@@ -162,12 +162,6 @@ data "intersight_iam_role" "odata_count_orderby"{
 	}
 }
 
-data "intersight_hyperflex_software_distribution_component" "odata_orderby_descending"{
-	odata {
-	 orderby = "CreateTime desc"
-	}
-}
-
 data "intersight_adapter_ext_eth_interface" "odata_orderby_ascending_select"{
 	odata {
 	 orderby = "CreateTime"
@@ -276,12 +270,6 @@ data "intersight_appliance_app_status" "odata_top_filter_empty_array"{
 	odata {
 		filter = "not(Tags/any())"
 		top = 5
-	}
-}
-
-data "intersight_workflow_workflow_info" "odata_top_filter_not_empty_array"{
-	odata {
-		filter = "Message/any()"
 	}
 }
 
