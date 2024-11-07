@@ -285,12 +285,12 @@ data "intersight_workflow_workflow_info" "odata_top_filter_not_empty_array"{
 	}
 }
 
-data "intersight_compute_rack_unit" "odata_top_skip_select"{
-	odata {
-		top = 20 
-		skip = 1 
-		nr_select = "Model,Serial"
-	}
+data "intersight_compute_rack_unit" "odata_top_skip_select" {
+  odata {
+    top = 20
+    skip = 1
+    nr_select = "Model,Serial"
+  }
 }
 
 data "intersight_adapter_host_fc_interface" "odata_top_inlinecount_allpages"{
