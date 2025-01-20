@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +24,7 @@ func resourceIamAccount() *schema.Resource {
 		UpdateContext: resourceIamAccountUpdate,
 		DeleteContext: resourceIamAccountDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -535,6 +538,14 @@ func resourceIamAccount() *schema.Resource {
 					},
 				},
 			},
+			"regions": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				}},
 			"resource_limits": {
 				Description: "A reference to a iamResourceLimits resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
 				Type:        schema.TypeList,
@@ -705,6 +716,17 @@ func resourceIamAccount() *schema.Resource {
 					}
 					return
 				}},
+			"single_admin_lockout": {
+				Description: "Indicates if the account is prone to lockout as it has only a single Account Administrator. \nAn account is prone to lockout if it has only one configured Account Administrator and no user groups configured that \ncan grant Account Administrator role to dynamic users.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"status": {
 				Description: "Status of the account. To activate the Intersight account, claim a device to the account.",
 				Type:        schema.TypeString,
@@ -801,6 +823,17 @@ func resourceIamAccount() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -916,6 +949,19 @@ func resourceIamAccountCreate(c context.Context, d *schema.ResourceData, meta in
 
 	o.SetObjectType("iam.Account")
 
+	if v, ok := d.GetOk("regions"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetRegions(x)
+		}
+	}
+
 	if v, ok := d.GetOk("tags"); ok {
 		x := make([]models.MoTag, 0)
 		s := v.([]interface{})
@@ -961,14 +1007,25 @@ func resourceIamAccountCreate(c context.Context, d *schema.ResourceData, meta in
 		}
 		return diag.Errorf("error occurred while creating IamAccount: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceIamAccountRead(c, d, meta)...)
 }
 
 func resourceIamAccountRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.IamApi.GetIamAccountByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1070,6 +1127,10 @@ func resourceIamAccountRead(c context.Context, d *schema.ResourceData, meta inte
 		return diag.Errorf("error occurred while setting property Privileges in IamAccount object: %s", err.Error())
 	}
 
+	if err := d.Set("regions", (s.GetRegions())); err != nil {
+		return diag.Errorf("error occurred while setting property Regions in IamAccount object: %s", err.Error())
+	}
+
 	if err := d.Set("resource_limits", flattenMapIamResourceLimitsRelationship(s.GetResourceLimits(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property ResourceLimits in IamAccount object: %s", err.Error())
 	}
@@ -1088,6 +1149,10 @@ func resourceIamAccountRead(c context.Context, d *schema.ResourceData, meta inte
 
 	if err := d.Set("shared_scope", (s.GetSharedScope())); err != nil {
 		return diag.Errorf("error occurred while setting property SharedScope in IamAccount object: %s", err.Error())
+	}
+
+	if err := d.Set("single_admin_lockout", (s.GetSingleAdminLockout())); err != nil {
+		return diag.Errorf("error occurred while setting property SingleAdminLockout in IamAccount object: %s", err.Error())
 	}
 
 	if err := d.Set("status", (s.GetStatus())); err != nil {
@@ -1138,6 +1203,18 @@ func resourceIamAccountUpdate(c context.Context, d *schema.ResourceData, meta in
 	}
 
 	o.SetObjectType("iam.Account")
+
+	if d.HasChange("regions") {
+		v := d.Get("regions")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetRegions(x)
+	}
 
 	if d.HasChange("tags") {
 		v := d.Get("tags")

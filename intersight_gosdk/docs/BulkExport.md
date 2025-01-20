@@ -7,15 +7,20 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "bulk.Export"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "bulk.Export"]
 **Action** | Pointer to **string** | Action to be performed on the export operation. * &#x60;Start&#x60; - Starts the export operation. * &#x60;Cancel&#x60; - Cancels the export operation that is in progress. | [optional] [default to "Start"]
+**ExcludePeers** | Pointer to **[]string** |  | [optional] 
+**ExcludeRelations** | Pointer to **bool** | Used to specify that none of the relationships should be exported. | [optional] 
 **ExportTags** | Pointer to **bool** | Specifies whether tags must be exported and will be considered for all the items MOs. | [optional] [default to true]
 **ExportedObjects** | Pointer to [**[]BulkSubRequest**](BulkSubRequest.md) |  | [optional] 
 **ImportOrder** | Pointer to **interface{}** | Contains the list of import order. | [optional] [readonly] 
+**IncludeOrgIdentity** | Pointer to **bool** | Indicates that exported references for objects which are organization owned should include the organization reference along with the other identity properties. | [optional] 
 **Items** | Pointer to [**[]MoMoRef**](MoMoRef.md) |  | [optional] 
 **Name** | Pointer to **string** | An identifier for the export instance. Name can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-) or an underscore (_). | [optional] 
+**PermissionId** | Pointer to **string** | The permission identifier which indicates the permission that current user has that will allow to start this export operation. | [optional] [readonly] 
 **Status** | Pointer to **string** | Status of the export operation. * &#x60;&#x60; - The operation has not started. * &#x60;InProgress&#x60; - The operation is in progress. * &#x60;OrderInProgress&#x60; - The archive operation is in progress. * &#x60;Success&#x60; - The operation has succeeded. * &#x60;Failed&#x60; - The operation has failed. * &#x60;OperationTimedOut&#x60; - The operation has timed out. * &#x60;OperationCancelled&#x60; - The operation has been cancelled. * &#x60;CancelInProgress&#x60; - The operation is being cancelled. | [optional] [readonly] [default to ""]
 **StatusMessage** | Pointer to **string** | Status message associated with failures or progress indication. | [optional] [readonly] 
+**UserId** | Pointer to **string** | The user identifier which indicates the user that started this export operation. | [optional] [readonly] 
 **ExportedItems** | Pointer to [**[]BulkExportedItemRelationship**](BulkExportedItemRelationship.md) | An array of relationships to bulkExportedItem resources. | [optional] [readonly] 
-**Organization** | Pointer to [**OrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**Organization** | Pointer to [**NullableOrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -100,6 +105,66 @@ SetAction sets Action field to given value.
 `func (o *BulkExport) HasAction() bool`
 
 HasAction returns a boolean if a field has been set.
+
+### GetExcludePeers
+
+`func (o *BulkExport) GetExcludePeers() []string`
+
+GetExcludePeers returns the ExcludePeers field if non-nil, zero value otherwise.
+
+### GetExcludePeersOk
+
+`func (o *BulkExport) GetExcludePeersOk() (*[]string, bool)`
+
+GetExcludePeersOk returns a tuple with the ExcludePeers field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExcludePeers
+
+`func (o *BulkExport) SetExcludePeers(v []string)`
+
+SetExcludePeers sets ExcludePeers field to given value.
+
+### HasExcludePeers
+
+`func (o *BulkExport) HasExcludePeers() bool`
+
+HasExcludePeers returns a boolean if a field has been set.
+
+### SetExcludePeersNil
+
+`func (o *BulkExport) SetExcludePeersNil(b bool)`
+
+ SetExcludePeersNil sets the value for ExcludePeers to be an explicit nil
+
+### UnsetExcludePeers
+`func (o *BulkExport) UnsetExcludePeers()`
+
+UnsetExcludePeers ensures that no value is present for ExcludePeers, not even an explicit nil
+### GetExcludeRelations
+
+`func (o *BulkExport) GetExcludeRelations() bool`
+
+GetExcludeRelations returns the ExcludeRelations field if non-nil, zero value otherwise.
+
+### GetExcludeRelationsOk
+
+`func (o *BulkExport) GetExcludeRelationsOk() (*bool, bool)`
+
+GetExcludeRelationsOk returns a tuple with the ExcludeRelations field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExcludeRelations
+
+`func (o *BulkExport) SetExcludeRelations(v bool)`
+
+SetExcludeRelations sets ExcludeRelations field to given value.
+
+### HasExcludeRelations
+
+`func (o *BulkExport) HasExcludeRelations() bool`
+
+HasExcludeRelations returns a boolean if a field has been set.
 
 ### GetExportTags
 
@@ -196,6 +261,31 @@ HasImportOrder returns a boolean if a field has been set.
 `func (o *BulkExport) UnsetImportOrder()`
 
 UnsetImportOrder ensures that no value is present for ImportOrder, not even an explicit nil
+### GetIncludeOrgIdentity
+
+`func (o *BulkExport) GetIncludeOrgIdentity() bool`
+
+GetIncludeOrgIdentity returns the IncludeOrgIdentity field if non-nil, zero value otherwise.
+
+### GetIncludeOrgIdentityOk
+
+`func (o *BulkExport) GetIncludeOrgIdentityOk() (*bool, bool)`
+
+GetIncludeOrgIdentityOk returns a tuple with the IncludeOrgIdentity field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIncludeOrgIdentity
+
+`func (o *BulkExport) SetIncludeOrgIdentity(v bool)`
+
+SetIncludeOrgIdentity sets IncludeOrgIdentity field to given value.
+
+### HasIncludeOrgIdentity
+
+`func (o *BulkExport) HasIncludeOrgIdentity() bool`
+
+HasIncludeOrgIdentity returns a boolean if a field has been set.
+
 ### GetItems
 
 `func (o *BulkExport) GetItems() []MoMoRef`
@@ -256,6 +346,31 @@ SetName sets Name field to given value.
 
 HasName returns a boolean if a field has been set.
 
+### GetPermissionId
+
+`func (o *BulkExport) GetPermissionId() string`
+
+GetPermissionId returns the PermissionId field if non-nil, zero value otherwise.
+
+### GetPermissionIdOk
+
+`func (o *BulkExport) GetPermissionIdOk() (*string, bool)`
+
+GetPermissionIdOk returns a tuple with the PermissionId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPermissionId
+
+`func (o *BulkExport) SetPermissionId(v string)`
+
+SetPermissionId sets PermissionId field to given value.
+
+### HasPermissionId
+
+`func (o *BulkExport) HasPermissionId() bool`
+
+HasPermissionId returns a boolean if a field has been set.
+
 ### GetStatus
 
 `func (o *BulkExport) GetStatus() string`
@@ -305,6 +420,31 @@ SetStatusMessage sets StatusMessage field to given value.
 `func (o *BulkExport) HasStatusMessage() bool`
 
 HasStatusMessage returns a boolean if a field has been set.
+
+### GetUserId
+
+`func (o *BulkExport) GetUserId() string`
+
+GetUserId returns the UserId field if non-nil, zero value otherwise.
+
+### GetUserIdOk
+
+`func (o *BulkExport) GetUserIdOk() (*string, bool)`
+
+GetUserIdOk returns a tuple with the UserId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUserId
+
+`func (o *BulkExport) SetUserId(v string)`
+
+SetUserId sets UserId field to given value.
+
+### HasUserId
+
+`func (o *BulkExport) HasUserId() bool`
+
+HasUserId returns a boolean if a field has been set.
 
 ### GetExportedItems
 
@@ -366,6 +506,16 @@ SetOrganization sets Organization field to given value.
 
 HasOrganization returns a boolean if a field has been set.
 
+### SetOrganizationNil
+
+`func (o *BulkExport) SetOrganizationNil(b bool)`
+
+ SetOrganizationNil sets the value for Organization to be an explicit nil
+
+### UnsetOrganization
+`func (o *BulkExport) UnsetOrganization()`
+
+UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

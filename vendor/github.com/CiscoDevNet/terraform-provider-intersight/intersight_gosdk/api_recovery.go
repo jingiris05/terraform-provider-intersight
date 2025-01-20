@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -56,8 +56,8 @@ func (r ApiCreateRecoveryBackupConfigPolicyRequest) Execute() (*RecoveryBackupCo
 /*
 CreateRecoveryBackupConfigPolicy Create a 'recovery.BackupConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateRecoveryBackupConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateRecoveryBackupConfigPolicyRequest
 */
 func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicy(ctx context.Context) ApiCreateRecoveryBackupConfigPolicyRequest {
 	return ApiCreateRecoveryBackupConfigPolicyRequest{
@@ -67,7 +67,8 @@ func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicy(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return RecoveryBackupConfigPolicy
+//
+//	@return RecoveryBackupConfigPolicy
 func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicyExecute(r ApiCreateRecoveryBackupConfigPolicyRequest) (*RecoveryBackupConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -108,10 +109,10 @@ func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicyExecute(r ApiCreate
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryBackupConfigPolicy
@@ -125,9 +126,9 @@ func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicyExecute(r ApiCreate
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -144,6 +145,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicyExecute(r ApiCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -154,6 +156,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicyExecute(r ApiCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -164,6 +167,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicyExecute(r ApiCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -174,6 +178,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicyExecute(r ApiCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -183,6 +188,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupConfigPolicyExecute(r ApiCreate
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -232,8 +238,8 @@ func (r ApiCreateRecoveryBackupProfileRequest) Execute() (*RecoveryBackupProfile
 /*
 CreateRecoveryBackupProfile Create a 'recovery.BackupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateRecoveryBackupProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateRecoveryBackupProfileRequest
 */
 func (a *RecoveryApiService) CreateRecoveryBackupProfile(ctx context.Context) ApiCreateRecoveryBackupProfileRequest {
 	return ApiCreateRecoveryBackupProfileRequest{
@@ -243,7 +249,8 @@ func (a *RecoveryApiService) CreateRecoveryBackupProfile(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return RecoveryBackupProfile
+//
+//	@return RecoveryBackupProfile
 func (a *RecoveryApiService) CreateRecoveryBackupProfileExecute(r ApiCreateRecoveryBackupProfileRequest) (*RecoveryBackupProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -284,10 +291,10 @@ func (a *RecoveryApiService) CreateRecoveryBackupProfileExecute(r ApiCreateRecov
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryBackupProfile
@@ -301,9 +308,9 @@ func (a *RecoveryApiService) CreateRecoveryBackupProfileExecute(r ApiCreateRecov
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -320,6 +327,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupProfileExecute(r ApiCreateRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -330,6 +338,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupProfileExecute(r ApiCreateRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -340,6 +349,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupProfileExecute(r ApiCreateRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -350,6 +360,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupProfileExecute(r ApiCreateRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -359,6 +370,7 @@ func (a *RecoveryApiService) CreateRecoveryBackupProfileExecute(r ApiCreateRecov
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -408,8 +420,8 @@ func (r ApiCreateRecoveryOnDemandBackupRequest) Execute() (*RecoveryOnDemandBack
 /*
 CreateRecoveryOnDemandBackup Create a 'recovery.OnDemandBackup' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateRecoveryOnDemandBackupRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateRecoveryOnDemandBackupRequest
 */
 func (a *RecoveryApiService) CreateRecoveryOnDemandBackup(ctx context.Context) ApiCreateRecoveryOnDemandBackupRequest {
 	return ApiCreateRecoveryOnDemandBackupRequest{
@@ -419,7 +431,8 @@ func (a *RecoveryApiService) CreateRecoveryOnDemandBackup(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return RecoveryOnDemandBackup
+//
+//	@return RecoveryOnDemandBackup
 func (a *RecoveryApiService) CreateRecoveryOnDemandBackupExecute(r ApiCreateRecoveryOnDemandBackupRequest) (*RecoveryOnDemandBackup, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -460,10 +473,10 @@ func (a *RecoveryApiService) CreateRecoveryOnDemandBackupExecute(r ApiCreateReco
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryOnDemandBackup
@@ -477,9 +490,9 @@ func (a *RecoveryApiService) CreateRecoveryOnDemandBackupExecute(r ApiCreateReco
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -496,6 +509,7 @@ func (a *RecoveryApiService) CreateRecoveryOnDemandBackupExecute(r ApiCreateReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -506,6 +520,7 @@ func (a *RecoveryApiService) CreateRecoveryOnDemandBackupExecute(r ApiCreateReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -516,6 +531,7 @@ func (a *RecoveryApiService) CreateRecoveryOnDemandBackupExecute(r ApiCreateReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -526,6 +542,7 @@ func (a *RecoveryApiService) CreateRecoveryOnDemandBackupExecute(r ApiCreateReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -535,6 +552,7 @@ func (a *RecoveryApiService) CreateRecoveryOnDemandBackupExecute(r ApiCreateReco
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -584,8 +602,8 @@ func (r ApiCreateRecoveryRestoreRequest) Execute() (*RecoveryRestore, *http.Resp
 /*
 CreateRecoveryRestore Create a 'recovery.Restore' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateRecoveryRestoreRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateRecoveryRestoreRequest
 */
 func (a *RecoveryApiService) CreateRecoveryRestore(ctx context.Context) ApiCreateRecoveryRestoreRequest {
 	return ApiCreateRecoveryRestoreRequest{
@@ -595,7 +613,8 @@ func (a *RecoveryApiService) CreateRecoveryRestore(ctx context.Context) ApiCreat
 }
 
 // Execute executes the request
-//  @return RecoveryRestore
+//
+//	@return RecoveryRestore
 func (a *RecoveryApiService) CreateRecoveryRestoreExecute(r ApiCreateRecoveryRestoreRequest) (*RecoveryRestore, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -636,10 +655,10 @@ func (a *RecoveryApiService) CreateRecoveryRestoreExecute(r ApiCreateRecoveryRes
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryRestore
@@ -653,9 +672,9 @@ func (a *RecoveryApiService) CreateRecoveryRestoreExecute(r ApiCreateRecoveryRes
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -672,6 +691,7 @@ func (a *RecoveryApiService) CreateRecoveryRestoreExecute(r ApiCreateRecoveryRes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -682,6 +702,7 @@ func (a *RecoveryApiService) CreateRecoveryRestoreExecute(r ApiCreateRecoveryRes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -692,6 +713,7 @@ func (a *RecoveryApiService) CreateRecoveryRestoreExecute(r ApiCreateRecoveryRes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -702,6 +724,7 @@ func (a *RecoveryApiService) CreateRecoveryRestoreExecute(r ApiCreateRecoveryRes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -711,6 +734,7 @@ func (a *RecoveryApiService) CreateRecoveryRestoreExecute(r ApiCreateRecoveryRes
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -760,8 +784,8 @@ func (r ApiCreateRecoveryScheduleConfigPolicyRequest) Execute() (*RecoverySchedu
 /*
 CreateRecoveryScheduleConfigPolicy Create a 'recovery.ScheduleConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateRecoveryScheduleConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateRecoveryScheduleConfigPolicyRequest
 */
 func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicy(ctx context.Context) ApiCreateRecoveryScheduleConfigPolicyRequest {
 	return ApiCreateRecoveryScheduleConfigPolicyRequest{
@@ -771,7 +795,8 @@ func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicy(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return RecoveryScheduleConfigPolicy
+//
+//	@return RecoveryScheduleConfigPolicy
 func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicyExecute(r ApiCreateRecoveryScheduleConfigPolicyRequest) (*RecoveryScheduleConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -812,10 +837,10 @@ func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicyExecute(r ApiCrea
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryScheduleConfigPolicy
@@ -829,9 +854,9 @@ func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicyExecute(r ApiCrea
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -848,6 +873,7 @@ func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicyExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -858,6 +884,7 @@ func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicyExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -868,6 +895,7 @@ func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicyExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -878,6 +906,7 @@ func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicyExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -887,6 +916,7 @@ func (a *RecoveryApiService) CreateRecoveryScheduleConfigPolicyExecute(r ApiCrea
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -916,9 +946,9 @@ func (r ApiDeleteRecoveryBackupConfigPolicyRequest) Execute() (*http.Response, e
 /*
 DeleteRecoveryBackupConfigPolicy Delete a 'recovery.BackupConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteRecoveryBackupConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteRecoveryBackupConfigPolicyRequest
 */
 func (a *RecoveryApiService) DeleteRecoveryBackupConfigPolicy(ctx context.Context, moid string) ApiDeleteRecoveryBackupConfigPolicyRequest {
 	return ApiDeleteRecoveryBackupConfigPolicyRequest{
@@ -942,7 +972,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupConfigPolicyExecute(r ApiDelete
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/BackupConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -975,9 +1005,9 @@ func (a *RecoveryApiService) DeleteRecoveryBackupConfigPolicyExecute(r ApiDelete
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -994,6 +1024,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupConfigPolicyExecute(r ApiDelete
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1004,6 +1035,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupConfigPolicyExecute(r ApiDelete
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1014,6 +1046,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupConfigPolicyExecute(r ApiDelete
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1024,6 +1057,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupConfigPolicyExecute(r ApiDelete
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1033,6 +1067,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupConfigPolicyExecute(r ApiDelete
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -1053,9 +1088,9 @@ func (r ApiDeleteRecoveryBackupProfileRequest) Execute() (*http.Response, error)
 /*
 DeleteRecoveryBackupProfile Delete a 'recovery.BackupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteRecoveryBackupProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteRecoveryBackupProfileRequest
 */
 func (a *RecoveryApiService) DeleteRecoveryBackupProfile(ctx context.Context, moid string) ApiDeleteRecoveryBackupProfileRequest {
 	return ApiDeleteRecoveryBackupProfileRequest{
@@ -1079,7 +1114,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupProfileExecute(r ApiDeleteRecov
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/BackupProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1112,9 +1147,9 @@ func (a *RecoveryApiService) DeleteRecoveryBackupProfileExecute(r ApiDeleteRecov
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -1131,6 +1166,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupProfileExecute(r ApiDeleteRecov
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1141,6 +1177,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupProfileExecute(r ApiDeleteRecov
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1151,6 +1188,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupProfileExecute(r ApiDeleteRecov
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1161,6 +1199,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupProfileExecute(r ApiDeleteRecov
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1170,6 +1209,7 @@ func (a *RecoveryApiService) DeleteRecoveryBackupProfileExecute(r ApiDeleteRecov
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -1190,9 +1230,9 @@ func (r ApiDeleteRecoveryOnDemandBackupRequest) Execute() (*http.Response, error
 /*
 DeleteRecoveryOnDemandBackup Delete a 'recovery.OnDemandBackup' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteRecoveryOnDemandBackupRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteRecoveryOnDemandBackupRequest
 */
 func (a *RecoveryApiService) DeleteRecoveryOnDemandBackup(ctx context.Context, moid string) ApiDeleteRecoveryOnDemandBackupRequest {
 	return ApiDeleteRecoveryOnDemandBackupRequest{
@@ -1216,7 +1256,7 @@ func (a *RecoveryApiService) DeleteRecoveryOnDemandBackupExecute(r ApiDeleteReco
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/OnDemandBackups/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1249,9 +1289,9 @@ func (a *RecoveryApiService) DeleteRecoveryOnDemandBackupExecute(r ApiDeleteReco
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -1268,6 +1308,7 @@ func (a *RecoveryApiService) DeleteRecoveryOnDemandBackupExecute(r ApiDeleteReco
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1278,6 +1319,7 @@ func (a *RecoveryApiService) DeleteRecoveryOnDemandBackupExecute(r ApiDeleteReco
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1288,6 +1330,7 @@ func (a *RecoveryApiService) DeleteRecoveryOnDemandBackupExecute(r ApiDeleteReco
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1298,6 +1341,7 @@ func (a *RecoveryApiService) DeleteRecoveryOnDemandBackupExecute(r ApiDeleteReco
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1307,6 +1351,7 @@ func (a *RecoveryApiService) DeleteRecoveryOnDemandBackupExecute(r ApiDeleteReco
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -1327,9 +1372,9 @@ func (r ApiDeleteRecoveryRestoreRequest) Execute() (*http.Response, error) {
 /*
 DeleteRecoveryRestore Delete a 'recovery.Restore' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteRecoveryRestoreRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteRecoveryRestoreRequest
 */
 func (a *RecoveryApiService) DeleteRecoveryRestore(ctx context.Context, moid string) ApiDeleteRecoveryRestoreRequest {
 	return ApiDeleteRecoveryRestoreRequest{
@@ -1353,7 +1398,7 @@ func (a *RecoveryApiService) DeleteRecoveryRestoreExecute(r ApiDeleteRecoveryRes
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/Restores/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1386,9 +1431,9 @@ func (a *RecoveryApiService) DeleteRecoveryRestoreExecute(r ApiDeleteRecoveryRes
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -1405,6 +1450,7 @@ func (a *RecoveryApiService) DeleteRecoveryRestoreExecute(r ApiDeleteRecoveryRes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1415,6 +1461,7 @@ func (a *RecoveryApiService) DeleteRecoveryRestoreExecute(r ApiDeleteRecoveryRes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1425,6 +1472,7 @@ func (a *RecoveryApiService) DeleteRecoveryRestoreExecute(r ApiDeleteRecoveryRes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1435,6 +1483,7 @@ func (a *RecoveryApiService) DeleteRecoveryRestoreExecute(r ApiDeleteRecoveryRes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1444,6 +1493,7 @@ func (a *RecoveryApiService) DeleteRecoveryRestoreExecute(r ApiDeleteRecoveryRes
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -1464,9 +1514,9 @@ func (r ApiDeleteRecoveryScheduleConfigPolicyRequest) Execute() (*http.Response,
 /*
 DeleteRecoveryScheduleConfigPolicy Delete a 'recovery.ScheduleConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteRecoveryScheduleConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteRecoveryScheduleConfigPolicyRequest
 */
 func (a *RecoveryApiService) DeleteRecoveryScheduleConfigPolicy(ctx context.Context, moid string) ApiDeleteRecoveryScheduleConfigPolicyRequest {
 	return ApiDeleteRecoveryScheduleConfigPolicyRequest{
@@ -1490,7 +1540,7 @@ func (a *RecoveryApiService) DeleteRecoveryScheduleConfigPolicyExecute(r ApiDele
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/ScheduleConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1523,9 +1573,9 @@ func (a *RecoveryApiService) DeleteRecoveryScheduleConfigPolicyExecute(r ApiDele
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -1542,6 +1592,7 @@ func (a *RecoveryApiService) DeleteRecoveryScheduleConfigPolicyExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1552,6 +1603,7 @@ func (a *RecoveryApiService) DeleteRecoveryScheduleConfigPolicyExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1562,6 +1614,7 @@ func (a *RecoveryApiService) DeleteRecoveryScheduleConfigPolicyExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1572,6 +1625,7 @@ func (a *RecoveryApiService) DeleteRecoveryScheduleConfigPolicyExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1581,6 +1635,7 @@ func (a *RecoveryApiService) DeleteRecoveryScheduleConfigPolicyExecute(r ApiDele
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -1601,9 +1656,9 @@ func (r ApiGetRecoveryBackupConfigPolicyByMoidRequest) Execute() (*RecoveryBacku
 /*
 GetRecoveryBackupConfigPolicyByMoid Read a 'recovery.BackupConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetRecoveryBackupConfigPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetRecoveryBackupConfigPolicyByMoidRequest
 */
 func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoid(ctx context.Context, moid string) ApiGetRecoveryBackupConfigPolicyByMoidRequest {
 	return ApiGetRecoveryBackupConfigPolicyByMoidRequest{
@@ -1614,7 +1669,8 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoid(ctx context.Con
 }
 
 // Execute executes the request
-//  @return RecoveryBackupConfigPolicy
+//
+//	@return RecoveryBackupConfigPolicy
 func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoidExecute(r ApiGetRecoveryBackupConfigPolicyByMoidRequest) (*RecoveryBackupConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1629,7 +1685,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoidExecute(r ApiGet
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/BackupConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1662,9 +1718,9 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoidExecute(r ApiGet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1681,6 +1737,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1691,6 +1748,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1701,6 +1759,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1711,6 +1770,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1720,6 +1780,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyByMoidExecute(r ApiGet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1788,7 +1849,7 @@ func (r ApiGetRecoveryBackupConfigPolicyListRequest) Expand(expand string) ApiGe
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetRecoveryBackupConfigPolicyListRequest) Apply(apply string) ApiGetRecoveryBackupConfigPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -1825,8 +1886,8 @@ func (r ApiGetRecoveryBackupConfigPolicyListRequest) Execute() (*RecoveryBackupC
 /*
 GetRecoveryBackupConfigPolicyList Read a 'recovery.BackupConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetRecoveryBackupConfigPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetRecoveryBackupConfigPolicyListRequest
 */
 func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyList(ctx context.Context) ApiGetRecoveryBackupConfigPolicyListRequest {
 	return ApiGetRecoveryBackupConfigPolicyListRequest{
@@ -1836,7 +1897,8 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyList(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return RecoveryBackupConfigPolicyResponse
+//
+//	@return RecoveryBackupConfigPolicyResponse
 func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyListExecute(r ApiGetRecoveryBackupConfigPolicyListRequest) (*RecoveryBackupConfigPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1857,37 +1919,52 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyListExecute(r ApiGetRe
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1916,9 +1993,9 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyListExecute(r ApiGetRe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1935,6 +2012,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyListExecute(r ApiGetRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1945,6 +2023,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyListExecute(r ApiGetRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1955,6 +2034,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyListExecute(r ApiGetRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1965,6 +2045,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyListExecute(r ApiGetRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1974,6 +2055,7 @@ func (a *RecoveryApiService) GetRecoveryBackupConfigPolicyListExecute(r ApiGetRe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2003,9 +2085,9 @@ func (r ApiGetRecoveryBackupProfileByMoidRequest) Execute() (*RecoveryBackupProf
 /*
 GetRecoveryBackupProfileByMoid Read a 'recovery.BackupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetRecoveryBackupProfileByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetRecoveryBackupProfileByMoidRequest
 */
 func (a *RecoveryApiService) GetRecoveryBackupProfileByMoid(ctx context.Context, moid string) ApiGetRecoveryBackupProfileByMoidRequest {
 	return ApiGetRecoveryBackupProfileByMoidRequest{
@@ -2016,7 +2098,8 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return RecoveryBackupProfile
+//
+//	@return RecoveryBackupProfile
 func (a *RecoveryApiService) GetRecoveryBackupProfileByMoidExecute(r ApiGetRecoveryBackupProfileByMoidRequest) (*RecoveryBackupProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2031,7 +2114,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileByMoidExecute(r ApiGetRecov
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/BackupProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2064,9 +2147,9 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileByMoidExecute(r ApiGetRecov
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2083,6 +2166,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileByMoidExecute(r ApiGetRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2093,6 +2177,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileByMoidExecute(r ApiGetRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2103,6 +2188,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileByMoidExecute(r ApiGetRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2113,6 +2199,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileByMoidExecute(r ApiGetRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2122,6 +2209,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileByMoidExecute(r ApiGetRecov
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2190,7 +2278,7 @@ func (r ApiGetRecoveryBackupProfileListRequest) Expand(expand string) ApiGetReco
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetRecoveryBackupProfileListRequest) Apply(apply string) ApiGetRecoveryBackupProfileListRequest {
 	r.apply = &apply
 	return r
@@ -2227,8 +2315,8 @@ func (r ApiGetRecoveryBackupProfileListRequest) Execute() (*RecoveryBackupProfil
 /*
 GetRecoveryBackupProfileList Read a 'recovery.BackupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetRecoveryBackupProfileListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetRecoveryBackupProfileListRequest
 */
 func (a *RecoveryApiService) GetRecoveryBackupProfileList(ctx context.Context) ApiGetRecoveryBackupProfileListRequest {
 	return ApiGetRecoveryBackupProfileListRequest{
@@ -2238,7 +2326,8 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return RecoveryBackupProfileResponse
+//
+//	@return RecoveryBackupProfileResponse
 func (a *RecoveryApiService) GetRecoveryBackupProfileListExecute(r ApiGetRecoveryBackupProfileListRequest) (*RecoveryBackupProfileResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2259,37 +2348,52 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileListExecute(r ApiGetRecover
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2318,9 +2422,9 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileListExecute(r ApiGetRecover
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2337,6 +2441,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileListExecute(r ApiGetRecover
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2347,6 +2452,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileListExecute(r ApiGetRecover
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2357,6 +2463,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileListExecute(r ApiGetRecover
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2367,6 +2474,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileListExecute(r ApiGetRecover
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2376,6 +2484,7 @@ func (a *RecoveryApiService) GetRecoveryBackupProfileListExecute(r ApiGetRecover
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2405,9 +2514,9 @@ func (r ApiGetRecoveryConfigResultByMoidRequest) Execute() (*RecoveryConfigResul
 /*
 GetRecoveryConfigResultByMoid Read a 'recovery.ConfigResult' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetRecoveryConfigResultByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetRecoveryConfigResultByMoidRequest
 */
 func (a *RecoveryApiService) GetRecoveryConfigResultByMoid(ctx context.Context, moid string) ApiGetRecoveryConfigResultByMoidRequest {
 	return ApiGetRecoveryConfigResultByMoidRequest{
@@ -2418,7 +2527,8 @@ func (a *RecoveryApiService) GetRecoveryConfigResultByMoid(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return RecoveryConfigResult
+//
+//	@return RecoveryConfigResult
 func (a *RecoveryApiService) GetRecoveryConfigResultByMoidExecute(r ApiGetRecoveryConfigResultByMoidRequest) (*RecoveryConfigResult, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2433,7 +2543,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultByMoidExecute(r ApiGetRecove
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/ConfigResults/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2466,9 +2576,9 @@ func (a *RecoveryApiService) GetRecoveryConfigResultByMoidExecute(r ApiGetRecove
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2485,6 +2595,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultByMoidExecute(r ApiGetRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2495,6 +2606,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultByMoidExecute(r ApiGetRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2505,6 +2617,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultByMoidExecute(r ApiGetRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2515,6 +2628,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultByMoidExecute(r ApiGetRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2524,6 +2638,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultByMoidExecute(r ApiGetRecove
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2553,9 +2668,9 @@ func (r ApiGetRecoveryConfigResultEntryByMoidRequest) Execute() (*RecoveryConfig
 /*
 GetRecoveryConfigResultEntryByMoid Read a 'recovery.ConfigResultEntry' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetRecoveryConfigResultEntryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetRecoveryConfigResultEntryByMoidRequest
 */
 func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoid(ctx context.Context, moid string) ApiGetRecoveryConfigResultEntryByMoidRequest {
 	return ApiGetRecoveryConfigResultEntryByMoidRequest{
@@ -2566,7 +2681,8 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return RecoveryConfigResultEntry
+//
+//	@return RecoveryConfigResultEntry
 func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoidExecute(r ApiGetRecoveryConfigResultEntryByMoidRequest) (*RecoveryConfigResultEntry, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2581,7 +2697,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoidExecute(r ApiGetR
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/ConfigResultEntries/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2614,9 +2730,9 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoidExecute(r ApiGetR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2633,6 +2749,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoidExecute(r ApiGetR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2643,6 +2760,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoidExecute(r ApiGetR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2653,6 +2771,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoidExecute(r ApiGetR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2663,6 +2782,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoidExecute(r ApiGetR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2672,6 +2792,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryByMoidExecute(r ApiGetR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2740,7 +2861,7 @@ func (r ApiGetRecoveryConfigResultEntryListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetRecoveryConfigResultEntryListRequest) Apply(apply string) ApiGetRecoveryConfigResultEntryListRequest {
 	r.apply = &apply
 	return r
@@ -2777,8 +2898,8 @@ func (r ApiGetRecoveryConfigResultEntryListRequest) Execute() (*RecoveryConfigRe
 /*
 GetRecoveryConfigResultEntryList Read a 'recovery.ConfigResultEntry' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetRecoveryConfigResultEntryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetRecoveryConfigResultEntryListRequest
 */
 func (a *RecoveryApiService) GetRecoveryConfigResultEntryList(ctx context.Context) ApiGetRecoveryConfigResultEntryListRequest {
 	return ApiGetRecoveryConfigResultEntryListRequest{
@@ -2788,7 +2909,8 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return RecoveryConfigResultEntryResponse
+//
+//	@return RecoveryConfigResultEntryResponse
 func (a *RecoveryApiService) GetRecoveryConfigResultEntryListExecute(r ApiGetRecoveryConfigResultEntryListRequest) (*RecoveryConfigResultEntryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2809,37 +2931,52 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryListExecute(r ApiGetRec
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2868,9 +3005,9 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryListExecute(r ApiGetRec
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2887,6 +3024,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryListExecute(r ApiGetRec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2897,6 +3035,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryListExecute(r ApiGetRec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2907,6 +3046,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryListExecute(r ApiGetRec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2917,6 +3057,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryListExecute(r ApiGetRec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2926,6 +3067,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultEntryListExecute(r ApiGetRec
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2994,7 +3136,7 @@ func (r ApiGetRecoveryConfigResultListRequest) Expand(expand string) ApiGetRecov
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetRecoveryConfigResultListRequest) Apply(apply string) ApiGetRecoveryConfigResultListRequest {
 	r.apply = &apply
 	return r
@@ -3031,8 +3173,8 @@ func (r ApiGetRecoveryConfigResultListRequest) Execute() (*RecoveryConfigResultR
 /*
 GetRecoveryConfigResultList Read a 'recovery.ConfigResult' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetRecoveryConfigResultListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetRecoveryConfigResultListRequest
 */
 func (a *RecoveryApiService) GetRecoveryConfigResultList(ctx context.Context) ApiGetRecoveryConfigResultListRequest {
 	return ApiGetRecoveryConfigResultListRequest{
@@ -3042,7 +3184,8 @@ func (a *RecoveryApiService) GetRecoveryConfigResultList(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return RecoveryConfigResultResponse
+//
+//	@return RecoveryConfigResultResponse
 func (a *RecoveryApiService) GetRecoveryConfigResultListExecute(r ApiGetRecoveryConfigResultListRequest) (*RecoveryConfigResultResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3063,37 +3206,52 @@ func (a *RecoveryApiService) GetRecoveryConfigResultListExecute(r ApiGetRecovery
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3122,9 +3280,9 @@ func (a *RecoveryApiService) GetRecoveryConfigResultListExecute(r ApiGetRecovery
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3141,6 +3299,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultListExecute(r ApiGetRecovery
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3151,6 +3310,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultListExecute(r ApiGetRecovery
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3161,6 +3321,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultListExecute(r ApiGetRecovery
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3171,6 +3332,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultListExecute(r ApiGetRecovery
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3180,6 +3342,7 @@ func (a *RecoveryApiService) GetRecoveryConfigResultListExecute(r ApiGetRecovery
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3209,9 +3372,9 @@ func (r ApiGetRecoveryOnDemandBackupByMoidRequest) Execute() (*RecoveryOnDemandB
 /*
 GetRecoveryOnDemandBackupByMoid Read a 'recovery.OnDemandBackup' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetRecoveryOnDemandBackupByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetRecoveryOnDemandBackupByMoidRequest
 */
 func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoid(ctx context.Context, moid string) ApiGetRecoveryOnDemandBackupByMoidRequest {
 	return ApiGetRecoveryOnDemandBackupByMoidRequest{
@@ -3222,7 +3385,8 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return RecoveryOnDemandBackup
+//
+//	@return RecoveryOnDemandBackup
 func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoidExecute(r ApiGetRecoveryOnDemandBackupByMoidRequest) (*RecoveryOnDemandBackup, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3237,7 +3401,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoidExecute(r ApiGetReco
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/OnDemandBackups/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3270,9 +3434,9 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoidExecute(r ApiGetReco
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3289,6 +3453,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoidExecute(r ApiGetReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3299,6 +3464,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoidExecute(r ApiGetReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3309,6 +3475,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoidExecute(r ApiGetReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3319,6 +3486,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoidExecute(r ApiGetReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3328,6 +3496,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupByMoidExecute(r ApiGetReco
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3396,7 +3565,7 @@ func (r ApiGetRecoveryOnDemandBackupListRequest) Expand(expand string) ApiGetRec
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetRecoveryOnDemandBackupListRequest) Apply(apply string) ApiGetRecoveryOnDemandBackupListRequest {
 	r.apply = &apply
 	return r
@@ -3433,8 +3602,8 @@ func (r ApiGetRecoveryOnDemandBackupListRequest) Execute() (*RecoveryOnDemandBac
 /*
 GetRecoveryOnDemandBackupList Read a 'recovery.OnDemandBackup' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetRecoveryOnDemandBackupListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetRecoveryOnDemandBackupListRequest
 */
 func (a *RecoveryApiService) GetRecoveryOnDemandBackupList(ctx context.Context) ApiGetRecoveryOnDemandBackupListRequest {
 	return ApiGetRecoveryOnDemandBackupListRequest{
@@ -3444,7 +3613,8 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return RecoveryOnDemandBackupResponse
+//
+//	@return RecoveryOnDemandBackupResponse
 func (a *RecoveryApiService) GetRecoveryOnDemandBackupListExecute(r ApiGetRecoveryOnDemandBackupListRequest) (*RecoveryOnDemandBackupResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3465,37 +3635,52 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupListExecute(r ApiGetRecove
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3524,9 +3709,9 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupListExecute(r ApiGetRecove
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3543,6 +3728,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupListExecute(r ApiGetRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3553,6 +3739,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupListExecute(r ApiGetRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3563,6 +3750,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupListExecute(r ApiGetRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3573,6 +3761,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupListExecute(r ApiGetRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3582,6 +3771,7 @@ func (a *RecoveryApiService) GetRecoveryOnDemandBackupListExecute(r ApiGetRecove
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3611,9 +3801,9 @@ func (r ApiGetRecoveryRestoreByMoidRequest) Execute() (*RecoveryRestore, *http.R
 /*
 GetRecoveryRestoreByMoid Read a 'recovery.Restore' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetRecoveryRestoreByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetRecoveryRestoreByMoidRequest
 */
 func (a *RecoveryApiService) GetRecoveryRestoreByMoid(ctx context.Context, moid string) ApiGetRecoveryRestoreByMoidRequest {
 	return ApiGetRecoveryRestoreByMoidRequest{
@@ -3624,7 +3814,8 @@ func (a *RecoveryApiService) GetRecoveryRestoreByMoid(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return RecoveryRestore
+//
+//	@return RecoveryRestore
 func (a *RecoveryApiService) GetRecoveryRestoreByMoidExecute(r ApiGetRecoveryRestoreByMoidRequest) (*RecoveryRestore, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3639,7 +3830,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreByMoidExecute(r ApiGetRecoveryRes
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/Restores/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3672,9 +3863,9 @@ func (a *RecoveryApiService) GetRecoveryRestoreByMoidExecute(r ApiGetRecoveryRes
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3691,6 +3882,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreByMoidExecute(r ApiGetRecoveryRes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3701,6 +3893,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreByMoidExecute(r ApiGetRecoveryRes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3711,6 +3904,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreByMoidExecute(r ApiGetRecoveryRes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3721,6 +3915,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreByMoidExecute(r ApiGetRecoveryRes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3730,6 +3925,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreByMoidExecute(r ApiGetRecoveryRes
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3798,7 +3994,7 @@ func (r ApiGetRecoveryRestoreListRequest) Expand(expand string) ApiGetRecoveryRe
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetRecoveryRestoreListRequest) Apply(apply string) ApiGetRecoveryRestoreListRequest {
 	r.apply = &apply
 	return r
@@ -3835,8 +4031,8 @@ func (r ApiGetRecoveryRestoreListRequest) Execute() (*RecoveryRestoreResponse, *
 /*
 GetRecoveryRestoreList Read a 'recovery.Restore' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetRecoveryRestoreListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetRecoveryRestoreListRequest
 */
 func (a *RecoveryApiService) GetRecoveryRestoreList(ctx context.Context) ApiGetRecoveryRestoreListRequest {
 	return ApiGetRecoveryRestoreListRequest{
@@ -3846,7 +4042,8 @@ func (a *RecoveryApiService) GetRecoveryRestoreList(ctx context.Context) ApiGetR
 }
 
 // Execute executes the request
-//  @return RecoveryRestoreResponse
+//
+//	@return RecoveryRestoreResponse
 func (a *RecoveryApiService) GetRecoveryRestoreListExecute(r ApiGetRecoveryRestoreListRequest) (*RecoveryRestoreResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3867,37 +4064,52 @@ func (a *RecoveryApiService) GetRecoveryRestoreListExecute(r ApiGetRecoveryResto
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3926,9 +4138,9 @@ func (a *RecoveryApiService) GetRecoveryRestoreListExecute(r ApiGetRecoveryResto
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3945,6 +4157,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreListExecute(r ApiGetRecoveryResto
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3955,6 +4168,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreListExecute(r ApiGetRecoveryResto
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3965,6 +4179,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreListExecute(r ApiGetRecoveryResto
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3975,6 +4190,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreListExecute(r ApiGetRecoveryResto
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3984,6 +4200,7 @@ func (a *RecoveryApiService) GetRecoveryRestoreListExecute(r ApiGetRecoveryResto
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4013,9 +4230,9 @@ func (r ApiGetRecoveryScheduleConfigPolicyByMoidRequest) Execute() (*RecoverySch
 /*
 GetRecoveryScheduleConfigPolicyByMoid Read a 'recovery.ScheduleConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetRecoveryScheduleConfigPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetRecoveryScheduleConfigPolicyByMoidRequest
 */
 func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoid(ctx context.Context, moid string) ApiGetRecoveryScheduleConfigPolicyByMoidRequest {
 	return ApiGetRecoveryScheduleConfigPolicyByMoidRequest{
@@ -4026,7 +4243,8 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoid(ctx context.C
 }
 
 // Execute executes the request
-//  @return RecoveryScheduleConfigPolicy
+//
+//	@return RecoveryScheduleConfigPolicy
 func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoidExecute(r ApiGetRecoveryScheduleConfigPolicyByMoidRequest) (*RecoveryScheduleConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4041,7 +4259,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoidExecute(r ApiG
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/ScheduleConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4074,9 +4292,9 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoidExecute(r ApiG
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4093,6 +4311,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4103,6 +4322,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4113,6 +4333,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4123,6 +4344,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4132,6 +4354,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyByMoidExecute(r ApiG
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4200,7 +4423,7 @@ func (r ApiGetRecoveryScheduleConfigPolicyListRequest) Expand(expand string) Api
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetRecoveryScheduleConfigPolicyListRequest) Apply(apply string) ApiGetRecoveryScheduleConfigPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -4237,8 +4460,8 @@ func (r ApiGetRecoveryScheduleConfigPolicyListRequest) Execute() (*RecoverySched
 /*
 GetRecoveryScheduleConfigPolicyList Read a 'recovery.ScheduleConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetRecoveryScheduleConfigPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetRecoveryScheduleConfigPolicyListRequest
 */
 func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyList(ctx context.Context) ApiGetRecoveryScheduleConfigPolicyListRequest {
 	return ApiGetRecoveryScheduleConfigPolicyListRequest{
@@ -4248,7 +4471,8 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyList(ctx context.Con
 }
 
 // Execute executes the request
-//  @return RecoveryScheduleConfigPolicyResponse
+//
+//	@return RecoveryScheduleConfigPolicyResponse
 func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyListExecute(r ApiGetRecoveryScheduleConfigPolicyListRequest) (*RecoveryScheduleConfigPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4269,37 +4493,52 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyListExecute(r ApiGet
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4328,9 +4567,9 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyListExecute(r ApiGet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4347,6 +4586,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4357,6 +4597,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4367,6 +4608,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4377,6 +4619,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4386,6 +4629,7 @@ func (a *RecoveryApiService) GetRecoveryScheduleConfigPolicyListExecute(r ApiGet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4429,9 +4673,9 @@ func (r ApiPatchRecoveryBackupConfigPolicyRequest) Execute() (*RecoveryBackupCon
 /*
 PatchRecoveryBackupConfigPolicy Update a 'recovery.BackupConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchRecoveryBackupConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchRecoveryBackupConfigPolicyRequest
 */
 func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicy(ctx context.Context, moid string) ApiPatchRecoveryBackupConfigPolicyRequest {
 	return ApiPatchRecoveryBackupConfigPolicyRequest{
@@ -4442,7 +4686,8 @@ func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicy(ctx context.Context
 }
 
 // Execute executes the request
-//  @return RecoveryBackupConfigPolicy
+//
+//	@return RecoveryBackupConfigPolicy
 func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicyExecute(r ApiPatchRecoveryBackupConfigPolicyRequest) (*RecoveryBackupConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -4457,7 +4702,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicyExecute(r ApiPatchRe
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/BackupConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4484,7 +4729,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicyExecute(r ApiPatchRe
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryBackupConfigPolicy
@@ -4498,9 +4743,9 @@ func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicyExecute(r ApiPatchRe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4517,6 +4762,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicyExecute(r ApiPatchRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4527,6 +4773,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicyExecute(r ApiPatchRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4537,6 +4784,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicyExecute(r ApiPatchRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4547,6 +4795,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicyExecute(r ApiPatchRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4556,6 +4805,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupConfigPolicyExecute(r ApiPatchRe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4599,9 +4849,9 @@ func (r ApiPatchRecoveryBackupProfileRequest) Execute() (*RecoveryBackupProfile,
 /*
 PatchRecoveryBackupProfile Update a 'recovery.BackupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchRecoveryBackupProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchRecoveryBackupProfileRequest
 */
 func (a *RecoveryApiService) PatchRecoveryBackupProfile(ctx context.Context, moid string) ApiPatchRecoveryBackupProfileRequest {
 	return ApiPatchRecoveryBackupProfileRequest{
@@ -4612,7 +4862,8 @@ func (a *RecoveryApiService) PatchRecoveryBackupProfile(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return RecoveryBackupProfile
+//
+//	@return RecoveryBackupProfile
 func (a *RecoveryApiService) PatchRecoveryBackupProfileExecute(r ApiPatchRecoveryBackupProfileRequest) (*RecoveryBackupProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -4627,7 +4878,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupProfileExecute(r ApiPatchRecover
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/BackupProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4654,7 +4905,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupProfileExecute(r ApiPatchRecover
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryBackupProfile
@@ -4668,9 +4919,9 @@ func (a *RecoveryApiService) PatchRecoveryBackupProfileExecute(r ApiPatchRecover
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4687,6 +4938,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupProfileExecute(r ApiPatchRecover
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4697,6 +4949,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupProfileExecute(r ApiPatchRecover
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4707,6 +4960,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupProfileExecute(r ApiPatchRecover
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4717,6 +4971,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupProfileExecute(r ApiPatchRecover
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4726,6 +4981,7 @@ func (a *RecoveryApiService) PatchRecoveryBackupProfileExecute(r ApiPatchRecover
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4769,9 +5025,9 @@ func (r ApiPatchRecoveryOnDemandBackupRequest) Execute() (*RecoveryOnDemandBacku
 /*
 PatchRecoveryOnDemandBackup Update a 'recovery.OnDemandBackup' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchRecoveryOnDemandBackupRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchRecoveryOnDemandBackupRequest
 */
 func (a *RecoveryApiService) PatchRecoveryOnDemandBackup(ctx context.Context, moid string) ApiPatchRecoveryOnDemandBackupRequest {
 	return ApiPatchRecoveryOnDemandBackupRequest{
@@ -4782,7 +5038,8 @@ func (a *RecoveryApiService) PatchRecoveryOnDemandBackup(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return RecoveryOnDemandBackup
+//
+//	@return RecoveryOnDemandBackup
 func (a *RecoveryApiService) PatchRecoveryOnDemandBackupExecute(r ApiPatchRecoveryOnDemandBackupRequest) (*RecoveryOnDemandBackup, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -4797,7 +5054,7 @@ func (a *RecoveryApiService) PatchRecoveryOnDemandBackupExecute(r ApiPatchRecove
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/OnDemandBackups/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4824,7 +5081,7 @@ func (a *RecoveryApiService) PatchRecoveryOnDemandBackupExecute(r ApiPatchRecove
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryOnDemandBackup
@@ -4838,9 +5095,9 @@ func (a *RecoveryApiService) PatchRecoveryOnDemandBackupExecute(r ApiPatchRecove
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4857,6 +5114,7 @@ func (a *RecoveryApiService) PatchRecoveryOnDemandBackupExecute(r ApiPatchRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4867,6 +5125,7 @@ func (a *RecoveryApiService) PatchRecoveryOnDemandBackupExecute(r ApiPatchRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4877,6 +5136,7 @@ func (a *RecoveryApiService) PatchRecoveryOnDemandBackupExecute(r ApiPatchRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4887,6 +5147,7 @@ func (a *RecoveryApiService) PatchRecoveryOnDemandBackupExecute(r ApiPatchRecove
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4896,6 +5157,7 @@ func (a *RecoveryApiService) PatchRecoveryOnDemandBackupExecute(r ApiPatchRecove
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4939,9 +5201,9 @@ func (r ApiPatchRecoveryScheduleConfigPolicyRequest) Execute() (*RecoverySchedul
 /*
 PatchRecoveryScheduleConfigPolicy Update a 'recovery.ScheduleConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchRecoveryScheduleConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchRecoveryScheduleConfigPolicyRequest
 */
 func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicy(ctx context.Context, moid string) ApiPatchRecoveryScheduleConfigPolicyRequest {
 	return ApiPatchRecoveryScheduleConfigPolicyRequest{
@@ -4952,7 +5214,8 @@ func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicy(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return RecoveryScheduleConfigPolicy
+//
+//	@return RecoveryScheduleConfigPolicy
 func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicyExecute(r ApiPatchRecoveryScheduleConfigPolicyRequest) (*RecoveryScheduleConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -4967,7 +5230,7 @@ func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicyExecute(r ApiPatch
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/ScheduleConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4994,7 +5257,7 @@ func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicyExecute(r ApiPatch
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryScheduleConfigPolicy
@@ -5008,9 +5271,9 @@ func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicyExecute(r ApiPatch
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5027,6 +5290,7 @@ func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicyExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5037,6 +5301,7 @@ func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicyExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5047,6 +5312,7 @@ func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicyExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5057,6 +5323,7 @@ func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicyExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5066,6 +5333,7 @@ func (a *RecoveryApiService) PatchRecoveryScheduleConfigPolicyExecute(r ApiPatch
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5109,9 +5377,9 @@ func (r ApiUpdateRecoveryBackupConfigPolicyRequest) Execute() (*RecoveryBackupCo
 /*
 UpdateRecoveryBackupConfigPolicy Update a 'recovery.BackupConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateRecoveryBackupConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateRecoveryBackupConfigPolicyRequest
 */
 func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicy(ctx context.Context, moid string) ApiUpdateRecoveryBackupConfigPolicyRequest {
 	return ApiUpdateRecoveryBackupConfigPolicyRequest{
@@ -5122,7 +5390,8 @@ func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicy(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return RecoveryBackupConfigPolicy
+//
+//	@return RecoveryBackupConfigPolicy
 func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicyExecute(r ApiUpdateRecoveryBackupConfigPolicyRequest) (*RecoveryBackupConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -5137,7 +5406,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicyExecute(r ApiUpdate
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/BackupConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5164,7 +5433,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicyExecute(r ApiUpdate
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryBackupConfigPolicy
@@ -5178,9 +5447,9 @@ func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicyExecute(r ApiUpdate
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5197,6 +5466,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicyExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5207,6 +5477,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicyExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5217,6 +5488,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicyExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5227,6 +5499,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicyExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5236,6 +5509,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupConfigPolicyExecute(r ApiUpdate
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5279,9 +5553,9 @@ func (r ApiUpdateRecoveryBackupProfileRequest) Execute() (*RecoveryBackupProfile
 /*
 UpdateRecoveryBackupProfile Update a 'recovery.BackupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateRecoveryBackupProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateRecoveryBackupProfileRequest
 */
 func (a *RecoveryApiService) UpdateRecoveryBackupProfile(ctx context.Context, moid string) ApiUpdateRecoveryBackupProfileRequest {
 	return ApiUpdateRecoveryBackupProfileRequest{
@@ -5292,7 +5566,8 @@ func (a *RecoveryApiService) UpdateRecoveryBackupProfile(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return RecoveryBackupProfile
+//
+//	@return RecoveryBackupProfile
 func (a *RecoveryApiService) UpdateRecoveryBackupProfileExecute(r ApiUpdateRecoveryBackupProfileRequest) (*RecoveryBackupProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -5307,7 +5582,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupProfileExecute(r ApiUpdateRecov
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/BackupProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5334,7 +5609,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupProfileExecute(r ApiUpdateRecov
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryBackupProfile
@@ -5348,9 +5623,9 @@ func (a *RecoveryApiService) UpdateRecoveryBackupProfileExecute(r ApiUpdateRecov
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5367,6 +5642,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupProfileExecute(r ApiUpdateRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5377,6 +5653,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupProfileExecute(r ApiUpdateRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5387,6 +5664,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupProfileExecute(r ApiUpdateRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5397,6 +5675,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupProfileExecute(r ApiUpdateRecov
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5406,6 +5685,7 @@ func (a *RecoveryApiService) UpdateRecoveryBackupProfileExecute(r ApiUpdateRecov
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5449,9 +5729,9 @@ func (r ApiUpdateRecoveryOnDemandBackupRequest) Execute() (*RecoveryOnDemandBack
 /*
 UpdateRecoveryOnDemandBackup Update a 'recovery.OnDemandBackup' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateRecoveryOnDemandBackupRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateRecoveryOnDemandBackupRequest
 */
 func (a *RecoveryApiService) UpdateRecoveryOnDemandBackup(ctx context.Context, moid string) ApiUpdateRecoveryOnDemandBackupRequest {
 	return ApiUpdateRecoveryOnDemandBackupRequest{
@@ -5462,7 +5742,8 @@ func (a *RecoveryApiService) UpdateRecoveryOnDemandBackup(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return RecoveryOnDemandBackup
+//
+//	@return RecoveryOnDemandBackup
 func (a *RecoveryApiService) UpdateRecoveryOnDemandBackupExecute(r ApiUpdateRecoveryOnDemandBackupRequest) (*RecoveryOnDemandBackup, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -5477,7 +5758,7 @@ func (a *RecoveryApiService) UpdateRecoveryOnDemandBackupExecute(r ApiUpdateReco
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/OnDemandBackups/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5504,7 +5785,7 @@ func (a *RecoveryApiService) UpdateRecoveryOnDemandBackupExecute(r ApiUpdateReco
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryOnDemandBackup
@@ -5518,9 +5799,9 @@ func (a *RecoveryApiService) UpdateRecoveryOnDemandBackupExecute(r ApiUpdateReco
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5537,6 +5818,7 @@ func (a *RecoveryApiService) UpdateRecoveryOnDemandBackupExecute(r ApiUpdateReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5547,6 +5829,7 @@ func (a *RecoveryApiService) UpdateRecoveryOnDemandBackupExecute(r ApiUpdateReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5557,6 +5840,7 @@ func (a *RecoveryApiService) UpdateRecoveryOnDemandBackupExecute(r ApiUpdateReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5567,6 +5851,7 @@ func (a *RecoveryApiService) UpdateRecoveryOnDemandBackupExecute(r ApiUpdateReco
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5576,6 +5861,7 @@ func (a *RecoveryApiService) UpdateRecoveryOnDemandBackupExecute(r ApiUpdateReco
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5619,9 +5905,9 @@ func (r ApiUpdateRecoveryScheduleConfigPolicyRequest) Execute() (*RecoverySchedu
 /*
 UpdateRecoveryScheduleConfigPolicy Update a 'recovery.ScheduleConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateRecoveryScheduleConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateRecoveryScheduleConfigPolicyRequest
 */
 func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicy(ctx context.Context, moid string) ApiUpdateRecoveryScheduleConfigPolicyRequest {
 	return ApiUpdateRecoveryScheduleConfigPolicyRequest{
@@ -5632,7 +5918,8 @@ func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicy(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return RecoveryScheduleConfigPolicy
+//
+//	@return RecoveryScheduleConfigPolicy
 func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicyExecute(r ApiUpdateRecoveryScheduleConfigPolicyRequest) (*RecoveryScheduleConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -5647,7 +5934,7 @@ func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicyExecute(r ApiUpda
 	}
 
 	localVarPath := localBasePath + "/api/v1/recovery/ScheduleConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5674,7 +5961,7 @@ func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicyExecute(r ApiUpda
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.recoveryScheduleConfigPolicy
@@ -5688,9 +5975,9 @@ func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicyExecute(r ApiUpda
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5707,6 +5994,7 @@ func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicyExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5717,6 +6005,7 @@ func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicyExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5727,6 +6016,7 @@ func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicyExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5737,6 +6027,7 @@ func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicyExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5746,6 +6037,7 @@ func (a *RecoveryApiService) UpdateRecoveryScheduleConfigPolicyExecute(r ApiUpda
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

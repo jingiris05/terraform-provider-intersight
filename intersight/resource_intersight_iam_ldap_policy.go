@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceIamLdapPolicy() *schema.Resource {
 		UpdateContext: resourceIamLdapPolicyUpdate,
 		DeleteContext: resourceIamLdapPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -178,6 +180,12 @@ func resourceIamLdapPolicy() *schema.Resource {
 							Description: "If enabled, user authorization is also done at the group level for LDAP users not in the local user database.",
 							Type:        schema.TypeBool,
 							Optional:    true,
+						},
+						"enable_nested_group_search": {
+							Description: "If enabled, an extended search walks the chain of ancestry all the way to the root and returns all the groups and subgroups, each of those groups belong to recursively.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
 						},
 						"filter": {
 							Description:  "Criteria to identify entries in search requests.",
@@ -702,6 +710,17 @@ func resourceIamLdapPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -903,6 +922,12 @@ func resourceIamLdapPolicyCreate(c context.Context, d *schema.ResourceData, meta
 				{
 					x := (v.(bool))
 					o.SetEnableGroupAuthorization(x)
+				}
+			}
+			if v, ok := l["enable_nested_group_search"]; ok {
+				{
+					x := (v.(bool))
+					o.SetEnableNestedGroupSearch(x)
 				}
 			}
 			if v, ok := l["filter"]; ok {
@@ -1246,8 +1271,16 @@ func resourceIamLdapPolicyCreate(c context.Context, d *schema.ResourceData, meta
 		}
 		return diag.Errorf("error occurred while creating IamLdapPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceIamLdapPolicyRead(c, d, meta)...)
 }
 func detachIamLdapPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -1275,6 +1308,9 @@ func detachIamLdapPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.
 func resourceIamLdapPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.IamApi.GetIamLdapPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1523,6 +1559,12 @@ func resourceIamLdapPolicyUpdate(c context.Context, d *schema.ResourceData, meta
 				{
 					x := (v.(bool))
 					o.SetEnableGroupAuthorization(x)
+				}
+			}
+			if v, ok := l["enable_nested_group_search"]; ok {
+				{
+					x := (v.(bool))
+					o.SetEnableNestedGroupSearch(x)
 				}
 			}
 			if v, ok := l["filter"]; ok {

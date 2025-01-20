@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VirtualizationVmwareVmCpuSocketInfo type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VirtualizationVmwareVmCpuSocketInfo{}
 
 // VirtualizationVmwareVmCpuSocketInfo Information about the virtual machine's hardware platform (CPU, memory).
 type VirtualizationVmwareVmCpuSocketInfo struct {
@@ -82,6 +86,11 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "virtualization.VmwareVmCpuSocketInfo" of the ClassId field.
+func (o *VirtualizationVmwareVmCpuSocketInfo) GetDefaultClassId() interface{} {
+	return "virtualization.VmwareVmCpuSocketInfo"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VirtualizationVmwareVmCpuSocketInfo) GetObjectType() string {
 	if o == nil {
@@ -106,9 +115,14 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "virtualization.VmwareVmCpuSocketInfo" of the ObjectType field.
+func (o *VirtualizationVmwareVmCpuSocketInfo) GetDefaultObjectType() interface{} {
+	return "virtualization.VmwareVmCpuSocketInfo"
+}
+
 // GetCoresPerSocket returns the CoresPerSocket field value if set, zero value otherwise.
 func (o *VirtualizationVmwareVmCpuSocketInfo) GetCoresPerSocket() int64 {
-	if o == nil || o.CoresPerSocket == nil {
+	if o == nil || IsNil(o.CoresPerSocket) {
 		var ret int64
 		return ret
 	}
@@ -118,7 +132,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) GetCoresPerSocket() int64 {
 // GetCoresPerSocketOk returns a tuple with the CoresPerSocket field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareVmCpuSocketInfo) GetCoresPerSocketOk() (*int64, bool) {
-	if o == nil || o.CoresPerSocket == nil {
+	if o == nil || IsNil(o.CoresPerSocket) {
 		return nil, false
 	}
 	return o.CoresPerSocket, true
@@ -126,7 +140,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) GetCoresPerSocketOk() (*int64, boo
 
 // HasCoresPerSocket returns a boolean if a field has been set.
 func (o *VirtualizationVmwareVmCpuSocketInfo) HasCoresPerSocket() bool {
-	if o != nil && o.CoresPerSocket != nil {
+	if o != nil && !IsNil(o.CoresPerSocket) {
 		return true
 	}
 
@@ -140,7 +154,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) SetCoresPerSocket(v int64) {
 
 // GetNumCpus returns the NumCpus field value if set, zero value otherwise.
 func (o *VirtualizationVmwareVmCpuSocketInfo) GetNumCpus() int64 {
-	if o == nil || o.NumCpus == nil {
+	if o == nil || IsNil(o.NumCpus) {
 		var ret int64
 		return ret
 	}
@@ -150,7 +164,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) GetNumCpus() int64 {
 // GetNumCpusOk returns a tuple with the NumCpus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareVmCpuSocketInfo) GetNumCpusOk() (*int64, bool) {
-	if o == nil || o.NumCpus == nil {
+	if o == nil || IsNil(o.NumCpus) {
 		return nil, false
 	}
 	return o.NumCpus, true
@@ -158,7 +172,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) GetNumCpusOk() (*int64, bool) {
 
 // HasNumCpus returns a boolean if a field has been set.
 func (o *VirtualizationVmwareVmCpuSocketInfo) HasNumCpus() bool {
-	if o != nil && o.NumCpus != nil {
+	if o != nil && !IsNil(o.NumCpus) {
 		return true
 	}
 
@@ -172,7 +186,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) SetNumCpus(v int64) {
 
 // GetNumSockets returns the NumSockets field value if set, zero value otherwise.
 func (o *VirtualizationVmwareVmCpuSocketInfo) GetNumSockets() int64 {
-	if o == nil || o.NumSockets == nil {
+	if o == nil || IsNil(o.NumSockets) {
 		var ret int64
 		return ret
 	}
@@ -182,7 +196,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) GetNumSockets() int64 {
 // GetNumSocketsOk returns a tuple with the NumSockets field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareVmCpuSocketInfo) GetNumSocketsOk() (*int64, bool) {
-	if o == nil || o.NumSockets == nil {
+	if o == nil || IsNil(o.NumSockets) {
 		return nil, false
 	}
 	return o.NumSockets, true
@@ -190,7 +204,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) GetNumSocketsOk() (*int64, bool) {
 
 // HasNumSockets returns a boolean if a field has been set.
 func (o *VirtualizationVmwareVmCpuSocketInfo) HasNumSockets() bool {
-	if o != nil && o.NumSockets != nil {
+	if o != nil && !IsNil(o.NumSockets) {
 		return true
 	}
 
@@ -203,28 +217,38 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) SetNumSockets(v int64) {
 }
 
 func (o VirtualizationVmwareVmCpuSocketInfo) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VirtualizationVmwareVmCpuSocketInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.CoresPerSocket != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.CoresPerSocket) {
 		toSerialize["CoresPerSocket"] = o.CoresPerSocket
 	}
-	if o.NumCpus != nil {
+	if !IsNil(o.NumCpus) {
 		toSerialize["NumCpus"] = o.NumCpus
 	}
-	if o.NumSockets != nil {
+	if !IsNil(o.NumSockets) {
 		toSerialize["NumSockets"] = o.NumSockets
 	}
 
@@ -232,10 +256,51 @@ func (o VirtualizationVmwareVmCpuSocketInfo) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VirtualizationVmwareVmCpuSocketInfo) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VirtualizationVmwareVmCpuSocketInfo) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VirtualizationVmwareVmCpuSocketInfoWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -251,7 +316,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) UnmarshalJSON(bytes []byte) (err e
 
 	varVirtualizationVmwareVmCpuSocketInfoWithoutEmbeddedStruct := VirtualizationVmwareVmCpuSocketInfoWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationVmwareVmCpuSocketInfoWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVirtualizationVmwareVmCpuSocketInfoWithoutEmbeddedStruct)
 	if err == nil {
 		varVirtualizationVmwareVmCpuSocketInfo := _VirtualizationVmwareVmCpuSocketInfo{}
 		varVirtualizationVmwareVmCpuSocketInfo.ClassId = varVirtualizationVmwareVmCpuSocketInfoWithoutEmbeddedStruct.ClassId
@@ -266,7 +331,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) UnmarshalJSON(bytes []byte) (err e
 
 	varVirtualizationVmwareVmCpuSocketInfo := _VirtualizationVmwareVmCpuSocketInfo{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationVmwareVmCpuSocketInfo)
+	err = json.Unmarshal(data, &varVirtualizationVmwareVmCpuSocketInfo)
 	if err == nil {
 		o.MoBaseComplexType = varVirtualizationVmwareVmCpuSocketInfo.MoBaseComplexType
 	} else {
@@ -275,7 +340,7 @@ func (o *VirtualizationVmwareVmCpuSocketInfo) UnmarshalJSON(bytes []byte) (err e
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "CoresPerSocket")

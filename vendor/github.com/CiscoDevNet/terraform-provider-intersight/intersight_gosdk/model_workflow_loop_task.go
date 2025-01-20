@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the WorkflowLoopTask type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &WorkflowLoopTask{}
 
 // WorkflowLoopTask A Parallel Loop is a control task that runs one task or one sub-workflow multiple times based on a specified count. The count can be a static value that is specified during design time or a dynamic value that is derived from workflow inputs or task outputs. When the loop is executed, the count 'N' is determined and then N tasks or sub-workflows are scheduled for execution in parallel. When all N instances of the task or sub-workflow reach a final state the parallel loop will complete and workflow execution will move on to the next task. If any one of the tasks or sub-workflows fails, then the entire loop will fail.
 type WorkflowLoopTask struct {
@@ -24,7 +28,9 @@ type WorkflowLoopTask struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// When tasks are run in parallel and the count is large, the actual number of task run in parallel can be controlled by this property. If count is 100 and numberOfBatches is 5 then 20 tasks are run in parallel 5 times. Parallel batch size must be less than the count. In cases where count is dynamic and depends on input given during workflow execution, if that count is less than batch then empty batches might get created which do not have any tasks under them.
+	// The policy to handle the failure of an iteration within a parallel loop. * `FailOnFirstFailure` - The enum specifies the option as FailOnFirstFailure where the loop task will fail if one of the iteration in the loop fails. The running iterations will be cancelled on first failure and the loop will be marked as failed. * `ContinueOnFailure` - The enum specifies the option as ContinueOnFailure where the loop task will continue with all iterations, even if one fails. Running iterations will not be canceled, but the loop will be marked as failed after all iterations are complete.
+	FailurePolicy *string `json:"FailurePolicy,omitempty"`
+	// All iterations of the loop run in parallel within a single batch, with a maximum of 100 iterations. To run more than 100 iterations, you can increase the number of batches. The configuration is acceptable as long as the total number of iterations divided by the number of batches is less than 100. Adjusting the number of batches also allows you to control how many iterations run in parallel. For example, if the total count is 100 and you set the number of batches to 5, then 20 tasks will run in parallel across the 5 batches. It's important to note that the number of batches must be less than the total count. If the count is dynamic and falls below the number of batches, this may result in empty batches with no tasks.
 	NumberOfBatches *int64 `json:"NumberOfBatches,omitempty"`
 	// This field is deprecated. Always set to true for parallel loop.
 	// Deprecated
@@ -42,6 +48,8 @@ func NewWorkflowLoopTask(classId string, objectType string) *WorkflowLoopTask {
 	this := WorkflowLoopTask{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var failurePolicy string = "FailOnFirstFailure"
+	this.FailurePolicy = &failurePolicy
 	var numberOfBatches int64 = 1
 	this.NumberOfBatches = &numberOfBatches
 	var parallel bool = true
@@ -58,6 +66,8 @@ func NewWorkflowLoopTaskWithDefaults() *WorkflowLoopTask {
 	this.ClassId = classId
 	var objectType string = "workflow.LoopTask"
 	this.ObjectType = objectType
+	var failurePolicy string = "FailOnFirstFailure"
+	this.FailurePolicy = &failurePolicy
 	var numberOfBatches int64 = 1
 	this.NumberOfBatches = &numberOfBatches
 	var parallel bool = true
@@ -89,6 +99,11 @@ func (o *WorkflowLoopTask) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "workflow.LoopTask" of the ClassId field.
+func (o *WorkflowLoopTask) GetDefaultClassId() interface{} {
+	return "workflow.LoopTask"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *WorkflowLoopTask) GetObjectType() string {
 	if o == nil {
@@ -113,9 +128,46 @@ func (o *WorkflowLoopTask) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "workflow.LoopTask" of the ObjectType field.
+func (o *WorkflowLoopTask) GetDefaultObjectType() interface{} {
+	return "workflow.LoopTask"
+}
+
+// GetFailurePolicy returns the FailurePolicy field value if set, zero value otherwise.
+func (o *WorkflowLoopTask) GetFailurePolicy() string {
+	if o == nil || IsNil(o.FailurePolicy) {
+		var ret string
+		return ret
+	}
+	return *o.FailurePolicy
+}
+
+// GetFailurePolicyOk returns a tuple with the FailurePolicy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WorkflowLoopTask) GetFailurePolicyOk() (*string, bool) {
+	if o == nil || IsNil(o.FailurePolicy) {
+		return nil, false
+	}
+	return o.FailurePolicy, true
+}
+
+// HasFailurePolicy returns a boolean if a field has been set.
+func (o *WorkflowLoopTask) HasFailurePolicy() bool {
+	if o != nil && !IsNil(o.FailurePolicy) {
+		return true
+	}
+
+	return false
+}
+
+// SetFailurePolicy gets a reference to the given string and assigns it to the FailurePolicy field.
+func (o *WorkflowLoopTask) SetFailurePolicy(v string) {
+	o.FailurePolicy = &v
+}
+
 // GetNumberOfBatches returns the NumberOfBatches field value if set, zero value otherwise.
 func (o *WorkflowLoopTask) GetNumberOfBatches() int64 {
-	if o == nil || o.NumberOfBatches == nil {
+	if o == nil || IsNil(o.NumberOfBatches) {
 		var ret int64
 		return ret
 	}
@@ -125,7 +177,7 @@ func (o *WorkflowLoopTask) GetNumberOfBatches() int64 {
 // GetNumberOfBatchesOk returns a tuple with the NumberOfBatches field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowLoopTask) GetNumberOfBatchesOk() (*int64, bool) {
-	if o == nil || o.NumberOfBatches == nil {
+	if o == nil || IsNil(o.NumberOfBatches) {
 		return nil, false
 	}
 	return o.NumberOfBatches, true
@@ -133,7 +185,7 @@ func (o *WorkflowLoopTask) GetNumberOfBatchesOk() (*int64, bool) {
 
 // HasNumberOfBatches returns a boolean if a field has been set.
 func (o *WorkflowLoopTask) HasNumberOfBatches() bool {
-	if o != nil && o.NumberOfBatches != nil {
+	if o != nil && !IsNil(o.NumberOfBatches) {
 		return true
 	}
 
@@ -148,7 +200,7 @@ func (o *WorkflowLoopTask) SetNumberOfBatches(v int64) {
 // GetParallel returns the Parallel field value if set, zero value otherwise.
 // Deprecated
 func (o *WorkflowLoopTask) GetParallel() bool {
-	if o == nil || o.Parallel == nil {
+	if o == nil || IsNil(o.Parallel) {
 		var ret bool
 		return ret
 	}
@@ -159,7 +211,7 @@ func (o *WorkflowLoopTask) GetParallel() bool {
 // and a boolean to check if the value has been set.
 // Deprecated
 func (o *WorkflowLoopTask) GetParallelOk() (*bool, bool) {
-	if o == nil || o.Parallel == nil {
+	if o == nil || IsNil(o.Parallel) {
 		return nil, false
 	}
 	return o.Parallel, true
@@ -167,7 +219,7 @@ func (o *WorkflowLoopTask) GetParallelOk() (*bool, bool) {
 
 // HasParallel returns a boolean if a field has been set.
 func (o *WorkflowLoopTask) HasParallel() bool {
-	if o != nil && o.Parallel != nil {
+	if o != nil && !IsNil(o.Parallel) {
 		return true
 	}
 
@@ -181,25 +233,38 @@ func (o *WorkflowLoopTask) SetParallel(v bool) {
 }
 
 func (o WorkflowLoopTask) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o WorkflowLoopTask) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedWorkflowAbstractLoopTask, errWorkflowAbstractLoopTask := json.Marshal(o.WorkflowAbstractLoopTask)
 	if errWorkflowAbstractLoopTask != nil {
-		return []byte{}, errWorkflowAbstractLoopTask
+		return map[string]interface{}{}, errWorkflowAbstractLoopTask
 	}
 	errWorkflowAbstractLoopTask = json.Unmarshal([]byte(serializedWorkflowAbstractLoopTask), &toSerialize)
 	if errWorkflowAbstractLoopTask != nil {
-		return []byte{}, errWorkflowAbstractLoopTask
+		return map[string]interface{}{}, errWorkflowAbstractLoopTask
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.NumberOfBatches != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.FailurePolicy) {
+		toSerialize["FailurePolicy"] = o.FailurePolicy
+	}
+	if !IsNil(o.NumberOfBatches) {
 		toSerialize["NumberOfBatches"] = o.NumberOfBatches
 	}
-	if o.Parallel != nil {
+	if !IsNil(o.Parallel) {
 		toSerialize["Parallel"] = o.Parallel
 	}
 
@@ -207,16 +272,59 @@ func (o WorkflowLoopTask) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *WorkflowLoopTask) UnmarshalJSON(bytes []byte) (err error) {
+func (o *WorkflowLoopTask) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type WorkflowLoopTaskWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// When tasks are run in parallel and the count is large, the actual number of task run in parallel can be controlled by this property. If count is 100 and numberOfBatches is 5 then 20 tasks are run in parallel 5 times. Parallel batch size must be less than the count. In cases where count is dynamic and depends on input given during workflow execution, if that count is less than batch then empty batches might get created which do not have any tasks under them.
+		// The policy to handle the failure of an iteration within a parallel loop. * `FailOnFirstFailure` - The enum specifies the option as FailOnFirstFailure where the loop task will fail if one of the iteration in the loop fails. The running iterations will be cancelled on first failure and the loop will be marked as failed. * `ContinueOnFailure` - The enum specifies the option as ContinueOnFailure where the loop task will continue with all iterations, even if one fails. Running iterations will not be canceled, but the loop will be marked as failed after all iterations are complete.
+		FailurePolicy *string `json:"FailurePolicy,omitempty"`
+		// All iterations of the loop run in parallel within a single batch, with a maximum of 100 iterations. To run more than 100 iterations, you can increase the number of batches. The configuration is acceptable as long as the total number of iterations divided by the number of batches is less than 100. Adjusting the number of batches also allows you to control how many iterations run in parallel. For example, if the total count is 100 and you set the number of batches to 5, then 20 tasks will run in parallel across the 5 batches. It's important to note that the number of batches must be less than the total count. If the count is dynamic and falls below the number of batches, this may result in empty batches with no tasks.
 		NumberOfBatches *int64 `json:"NumberOfBatches,omitempty"`
 		// This field is deprecated. Always set to true for parallel loop.
 		// Deprecated
@@ -225,11 +333,12 @@ func (o *WorkflowLoopTask) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowLoopTaskWithoutEmbeddedStruct := WorkflowLoopTaskWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varWorkflowLoopTaskWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varWorkflowLoopTaskWithoutEmbeddedStruct)
 	if err == nil {
 		varWorkflowLoopTask := _WorkflowLoopTask{}
 		varWorkflowLoopTask.ClassId = varWorkflowLoopTaskWithoutEmbeddedStruct.ClassId
 		varWorkflowLoopTask.ObjectType = varWorkflowLoopTaskWithoutEmbeddedStruct.ObjectType
+		varWorkflowLoopTask.FailurePolicy = varWorkflowLoopTaskWithoutEmbeddedStruct.FailurePolicy
 		varWorkflowLoopTask.NumberOfBatches = varWorkflowLoopTaskWithoutEmbeddedStruct.NumberOfBatches
 		varWorkflowLoopTask.Parallel = varWorkflowLoopTaskWithoutEmbeddedStruct.Parallel
 		*o = WorkflowLoopTask(varWorkflowLoopTask)
@@ -239,7 +348,7 @@ func (o *WorkflowLoopTask) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowLoopTask := _WorkflowLoopTask{}
 
-	err = json.Unmarshal(bytes, &varWorkflowLoopTask)
+	err = json.Unmarshal(data, &varWorkflowLoopTask)
 	if err == nil {
 		o.WorkflowAbstractLoopTask = varWorkflowLoopTask.WorkflowAbstractLoopTask
 	} else {
@@ -248,9 +357,10 @@ func (o *WorkflowLoopTask) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "FailurePolicy")
 		delete(additionalProperties, "NumberOfBatches")
 		delete(additionalProperties, "Parallel")
 

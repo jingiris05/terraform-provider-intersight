@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the StorageBaseTenant type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &StorageBaseTenant{}
 
 // StorageBaseTenant Generic tenant object which represents a logical storage system within a physical storage array.
 type StorageBaseTenant struct {
@@ -29,7 +33,7 @@ type StorageBaseTenant struct {
 	// The state of this tenant. * `Unknown` - Component state is not available. * `Starting` - Component is being started. * `Running` - Component is currently running. * `Stopping` - Component is being stopped. * `Stopped` - Component has been stopped. * `Deleting` - Component deletion is in progress.
 	State *string `json:"State,omitempty"`
 	// The uuid of this tenant in storage array.
-	Uuid                 *string `json:"Uuid,omitempty"`
+	Uuid                 *string `json:"Uuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -82,6 +86,11 @@ func (o *StorageBaseTenant) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "storage.NetAppStorageVm" of the ClassId field.
+func (o *StorageBaseTenant) GetDefaultClassId() interface{} {
+	return "storage.NetAppStorageVm"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *StorageBaseTenant) GetObjectType() string {
 	if o == nil {
@@ -106,9 +115,14 @@ func (o *StorageBaseTenant) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "storage.NetAppStorageVm" of the ObjectType field.
+func (o *StorageBaseTenant) GetDefaultObjectType() interface{} {
+	return "storage.NetAppStorageVm"
+}
+
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *StorageBaseTenant) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -118,7 +132,7 @@ func (o *StorageBaseTenant) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageBaseTenant) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -126,7 +140,7 @@ func (o *StorageBaseTenant) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *StorageBaseTenant) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -140,7 +154,7 @@ func (o *StorageBaseTenant) SetName(v string) {
 
 // GetState returns the State field value if set, zero value otherwise.
 func (o *StorageBaseTenant) GetState() string {
-	if o == nil || o.State == nil {
+	if o == nil || IsNil(o.State) {
 		var ret string
 		return ret
 	}
@@ -150,7 +164,7 @@ func (o *StorageBaseTenant) GetState() string {
 // GetStateOk returns a tuple with the State field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageBaseTenant) GetStateOk() (*string, bool) {
-	if o == nil || o.State == nil {
+	if o == nil || IsNil(o.State) {
 		return nil, false
 	}
 	return o.State, true
@@ -158,7 +172,7 @@ func (o *StorageBaseTenant) GetStateOk() (*string, bool) {
 
 // HasState returns a boolean if a field has been set.
 func (o *StorageBaseTenant) HasState() bool {
-	if o != nil && o.State != nil {
+	if o != nil && !IsNil(o.State) {
 		return true
 	}
 
@@ -172,7 +186,7 @@ func (o *StorageBaseTenant) SetState(v string) {
 
 // GetUuid returns the Uuid field value if set, zero value otherwise.
 func (o *StorageBaseTenant) GetUuid() string {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		var ret string
 		return ret
 	}
@@ -182,7 +196,7 @@ func (o *StorageBaseTenant) GetUuid() string {
 // GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageBaseTenant) GetUuidOk() (*string, bool) {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		return nil, false
 	}
 	return o.Uuid, true
@@ -190,7 +204,7 @@ func (o *StorageBaseTenant) GetUuidOk() (*string, bool) {
 
 // HasUuid returns a boolean if a field has been set.
 func (o *StorageBaseTenant) HasUuid() bool {
-	if o != nil && o.Uuid != nil {
+	if o != nil && !IsNil(o.Uuid) {
 		return true
 	}
 
@@ -203,28 +217,38 @@ func (o *StorageBaseTenant) SetUuid(v string) {
 }
 
 func (o StorageBaseTenant) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o StorageBaseTenant) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Name != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.State != nil {
+	if !IsNil(o.State) {
 		toSerialize["State"] = o.State
 	}
-	if o.Uuid != nil {
+	if !IsNil(o.Uuid) {
 		toSerialize["Uuid"] = o.Uuid
 	}
 
@@ -232,10 +256,51 @@ func (o StorageBaseTenant) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *StorageBaseTenant) UnmarshalJSON(bytes []byte) (err error) {
+func (o *StorageBaseTenant) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type StorageBaseTenantWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. The enum values provides the list of concrete types that can be instantiated from this abstract type.
 		ClassId string `json:"ClassId"`
@@ -246,12 +311,12 @@ func (o *StorageBaseTenant) UnmarshalJSON(bytes []byte) (err error) {
 		// The state of this tenant. * `Unknown` - Component state is not available. * `Starting` - Component is being started. * `Running` - Component is currently running. * `Stopping` - Component is being stopped. * `Stopped` - Component has been stopped. * `Deleting` - Component deletion is in progress.
 		State *string `json:"State,omitempty"`
 		// The uuid of this tenant in storage array.
-		Uuid *string `json:"Uuid,omitempty"`
+		Uuid *string `json:"Uuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
 	}
 
 	varStorageBaseTenantWithoutEmbeddedStruct := StorageBaseTenantWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varStorageBaseTenantWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varStorageBaseTenantWithoutEmbeddedStruct)
 	if err == nil {
 		varStorageBaseTenant := _StorageBaseTenant{}
 		varStorageBaseTenant.ClassId = varStorageBaseTenantWithoutEmbeddedStruct.ClassId
@@ -266,7 +331,7 @@ func (o *StorageBaseTenant) UnmarshalJSON(bytes []byte) (err error) {
 
 	varStorageBaseTenant := _StorageBaseTenant{}
 
-	err = json.Unmarshal(bytes, &varStorageBaseTenant)
+	err = json.Unmarshal(data, &varStorageBaseTenant)
 	if err == nil {
 		o.MoBaseMo = varStorageBaseTenant.MoBaseMo
 	} else {
@@ -275,7 +340,7 @@ func (o *StorageBaseTenant) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Name")

@@ -9,8 +9,9 @@ Name | Type | Description | Notes
 **CpuOverCommitment** | Pointer to **int64** | CPU over commitment associated with this cluster. | [optional] 
 **DatastoreCount** | Pointer to **int64** | Count of all datastores associated with this cluster. | [optional] 
 **InventoryPath** | Pointer to **string** | Inventory path of the cluster. | [optional] 
-**Datacenter** | Pointer to [**VirtualizationVmwareDatacenterRelationship**](VirtualizationVmwareDatacenterRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**ProactiveHaEnabled** | Pointer to **bool** | Every cluster has an option to enable proactive HA in vCenter. Set to true when the vCenter admin has enabled proactive HA for the cluster. | [optional] [readonly] 
+**Datacenter** | Pointer to [**NullableVirtualizationVmwareDatacenterRelationship**](VirtualizationVmwareDatacenterRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -146,6 +147,31 @@ SetInventoryPath sets InventoryPath field to given value.
 
 HasInventoryPath returns a boolean if a field has been set.
 
+### GetProactiveHaEnabled
+
+`func (o *VirtualizationVmwareCluster) GetProactiveHaEnabled() bool`
+
+GetProactiveHaEnabled returns the ProactiveHaEnabled field if non-nil, zero value otherwise.
+
+### GetProactiveHaEnabledOk
+
+`func (o *VirtualizationVmwareCluster) GetProactiveHaEnabledOk() (*bool, bool)`
+
+GetProactiveHaEnabledOk returns a tuple with the ProactiveHaEnabled field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetProactiveHaEnabled
+
+`func (o *VirtualizationVmwareCluster) SetProactiveHaEnabled(v bool)`
+
+SetProactiveHaEnabled sets ProactiveHaEnabled field to given value.
+
+### HasProactiveHaEnabled
+
+`func (o *VirtualizationVmwareCluster) HasProactiveHaEnabled() bool`
+
+HasProactiveHaEnabled returns a boolean if a field has been set.
+
 ### GetDatacenter
 
 `func (o *VirtualizationVmwareCluster) GetDatacenter() VirtualizationVmwareDatacenterRelationship`
@@ -171,6 +197,16 @@ SetDatacenter sets Datacenter field to given value.
 
 HasDatacenter returns a boolean if a field has been set.
 
+### SetDatacenterNil
+
+`func (o *VirtualizationVmwareCluster) SetDatacenterNil(b bool)`
+
+ SetDatacenterNil sets the value for Datacenter to be an explicit nil
+
+### UnsetDatacenter
+`func (o *VirtualizationVmwareCluster) UnsetDatacenter()`
+
+UnsetDatacenter ensures that no value is present for Datacenter, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *VirtualizationVmwareCluster) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -196,6 +232,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *VirtualizationVmwareCluster) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *VirtualizationVmwareCluster) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

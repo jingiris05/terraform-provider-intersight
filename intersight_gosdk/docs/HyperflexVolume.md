@@ -8,7 +8,6 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "hyperflex.Volume"]
 **Capacity** | Pointer to **int64** | Provisioned Capacity of the volume in bytes. | [optional] [readonly] 
 **ClientId** | Pointer to **string** | Client (tenant) ID to which the volume belongs. | [optional] [readonly] 
-**KubernetesClusterName** | Pointer to **string** | The name of the kubernetes cluster to which the volume is associated. | [optional] [readonly] 
 **LastModifiedTime** | Pointer to **time.Time** | Last modified time as UTC of the volume. | [optional] [readonly] 
 **LunUuid** | Pointer to **string** | UUID of LUN associated with the volume. | [optional] [readonly] 
 **SerialNumber** | Pointer to **string** | Serial number of the volume. | [optional] [readonly] 
@@ -17,9 +16,8 @@ Name | Type | Description | Notes
 **VolumeCreateTime** | Pointer to **time.Time** | Volume creation time in UTC. | [optional] [readonly] 
 **VolumeMode** | Pointer to **string** | The mode of the HyperFlex volume. * &#x60;Block&#x60; - It is a Block virtual disk. * &#x60;Filesystem&#x60; - It is a File system virtual disk. * &#x60;&#x60; - Disk mode is either unknown or not supported. | [optional] [readonly] [default to "Block"]
 **VolumeType** | Pointer to **string** | The type of the HyperFlex volume. | [optional] [readonly] 
-**Cluster** | Pointer to [**HyperflexClusterRelationship**](HyperflexClusterRelationship.md) |  | [optional] 
-**IweVirtualDisk** | Pointer to [**VirtualizationIweVirtualDiskRelationship**](VirtualizationIweVirtualDiskRelationship.md) |  | [optional] 
-**StorageContainer** | Pointer to [**HyperflexStorageContainerRelationship**](HyperflexStorageContainerRelationship.md) |  | [optional] 
+**Cluster** | Pointer to [**NullableHyperflexClusterRelationship**](HyperflexClusterRelationship.md) |  | [optional] 
+**StorageContainer** | Pointer to [**NullableHyperflexStorageContainerRelationship**](HyperflexStorageContainerRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -129,31 +127,6 @@ SetClientId sets ClientId field to given value.
 `func (o *HyperflexVolume) HasClientId() bool`
 
 HasClientId returns a boolean if a field has been set.
-
-### GetKubernetesClusterName
-
-`func (o *HyperflexVolume) GetKubernetesClusterName() string`
-
-GetKubernetesClusterName returns the KubernetesClusterName field if non-nil, zero value otherwise.
-
-### GetKubernetesClusterNameOk
-
-`func (o *HyperflexVolume) GetKubernetesClusterNameOk() (*string, bool)`
-
-GetKubernetesClusterNameOk returns a tuple with the KubernetesClusterName field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetKubernetesClusterName
-
-`func (o *HyperflexVolume) SetKubernetesClusterName(v string)`
-
-SetKubernetesClusterName sets KubernetesClusterName field to given value.
-
-### HasKubernetesClusterName
-
-`func (o *HyperflexVolume) HasKubernetesClusterName() bool`
-
-HasKubernetesClusterName returns a boolean if a field has been set.
 
 ### GetLastModifiedTime
 
@@ -380,31 +353,16 @@ SetCluster sets Cluster field to given value.
 
 HasCluster returns a boolean if a field has been set.
 
-### GetIweVirtualDisk
+### SetClusterNil
 
-`func (o *HyperflexVolume) GetIweVirtualDisk() VirtualizationIweVirtualDiskRelationship`
+`func (o *HyperflexVolume) SetClusterNil(b bool)`
 
-GetIweVirtualDisk returns the IweVirtualDisk field if non-nil, zero value otherwise.
+ SetClusterNil sets the value for Cluster to be an explicit nil
 
-### GetIweVirtualDiskOk
+### UnsetCluster
+`func (o *HyperflexVolume) UnsetCluster()`
 
-`func (o *HyperflexVolume) GetIweVirtualDiskOk() (*VirtualizationIweVirtualDiskRelationship, bool)`
-
-GetIweVirtualDiskOk returns a tuple with the IweVirtualDisk field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetIweVirtualDisk
-
-`func (o *HyperflexVolume) SetIweVirtualDisk(v VirtualizationIweVirtualDiskRelationship)`
-
-SetIweVirtualDisk sets IweVirtualDisk field to given value.
-
-### HasIweVirtualDisk
-
-`func (o *HyperflexVolume) HasIweVirtualDisk() bool`
-
-HasIweVirtualDisk returns a boolean if a field has been set.
-
+UnsetCluster ensures that no value is present for Cluster, not even an explicit nil
 ### GetStorageContainer
 
 `func (o *HyperflexVolume) GetStorageContainer() HyperflexStorageContainerRelationship`
@@ -430,6 +388,16 @@ SetStorageContainer sets StorageContainer field to given value.
 
 HasStorageContainer returns a boolean if a field has been set.
 
+### SetStorageContainerNil
+
+`func (o *HyperflexVolume) SetStorageContainerNil(b bool)`
+
+ SetStorageContainerNil sets the value for StorageContainer to be an explicit nil
+
+### UnsetStorageContainer
+`func (o *HyperflexVolume) UnsetStorageContainer()`
+
+UnsetStorageContainer ensures that no value is present for StorageContainer, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

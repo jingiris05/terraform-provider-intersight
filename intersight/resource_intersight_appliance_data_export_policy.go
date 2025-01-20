@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceApplianceDataExportPolicy() *schema.Resource {
 		UpdateContext: resourceApplianceDataExportPolicyUpdate,
 		DeleteContext: resourceApplianceDataExportPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account": {
 				Description: "A reference to a iamAccount resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
@@ -447,6 +449,17 @@ func resourceApplianceDataExportPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -649,14 +662,25 @@ func resourceApplianceDataExportPolicyCreate(c context.Context, d *schema.Resour
 		}
 		return diag.Errorf("error occurred while creating ApplianceDataExportPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceApplianceDataExportPolicyRead(c, d, meta)...)
 }
 
 func resourceApplianceDataExportPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.ApplianceApi.GetApplianceDataExportPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

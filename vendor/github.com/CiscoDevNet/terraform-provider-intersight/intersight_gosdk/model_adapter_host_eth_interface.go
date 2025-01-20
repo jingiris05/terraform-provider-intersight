@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the AdapterHostEthInterface type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AdapterHostEthInterface{}
 
 // AdapterHostEthInterface Physical / Virtual port of an adapter as seen by the host.
 type AdapterHostEthInterface struct {
@@ -24,6 +28,10 @@ type AdapterHostEthInterface struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
+	// The operational state of the Active vNIC. vNIC operational state information is updated by events from the adapter. This operational state is applicable to primary vNIC. If a host is powered off, this property might not be accurate as we may or may not receive events from the adapter. For Intersight Managed Domains Mode domains (IMM), the vNIC's peer object Vethernet will have the current operational state of the connection when a host is powered off.
+	ActiveOperState *string `json:"ActiveOperState,omitempty"`
+	// The operational state of the Active Vethernet peer of a vNIC in Intersight Managed Mode. This state is updated by events from Fabric Interconnect or by periodic updates from Fabric Interconnect. When a Fabric Interconnect is not connected to Intersight or if the Fabric Interconnect is powered down, this property will not be updated. This state is not applicable for standalone servers. * `unknown` - The operational state of the Vethernet is not known. * `adminDown` - The operational state of the Vethernet is admin down. * `up` - The operational state of the Vethernet is Up. * `down` - The operational state of the Vethernet is Down. * `noLicense` - The operational state of the Vethernet is no license. * `linkUp` - The operational state of the Vethernet is link up. * `hardwareFailure` - The operational state of the Vethernet is hardware failure. * `softwareFailure` - The operational state of the Vethernet is software failure. * `errorDisabled` - The operational state of the Vethernet is error disabled. * `linkDown` - The operational state of the Vethernet is link down. * `sfpNotPresent` - The operational state of the Vethernet is SFP not present. * `udldAggrDown` - The operational state of the Vethernet is UDLD aggregate down.
+	ActiveVethOperState *string `json:"ActiveVethOperState,omitempty"`
 	// Admin state of the Host Ethernet Interface.
 	AdminState *string `json:"AdminState,omitempty"`
 	// The Endpoint Config Dn of the Host Ethernet Interface.
@@ -47,14 +55,30 @@ type AdapterHostEthInterface struct {
 	PeerDn *string `json:"PeerDn,omitempty"`
 	// Name given for Lan PinGroup.
 	PinGroupName *string `json:"PinGroupName,omitempty"`
+	// Setting qinqEnabled to true if we have QinQ tagging enabled on the vNIC.
+	QinqEnabled *bool `json:"QinqEnabled,omitempty"`
+	// The VLAN ID for VIC QinQ (802.1Q) Tunneling.
+	QinqVlan *int64 `json:"QinqVlan,omitempty"`
+	// The operational state of the standby vNIC. vNIC operational state information is updated by events from the adapter. This operational state is applicable only to failover vNIC. If a host is powered off, this property might not be accurate as we may or may not receive events from the adapter. For Intersight Managed Mode domains (IMM), the vNIC's peer object Vethernet will have the current operational state of the connection when a host is powered off.
+	StandbyOperState *string `json:"StandbyOperState,omitempty"`
+	// The operational state of the Standby Vethernet peer of a failover vNIC in Intersight Managed Mode. This state is updated by events from Fabric Interconnect or by periodic updates from Fabric Interconnect. When a Fabric Interconnect is not connected to Intersight or if the Fabric Interconnect is powered down, this property will not be updated. This state is not applicable for standalone servers. * `unknown` - The operational state of the Vethernet is not known. * `adminDown` - The operational state of the Vethernet is admin down. * `up` - The operational state of the Vethernet is Up. * `down` - The operational state of the Vethernet is Down. * `noLicense` - The operational state of the Vethernet is no license. * `linkUp` - The operational state of the Vethernet is link up. * `hardwareFailure` - The operational state of the Vethernet is hardware failure. * `softwareFailure` - The operational state of the Vethernet is software failure. * `errorDisabled` - The operational state of the Vethernet is error disabled. * `linkDown` - The operational state of the Vethernet is link down. * `sfpNotPresent` - The operational state of the Vethernet is SFP not present. * `udldAggrDown` - The operational state of the Vethernet is UDLD aggregate down.
+	StandbyVethOperState *string `json:"StandbyVethOperState,omitempty"`
+	// Identifier of the Standby virtual ethernet interface (Vethernet) on the networking component (e.g., Fabric Interconnect) for the corresponding Host Ethernet Interface (vNIC).
+	StandbyVifId *int64 `json:"StandbyVifId,omitempty"`
+	// The action to be performed on the vethernet corresponding to the vNIC. * `None` - Default value for vif operation. * `ResetConnectivity` - Resets connectivity on both active and passive vif. * `ResetConnectivityActive` - Resets connectivity on the active vif. * `ResetConnectivityPassive` - Resets connectivity on the passive vif. * `Enable` - Enables the vif on both the FIs. * `Disable` - Disables the vif on both the FIs. * `EnableActive` - Enables the corresponding active vif. * `EnablePassive` - Enables the corresponding standby vif. * `DisableActive` - Disables the corresponding active vif. * `DisablePassive` - Disables the corresponding standby vif.
+	VethAction *string `json:"VethAction,omitempty"`
+	// Identifier of the virtual ethernet interface (Vethernet) on the networking component (e.g., Fabric Interconnect) for the corresponding Host Ethernet Interface (vNIC).
+	VifId *int64 `json:"VifId,omitempty"`
 	// Virtualization Preference of the Host Ethernet Interface indicating if virtualization is enabled or not.
 	VirtualizationPreference *string `json:"VirtualizationPreference,omitempty"`
 	// The Virtual Ethernet Interface DN connected to the Host Ethernet Interface.
-	VnicDn               *string                              `json:"VnicDn,omitempty"`
-	AdapterUnit          *AdapterUnitRelationship             `json:"AdapterUnit,omitempty"`
-	InventoryDeviceInfo  *InventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
-	PinnedInterface      *InventoryInterfaceRelationship      `json:"PinnedInterface,omitempty"`
-	RegisteredDevice     *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	VnicDn               *string                                     `json:"VnicDn,omitempty"`
+	AdapterUnit          NullableAdapterUnitRelationship             `json:"AdapterUnit,omitempty"`
+	InventoryDeviceInfo  NullableInventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
+	PinnedInterface      NullableInventoryInterfaceRelationship      `json:"PinnedInterface,omitempty"`
+	RegisteredDevice     NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	StandbyVethernet     NullableNetworkVethernetRelationship        `json:"StandbyVethernet,omitempty"`
+	Vethernet            NullableNetworkVethernetRelationship        `json:"Vethernet,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -68,6 +92,10 @@ func NewAdapterHostEthInterface(classId string, objectType string) *AdapterHostE
 	this := AdapterHostEthInterface{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var qinqVlan int64 = 2
+	this.QinqVlan = &qinqVlan
+	var vethAction string = "None"
+	this.VethAction = &vethAction
 	return &this
 }
 
@@ -80,6 +108,10 @@ func NewAdapterHostEthInterfaceWithDefaults() *AdapterHostEthInterface {
 	this.ClassId = classId
 	var objectType string = "adapter.HostEthInterface"
 	this.ObjectType = objectType
+	var qinqVlan int64 = 2
+	this.QinqVlan = &qinqVlan
+	var vethAction string = "None"
+	this.VethAction = &vethAction
 	return &this
 }
 
@@ -107,6 +139,11 @@ func (o *AdapterHostEthInterface) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "adapter.HostEthInterface" of the ClassId field.
+func (o *AdapterHostEthInterface) GetDefaultClassId() interface{} {
+	return "adapter.HostEthInterface"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *AdapterHostEthInterface) GetObjectType() string {
 	if o == nil {
@@ -131,9 +168,78 @@ func (o *AdapterHostEthInterface) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "adapter.HostEthInterface" of the ObjectType field.
+func (o *AdapterHostEthInterface) GetDefaultObjectType() interface{} {
+	return "adapter.HostEthInterface"
+}
+
+// GetActiveOperState returns the ActiveOperState field value if set, zero value otherwise.
+func (o *AdapterHostEthInterface) GetActiveOperState() string {
+	if o == nil || IsNil(o.ActiveOperState) {
+		var ret string
+		return ret
+	}
+	return *o.ActiveOperState
+}
+
+// GetActiveOperStateOk returns a tuple with the ActiveOperState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdapterHostEthInterface) GetActiveOperStateOk() (*string, bool) {
+	if o == nil || IsNil(o.ActiveOperState) {
+		return nil, false
+	}
+	return o.ActiveOperState, true
+}
+
+// HasActiveOperState returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasActiveOperState() bool {
+	if o != nil && !IsNil(o.ActiveOperState) {
+		return true
+	}
+
+	return false
+}
+
+// SetActiveOperState gets a reference to the given string and assigns it to the ActiveOperState field.
+func (o *AdapterHostEthInterface) SetActiveOperState(v string) {
+	o.ActiveOperState = &v
+}
+
+// GetActiveVethOperState returns the ActiveVethOperState field value if set, zero value otherwise.
+func (o *AdapterHostEthInterface) GetActiveVethOperState() string {
+	if o == nil || IsNil(o.ActiveVethOperState) {
+		var ret string
+		return ret
+	}
+	return *o.ActiveVethOperState
+}
+
+// GetActiveVethOperStateOk returns a tuple with the ActiveVethOperState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdapterHostEthInterface) GetActiveVethOperStateOk() (*string, bool) {
+	if o == nil || IsNil(o.ActiveVethOperState) {
+		return nil, false
+	}
+	return o.ActiveVethOperState, true
+}
+
+// HasActiveVethOperState returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasActiveVethOperState() bool {
+	if o != nil && !IsNil(o.ActiveVethOperState) {
+		return true
+	}
+
+	return false
+}
+
+// SetActiveVethOperState gets a reference to the given string and assigns it to the ActiveVethOperState field.
+func (o *AdapterHostEthInterface) SetActiveVethOperState(v string) {
+	o.ActiveVethOperState = &v
+}
+
 // GetAdminState returns the AdminState field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetAdminState() string {
-	if o == nil || o.AdminState == nil {
+	if o == nil || IsNil(o.AdminState) {
 		var ret string
 		return ret
 	}
@@ -143,7 +249,7 @@ func (o *AdapterHostEthInterface) GetAdminState() string {
 // GetAdminStateOk returns a tuple with the AdminState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetAdminStateOk() (*string, bool) {
-	if o == nil || o.AdminState == nil {
+	if o == nil || IsNil(o.AdminState) {
 		return nil, false
 	}
 	return o.AdminState, true
@@ -151,7 +257,7 @@ func (o *AdapterHostEthInterface) GetAdminStateOk() (*string, bool) {
 
 // HasAdminState returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasAdminState() bool {
-	if o != nil && o.AdminState != nil {
+	if o != nil && !IsNil(o.AdminState) {
 		return true
 	}
 
@@ -165,7 +271,7 @@ func (o *AdapterHostEthInterface) SetAdminState(v string) {
 
 // GetEpDn returns the EpDn field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetEpDn() string {
-	if o == nil || o.EpDn == nil {
+	if o == nil || IsNil(o.EpDn) {
 		var ret string
 		return ret
 	}
@@ -175,7 +281,7 @@ func (o *AdapterHostEthInterface) GetEpDn() string {
 // GetEpDnOk returns a tuple with the EpDn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetEpDnOk() (*string, bool) {
-	if o == nil || o.EpDn == nil {
+	if o == nil || IsNil(o.EpDn) {
 		return nil, false
 	}
 	return o.EpDn, true
@@ -183,7 +289,7 @@ func (o *AdapterHostEthInterface) GetEpDnOk() (*string, bool) {
 
 // HasEpDn returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasEpDn() bool {
-	if o != nil && o.EpDn != nil {
+	if o != nil && !IsNil(o.EpDn) {
 		return true
 	}
 
@@ -197,7 +303,7 @@ func (o *AdapterHostEthInterface) SetEpDn(v string) {
 
 // GetHostEthInterfaceId returns the HostEthInterfaceId field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetHostEthInterfaceId() int64 {
-	if o == nil || o.HostEthInterfaceId == nil {
+	if o == nil || IsNil(o.HostEthInterfaceId) {
 		var ret int64
 		return ret
 	}
@@ -207,7 +313,7 @@ func (o *AdapterHostEthInterface) GetHostEthInterfaceId() int64 {
 // GetHostEthInterfaceIdOk returns a tuple with the HostEthInterfaceId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetHostEthInterfaceIdOk() (*int64, bool) {
-	if o == nil || o.HostEthInterfaceId == nil {
+	if o == nil || IsNil(o.HostEthInterfaceId) {
 		return nil, false
 	}
 	return o.HostEthInterfaceId, true
@@ -215,7 +321,7 @@ func (o *AdapterHostEthInterface) GetHostEthInterfaceIdOk() (*int64, bool) {
 
 // HasHostEthInterfaceId returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasHostEthInterfaceId() bool {
-	if o != nil && o.HostEthInterfaceId != nil {
+	if o != nil && !IsNil(o.HostEthInterfaceId) {
 		return true
 	}
 
@@ -229,7 +335,7 @@ func (o *AdapterHostEthInterface) SetHostEthInterfaceId(v int64) {
 
 // GetInterfaceType returns the InterfaceType field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetInterfaceType() string {
-	if o == nil || o.InterfaceType == nil {
+	if o == nil || IsNil(o.InterfaceType) {
 		var ret string
 		return ret
 	}
@@ -239,7 +345,7 @@ func (o *AdapterHostEthInterface) GetInterfaceType() string {
 // GetInterfaceTypeOk returns a tuple with the InterfaceType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetInterfaceTypeOk() (*string, bool) {
-	if o == nil || o.InterfaceType == nil {
+	if o == nil || IsNil(o.InterfaceType) {
 		return nil, false
 	}
 	return o.InterfaceType, true
@@ -247,7 +353,7 @@ func (o *AdapterHostEthInterface) GetInterfaceTypeOk() (*string, bool) {
 
 // HasInterfaceType returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasInterfaceType() bool {
-	if o != nil && o.InterfaceType != nil {
+	if o != nil && !IsNil(o.InterfaceType) {
 		return true
 	}
 
@@ -261,7 +367,7 @@ func (o *AdapterHostEthInterface) SetInterfaceType(v string) {
 
 // GetMacAddress returns the MacAddress field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetMacAddress() string {
-	if o == nil || o.MacAddress == nil {
+	if o == nil || IsNil(o.MacAddress) {
 		var ret string
 		return ret
 	}
@@ -271,7 +377,7 @@ func (o *AdapterHostEthInterface) GetMacAddress() string {
 // GetMacAddressOk returns a tuple with the MacAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetMacAddressOk() (*string, bool) {
-	if o == nil || o.MacAddress == nil {
+	if o == nil || IsNil(o.MacAddress) {
 		return nil, false
 	}
 	return o.MacAddress, true
@@ -279,7 +385,7 @@ func (o *AdapterHostEthInterface) GetMacAddressOk() (*string, bool) {
 
 // HasMacAddress returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasMacAddress() bool {
-	if o != nil && o.MacAddress != nil {
+	if o != nil && !IsNil(o.MacAddress) {
 		return true
 	}
 
@@ -293,7 +399,7 @@ func (o *AdapterHostEthInterface) SetMacAddress(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -303,7 +409,7 @@ func (o *AdapterHostEthInterface) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -311,7 +417,7 @@ func (o *AdapterHostEthInterface) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -336,7 +442,7 @@ func (o *AdapterHostEthInterface) GetOperReason() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AdapterHostEthInterface) GetOperReasonOk() ([]string, bool) {
-	if o == nil || o.OperReason == nil {
+	if o == nil || IsNil(o.OperReason) {
 		return nil, false
 	}
 	return o.OperReason, true
@@ -344,7 +450,7 @@ func (o *AdapterHostEthInterface) GetOperReasonOk() ([]string, bool) {
 
 // HasOperReason returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasOperReason() bool {
-	if o != nil && o.OperReason != nil {
+	if o != nil && !IsNil(o.OperReason) {
 		return true
 	}
 
@@ -358,7 +464,7 @@ func (o *AdapterHostEthInterface) SetOperReason(v []string) {
 
 // GetOperability returns the Operability field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetOperability() string {
-	if o == nil || o.Operability == nil {
+	if o == nil || IsNil(o.Operability) {
 		var ret string
 		return ret
 	}
@@ -368,7 +474,7 @@ func (o *AdapterHostEthInterface) GetOperability() string {
 // GetOperabilityOk returns a tuple with the Operability field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetOperabilityOk() (*string, bool) {
-	if o == nil || o.Operability == nil {
+	if o == nil || IsNil(o.Operability) {
 		return nil, false
 	}
 	return o.Operability, true
@@ -376,7 +482,7 @@ func (o *AdapterHostEthInterface) GetOperabilityOk() (*string, bool) {
 
 // HasOperability returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasOperability() bool {
-	if o != nil && o.Operability != nil {
+	if o != nil && !IsNil(o.Operability) {
 		return true
 	}
 
@@ -390,7 +496,7 @@ func (o *AdapterHostEthInterface) SetOperability(v string) {
 
 // GetOriginalMacAddress returns the OriginalMacAddress field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetOriginalMacAddress() string {
-	if o == nil || o.OriginalMacAddress == nil {
+	if o == nil || IsNil(o.OriginalMacAddress) {
 		var ret string
 		return ret
 	}
@@ -400,7 +506,7 @@ func (o *AdapterHostEthInterface) GetOriginalMacAddress() string {
 // GetOriginalMacAddressOk returns a tuple with the OriginalMacAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetOriginalMacAddressOk() (*string, bool) {
-	if o == nil || o.OriginalMacAddress == nil {
+	if o == nil || IsNil(o.OriginalMacAddress) {
 		return nil, false
 	}
 	return o.OriginalMacAddress, true
@@ -408,7 +514,7 @@ func (o *AdapterHostEthInterface) GetOriginalMacAddressOk() (*string, bool) {
 
 // HasOriginalMacAddress returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasOriginalMacAddress() bool {
-	if o != nil && o.OriginalMacAddress != nil {
+	if o != nil && !IsNil(o.OriginalMacAddress) {
 		return true
 	}
 
@@ -422,7 +528,7 @@ func (o *AdapterHostEthInterface) SetOriginalMacAddress(v string) {
 
 // GetPciAddr returns the PciAddr field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetPciAddr() string {
-	if o == nil || o.PciAddr == nil {
+	if o == nil || IsNil(o.PciAddr) {
 		var ret string
 		return ret
 	}
@@ -432,7 +538,7 @@ func (o *AdapterHostEthInterface) GetPciAddr() string {
 // GetPciAddrOk returns a tuple with the PciAddr field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetPciAddrOk() (*string, bool) {
-	if o == nil || o.PciAddr == nil {
+	if o == nil || IsNil(o.PciAddr) {
 		return nil, false
 	}
 	return o.PciAddr, true
@@ -440,7 +546,7 @@ func (o *AdapterHostEthInterface) GetPciAddrOk() (*string, bool) {
 
 // HasPciAddr returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasPciAddr() bool {
-	if o != nil && o.PciAddr != nil {
+	if o != nil && !IsNil(o.PciAddr) {
 		return true
 	}
 
@@ -454,7 +560,7 @@ func (o *AdapterHostEthInterface) SetPciAddr(v string) {
 
 // GetPeerDn returns the PeerDn field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetPeerDn() string {
-	if o == nil || o.PeerDn == nil {
+	if o == nil || IsNil(o.PeerDn) {
 		var ret string
 		return ret
 	}
@@ -464,7 +570,7 @@ func (o *AdapterHostEthInterface) GetPeerDn() string {
 // GetPeerDnOk returns a tuple with the PeerDn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetPeerDnOk() (*string, bool) {
-	if o == nil || o.PeerDn == nil {
+	if o == nil || IsNil(o.PeerDn) {
 		return nil, false
 	}
 	return o.PeerDn, true
@@ -472,7 +578,7 @@ func (o *AdapterHostEthInterface) GetPeerDnOk() (*string, bool) {
 
 // HasPeerDn returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasPeerDn() bool {
-	if o != nil && o.PeerDn != nil {
+	if o != nil && !IsNil(o.PeerDn) {
 		return true
 	}
 
@@ -486,7 +592,7 @@ func (o *AdapterHostEthInterface) SetPeerDn(v string) {
 
 // GetPinGroupName returns the PinGroupName field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetPinGroupName() string {
-	if o == nil || o.PinGroupName == nil {
+	if o == nil || IsNil(o.PinGroupName) {
 		var ret string
 		return ret
 	}
@@ -496,7 +602,7 @@ func (o *AdapterHostEthInterface) GetPinGroupName() string {
 // GetPinGroupNameOk returns a tuple with the PinGroupName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetPinGroupNameOk() (*string, bool) {
-	if o == nil || o.PinGroupName == nil {
+	if o == nil || IsNil(o.PinGroupName) {
 		return nil, false
 	}
 	return o.PinGroupName, true
@@ -504,7 +610,7 @@ func (o *AdapterHostEthInterface) GetPinGroupNameOk() (*string, bool) {
 
 // HasPinGroupName returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasPinGroupName() bool {
-	if o != nil && o.PinGroupName != nil {
+	if o != nil && !IsNil(o.PinGroupName) {
 		return true
 	}
 
@@ -516,9 +622,233 @@ func (o *AdapterHostEthInterface) SetPinGroupName(v string) {
 	o.PinGroupName = &v
 }
 
+// GetQinqEnabled returns the QinqEnabled field value if set, zero value otherwise.
+func (o *AdapterHostEthInterface) GetQinqEnabled() bool {
+	if o == nil || IsNil(o.QinqEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.QinqEnabled
+}
+
+// GetQinqEnabledOk returns a tuple with the QinqEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdapterHostEthInterface) GetQinqEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.QinqEnabled) {
+		return nil, false
+	}
+	return o.QinqEnabled, true
+}
+
+// HasQinqEnabled returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasQinqEnabled() bool {
+	if o != nil && !IsNil(o.QinqEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetQinqEnabled gets a reference to the given bool and assigns it to the QinqEnabled field.
+func (o *AdapterHostEthInterface) SetQinqEnabled(v bool) {
+	o.QinqEnabled = &v
+}
+
+// GetQinqVlan returns the QinqVlan field value if set, zero value otherwise.
+func (o *AdapterHostEthInterface) GetQinqVlan() int64 {
+	if o == nil || IsNil(o.QinqVlan) {
+		var ret int64
+		return ret
+	}
+	return *o.QinqVlan
+}
+
+// GetQinqVlanOk returns a tuple with the QinqVlan field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdapterHostEthInterface) GetQinqVlanOk() (*int64, bool) {
+	if o == nil || IsNil(o.QinqVlan) {
+		return nil, false
+	}
+	return o.QinqVlan, true
+}
+
+// HasQinqVlan returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasQinqVlan() bool {
+	if o != nil && !IsNil(o.QinqVlan) {
+		return true
+	}
+
+	return false
+}
+
+// SetQinqVlan gets a reference to the given int64 and assigns it to the QinqVlan field.
+func (o *AdapterHostEthInterface) SetQinqVlan(v int64) {
+	o.QinqVlan = &v
+}
+
+// GetStandbyOperState returns the StandbyOperState field value if set, zero value otherwise.
+func (o *AdapterHostEthInterface) GetStandbyOperState() string {
+	if o == nil || IsNil(o.StandbyOperState) {
+		var ret string
+		return ret
+	}
+	return *o.StandbyOperState
+}
+
+// GetStandbyOperStateOk returns a tuple with the StandbyOperState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdapterHostEthInterface) GetStandbyOperStateOk() (*string, bool) {
+	if o == nil || IsNil(o.StandbyOperState) {
+		return nil, false
+	}
+	return o.StandbyOperState, true
+}
+
+// HasStandbyOperState returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasStandbyOperState() bool {
+	if o != nil && !IsNil(o.StandbyOperState) {
+		return true
+	}
+
+	return false
+}
+
+// SetStandbyOperState gets a reference to the given string and assigns it to the StandbyOperState field.
+func (o *AdapterHostEthInterface) SetStandbyOperState(v string) {
+	o.StandbyOperState = &v
+}
+
+// GetStandbyVethOperState returns the StandbyVethOperState field value if set, zero value otherwise.
+func (o *AdapterHostEthInterface) GetStandbyVethOperState() string {
+	if o == nil || IsNil(o.StandbyVethOperState) {
+		var ret string
+		return ret
+	}
+	return *o.StandbyVethOperState
+}
+
+// GetStandbyVethOperStateOk returns a tuple with the StandbyVethOperState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdapterHostEthInterface) GetStandbyVethOperStateOk() (*string, bool) {
+	if o == nil || IsNil(o.StandbyVethOperState) {
+		return nil, false
+	}
+	return o.StandbyVethOperState, true
+}
+
+// HasStandbyVethOperState returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasStandbyVethOperState() bool {
+	if o != nil && !IsNil(o.StandbyVethOperState) {
+		return true
+	}
+
+	return false
+}
+
+// SetStandbyVethOperState gets a reference to the given string and assigns it to the StandbyVethOperState field.
+func (o *AdapterHostEthInterface) SetStandbyVethOperState(v string) {
+	o.StandbyVethOperState = &v
+}
+
+// GetStandbyVifId returns the StandbyVifId field value if set, zero value otherwise.
+func (o *AdapterHostEthInterface) GetStandbyVifId() int64 {
+	if o == nil || IsNil(o.StandbyVifId) {
+		var ret int64
+		return ret
+	}
+	return *o.StandbyVifId
+}
+
+// GetStandbyVifIdOk returns a tuple with the StandbyVifId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdapterHostEthInterface) GetStandbyVifIdOk() (*int64, bool) {
+	if o == nil || IsNil(o.StandbyVifId) {
+		return nil, false
+	}
+	return o.StandbyVifId, true
+}
+
+// HasStandbyVifId returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasStandbyVifId() bool {
+	if o != nil && !IsNil(o.StandbyVifId) {
+		return true
+	}
+
+	return false
+}
+
+// SetStandbyVifId gets a reference to the given int64 and assigns it to the StandbyVifId field.
+func (o *AdapterHostEthInterface) SetStandbyVifId(v int64) {
+	o.StandbyVifId = &v
+}
+
+// GetVethAction returns the VethAction field value if set, zero value otherwise.
+func (o *AdapterHostEthInterface) GetVethAction() string {
+	if o == nil || IsNil(o.VethAction) {
+		var ret string
+		return ret
+	}
+	return *o.VethAction
+}
+
+// GetVethActionOk returns a tuple with the VethAction field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdapterHostEthInterface) GetVethActionOk() (*string, bool) {
+	if o == nil || IsNil(o.VethAction) {
+		return nil, false
+	}
+	return o.VethAction, true
+}
+
+// HasVethAction returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasVethAction() bool {
+	if o != nil && !IsNil(o.VethAction) {
+		return true
+	}
+
+	return false
+}
+
+// SetVethAction gets a reference to the given string and assigns it to the VethAction field.
+func (o *AdapterHostEthInterface) SetVethAction(v string) {
+	o.VethAction = &v
+}
+
+// GetVifId returns the VifId field value if set, zero value otherwise.
+func (o *AdapterHostEthInterface) GetVifId() int64 {
+	if o == nil || IsNil(o.VifId) {
+		var ret int64
+		return ret
+	}
+	return *o.VifId
+}
+
+// GetVifIdOk returns a tuple with the VifId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AdapterHostEthInterface) GetVifIdOk() (*int64, bool) {
+	if o == nil || IsNil(o.VifId) {
+		return nil, false
+	}
+	return o.VifId, true
+}
+
+// HasVifId returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasVifId() bool {
+	if o != nil && !IsNil(o.VifId) {
+		return true
+	}
+
+	return false
+}
+
+// SetVifId gets a reference to the given int64 and assigns it to the VifId field.
+func (o *AdapterHostEthInterface) SetVifId(v int64) {
+	o.VifId = &v
+}
+
 // GetVirtualizationPreference returns the VirtualizationPreference field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetVirtualizationPreference() string {
-	if o == nil || o.VirtualizationPreference == nil {
+	if o == nil || IsNil(o.VirtualizationPreference) {
 		var ret string
 		return ret
 	}
@@ -528,7 +858,7 @@ func (o *AdapterHostEthInterface) GetVirtualizationPreference() string {
 // GetVirtualizationPreferenceOk returns a tuple with the VirtualizationPreference field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetVirtualizationPreferenceOk() (*string, bool) {
-	if o == nil || o.VirtualizationPreference == nil {
+	if o == nil || IsNil(o.VirtualizationPreference) {
 		return nil, false
 	}
 	return o.VirtualizationPreference, true
@@ -536,7 +866,7 @@ func (o *AdapterHostEthInterface) GetVirtualizationPreferenceOk() (*string, bool
 
 // HasVirtualizationPreference returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasVirtualizationPreference() bool {
-	if o != nil && o.VirtualizationPreference != nil {
+	if o != nil && !IsNil(o.VirtualizationPreference) {
 		return true
 	}
 
@@ -550,7 +880,7 @@ func (o *AdapterHostEthInterface) SetVirtualizationPreference(v string) {
 
 // GetVnicDn returns the VnicDn field value if set, zero value otherwise.
 func (o *AdapterHostEthInterface) GetVnicDn() string {
-	if o == nil || o.VnicDn == nil {
+	if o == nil || IsNil(o.VnicDn) {
 		var ret string
 		return ret
 	}
@@ -560,7 +890,7 @@ func (o *AdapterHostEthInterface) GetVnicDn() string {
 // GetVnicDnOk returns a tuple with the VnicDn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AdapterHostEthInterface) GetVnicDnOk() (*string, bool) {
-	if o == nil || o.VnicDn == nil {
+	if o == nil || IsNil(o.VnicDn) {
 		return nil, false
 	}
 	return o.VnicDn, true
@@ -568,7 +898,7 @@ func (o *AdapterHostEthInterface) GetVnicDnOk() (*string, bool) {
 
 // HasVnicDn returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasVnicDn() bool {
-	if o != nil && o.VnicDn != nil {
+	if o != nil && !IsNil(o.VnicDn) {
 		return true
 	}
 
@@ -580,218 +910,436 @@ func (o *AdapterHostEthInterface) SetVnicDn(v string) {
 	o.VnicDn = &v
 }
 
-// GetAdapterUnit returns the AdapterUnit field value if set, zero value otherwise.
+// GetAdapterUnit returns the AdapterUnit field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdapterHostEthInterface) GetAdapterUnit() AdapterUnitRelationship {
-	if o == nil || o.AdapterUnit == nil {
+	if o == nil || IsNil(o.AdapterUnit.Get()) {
 		var ret AdapterUnitRelationship
 		return ret
 	}
-	return *o.AdapterUnit
+	return *o.AdapterUnit.Get()
 }
 
 // GetAdapterUnitOk returns a tuple with the AdapterUnit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AdapterHostEthInterface) GetAdapterUnitOk() (*AdapterUnitRelationship, bool) {
-	if o == nil || o.AdapterUnit == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.AdapterUnit, true
+	return o.AdapterUnit.Get(), o.AdapterUnit.IsSet()
 }
 
 // HasAdapterUnit returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasAdapterUnit() bool {
-	if o != nil && o.AdapterUnit != nil {
+	if o != nil && o.AdapterUnit.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAdapterUnit gets a reference to the given AdapterUnitRelationship and assigns it to the AdapterUnit field.
+// SetAdapterUnit gets a reference to the given NullableAdapterUnitRelationship and assigns it to the AdapterUnit field.
 func (o *AdapterHostEthInterface) SetAdapterUnit(v AdapterUnitRelationship) {
-	o.AdapterUnit = &v
+	o.AdapterUnit.Set(&v)
 }
 
-// GetInventoryDeviceInfo returns the InventoryDeviceInfo field value if set, zero value otherwise.
+// SetAdapterUnitNil sets the value for AdapterUnit to be an explicit nil
+func (o *AdapterHostEthInterface) SetAdapterUnitNil() {
+	o.AdapterUnit.Set(nil)
+}
+
+// UnsetAdapterUnit ensures that no value is present for AdapterUnit, not even an explicit nil
+func (o *AdapterHostEthInterface) UnsetAdapterUnit() {
+	o.AdapterUnit.Unset()
+}
+
+// GetInventoryDeviceInfo returns the InventoryDeviceInfo field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdapterHostEthInterface) GetInventoryDeviceInfo() InventoryDeviceInfoRelationship {
-	if o == nil || o.InventoryDeviceInfo == nil {
+	if o == nil || IsNil(o.InventoryDeviceInfo.Get()) {
 		var ret InventoryDeviceInfoRelationship
 		return ret
 	}
-	return *o.InventoryDeviceInfo
+	return *o.InventoryDeviceInfo.Get()
 }
 
 // GetInventoryDeviceInfoOk returns a tuple with the InventoryDeviceInfo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AdapterHostEthInterface) GetInventoryDeviceInfoOk() (*InventoryDeviceInfoRelationship, bool) {
-	if o == nil || o.InventoryDeviceInfo == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.InventoryDeviceInfo, true
+	return o.InventoryDeviceInfo.Get(), o.InventoryDeviceInfo.IsSet()
 }
 
 // HasInventoryDeviceInfo returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasInventoryDeviceInfo() bool {
-	if o != nil && o.InventoryDeviceInfo != nil {
+	if o != nil && o.InventoryDeviceInfo.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetInventoryDeviceInfo gets a reference to the given InventoryDeviceInfoRelationship and assigns it to the InventoryDeviceInfo field.
+// SetInventoryDeviceInfo gets a reference to the given NullableInventoryDeviceInfoRelationship and assigns it to the InventoryDeviceInfo field.
 func (o *AdapterHostEthInterface) SetInventoryDeviceInfo(v InventoryDeviceInfoRelationship) {
-	o.InventoryDeviceInfo = &v
+	o.InventoryDeviceInfo.Set(&v)
 }
 
-// GetPinnedInterface returns the PinnedInterface field value if set, zero value otherwise.
+// SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+func (o *AdapterHostEthInterface) SetInventoryDeviceInfoNil() {
+	o.InventoryDeviceInfo.Set(nil)
+}
+
+// UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
+func (o *AdapterHostEthInterface) UnsetInventoryDeviceInfo() {
+	o.InventoryDeviceInfo.Unset()
+}
+
+// GetPinnedInterface returns the PinnedInterface field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdapterHostEthInterface) GetPinnedInterface() InventoryInterfaceRelationship {
-	if o == nil || o.PinnedInterface == nil {
+	if o == nil || IsNil(o.PinnedInterface.Get()) {
 		var ret InventoryInterfaceRelationship
 		return ret
 	}
-	return *o.PinnedInterface
+	return *o.PinnedInterface.Get()
 }
 
 // GetPinnedInterfaceOk returns a tuple with the PinnedInterface field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AdapterHostEthInterface) GetPinnedInterfaceOk() (*InventoryInterfaceRelationship, bool) {
-	if o == nil || o.PinnedInterface == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.PinnedInterface, true
+	return o.PinnedInterface.Get(), o.PinnedInterface.IsSet()
 }
 
 // HasPinnedInterface returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasPinnedInterface() bool {
-	if o != nil && o.PinnedInterface != nil {
+	if o != nil && o.PinnedInterface.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPinnedInterface gets a reference to the given InventoryInterfaceRelationship and assigns it to the PinnedInterface field.
+// SetPinnedInterface gets a reference to the given NullableInventoryInterfaceRelationship and assigns it to the PinnedInterface field.
 func (o *AdapterHostEthInterface) SetPinnedInterface(v InventoryInterfaceRelationship) {
-	o.PinnedInterface = &v
+	o.PinnedInterface.Set(&v)
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// SetPinnedInterfaceNil sets the value for PinnedInterface to be an explicit nil
+func (o *AdapterHostEthInterface) SetPinnedInterfaceNil() {
+	o.PinnedInterface.Set(nil)
+}
+
+// UnsetPinnedInterface ensures that no value is present for PinnedInterface, not even an explicit nil
+func (o *AdapterHostEthInterface) UnsetPinnedInterface() {
+	o.PinnedInterface.Unset()
+}
+
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AdapterHostEthInterface) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AdapterHostEthInterface) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *AdapterHostEthInterface) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *AdapterHostEthInterface) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
+}
+
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *AdapterHostEthInterface) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *AdapterHostEthInterface) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
+}
+
+// GetStandbyVethernet returns the StandbyVethernet field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdapterHostEthInterface) GetStandbyVethernet() NetworkVethernetRelationship {
+	if o == nil || IsNil(o.StandbyVethernet.Get()) {
+		var ret NetworkVethernetRelationship
+		return ret
+	}
+	return *o.StandbyVethernet.Get()
+}
+
+// GetStandbyVethernetOk returns a tuple with the StandbyVethernet field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdapterHostEthInterface) GetStandbyVethernetOk() (*NetworkVethernetRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.StandbyVethernet.Get(), o.StandbyVethernet.IsSet()
+}
+
+// HasStandbyVethernet returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasStandbyVethernet() bool {
+	if o != nil && o.StandbyVethernet.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStandbyVethernet gets a reference to the given NullableNetworkVethernetRelationship and assigns it to the StandbyVethernet field.
+func (o *AdapterHostEthInterface) SetStandbyVethernet(v NetworkVethernetRelationship) {
+	o.StandbyVethernet.Set(&v)
+}
+
+// SetStandbyVethernetNil sets the value for StandbyVethernet to be an explicit nil
+func (o *AdapterHostEthInterface) SetStandbyVethernetNil() {
+	o.StandbyVethernet.Set(nil)
+}
+
+// UnsetStandbyVethernet ensures that no value is present for StandbyVethernet, not even an explicit nil
+func (o *AdapterHostEthInterface) UnsetStandbyVethernet() {
+	o.StandbyVethernet.Unset()
+}
+
+// GetVethernet returns the Vethernet field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AdapterHostEthInterface) GetVethernet() NetworkVethernetRelationship {
+	if o == nil || IsNil(o.Vethernet.Get()) {
+		var ret NetworkVethernetRelationship
+		return ret
+	}
+	return *o.Vethernet.Get()
+}
+
+// GetVethernetOk returns a tuple with the Vethernet field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AdapterHostEthInterface) GetVethernetOk() (*NetworkVethernetRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Vethernet.Get(), o.Vethernet.IsSet()
+}
+
+// HasVethernet returns a boolean if a field has been set.
+func (o *AdapterHostEthInterface) HasVethernet() bool {
+	if o != nil && o.Vethernet.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetVethernet gets a reference to the given NullableNetworkVethernetRelationship and assigns it to the Vethernet field.
+func (o *AdapterHostEthInterface) SetVethernet(v NetworkVethernetRelationship) {
+	o.Vethernet.Set(&v)
+}
+
+// SetVethernetNil sets the value for Vethernet to be an explicit nil
+func (o *AdapterHostEthInterface) SetVethernetNil() {
+	o.Vethernet.Set(nil)
+}
+
+// UnsetVethernet ensures that no value is present for Vethernet, not even an explicit nil
+func (o *AdapterHostEthInterface) UnsetVethernet() {
+	o.Vethernet.Unset()
 }
 
 func (o AdapterHostEthInterface) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o AdapterHostEthInterface) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPortInterfaceBase, errPortInterfaceBase := json.Marshal(o.PortInterfaceBase)
 	if errPortInterfaceBase != nil {
-		return []byte{}, errPortInterfaceBase
+		return map[string]interface{}{}, errPortInterfaceBase
 	}
 	errPortInterfaceBase = json.Unmarshal([]byte(serializedPortInterfaceBase), &toSerialize)
 	if errPortInterfaceBase != nil {
-		return []byte{}, errPortInterfaceBase
+		return map[string]interface{}{}, errPortInterfaceBase
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AdminState != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ActiveOperState) {
+		toSerialize["ActiveOperState"] = o.ActiveOperState
+	}
+	if !IsNil(o.ActiveVethOperState) {
+		toSerialize["ActiveVethOperState"] = o.ActiveVethOperState
+	}
+	if !IsNil(o.AdminState) {
 		toSerialize["AdminState"] = o.AdminState
 	}
-	if o.EpDn != nil {
+	if !IsNil(o.EpDn) {
 		toSerialize["EpDn"] = o.EpDn
 	}
-	if o.HostEthInterfaceId != nil {
+	if !IsNil(o.HostEthInterfaceId) {
 		toSerialize["HostEthInterfaceId"] = o.HostEthInterfaceId
 	}
-	if o.InterfaceType != nil {
+	if !IsNil(o.InterfaceType) {
 		toSerialize["InterfaceType"] = o.InterfaceType
 	}
-	if o.MacAddress != nil {
+	if !IsNil(o.MacAddress) {
 		toSerialize["MacAddress"] = o.MacAddress
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
 	if o.OperReason != nil {
 		toSerialize["OperReason"] = o.OperReason
 	}
-	if o.Operability != nil {
+	if !IsNil(o.Operability) {
 		toSerialize["Operability"] = o.Operability
 	}
-	if o.OriginalMacAddress != nil {
+	if !IsNil(o.OriginalMacAddress) {
 		toSerialize["OriginalMacAddress"] = o.OriginalMacAddress
 	}
-	if o.PciAddr != nil {
+	if !IsNil(o.PciAddr) {
 		toSerialize["PciAddr"] = o.PciAddr
 	}
-	if o.PeerDn != nil {
+	if !IsNil(o.PeerDn) {
 		toSerialize["PeerDn"] = o.PeerDn
 	}
-	if o.PinGroupName != nil {
+	if !IsNil(o.PinGroupName) {
 		toSerialize["PinGroupName"] = o.PinGroupName
 	}
-	if o.VirtualizationPreference != nil {
+	if !IsNil(o.QinqEnabled) {
+		toSerialize["QinqEnabled"] = o.QinqEnabled
+	}
+	if !IsNil(o.QinqVlan) {
+		toSerialize["QinqVlan"] = o.QinqVlan
+	}
+	if !IsNil(o.StandbyOperState) {
+		toSerialize["StandbyOperState"] = o.StandbyOperState
+	}
+	if !IsNil(o.StandbyVethOperState) {
+		toSerialize["StandbyVethOperState"] = o.StandbyVethOperState
+	}
+	if !IsNil(o.StandbyVifId) {
+		toSerialize["StandbyVifId"] = o.StandbyVifId
+	}
+	if !IsNil(o.VethAction) {
+		toSerialize["VethAction"] = o.VethAction
+	}
+	if !IsNil(o.VifId) {
+		toSerialize["VifId"] = o.VifId
+	}
+	if !IsNil(o.VirtualizationPreference) {
 		toSerialize["VirtualizationPreference"] = o.VirtualizationPreference
 	}
-	if o.VnicDn != nil {
+	if !IsNil(o.VnicDn) {
 		toSerialize["VnicDn"] = o.VnicDn
 	}
-	if o.AdapterUnit != nil {
-		toSerialize["AdapterUnit"] = o.AdapterUnit
+	if o.AdapterUnit.IsSet() {
+		toSerialize["AdapterUnit"] = o.AdapterUnit.Get()
 	}
-	if o.InventoryDeviceInfo != nil {
-		toSerialize["InventoryDeviceInfo"] = o.InventoryDeviceInfo
+	if o.InventoryDeviceInfo.IsSet() {
+		toSerialize["InventoryDeviceInfo"] = o.InventoryDeviceInfo.Get()
 	}
-	if o.PinnedInterface != nil {
-		toSerialize["PinnedInterface"] = o.PinnedInterface
+	if o.PinnedInterface.IsSet() {
+		toSerialize["PinnedInterface"] = o.PinnedInterface.Get()
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
+	}
+	if o.StandbyVethernet.IsSet() {
+		toSerialize["StandbyVethernet"] = o.StandbyVethernet.Get()
+	}
+	if o.Vethernet.IsSet() {
+		toSerialize["Vethernet"] = o.Vethernet.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *AdapterHostEthInterface) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AdapterHostEthInterface) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type AdapterHostEthInterfaceWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
+		// The operational state of the Active vNIC. vNIC operational state information is updated by events from the adapter. This operational state is applicable to primary vNIC. If a host is powered off, this property might not be accurate as we may or may not receive events from the adapter. For Intersight Managed Domains Mode domains (IMM), the vNIC's peer object Vethernet will have the current operational state of the connection when a host is powered off.
+		ActiveOperState *string `json:"ActiveOperState,omitempty"`
+		// The operational state of the Active Vethernet peer of a vNIC in Intersight Managed Mode. This state is updated by events from Fabric Interconnect or by periodic updates from Fabric Interconnect. When a Fabric Interconnect is not connected to Intersight or if the Fabric Interconnect is powered down, this property will not be updated. This state is not applicable for standalone servers. * `unknown` - The operational state of the Vethernet is not known. * `adminDown` - The operational state of the Vethernet is admin down. * `up` - The operational state of the Vethernet is Up. * `down` - The operational state of the Vethernet is Down. * `noLicense` - The operational state of the Vethernet is no license. * `linkUp` - The operational state of the Vethernet is link up. * `hardwareFailure` - The operational state of the Vethernet is hardware failure. * `softwareFailure` - The operational state of the Vethernet is software failure. * `errorDisabled` - The operational state of the Vethernet is error disabled. * `linkDown` - The operational state of the Vethernet is link down. * `sfpNotPresent` - The operational state of the Vethernet is SFP not present. * `udldAggrDown` - The operational state of the Vethernet is UDLD aggregate down.
+		ActiveVethOperState *string `json:"ActiveVethOperState,omitempty"`
 		// Admin state of the Host Ethernet Interface.
 		AdminState *string `json:"AdminState,omitempty"`
 		// The Endpoint Config Dn of the Host Ethernet Interface.
@@ -815,23 +1363,41 @@ func (o *AdapterHostEthInterface) UnmarshalJSON(bytes []byte) (err error) {
 		PeerDn *string `json:"PeerDn,omitempty"`
 		// Name given for Lan PinGroup.
 		PinGroupName *string `json:"PinGroupName,omitempty"`
+		// Setting qinqEnabled to true if we have QinQ tagging enabled on the vNIC.
+		QinqEnabled *bool `json:"QinqEnabled,omitempty"`
+		// The VLAN ID for VIC QinQ (802.1Q) Tunneling.
+		QinqVlan *int64 `json:"QinqVlan,omitempty"`
+		// The operational state of the standby vNIC. vNIC operational state information is updated by events from the adapter. This operational state is applicable only to failover vNIC. If a host is powered off, this property might not be accurate as we may or may not receive events from the adapter. For Intersight Managed Mode domains (IMM), the vNIC's peer object Vethernet will have the current operational state of the connection when a host is powered off.
+		StandbyOperState *string `json:"StandbyOperState,omitempty"`
+		// The operational state of the Standby Vethernet peer of a failover vNIC in Intersight Managed Mode. This state is updated by events from Fabric Interconnect or by periodic updates from Fabric Interconnect. When a Fabric Interconnect is not connected to Intersight or if the Fabric Interconnect is powered down, this property will not be updated. This state is not applicable for standalone servers. * `unknown` - The operational state of the Vethernet is not known. * `adminDown` - The operational state of the Vethernet is admin down. * `up` - The operational state of the Vethernet is Up. * `down` - The operational state of the Vethernet is Down. * `noLicense` - The operational state of the Vethernet is no license. * `linkUp` - The operational state of the Vethernet is link up. * `hardwareFailure` - The operational state of the Vethernet is hardware failure. * `softwareFailure` - The operational state of the Vethernet is software failure. * `errorDisabled` - The operational state of the Vethernet is error disabled. * `linkDown` - The operational state of the Vethernet is link down. * `sfpNotPresent` - The operational state of the Vethernet is SFP not present. * `udldAggrDown` - The operational state of the Vethernet is UDLD aggregate down.
+		StandbyVethOperState *string `json:"StandbyVethOperState,omitempty"`
+		// Identifier of the Standby virtual ethernet interface (Vethernet) on the networking component (e.g., Fabric Interconnect) for the corresponding Host Ethernet Interface (vNIC).
+		StandbyVifId *int64 `json:"StandbyVifId,omitempty"`
+		// The action to be performed on the vethernet corresponding to the vNIC. * `None` - Default value for vif operation. * `ResetConnectivity` - Resets connectivity on both active and passive vif. * `ResetConnectivityActive` - Resets connectivity on the active vif. * `ResetConnectivityPassive` - Resets connectivity on the passive vif. * `Enable` - Enables the vif on both the FIs. * `Disable` - Disables the vif on both the FIs. * `EnableActive` - Enables the corresponding active vif. * `EnablePassive` - Enables the corresponding standby vif. * `DisableActive` - Disables the corresponding active vif. * `DisablePassive` - Disables the corresponding standby vif.
+		VethAction *string `json:"VethAction,omitempty"`
+		// Identifier of the virtual ethernet interface (Vethernet) on the networking component (e.g., Fabric Interconnect) for the corresponding Host Ethernet Interface (vNIC).
+		VifId *int64 `json:"VifId,omitempty"`
 		// Virtualization Preference of the Host Ethernet Interface indicating if virtualization is enabled or not.
 		VirtualizationPreference *string `json:"VirtualizationPreference,omitempty"`
 		// The Virtual Ethernet Interface DN connected to the Host Ethernet Interface.
-		VnicDn              *string                              `json:"VnicDn,omitempty"`
-		AdapterUnit         *AdapterUnitRelationship             `json:"AdapterUnit,omitempty"`
-		InventoryDeviceInfo *InventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
-		PinnedInterface     *InventoryInterfaceRelationship      `json:"PinnedInterface,omitempty"`
-		RegisteredDevice    *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		VnicDn              *string                                     `json:"VnicDn,omitempty"`
+		AdapterUnit         NullableAdapterUnitRelationship             `json:"AdapterUnit,omitempty"`
+		InventoryDeviceInfo NullableInventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
+		PinnedInterface     NullableInventoryInterfaceRelationship      `json:"PinnedInterface,omitempty"`
+		RegisteredDevice    NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		StandbyVethernet    NullableNetworkVethernetRelationship        `json:"StandbyVethernet,omitempty"`
+		Vethernet           NullableNetworkVethernetRelationship        `json:"Vethernet,omitempty"`
 	}
 
 	varAdapterHostEthInterfaceWithoutEmbeddedStruct := AdapterHostEthInterfaceWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varAdapterHostEthInterfaceWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varAdapterHostEthInterfaceWithoutEmbeddedStruct)
 	if err == nil {
 		varAdapterHostEthInterface := _AdapterHostEthInterface{}
 		varAdapterHostEthInterface.ClassId = varAdapterHostEthInterfaceWithoutEmbeddedStruct.ClassId
 		varAdapterHostEthInterface.ObjectType = varAdapterHostEthInterfaceWithoutEmbeddedStruct.ObjectType
+		varAdapterHostEthInterface.ActiveOperState = varAdapterHostEthInterfaceWithoutEmbeddedStruct.ActiveOperState
+		varAdapterHostEthInterface.ActiveVethOperState = varAdapterHostEthInterfaceWithoutEmbeddedStruct.ActiveVethOperState
 		varAdapterHostEthInterface.AdminState = varAdapterHostEthInterfaceWithoutEmbeddedStruct.AdminState
 		varAdapterHostEthInterface.EpDn = varAdapterHostEthInterfaceWithoutEmbeddedStruct.EpDn
 		varAdapterHostEthInterface.HostEthInterfaceId = varAdapterHostEthInterfaceWithoutEmbeddedStruct.HostEthInterfaceId
@@ -844,12 +1410,21 @@ func (o *AdapterHostEthInterface) UnmarshalJSON(bytes []byte) (err error) {
 		varAdapterHostEthInterface.PciAddr = varAdapterHostEthInterfaceWithoutEmbeddedStruct.PciAddr
 		varAdapterHostEthInterface.PeerDn = varAdapterHostEthInterfaceWithoutEmbeddedStruct.PeerDn
 		varAdapterHostEthInterface.PinGroupName = varAdapterHostEthInterfaceWithoutEmbeddedStruct.PinGroupName
+		varAdapterHostEthInterface.QinqEnabled = varAdapterHostEthInterfaceWithoutEmbeddedStruct.QinqEnabled
+		varAdapterHostEthInterface.QinqVlan = varAdapterHostEthInterfaceWithoutEmbeddedStruct.QinqVlan
+		varAdapterHostEthInterface.StandbyOperState = varAdapterHostEthInterfaceWithoutEmbeddedStruct.StandbyOperState
+		varAdapterHostEthInterface.StandbyVethOperState = varAdapterHostEthInterfaceWithoutEmbeddedStruct.StandbyVethOperState
+		varAdapterHostEthInterface.StandbyVifId = varAdapterHostEthInterfaceWithoutEmbeddedStruct.StandbyVifId
+		varAdapterHostEthInterface.VethAction = varAdapterHostEthInterfaceWithoutEmbeddedStruct.VethAction
+		varAdapterHostEthInterface.VifId = varAdapterHostEthInterfaceWithoutEmbeddedStruct.VifId
 		varAdapterHostEthInterface.VirtualizationPreference = varAdapterHostEthInterfaceWithoutEmbeddedStruct.VirtualizationPreference
 		varAdapterHostEthInterface.VnicDn = varAdapterHostEthInterfaceWithoutEmbeddedStruct.VnicDn
 		varAdapterHostEthInterface.AdapterUnit = varAdapterHostEthInterfaceWithoutEmbeddedStruct.AdapterUnit
 		varAdapterHostEthInterface.InventoryDeviceInfo = varAdapterHostEthInterfaceWithoutEmbeddedStruct.InventoryDeviceInfo
 		varAdapterHostEthInterface.PinnedInterface = varAdapterHostEthInterfaceWithoutEmbeddedStruct.PinnedInterface
 		varAdapterHostEthInterface.RegisteredDevice = varAdapterHostEthInterfaceWithoutEmbeddedStruct.RegisteredDevice
+		varAdapterHostEthInterface.StandbyVethernet = varAdapterHostEthInterfaceWithoutEmbeddedStruct.StandbyVethernet
+		varAdapterHostEthInterface.Vethernet = varAdapterHostEthInterfaceWithoutEmbeddedStruct.Vethernet
 		*o = AdapterHostEthInterface(varAdapterHostEthInterface)
 	} else {
 		return err
@@ -857,7 +1432,7 @@ func (o *AdapterHostEthInterface) UnmarshalJSON(bytes []byte) (err error) {
 
 	varAdapterHostEthInterface := _AdapterHostEthInterface{}
 
-	err = json.Unmarshal(bytes, &varAdapterHostEthInterface)
+	err = json.Unmarshal(data, &varAdapterHostEthInterface)
 	if err == nil {
 		o.PortInterfaceBase = varAdapterHostEthInterface.PortInterfaceBase
 	} else {
@@ -866,9 +1441,11 @@ func (o *AdapterHostEthInterface) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "ActiveOperState")
+		delete(additionalProperties, "ActiveVethOperState")
 		delete(additionalProperties, "AdminState")
 		delete(additionalProperties, "EpDn")
 		delete(additionalProperties, "HostEthInterfaceId")
@@ -881,12 +1458,21 @@ func (o *AdapterHostEthInterface) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "PciAddr")
 		delete(additionalProperties, "PeerDn")
 		delete(additionalProperties, "PinGroupName")
+		delete(additionalProperties, "QinqEnabled")
+		delete(additionalProperties, "QinqVlan")
+		delete(additionalProperties, "StandbyOperState")
+		delete(additionalProperties, "StandbyVethOperState")
+		delete(additionalProperties, "StandbyVifId")
+		delete(additionalProperties, "VethAction")
+		delete(additionalProperties, "VifId")
 		delete(additionalProperties, "VirtualizationPreference")
 		delete(additionalProperties, "VnicDn")
 		delete(additionalProperties, "AdapterUnit")
 		delete(additionalProperties, "InventoryDeviceInfo")
 		delete(additionalProperties, "PinnedInterface")
 		delete(additionalProperties, "RegisteredDevice")
+		delete(additionalProperties, "StandbyVethernet")
+		delete(additionalProperties, "Vethernet")
 
 		// remove fields from embedded structs
 		reflectPortInterfaceBase := reflect.ValueOf(o.PortInterfaceBase)

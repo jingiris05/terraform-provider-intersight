@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "power.ControlState"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "power.ControlState"]
 **AllocatedPower** | Pointer to **int64** | This field identifies the allocated power on the chassis in Watts. | [optional] [readonly] 
-**ExtendedPowerCapacity** | Pointer to **string** | The status of extended power capacity mode of the chassis. If Enabled, this mode allows chassis available power to be increased by borrowing power from redundant power supplies. * &#x60;Enabled&#x60; - Set the value to Enabled. * &#x60;Disabled&#x60; - Set the value to Disabled. | [optional] [readonly] [default to "Enabled"]
+**ExtendedPowerCapacity** | Pointer to **string** | The status of extended power capacity mode of the chassis. If Enabled, this mode allows chassis available power to be increased by borrowing power from redundant power supplies. * &#x60;Enabled&#x60; - Set the value to Enabled. * &#x60;Disabled&#x60; - Set the value to Disabled. * &#x60;Not Applicable&#x60; - Set the value to Not Applicable. | [optional] [readonly] [default to "Enabled"]
 **GridMaxPower** | Pointer to **int64** | This field identifies the available power when PSUs are in grid mode in Watts. | [optional] [readonly] 
 **MaxRequiredPower** | Pointer to **int64** | This field identifies the maximum power required by the endpoint in Watts. | [optional] [readonly] 
 **MinRequiredPower** | Pointer to **int64** | This field identifies the minimum power required by the endpoint in Watts. | [optional] [readonly] 
@@ -16,8 +16,8 @@ Name | Type | Description | Notes
 **NonRedundantMaxPower** | Pointer to **int64** | This field identifies the available power when PSUs are in non-redundant mode in Watts. | [optional] [readonly] 
 **PowerRebalancing** | Pointer to **string** | The status of power rebalancing mode of the chassis. If enabled, this mode allows the system to dynamically reallocate the power between servers depending on their power usage.  * &#x60;Enabled&#x60; - Set the value to Enabled. * &#x60;Disabled&#x60; - Set the value to Disabled. | [optional] [readonly] [default to "Enabled"]
 **PowerSaveMode** | Pointer to **string** | The status of power save mode of the chassis. If Enabled and the requested power budget is less than available power capacity,  the additional PSUs not required to comply with redundancy policy are placed in Power Save mode.  * &#x60;Enabled&#x60; - Set the value to Enabled. * &#x60;Disabled&#x60; - Set the value to Disabled. | [optional] [readonly] [default to "Enabled"]
-**EquipmentChassis** | Pointer to [**EquipmentChassisRelationship**](EquipmentChassisRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**EquipmentChassis** | Pointer to [**NullableEquipmentChassisRelationship**](EquipmentChassisRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -353,6 +353,16 @@ SetEquipmentChassis sets EquipmentChassis field to given value.
 
 HasEquipmentChassis returns a boolean if a field has been set.
 
+### SetEquipmentChassisNil
+
+`func (o *PowerControlState) SetEquipmentChassisNil(b bool)`
+
+ SetEquipmentChassisNil sets the value for EquipmentChassis to be an explicit nil
+
+### UnsetEquipmentChassis
+`func (o *PowerControlState) UnsetEquipmentChassis()`
+
+UnsetEquipmentChassis ensures that no value is present for EquipmentChassis, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *PowerControlState) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -378,6 +388,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *PowerControlState) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *PowerControlState) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

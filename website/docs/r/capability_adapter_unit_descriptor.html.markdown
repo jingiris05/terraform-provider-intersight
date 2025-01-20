@@ -51,8 +51,9 @@ This complex property has following sub-properties:
 * `ethernet_port_speed`:(int) The port speed for ethernet ports in Mbps. 
 * `features`:(Array)
 This complex property has following sub-properties:
-  + `feature_name`:(string) Name of the feature that identifies the specific adapter configuration.* `RoCEv2` - Capability indicator of the RDMA over Converged Ethernet (RoCE) feature version 2.* `RoCEv1` - Capability indicator of the RDMA over Converged Ethernet (RoCE) feature version 1.* `VMQ` - Capability indicator of the Virtual Machine Queue (VMQ) feature.* `VMMQ` - Capability indicator of the Virtual Machine Multi-Queue (VMMQ) feature.* `VMQInterrupts` - Capability indicator of the Virtual Machine Queue (VMQ) Interrupts feature.* `NVGRE` - Capability indicator of the Network Virtualization using Generic Routing Encapsulation (NVGRE) feature.* `ARFS` - Capability indicator of the Accelerated Receive Flow Steering (ARFS) feature.* `VXLAN` - Capability indicator of the Virtual Extensible LAN (VXLAN) feature. 
-  + `min_fw_version`:(string) Firmware version from which support for this feature is available. 
+  + `feature_name`:(string) Name of the feature that identifies the specific adapter configuration.* `RoCEv2` - Capability indicator of the RDMA over Converged Ethernet (RoCE) feature version 2.* `RoCEv1` - Capability indicator of the RDMA over Converged Ethernet (RoCE) feature version 1.* `VMQ` - Capability indicator of the Virtual Machine Queue (VMQ) feature.* `VMMQ` - Capability indicator of the Virtual Machine Multi-Queue (VMMQ) feature.* `VMQInterrupts` - Capability indicator of the Virtual Machine Queue (VMQ) Interrupts feature.* `NVGRE` - Capability indicator of the Network Virtualization using Generic Routing Encapsulation (NVGRE) feature.* `ARFS` - Capability indicator of the Accelerated Receive Flow Steering (ARFS) feature.* `VXLAN` - Capability indicator of the Virtual Extensible LAN (VXLAN) feature.* `usNIC` - Capability indicator of the User Space NIC (usNIC) feature.* `Advanced Filter` - Capability indicator of the Advanced Filter feature.* `Azure Stack Host QOS` - Capability indicator of the Azure Stack Host QOS feature.* `GENEVE Offload` - Capability indicator of the Generic Network Virtualization Encapsulation (Geneve) Offload feature.* `QinQ` - Capability indicator of the QinQ feature.* `SRIOV` - Capability indicator of the Single Root Input Output Virtualization (SR-IOV).* `Ether Channel Pinning` - Capability indicator of the Ether Channel Pinning feature. 
+  + `min_adapter_fw_version`:(string) Firmware version of Adapter from which support for this feature is available. 
+  + `min_fw_version`:(string) Firmware version of BMC from which support for this feature is available. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `supported_fw_versions`:
                 (Array of schema.TypeString) -
@@ -60,10 +61,18 @@ This complex property has following sub-properties:
                 (Array of schema.TypeString) -
   + `supported_in_generations`:
                 (Array of schema.TypeInt) -
+  + `unsupported_feature_matrix`:(Array)
+This complex property has following sub-properties:
+    + `generation`:(int) The adapter generations that support this feature.* `4` - Fourth generation adapters (14xx). The PIDs of these adapters end with the string 04.* `2` - Second generation VIC adapters (12xx). The PIDs of these adapters end with the string 02.* `3` - Third generation adapters (13xx). The PIDs of these adapters end with the string 03.* `5` - Fifth generation adapters (15xx). The PIDs of these adapters contain the V5 string. 
+    + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+    + `unsupportd_features`:
+                (Array of schema.TypeString) -
+  + `validation_action`:(string) Action to be taken when validation does not succeed.* `Error` - Stop workflow execution by throwing error.* `Skip` - Remove the feature from configuration and continue workflow execution. 
 * `fibre_channel_port_speed`:(int) The port speed for fibre channel ports in Mbps. 
 * `fibre_channel_scsi_ioq_limit`:(int) The number of SCSI I/O Queue resources to allocate. 
 * `is_azure_qos_supported`:(bool) Indicates that the Azure Stack Host QoS feature is supported by this adapter. 
 * `is_geneve_supported`:(bool) Indicates that the GENEVE offload feature is supported by this adapter. 
+* `is_secure_boot_supported`:(bool) Indicates support for secure boot. 
 * `max_eth_rx_ring_size`:(int) Maximum Ring Size value for vNIC Receive Queue. 
 * `max_eth_tx_ring_size`:(int) Maximum Ring Size value for vNIC Transmit Queue. 
 * `max_rocev2_interfaces`:(int) Maximum number of vNIC interfaces that can be RoCEv2 enabled. 
@@ -71,6 +80,7 @@ This complex property has following sub-properties:
 * `model`:(string) The model of the endpoint, for which this capability information is applicable. 
 * `moid`:(string) The unique identifier of this Managed Object instance. 
 * `num_dce_ports`:(int) Number of Dce Ports for the adapter. 
+* `number_of_pci_links`:(int) Indicates number of PCI Links of the adapter. 
 * `owners`:
                 (Array of schema.TypeString) -(ReadOnly)
 * `parent`:(HashMap) -(ReadOnly) A reference to a moBaseMo resource.When the $expand query parameter is specified, the referenced resource is returned inline. 
@@ -99,6 +109,7 @@ This complex property has following sub-properties:
     + `moid`:(string) The Moid of the referenced REST resource. 
     + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
     + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+  + `marked_for_deletion`:(bool)(ReadOnly) The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `ref_mo`:(HashMap) -(ReadOnly) A reference to the original Managed Object. 
 This complex property has following sub-properties:
@@ -108,6 +119,7 @@ This complex property has following sub-properties:
   + `timestamp`:(string)(ReadOnly) The time this versioned Managed Object was created. 
   + `nr_version`:(string)(ReadOnly) The version of the Managed Object, e.g. an incrementing number or a hash id. 
   + `version_type`:(string)(ReadOnly) Specifies type of version. Currently the only supported value is \ Configured\ that is used to keep track of snapshots of policies and profiles that are intendedto be configured to target endpoints.* `Modified` - Version created every time an object is modified.* `Configured` - Version created every time an object is configured to the service profile.* `Deployed` - Version created for objects related to a service profile when it is deployed. 
+* `vic_id`:(string) Vic Id assigned for the adapter. 
 
 
 ## Import

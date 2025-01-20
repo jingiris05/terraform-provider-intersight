@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VnicEthAdapterPolicyInventory type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VnicEthAdapterPolicyInventory{}
 
 // VnicEthAdapterPolicyInventory An Ethernet adapter policy governs the host-side behavior of the adapter, including how the adapter handles traffic. For each VIC Virtual Ethernet Interface various features like VXLAN, NVGRE, ARFS, Interrupt settings, and TCP Offload settings can be configured.
 type VnicEthAdapterPolicyInventory struct {
@@ -28,6 +32,8 @@ type VnicEthAdapterPolicyInventory struct {
 	AdvancedFilter          *bool                               `json:"AdvancedFilter,omitempty"`
 	ArfsSettings            NullableVnicArfsSettings            `json:"ArfsSettings,omitempty"`
 	CompletionQueueSettings NullableVnicCompletionQueueSettings `json:"CompletionQueueSettings,omitempty"`
+	// Enables EtherChannel Pinning to combine multiple physical links between two network switches into a single logical link. Transmit Queue Count should be at least 2 to enable ether channel pinning.
+	EtherChannelPinningEnabled *bool `json:"EtherChannelPinningEnabled,omitempty"`
 	// GENEVE offload protocol allows you to create logical networks that span physical network boundaries by allowing any information to be encoded in a packet and passed between tunnel endpoints.
 	GeneveEnabled *bool `json:"GeneveEnabled,omitempty"`
 	// Enables Interrupt Scaling on the interface.
@@ -43,9 +49,9 @@ type VnicEthAdapterPolicyInventory struct {
 	TcpOffloadSettings NullableVnicTcpOffloadSettings `json:"TcpOffloadSettings,omitempty"`
 	TxQueueSettings    NullableVnicEthTxQueueSettings `json:"TxQueueSettings,omitempty"`
 	// Uplink Failback Timeout in seconds when uplink failover is enabled for a vNIC. After a vNIC has started using its secondary interface, this setting controls how long the primary interface must be available before the system resumes using the primary interface for the vNIC.
-	UplinkFailbackTimeout *int64                    `json:"UplinkFailbackTimeout,omitempty"`
-	VxlanSettings         NullableVnicVxlanSettings `json:"VxlanSettings,omitempty"`
-	TargetMo              *MoBaseMoRelationship     `json:"TargetMo,omitempty"`
+	UplinkFailbackTimeout *int64                       `json:"UplinkFailbackTimeout,omitempty"`
+	VxlanSettings         NullableVnicVxlanSettings    `json:"VxlanSettings,omitempty"`
+	TargetMo              NullableMoBaseMoRelationship `json:"TargetMo,omitempty"`
 	AdditionalProperties  map[string]interface{}
 }
 
@@ -98,6 +104,11 @@ func (o *VnicEthAdapterPolicyInventory) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "vnic.EthAdapterPolicyInventory" of the ClassId field.
+func (o *VnicEthAdapterPolicyInventory) GetDefaultClassId() interface{} {
+	return "vnic.EthAdapterPolicyInventory"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VnicEthAdapterPolicyInventory) GetObjectType() string {
 	if o == nil {
@@ -122,9 +133,14 @@ func (o *VnicEthAdapterPolicyInventory) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "vnic.EthAdapterPolicyInventory" of the ObjectType field.
+func (o *VnicEthAdapterPolicyInventory) GetDefaultObjectType() interface{} {
+	return "vnic.EthAdapterPolicyInventory"
+}
+
 // GetAdvancedFilter returns the AdvancedFilter field value if set, zero value otherwise.
 func (o *VnicEthAdapterPolicyInventory) GetAdvancedFilter() bool {
-	if o == nil || o.AdvancedFilter == nil {
+	if o == nil || IsNil(o.AdvancedFilter) {
 		var ret bool
 		return ret
 	}
@@ -134,7 +150,7 @@ func (o *VnicEthAdapterPolicyInventory) GetAdvancedFilter() bool {
 // GetAdvancedFilterOk returns a tuple with the AdvancedFilter field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthAdapterPolicyInventory) GetAdvancedFilterOk() (*bool, bool) {
-	if o == nil || o.AdvancedFilter == nil {
+	if o == nil || IsNil(o.AdvancedFilter) {
 		return nil, false
 	}
 	return o.AdvancedFilter, true
@@ -142,7 +158,7 @@ func (o *VnicEthAdapterPolicyInventory) GetAdvancedFilterOk() (*bool, bool) {
 
 // HasAdvancedFilter returns a boolean if a field has been set.
 func (o *VnicEthAdapterPolicyInventory) HasAdvancedFilter() bool {
-	if o != nil && o.AdvancedFilter != nil {
+	if o != nil && !IsNil(o.AdvancedFilter) {
 		return true
 	}
 
@@ -156,7 +172,7 @@ func (o *VnicEthAdapterPolicyInventory) SetAdvancedFilter(v bool) {
 
 // GetArfsSettings returns the ArfsSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetArfsSettings() VnicArfsSettings {
-	if o == nil || o.ArfsSettings.Get() == nil {
+	if o == nil || IsNil(o.ArfsSettings.Get()) {
 		var ret VnicArfsSettings
 		return ret
 	}
@@ -199,7 +215,7 @@ func (o *VnicEthAdapterPolicyInventory) UnsetArfsSettings() {
 
 // GetCompletionQueueSettings returns the CompletionQueueSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetCompletionQueueSettings() VnicCompletionQueueSettings {
-	if o == nil || o.CompletionQueueSettings.Get() == nil {
+	if o == nil || IsNil(o.CompletionQueueSettings.Get()) {
 		var ret VnicCompletionQueueSettings
 		return ret
 	}
@@ -240,9 +256,41 @@ func (o *VnicEthAdapterPolicyInventory) UnsetCompletionQueueSettings() {
 	o.CompletionQueueSettings.Unset()
 }
 
+// GetEtherChannelPinningEnabled returns the EtherChannelPinningEnabled field value if set, zero value otherwise.
+func (o *VnicEthAdapterPolicyInventory) GetEtherChannelPinningEnabled() bool {
+	if o == nil || IsNil(o.EtherChannelPinningEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.EtherChannelPinningEnabled
+}
+
+// GetEtherChannelPinningEnabledOk returns a tuple with the EtherChannelPinningEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VnicEthAdapterPolicyInventory) GetEtherChannelPinningEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.EtherChannelPinningEnabled) {
+		return nil, false
+	}
+	return o.EtherChannelPinningEnabled, true
+}
+
+// HasEtherChannelPinningEnabled returns a boolean if a field has been set.
+func (o *VnicEthAdapterPolicyInventory) HasEtherChannelPinningEnabled() bool {
+	if o != nil && !IsNil(o.EtherChannelPinningEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetEtherChannelPinningEnabled gets a reference to the given bool and assigns it to the EtherChannelPinningEnabled field.
+func (o *VnicEthAdapterPolicyInventory) SetEtherChannelPinningEnabled(v bool) {
+	o.EtherChannelPinningEnabled = &v
+}
+
 // GetGeneveEnabled returns the GeneveEnabled field value if set, zero value otherwise.
 func (o *VnicEthAdapterPolicyInventory) GetGeneveEnabled() bool {
-	if o == nil || o.GeneveEnabled == nil {
+	if o == nil || IsNil(o.GeneveEnabled) {
 		var ret bool
 		return ret
 	}
@@ -252,7 +300,7 @@ func (o *VnicEthAdapterPolicyInventory) GetGeneveEnabled() bool {
 // GetGeneveEnabledOk returns a tuple with the GeneveEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthAdapterPolicyInventory) GetGeneveEnabledOk() (*bool, bool) {
-	if o == nil || o.GeneveEnabled == nil {
+	if o == nil || IsNil(o.GeneveEnabled) {
 		return nil, false
 	}
 	return o.GeneveEnabled, true
@@ -260,7 +308,7 @@ func (o *VnicEthAdapterPolicyInventory) GetGeneveEnabledOk() (*bool, bool) {
 
 // HasGeneveEnabled returns a boolean if a field has been set.
 func (o *VnicEthAdapterPolicyInventory) HasGeneveEnabled() bool {
-	if o != nil && o.GeneveEnabled != nil {
+	if o != nil && !IsNil(o.GeneveEnabled) {
 		return true
 	}
 
@@ -274,7 +322,7 @@ func (o *VnicEthAdapterPolicyInventory) SetGeneveEnabled(v bool) {
 
 // GetInterruptScaling returns the InterruptScaling field value if set, zero value otherwise.
 func (o *VnicEthAdapterPolicyInventory) GetInterruptScaling() bool {
-	if o == nil || o.InterruptScaling == nil {
+	if o == nil || IsNil(o.InterruptScaling) {
 		var ret bool
 		return ret
 	}
@@ -284,7 +332,7 @@ func (o *VnicEthAdapterPolicyInventory) GetInterruptScaling() bool {
 // GetInterruptScalingOk returns a tuple with the InterruptScaling field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthAdapterPolicyInventory) GetInterruptScalingOk() (*bool, bool) {
-	if o == nil || o.InterruptScaling == nil {
+	if o == nil || IsNil(o.InterruptScaling) {
 		return nil, false
 	}
 	return o.InterruptScaling, true
@@ -292,7 +340,7 @@ func (o *VnicEthAdapterPolicyInventory) GetInterruptScalingOk() (*bool, bool) {
 
 // HasInterruptScaling returns a boolean if a field has been set.
 func (o *VnicEthAdapterPolicyInventory) HasInterruptScaling() bool {
-	if o != nil && o.InterruptScaling != nil {
+	if o != nil && !IsNil(o.InterruptScaling) {
 		return true
 	}
 
@@ -306,7 +354,7 @@ func (o *VnicEthAdapterPolicyInventory) SetInterruptScaling(v bool) {
 
 // GetInterruptSettings returns the InterruptSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetInterruptSettings() VnicEthInterruptSettings {
-	if o == nil || o.InterruptSettings.Get() == nil {
+	if o == nil || IsNil(o.InterruptSettings.Get()) {
 		var ret VnicEthInterruptSettings
 		return ret
 	}
@@ -349,7 +397,7 @@ func (o *VnicEthAdapterPolicyInventory) UnsetInterruptSettings() {
 
 // GetNvgreSettings returns the NvgreSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetNvgreSettings() VnicNvgreSettings {
-	if o == nil || o.NvgreSettings.Get() == nil {
+	if o == nil || IsNil(o.NvgreSettings.Get()) {
 		var ret VnicNvgreSettings
 		return ret
 	}
@@ -392,7 +440,7 @@ func (o *VnicEthAdapterPolicyInventory) UnsetNvgreSettings() {
 
 // GetPtpSettings returns the PtpSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetPtpSettings() VnicPtpSettings {
-	if o == nil || o.PtpSettings.Get() == nil {
+	if o == nil || IsNil(o.PtpSettings.Get()) {
 		var ret VnicPtpSettings
 		return ret
 	}
@@ -435,7 +483,7 @@ func (o *VnicEthAdapterPolicyInventory) UnsetPtpSettings() {
 
 // GetRoceSettings returns the RoceSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetRoceSettings() VnicRoceSettings {
-	if o == nil || o.RoceSettings.Get() == nil {
+	if o == nil || IsNil(o.RoceSettings.Get()) {
 		var ret VnicRoceSettings
 		return ret
 	}
@@ -478,7 +526,7 @@ func (o *VnicEthAdapterPolicyInventory) UnsetRoceSettings() {
 
 // GetRssHashSettings returns the RssHashSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetRssHashSettings() VnicRssHashSettings {
-	if o == nil || o.RssHashSettings.Get() == nil {
+	if o == nil || IsNil(o.RssHashSettings.Get()) {
 		var ret VnicRssHashSettings
 		return ret
 	}
@@ -521,7 +569,7 @@ func (o *VnicEthAdapterPolicyInventory) UnsetRssHashSettings() {
 
 // GetRssSettings returns the RssSettings field value if set, zero value otherwise.
 func (o *VnicEthAdapterPolicyInventory) GetRssSettings() bool {
-	if o == nil || o.RssSettings == nil {
+	if o == nil || IsNil(o.RssSettings) {
 		var ret bool
 		return ret
 	}
@@ -531,7 +579,7 @@ func (o *VnicEthAdapterPolicyInventory) GetRssSettings() bool {
 // GetRssSettingsOk returns a tuple with the RssSettings field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthAdapterPolicyInventory) GetRssSettingsOk() (*bool, bool) {
-	if o == nil || o.RssSettings == nil {
+	if o == nil || IsNil(o.RssSettings) {
 		return nil, false
 	}
 	return o.RssSettings, true
@@ -539,7 +587,7 @@ func (o *VnicEthAdapterPolicyInventory) GetRssSettingsOk() (*bool, bool) {
 
 // HasRssSettings returns a boolean if a field has been set.
 func (o *VnicEthAdapterPolicyInventory) HasRssSettings() bool {
-	if o != nil && o.RssSettings != nil {
+	if o != nil && !IsNil(o.RssSettings) {
 		return true
 	}
 
@@ -553,7 +601,7 @@ func (o *VnicEthAdapterPolicyInventory) SetRssSettings(v bool) {
 
 // GetRxQueueSettings returns the RxQueueSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetRxQueueSettings() VnicEthRxQueueSettings {
-	if o == nil || o.RxQueueSettings.Get() == nil {
+	if o == nil || IsNil(o.RxQueueSettings.Get()) {
 		var ret VnicEthRxQueueSettings
 		return ret
 	}
@@ -596,7 +644,7 @@ func (o *VnicEthAdapterPolicyInventory) UnsetRxQueueSettings() {
 
 // GetTcpOffloadSettings returns the TcpOffloadSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetTcpOffloadSettings() VnicTcpOffloadSettings {
-	if o == nil || o.TcpOffloadSettings.Get() == nil {
+	if o == nil || IsNil(o.TcpOffloadSettings.Get()) {
 		var ret VnicTcpOffloadSettings
 		return ret
 	}
@@ -639,7 +687,7 @@ func (o *VnicEthAdapterPolicyInventory) UnsetTcpOffloadSettings() {
 
 // GetTxQueueSettings returns the TxQueueSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetTxQueueSettings() VnicEthTxQueueSettings {
-	if o == nil || o.TxQueueSettings.Get() == nil {
+	if o == nil || IsNil(o.TxQueueSettings.Get()) {
 		var ret VnicEthTxQueueSettings
 		return ret
 	}
@@ -682,7 +730,7 @@ func (o *VnicEthAdapterPolicyInventory) UnsetTxQueueSettings() {
 
 // GetUplinkFailbackTimeout returns the UplinkFailbackTimeout field value if set, zero value otherwise.
 func (o *VnicEthAdapterPolicyInventory) GetUplinkFailbackTimeout() int64 {
-	if o == nil || o.UplinkFailbackTimeout == nil {
+	if o == nil || IsNil(o.UplinkFailbackTimeout) {
 		var ret int64
 		return ret
 	}
@@ -692,7 +740,7 @@ func (o *VnicEthAdapterPolicyInventory) GetUplinkFailbackTimeout() int64 {
 // GetUplinkFailbackTimeoutOk returns a tuple with the UplinkFailbackTimeout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthAdapterPolicyInventory) GetUplinkFailbackTimeoutOk() (*int64, bool) {
-	if o == nil || o.UplinkFailbackTimeout == nil {
+	if o == nil || IsNil(o.UplinkFailbackTimeout) {
 		return nil, false
 	}
 	return o.UplinkFailbackTimeout, true
@@ -700,7 +748,7 @@ func (o *VnicEthAdapterPolicyInventory) GetUplinkFailbackTimeoutOk() (*int64, bo
 
 // HasUplinkFailbackTimeout returns a boolean if a field has been set.
 func (o *VnicEthAdapterPolicyInventory) HasUplinkFailbackTimeout() bool {
-	if o != nil && o.UplinkFailbackTimeout != nil {
+	if o != nil && !IsNil(o.UplinkFailbackTimeout) {
 		return true
 	}
 
@@ -714,7 +762,7 @@ func (o *VnicEthAdapterPolicyInventory) SetUplinkFailbackTimeout(v int64) {
 
 // GetVxlanSettings returns the VxlanSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetVxlanSettings() VnicVxlanSettings {
-	if o == nil || o.VxlanSettings.Get() == nil {
+	if o == nil || IsNil(o.VxlanSettings.Get()) {
 		var ret VnicVxlanSettings
 		return ret
 	}
@@ -755,55 +803,76 @@ func (o *VnicEthAdapterPolicyInventory) UnsetVxlanSettings() {
 	o.VxlanSettings.Unset()
 }
 
-// GetTargetMo returns the TargetMo field value if set, zero value otherwise.
+// GetTargetMo returns the TargetMo field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthAdapterPolicyInventory) GetTargetMo() MoBaseMoRelationship {
-	if o == nil || o.TargetMo == nil {
+	if o == nil || IsNil(o.TargetMo.Get()) {
 		var ret MoBaseMoRelationship
 		return ret
 	}
-	return *o.TargetMo
+	return *o.TargetMo.Get()
 }
 
 // GetTargetMoOk returns a tuple with the TargetMo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthAdapterPolicyInventory) GetTargetMoOk() (*MoBaseMoRelationship, bool) {
-	if o == nil || o.TargetMo == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.TargetMo, true
+	return o.TargetMo.Get(), o.TargetMo.IsSet()
 }
 
 // HasTargetMo returns a boolean if a field has been set.
 func (o *VnicEthAdapterPolicyInventory) HasTargetMo() bool {
-	if o != nil && o.TargetMo != nil {
+	if o != nil && o.TargetMo.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetTargetMo gets a reference to the given MoBaseMoRelationship and assigns it to the TargetMo field.
+// SetTargetMo gets a reference to the given NullableMoBaseMoRelationship and assigns it to the TargetMo field.
 func (o *VnicEthAdapterPolicyInventory) SetTargetMo(v MoBaseMoRelationship) {
-	o.TargetMo = &v
+	o.TargetMo.Set(&v)
+}
+
+// SetTargetMoNil sets the value for TargetMo to be an explicit nil
+func (o *VnicEthAdapterPolicyInventory) SetTargetMoNil() {
+	o.TargetMo.Set(nil)
+}
+
+// UnsetTargetMo ensures that no value is present for TargetMo, not even an explicit nil
+func (o *VnicEthAdapterPolicyInventory) UnsetTargetMo() {
+	o.TargetMo.Unset()
 }
 
 func (o VnicEthAdapterPolicyInventory) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VnicEthAdapterPolicyInventory) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicyInventory, errPolicyAbstractPolicyInventory := json.Marshal(o.PolicyAbstractPolicyInventory)
 	if errPolicyAbstractPolicyInventory != nil {
-		return []byte{}, errPolicyAbstractPolicyInventory
+		return map[string]interface{}{}, errPolicyAbstractPolicyInventory
 	}
 	errPolicyAbstractPolicyInventory = json.Unmarshal([]byte(serializedPolicyAbstractPolicyInventory), &toSerialize)
 	if errPolicyAbstractPolicyInventory != nil {
-		return []byte{}, errPolicyAbstractPolicyInventory
+		return map[string]interface{}{}, errPolicyAbstractPolicyInventory
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AdvancedFilter != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AdvancedFilter) {
 		toSerialize["AdvancedFilter"] = o.AdvancedFilter
 	}
 	if o.ArfsSettings.IsSet() {
@@ -812,10 +881,13 @@ func (o VnicEthAdapterPolicyInventory) MarshalJSON() ([]byte, error) {
 	if o.CompletionQueueSettings.IsSet() {
 		toSerialize["CompletionQueueSettings"] = o.CompletionQueueSettings.Get()
 	}
-	if o.GeneveEnabled != nil {
+	if !IsNil(o.EtherChannelPinningEnabled) {
+		toSerialize["EtherChannelPinningEnabled"] = o.EtherChannelPinningEnabled
+	}
+	if !IsNil(o.GeneveEnabled) {
 		toSerialize["GeneveEnabled"] = o.GeneveEnabled
 	}
-	if o.InterruptScaling != nil {
+	if !IsNil(o.InterruptScaling) {
 		toSerialize["InterruptScaling"] = o.InterruptScaling
 	}
 	if o.InterruptSettings.IsSet() {
@@ -833,7 +905,7 @@ func (o VnicEthAdapterPolicyInventory) MarshalJSON() ([]byte, error) {
 	if o.RssHashSettings.IsSet() {
 		toSerialize["RssHashSettings"] = o.RssHashSettings.Get()
 	}
-	if o.RssSettings != nil {
+	if !IsNil(o.RssSettings) {
 		toSerialize["RssSettings"] = o.RssSettings
 	}
 	if o.RxQueueSettings.IsSet() {
@@ -845,24 +917,65 @@ func (o VnicEthAdapterPolicyInventory) MarshalJSON() ([]byte, error) {
 	if o.TxQueueSettings.IsSet() {
 		toSerialize["TxQueueSettings"] = o.TxQueueSettings.Get()
 	}
-	if o.UplinkFailbackTimeout != nil {
+	if !IsNil(o.UplinkFailbackTimeout) {
 		toSerialize["UplinkFailbackTimeout"] = o.UplinkFailbackTimeout
 	}
 	if o.VxlanSettings.IsSet() {
 		toSerialize["VxlanSettings"] = o.VxlanSettings.Get()
 	}
-	if o.TargetMo != nil {
-		toSerialize["TargetMo"] = o.TargetMo
+	if o.TargetMo.IsSet() {
+		toSerialize["TargetMo"] = o.TargetMo.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VnicEthAdapterPolicyInventory) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VnicEthAdapterPolicyInventory) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VnicEthAdapterPolicyInventoryWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -872,6 +985,8 @@ func (o *VnicEthAdapterPolicyInventory) UnmarshalJSON(bytes []byte) (err error) 
 		AdvancedFilter          *bool                               `json:"AdvancedFilter,omitempty"`
 		ArfsSettings            NullableVnicArfsSettings            `json:"ArfsSettings,omitempty"`
 		CompletionQueueSettings NullableVnicCompletionQueueSettings `json:"CompletionQueueSettings,omitempty"`
+		// Enables EtherChannel Pinning to combine multiple physical links between two network switches into a single logical link. Transmit Queue Count should be at least 2 to enable ether channel pinning.
+		EtherChannelPinningEnabled *bool `json:"EtherChannelPinningEnabled,omitempty"`
 		// GENEVE offload protocol allows you to create logical networks that span physical network boundaries by allowing any information to be encoded in a packet and passed between tunnel endpoints.
 		GeneveEnabled *bool `json:"GeneveEnabled,omitempty"`
 		// Enables Interrupt Scaling on the interface.
@@ -887,14 +1002,14 @@ func (o *VnicEthAdapterPolicyInventory) UnmarshalJSON(bytes []byte) (err error) 
 		TcpOffloadSettings NullableVnicTcpOffloadSettings `json:"TcpOffloadSettings,omitempty"`
 		TxQueueSettings    NullableVnicEthTxQueueSettings `json:"TxQueueSettings,omitempty"`
 		// Uplink Failback Timeout in seconds when uplink failover is enabled for a vNIC. After a vNIC has started using its secondary interface, this setting controls how long the primary interface must be available before the system resumes using the primary interface for the vNIC.
-		UplinkFailbackTimeout *int64                    `json:"UplinkFailbackTimeout,omitempty"`
-		VxlanSettings         NullableVnicVxlanSettings `json:"VxlanSettings,omitempty"`
-		TargetMo              *MoBaseMoRelationship     `json:"TargetMo,omitempty"`
+		UplinkFailbackTimeout *int64                       `json:"UplinkFailbackTimeout,omitempty"`
+		VxlanSettings         NullableVnicVxlanSettings    `json:"VxlanSettings,omitempty"`
+		TargetMo              NullableMoBaseMoRelationship `json:"TargetMo,omitempty"`
 	}
 
 	varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct := VnicEthAdapterPolicyInventoryWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct)
 	if err == nil {
 		varVnicEthAdapterPolicyInventory := _VnicEthAdapterPolicyInventory{}
 		varVnicEthAdapterPolicyInventory.ClassId = varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct.ClassId
@@ -902,6 +1017,7 @@ func (o *VnicEthAdapterPolicyInventory) UnmarshalJSON(bytes []byte) (err error) 
 		varVnicEthAdapterPolicyInventory.AdvancedFilter = varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct.AdvancedFilter
 		varVnicEthAdapterPolicyInventory.ArfsSettings = varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct.ArfsSettings
 		varVnicEthAdapterPolicyInventory.CompletionQueueSettings = varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct.CompletionQueueSettings
+		varVnicEthAdapterPolicyInventory.EtherChannelPinningEnabled = varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct.EtherChannelPinningEnabled
 		varVnicEthAdapterPolicyInventory.GeneveEnabled = varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct.GeneveEnabled
 		varVnicEthAdapterPolicyInventory.InterruptScaling = varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct.InterruptScaling
 		varVnicEthAdapterPolicyInventory.InterruptSettings = varVnicEthAdapterPolicyInventoryWithoutEmbeddedStruct.InterruptSettings
@@ -923,7 +1039,7 @@ func (o *VnicEthAdapterPolicyInventory) UnmarshalJSON(bytes []byte) (err error) 
 
 	varVnicEthAdapterPolicyInventory := _VnicEthAdapterPolicyInventory{}
 
-	err = json.Unmarshal(bytes, &varVnicEthAdapterPolicyInventory)
+	err = json.Unmarshal(data, &varVnicEthAdapterPolicyInventory)
 	if err == nil {
 		o.PolicyAbstractPolicyInventory = varVnicEthAdapterPolicyInventory.PolicyAbstractPolicyInventory
 	} else {
@@ -932,12 +1048,13 @@ func (o *VnicEthAdapterPolicyInventory) UnmarshalJSON(bytes []byte) (err error) 
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AdvancedFilter")
 		delete(additionalProperties, "ArfsSettings")
 		delete(additionalProperties, "CompletionQueueSettings")
+		delete(additionalProperties, "EtherChannelPinningEnabled")
 		delete(additionalProperties, "GeneveEnabled")
 		delete(additionalProperties, "InterruptScaling")
 		delete(additionalProperties, "InterruptSettings")

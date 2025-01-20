@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceFirmwareUnsupportedVersionUpgrade() *schema.Resource {
 		UpdateContext: resourceFirmwareUnsupportedVersionUpgradeUpdate,
 		DeleteContext: resourceFirmwareUnsupportedVersionUpgradeDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -98,7 +100,7 @@ func resourceFirmwareUnsupportedVersionUpgrade() *schema.Resource {
 							Default:     "connector.FileChecksum",
 						},
 						"hash_algorithm": {
-							Description:  "The hash algorithm used to calculate the checksum.\n* `crc` - A CRC hash as definded by RFC 3385. Generated with the IEEE polynomial.\n* `sha256` - A SHA256 hash as defined by RFC 4634.",
+							Description:  "The hash algorithm used to calculate the checksum.\n* `crc` - A CRC hash as definded by RFC 3385. Generated with the IEEE polynomial.\n* `sha256` - An SHA256 hash as defined by RFC 4634.",
 							Type:         schema.TypeString,
 							ValidateFunc: validation.StringInSlice([]string{"crc", "sha256"}, false),
 							Optional:     true,
@@ -227,7 +229,7 @@ func resourceFirmwareUnsupportedVersionUpgrade() *schema.Resource {
 				Optional:    true,
 			},
 			"download_progress": {
-				Description: "The download progress of the file represented as a percentage between 0% and 100%. If progress reporting is not possible a value of -1 is sent.",
+				Description: "The download progress of the file represented as a percentage between 0% and 100%. If progress reporting is not possible, a value of -1 is sent.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
@@ -491,6 +493,17 @@ func resourceFirmwareUnsupportedVersionUpgrade() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -789,14 +802,25 @@ func resourceFirmwareUnsupportedVersionUpgradeCreate(c context.Context, d *schem
 		}
 		return diag.Errorf("error occurred while creating FirmwareUnsupportedVersionUpgrade: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceFirmwareUnsupportedVersionUpgradeRead(c, d, meta)...)
 }
 
 func resourceFirmwareUnsupportedVersionUpgradeRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.FirmwareApi.GetFirmwareUnsupportedVersionUpgradeByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

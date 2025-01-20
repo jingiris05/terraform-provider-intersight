@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceCapabilityEquipmentPhysicalDef() *schema.Resource {
 		UpdateContext: resourceCapabilityEquipmentPhysicalDefUpdate,
 		DeleteContext: resourceCapabilityEquipmentPhysicalDefDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -247,9 +249,9 @@ func resourceCapabilityEquipmentPhysicalDef() *schema.Resource {
 				},
 			},
 			"pid": {
-				Description:  "Product Identifier for a Switch/Fabric-Interconnect.\n* `UCS-FI-6454` - The standard 4th generation UCS Fabric Interconnect with 54 ports.\n* `UCS-FI-64108` - The expanded 4th generation UCS Fabric Interconnect with 108 ports.\n* `UCS-FI-6536` - The standard 5th generation UCS Fabric Interconnect with 36 ports.\n* `unknown` - Unknown device type, usage is TBD.",
+				Description:  "Product Identifier for a Switch/Fabric-Interconnect.\n* `UCS-FI-6454` - The standard 4th generation UCS Fabric Interconnect with 54 ports.\n* `UCS-FI-64108` - The expanded 4th generation UCS Fabric Interconnect with 108 ports.\n* `UCS-FI-6536` - The standard 5th generation UCS Fabric Interconnect with 36 ports.\n* `UCSX-S9108-100G` - Cisco UCS Fabric Interconnect 9108 100G with 8 ports.\n* `UCS-FI-6664` - The standard 6th generation UCS Fabric Interconnect with 64 ports.\n* `unknown` - Unknown device type, usage is TBD.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringInSlice([]string{"UCS-FI-6454", "UCS-FI-64108", "UCS-FI-6536", "unknown"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"UCS-FI-6454", "UCS-FI-64108", "UCS-FI-6536", "UCSX-S9108-100G", "UCS-FI-6664", "unknown"}, false),
 				Optional:     true,
 				Default:      "UCS-FI-6454",
 			},
@@ -354,6 +356,17 @@ func resourceCapabilityEquipmentPhysicalDef() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -579,14 +592,25 @@ func resourceCapabilityEquipmentPhysicalDefCreate(c context.Context, d *schema.R
 		}
 		return diag.Errorf("error occurred while creating CapabilityEquipmentPhysicalDef: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceCapabilityEquipmentPhysicalDefRead(c, d, meta)...)
 }
 
 func resourceCapabilityEquipmentPhysicalDefRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.CapabilityApi.GetCapabilityEquipmentPhysicalDefByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

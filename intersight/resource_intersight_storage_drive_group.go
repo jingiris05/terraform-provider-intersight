@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceStorageDriveGroup() *schema.Resource {
 		UpdateContext: resourceStorageDriveGroupUpdate,
 		DeleteContext: resourceStorageDriveGroupDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -110,6 +112,7 @@ func resourceStorageDriveGroup() *schema.Resource {
 							Type:         schema.TypeInt,
 							ValidateFunc: validation.IntBetween(1, 100),
 							Optional:     true,
+							Default:      1,
 						},
 						"minimum_drive_size": {
 							Description: "Minimum size of the drive to be used for creating this RAID group.",
@@ -364,6 +367,11 @@ func resourceStorageDriveGroup() *schema.Resource {
 				Optional:     true,
 				Default:      "Raid0",
 			},
+			"secure_drive_group": {
+				Description: "Enables/disables the drive security on all the drives used in this policy. This flag just enables the drive security and only after Remote/Manual key setting configured, the actual security will be applied.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 			"shared_scope": {
 				Description: "Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.\nObjects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs.",
 				Type:        schema.TypeString,
@@ -511,6 +519,17 @@ func resourceStorageDriveGroup() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -622,9 +641,9 @@ func resourceStorageDriveGroup() *schema.Resource {
 							Optional:    true,
 						},
 						"name": {
-							Description:  "The name of the virtual drive. The name can be between 1 and 15 alphanumeric characters. Spaces or any special characters other than - (hyphen), _ (underscore), : (colon), and . (period) are not allowed.",
+							Description:  "The name of the virtual drive. The name can be between 1 and 15 alphanumeric characters. Spaces or any special characters other than - (hyphen) and _ (underscore) are not allowed.",
 							Type:         schema.TypeString,
-							ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9\\-\\._:]*$"), ""), StringLenMaximum(15)),
+							ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9\\-_]*$"), ""), StringLenMaximum(15)),
 							Optional:     true,
 						},
 						"object_type": {
@@ -885,6 +904,11 @@ func resourceStorageDriveGroupCreate(c context.Context, d *schema.ResourceData, 
 		o.SetRaidLevel(x)
 	}
 
+	if v, ok := d.GetOkExists("secure_drive_group"); ok {
+		x := (v.(bool))
+		o.SetSecureDriveGroup(x)
+	}
+
 	if v, ok := d.GetOk("storage_policy"); ok {
 		p := make([]models.StorageStoragePolicyRelationship, 0, 1)
 		s := v.([]interface{})
@@ -1089,14 +1113,25 @@ func resourceStorageDriveGroupCreate(c context.Context, d *schema.ResourceData, 
 		}
 		return diag.Errorf("error occurred while creating StorageDriveGroup: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceStorageDriveGroupRead(c, d, meta)...)
 }
 
 func resourceStorageDriveGroupRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.StorageApi.GetStorageDriveGroupByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1176,6 +1211,10 @@ func resourceStorageDriveGroupRead(c context.Context, d *schema.ResourceData, me
 
 	if err := d.Set("raid_level", (s.GetRaidLevel())); err != nil {
 		return diag.Errorf("error occurred while setting property RaidLevel in StorageDriveGroup object: %s", err.Error())
+	}
+
+	if err := d.Set("secure_drive_group", (s.GetSecureDriveGroup())); err != nil {
+		return diag.Errorf("error occurred while setting property SecureDriveGroup in StorageDriveGroup object: %s", err.Error())
 	}
 
 	if err := d.Set("shared_scope", (s.GetSharedScope())); err != nil {
@@ -1386,6 +1425,12 @@ func resourceStorageDriveGroupUpdate(c context.Context, d *schema.ResourceData, 
 		v := d.Get("raid_level")
 		x := (v.(string))
 		o.SetRaidLevel(x)
+	}
+
+	if d.HasChange("secure_drive_group") {
+		v := d.Get("secure_drive_group")
+		x := (v.(bool))
+		o.SetSecureDriveGroup(x)
 	}
 
 	if d.HasChange("storage_policy") {

@@ -15,14 +15,14 @@ Name | Type | Description | Notes
 **DeploymentType** | Pointer to **string** | The deployment type of the HyperFlex cluster. The cluster can have one of the following configurations: 1. Datacenter: The HyperFlex cluster consists of UCS Fabric Interconnect-attached nodes on a single site. 2. Stretched Cluster: The HyperFlex cluster consists of UCS Fabric Interconnect-attached nodes distributed across multiple sites. 3. Edge: The HyperFlex cluster consists of 2-4 standalone nodes. If the cluster is running a HyperFlex Data Platform version less than 4.0 or if the deployment type cannot be determined, the deployment type is set as &#39;NA&#39; (not available). * &#x60;NA&#x60; - The deployment type of the HyperFlex cluster is not available. * &#x60;Datacenter&#x60; - The deployment type of a HyperFlex cluster consisting of UCS Fabric Interconnect-attached nodes on the same site. * &#x60;Stretched Cluster&#x60; - The deployment type of a HyperFlex cluster consisting of UCS Fabric Interconnect-attached nodes across different sites. * &#x60;Edge&#x60; - The deployment type of a HyperFlex cluster consisting of 2 or more standalone nodes. * &#x60;DC-No-FI&#x60; - The deployment type of a HyperFlex cluster consisting of 3 or more standalone nodes with the required Datacenter license. | [optional] [readonly] [default to "NA"]
 **DriveType** | Pointer to **string** | The type of the drives used for storage in this cluster. * &#x60;NA&#x60; - The drive type of the cluster is not available. * &#x60;All-Flash&#x60; - Indicates that this cluster contains flash drives only. * &#x60;Hybrid&#x60; - Indicates that this cluster contains both flash and hard disk drives. | [optional] [readonly] [default to "NA"]
 **HxVersion** | Pointer to **string** | The HyperFlex Data or Application Platform version of this cluster. | [optional] [readonly] 
-**HypervisorType** | Pointer to **string** | Identifies the broad type of the underlying hypervisor. * &#x60;ESXi&#x60; - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version. * &#x60;HyperFlexAp&#x60; - The hypervisor of the virtualization platform is Cisco HyperFlex Application Platform. * &#x60;IWE&#x60; - The hypervisor of the virtualization platform is Cisco Intersight Workload Engine. * &#x60;Hyper-V&#x60; - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V. * &#x60;Unknown&#x60; - The hypervisor running on the HyperFlex cluster is not known. | [optional] [default to "ESXi"]
+**HypervisorType** | Pointer to **string** | Identifies the broad type of the underlying hypervisor. * &#x60;ESXi&#x60; - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version. * &#x60;Hyper-V&#x60; - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V. * &#x60;Unknown&#x60; - The hypervisor running on the HyperFlex cluster is not known. | [optional] [default to "ESXi"]
 **HypervisorVersion** | Pointer to **string** | The version of hypervisor running on this cluster. | [optional] [readonly] 
 **Identity** | Pointer to **string** | The internally generated identity of this cluster.  This entity is not manipulated by users. It aids in uniquely identifying  the cluster object. In case of VMware, this is a MOR (managed object reference). | [optional] [readonly] 
 **StorageNodeCount** | Pointer to **int64** | The number of storage nodes that belong to this cluster. | [optional] [readonly] 
 **StorageUtilization** | Pointer to **float32** | The storage utilization is computed based on total capacity and current capacity utilization. | [optional] [readonly] 
 **UtilizationPercentage** | Pointer to **float32** | The storage utilization percentage is computed based on total capacity and current capacity utilization. | [optional] [readonly] 
 **UtilizationTrendPercentage** | Pointer to **float32** | The storage utilization trend percentage represents the trend in percentage computed using the first and last point from historical data. | [optional] [readonly] 
-**AssociatedProfile** | Pointer to [**PolicyAbstractProfileRelationship**](PolicyAbstractProfileRelationship.md) |  | [optional] 
+**AssociatedProfile** | Pointer to [**NullablePolicyAbstractProfileRelationship**](PolicyAbstractProfileRelationship.md) |  | [optional] 
 **ChildClusters** | Pointer to [**[]HyperflexBaseClusterRelationship**](HyperflexBaseClusterRelationship.md) | An array of relationships to hyperflexBaseCluster resources. | [optional] 
 
 ## Methods
@@ -519,6 +519,16 @@ SetAssociatedProfile sets AssociatedProfile field to given value.
 
 HasAssociatedProfile returns a boolean if a field has been set.
 
+### SetAssociatedProfileNil
+
+`func (o *HyperflexBaseCluster) SetAssociatedProfileNil(b bool)`
+
+ SetAssociatedProfileNil sets the value for AssociatedProfile to be an explicit nil
+
+### UnsetAssociatedProfile
+`func (o *HyperflexBaseCluster) UnsetAssociatedProfile()`
+
+UnsetAssociatedProfile ensures that no value is present for AssociatedProfile, not even an explicit nil
 ### GetChildClusters
 
 `func (o *HyperflexBaseCluster) GetChildClusters() []HyperflexBaseClusterRelationship`

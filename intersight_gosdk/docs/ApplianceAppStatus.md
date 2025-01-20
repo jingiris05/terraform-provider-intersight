@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "appliance.AppStatus"]
 **ApiStatuses** | Pointer to [**[]ApplianceApiStatus**](ApplianceApiStatus.md) |  | [optional] 
 **AppLabel** | Pointer to **string** | Unique label to identify the application. | [optional] [readonly] 
-**OperationalStatus** | Pointer to **string** | Operational status of the application. Operational status is based on the result of the status checks. If result of any check is Critical, then its value is Impaired. Otherwise, if result of any check is Warning, then its value is AttentionNeeded. If all checks are OK, then its value is Operational. * &#x60;Unknown&#x60; - Operational status of the Intersight Appliance entity is Unknown. * &#x60;Operational&#x60; - Operational status of the Intersight Appliance entity is Operational. * &#x60;Impaired&#x60; - Operational status of the Intersight Appliance entity is Impaired. * &#x60;AttentionNeeded&#x60; - Operational status of the Intersight Appliance entity is AttentionNeeded. | [optional] [readonly] [default to "Unknown"]
+**OperationalStatus** | Pointer to **string** | Operational status of the application. Operational status is based on the result of the status checks. If result of any check is Critical, then its value is Impaired. Otherwise, if result of any check is Warning, then its value is AttentionNeeded. If all checks are OK, then its value is Operational. * &#x60;Unknown&#x60; - The status of the appliance node is unknown. * &#x60;Operational&#x60; - The appliance node is operational. * &#x60;Impaired&#x60; - The appliance node is impaired. * &#x60;AttentionNeeded&#x60; - The appliance node needs attention. * &#x60;ReadyToJoin&#x60; - The node is ready to be added to a standalone Intersight Appliance to form a cluster. * &#x60;OutOfService&#x60; - The user has taken this node (part of a cluster) to out of service. * &#x60;ReadyForReplacement&#x60; - The cluster node is ready to be replaced. * &#x60;ReplacementInProgress&#x60; - The cluster node replacement is in progress. * &#x60;ReplacementFailed&#x60; - There was a failure during the cluster node replacement. | [optional] [readonly] [default to "Unknown"]
 **ReadyCount** | Pointer to **int64** | Number of replicas ready.  The number of instances of the application currently ready to perform its intended functions. | [optional] [readonly] 
 **ReplicaCount** | Pointer to **int64** | Number of replicas provisioned. The number of instances of the application provisioned to run on the Intersight appliance. | [optional] [readonly] 
 **RestartCount1Hour** | Pointer to **int64** | Number of instance restarts in the last hour. | [optional] [readonly] 
@@ -17,8 +17,8 @@ Name | Type | Description | Notes
 **RestartCountTotal** | Pointer to **int64** | Total number of restarts since last deployment. | [optional] [readonly] 
 **RunningCount** | Pointer to **int64** | Number of replicas running. The number of instances of the application currently running. | [optional] [readonly] 
 **StatusChecks** | Pointer to [**[]ApplianceStatusCheck**](ApplianceStatusCheck.md) |  | [optional] 
-**GroupStatus** | Pointer to [**ApplianceGroupStatusRelationship**](ApplianceGroupStatusRelationship.md) |  | [optional] 
-**SystemStatus** | Pointer to [**ApplianceSystemStatusRelationship**](ApplianceSystemStatusRelationship.md) |  | [optional] 
+**GroupStatus** | Pointer to [**NullableApplianceGroupStatusRelationship**](ApplianceGroupStatusRelationship.md) |  | [optional] 
+**SystemStatus** | Pointer to [**NullableApplianceSystemStatusRelationship**](ApplianceSystemStatusRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -399,6 +399,16 @@ SetGroupStatus sets GroupStatus field to given value.
 
 HasGroupStatus returns a boolean if a field has been set.
 
+### SetGroupStatusNil
+
+`func (o *ApplianceAppStatus) SetGroupStatusNil(b bool)`
+
+ SetGroupStatusNil sets the value for GroupStatus to be an explicit nil
+
+### UnsetGroupStatus
+`func (o *ApplianceAppStatus) UnsetGroupStatus()`
+
+UnsetGroupStatus ensures that no value is present for GroupStatus, not even an explicit nil
 ### GetSystemStatus
 
 `func (o *ApplianceAppStatus) GetSystemStatus() ApplianceSystemStatusRelationship`
@@ -424,6 +434,16 @@ SetSystemStatus sets SystemStatus field to given value.
 
 HasSystemStatus returns a boolean if a field has been set.
 
+### SetSystemStatusNil
+
+`func (o *ApplianceAppStatus) SetSystemStatusNil(b bool)`
+
+ SetSystemStatusNil sets the value for SystemStatus to be an explicit nil
+
+### UnsetSystemStatus
+`func (o *ApplianceAppStatus) UnsetSystemStatus()`
+
+UnsetSystemStatus ensures that no value is present for SystemStatus, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

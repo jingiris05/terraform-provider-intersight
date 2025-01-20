@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the StorageBasePerformanceMetricsAverage type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &StorageBasePerformanceMetricsAverage{}
 
 // StorageBasePerformanceMetricsAverage Average performance metrics data for a storage resource over a given period of time.
 type StorageBasePerformanceMetricsAverage struct {
@@ -84,6 +88,11 @@ func (o *StorageBasePerformanceMetricsAverage) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "storage.NetAppPerformanceMetricsAverage" of the ClassId field.
+func (o *StorageBasePerformanceMetricsAverage) GetDefaultClassId() interface{} {
+	return "storage.NetAppPerformanceMetricsAverage"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *StorageBasePerformanceMetricsAverage) GetObjectType() string {
 	if o == nil {
@@ -108,9 +117,14 @@ func (o *StorageBasePerformanceMetricsAverage) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "storage.NetAppPerformanceMetricsAverage" of the ObjectType field.
+func (o *StorageBasePerformanceMetricsAverage) GetDefaultObjectType() interface{} {
+	return "storage.NetAppPerformanceMetricsAverage"
+}
+
 // GetIops returns the Iops field value if set, zero value otherwise.
 func (o *StorageBasePerformanceMetricsAverage) GetIops() float64 {
-	if o == nil || o.Iops == nil {
+	if o == nil || IsNil(o.Iops) {
 		var ret float64
 		return ret
 	}
@@ -120,7 +134,7 @@ func (o *StorageBasePerformanceMetricsAverage) GetIops() float64 {
 // GetIopsOk returns a tuple with the Iops field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageBasePerformanceMetricsAverage) GetIopsOk() (*float64, bool) {
-	if o == nil || o.Iops == nil {
+	if o == nil || IsNil(o.Iops) {
 		return nil, false
 	}
 	return o.Iops, true
@@ -128,7 +142,7 @@ func (o *StorageBasePerformanceMetricsAverage) GetIopsOk() (*float64, bool) {
 
 // HasIops returns a boolean if a field has been set.
 func (o *StorageBasePerformanceMetricsAverage) HasIops() bool {
-	if o != nil && o.Iops != nil {
+	if o != nil && !IsNil(o.Iops) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *StorageBasePerformanceMetricsAverage) SetIops(v float64) {
 
 // GetLatency returns the Latency field value if set, zero value otherwise.
 func (o *StorageBasePerformanceMetricsAverage) GetLatency() float64 {
-	if o == nil || o.Latency == nil {
+	if o == nil || IsNil(o.Latency) {
 		var ret float64
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *StorageBasePerformanceMetricsAverage) GetLatency() float64 {
 // GetLatencyOk returns a tuple with the Latency field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageBasePerformanceMetricsAverage) GetLatencyOk() (*float64, bool) {
-	if o == nil || o.Latency == nil {
+	if o == nil || IsNil(o.Latency) {
 		return nil, false
 	}
 	return o.Latency, true
@@ -160,7 +174,7 @@ func (o *StorageBasePerformanceMetricsAverage) GetLatencyOk() (*float64, bool) {
 
 // HasLatency returns a boolean if a field has been set.
 func (o *StorageBasePerformanceMetricsAverage) HasLatency() bool {
-	if o != nil && o.Latency != nil {
+	if o != nil && !IsNil(o.Latency) {
 		return true
 	}
 
@@ -174,7 +188,7 @@ func (o *StorageBasePerformanceMetricsAverage) SetLatency(v float64) {
 
 // GetPeriod returns the Period field value if set, zero value otherwise.
 func (o *StorageBasePerformanceMetricsAverage) GetPeriod() int64 {
-	if o == nil || o.Period == nil {
+	if o == nil || IsNil(o.Period) {
 		var ret int64
 		return ret
 	}
@@ -184,7 +198,7 @@ func (o *StorageBasePerformanceMetricsAverage) GetPeriod() int64 {
 // GetPeriodOk returns a tuple with the Period field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageBasePerformanceMetricsAverage) GetPeriodOk() (*int64, bool) {
-	if o == nil || o.Period == nil {
+	if o == nil || IsNil(o.Period) {
 		return nil, false
 	}
 	return o.Period, true
@@ -192,7 +206,7 @@ func (o *StorageBasePerformanceMetricsAverage) GetPeriodOk() (*int64, bool) {
 
 // HasPeriod returns a boolean if a field has been set.
 func (o *StorageBasePerformanceMetricsAverage) HasPeriod() bool {
-	if o != nil && o.Period != nil {
+	if o != nil && !IsNil(o.Period) {
 		return true
 	}
 
@@ -206,7 +220,7 @@ func (o *StorageBasePerformanceMetricsAverage) SetPeriod(v int64) {
 
 // GetThroughput returns the Throughput field value if set, zero value otherwise.
 func (o *StorageBasePerformanceMetricsAverage) GetThroughput() float64 {
-	if o == nil || o.Throughput == nil {
+	if o == nil || IsNil(o.Throughput) {
 		var ret float64
 		return ret
 	}
@@ -216,7 +230,7 @@ func (o *StorageBasePerformanceMetricsAverage) GetThroughput() float64 {
 // GetThroughputOk returns a tuple with the Throughput field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageBasePerformanceMetricsAverage) GetThroughputOk() (*float64, bool) {
-	if o == nil || o.Throughput == nil {
+	if o == nil || IsNil(o.Throughput) {
 		return nil, false
 	}
 	return o.Throughput, true
@@ -224,7 +238,7 @@ func (o *StorageBasePerformanceMetricsAverage) GetThroughputOk() (*float64, bool
 
 // HasThroughput returns a boolean if a field has been set.
 func (o *StorageBasePerformanceMetricsAverage) HasThroughput() bool {
-	if o != nil && o.Throughput != nil {
+	if o != nil && !IsNil(o.Throughput) {
 		return true
 	}
 
@@ -237,31 +251,41 @@ func (o *StorageBasePerformanceMetricsAverage) SetThroughput(v float64) {
 }
 
 func (o StorageBasePerformanceMetricsAverage) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o StorageBasePerformanceMetricsAverage) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Iops != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Iops) {
 		toSerialize["Iops"] = o.Iops
 	}
-	if o.Latency != nil {
+	if !IsNil(o.Latency) {
 		toSerialize["Latency"] = o.Latency
 	}
-	if o.Period != nil {
+	if !IsNil(o.Period) {
 		toSerialize["Period"] = o.Period
 	}
-	if o.Throughput != nil {
+	if !IsNil(o.Throughput) {
 		toSerialize["Throughput"] = o.Throughput
 	}
 
@@ -269,10 +293,51 @@ func (o StorageBasePerformanceMetricsAverage) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *StorageBasePerformanceMetricsAverage) UnmarshalJSON(bytes []byte) (err error) {
+func (o *StorageBasePerformanceMetricsAverage) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type StorageBasePerformanceMetricsAverageWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. The enum values provides the list of concrete types that can be instantiated from this abstract type.
 		ClassId string `json:"ClassId"`
@@ -290,7 +355,7 @@ func (o *StorageBasePerformanceMetricsAverage) UnmarshalJSON(bytes []byte) (err 
 
 	varStorageBasePerformanceMetricsAverageWithoutEmbeddedStruct := StorageBasePerformanceMetricsAverageWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varStorageBasePerformanceMetricsAverageWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varStorageBasePerformanceMetricsAverageWithoutEmbeddedStruct)
 	if err == nil {
 		varStorageBasePerformanceMetricsAverage := _StorageBasePerformanceMetricsAverage{}
 		varStorageBasePerformanceMetricsAverage.ClassId = varStorageBasePerformanceMetricsAverageWithoutEmbeddedStruct.ClassId
@@ -306,7 +371,7 @@ func (o *StorageBasePerformanceMetricsAverage) UnmarshalJSON(bytes []byte) (err 
 
 	varStorageBasePerformanceMetricsAverage := _StorageBasePerformanceMetricsAverage{}
 
-	err = json.Unmarshal(bytes, &varStorageBasePerformanceMetricsAverage)
+	err = json.Unmarshal(data, &varStorageBasePerformanceMetricsAverage)
 	if err == nil {
 		o.MoBaseComplexType = varStorageBasePerformanceMetricsAverage.MoBaseComplexType
 	} else {
@@ -315,7 +380,7 @@ func (o *StorageBasePerformanceMetricsAverage) UnmarshalJSON(bytes []byte) (err 
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Iops")

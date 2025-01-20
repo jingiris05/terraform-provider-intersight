@@ -62,6 +62,7 @@ This complex property has following sub-properties:
     + `moid`:(string) The Moid of the referenced REST resource. 
     + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
     + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+  + `marked_for_deletion`:(bool)(ReadOnly) The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `ref_mo`:(HashMap) -(ReadOnly) A reference to the original Managed Object. 
 This complex property has following sub-properties:
@@ -73,8 +74,6 @@ This complex property has following sub-properties:
   + `version_type`:(string)(ReadOnly) Specifies type of version. Currently the only supported value is \ Configured\ that is used to keep track of snapshots of policies and profiles that are intendedto be configured to target endpoints.* `Modified` - Version created every time an object is modified.* `Configured` - Version created every time an object is configured to the service profile.* `Deployed` - Version created for objects related to a service profile when it is deployed. 
 * `vm_config`:(HashMap) - Virtual machine infrastucture provider allocation properties. 
 This complex property has following sub-properties:
-  + `additional_properties`:(JSON as string) - Additional Properties as per object type, can be added as JSON using `jsonencode()`. Allowed Types are: [kubernetes.EsxiVirtualMachineInfraConfig](#kubernetesEsxiVirtualMachineInfraConfig)
-[kubernetes.HyperFlexApVirtualMachineInfraConfig](#kubernetesHyperFlexApVirtualMachineInfraConfig)
   + `interfaces`:
                 (Array of schema.TypeString) -
   + `network_interfaces`:(Array)
@@ -100,18 +99,4 @@ This complex property has following sub-properties:
 `intersight_kubernetes_virtual_machine_infra_config_policy` can be imported using the Moid of the object, e.g.
 ```
 $ terraform import intersight_kubernetes_virtual_machine_infra_config_policy.example 1234567890987654321abcde
-```
-## Allowed Types in `AdditionalProperties`
- 
-### [kubernetes.EsxiVirtualMachineInfraConfig](#argument-reference)
-Infrastructure provider allocation configuration for ESXi virtual machine Kubernetes nodes.
-* `cluster`:(string) Name of the vSphere cluster on which the virtual machines are created. 
-* `datastore`:(string) Name of the datasore on which the virtual machine disks are created. 
-* `is_passphrase_set`:(bool)(ReadOnly) Indicates whether the value of the 'passphrase' property has been set. 
-* `passphrase`:(string) Passphrase for the vcenter user. 
-* `resource_pool`:(string) Name of the vSphere resource pool on which the virtual machines are created. 
-
-### [kubernetes.HyperFlexApVirtualMachineInfraConfig](#argument-reference)
-Infrastructure provider allocation configuration for HyperFlex Application platform virtual machine Kubernetes nodes.
-* `disk_mode`:(string) Disk mode to use for volumes.* `Block` - It is a Block virtual disk.* `Filesystem` - It is a File system virtual disk.* `` - Disk mode is either unknown or not supported. 
-  
+``` 

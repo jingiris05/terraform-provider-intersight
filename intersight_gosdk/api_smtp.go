@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -56,8 +56,8 @@ func (r ApiCreateSmtpPolicyRequest) Execute() (*SmtpPolicy, *http.Response, erro
 /*
 CreateSmtpPolicy Create a 'smtp.Policy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSmtpPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSmtpPolicyRequest
 */
 func (a *SmtpApiService) CreateSmtpPolicy(ctx context.Context) ApiCreateSmtpPolicyRequest {
 	return ApiCreateSmtpPolicyRequest{
@@ -67,7 +67,8 @@ func (a *SmtpApiService) CreateSmtpPolicy(ctx context.Context) ApiCreateSmtpPoli
 }
 
 // Execute executes the request
-//  @return SmtpPolicy
+//
+//	@return SmtpPolicy
 func (a *SmtpApiService) CreateSmtpPolicyExecute(r ApiCreateSmtpPolicyRequest) (*SmtpPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -108,10 +109,10 @@ func (a *SmtpApiService) CreateSmtpPolicyExecute(r ApiCreateSmtpPolicyRequest) (
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.smtpPolicy
@@ -125,9 +126,9 @@ func (a *SmtpApiService) CreateSmtpPolicyExecute(r ApiCreateSmtpPolicyRequest) (
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -144,6 +145,7 @@ func (a *SmtpApiService) CreateSmtpPolicyExecute(r ApiCreateSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -154,6 +156,7 @@ func (a *SmtpApiService) CreateSmtpPolicyExecute(r ApiCreateSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -164,6 +167,7 @@ func (a *SmtpApiService) CreateSmtpPolicyExecute(r ApiCreateSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -174,6 +178,7 @@ func (a *SmtpApiService) CreateSmtpPolicyExecute(r ApiCreateSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -183,6 +188,7 @@ func (a *SmtpApiService) CreateSmtpPolicyExecute(r ApiCreateSmtpPolicyRequest) (
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -212,9 +218,9 @@ func (r ApiDeleteSmtpPolicyRequest) Execute() (*http.Response, error) {
 /*
 DeleteSmtpPolicy Delete a 'smtp.Policy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSmtpPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSmtpPolicyRequest
 */
 func (a *SmtpApiService) DeleteSmtpPolicy(ctx context.Context, moid string) ApiDeleteSmtpPolicyRequest {
 	return ApiDeleteSmtpPolicyRequest{
@@ -238,7 +244,7 @@ func (a *SmtpApiService) DeleteSmtpPolicyExecute(r ApiDeleteSmtpPolicyRequest) (
 	}
 
 	localVarPath := localBasePath + "/api/v1/smtp/Policies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -271,9 +277,9 @@ func (a *SmtpApiService) DeleteSmtpPolicyExecute(r ApiDeleteSmtpPolicyRequest) (
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -290,6 +296,7 @@ func (a *SmtpApiService) DeleteSmtpPolicyExecute(r ApiDeleteSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -300,6 +307,7 @@ func (a *SmtpApiService) DeleteSmtpPolicyExecute(r ApiDeleteSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -310,6 +318,7 @@ func (a *SmtpApiService) DeleteSmtpPolicyExecute(r ApiDeleteSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -320,6 +329,7 @@ func (a *SmtpApiService) DeleteSmtpPolicyExecute(r ApiDeleteSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -329,6 +339,7 @@ func (a *SmtpApiService) DeleteSmtpPolicyExecute(r ApiDeleteSmtpPolicyRequest) (
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -349,9 +360,9 @@ func (r ApiGetSmtpPolicyByMoidRequest) Execute() (*SmtpPolicy, *http.Response, e
 /*
 GetSmtpPolicyByMoid Read a 'smtp.Policy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSmtpPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSmtpPolicyByMoidRequest
 */
 func (a *SmtpApiService) GetSmtpPolicyByMoid(ctx context.Context, moid string) ApiGetSmtpPolicyByMoidRequest {
 	return ApiGetSmtpPolicyByMoidRequest{
@@ -362,7 +373,8 @@ func (a *SmtpApiService) GetSmtpPolicyByMoid(ctx context.Context, moid string) A
 }
 
 // Execute executes the request
-//  @return SmtpPolicy
+//
+//	@return SmtpPolicy
 func (a *SmtpApiService) GetSmtpPolicyByMoidExecute(r ApiGetSmtpPolicyByMoidRequest) (*SmtpPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -377,7 +389,7 @@ func (a *SmtpApiService) GetSmtpPolicyByMoidExecute(r ApiGetSmtpPolicyByMoidRequ
 	}
 
 	localVarPath := localBasePath + "/api/v1/smtp/Policies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -410,9 +422,9 @@ func (a *SmtpApiService) GetSmtpPolicyByMoidExecute(r ApiGetSmtpPolicyByMoidRequ
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -429,6 +441,7 @@ func (a *SmtpApiService) GetSmtpPolicyByMoidExecute(r ApiGetSmtpPolicyByMoidRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -439,6 +452,7 @@ func (a *SmtpApiService) GetSmtpPolicyByMoidExecute(r ApiGetSmtpPolicyByMoidRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -449,6 +463,7 @@ func (a *SmtpApiService) GetSmtpPolicyByMoidExecute(r ApiGetSmtpPolicyByMoidRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -459,6 +474,7 @@ func (a *SmtpApiService) GetSmtpPolicyByMoidExecute(r ApiGetSmtpPolicyByMoidRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -468,6 +484,7 @@ func (a *SmtpApiService) GetSmtpPolicyByMoidExecute(r ApiGetSmtpPolicyByMoidRequ
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -536,7 +553,7 @@ func (r ApiGetSmtpPolicyListRequest) Expand(expand string) ApiGetSmtpPolicyListR
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSmtpPolicyListRequest) Apply(apply string) ApiGetSmtpPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -573,8 +590,8 @@ func (r ApiGetSmtpPolicyListRequest) Execute() (*SmtpPolicyResponse, *http.Respo
 /*
 GetSmtpPolicyList Read a 'smtp.Policy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSmtpPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSmtpPolicyListRequest
 */
 func (a *SmtpApiService) GetSmtpPolicyList(ctx context.Context) ApiGetSmtpPolicyListRequest {
 	return ApiGetSmtpPolicyListRequest{
@@ -584,7 +601,8 @@ func (a *SmtpApiService) GetSmtpPolicyList(ctx context.Context) ApiGetSmtpPolicy
 }
 
 // Execute executes the request
-//  @return SmtpPolicyResponse
+//
+//	@return SmtpPolicyResponse
 func (a *SmtpApiService) GetSmtpPolicyListExecute(r ApiGetSmtpPolicyListRequest) (*SmtpPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -605,37 +623,52 @@ func (a *SmtpApiService) GetSmtpPolicyListExecute(r ApiGetSmtpPolicyListRequest)
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -664,9 +697,9 @@ func (a *SmtpApiService) GetSmtpPolicyListExecute(r ApiGetSmtpPolicyListRequest)
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -683,6 +716,7 @@ func (a *SmtpApiService) GetSmtpPolicyListExecute(r ApiGetSmtpPolicyListRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -693,6 +727,7 @@ func (a *SmtpApiService) GetSmtpPolicyListExecute(r ApiGetSmtpPolicyListRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -703,6 +738,7 @@ func (a *SmtpApiService) GetSmtpPolicyListExecute(r ApiGetSmtpPolicyListRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -713,6 +749,7 @@ func (a *SmtpApiService) GetSmtpPolicyListExecute(r ApiGetSmtpPolicyListRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -722,6 +759,7 @@ func (a *SmtpApiService) GetSmtpPolicyListExecute(r ApiGetSmtpPolicyListRequest)
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -765,9 +803,9 @@ func (r ApiPatchSmtpPolicyRequest) Execute() (*SmtpPolicy, *http.Response, error
 /*
 PatchSmtpPolicy Update a 'smtp.Policy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSmtpPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSmtpPolicyRequest
 */
 func (a *SmtpApiService) PatchSmtpPolicy(ctx context.Context, moid string) ApiPatchSmtpPolicyRequest {
 	return ApiPatchSmtpPolicyRequest{
@@ -778,7 +816,8 @@ func (a *SmtpApiService) PatchSmtpPolicy(ctx context.Context, moid string) ApiPa
 }
 
 // Execute executes the request
-//  @return SmtpPolicy
+//
+//	@return SmtpPolicy
 func (a *SmtpApiService) PatchSmtpPolicyExecute(r ApiPatchSmtpPolicyRequest) (*SmtpPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -793,7 +832,7 @@ func (a *SmtpApiService) PatchSmtpPolicyExecute(r ApiPatchSmtpPolicyRequest) (*S
 	}
 
 	localVarPath := localBasePath + "/api/v1/smtp/Policies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -820,7 +859,7 @@ func (a *SmtpApiService) PatchSmtpPolicyExecute(r ApiPatchSmtpPolicyRequest) (*S
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.smtpPolicy
@@ -834,9 +873,9 @@ func (a *SmtpApiService) PatchSmtpPolicyExecute(r ApiPatchSmtpPolicyRequest) (*S
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -853,6 +892,7 @@ func (a *SmtpApiService) PatchSmtpPolicyExecute(r ApiPatchSmtpPolicyRequest) (*S
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -863,6 +903,7 @@ func (a *SmtpApiService) PatchSmtpPolicyExecute(r ApiPatchSmtpPolicyRequest) (*S
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -873,6 +914,7 @@ func (a *SmtpApiService) PatchSmtpPolicyExecute(r ApiPatchSmtpPolicyRequest) (*S
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -883,6 +925,7 @@ func (a *SmtpApiService) PatchSmtpPolicyExecute(r ApiPatchSmtpPolicyRequest) (*S
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -892,6 +935,7 @@ func (a *SmtpApiService) PatchSmtpPolicyExecute(r ApiPatchSmtpPolicyRequest) (*S
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -935,9 +979,9 @@ func (r ApiUpdateSmtpPolicyRequest) Execute() (*SmtpPolicy, *http.Response, erro
 /*
 UpdateSmtpPolicy Update a 'smtp.Policy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSmtpPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSmtpPolicyRequest
 */
 func (a *SmtpApiService) UpdateSmtpPolicy(ctx context.Context, moid string) ApiUpdateSmtpPolicyRequest {
 	return ApiUpdateSmtpPolicyRequest{
@@ -948,7 +992,8 @@ func (a *SmtpApiService) UpdateSmtpPolicy(ctx context.Context, moid string) ApiU
 }
 
 // Execute executes the request
-//  @return SmtpPolicy
+//
+//	@return SmtpPolicy
 func (a *SmtpApiService) UpdateSmtpPolicyExecute(r ApiUpdateSmtpPolicyRequest) (*SmtpPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -963,7 +1008,7 @@ func (a *SmtpApiService) UpdateSmtpPolicyExecute(r ApiUpdateSmtpPolicyRequest) (
 	}
 
 	localVarPath := localBasePath + "/api/v1/smtp/Policies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -990,7 +1035,7 @@ func (a *SmtpApiService) UpdateSmtpPolicyExecute(r ApiUpdateSmtpPolicyRequest) (
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.smtpPolicy
@@ -1004,9 +1049,9 @@ func (a *SmtpApiService) UpdateSmtpPolicyExecute(r ApiUpdateSmtpPolicyRequest) (
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1023,6 +1068,7 @@ func (a *SmtpApiService) UpdateSmtpPolicyExecute(r ApiUpdateSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1033,6 +1079,7 @@ func (a *SmtpApiService) UpdateSmtpPolicyExecute(r ApiUpdateSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1043,6 +1090,7 @@ func (a *SmtpApiService) UpdateSmtpPolicyExecute(r ApiUpdateSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1053,6 +1101,7 @@ func (a *SmtpApiService) UpdateSmtpPolicyExecute(r ApiUpdateSmtpPolicyRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1062,6 +1111,7 @@ func (a *SmtpApiService) UpdateSmtpPolicyExecute(r ApiUpdateSmtpPolicyRequest) (
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

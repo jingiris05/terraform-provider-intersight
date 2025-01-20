@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -49,15 +49,15 @@ func (r ApiCreateFirmwareBiosDescriptorRequest) IfNoneMatch(ifNoneMatch string) 
 	return r
 }
 
-func (r ApiCreateFirmwareBiosDescriptorRequest) Execute() (*FirmwareBiosDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareBiosDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareBiosDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareBiosDescriptor Create a 'firmware.BiosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareBiosDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareBiosDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareBiosDescriptor(ctx context.Context) ApiCreateFirmwareBiosDescriptorRequest {
 	return ApiCreateFirmwareBiosDescriptorRequest{
@@ -67,13 +67,14 @@ func (a *FirmwareApiService) CreateFirmwareBiosDescriptor(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareBiosDescriptor
-func (a *FirmwareApiService) CreateFirmwareBiosDescriptorExecute(r ApiCreateFirmwareBiosDescriptorRequest) (*FirmwareBiosDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareBiosDescriptorExecute(r ApiCreateFirmwareBiosDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareBiosDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareBiosDescriptor")
@@ -108,10 +109,10 @@ func (a *FirmwareApiService) CreateFirmwareBiosDescriptorExecute(r ApiCreateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareBiosDescriptor
@@ -125,9 +126,9 @@ func (a *FirmwareApiService) CreateFirmwareBiosDescriptorExecute(r ApiCreateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -144,6 +145,7 @@ func (a *FirmwareApiService) CreateFirmwareBiosDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -154,6 +156,7 @@ func (a *FirmwareApiService) CreateFirmwareBiosDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -164,6 +167,7 @@ func (a *FirmwareApiService) CreateFirmwareBiosDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -174,6 +178,7 @@ func (a *FirmwareApiService) CreateFirmwareBiosDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -183,6 +188,7 @@ func (a *FirmwareApiService) CreateFirmwareBiosDescriptorExecute(r ApiCreateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -225,15 +231,15 @@ func (r ApiCreateFirmwareBoardControllerDescriptorRequest) IfNoneMatch(ifNoneMat
 	return r
 }
 
-func (r ApiCreateFirmwareBoardControllerDescriptorRequest) Execute() (*FirmwareBoardControllerDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareBoardControllerDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareBoardControllerDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareBoardControllerDescriptor Create a 'firmware.BoardControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareBoardControllerDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareBoardControllerDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptor(ctx context.Context) ApiCreateFirmwareBoardControllerDescriptorRequest {
 	return ApiCreateFirmwareBoardControllerDescriptorRequest{
@@ -243,13 +249,14 @@ func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptor(ctx context
 }
 
 // Execute executes the request
-//  @return FirmwareBoardControllerDescriptor
-func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptorExecute(r ApiCreateFirmwareBoardControllerDescriptorRequest) (*FirmwareBoardControllerDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptorExecute(r ApiCreateFirmwareBoardControllerDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareBoardControllerDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareBoardControllerDescriptor")
@@ -284,10 +291,10 @@ func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptorExecute(r Ap
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareBoardControllerDescriptor
@@ -301,9 +308,9 @@ func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptorExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -320,6 +327,7 @@ func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -330,6 +338,7 @@ func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -340,6 +349,7 @@ func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -350,6 +360,7 @@ func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -359,6 +370,7 @@ func (a *FirmwareApiService) CreateFirmwareBoardControllerDescriptorExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -408,8 +420,8 @@ func (r ApiCreateFirmwareChassisUpgradeRequest) Execute() (*FirmwareChassisUpgra
 /*
 CreateFirmwareChassisUpgrade Create a 'firmware.ChassisUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareChassisUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareChassisUpgradeRequest
 */
 func (a *FirmwareApiService) CreateFirmwareChassisUpgrade(ctx context.Context) ApiCreateFirmwareChassisUpgradeRequest {
 	return ApiCreateFirmwareChassisUpgradeRequest{
@@ -419,7 +431,8 @@ func (a *FirmwareApiService) CreateFirmwareChassisUpgrade(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareChassisUpgrade
+//
+//	@return FirmwareChassisUpgrade
 func (a *FirmwareApiService) CreateFirmwareChassisUpgradeExecute(r ApiCreateFirmwareChassisUpgradeRequest) (*FirmwareChassisUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -460,10 +473,10 @@ func (a *FirmwareApiService) CreateFirmwareChassisUpgradeExecute(r ApiCreateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareChassisUpgrade
@@ -477,9 +490,9 @@ func (a *FirmwareApiService) CreateFirmwareChassisUpgradeExecute(r ApiCreateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -496,6 +509,7 @@ func (a *FirmwareApiService) CreateFirmwareChassisUpgradeExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -506,6 +520,7 @@ func (a *FirmwareApiService) CreateFirmwareChassisUpgradeExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -516,6 +531,7 @@ func (a *FirmwareApiService) CreateFirmwareChassisUpgradeExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -526,6 +542,7 @@ func (a *FirmwareApiService) CreateFirmwareChassisUpgradeExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -535,6 +552,7 @@ func (a *FirmwareApiService) CreateFirmwareChassisUpgradeExecute(r ApiCreateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -577,15 +595,15 @@ func (r ApiCreateFirmwareCimcDescriptorRequest) IfNoneMatch(ifNoneMatch string) 
 	return r
 }
 
-func (r ApiCreateFirmwareCimcDescriptorRequest) Execute() (*FirmwareCimcDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareCimcDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareCimcDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareCimcDescriptor Create a 'firmware.CimcDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareCimcDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareCimcDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareCimcDescriptor(ctx context.Context) ApiCreateFirmwareCimcDescriptorRequest {
 	return ApiCreateFirmwareCimcDescriptorRequest{
@@ -595,13 +613,14 @@ func (a *FirmwareApiService) CreateFirmwareCimcDescriptor(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareCimcDescriptor
-func (a *FirmwareApiService) CreateFirmwareCimcDescriptorExecute(r ApiCreateFirmwareCimcDescriptorRequest) (*FirmwareCimcDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareCimcDescriptorExecute(r ApiCreateFirmwareCimcDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareCimcDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareCimcDescriptor")
@@ -636,10 +655,10 @@ func (a *FirmwareApiService) CreateFirmwareCimcDescriptorExecute(r ApiCreateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareCimcDescriptor
@@ -653,9 +672,9 @@ func (a *FirmwareApiService) CreateFirmwareCimcDescriptorExecute(r ApiCreateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -672,6 +691,7 @@ func (a *FirmwareApiService) CreateFirmwareCimcDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -682,6 +702,7 @@ func (a *FirmwareApiService) CreateFirmwareCimcDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -692,6 +713,7 @@ func (a *FirmwareApiService) CreateFirmwareCimcDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -702,6 +724,7 @@ func (a *FirmwareApiService) CreateFirmwareCimcDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -711,6 +734,7 @@ func (a *FirmwareApiService) CreateFirmwareCimcDescriptorExecute(r ApiCreateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -753,15 +777,15 @@ func (r ApiCreateFirmwareDimmDescriptorRequest) IfNoneMatch(ifNoneMatch string) 
 	return r
 }
 
-func (r ApiCreateFirmwareDimmDescriptorRequest) Execute() (*FirmwareDimmDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareDimmDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareDimmDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareDimmDescriptor Create a 'firmware.DimmDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareDimmDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareDimmDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareDimmDescriptor(ctx context.Context) ApiCreateFirmwareDimmDescriptorRequest {
 	return ApiCreateFirmwareDimmDescriptorRequest{
@@ -771,13 +795,14 @@ func (a *FirmwareApiService) CreateFirmwareDimmDescriptor(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareDimmDescriptor
-func (a *FirmwareApiService) CreateFirmwareDimmDescriptorExecute(r ApiCreateFirmwareDimmDescriptorRequest) (*FirmwareDimmDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareDimmDescriptorExecute(r ApiCreateFirmwareDimmDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareDimmDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareDimmDescriptor")
@@ -812,10 +837,10 @@ func (a *FirmwareApiService) CreateFirmwareDimmDescriptorExecute(r ApiCreateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDimmDescriptor
@@ -829,9 +854,9 @@ func (a *FirmwareApiService) CreateFirmwareDimmDescriptorExecute(r ApiCreateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -848,6 +873,7 @@ func (a *FirmwareApiService) CreateFirmwareDimmDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -858,6 +884,7 @@ func (a *FirmwareApiService) CreateFirmwareDimmDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -868,6 +895,7 @@ func (a *FirmwareApiService) CreateFirmwareDimmDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -878,6 +906,7 @@ func (a *FirmwareApiService) CreateFirmwareDimmDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -887,6 +916,7 @@ func (a *FirmwareApiService) CreateFirmwareDimmDescriptorExecute(r ApiCreateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -936,8 +966,8 @@ func (r ApiCreateFirmwareDistributableRequest) Execute() (*FirmwareDistributable
 /*
 CreateFirmwareDistributable Create a 'firmware.Distributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareDistributableRequest
 */
 func (a *FirmwareApiService) CreateFirmwareDistributable(ctx context.Context) ApiCreateFirmwareDistributableRequest {
 	return ApiCreateFirmwareDistributableRequest{
@@ -947,7 +977,8 @@ func (a *FirmwareApiService) CreateFirmwareDistributable(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return FirmwareDistributable
+//
+//	@return FirmwareDistributable
 func (a *FirmwareApiService) CreateFirmwareDistributableExecute(r ApiCreateFirmwareDistributableRequest) (*FirmwareDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -988,10 +1019,10 @@ func (a *FirmwareApiService) CreateFirmwareDistributableExecute(r ApiCreateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDistributable
@@ -1005,9 +1036,9 @@ func (a *FirmwareApiService) CreateFirmwareDistributableExecute(r ApiCreateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1024,6 +1055,7 @@ func (a *FirmwareApiService) CreateFirmwareDistributableExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1034,6 +1066,7 @@ func (a *FirmwareApiService) CreateFirmwareDistributableExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1044,6 +1077,7 @@ func (a *FirmwareApiService) CreateFirmwareDistributableExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1054,6 +1088,7 @@ func (a *FirmwareApiService) CreateFirmwareDistributableExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1063,6 +1098,7 @@ func (a *FirmwareApiService) CreateFirmwareDistributableExecute(r ApiCreateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1105,15 +1141,15 @@ func (r ApiCreateFirmwareDriveDescriptorRequest) IfNoneMatch(ifNoneMatch string)
 	return r
 }
 
-func (r ApiCreateFirmwareDriveDescriptorRequest) Execute() (*FirmwareDriveDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareDriveDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareDriveDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareDriveDescriptor Create a 'firmware.DriveDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareDriveDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareDriveDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareDriveDescriptor(ctx context.Context) ApiCreateFirmwareDriveDescriptorRequest {
 	return ApiCreateFirmwareDriveDescriptorRequest{
@@ -1123,13 +1159,14 @@ func (a *FirmwareApiService) CreateFirmwareDriveDescriptor(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return FirmwareDriveDescriptor
-func (a *FirmwareApiService) CreateFirmwareDriveDescriptorExecute(r ApiCreateFirmwareDriveDescriptorRequest) (*FirmwareDriveDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareDriveDescriptorExecute(r ApiCreateFirmwareDriveDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareDriveDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareDriveDescriptor")
@@ -1164,10 +1201,10 @@ func (a *FirmwareApiService) CreateFirmwareDriveDescriptorExecute(r ApiCreateFir
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDriveDescriptor
@@ -1181,9 +1218,9 @@ func (a *FirmwareApiService) CreateFirmwareDriveDescriptorExecute(r ApiCreateFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1200,6 +1237,7 @@ func (a *FirmwareApiService) CreateFirmwareDriveDescriptorExecute(r ApiCreateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1210,6 +1248,7 @@ func (a *FirmwareApiService) CreateFirmwareDriveDescriptorExecute(r ApiCreateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1220,6 +1259,7 @@ func (a *FirmwareApiService) CreateFirmwareDriveDescriptorExecute(r ApiCreateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1230,6 +1270,7 @@ func (a *FirmwareApiService) CreateFirmwareDriveDescriptorExecute(r ApiCreateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1239,6 +1280,7 @@ func (a *FirmwareApiService) CreateFirmwareDriveDescriptorExecute(r ApiCreateFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1288,8 +1330,8 @@ func (r ApiCreateFirmwareDriverDistributableRequest) Execute() (*FirmwareDriverD
 /*
 CreateFirmwareDriverDistributable Create a 'firmware.DriverDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareDriverDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareDriverDistributableRequest
 */
 func (a *FirmwareApiService) CreateFirmwareDriverDistributable(ctx context.Context) ApiCreateFirmwareDriverDistributableRequest {
 	return ApiCreateFirmwareDriverDistributableRequest{
@@ -1299,7 +1341,8 @@ func (a *FirmwareApiService) CreateFirmwareDriverDistributable(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return FirmwareDriverDistributable
+//
+//	@return FirmwareDriverDistributable
 func (a *FirmwareApiService) CreateFirmwareDriverDistributableExecute(r ApiCreateFirmwareDriverDistributableRequest) (*FirmwareDriverDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1340,10 +1383,10 @@ func (a *FirmwareApiService) CreateFirmwareDriverDistributableExecute(r ApiCreat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDriverDistributable
@@ -1357,9 +1400,9 @@ func (a *FirmwareApiService) CreateFirmwareDriverDistributableExecute(r ApiCreat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1376,6 +1419,7 @@ func (a *FirmwareApiService) CreateFirmwareDriverDistributableExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1386,6 +1430,7 @@ func (a *FirmwareApiService) CreateFirmwareDriverDistributableExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1396,6 +1441,7 @@ func (a *FirmwareApiService) CreateFirmwareDriverDistributableExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1406,6 +1452,7 @@ func (a *FirmwareApiService) CreateFirmwareDriverDistributableExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1415,6 +1462,7 @@ func (a *FirmwareApiService) CreateFirmwareDriverDistributableExecute(r ApiCreat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1464,8 +1512,8 @@ func (r ApiCreateFirmwareEulaRequest) Execute() (*FirmwareEula, *http.Response, 
 /*
 CreateFirmwareEula Create a 'firmware.Eula' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareEulaRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareEulaRequest
 */
 func (a *FirmwareApiService) CreateFirmwareEula(ctx context.Context) ApiCreateFirmwareEulaRequest {
 	return ApiCreateFirmwareEulaRequest{
@@ -1475,7 +1523,8 @@ func (a *FirmwareApiService) CreateFirmwareEula(ctx context.Context) ApiCreateFi
 }
 
 // Execute executes the request
-//  @return FirmwareEula
+//
+//	@return FirmwareEula
 func (a *FirmwareApiService) CreateFirmwareEulaExecute(r ApiCreateFirmwareEulaRequest) (*FirmwareEula, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1516,10 +1565,10 @@ func (a *FirmwareApiService) CreateFirmwareEulaExecute(r ApiCreateFirmwareEulaRe
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareEula
@@ -1533,9 +1582,9 @@ func (a *FirmwareApiService) CreateFirmwareEulaExecute(r ApiCreateFirmwareEulaRe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1552,6 +1601,7 @@ func (a *FirmwareApiService) CreateFirmwareEulaExecute(r ApiCreateFirmwareEulaRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1562,6 +1612,7 @@ func (a *FirmwareApiService) CreateFirmwareEulaExecute(r ApiCreateFirmwareEulaRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1572,6 +1623,7 @@ func (a *FirmwareApiService) CreateFirmwareEulaExecute(r ApiCreateFirmwareEulaRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1582,6 +1634,7 @@ func (a *FirmwareApiService) CreateFirmwareEulaExecute(r ApiCreateFirmwareEulaRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1591,6 +1644,7 @@ func (a *FirmwareApiService) CreateFirmwareEulaExecute(r ApiCreateFirmwareEulaRe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1633,15 +1687,15 @@ func (r ApiCreateFirmwareGpuDescriptorRequest) IfNoneMatch(ifNoneMatch string) A
 	return r
 }
 
-func (r ApiCreateFirmwareGpuDescriptorRequest) Execute() (*FirmwareGpuDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareGpuDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareGpuDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareGpuDescriptor Create a 'firmware.GpuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareGpuDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareGpuDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareGpuDescriptor(ctx context.Context) ApiCreateFirmwareGpuDescriptorRequest {
 	return ApiCreateFirmwareGpuDescriptorRequest{
@@ -1651,13 +1705,14 @@ func (a *FirmwareApiService) CreateFirmwareGpuDescriptor(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return FirmwareGpuDescriptor
-func (a *FirmwareApiService) CreateFirmwareGpuDescriptorExecute(r ApiCreateFirmwareGpuDescriptorRequest) (*FirmwareGpuDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareGpuDescriptorExecute(r ApiCreateFirmwareGpuDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareGpuDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareGpuDescriptor")
@@ -1692,10 +1747,10 @@ func (a *FirmwareApiService) CreateFirmwareGpuDescriptorExecute(r ApiCreateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareGpuDescriptor
@@ -1709,9 +1764,9 @@ func (a *FirmwareApiService) CreateFirmwareGpuDescriptorExecute(r ApiCreateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1728,6 +1783,7 @@ func (a *FirmwareApiService) CreateFirmwareGpuDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1738,6 +1794,7 @@ func (a *FirmwareApiService) CreateFirmwareGpuDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1748,6 +1805,7 @@ func (a *FirmwareApiService) CreateFirmwareGpuDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1758,6 +1816,7 @@ func (a *FirmwareApiService) CreateFirmwareGpuDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1767,6 +1826,7 @@ func (a *FirmwareApiService) CreateFirmwareGpuDescriptorExecute(r ApiCreateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1809,15 +1869,15 @@ func (r ApiCreateFirmwareHbaDescriptorRequest) IfNoneMatch(ifNoneMatch string) A
 	return r
 }
 
-func (r ApiCreateFirmwareHbaDescriptorRequest) Execute() (*FirmwareHbaDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareHbaDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareHbaDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareHbaDescriptor Create a 'firmware.HbaDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareHbaDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareHbaDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareHbaDescriptor(ctx context.Context) ApiCreateFirmwareHbaDescriptorRequest {
 	return ApiCreateFirmwareHbaDescriptorRequest{
@@ -1827,13 +1887,14 @@ func (a *FirmwareApiService) CreateFirmwareHbaDescriptor(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return FirmwareHbaDescriptor
-func (a *FirmwareApiService) CreateFirmwareHbaDescriptorExecute(r ApiCreateFirmwareHbaDescriptorRequest) (*FirmwareHbaDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareHbaDescriptorExecute(r ApiCreateFirmwareHbaDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareHbaDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareHbaDescriptor")
@@ -1868,10 +1929,10 @@ func (a *FirmwareApiService) CreateFirmwareHbaDescriptorExecute(r ApiCreateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareHbaDescriptor
@@ -1885,9 +1946,9 @@ func (a *FirmwareApiService) CreateFirmwareHbaDescriptorExecute(r ApiCreateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1904,6 +1965,7 @@ func (a *FirmwareApiService) CreateFirmwareHbaDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1914,6 +1976,7 @@ func (a *FirmwareApiService) CreateFirmwareHbaDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1924,6 +1987,7 @@ func (a *FirmwareApiService) CreateFirmwareHbaDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1934,6 +1998,7 @@ func (a *FirmwareApiService) CreateFirmwareHbaDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1943,6 +2008,7 @@ func (a *FirmwareApiService) CreateFirmwareHbaDescriptorExecute(r ApiCreateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1985,15 +2051,15 @@ func (r ApiCreateFirmwareIomDescriptorRequest) IfNoneMatch(ifNoneMatch string) A
 	return r
 }
 
-func (r ApiCreateFirmwareIomDescriptorRequest) Execute() (*FirmwareIomDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareIomDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareIomDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareIomDescriptor Create a 'firmware.IomDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareIomDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareIomDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareIomDescriptor(ctx context.Context) ApiCreateFirmwareIomDescriptorRequest {
 	return ApiCreateFirmwareIomDescriptorRequest{
@@ -2003,13 +2069,14 @@ func (a *FirmwareApiService) CreateFirmwareIomDescriptor(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return FirmwareIomDescriptor
-func (a *FirmwareApiService) CreateFirmwareIomDescriptorExecute(r ApiCreateFirmwareIomDescriptorRequest) (*FirmwareIomDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareIomDescriptorExecute(r ApiCreateFirmwareIomDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareIomDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareIomDescriptor")
@@ -2044,10 +2111,10 @@ func (a *FirmwareApiService) CreateFirmwareIomDescriptorExecute(r ApiCreateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareIomDescriptor
@@ -2061,9 +2128,9 @@ func (a *FirmwareApiService) CreateFirmwareIomDescriptorExecute(r ApiCreateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2080,6 +2147,7 @@ func (a *FirmwareApiService) CreateFirmwareIomDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2090,6 +2158,7 @@ func (a *FirmwareApiService) CreateFirmwareIomDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2100,6 +2169,7 @@ func (a *FirmwareApiService) CreateFirmwareIomDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2110,6 +2180,7 @@ func (a *FirmwareApiService) CreateFirmwareIomDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2119,6 +2190,7 @@ func (a *FirmwareApiService) CreateFirmwareIomDescriptorExecute(r ApiCreateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2161,15 +2233,15 @@ func (r ApiCreateFirmwareMswitchDescriptorRequest) IfNoneMatch(ifNoneMatch strin
 	return r
 }
 
-func (r ApiCreateFirmwareMswitchDescriptorRequest) Execute() (*FirmwareMswitchDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareMswitchDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareMswitchDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareMswitchDescriptor Create a 'firmware.MswitchDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareMswitchDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareMswitchDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareMswitchDescriptor(ctx context.Context) ApiCreateFirmwareMswitchDescriptorRequest {
 	return ApiCreateFirmwareMswitchDescriptorRequest{
@@ -2179,13 +2251,14 @@ func (a *FirmwareApiService) CreateFirmwareMswitchDescriptor(ctx context.Context
 }
 
 // Execute executes the request
-//  @return FirmwareMswitchDescriptor
-func (a *FirmwareApiService) CreateFirmwareMswitchDescriptorExecute(r ApiCreateFirmwareMswitchDescriptorRequest) (*FirmwareMswitchDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareMswitchDescriptorExecute(r ApiCreateFirmwareMswitchDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareMswitchDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareMswitchDescriptor")
@@ -2220,10 +2293,10 @@ func (a *FirmwareApiService) CreateFirmwareMswitchDescriptorExecute(r ApiCreateF
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareMswitchDescriptor
@@ -2237,9 +2310,9 @@ func (a *FirmwareApiService) CreateFirmwareMswitchDescriptorExecute(r ApiCreateF
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2256,6 +2329,7 @@ func (a *FirmwareApiService) CreateFirmwareMswitchDescriptorExecute(r ApiCreateF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2266,6 +2340,7 @@ func (a *FirmwareApiService) CreateFirmwareMswitchDescriptorExecute(r ApiCreateF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2276,6 +2351,7 @@ func (a *FirmwareApiService) CreateFirmwareMswitchDescriptorExecute(r ApiCreateF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2286,6 +2362,7 @@ func (a *FirmwareApiService) CreateFirmwareMswitchDescriptorExecute(r ApiCreateF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2295,6 +2372,7 @@ func (a *FirmwareApiService) CreateFirmwareMswitchDescriptorExecute(r ApiCreateF
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2337,15 +2415,15 @@ func (r ApiCreateFirmwareNxosDescriptorRequest) IfNoneMatch(ifNoneMatch string) 
 	return r
 }
 
-func (r ApiCreateFirmwareNxosDescriptorRequest) Execute() (*FirmwareNxosDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareNxosDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareNxosDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareNxosDescriptor Create a 'firmware.NxosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareNxosDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareNxosDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareNxosDescriptor(ctx context.Context) ApiCreateFirmwareNxosDescriptorRequest {
 	return ApiCreateFirmwareNxosDescriptorRequest{
@@ -2355,13 +2433,14 @@ func (a *FirmwareApiService) CreateFirmwareNxosDescriptor(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareNxosDescriptor
-func (a *FirmwareApiService) CreateFirmwareNxosDescriptorExecute(r ApiCreateFirmwareNxosDescriptorRequest) (*FirmwareNxosDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareNxosDescriptorExecute(r ApiCreateFirmwareNxosDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareNxosDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareNxosDescriptor")
@@ -2396,10 +2475,10 @@ func (a *FirmwareApiService) CreateFirmwareNxosDescriptorExecute(r ApiCreateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareNxosDescriptor
@@ -2413,9 +2492,9 @@ func (a *FirmwareApiService) CreateFirmwareNxosDescriptorExecute(r ApiCreateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2432,6 +2511,7 @@ func (a *FirmwareApiService) CreateFirmwareNxosDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2442,6 +2522,7 @@ func (a *FirmwareApiService) CreateFirmwareNxosDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2452,6 +2533,7 @@ func (a *FirmwareApiService) CreateFirmwareNxosDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2462,6 +2544,7 @@ func (a *FirmwareApiService) CreateFirmwareNxosDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2471,6 +2554,7 @@ func (a *FirmwareApiService) CreateFirmwareNxosDescriptorExecute(r ApiCreateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2513,15 +2597,15 @@ func (r ApiCreateFirmwarePcieDescriptorRequest) IfNoneMatch(ifNoneMatch string) 
 	return r
 }
 
-func (r ApiCreateFirmwarePcieDescriptorRequest) Execute() (*FirmwarePcieDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwarePcieDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwarePcieDescriptorExecute(r)
 }
 
 /*
 CreateFirmwarePcieDescriptor Create a 'firmware.PcieDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwarePcieDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwarePcieDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwarePcieDescriptor(ctx context.Context) ApiCreateFirmwarePcieDescriptorRequest {
 	return ApiCreateFirmwarePcieDescriptorRequest{
@@ -2531,13 +2615,14 @@ func (a *FirmwareApiService) CreateFirmwarePcieDescriptor(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwarePcieDescriptor
-func (a *FirmwareApiService) CreateFirmwarePcieDescriptorExecute(r ApiCreateFirmwarePcieDescriptorRequest) (*FirmwarePcieDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwarePcieDescriptorExecute(r ApiCreateFirmwarePcieDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwarePcieDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwarePcieDescriptor")
@@ -2572,10 +2657,10 @@ func (a *FirmwareApiService) CreateFirmwarePcieDescriptorExecute(r ApiCreateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwarePcieDescriptor
@@ -2589,9 +2674,9 @@ func (a *FirmwareApiService) CreateFirmwarePcieDescriptorExecute(r ApiCreateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2608,6 +2693,7 @@ func (a *FirmwareApiService) CreateFirmwarePcieDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2618,6 +2704,7 @@ func (a *FirmwareApiService) CreateFirmwarePcieDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2628,6 +2715,7 @@ func (a *FirmwareApiService) CreateFirmwarePcieDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2638,6 +2726,7 @@ func (a *FirmwareApiService) CreateFirmwarePcieDescriptorExecute(r ApiCreateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2647,6 +2736,189 @@ func (a *FirmwareApiService) CreateFirmwarePcieDescriptorExecute(r ApiCreateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCreateFirmwarePolicyRequest struct {
+	ctx            context.Context
+	ApiService     *FirmwareApiService
+	firmwarePolicy *FirmwarePolicy
+	ifMatch        *string
+	ifNoneMatch    *string
+}
+
+// The &#39;firmware.Policy&#39; resource to create.
+func (r ApiCreateFirmwarePolicyRequest) FirmwarePolicy(firmwarePolicy FirmwarePolicy) ApiCreateFirmwarePolicyRequest {
+	r.firmwarePolicy = &firmwarePolicy
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiCreateFirmwarePolicyRequest) IfMatch(ifMatch string) ApiCreateFirmwarePolicyRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+// For methods that apply server-side changes, If-None-Match used with the * value can be used to create a resource not known to exist, guaranteeing that another resource creation didn&#39;t happen before, losing the data of the previous put. The request will be processed only if the eventually existing resource&#39;s ETag doesn&#39;t match any of the values listed. Otherwise, the status code 412 (Precondition Failed) is used. The asterisk is a special value representing any resource. It is only useful when creating a resource, usually with PUT, to check if another resource with the identity has already been created before. The comparison with the stored ETag uses the weak comparison algorithm, meaning two resources are considered identical if the content is equivalent - they don&#39;t have to be identical byte for byte.
+func (r ApiCreateFirmwarePolicyRequest) IfNoneMatch(ifNoneMatch string) ApiCreateFirmwarePolicyRequest {
+	r.ifNoneMatch = &ifNoneMatch
+	return r
+}
+
+func (r ApiCreateFirmwarePolicyRequest) Execute() (*FirmwarePolicy, *http.Response, error) {
+	return r.ApiService.CreateFirmwarePolicyExecute(r)
+}
+
+/*
+CreateFirmwarePolicy Create a 'firmware.Policy' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwarePolicyRequest
+*/
+func (a *FirmwareApiService) CreateFirmwarePolicy(ctx context.Context) ApiCreateFirmwarePolicyRequest {
+	return ApiCreateFirmwarePolicyRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return FirmwarePolicy
+func (a *FirmwareApiService) CreateFirmwarePolicyExecute(r ApiCreateFirmwarePolicyRequest) (*FirmwarePolicy, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FirmwarePolicy
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwarePolicy")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/firmware/Policies"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.firmwarePolicy == nil {
+		return localVarReturnValue, nil, reportError("firmwarePolicy is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	if r.ifNoneMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.firmwarePolicy
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2689,15 +2961,15 @@ func (r ApiCreateFirmwarePsuDescriptorRequest) IfNoneMatch(ifNoneMatch string) A
 	return r
 }
 
-func (r ApiCreateFirmwarePsuDescriptorRequest) Execute() (*FirmwarePsuDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwarePsuDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwarePsuDescriptorExecute(r)
 }
 
 /*
 CreateFirmwarePsuDescriptor Create a 'firmware.PsuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwarePsuDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwarePsuDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwarePsuDescriptor(ctx context.Context) ApiCreateFirmwarePsuDescriptorRequest {
 	return ApiCreateFirmwarePsuDescriptorRequest{
@@ -2707,13 +2979,14 @@ func (a *FirmwareApiService) CreateFirmwarePsuDescriptor(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return FirmwarePsuDescriptor
-func (a *FirmwareApiService) CreateFirmwarePsuDescriptorExecute(r ApiCreateFirmwarePsuDescriptorRequest) (*FirmwarePsuDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwarePsuDescriptorExecute(r ApiCreateFirmwarePsuDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwarePsuDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwarePsuDescriptor")
@@ -2748,10 +3021,10 @@ func (a *FirmwareApiService) CreateFirmwarePsuDescriptorExecute(r ApiCreateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwarePsuDescriptor
@@ -2765,9 +3038,9 @@ func (a *FirmwareApiService) CreateFirmwarePsuDescriptorExecute(r ApiCreateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2784,6 +3057,7 @@ func (a *FirmwareApiService) CreateFirmwarePsuDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2794,6 +3068,7 @@ func (a *FirmwareApiService) CreateFirmwarePsuDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2804,6 +3079,7 @@ func (a *FirmwareApiService) CreateFirmwarePsuDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2814,6 +3090,7 @@ func (a *FirmwareApiService) CreateFirmwarePsuDescriptorExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2823,6 +3100,7 @@ func (a *FirmwareApiService) CreateFirmwarePsuDescriptorExecute(r ApiCreateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2865,15 +3143,15 @@ func (r ApiCreateFirmwareSasExpanderDescriptorRequest) IfNoneMatch(ifNoneMatch s
 	return r
 }
 
-func (r ApiCreateFirmwareSasExpanderDescriptorRequest) Execute() (*FirmwareSasExpanderDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareSasExpanderDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareSasExpanderDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareSasExpanderDescriptor Create a 'firmware.SasExpanderDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareSasExpanderDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareSasExpanderDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptor(ctx context.Context) ApiCreateFirmwareSasExpanderDescriptorRequest {
 	return ApiCreateFirmwareSasExpanderDescriptorRequest{
@@ -2883,13 +3161,14 @@ func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptor(ctx context.Con
 }
 
 // Execute executes the request
-//  @return FirmwareSasExpanderDescriptor
-func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptorExecute(r ApiCreateFirmwareSasExpanderDescriptorRequest) (*FirmwareSasExpanderDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptorExecute(r ApiCreateFirmwareSasExpanderDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareSasExpanderDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareSasExpanderDescriptor")
@@ -2924,10 +3203,10 @@ func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptorExecute(r ApiCre
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareSasExpanderDescriptor
@@ -2941,9 +3220,9 @@ func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptorExecute(r ApiCre
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2960,6 +3239,7 @@ func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptorExecute(r ApiCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2970,6 +3250,7 @@ func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptorExecute(r ApiCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2980,6 +3261,7 @@ func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptorExecute(r ApiCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2990,6 +3272,7 @@ func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptorExecute(r ApiCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2999,6 +3282,7 @@ func (a *FirmwareApiService) CreateFirmwareSasExpanderDescriptorExecute(r ApiCre
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3048,8 +3332,8 @@ func (r ApiCreateFirmwareServerConfigurationUtilityDistributableRequest) Execute
 /*
 CreateFirmwareServerConfigurationUtilityDistributable Create a 'firmware.ServerConfigurationUtilityDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareServerConfigurationUtilityDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareServerConfigurationUtilityDistributableRequest
 */
 func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributable(ctx context.Context) ApiCreateFirmwareServerConfigurationUtilityDistributableRequest {
 	return ApiCreateFirmwareServerConfigurationUtilityDistributableRequest{
@@ -3059,7 +3343,8 @@ func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributab
 }
 
 // Execute executes the request
-//  @return FirmwareServerConfigurationUtilityDistributable
+//
+//	@return FirmwareServerConfigurationUtilityDistributable
 func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributableExecute(r ApiCreateFirmwareServerConfigurationUtilityDistributableRequest) (*FirmwareServerConfigurationUtilityDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3100,10 +3385,10 @@ func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributab
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareServerConfigurationUtilityDistributable
@@ -3117,9 +3402,9 @@ func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributab
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3136,6 +3421,7 @@ func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3146,6 +3432,7 @@ func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3156,6 +3443,7 @@ func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3166,6 +3454,7 @@ func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3175,6 +3464,7 @@ func (a *FirmwareApiService) CreateFirmwareServerConfigurationUtilityDistributab
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3217,15 +3507,15 @@ func (r ApiCreateFirmwareStorageControllerDescriptorRequest) IfNoneMatch(ifNoneM
 	return r
 }
 
-func (r ApiCreateFirmwareStorageControllerDescriptorRequest) Execute() (*FirmwareStorageControllerDescriptor, *http.Response, error) {
+func (r ApiCreateFirmwareStorageControllerDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.CreateFirmwareStorageControllerDescriptorExecute(r)
 }
 
 /*
 CreateFirmwareStorageControllerDescriptor Create a 'firmware.StorageControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareStorageControllerDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareStorageControllerDescriptorRequest
 */
 func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptor(ctx context.Context) ApiCreateFirmwareStorageControllerDescriptorRequest {
 	return ApiCreateFirmwareStorageControllerDescriptorRequest{
@@ -3235,13 +3525,14 @@ func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptor(ctx conte
 }
 
 // Execute executes the request
-//  @return FirmwareStorageControllerDescriptor
-func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptorExecute(r ApiCreateFirmwareStorageControllerDescriptorRequest) (*FirmwareStorageControllerDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptorExecute(r ApiCreateFirmwareStorageControllerDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareStorageControllerDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.CreateFirmwareStorageControllerDescriptor")
@@ -3276,10 +3567,10 @@ func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptorExecute(r 
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareStorageControllerDescriptor
@@ -3293,9 +3584,9 @@ func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptorExecute(r 
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3312,6 +3603,7 @@ func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3322,6 +3614,7 @@ func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3332,6 +3625,7 @@ func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3342,6 +3636,7 @@ func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3351,6 +3646,7 @@ func (a *FirmwareApiService) CreateFirmwareStorageControllerDescriptorExecute(r 
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3400,8 +3696,8 @@ func (r ApiCreateFirmwareSwitchUpgradeRequest) Execute() (*FirmwareSwitchUpgrade
 /*
 CreateFirmwareSwitchUpgrade Create a 'firmware.SwitchUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareSwitchUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareSwitchUpgradeRequest
 */
 func (a *FirmwareApiService) CreateFirmwareSwitchUpgrade(ctx context.Context) ApiCreateFirmwareSwitchUpgradeRequest {
 	return ApiCreateFirmwareSwitchUpgradeRequest{
@@ -3411,7 +3707,8 @@ func (a *FirmwareApiService) CreateFirmwareSwitchUpgrade(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return FirmwareSwitchUpgrade
+//
+//	@return FirmwareSwitchUpgrade
 func (a *FirmwareApiService) CreateFirmwareSwitchUpgradeExecute(r ApiCreateFirmwareSwitchUpgradeRequest) (*FirmwareSwitchUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3452,10 +3749,10 @@ func (a *FirmwareApiService) CreateFirmwareSwitchUpgradeExecute(r ApiCreateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareSwitchUpgrade
@@ -3469,9 +3766,9 @@ func (a *FirmwareApiService) CreateFirmwareSwitchUpgradeExecute(r ApiCreateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3488,6 +3785,7 @@ func (a *FirmwareApiService) CreateFirmwareSwitchUpgradeExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3498,6 +3796,7 @@ func (a *FirmwareApiService) CreateFirmwareSwitchUpgradeExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3508,6 +3807,7 @@ func (a *FirmwareApiService) CreateFirmwareSwitchUpgradeExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3518,6 +3818,7 @@ func (a *FirmwareApiService) CreateFirmwareSwitchUpgradeExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3527,6 +3828,7 @@ func (a *FirmwareApiService) CreateFirmwareSwitchUpgradeExecute(r ApiCreateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3576,8 +3878,8 @@ func (r ApiCreateFirmwareUnsupportedVersionUpgradeRequest) Execute() (*FirmwareU
 /*
 CreateFirmwareUnsupportedVersionUpgrade Create a 'firmware.UnsupportedVersionUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareUnsupportedVersionUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareUnsupportedVersionUpgradeRequest
 */
 func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgrade(ctx context.Context) ApiCreateFirmwareUnsupportedVersionUpgradeRequest {
 	return ApiCreateFirmwareUnsupportedVersionUpgradeRequest{
@@ -3587,7 +3889,8 @@ func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgrade(ctx context
 }
 
 // Execute executes the request
-//  @return FirmwareUnsupportedVersionUpgrade
+//
+//	@return FirmwareUnsupportedVersionUpgrade
 func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgradeExecute(r ApiCreateFirmwareUnsupportedVersionUpgradeRequest) (*FirmwareUnsupportedVersionUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3628,10 +3931,10 @@ func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareUnsupportedVersionUpgrade
@@ -3645,9 +3948,9 @@ func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3664,6 +3967,7 @@ func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3674,6 +3978,7 @@ func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3684,6 +3989,7 @@ func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3694,6 +4000,7 @@ func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3703,6 +4010,7 @@ func (a *FirmwareApiService) CreateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3752,8 +4060,8 @@ func (r ApiCreateFirmwareUpgradeRequest) Execute() (*FirmwareUpgrade, *http.Resp
 /*
 CreateFirmwareUpgrade Create a 'firmware.Upgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareUpgradeRequest
 */
 func (a *FirmwareApiService) CreateFirmwareUpgrade(ctx context.Context) ApiCreateFirmwareUpgradeRequest {
 	return ApiCreateFirmwareUpgradeRequest{
@@ -3763,7 +4071,8 @@ func (a *FirmwareApiService) CreateFirmwareUpgrade(ctx context.Context) ApiCreat
 }
 
 // Execute executes the request
-//  @return FirmwareUpgrade
+//
+//	@return FirmwareUpgrade
 func (a *FirmwareApiService) CreateFirmwareUpgradeExecute(r ApiCreateFirmwareUpgradeRequest) (*FirmwareUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3804,10 +4113,10 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeExecute(r ApiCreateFirmwareUpg
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareUpgrade
@@ -3821,9 +4130,9 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeExecute(r ApiCreateFirmwareUpg
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3840,6 +4149,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeExecute(r ApiCreateFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3850,6 +4160,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeExecute(r ApiCreateFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3860,6 +4171,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeExecute(r ApiCreateFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3870,6 +4182,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeExecute(r ApiCreateFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3879,6 +4192,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeExecute(r ApiCreateFirmwareUpg
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3928,8 +4242,8 @@ func (r ApiCreateFirmwareUpgradeImpactRequest) Execute() (*FirmwareUpgradeImpact
 /*
 CreateFirmwareUpgradeImpact Create a 'firmware.UpgradeImpact' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareUpgradeImpactRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareUpgradeImpactRequest
 */
 func (a *FirmwareApiService) CreateFirmwareUpgradeImpact(ctx context.Context) ApiCreateFirmwareUpgradeImpactRequest {
 	return ApiCreateFirmwareUpgradeImpactRequest{
@@ -3939,7 +4253,8 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeImpact(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return FirmwareUpgradeImpact
+//
+//	@return FirmwareUpgradeImpact
 func (a *FirmwareApiService) CreateFirmwareUpgradeImpactExecute(r ApiCreateFirmwareUpgradeImpactRequest) (*FirmwareUpgradeImpact, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3980,10 +4295,10 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeImpactExecute(r ApiCreateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareUpgradeImpact
@@ -3997,9 +4312,9 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeImpactExecute(r ApiCreateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4016,6 +4331,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeImpactExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4026,6 +4342,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeImpactExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4036,6 +4353,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeImpactExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4046,6 +4364,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeImpactExecute(r ApiCreateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4055,6 +4374,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeImpactExecute(r ApiCreateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4104,8 +4424,8 @@ func (r ApiCreateFirmwareUpgradeValidityRequest) Execute() (*FirmwareUpgradeVali
 /*
 CreateFirmwareUpgradeValidity Create a 'firmware.UpgradeValidity' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateFirmwareUpgradeValidityRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateFirmwareUpgradeValidityRequest
 */
 func (a *FirmwareApiService) CreateFirmwareUpgradeValidity(ctx context.Context) ApiCreateFirmwareUpgradeValidityRequest {
 	return ApiCreateFirmwareUpgradeValidityRequest{
@@ -4115,7 +4435,8 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeValidity(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return FirmwareUpgradeValidity
+//
+//	@return FirmwareUpgradeValidity
 func (a *FirmwareApiService) CreateFirmwareUpgradeValidityExecute(r ApiCreateFirmwareUpgradeValidityRequest) (*FirmwareUpgradeValidity, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -4156,10 +4477,10 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeValidityExecute(r ApiCreateFir
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareUpgradeValidity
@@ -4173,9 +4494,9 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeValidityExecute(r ApiCreateFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4192,6 +4513,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeValidityExecute(r ApiCreateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4202,6 +4524,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeValidityExecute(r ApiCreateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4212,6 +4535,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeValidityExecute(r ApiCreateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4222,6 +4546,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeValidityExecute(r ApiCreateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4231,6 +4556,7 @@ func (a *FirmwareApiService) CreateFirmwareUpgradeValidityExecute(r ApiCreateFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4260,9 +4586,9 @@ func (r ApiDeleteFirmwareBiosDescriptorRequest) Execute() (*http.Response, error
 /*
 DeleteFirmwareBiosDescriptor Delete a 'firmware.BiosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareBiosDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareBiosDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareBiosDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareBiosDescriptorRequest {
 	return ApiDeleteFirmwareBiosDescriptorRequest{
@@ -4286,7 +4612,7 @@ func (a *FirmwareApiService) DeleteFirmwareBiosDescriptorExecute(r ApiDeleteFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/BiosDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4319,9 +4645,9 @@ func (a *FirmwareApiService) DeleteFirmwareBiosDescriptorExecute(r ApiDeleteFirm
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4338,6 +4664,7 @@ func (a *FirmwareApiService) DeleteFirmwareBiosDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4348,6 +4675,7 @@ func (a *FirmwareApiService) DeleteFirmwareBiosDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4358,6 +4686,7 @@ func (a *FirmwareApiService) DeleteFirmwareBiosDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4368,6 +4697,7 @@ func (a *FirmwareApiService) DeleteFirmwareBiosDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4377,6 +4707,7 @@ func (a *FirmwareApiService) DeleteFirmwareBiosDescriptorExecute(r ApiDeleteFirm
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4397,9 +4728,9 @@ func (r ApiDeleteFirmwareBoardControllerDescriptorRequest) Execute() (*http.Resp
 /*
 DeleteFirmwareBoardControllerDescriptor Delete a 'firmware.BoardControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareBoardControllerDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareBoardControllerDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareBoardControllerDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareBoardControllerDescriptorRequest {
 	return ApiDeleteFirmwareBoardControllerDescriptorRequest{
@@ -4423,7 +4754,7 @@ func (a *FirmwareApiService) DeleteFirmwareBoardControllerDescriptorExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/BoardControllerDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4456,9 +4787,9 @@ func (a *FirmwareApiService) DeleteFirmwareBoardControllerDescriptorExecute(r Ap
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4475,6 +4806,7 @@ func (a *FirmwareApiService) DeleteFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4485,6 +4817,7 @@ func (a *FirmwareApiService) DeleteFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4495,6 +4828,7 @@ func (a *FirmwareApiService) DeleteFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4505,6 +4839,7 @@ func (a *FirmwareApiService) DeleteFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4514,6 +4849,7 @@ func (a *FirmwareApiService) DeleteFirmwareBoardControllerDescriptorExecute(r Ap
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4534,9 +4870,9 @@ func (r ApiDeleteFirmwareChassisUpgradeRequest) Execute() (*http.Response, error
 /*
 DeleteFirmwareChassisUpgrade Delete a 'firmware.ChassisUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareChassisUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareChassisUpgradeRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareChassisUpgrade(ctx context.Context, moid string) ApiDeleteFirmwareChassisUpgradeRequest {
 	return ApiDeleteFirmwareChassisUpgradeRequest{
@@ -4560,7 +4896,7 @@ func (a *FirmwareApiService) DeleteFirmwareChassisUpgradeExecute(r ApiDeleteFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/ChassisUpgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4593,9 +4929,9 @@ func (a *FirmwareApiService) DeleteFirmwareChassisUpgradeExecute(r ApiDeleteFirm
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4612,6 +4948,7 @@ func (a *FirmwareApiService) DeleteFirmwareChassisUpgradeExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4622,6 +4959,7 @@ func (a *FirmwareApiService) DeleteFirmwareChassisUpgradeExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4632,6 +4970,7 @@ func (a *FirmwareApiService) DeleteFirmwareChassisUpgradeExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4642,6 +4981,7 @@ func (a *FirmwareApiService) DeleteFirmwareChassisUpgradeExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4651,6 +4991,7 @@ func (a *FirmwareApiService) DeleteFirmwareChassisUpgradeExecute(r ApiDeleteFirm
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4671,9 +5012,9 @@ func (r ApiDeleteFirmwareCimcDescriptorRequest) Execute() (*http.Response, error
 /*
 DeleteFirmwareCimcDescriptor Delete a 'firmware.CimcDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareCimcDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareCimcDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareCimcDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareCimcDescriptorRequest {
 	return ApiDeleteFirmwareCimcDescriptorRequest{
@@ -4697,7 +5038,7 @@ func (a *FirmwareApiService) DeleteFirmwareCimcDescriptorExecute(r ApiDeleteFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/CimcDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4730,9 +5071,9 @@ func (a *FirmwareApiService) DeleteFirmwareCimcDescriptorExecute(r ApiDeleteFirm
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4749,6 +5090,7 @@ func (a *FirmwareApiService) DeleteFirmwareCimcDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4759,6 +5101,7 @@ func (a *FirmwareApiService) DeleteFirmwareCimcDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4769,6 +5112,7 @@ func (a *FirmwareApiService) DeleteFirmwareCimcDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4779,6 +5123,7 @@ func (a *FirmwareApiService) DeleteFirmwareCimcDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4788,6 +5133,7 @@ func (a *FirmwareApiService) DeleteFirmwareCimcDescriptorExecute(r ApiDeleteFirm
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4808,9 +5154,9 @@ func (r ApiDeleteFirmwareDimmDescriptorRequest) Execute() (*http.Response, error
 /*
 DeleteFirmwareDimmDescriptor Delete a 'firmware.DimmDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareDimmDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareDimmDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareDimmDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareDimmDescriptorRequest {
 	return ApiDeleteFirmwareDimmDescriptorRequest{
@@ -4834,7 +5180,7 @@ func (a *FirmwareApiService) DeleteFirmwareDimmDescriptorExecute(r ApiDeleteFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DimmDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4867,9 +5213,9 @@ func (a *FirmwareApiService) DeleteFirmwareDimmDescriptorExecute(r ApiDeleteFirm
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4886,6 +5232,7 @@ func (a *FirmwareApiService) DeleteFirmwareDimmDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4896,6 +5243,7 @@ func (a *FirmwareApiService) DeleteFirmwareDimmDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4906,6 +5254,7 @@ func (a *FirmwareApiService) DeleteFirmwareDimmDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4916,6 +5265,7 @@ func (a *FirmwareApiService) DeleteFirmwareDimmDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4925,6 +5275,7 @@ func (a *FirmwareApiService) DeleteFirmwareDimmDescriptorExecute(r ApiDeleteFirm
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4945,9 +5296,9 @@ func (r ApiDeleteFirmwareDistributableRequest) Execute() (*http.Response, error)
 /*
 DeleteFirmwareDistributable Delete a 'firmware.Distributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareDistributableRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareDistributable(ctx context.Context, moid string) ApiDeleteFirmwareDistributableRequest {
 	return ApiDeleteFirmwareDistributableRequest{
@@ -4971,7 +5322,7 @@ func (a *FirmwareApiService) DeleteFirmwareDistributableExecute(r ApiDeleteFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/Distributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5004,9 +5355,9 @@ func (a *FirmwareApiService) DeleteFirmwareDistributableExecute(r ApiDeleteFirmw
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5023,6 +5374,7 @@ func (a *FirmwareApiService) DeleteFirmwareDistributableExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5033,6 +5385,7 @@ func (a *FirmwareApiService) DeleteFirmwareDistributableExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5043,6 +5396,7 @@ func (a *FirmwareApiService) DeleteFirmwareDistributableExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5053,6 +5407,7 @@ func (a *FirmwareApiService) DeleteFirmwareDistributableExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5062,6 +5417,7 @@ func (a *FirmwareApiService) DeleteFirmwareDistributableExecute(r ApiDeleteFirmw
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5082,9 +5438,9 @@ func (r ApiDeleteFirmwareDriveDescriptorRequest) Execute() (*http.Response, erro
 /*
 DeleteFirmwareDriveDescriptor Delete a 'firmware.DriveDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareDriveDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareDriveDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareDriveDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareDriveDescriptorRequest {
 	return ApiDeleteFirmwareDriveDescriptorRequest{
@@ -5108,7 +5464,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriveDescriptorExecute(r ApiDeleteFir
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DriveDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5141,9 +5497,9 @@ func (a *FirmwareApiService) DeleteFirmwareDriveDescriptorExecute(r ApiDeleteFir
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5160,6 +5516,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriveDescriptorExecute(r ApiDeleteFir
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5170,6 +5527,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriveDescriptorExecute(r ApiDeleteFir
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5180,6 +5538,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriveDescriptorExecute(r ApiDeleteFir
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5190,6 +5549,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriveDescriptorExecute(r ApiDeleteFir
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5199,6 +5559,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriveDescriptorExecute(r ApiDeleteFir
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5219,9 +5580,9 @@ func (r ApiDeleteFirmwareDriverDistributableRequest) Execute() (*http.Response, 
 /*
 DeleteFirmwareDriverDistributable Delete a 'firmware.DriverDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareDriverDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareDriverDistributableRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareDriverDistributable(ctx context.Context, moid string) ApiDeleteFirmwareDriverDistributableRequest {
 	return ApiDeleteFirmwareDriverDistributableRequest{
@@ -5245,7 +5606,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriverDistributableExecute(r ApiDelet
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DriverDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5278,9 +5639,9 @@ func (a *FirmwareApiService) DeleteFirmwareDriverDistributableExecute(r ApiDelet
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5297,6 +5658,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriverDistributableExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5307,6 +5669,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriverDistributableExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5317,6 +5680,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriverDistributableExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5327,6 +5691,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriverDistributableExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5336,6 +5701,7 @@ func (a *FirmwareApiService) DeleteFirmwareDriverDistributableExecute(r ApiDelet
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5356,9 +5722,9 @@ func (r ApiDeleteFirmwareGpuDescriptorRequest) Execute() (*http.Response, error)
 /*
 DeleteFirmwareGpuDescriptor Delete a 'firmware.GpuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareGpuDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareGpuDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareGpuDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareGpuDescriptorRequest {
 	return ApiDeleteFirmwareGpuDescriptorRequest{
@@ -5382,7 +5748,7 @@ func (a *FirmwareApiService) DeleteFirmwareGpuDescriptorExecute(r ApiDeleteFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/GpuDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5415,9 +5781,9 @@ func (a *FirmwareApiService) DeleteFirmwareGpuDescriptorExecute(r ApiDeleteFirmw
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5434,6 +5800,7 @@ func (a *FirmwareApiService) DeleteFirmwareGpuDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5444,6 +5811,7 @@ func (a *FirmwareApiService) DeleteFirmwareGpuDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5454,6 +5822,7 @@ func (a *FirmwareApiService) DeleteFirmwareGpuDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5464,6 +5833,7 @@ func (a *FirmwareApiService) DeleteFirmwareGpuDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5473,6 +5843,7 @@ func (a *FirmwareApiService) DeleteFirmwareGpuDescriptorExecute(r ApiDeleteFirmw
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5493,9 +5864,9 @@ func (r ApiDeleteFirmwareHbaDescriptorRequest) Execute() (*http.Response, error)
 /*
 DeleteFirmwareHbaDescriptor Delete a 'firmware.HbaDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareHbaDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareHbaDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareHbaDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareHbaDescriptorRequest {
 	return ApiDeleteFirmwareHbaDescriptorRequest{
@@ -5519,7 +5890,7 @@ func (a *FirmwareApiService) DeleteFirmwareHbaDescriptorExecute(r ApiDeleteFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/HbaDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5552,9 +5923,9 @@ func (a *FirmwareApiService) DeleteFirmwareHbaDescriptorExecute(r ApiDeleteFirmw
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5571,6 +5942,7 @@ func (a *FirmwareApiService) DeleteFirmwareHbaDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5581,6 +5953,7 @@ func (a *FirmwareApiService) DeleteFirmwareHbaDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5591,6 +5964,7 @@ func (a *FirmwareApiService) DeleteFirmwareHbaDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5601,6 +5975,7 @@ func (a *FirmwareApiService) DeleteFirmwareHbaDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5610,6 +5985,7 @@ func (a *FirmwareApiService) DeleteFirmwareHbaDescriptorExecute(r ApiDeleteFirmw
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5630,9 +6006,9 @@ func (r ApiDeleteFirmwareIomDescriptorRequest) Execute() (*http.Response, error)
 /*
 DeleteFirmwareIomDescriptor Delete a 'firmware.IomDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareIomDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareIomDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareIomDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareIomDescriptorRequest {
 	return ApiDeleteFirmwareIomDescriptorRequest{
@@ -5656,7 +6032,7 @@ func (a *FirmwareApiService) DeleteFirmwareIomDescriptorExecute(r ApiDeleteFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/IomDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5689,9 +6065,9 @@ func (a *FirmwareApiService) DeleteFirmwareIomDescriptorExecute(r ApiDeleteFirmw
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5708,6 +6084,7 @@ func (a *FirmwareApiService) DeleteFirmwareIomDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5718,6 +6095,7 @@ func (a *FirmwareApiService) DeleteFirmwareIomDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5728,6 +6106,7 @@ func (a *FirmwareApiService) DeleteFirmwareIomDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5738,6 +6117,7 @@ func (a *FirmwareApiService) DeleteFirmwareIomDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5747,6 +6127,7 @@ func (a *FirmwareApiService) DeleteFirmwareIomDescriptorExecute(r ApiDeleteFirmw
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5767,9 +6148,9 @@ func (r ApiDeleteFirmwareMswitchDescriptorRequest) Execute() (*http.Response, er
 /*
 DeleteFirmwareMswitchDescriptor Delete a 'firmware.MswitchDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareMswitchDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareMswitchDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareMswitchDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareMswitchDescriptorRequest {
 	return ApiDeleteFirmwareMswitchDescriptorRequest{
@@ -5793,7 +6174,7 @@ func (a *FirmwareApiService) DeleteFirmwareMswitchDescriptorExecute(r ApiDeleteF
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/MswitchDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5826,9 +6207,9 @@ func (a *FirmwareApiService) DeleteFirmwareMswitchDescriptorExecute(r ApiDeleteF
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5845,6 +6226,7 @@ func (a *FirmwareApiService) DeleteFirmwareMswitchDescriptorExecute(r ApiDeleteF
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5855,6 +6237,7 @@ func (a *FirmwareApiService) DeleteFirmwareMswitchDescriptorExecute(r ApiDeleteF
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5865,6 +6248,7 @@ func (a *FirmwareApiService) DeleteFirmwareMswitchDescriptorExecute(r ApiDeleteF
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5875,6 +6259,7 @@ func (a *FirmwareApiService) DeleteFirmwareMswitchDescriptorExecute(r ApiDeleteF
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5884,6 +6269,7 @@ func (a *FirmwareApiService) DeleteFirmwareMswitchDescriptorExecute(r ApiDeleteF
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5904,9 +6290,9 @@ func (r ApiDeleteFirmwareNxosDescriptorRequest) Execute() (*http.Response, error
 /*
 DeleteFirmwareNxosDescriptor Delete a 'firmware.NxosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareNxosDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareNxosDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareNxosDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareNxosDescriptorRequest {
 	return ApiDeleteFirmwareNxosDescriptorRequest{
@@ -5930,7 +6316,7 @@ func (a *FirmwareApiService) DeleteFirmwareNxosDescriptorExecute(r ApiDeleteFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/NxosDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5963,9 +6349,9 @@ func (a *FirmwareApiService) DeleteFirmwareNxosDescriptorExecute(r ApiDeleteFirm
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5982,6 +6368,7 @@ func (a *FirmwareApiService) DeleteFirmwareNxosDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5992,6 +6379,7 @@ func (a *FirmwareApiService) DeleteFirmwareNxosDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6002,6 +6390,7 @@ func (a *FirmwareApiService) DeleteFirmwareNxosDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6012,6 +6401,7 @@ func (a *FirmwareApiService) DeleteFirmwareNxosDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6021,6 +6411,7 @@ func (a *FirmwareApiService) DeleteFirmwareNxosDescriptorExecute(r ApiDeleteFirm
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6041,9 +6432,9 @@ func (r ApiDeleteFirmwarePcieDescriptorRequest) Execute() (*http.Response, error
 /*
 DeleteFirmwarePcieDescriptor Delete a 'firmware.PcieDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwarePcieDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwarePcieDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwarePcieDescriptor(ctx context.Context, moid string) ApiDeleteFirmwarePcieDescriptorRequest {
 	return ApiDeleteFirmwarePcieDescriptorRequest{
@@ -6067,7 +6458,7 @@ func (a *FirmwareApiService) DeleteFirmwarePcieDescriptorExecute(r ApiDeleteFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/PcieDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6100,9 +6491,9 @@ func (a *FirmwareApiService) DeleteFirmwarePcieDescriptorExecute(r ApiDeleteFirm
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6119,6 +6510,7 @@ func (a *FirmwareApiService) DeleteFirmwarePcieDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6129,6 +6521,7 @@ func (a *FirmwareApiService) DeleteFirmwarePcieDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6139,6 +6532,7 @@ func (a *FirmwareApiService) DeleteFirmwarePcieDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6149,6 +6543,7 @@ func (a *FirmwareApiService) DeleteFirmwarePcieDescriptorExecute(r ApiDeleteFirm
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6158,6 +6553,149 @@ func (a *FirmwareApiService) DeleteFirmwarePcieDescriptorExecute(r ApiDeleteFirm
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiDeleteFirmwarePolicyRequest struct {
+	ctx        context.Context
+	ApiService *FirmwareApiService
+	moid       string
+}
+
+func (r ApiDeleteFirmwarePolicyRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeleteFirmwarePolicyExecute(r)
+}
+
+/*
+DeleteFirmwarePolicy Delete a 'firmware.Policy' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwarePolicyRequest
+*/
+func (a *FirmwareApiService) DeleteFirmwarePolicy(ctx context.Context, moid string) ApiDeleteFirmwarePolicyRequest {
+	return ApiDeleteFirmwarePolicyRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+func (a *FirmwareApiService) DeleteFirmwarePolicyExecute(r ApiDeleteFirmwarePolicyRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.DeleteFirmwarePolicy")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/firmware/Policies/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6178,9 +6716,9 @@ func (r ApiDeleteFirmwarePsuDescriptorRequest) Execute() (*http.Response, error)
 /*
 DeleteFirmwarePsuDescriptor Delete a 'firmware.PsuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwarePsuDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwarePsuDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwarePsuDescriptor(ctx context.Context, moid string) ApiDeleteFirmwarePsuDescriptorRequest {
 	return ApiDeleteFirmwarePsuDescriptorRequest{
@@ -6204,7 +6742,7 @@ func (a *FirmwareApiService) DeleteFirmwarePsuDescriptorExecute(r ApiDeleteFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/PsuDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6237,9 +6775,9 @@ func (a *FirmwareApiService) DeleteFirmwarePsuDescriptorExecute(r ApiDeleteFirmw
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6256,6 +6794,7 @@ func (a *FirmwareApiService) DeleteFirmwarePsuDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6266,6 +6805,7 @@ func (a *FirmwareApiService) DeleteFirmwarePsuDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6276,6 +6816,7 @@ func (a *FirmwareApiService) DeleteFirmwarePsuDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6286,6 +6827,7 @@ func (a *FirmwareApiService) DeleteFirmwarePsuDescriptorExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6295,6 +6837,7 @@ func (a *FirmwareApiService) DeleteFirmwarePsuDescriptorExecute(r ApiDeleteFirmw
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6315,9 +6858,9 @@ func (r ApiDeleteFirmwareSasExpanderDescriptorRequest) Execute() (*http.Response
 /*
 DeleteFirmwareSasExpanderDescriptor Delete a 'firmware.SasExpanderDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareSasExpanderDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareSasExpanderDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareSasExpanderDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareSasExpanderDescriptorRequest {
 	return ApiDeleteFirmwareSasExpanderDescriptorRequest{
@@ -6341,7 +6884,7 @@ func (a *FirmwareApiService) DeleteFirmwareSasExpanderDescriptorExecute(r ApiDel
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/SasExpanderDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6374,9 +6917,9 @@ func (a *FirmwareApiService) DeleteFirmwareSasExpanderDescriptorExecute(r ApiDel
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6393,6 +6936,7 @@ func (a *FirmwareApiService) DeleteFirmwareSasExpanderDescriptorExecute(r ApiDel
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6403,6 +6947,7 @@ func (a *FirmwareApiService) DeleteFirmwareSasExpanderDescriptorExecute(r ApiDel
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6413,6 +6958,7 @@ func (a *FirmwareApiService) DeleteFirmwareSasExpanderDescriptorExecute(r ApiDel
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6423,6 +6969,7 @@ func (a *FirmwareApiService) DeleteFirmwareSasExpanderDescriptorExecute(r ApiDel
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6432,6 +6979,7 @@ func (a *FirmwareApiService) DeleteFirmwareSasExpanderDescriptorExecute(r ApiDel
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6452,9 +7000,9 @@ func (r ApiDeleteFirmwareServerConfigurationUtilityDistributableRequest) Execute
 /*
 DeleteFirmwareServerConfigurationUtilityDistributable Delete a 'firmware.ServerConfigurationUtilityDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareServerConfigurationUtilityDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareServerConfigurationUtilityDistributableRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareServerConfigurationUtilityDistributable(ctx context.Context, moid string) ApiDeleteFirmwareServerConfigurationUtilityDistributableRequest {
 	return ApiDeleteFirmwareServerConfigurationUtilityDistributableRequest{
@@ -6478,7 +7026,7 @@ func (a *FirmwareApiService) DeleteFirmwareServerConfigurationUtilityDistributab
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/ServerConfigurationUtilityDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6511,9 +7059,9 @@ func (a *FirmwareApiService) DeleteFirmwareServerConfigurationUtilityDistributab
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6530,6 +7078,7 @@ func (a *FirmwareApiService) DeleteFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6540,6 +7089,7 @@ func (a *FirmwareApiService) DeleteFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6550,6 +7100,7 @@ func (a *FirmwareApiService) DeleteFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6560,6 +7111,7 @@ func (a *FirmwareApiService) DeleteFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6569,6 +7121,7 @@ func (a *FirmwareApiService) DeleteFirmwareServerConfigurationUtilityDistributab
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6589,9 +7142,9 @@ func (r ApiDeleteFirmwareStorageControllerDescriptorRequest) Execute() (*http.Re
 /*
 DeleteFirmwareStorageControllerDescriptor Delete a 'firmware.StorageControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareStorageControllerDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareStorageControllerDescriptorRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareStorageControllerDescriptor(ctx context.Context, moid string) ApiDeleteFirmwareStorageControllerDescriptorRequest {
 	return ApiDeleteFirmwareStorageControllerDescriptorRequest{
@@ -6615,7 +7168,7 @@ func (a *FirmwareApiService) DeleteFirmwareStorageControllerDescriptorExecute(r 
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/StorageControllerDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6648,9 +7201,9 @@ func (a *FirmwareApiService) DeleteFirmwareStorageControllerDescriptorExecute(r 
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6667,6 +7220,7 @@ func (a *FirmwareApiService) DeleteFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6677,6 +7231,7 @@ func (a *FirmwareApiService) DeleteFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6687,6 +7242,7 @@ func (a *FirmwareApiService) DeleteFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6697,6 +7253,7 @@ func (a *FirmwareApiService) DeleteFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6706,6 +7263,7 @@ func (a *FirmwareApiService) DeleteFirmwareStorageControllerDescriptorExecute(r 
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6726,9 +7284,9 @@ func (r ApiDeleteFirmwareSwitchUpgradeRequest) Execute() (*http.Response, error)
 /*
 DeleteFirmwareSwitchUpgrade Delete a 'firmware.SwitchUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareSwitchUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareSwitchUpgradeRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareSwitchUpgrade(ctx context.Context, moid string) ApiDeleteFirmwareSwitchUpgradeRequest {
 	return ApiDeleteFirmwareSwitchUpgradeRequest{
@@ -6752,7 +7310,7 @@ func (a *FirmwareApiService) DeleteFirmwareSwitchUpgradeExecute(r ApiDeleteFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/SwitchUpgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6785,9 +7343,9 @@ func (a *FirmwareApiService) DeleteFirmwareSwitchUpgradeExecute(r ApiDeleteFirmw
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6804,6 +7362,7 @@ func (a *FirmwareApiService) DeleteFirmwareSwitchUpgradeExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6814,6 +7373,7 @@ func (a *FirmwareApiService) DeleteFirmwareSwitchUpgradeExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6824,6 +7384,7 @@ func (a *FirmwareApiService) DeleteFirmwareSwitchUpgradeExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6834,6 +7395,7 @@ func (a *FirmwareApiService) DeleteFirmwareSwitchUpgradeExecute(r ApiDeleteFirmw
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6843,6 +7405,7 @@ func (a *FirmwareApiService) DeleteFirmwareSwitchUpgradeExecute(r ApiDeleteFirmw
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6863,9 +7426,9 @@ func (r ApiDeleteFirmwareUnsupportedVersionUpgradeRequest) Execute() (*http.Resp
 /*
 DeleteFirmwareUnsupportedVersionUpgrade Delete a 'firmware.UnsupportedVersionUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareUnsupportedVersionUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareUnsupportedVersionUpgradeRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareUnsupportedVersionUpgrade(ctx context.Context, moid string) ApiDeleteFirmwareUnsupportedVersionUpgradeRequest {
 	return ApiDeleteFirmwareUnsupportedVersionUpgradeRequest{
@@ -6889,7 +7452,7 @@ func (a *FirmwareApiService) DeleteFirmwareUnsupportedVersionUpgradeExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/UnsupportedVersionUpgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6922,9 +7485,9 @@ func (a *FirmwareApiService) DeleteFirmwareUnsupportedVersionUpgradeExecute(r Ap
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6941,6 +7504,7 @@ func (a *FirmwareApiService) DeleteFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6951,6 +7515,7 @@ func (a *FirmwareApiService) DeleteFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6961,6 +7526,7 @@ func (a *FirmwareApiService) DeleteFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6971,6 +7537,7 @@ func (a *FirmwareApiService) DeleteFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6980,6 +7547,7 @@ func (a *FirmwareApiService) DeleteFirmwareUnsupportedVersionUpgradeExecute(r Ap
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -7000,9 +7568,9 @@ func (r ApiDeleteFirmwareUpgradeRequest) Execute() (*http.Response, error) {
 /*
 DeleteFirmwareUpgrade Delete a 'firmware.Upgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteFirmwareUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteFirmwareUpgradeRequest
 */
 func (a *FirmwareApiService) DeleteFirmwareUpgrade(ctx context.Context, moid string) ApiDeleteFirmwareUpgradeRequest {
 	return ApiDeleteFirmwareUpgradeRequest{
@@ -7026,7 +7594,7 @@ func (a *FirmwareApiService) DeleteFirmwareUpgradeExecute(r ApiDeleteFirmwareUpg
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/Upgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7059,9 +7627,9 @@ func (a *FirmwareApiService) DeleteFirmwareUpgradeExecute(r ApiDeleteFirmwareUpg
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -7078,6 +7646,7 @@ func (a *FirmwareApiService) DeleteFirmwareUpgradeExecute(r ApiDeleteFirmwareUpg
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7088,6 +7657,7 @@ func (a *FirmwareApiService) DeleteFirmwareUpgradeExecute(r ApiDeleteFirmwareUpg
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7098,6 +7668,7 @@ func (a *FirmwareApiService) DeleteFirmwareUpgradeExecute(r ApiDeleteFirmwareUpg
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7108,6 +7679,7 @@ func (a *FirmwareApiService) DeleteFirmwareUpgradeExecute(r ApiDeleteFirmwareUpg
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7117,6 +7689,7 @@ func (a *FirmwareApiService) DeleteFirmwareUpgradeExecute(r ApiDeleteFirmwareUpg
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -7130,16 +7703,16 @@ type ApiGetFirmwareBiosDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareBiosDescriptorByMoidRequest) Execute() (*FirmwareBiosDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareBiosDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareBiosDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareBiosDescriptorByMoid Read a 'firmware.BiosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareBiosDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareBiosDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareBiosDescriptorByMoidRequest {
 	return ApiGetFirmwareBiosDescriptorByMoidRequest{
@@ -7150,13 +7723,14 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return FirmwareBiosDescriptor
-func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoidExecute(r ApiGetFirmwareBiosDescriptorByMoidRequest) (*FirmwareBiosDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoidExecute(r ApiGetFirmwareBiosDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareBiosDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareBiosDescriptorByMoid")
@@ -7165,7 +7739,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoidExecute(r ApiGetFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/BiosDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7198,9 +7772,9 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoidExecute(r ApiGetFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7217,6 +7791,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7227,6 +7802,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7237,6 +7813,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7247,6 +7824,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7256,6 +7834,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorByMoidExecute(r ApiGetFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7324,7 +7903,7 @@ func (r ApiGetFirmwareBiosDescriptorListRequest) Expand(expand string) ApiGetFir
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareBiosDescriptorListRequest) Apply(apply string) ApiGetFirmwareBiosDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -7361,8 +7940,8 @@ func (r ApiGetFirmwareBiosDescriptorListRequest) Execute() (*FirmwareBiosDescrip
 /*
 GetFirmwareBiosDescriptorList Read a 'firmware.BiosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareBiosDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareBiosDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareBiosDescriptorList(ctx context.Context) ApiGetFirmwareBiosDescriptorListRequest {
 	return ApiGetFirmwareBiosDescriptorListRequest{
@@ -7372,7 +7951,8 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return FirmwareBiosDescriptorResponse
+//
+//	@return FirmwareBiosDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareBiosDescriptorListExecute(r ApiGetFirmwareBiosDescriptorListRequest) (*FirmwareBiosDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7393,37 +7973,52 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorListExecute(r ApiGetFirmwa
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -7452,9 +8047,9 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorListExecute(r ApiGetFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7471,6 +8066,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7481,6 +8077,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7491,6 +8088,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7501,6 +8099,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7510,6 +8109,7 @@ func (a *FirmwareApiService) GetFirmwareBiosDescriptorListExecute(r ApiGetFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7532,16 +8132,16 @@ type ApiGetFirmwareBoardControllerDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareBoardControllerDescriptorByMoidRequest) Execute() (*FirmwareBoardControllerDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareBoardControllerDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareBoardControllerDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareBoardControllerDescriptorByMoid Read a 'firmware.BoardControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareBoardControllerDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareBoardControllerDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareBoardControllerDescriptorByMoidRequest {
 	return ApiGetFirmwareBoardControllerDescriptorByMoidRequest{
@@ -7552,13 +8152,14 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoid(ctx cont
 }
 
 // Execute executes the request
-//  @return FirmwareBoardControllerDescriptor
-func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoidExecute(r ApiGetFirmwareBoardControllerDescriptorByMoidRequest) (*FirmwareBoardControllerDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoidExecute(r ApiGetFirmwareBoardControllerDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareBoardControllerDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareBoardControllerDescriptorByMoid")
@@ -7567,7 +8168,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoidExecute(r
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/BoardControllerDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7600,9 +8201,9 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoidExecute(r
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7619,6 +8220,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoidExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7629,6 +8231,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoidExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7639,6 +8242,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoidExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7649,6 +8253,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoidExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7658,6 +8263,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorByMoidExecute(r
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7726,7 +8332,7 @@ func (r ApiGetFirmwareBoardControllerDescriptorListRequest) Expand(expand string
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareBoardControllerDescriptorListRequest) Apply(apply string) ApiGetFirmwareBoardControllerDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -7763,8 +8369,8 @@ func (r ApiGetFirmwareBoardControllerDescriptorListRequest) Execute() (*Firmware
 /*
 GetFirmwareBoardControllerDescriptorList Read a 'firmware.BoardControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareBoardControllerDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareBoardControllerDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorList(ctx context.Context) ApiGetFirmwareBoardControllerDescriptorListRequest {
 	return ApiGetFirmwareBoardControllerDescriptorListRequest{
@@ -7774,7 +8380,8 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorList(ctx contex
 }
 
 // Execute executes the request
-//  @return FirmwareBoardControllerDescriptorResponse
+//
+//	@return FirmwareBoardControllerDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorListExecute(r ApiGetFirmwareBoardControllerDescriptorListRequest) (*FirmwareBoardControllerDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7795,37 +8402,52 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorListExecute(r A
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -7854,9 +8476,9 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorListExecute(r A
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7873,6 +8495,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7883,6 +8506,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7893,6 +8517,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7903,6 +8528,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7912,6 +8538,7 @@ func (a *FirmwareApiService) GetFirmwareBoardControllerDescriptorListExecute(r A
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7941,9 +8568,9 @@ func (r ApiGetFirmwareChassisUpgradeByMoidRequest) Execute() (*FirmwareChassisUp
 /*
 GetFirmwareChassisUpgradeByMoid Read a 'firmware.ChassisUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareChassisUpgradeByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareChassisUpgradeByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoid(ctx context.Context, moid string) ApiGetFirmwareChassisUpgradeByMoidRequest {
 	return ApiGetFirmwareChassisUpgradeByMoidRequest{
@@ -7954,7 +8581,8 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return FirmwareChassisUpgrade
+//
+//	@return FirmwareChassisUpgrade
 func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoidExecute(r ApiGetFirmwareChassisUpgradeByMoidRequest) (*FirmwareChassisUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7969,7 +8597,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoidExecute(r ApiGetFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/ChassisUpgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8002,9 +8630,9 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoidExecute(r ApiGetFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8021,6 +8649,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8031,6 +8660,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8041,6 +8671,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8051,6 +8682,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8060,6 +8692,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeByMoidExecute(r ApiGetFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8128,7 +8761,7 @@ func (r ApiGetFirmwareChassisUpgradeListRequest) Expand(expand string) ApiGetFir
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareChassisUpgradeListRequest) Apply(apply string) ApiGetFirmwareChassisUpgradeListRequest {
 	r.apply = &apply
 	return r
@@ -8165,8 +8798,8 @@ func (r ApiGetFirmwareChassisUpgradeListRequest) Execute() (*FirmwareChassisUpgr
 /*
 GetFirmwareChassisUpgradeList Read a 'firmware.ChassisUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareChassisUpgradeListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareChassisUpgradeListRequest
 */
 func (a *FirmwareApiService) GetFirmwareChassisUpgradeList(ctx context.Context) ApiGetFirmwareChassisUpgradeListRequest {
 	return ApiGetFirmwareChassisUpgradeListRequest{
@@ -8176,7 +8809,8 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return FirmwareChassisUpgradeResponse
+//
+//	@return FirmwareChassisUpgradeResponse
 func (a *FirmwareApiService) GetFirmwareChassisUpgradeListExecute(r ApiGetFirmwareChassisUpgradeListRequest) (*FirmwareChassisUpgradeResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8197,37 +8831,52 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeListExecute(r ApiGetFirmwa
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8256,9 +8905,9 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeListExecute(r ApiGetFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8275,6 +8924,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8285,6 +8935,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8295,6 +8946,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8305,6 +8957,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8314,6 +8967,7 @@ func (a *FirmwareApiService) GetFirmwareChassisUpgradeListExecute(r ApiGetFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8336,16 +8990,16 @@ type ApiGetFirmwareCimcDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareCimcDescriptorByMoidRequest) Execute() (*FirmwareCimcDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareCimcDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareCimcDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareCimcDescriptorByMoid Read a 'firmware.CimcDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareCimcDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareCimcDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareCimcDescriptorByMoidRequest {
 	return ApiGetFirmwareCimcDescriptorByMoidRequest{
@@ -8356,13 +9010,14 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return FirmwareCimcDescriptor
-func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoidExecute(r ApiGetFirmwareCimcDescriptorByMoidRequest) (*FirmwareCimcDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoidExecute(r ApiGetFirmwareCimcDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareCimcDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareCimcDescriptorByMoid")
@@ -8371,7 +9026,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoidExecute(r ApiGetFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/CimcDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8404,9 +9059,9 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoidExecute(r ApiGetFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8423,6 +9078,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8433,6 +9089,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8443,6 +9100,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8453,6 +9111,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8462,6 +9121,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorByMoidExecute(r ApiGetFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8530,7 +9190,7 @@ func (r ApiGetFirmwareCimcDescriptorListRequest) Expand(expand string) ApiGetFir
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareCimcDescriptorListRequest) Apply(apply string) ApiGetFirmwareCimcDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -8567,8 +9227,8 @@ func (r ApiGetFirmwareCimcDescriptorListRequest) Execute() (*FirmwareCimcDescrip
 /*
 GetFirmwareCimcDescriptorList Read a 'firmware.CimcDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareCimcDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareCimcDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareCimcDescriptorList(ctx context.Context) ApiGetFirmwareCimcDescriptorListRequest {
 	return ApiGetFirmwareCimcDescriptorListRequest{
@@ -8578,7 +9238,8 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return FirmwareCimcDescriptorResponse
+//
+//	@return FirmwareCimcDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareCimcDescriptorListExecute(r ApiGetFirmwareCimcDescriptorListRequest) (*FirmwareCimcDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8599,37 +9260,52 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorListExecute(r ApiGetFirmwa
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8658,9 +9334,9 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorListExecute(r ApiGetFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8677,6 +9353,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8687,6 +9364,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8697,6 +9375,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8707,6 +9386,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8716,6 +9396,7 @@ func (a *FirmwareApiService) GetFirmwareCimcDescriptorListExecute(r ApiGetFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8738,16 +9419,16 @@ type ApiGetFirmwareDimmDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareDimmDescriptorByMoidRequest) Execute() (*FirmwareDimmDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareDimmDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareDimmDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareDimmDescriptorByMoid Read a 'firmware.DimmDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareDimmDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareDimmDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareDimmDescriptorByMoidRequest {
 	return ApiGetFirmwareDimmDescriptorByMoidRequest{
@@ -8758,13 +9439,14 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return FirmwareDimmDescriptor
-func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoidExecute(r ApiGetFirmwareDimmDescriptorByMoidRequest) (*FirmwareDimmDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoidExecute(r ApiGetFirmwareDimmDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareDimmDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareDimmDescriptorByMoid")
@@ -8773,7 +9455,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoidExecute(r ApiGetFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DimmDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8806,9 +9488,9 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoidExecute(r ApiGetFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8825,6 +9507,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8835,6 +9518,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8845,6 +9529,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8855,6 +9540,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8864,6 +9550,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorByMoidExecute(r ApiGetFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8932,7 +9619,7 @@ func (r ApiGetFirmwareDimmDescriptorListRequest) Expand(expand string) ApiGetFir
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareDimmDescriptorListRequest) Apply(apply string) ApiGetFirmwareDimmDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -8969,8 +9656,8 @@ func (r ApiGetFirmwareDimmDescriptorListRequest) Execute() (*FirmwareDimmDescrip
 /*
 GetFirmwareDimmDescriptorList Read a 'firmware.DimmDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareDimmDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareDimmDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareDimmDescriptorList(ctx context.Context) ApiGetFirmwareDimmDescriptorListRequest {
 	return ApiGetFirmwareDimmDescriptorListRequest{
@@ -8980,7 +9667,8 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return FirmwareDimmDescriptorResponse
+//
+//	@return FirmwareDimmDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareDimmDescriptorListExecute(r ApiGetFirmwareDimmDescriptorListRequest) (*FirmwareDimmDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9001,37 +9689,52 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorListExecute(r ApiGetFirmwa
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9060,9 +9763,9 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorListExecute(r ApiGetFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9079,6 +9782,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9089,6 +9793,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9099,6 +9804,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9109,6 +9815,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9118,6 +9825,7 @@ func (a *FirmwareApiService) GetFirmwareDimmDescriptorListExecute(r ApiGetFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9147,9 +9855,9 @@ func (r ApiGetFirmwareDistributableByMoidRequest) Execute() (*FirmwareDistributa
 /*
 GetFirmwareDistributableByMoid Read a 'firmware.Distributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareDistributableByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareDistributableByMoid(ctx context.Context, moid string) ApiGetFirmwareDistributableByMoidRequest {
 	return ApiGetFirmwareDistributableByMoidRequest{
@@ -9160,7 +9868,8 @@ func (a *FirmwareApiService) GetFirmwareDistributableByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return FirmwareDistributable
+//
+//	@return FirmwareDistributable
 func (a *FirmwareApiService) GetFirmwareDistributableByMoidExecute(r ApiGetFirmwareDistributableByMoidRequest) (*FirmwareDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9175,7 +9884,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableByMoidExecute(r ApiGetFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/Distributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9208,9 +9917,9 @@ func (a *FirmwareApiService) GetFirmwareDistributableByMoidExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9227,6 +9936,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9237,6 +9947,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9247,6 +9958,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9257,6 +9969,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9266,6 +9979,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableByMoidExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9334,7 +10048,7 @@ func (r ApiGetFirmwareDistributableListRequest) Expand(expand string) ApiGetFirm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareDistributableListRequest) Apply(apply string) ApiGetFirmwareDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -9371,8 +10085,8 @@ func (r ApiGetFirmwareDistributableListRequest) Execute() (*FirmwareDistributabl
 /*
 GetFirmwareDistributableList Read a 'firmware.Distributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareDistributableListRequest
 */
 func (a *FirmwareApiService) GetFirmwareDistributableList(ctx context.Context) ApiGetFirmwareDistributableListRequest {
 	return ApiGetFirmwareDistributableListRequest{
@@ -9382,7 +10096,8 @@ func (a *FirmwareApiService) GetFirmwareDistributableList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareDistributableResponse
+//
+//	@return FirmwareDistributableResponse
 func (a *FirmwareApiService) GetFirmwareDistributableListExecute(r ApiGetFirmwareDistributableListRequest) (*FirmwareDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9403,37 +10118,52 @@ func (a *FirmwareApiService) GetFirmwareDistributableListExecute(r ApiGetFirmwar
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9462,9 +10192,9 @@ func (a *FirmwareApiService) GetFirmwareDistributableListExecute(r ApiGetFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9481,6 +10211,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9491,6 +10222,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9501,6 +10233,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9511,6 +10244,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9520,6 +10254,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableListExecute(r ApiGetFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9549,9 +10284,9 @@ func (r ApiGetFirmwareDistributableMetaByMoidRequest) Execute() (*FirmwareDistri
 /*
 GetFirmwareDistributableMetaByMoid Read a 'firmware.DistributableMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareDistributableMetaByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareDistributableMetaByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoid(ctx context.Context, moid string) ApiGetFirmwareDistributableMetaByMoidRequest {
 	return ApiGetFirmwareDistributableMetaByMoidRequest{
@@ -9562,7 +10297,8 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return FirmwareDistributableMeta
+//
+//	@return FirmwareDistributableMeta
 func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoidExecute(r ApiGetFirmwareDistributableMetaByMoidRequest) (*FirmwareDistributableMeta, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9577,7 +10313,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoidExecute(r ApiGetF
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DistributableMeta/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9610,9 +10346,9 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoidExecute(r ApiGetF
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9629,6 +10365,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoidExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9639,6 +10376,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoidExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9649,6 +10387,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoidExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9659,6 +10398,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoidExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9668,6 +10408,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaByMoidExecute(r ApiGetF
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9736,7 +10477,7 @@ func (r ApiGetFirmwareDistributableMetaListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareDistributableMetaListRequest) Apply(apply string) ApiGetFirmwareDistributableMetaListRequest {
 	r.apply = &apply
 	return r
@@ -9773,8 +10514,8 @@ func (r ApiGetFirmwareDistributableMetaListRequest) Execute() (*FirmwareDistribu
 /*
 GetFirmwareDistributableMetaList Read a 'firmware.DistributableMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareDistributableMetaListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareDistributableMetaListRequest
 */
 func (a *FirmwareApiService) GetFirmwareDistributableMetaList(ctx context.Context) ApiGetFirmwareDistributableMetaListRequest {
 	return ApiGetFirmwareDistributableMetaListRequest{
@@ -9784,7 +10525,8 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return FirmwareDistributableMetaResponse
+//
+//	@return FirmwareDistributableMetaResponse
 func (a *FirmwareApiService) GetFirmwareDistributableMetaListExecute(r ApiGetFirmwareDistributableMetaListRequest) (*FirmwareDistributableMetaResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9805,37 +10547,52 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaListExecute(r ApiGetFir
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9864,9 +10621,9 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaListExecute(r ApiGetFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9883,6 +10640,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaListExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9893,6 +10651,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaListExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9903,6 +10662,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaListExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9913,6 +10673,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaListExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9922,6 +10683,7 @@ func (a *FirmwareApiService) GetFirmwareDistributableMetaListExecute(r ApiGetFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9944,16 +10706,16 @@ type ApiGetFirmwareDriveDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareDriveDescriptorByMoidRequest) Execute() (*FirmwareDriveDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareDriveDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareDriveDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareDriveDescriptorByMoid Read a 'firmware.DriveDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareDriveDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareDriveDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareDriveDescriptorByMoidRequest {
 	return ApiGetFirmwareDriveDescriptorByMoidRequest{
@@ -9964,13 +10726,14 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return FirmwareDriveDescriptor
-func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoidExecute(r ApiGetFirmwareDriveDescriptorByMoidRequest) (*FirmwareDriveDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoidExecute(r ApiGetFirmwareDriveDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareDriveDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareDriveDescriptorByMoid")
@@ -9979,7 +10742,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoidExecute(r ApiGetFir
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DriveDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10012,9 +10775,9 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoidExecute(r ApiGetFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10031,6 +10794,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10041,6 +10805,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10051,6 +10816,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10061,6 +10827,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10070,6 +10837,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorByMoidExecute(r ApiGetFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10138,7 +10906,7 @@ func (r ApiGetFirmwareDriveDescriptorListRequest) Expand(expand string) ApiGetFi
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareDriveDescriptorListRequest) Apply(apply string) ApiGetFirmwareDriveDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -10175,8 +10943,8 @@ func (r ApiGetFirmwareDriveDescriptorListRequest) Execute() (*FirmwareDriveDescr
 /*
 GetFirmwareDriveDescriptorList Read a 'firmware.DriveDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareDriveDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareDriveDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareDriveDescriptorList(ctx context.Context) ApiGetFirmwareDriveDescriptorListRequest {
 	return ApiGetFirmwareDriveDescriptorListRequest{
@@ -10186,7 +10954,8 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return FirmwareDriveDescriptorResponse
+//
+//	@return FirmwareDriveDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareDriveDescriptorListExecute(r ApiGetFirmwareDriveDescriptorListRequest) (*FirmwareDriveDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10207,37 +10976,52 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorListExecute(r ApiGetFirmw
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10266,9 +11050,9 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorListExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10285,6 +11069,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10295,6 +11080,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10305,6 +11091,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10315,6 +11102,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10324,6 +11112,7 @@ func (a *FirmwareApiService) GetFirmwareDriveDescriptorListExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10353,9 +11142,9 @@ func (r ApiGetFirmwareDriverDistributableByMoidRequest) Execute() (*FirmwareDriv
 /*
 GetFirmwareDriverDistributableByMoid Read a 'firmware.DriverDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareDriverDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareDriverDistributableByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoid(ctx context.Context, moid string) ApiGetFirmwareDriverDistributableByMoidRequest {
 	return ApiGetFirmwareDriverDistributableByMoidRequest{
@@ -10366,7 +11155,8 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoid(ctx context.Co
 }
 
 // Execute executes the request
-//  @return FirmwareDriverDistributable
+//
+//	@return FirmwareDriverDistributable
 func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoidExecute(r ApiGetFirmwareDriverDistributableByMoidRequest) (*FirmwareDriverDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10381,7 +11171,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoidExecute(r ApiGe
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DriverDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10414,9 +11204,9 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoidExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10433,6 +11223,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10443,6 +11234,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10453,6 +11245,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10463,6 +11256,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10472,6 +11266,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableByMoidExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10540,7 +11335,7 @@ func (r ApiGetFirmwareDriverDistributableListRequest) Expand(expand string) ApiG
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareDriverDistributableListRequest) Apply(apply string) ApiGetFirmwareDriverDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -10577,8 +11372,8 @@ func (r ApiGetFirmwareDriverDistributableListRequest) Execute() (*FirmwareDriver
 /*
 GetFirmwareDriverDistributableList Read a 'firmware.DriverDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareDriverDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareDriverDistributableListRequest
 */
 func (a *FirmwareApiService) GetFirmwareDriverDistributableList(ctx context.Context) ApiGetFirmwareDriverDistributableListRequest {
 	return ApiGetFirmwareDriverDistributableListRequest{
@@ -10588,7 +11383,8 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableList(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return FirmwareDriverDistributableResponse
+//
+//	@return FirmwareDriverDistributableResponse
 func (a *FirmwareApiService) GetFirmwareDriverDistributableListExecute(r ApiGetFirmwareDriverDistributableListRequest) (*FirmwareDriverDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10609,37 +11405,52 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableListExecute(r ApiGetF
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10668,9 +11479,9 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableListExecute(r ApiGetF
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10687,6 +11498,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableListExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10697,6 +11509,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableListExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10707,6 +11520,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableListExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10717,6 +11531,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableListExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10726,6 +11541,7 @@ func (a *FirmwareApiService) GetFirmwareDriverDistributableListExecute(r ApiGetF
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10755,9 +11571,9 @@ func (r ApiGetFirmwareEulaByMoidRequest) Execute() (*FirmwareEula, *http.Respons
 /*
 GetFirmwareEulaByMoid Read a 'firmware.Eula' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareEulaByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareEulaByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareEulaByMoid(ctx context.Context, moid string) ApiGetFirmwareEulaByMoidRequest {
 	return ApiGetFirmwareEulaByMoidRequest{
@@ -10768,7 +11584,8 @@ func (a *FirmwareApiService) GetFirmwareEulaByMoid(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return FirmwareEula
+//
+//	@return FirmwareEula
 func (a *FirmwareApiService) GetFirmwareEulaByMoidExecute(r ApiGetFirmwareEulaByMoidRequest) (*FirmwareEula, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10783,7 +11600,7 @@ func (a *FirmwareApiService) GetFirmwareEulaByMoidExecute(r ApiGetFirmwareEulaBy
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/Eulas/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10816,9 +11633,9 @@ func (a *FirmwareApiService) GetFirmwareEulaByMoidExecute(r ApiGetFirmwareEulaBy
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10835,6 +11652,7 @@ func (a *FirmwareApiService) GetFirmwareEulaByMoidExecute(r ApiGetFirmwareEulaBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10845,6 +11663,7 @@ func (a *FirmwareApiService) GetFirmwareEulaByMoidExecute(r ApiGetFirmwareEulaBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10855,6 +11674,7 @@ func (a *FirmwareApiService) GetFirmwareEulaByMoidExecute(r ApiGetFirmwareEulaBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10865,6 +11685,7 @@ func (a *FirmwareApiService) GetFirmwareEulaByMoidExecute(r ApiGetFirmwareEulaBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10874,6 +11695,7 @@ func (a *FirmwareApiService) GetFirmwareEulaByMoidExecute(r ApiGetFirmwareEulaBy
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10942,7 +11764,7 @@ func (r ApiGetFirmwareEulaListRequest) Expand(expand string) ApiGetFirmwareEulaL
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareEulaListRequest) Apply(apply string) ApiGetFirmwareEulaListRequest {
 	r.apply = &apply
 	return r
@@ -10979,8 +11801,8 @@ func (r ApiGetFirmwareEulaListRequest) Execute() (*FirmwareEulaResponse, *http.R
 /*
 GetFirmwareEulaList Read a 'firmware.Eula' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareEulaListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareEulaListRequest
 */
 func (a *FirmwareApiService) GetFirmwareEulaList(ctx context.Context) ApiGetFirmwareEulaListRequest {
 	return ApiGetFirmwareEulaListRequest{
@@ -10990,7 +11812,8 @@ func (a *FirmwareApiService) GetFirmwareEulaList(ctx context.Context) ApiGetFirm
 }
 
 // Execute executes the request
-//  @return FirmwareEulaResponse
+//
+//	@return FirmwareEulaResponse
 func (a *FirmwareApiService) GetFirmwareEulaListExecute(r ApiGetFirmwareEulaListRequest) (*FirmwareEulaResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11011,37 +11834,52 @@ func (a *FirmwareApiService) GetFirmwareEulaListExecute(r ApiGetFirmwareEulaList
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -11070,9 +11908,9 @@ func (a *FirmwareApiService) GetFirmwareEulaListExecute(r ApiGetFirmwareEulaList
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11089,6 +11927,7 @@ func (a *FirmwareApiService) GetFirmwareEulaListExecute(r ApiGetFirmwareEulaList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11099,6 +11938,7 @@ func (a *FirmwareApiService) GetFirmwareEulaListExecute(r ApiGetFirmwareEulaList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11109,6 +11949,7 @@ func (a *FirmwareApiService) GetFirmwareEulaListExecute(r ApiGetFirmwareEulaList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11119,6 +11960,7 @@ func (a *FirmwareApiService) GetFirmwareEulaListExecute(r ApiGetFirmwareEulaList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11128,6 +11970,7 @@ func (a *FirmwareApiService) GetFirmwareEulaListExecute(r ApiGetFirmwareEulaList
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11157,9 +12000,9 @@ func (r ApiGetFirmwareFirmwareSummaryByMoidRequest) Execute() (*FirmwareFirmware
 /*
 GetFirmwareFirmwareSummaryByMoid Read a 'firmware.FirmwareSummary' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareFirmwareSummaryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareFirmwareSummaryByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoid(ctx context.Context, moid string) ApiGetFirmwareFirmwareSummaryByMoidRequest {
 	return ApiGetFirmwareFirmwareSummaryByMoidRequest{
@@ -11170,7 +12013,8 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return FirmwareFirmwareSummary
+//
+//	@return FirmwareFirmwareSummary
 func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoidExecute(r ApiGetFirmwareFirmwareSummaryByMoidRequest) (*FirmwareFirmwareSummary, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11185,7 +12029,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoidExecute(r ApiGetFir
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/FirmwareSummaries/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11218,9 +12062,9 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoidExecute(r ApiGetFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11237,6 +12081,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11247,6 +12092,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11257,6 +12103,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11267,6 +12114,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11276,6 +12124,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryByMoidExecute(r ApiGetFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11344,7 +12193,7 @@ func (r ApiGetFirmwareFirmwareSummaryListRequest) Expand(expand string) ApiGetFi
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareFirmwareSummaryListRequest) Apply(apply string) ApiGetFirmwareFirmwareSummaryListRequest {
 	r.apply = &apply
 	return r
@@ -11381,8 +12230,8 @@ func (r ApiGetFirmwareFirmwareSummaryListRequest) Execute() (*FirmwareFirmwareSu
 /*
 GetFirmwareFirmwareSummaryList Read a 'firmware.FirmwareSummary' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareFirmwareSummaryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareFirmwareSummaryListRequest
 */
 func (a *FirmwareApiService) GetFirmwareFirmwareSummaryList(ctx context.Context) ApiGetFirmwareFirmwareSummaryListRequest {
 	return ApiGetFirmwareFirmwareSummaryListRequest{
@@ -11392,7 +12241,8 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return FirmwareFirmwareSummaryResponse
+//
+//	@return FirmwareFirmwareSummaryResponse
 func (a *FirmwareApiService) GetFirmwareFirmwareSummaryListExecute(r ApiGetFirmwareFirmwareSummaryListRequest) (*FirmwareFirmwareSummaryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11413,37 +12263,52 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryListExecute(r ApiGetFirmw
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -11472,9 +12337,9 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryListExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11491,6 +12356,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11501,6 +12367,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11511,6 +12378,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11521,6 +12389,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11530,6 +12399,7 @@ func (a *FirmwareApiService) GetFirmwareFirmwareSummaryListExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11552,16 +12422,16 @@ type ApiGetFirmwareGpuDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareGpuDescriptorByMoidRequest) Execute() (*FirmwareGpuDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareGpuDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareGpuDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareGpuDescriptorByMoid Read a 'firmware.GpuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareGpuDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareGpuDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareGpuDescriptorByMoidRequest {
 	return ApiGetFirmwareGpuDescriptorByMoidRequest{
@@ -11572,13 +12442,14 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return FirmwareGpuDescriptor
-func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoidExecute(r ApiGetFirmwareGpuDescriptorByMoidRequest) (*FirmwareGpuDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoidExecute(r ApiGetFirmwareGpuDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareGpuDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareGpuDescriptorByMoid")
@@ -11587,7 +12458,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoidExecute(r ApiGetFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/GpuDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11620,9 +12491,9 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoidExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11639,6 +12510,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11649,6 +12521,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11659,6 +12532,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11669,6 +12543,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11678,6 +12553,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorByMoidExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11746,7 +12622,7 @@ func (r ApiGetFirmwareGpuDescriptorListRequest) Expand(expand string) ApiGetFirm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareGpuDescriptorListRequest) Apply(apply string) ApiGetFirmwareGpuDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -11783,8 +12659,8 @@ func (r ApiGetFirmwareGpuDescriptorListRequest) Execute() (*FirmwareGpuDescripto
 /*
 GetFirmwareGpuDescriptorList Read a 'firmware.GpuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareGpuDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareGpuDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareGpuDescriptorList(ctx context.Context) ApiGetFirmwareGpuDescriptorListRequest {
 	return ApiGetFirmwareGpuDescriptorListRequest{
@@ -11794,7 +12670,8 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareGpuDescriptorResponse
+//
+//	@return FirmwareGpuDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareGpuDescriptorListExecute(r ApiGetFirmwareGpuDescriptorListRequest) (*FirmwareGpuDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11815,37 +12692,52 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorListExecute(r ApiGetFirmwar
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -11874,9 +12766,9 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorListExecute(r ApiGetFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11893,6 +12785,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11903,6 +12796,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11913,6 +12807,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11923,6 +12818,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11932,6 +12828,7 @@ func (a *FirmwareApiService) GetFirmwareGpuDescriptorListExecute(r ApiGetFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11954,16 +12851,16 @@ type ApiGetFirmwareHbaDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareHbaDescriptorByMoidRequest) Execute() (*FirmwareHbaDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareHbaDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareHbaDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareHbaDescriptorByMoid Read a 'firmware.HbaDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareHbaDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareHbaDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareHbaDescriptorByMoidRequest {
 	return ApiGetFirmwareHbaDescriptorByMoidRequest{
@@ -11974,13 +12871,14 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return FirmwareHbaDescriptor
-func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoidExecute(r ApiGetFirmwareHbaDescriptorByMoidRequest) (*FirmwareHbaDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoidExecute(r ApiGetFirmwareHbaDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareHbaDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareHbaDescriptorByMoid")
@@ -11989,7 +12887,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoidExecute(r ApiGetFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/HbaDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12022,9 +12920,9 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoidExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12041,6 +12939,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12051,6 +12950,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12061,6 +12961,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12071,6 +12972,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12080,6 +12982,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorByMoidExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12148,7 +13051,7 @@ func (r ApiGetFirmwareHbaDescriptorListRequest) Expand(expand string) ApiGetFirm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareHbaDescriptorListRequest) Apply(apply string) ApiGetFirmwareHbaDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -12185,8 +13088,8 @@ func (r ApiGetFirmwareHbaDescriptorListRequest) Execute() (*FirmwareHbaDescripto
 /*
 GetFirmwareHbaDescriptorList Read a 'firmware.HbaDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareHbaDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareHbaDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareHbaDescriptorList(ctx context.Context) ApiGetFirmwareHbaDescriptorListRequest {
 	return ApiGetFirmwareHbaDescriptorListRequest{
@@ -12196,7 +13099,8 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareHbaDescriptorResponse
+//
+//	@return FirmwareHbaDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareHbaDescriptorListExecute(r ApiGetFirmwareHbaDescriptorListRequest) (*FirmwareHbaDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12217,37 +13121,52 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorListExecute(r ApiGetFirmwar
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -12276,9 +13195,9 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorListExecute(r ApiGetFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12295,6 +13214,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12305,6 +13225,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12315,6 +13236,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12325,6 +13247,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12334,6 +13257,7 @@ func (a *FirmwareApiService) GetFirmwareHbaDescriptorListExecute(r ApiGetFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12356,16 +13280,16 @@ type ApiGetFirmwareIomDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareIomDescriptorByMoidRequest) Execute() (*FirmwareIomDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareIomDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareIomDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareIomDescriptorByMoid Read a 'firmware.IomDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareIomDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareIomDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareIomDescriptorByMoidRequest {
 	return ApiGetFirmwareIomDescriptorByMoidRequest{
@@ -12376,13 +13300,14 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return FirmwareIomDescriptor
-func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoidExecute(r ApiGetFirmwareIomDescriptorByMoidRequest) (*FirmwareIomDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoidExecute(r ApiGetFirmwareIomDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareIomDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareIomDescriptorByMoid")
@@ -12391,7 +13316,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoidExecute(r ApiGetFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/IomDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12424,9 +13349,9 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoidExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12443,6 +13368,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12453,6 +13379,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12463,6 +13390,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12473,6 +13401,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12482,6 +13411,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorByMoidExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12550,7 +13480,7 @@ func (r ApiGetFirmwareIomDescriptorListRequest) Expand(expand string) ApiGetFirm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareIomDescriptorListRequest) Apply(apply string) ApiGetFirmwareIomDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -12587,8 +13517,8 @@ func (r ApiGetFirmwareIomDescriptorListRequest) Execute() (*FirmwareIomDescripto
 /*
 GetFirmwareIomDescriptorList Read a 'firmware.IomDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareIomDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareIomDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareIomDescriptorList(ctx context.Context) ApiGetFirmwareIomDescriptorListRequest {
 	return ApiGetFirmwareIomDescriptorListRequest{
@@ -12598,7 +13528,8 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareIomDescriptorResponse
+//
+//	@return FirmwareIomDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareIomDescriptorListExecute(r ApiGetFirmwareIomDescriptorListRequest) (*FirmwareIomDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12619,37 +13550,52 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorListExecute(r ApiGetFirmwar
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -12678,9 +13624,9 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorListExecute(r ApiGetFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12697,6 +13643,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12707,6 +13654,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12717,6 +13665,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12727,6 +13676,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12736,6 +13686,7 @@ func (a *FirmwareApiService) GetFirmwareIomDescriptorListExecute(r ApiGetFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12758,16 +13709,16 @@ type ApiGetFirmwareMswitchDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareMswitchDescriptorByMoidRequest) Execute() (*FirmwareMswitchDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareMswitchDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareMswitchDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareMswitchDescriptorByMoid Read a 'firmware.MswitchDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareMswitchDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareMswitchDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareMswitchDescriptorByMoidRequest {
 	return ApiGetFirmwareMswitchDescriptorByMoidRequest{
@@ -12778,13 +13729,14 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return FirmwareMswitchDescriptor
-func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoidExecute(r ApiGetFirmwareMswitchDescriptorByMoidRequest) (*FirmwareMswitchDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoidExecute(r ApiGetFirmwareMswitchDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareMswitchDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareMswitchDescriptorByMoid")
@@ -12793,7 +13745,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoidExecute(r ApiGetF
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/MswitchDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12826,9 +13778,9 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoidExecute(r ApiGetF
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12845,6 +13797,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoidExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12855,6 +13808,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoidExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12865,6 +13819,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoidExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12875,6 +13830,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoidExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12884,6 +13840,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorByMoidExecute(r ApiGetF
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12952,7 +13909,7 @@ func (r ApiGetFirmwareMswitchDescriptorListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareMswitchDescriptorListRequest) Apply(apply string) ApiGetFirmwareMswitchDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -12989,8 +13946,8 @@ func (r ApiGetFirmwareMswitchDescriptorListRequest) Execute() (*FirmwareMswitchD
 /*
 GetFirmwareMswitchDescriptorList Read a 'firmware.MswitchDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareMswitchDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareMswitchDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareMswitchDescriptorList(ctx context.Context) ApiGetFirmwareMswitchDescriptorListRequest {
 	return ApiGetFirmwareMswitchDescriptorListRequest{
@@ -13000,7 +13957,8 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return FirmwareMswitchDescriptorResponse
+//
+//	@return FirmwareMswitchDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareMswitchDescriptorListExecute(r ApiGetFirmwareMswitchDescriptorListRequest) (*FirmwareMswitchDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13021,37 +13979,52 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorListExecute(r ApiGetFir
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -13080,9 +14053,9 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorListExecute(r ApiGetFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13099,6 +14072,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorListExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13109,6 +14083,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorListExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13119,6 +14094,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorListExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13129,6 +14105,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorListExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13138,6 +14115,7 @@ func (a *FirmwareApiService) GetFirmwareMswitchDescriptorListExecute(r ApiGetFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13160,16 +14138,16 @@ type ApiGetFirmwareNxosDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareNxosDescriptorByMoidRequest) Execute() (*FirmwareNxosDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareNxosDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareNxosDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareNxosDescriptorByMoid Read a 'firmware.NxosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareNxosDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareNxosDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareNxosDescriptorByMoidRequest {
 	return ApiGetFirmwareNxosDescriptorByMoidRequest{
@@ -13180,13 +14158,14 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return FirmwareNxosDescriptor
-func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoidExecute(r ApiGetFirmwareNxosDescriptorByMoidRequest) (*FirmwareNxosDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoidExecute(r ApiGetFirmwareNxosDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareNxosDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareNxosDescriptorByMoid")
@@ -13195,7 +14174,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoidExecute(r ApiGetFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/NxosDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13228,9 +14207,9 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoidExecute(r ApiGetFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13247,6 +14226,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13257,6 +14237,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13267,6 +14248,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13277,6 +14259,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13286,6 +14269,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorByMoidExecute(r ApiGetFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13354,7 +14338,7 @@ func (r ApiGetFirmwareNxosDescriptorListRequest) Expand(expand string) ApiGetFir
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareNxosDescriptorListRequest) Apply(apply string) ApiGetFirmwareNxosDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -13391,8 +14375,8 @@ func (r ApiGetFirmwareNxosDescriptorListRequest) Execute() (*FirmwareNxosDescrip
 /*
 GetFirmwareNxosDescriptorList Read a 'firmware.NxosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareNxosDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareNxosDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareNxosDescriptorList(ctx context.Context) ApiGetFirmwareNxosDescriptorListRequest {
 	return ApiGetFirmwareNxosDescriptorListRequest{
@@ -13402,7 +14386,8 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return FirmwareNxosDescriptorResponse
+//
+//	@return FirmwareNxosDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareNxosDescriptorListExecute(r ApiGetFirmwareNxosDescriptorListRequest) (*FirmwareNxosDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13423,37 +14408,52 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorListExecute(r ApiGetFirmwa
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -13482,9 +14482,9 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorListExecute(r ApiGetFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13501,6 +14501,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13511,6 +14512,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13521,6 +14523,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13531,6 +14534,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13540,6 +14544,7 @@ func (a *FirmwareApiService) GetFirmwareNxosDescriptorListExecute(r ApiGetFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13562,16 +14567,16 @@ type ApiGetFirmwarePcieDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwarePcieDescriptorByMoidRequest) Execute() (*FirmwarePcieDescriptor, *http.Response, error) {
+func (r ApiGetFirmwarePcieDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwarePcieDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwarePcieDescriptorByMoid Read a 'firmware.PcieDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwarePcieDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwarePcieDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwarePcieDescriptorByMoidRequest {
 	return ApiGetFirmwarePcieDescriptorByMoidRequest{
@@ -13582,13 +14587,14 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return FirmwarePcieDescriptor
-func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoidExecute(r ApiGetFirmwarePcieDescriptorByMoidRequest) (*FirmwarePcieDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoidExecute(r ApiGetFirmwarePcieDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwarePcieDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwarePcieDescriptorByMoid")
@@ -13597,7 +14603,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoidExecute(r ApiGetFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/PcieDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13630,9 +14636,9 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoidExecute(r ApiGetFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13649,6 +14655,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13659,6 +14666,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13669,6 +14677,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13679,6 +14688,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoidExecute(r ApiGetFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13688,6 +14698,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorByMoidExecute(r ApiGetFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13756,7 +14767,7 @@ func (r ApiGetFirmwarePcieDescriptorListRequest) Expand(expand string) ApiGetFir
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwarePcieDescriptorListRequest) Apply(apply string) ApiGetFirmwarePcieDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -13793,8 +14804,8 @@ func (r ApiGetFirmwarePcieDescriptorListRequest) Execute() (*FirmwarePcieDescrip
 /*
 GetFirmwarePcieDescriptorList Read a 'firmware.PcieDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwarePcieDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwarePcieDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwarePcieDescriptorList(ctx context.Context) ApiGetFirmwarePcieDescriptorListRequest {
 	return ApiGetFirmwarePcieDescriptorListRequest{
@@ -13804,7 +14815,8 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return FirmwarePcieDescriptorResponse
+//
+//	@return FirmwarePcieDescriptorResponse
 func (a *FirmwareApiService) GetFirmwarePcieDescriptorListExecute(r ApiGetFirmwarePcieDescriptorListRequest) (*FirmwarePcieDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13825,37 +14837,52 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorListExecute(r ApiGetFirmwa
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -13884,9 +14911,9 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorListExecute(r ApiGetFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13903,6 +14930,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13913,6 +14941,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13923,6 +14952,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13933,6 +14963,7 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorListExecute(r ApiGetFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13942,6 +14973,436 @@ func (a *FirmwareApiService) GetFirmwarePcieDescriptorListExecute(r ApiGetFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetFirmwarePolicyByMoidRequest struct {
+	ctx        context.Context
+	ApiService *FirmwareApiService
+	moid       string
+}
+
+func (r ApiGetFirmwarePolicyByMoidRequest) Execute() (*FirmwarePolicy, *http.Response, error) {
+	return r.ApiService.GetFirmwarePolicyByMoidExecute(r)
+}
+
+/*
+GetFirmwarePolicyByMoid Read a 'firmware.Policy' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwarePolicyByMoidRequest
+*/
+func (a *FirmwareApiService) GetFirmwarePolicyByMoid(ctx context.Context, moid string) ApiGetFirmwarePolicyByMoidRequest {
+	return ApiGetFirmwarePolicyByMoidRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return FirmwarePolicy
+func (a *FirmwareApiService) GetFirmwarePolicyByMoidExecute(r ApiGetFirmwarePolicyByMoidRequest) (*FirmwarePolicy, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FirmwarePolicy
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwarePolicyByMoid")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/firmware/Policies/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetFirmwarePolicyListRequest struct {
+	ctx         context.Context
+	ApiService  *FirmwareApiService
+	filter      *string
+	orderby     *string
+	top         *int32
+	skip        *int32
+	select_     *string
+	expand      *string
+	apply       *string
+	count       *bool
+	inlinecount *string
+	at          *string
+	tags        *string
+}
+
+// Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
+func (r ApiGetFirmwarePolicyListRequest) Filter(filter string) ApiGetFirmwarePolicyListRequest {
+	r.filter = &filter
+	return r
+}
+
+// Determines what properties are used to sort the collection of resources.
+func (r ApiGetFirmwarePolicyListRequest) Orderby(orderby string) ApiGetFirmwarePolicyListRequest {
+	r.orderby = &orderby
+	return r
+}
+
+// Specifies the maximum number of resources to return in the response.
+func (r ApiGetFirmwarePolicyListRequest) Top(top int32) ApiGetFirmwarePolicyListRequest {
+	r.top = &top
+	return r
+}
+
+// Specifies the number of resources to skip in the response.
+func (r ApiGetFirmwarePolicyListRequest) Skip(skip int32) ApiGetFirmwarePolicyListRequest {
+	r.skip = &skip
+	return r
+}
+
+// Specifies a subset of properties to return.
+func (r ApiGetFirmwarePolicyListRequest) Select_(select_ string) ApiGetFirmwarePolicyListRequest {
+	r.select_ = &select_
+	return r
+}
+
+// Specify additional attributes or related resources to return in addition to the primary resources.
+func (r ApiGetFirmwarePolicyListRequest) Expand(expand string) ApiGetFirmwarePolicyListRequest {
+	r.expand = &expand
+	return r
+}
+
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetFirmwarePolicyListRequest) Apply(apply string) ApiGetFirmwarePolicyListRequest {
+	r.apply = &apply
+	return r
+}
+
+// The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
+func (r ApiGetFirmwarePolicyListRequest) Count(count bool) ApiGetFirmwarePolicyListRequest {
+	r.count = &count
+	return r
+}
+
+// The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+func (r ApiGetFirmwarePolicyListRequest) Inlinecount(inlinecount string) ApiGetFirmwarePolicyListRequest {
+	r.inlinecount = &inlinecount
+	return r
+}
+
+// Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
+func (r ApiGetFirmwarePolicyListRequest) At(at string) ApiGetFirmwarePolicyListRequest {
+	r.at = &at
+	return r
+}
+
+// The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
+func (r ApiGetFirmwarePolicyListRequest) Tags(tags string) ApiGetFirmwarePolicyListRequest {
+	r.tags = &tags
+	return r
+}
+
+func (r ApiGetFirmwarePolicyListRequest) Execute() (*FirmwarePolicyResponse, *http.Response, error) {
+	return r.ApiService.GetFirmwarePolicyListExecute(r)
+}
+
+/*
+GetFirmwarePolicyList Read a 'firmware.Policy' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwarePolicyListRequest
+*/
+func (a *FirmwareApiService) GetFirmwarePolicyList(ctx context.Context) ApiGetFirmwarePolicyListRequest {
+	return ApiGetFirmwarePolicyListRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return FirmwarePolicyResponse
+func (a *FirmwareApiService) GetFirmwarePolicyListExecute(r ApiGetFirmwarePolicyListRequest) (*FirmwarePolicyResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FirmwarePolicyResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwarePolicyList")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/firmware/Policies"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.filter != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
+	}
+	if r.orderby != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
+	}
+	if r.top != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
+	}
+	if r.select_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
+	}
+	if r.expand != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
+	}
+	if r.apply != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
+	}
+	if r.inlinecount != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
+	}
+	if r.at != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13964,16 +15425,16 @@ type ApiGetFirmwarePsuDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwarePsuDescriptorByMoidRequest) Execute() (*FirmwarePsuDescriptor, *http.Response, error) {
+func (r ApiGetFirmwarePsuDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwarePsuDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwarePsuDescriptorByMoid Read a 'firmware.PsuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwarePsuDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwarePsuDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwarePsuDescriptorByMoidRequest {
 	return ApiGetFirmwarePsuDescriptorByMoidRequest{
@@ -13984,13 +15445,14 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return FirmwarePsuDescriptor
-func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoidExecute(r ApiGetFirmwarePsuDescriptorByMoidRequest) (*FirmwarePsuDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoidExecute(r ApiGetFirmwarePsuDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwarePsuDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwarePsuDescriptorByMoid")
@@ -13999,7 +15461,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoidExecute(r ApiGetFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/PsuDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14032,9 +15494,9 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoidExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14051,6 +15513,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14061,6 +15524,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14071,6 +15535,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14081,6 +15546,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14090,6 +15556,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorByMoidExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14158,7 +15625,7 @@ func (r ApiGetFirmwarePsuDescriptorListRequest) Expand(expand string) ApiGetFirm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwarePsuDescriptorListRequest) Apply(apply string) ApiGetFirmwarePsuDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -14195,8 +15662,8 @@ func (r ApiGetFirmwarePsuDescriptorListRequest) Execute() (*FirmwarePsuDescripto
 /*
 GetFirmwarePsuDescriptorList Read a 'firmware.PsuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwarePsuDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwarePsuDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwarePsuDescriptorList(ctx context.Context) ApiGetFirmwarePsuDescriptorListRequest {
 	return ApiGetFirmwarePsuDescriptorListRequest{
@@ -14206,7 +15673,8 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwarePsuDescriptorResponse
+//
+//	@return FirmwarePsuDescriptorResponse
 func (a *FirmwareApiService) GetFirmwarePsuDescriptorListExecute(r ApiGetFirmwarePsuDescriptorListRequest) (*FirmwarePsuDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14227,37 +15695,52 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorListExecute(r ApiGetFirmwar
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -14286,9 +15769,9 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorListExecute(r ApiGetFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14305,6 +15788,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14315,6 +15799,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14325,6 +15810,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14335,6 +15821,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14344,6 +15831,7 @@ func (a *FirmwareApiService) GetFirmwarePsuDescriptorListExecute(r ApiGetFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14373,9 +15861,9 @@ func (r ApiGetFirmwareRunningFirmwareByMoidRequest) Execute() (*FirmwareRunningF
 /*
 GetFirmwareRunningFirmwareByMoid Read a 'firmware.RunningFirmware' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareRunningFirmwareByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareRunningFirmwareByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoid(ctx context.Context, moid string) ApiGetFirmwareRunningFirmwareByMoidRequest {
 	return ApiGetFirmwareRunningFirmwareByMoidRequest{
@@ -14386,7 +15874,8 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return FirmwareRunningFirmware
+//
+//	@return FirmwareRunningFirmware
 func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoidExecute(r ApiGetFirmwareRunningFirmwareByMoidRequest) (*FirmwareRunningFirmware, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14401,7 +15890,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoidExecute(r ApiGetFir
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/RunningFirmwares/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14434,9 +15923,9 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoidExecute(r ApiGetFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14453,6 +15942,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14463,6 +15953,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14473,6 +15964,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14483,6 +15975,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoidExecute(r ApiGetFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14492,6 +15985,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareByMoidExecute(r ApiGetFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14560,7 +16054,7 @@ func (r ApiGetFirmwareRunningFirmwareListRequest) Expand(expand string) ApiGetFi
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareRunningFirmwareListRequest) Apply(apply string) ApiGetFirmwareRunningFirmwareListRequest {
 	r.apply = &apply
 	return r
@@ -14597,8 +16091,8 @@ func (r ApiGetFirmwareRunningFirmwareListRequest) Execute() (*FirmwareRunningFir
 /*
 GetFirmwareRunningFirmwareList Read a 'firmware.RunningFirmware' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareRunningFirmwareListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareRunningFirmwareListRequest
 */
 func (a *FirmwareApiService) GetFirmwareRunningFirmwareList(ctx context.Context) ApiGetFirmwareRunningFirmwareListRequest {
 	return ApiGetFirmwareRunningFirmwareListRequest{
@@ -14608,7 +16102,8 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return FirmwareRunningFirmwareResponse
+//
+//	@return FirmwareRunningFirmwareResponse
 func (a *FirmwareApiService) GetFirmwareRunningFirmwareListExecute(r ApiGetFirmwareRunningFirmwareListRequest) (*FirmwareRunningFirmwareResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14629,37 +16124,52 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareListExecute(r ApiGetFirmw
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -14688,9 +16198,9 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareListExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14707,6 +16217,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14717,6 +16228,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14727,6 +16239,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14737,6 +16250,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareListExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14746,6 +16260,7 @@ func (a *FirmwareApiService) GetFirmwareRunningFirmwareListExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14768,16 +16283,16 @@ type ApiGetFirmwareSasExpanderDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareSasExpanderDescriptorByMoidRequest) Execute() (*FirmwareSasExpanderDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareSasExpanderDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareSasExpanderDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareSasExpanderDescriptorByMoid Read a 'firmware.SasExpanderDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareSasExpanderDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareSasExpanderDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareSasExpanderDescriptorByMoidRequest {
 	return ApiGetFirmwareSasExpanderDescriptorByMoidRequest{
@@ -14788,13 +16303,14 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoid(ctx context.
 }
 
 // Execute executes the request
-//  @return FirmwareSasExpanderDescriptor
-func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoidExecute(r ApiGetFirmwareSasExpanderDescriptorByMoidRequest) (*FirmwareSasExpanderDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoidExecute(r ApiGetFirmwareSasExpanderDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareSasExpanderDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareSasExpanderDescriptorByMoid")
@@ -14803,7 +16319,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoidExecute(r Api
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/SasExpanderDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14836,9 +16352,9 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoidExecute(r Api
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14855,6 +16371,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14865,6 +16382,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14875,6 +16393,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14885,6 +16404,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14894,6 +16414,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorByMoidExecute(r Api
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14962,7 +16483,7 @@ func (r ApiGetFirmwareSasExpanderDescriptorListRequest) Expand(expand string) Ap
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareSasExpanderDescriptorListRequest) Apply(apply string) ApiGetFirmwareSasExpanderDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -14999,8 +16520,8 @@ func (r ApiGetFirmwareSasExpanderDescriptorListRequest) Execute() (*FirmwareSasE
 /*
 GetFirmwareSasExpanderDescriptorList Read a 'firmware.SasExpanderDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareSasExpanderDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareSasExpanderDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorList(ctx context.Context) ApiGetFirmwareSasExpanderDescriptorListRequest {
 	return ApiGetFirmwareSasExpanderDescriptorListRequest{
@@ -15010,7 +16531,8 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorList(ctx context.Co
 }
 
 // Execute executes the request
-//  @return FirmwareSasExpanderDescriptorResponse
+//
+//	@return FirmwareSasExpanderDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorListExecute(r ApiGetFirmwareSasExpanderDescriptorListRequest) (*FirmwareSasExpanderDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15031,37 +16553,52 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorListExecute(r ApiGe
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -15090,9 +16627,9 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorListExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15109,6 +16646,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15119,6 +16657,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15129,6 +16668,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15139,6 +16679,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15148,6 +16689,7 @@ func (a *FirmwareApiService) GetFirmwareSasExpanderDescriptorListExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15177,9 +16719,9 @@ func (r ApiGetFirmwareServerConfigurationUtilityDistributableByMoidRequest) Exec
 /*
 GetFirmwareServerConfigurationUtilityDistributableByMoid Read a 'firmware.ServerConfigurationUtilityDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareServerConfigurationUtilityDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareServerConfigurationUtilityDistributableByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableByMoid(ctx context.Context, moid string) ApiGetFirmwareServerConfigurationUtilityDistributableByMoidRequest {
 	return ApiGetFirmwareServerConfigurationUtilityDistributableByMoidRequest{
@@ -15190,7 +16732,8 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableB
 }
 
 // Execute executes the request
-//  @return FirmwareServerConfigurationUtilityDistributable
+//
+//	@return FirmwareServerConfigurationUtilityDistributable
 func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableByMoidExecute(r ApiGetFirmwareServerConfigurationUtilityDistributableByMoidRequest) (*FirmwareServerConfigurationUtilityDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15205,7 +16748,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableB
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/ServerConfigurationUtilityDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15238,9 +16781,9 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableB
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15257,6 +16800,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15267,6 +16811,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15277,6 +16822,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15287,6 +16833,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15296,6 +16843,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableB
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15364,7 +16912,7 @@ func (r ApiGetFirmwareServerConfigurationUtilityDistributableListRequest) Expand
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareServerConfigurationUtilityDistributableListRequest) Apply(apply string) ApiGetFirmwareServerConfigurationUtilityDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -15401,8 +16949,8 @@ func (r ApiGetFirmwareServerConfigurationUtilityDistributableListRequest) Execut
 /*
 GetFirmwareServerConfigurationUtilityDistributableList Read a 'firmware.ServerConfigurationUtilityDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareServerConfigurationUtilityDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareServerConfigurationUtilityDistributableListRequest
 */
 func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableList(ctx context.Context) ApiGetFirmwareServerConfigurationUtilityDistributableListRequest {
 	return ApiGetFirmwareServerConfigurationUtilityDistributableListRequest{
@@ -15412,7 +16960,8 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableL
 }
 
 // Execute executes the request
-//  @return FirmwareServerConfigurationUtilityDistributableResponse
+//
+//	@return FirmwareServerConfigurationUtilityDistributableResponse
 func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableListExecute(r ApiGetFirmwareServerConfigurationUtilityDistributableListRequest) (*FirmwareServerConfigurationUtilityDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15433,37 +16982,52 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableL
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -15492,9 +17056,9 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableL
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15511,6 +17075,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15521,6 +17086,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15531,6 +17097,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15541,6 +17108,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15550,6 +17118,7 @@ func (a *FirmwareApiService) GetFirmwareServerConfigurationUtilityDistributableL
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15572,16 +17141,16 @@ type ApiGetFirmwareStorageControllerDescriptorByMoidRequest struct {
 	moid       string
 }
 
-func (r ApiGetFirmwareStorageControllerDescriptorByMoidRequest) Execute() (*FirmwareStorageControllerDescriptor, *http.Response, error) {
+func (r ApiGetFirmwareStorageControllerDescriptorByMoidRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.GetFirmwareStorageControllerDescriptorByMoidExecute(r)
 }
 
 /*
 GetFirmwareStorageControllerDescriptorByMoid Read a 'firmware.StorageControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareStorageControllerDescriptorByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareStorageControllerDescriptorByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoid(ctx context.Context, moid string) ApiGetFirmwareStorageControllerDescriptorByMoidRequest {
 	return ApiGetFirmwareStorageControllerDescriptorByMoidRequest{
@@ -15592,13 +17161,14 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoid(ctx co
 }
 
 // Execute executes the request
-//  @return FirmwareStorageControllerDescriptor
-func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoidExecute(r ApiGetFirmwareStorageControllerDescriptorByMoidRequest) (*FirmwareStorageControllerDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoidExecute(r ApiGetFirmwareStorageControllerDescriptorByMoidRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareStorageControllerDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.GetFirmwareStorageControllerDescriptorByMoid")
@@ -15607,7 +17177,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoidExecute
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/StorageControllerDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15640,9 +17210,9 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoidExecute
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15659,6 +17229,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoidExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15669,6 +17240,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoidExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15679,6 +17251,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoidExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15689,6 +17262,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoidExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15698,6 +17272,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorByMoidExecute
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15766,7 +17341,7 @@ func (r ApiGetFirmwareStorageControllerDescriptorListRequest) Expand(expand stri
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareStorageControllerDescriptorListRequest) Apply(apply string) ApiGetFirmwareStorageControllerDescriptorListRequest {
 	r.apply = &apply
 	return r
@@ -15803,8 +17378,8 @@ func (r ApiGetFirmwareStorageControllerDescriptorListRequest) Execute() (*Firmwa
 /*
 GetFirmwareStorageControllerDescriptorList Read a 'firmware.StorageControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareStorageControllerDescriptorListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareStorageControllerDescriptorListRequest
 */
 func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorList(ctx context.Context) ApiGetFirmwareStorageControllerDescriptorListRequest {
 	return ApiGetFirmwareStorageControllerDescriptorListRequest{
@@ -15814,7 +17389,8 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorList(ctx cont
 }
 
 // Execute executes the request
-//  @return FirmwareStorageControllerDescriptorResponse
+//
+//	@return FirmwareStorageControllerDescriptorResponse
 func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorListExecute(r ApiGetFirmwareStorageControllerDescriptorListRequest) (*FirmwareStorageControllerDescriptorResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15835,37 +17411,52 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorListExecute(r
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -15894,9 +17485,9 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorListExecute(r
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15913,6 +17504,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15923,6 +17515,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15933,6 +17526,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15943,6 +17537,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15952,6 +17547,7 @@ func (a *FirmwareApiService) GetFirmwareStorageControllerDescriptorListExecute(r
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15981,9 +17577,9 @@ func (r ApiGetFirmwareSwitchUpgradeByMoidRequest) Execute() (*FirmwareSwitchUpgr
 /*
 GetFirmwareSwitchUpgradeByMoid Read a 'firmware.SwitchUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareSwitchUpgradeByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareSwitchUpgradeByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoid(ctx context.Context, moid string) ApiGetFirmwareSwitchUpgradeByMoidRequest {
 	return ApiGetFirmwareSwitchUpgradeByMoidRequest{
@@ -15994,7 +17590,8 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return FirmwareSwitchUpgrade
+//
+//	@return FirmwareSwitchUpgrade
 func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoidExecute(r ApiGetFirmwareSwitchUpgradeByMoidRequest) (*FirmwareSwitchUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16009,7 +17606,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoidExecute(r ApiGetFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/SwitchUpgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16042,9 +17639,9 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoidExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16061,6 +17658,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16071,6 +17669,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16081,6 +17680,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16091,6 +17691,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16100,6 +17701,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeByMoidExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16168,7 +17770,7 @@ func (r ApiGetFirmwareSwitchUpgradeListRequest) Expand(expand string) ApiGetFirm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareSwitchUpgradeListRequest) Apply(apply string) ApiGetFirmwareSwitchUpgradeListRequest {
 	r.apply = &apply
 	return r
@@ -16205,8 +17807,8 @@ func (r ApiGetFirmwareSwitchUpgradeListRequest) Execute() (*FirmwareSwitchUpgrad
 /*
 GetFirmwareSwitchUpgradeList Read a 'firmware.SwitchUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareSwitchUpgradeListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareSwitchUpgradeListRequest
 */
 func (a *FirmwareApiService) GetFirmwareSwitchUpgradeList(ctx context.Context) ApiGetFirmwareSwitchUpgradeListRequest {
 	return ApiGetFirmwareSwitchUpgradeListRequest{
@@ -16216,7 +17818,8 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareSwitchUpgradeResponse
+//
+//	@return FirmwareSwitchUpgradeResponse
 func (a *FirmwareApiService) GetFirmwareSwitchUpgradeListExecute(r ApiGetFirmwareSwitchUpgradeListRequest) (*FirmwareSwitchUpgradeResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16237,37 +17840,52 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeListExecute(r ApiGetFirmwar
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -16296,9 +17914,9 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeListExecute(r ApiGetFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16315,6 +17933,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16325,6 +17944,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16335,6 +17955,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16345,6 +17966,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16354,6 +17976,7 @@ func (a *FirmwareApiService) GetFirmwareSwitchUpgradeListExecute(r ApiGetFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16383,9 +18006,9 @@ func (r ApiGetFirmwareUnsupportedVersionUpgradeByMoidRequest) Execute() (*Firmwa
 /*
 GetFirmwareUnsupportedVersionUpgradeByMoid Read a 'firmware.UnsupportedVersionUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareUnsupportedVersionUpgradeByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareUnsupportedVersionUpgradeByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoid(ctx context.Context, moid string) ApiGetFirmwareUnsupportedVersionUpgradeByMoidRequest {
 	return ApiGetFirmwareUnsupportedVersionUpgradeByMoidRequest{
@@ -16396,7 +18019,8 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoid(ctx cont
 }
 
 // Execute executes the request
-//  @return FirmwareUnsupportedVersionUpgrade
+//
+//	@return FirmwareUnsupportedVersionUpgrade
 func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoidExecute(r ApiGetFirmwareUnsupportedVersionUpgradeByMoidRequest) (*FirmwareUnsupportedVersionUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16411,7 +18035,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoidExecute(r
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/UnsupportedVersionUpgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16444,9 +18068,9 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoidExecute(r
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16463,6 +18087,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoidExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16473,6 +18098,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoidExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16483,6 +18109,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoidExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16493,6 +18120,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoidExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16502,6 +18130,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeByMoidExecute(r
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16570,7 +18199,7 @@ func (r ApiGetFirmwareUnsupportedVersionUpgradeListRequest) Expand(expand string
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareUnsupportedVersionUpgradeListRequest) Apply(apply string) ApiGetFirmwareUnsupportedVersionUpgradeListRequest {
 	r.apply = &apply
 	return r
@@ -16607,8 +18236,8 @@ func (r ApiGetFirmwareUnsupportedVersionUpgradeListRequest) Execute() (*Firmware
 /*
 GetFirmwareUnsupportedVersionUpgradeList Read a 'firmware.UnsupportedVersionUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareUnsupportedVersionUpgradeListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareUnsupportedVersionUpgradeListRequest
 */
 func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeList(ctx context.Context) ApiGetFirmwareUnsupportedVersionUpgradeListRequest {
 	return ApiGetFirmwareUnsupportedVersionUpgradeListRequest{
@@ -16618,7 +18247,8 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeList(ctx contex
 }
 
 // Execute executes the request
-//  @return FirmwareUnsupportedVersionUpgradeResponse
+//
+//	@return FirmwareUnsupportedVersionUpgradeResponse
 func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeListExecute(r ApiGetFirmwareUnsupportedVersionUpgradeListRequest) (*FirmwareUnsupportedVersionUpgradeResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16639,37 +18269,52 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeListExecute(r A
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -16698,9 +18343,9 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeListExecute(r A
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16717,6 +18362,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16727,6 +18373,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16737,6 +18384,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16747,6 +18395,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeListExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16756,6 +18405,7 @@ func (a *FirmwareApiService) GetFirmwareUnsupportedVersionUpgradeListExecute(r A
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16785,9 +18435,9 @@ func (r ApiGetFirmwareUpgradeByMoidRequest) Execute() (*FirmwareUpgrade, *http.R
 /*
 GetFirmwareUpgradeByMoid Read a 'firmware.Upgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareUpgradeByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareUpgradeByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareUpgradeByMoid(ctx context.Context, moid string) ApiGetFirmwareUpgradeByMoidRequest {
 	return ApiGetFirmwareUpgradeByMoidRequest{
@@ -16798,7 +18448,8 @@ func (a *FirmwareApiService) GetFirmwareUpgradeByMoid(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return FirmwareUpgrade
+//
+//	@return FirmwareUpgrade
 func (a *FirmwareApiService) GetFirmwareUpgradeByMoidExecute(r ApiGetFirmwareUpgradeByMoidRequest) (*FirmwareUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16813,7 +18464,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeByMoidExecute(r ApiGetFirmwareUpg
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/Upgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16846,9 +18497,9 @@ func (a *FirmwareApiService) GetFirmwareUpgradeByMoidExecute(r ApiGetFirmwareUpg
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16865,6 +18516,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeByMoidExecute(r ApiGetFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16875,6 +18527,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeByMoidExecute(r ApiGetFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16885,6 +18538,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeByMoidExecute(r ApiGetFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16895,6 +18549,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeByMoidExecute(r ApiGetFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16904,6 +18559,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeByMoidExecute(r ApiGetFirmwareUpg
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16933,9 +18589,9 @@ func (r ApiGetFirmwareUpgradeImpactStatusByMoidRequest) Execute() (*FirmwareUpgr
 /*
 GetFirmwareUpgradeImpactStatusByMoid Read a 'firmware.UpgradeImpactStatus' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareUpgradeImpactStatusByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareUpgradeImpactStatusByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoid(ctx context.Context, moid string) ApiGetFirmwareUpgradeImpactStatusByMoidRequest {
 	return ApiGetFirmwareUpgradeImpactStatusByMoidRequest{
@@ -16946,7 +18602,8 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoid(ctx context.Co
 }
 
 // Execute executes the request
-//  @return FirmwareUpgradeImpactStatus
+//
+//	@return FirmwareUpgradeImpactStatus
 func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoidExecute(r ApiGetFirmwareUpgradeImpactStatusByMoidRequest) (*FirmwareUpgradeImpactStatus, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16961,7 +18618,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoidExecute(r ApiGe
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/UpgradeImpactStatuses/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16994,9 +18651,9 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoidExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17013,6 +18670,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17023,6 +18681,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17033,6 +18692,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17043,6 +18703,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17052,6 +18713,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusByMoidExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17120,7 +18782,7 @@ func (r ApiGetFirmwareUpgradeImpactStatusListRequest) Expand(expand string) ApiG
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareUpgradeImpactStatusListRequest) Apply(apply string) ApiGetFirmwareUpgradeImpactStatusListRequest {
 	r.apply = &apply
 	return r
@@ -17157,8 +18819,8 @@ func (r ApiGetFirmwareUpgradeImpactStatusListRequest) Execute() (*FirmwareUpgrad
 /*
 GetFirmwareUpgradeImpactStatusList Read a 'firmware.UpgradeImpactStatus' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareUpgradeImpactStatusListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareUpgradeImpactStatusListRequest
 */
 func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusList(ctx context.Context) ApiGetFirmwareUpgradeImpactStatusListRequest {
 	return ApiGetFirmwareUpgradeImpactStatusListRequest{
@@ -17168,7 +18830,8 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusList(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return FirmwareUpgradeImpactStatusResponse
+//
+//	@return FirmwareUpgradeImpactStatusResponse
 func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusListExecute(r ApiGetFirmwareUpgradeImpactStatusListRequest) (*FirmwareUpgradeImpactStatusResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -17189,37 +18852,52 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusListExecute(r ApiGetF
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -17248,9 +18926,9 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusListExecute(r ApiGetF
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17267,6 +18945,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusListExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17277,6 +18956,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusListExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17287,6 +18967,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusListExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17297,6 +18978,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusListExecute(r ApiGetF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17306,6 +18988,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeImpactStatusListExecute(r ApiGetF
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17374,7 +19057,7 @@ func (r ApiGetFirmwareUpgradeListRequest) Expand(expand string) ApiGetFirmwareUp
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareUpgradeListRequest) Apply(apply string) ApiGetFirmwareUpgradeListRequest {
 	r.apply = &apply
 	return r
@@ -17411,8 +19094,8 @@ func (r ApiGetFirmwareUpgradeListRequest) Execute() (*FirmwareUpgradeResponse, *
 /*
 GetFirmwareUpgradeList Read a 'firmware.Upgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareUpgradeListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareUpgradeListRequest
 */
 func (a *FirmwareApiService) GetFirmwareUpgradeList(ctx context.Context) ApiGetFirmwareUpgradeListRequest {
 	return ApiGetFirmwareUpgradeListRequest{
@@ -17422,7 +19105,8 @@ func (a *FirmwareApiService) GetFirmwareUpgradeList(ctx context.Context) ApiGetF
 }
 
 // Execute executes the request
-//  @return FirmwareUpgradeResponse
+//
+//	@return FirmwareUpgradeResponse
 func (a *FirmwareApiService) GetFirmwareUpgradeListExecute(r ApiGetFirmwareUpgradeListRequest) (*FirmwareUpgradeResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -17443,37 +19127,52 @@ func (a *FirmwareApiService) GetFirmwareUpgradeListExecute(r ApiGetFirmwareUpgra
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -17502,9 +19201,9 @@ func (a *FirmwareApiService) GetFirmwareUpgradeListExecute(r ApiGetFirmwareUpgra
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17521,6 +19220,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeListExecute(r ApiGetFirmwareUpgra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17531,6 +19231,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeListExecute(r ApiGetFirmwareUpgra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17541,6 +19242,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeListExecute(r ApiGetFirmwareUpgra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17551,6 +19253,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeListExecute(r ApiGetFirmwareUpgra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17560,6 +19263,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeListExecute(r ApiGetFirmwareUpgra
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17589,9 +19293,9 @@ func (r ApiGetFirmwareUpgradeStatusByMoidRequest) Execute() (*FirmwareUpgradeSta
 /*
 GetFirmwareUpgradeStatusByMoid Read a 'firmware.UpgradeStatus' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetFirmwareUpgradeStatusByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetFirmwareUpgradeStatusByMoidRequest
 */
 func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoid(ctx context.Context, moid string) ApiGetFirmwareUpgradeStatusByMoidRequest {
 	return ApiGetFirmwareUpgradeStatusByMoidRequest{
@@ -17602,7 +19306,8 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return FirmwareUpgradeStatus
+//
+//	@return FirmwareUpgradeStatus
 func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoidExecute(r ApiGetFirmwareUpgradeStatusByMoidRequest) (*FirmwareUpgradeStatus, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -17617,7 +19322,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoidExecute(r ApiGetFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/UpgradeStatuses/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17650,9 +19355,9 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoidExecute(r ApiGetFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17669,6 +19374,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17679,6 +19385,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17689,6 +19396,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17699,6 +19407,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoidExecute(r ApiGetFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17708,6 +19417,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusByMoidExecute(r ApiGetFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17776,7 +19486,7 @@ func (r ApiGetFirmwareUpgradeStatusListRequest) Expand(expand string) ApiGetFirm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetFirmwareUpgradeStatusListRequest) Apply(apply string) ApiGetFirmwareUpgradeStatusListRequest {
 	r.apply = &apply
 	return r
@@ -17813,8 +19523,8 @@ func (r ApiGetFirmwareUpgradeStatusListRequest) Execute() (*FirmwareUpgradeStatu
 /*
 GetFirmwareUpgradeStatusList Read a 'firmware.UpgradeStatus' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetFirmwareUpgradeStatusListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetFirmwareUpgradeStatusListRequest
 */
 func (a *FirmwareApiService) GetFirmwareUpgradeStatusList(ctx context.Context) ApiGetFirmwareUpgradeStatusListRequest {
 	return ApiGetFirmwareUpgradeStatusListRequest{
@@ -17824,7 +19534,8 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return FirmwareUpgradeStatusResponse
+//
+//	@return FirmwareUpgradeStatusResponse
 func (a *FirmwareApiService) GetFirmwareUpgradeStatusListExecute(r ApiGetFirmwareUpgradeStatusListRequest) (*FirmwareUpgradeStatusResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -17845,37 +19556,52 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusListExecute(r ApiGetFirmwar
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -17904,9 +19630,9 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusListExecute(r ApiGetFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17923,6 +19649,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17933,6 +19660,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17943,6 +19671,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17953,6 +19682,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusListExecute(r ApiGetFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17962,6 +19692,7 @@ func (a *FirmwareApiService) GetFirmwareUpgradeStatusListExecute(r ApiGetFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17998,16 +19729,16 @@ func (r ApiPatchFirmwareBiosDescriptorRequest) IfMatch(ifMatch string) ApiPatchF
 	return r
 }
 
-func (r ApiPatchFirmwareBiosDescriptorRequest) Execute() (*FirmwareBiosDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareBiosDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareBiosDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareBiosDescriptor Update a 'firmware.BiosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareBiosDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareBiosDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareBiosDescriptor(ctx context.Context, moid string) ApiPatchFirmwareBiosDescriptorRequest {
 	return ApiPatchFirmwareBiosDescriptorRequest{
@@ -18018,13 +19749,14 @@ func (a *FirmwareApiService) PatchFirmwareBiosDescriptor(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwareBiosDescriptor
-func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwareBiosDescriptorRequest) (*FirmwareBiosDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwareBiosDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareBiosDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareBiosDescriptor")
@@ -18033,7 +19765,7 @@ func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwa
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/BiosDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18060,7 +19792,7 @@ func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwa
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareBiosDescriptor
@@ -18074,9 +19806,9 @@ func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18093,6 +19825,7 @@ func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18103,6 +19836,7 @@ func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18113,6 +19847,7 @@ func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18123,6 +19858,7 @@ func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18132,6 +19868,7 @@ func (a *FirmwareApiService) PatchFirmwareBiosDescriptorExecute(r ApiPatchFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18168,16 +19905,16 @@ func (r ApiPatchFirmwareBoardControllerDescriptorRequest) IfMatch(ifMatch string
 	return r
 }
 
-func (r ApiPatchFirmwareBoardControllerDescriptorRequest) Execute() (*FirmwareBoardControllerDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareBoardControllerDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareBoardControllerDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareBoardControllerDescriptor Update a 'firmware.BoardControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareBoardControllerDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareBoardControllerDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptor(ctx context.Context, moid string) ApiPatchFirmwareBoardControllerDescriptorRequest {
 	return ApiPatchFirmwareBoardControllerDescriptorRequest{
@@ -18188,13 +19925,14 @@ func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptor(ctx context.
 }
 
 // Execute executes the request
-//  @return FirmwareBoardControllerDescriptor
-func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r ApiPatchFirmwareBoardControllerDescriptorRequest) (*FirmwareBoardControllerDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r ApiPatchFirmwareBoardControllerDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareBoardControllerDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareBoardControllerDescriptor")
@@ -18203,7 +19941,7 @@ func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r Api
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/BoardControllerDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18230,7 +19968,7 @@ func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r Api
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareBoardControllerDescriptor
@@ -18244,9 +19982,9 @@ func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r Api
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18263,6 +20001,7 @@ func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18273,6 +20012,7 @@ func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18283,6 +20023,7 @@ func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18293,6 +20034,7 @@ func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18302,6 +20044,7 @@ func (a *FirmwareApiService) PatchFirmwareBoardControllerDescriptorExecute(r Api
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18338,16 +20081,16 @@ func (r ApiPatchFirmwareCimcDescriptorRequest) IfMatch(ifMatch string) ApiPatchF
 	return r
 }
 
-func (r ApiPatchFirmwareCimcDescriptorRequest) Execute() (*FirmwareCimcDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareCimcDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareCimcDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareCimcDescriptor Update a 'firmware.CimcDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareCimcDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareCimcDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareCimcDescriptor(ctx context.Context, moid string) ApiPatchFirmwareCimcDescriptorRequest {
 	return ApiPatchFirmwareCimcDescriptorRequest{
@@ -18358,13 +20101,14 @@ func (a *FirmwareApiService) PatchFirmwareCimcDescriptor(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwareCimcDescriptor
-func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwareCimcDescriptorRequest) (*FirmwareCimcDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwareCimcDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareCimcDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareCimcDescriptor")
@@ -18373,7 +20117,7 @@ func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwa
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/CimcDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18400,7 +20144,7 @@ func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwa
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareCimcDescriptor
@@ -18414,9 +20158,9 @@ func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18433,6 +20177,7 @@ func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18443,6 +20188,7 @@ func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18453,6 +20199,7 @@ func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18463,6 +20210,7 @@ func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18472,6 +20220,7 @@ func (a *FirmwareApiService) PatchFirmwareCimcDescriptorExecute(r ApiPatchFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18508,16 +20257,16 @@ func (r ApiPatchFirmwareDimmDescriptorRequest) IfMatch(ifMatch string) ApiPatchF
 	return r
 }
 
-func (r ApiPatchFirmwareDimmDescriptorRequest) Execute() (*FirmwareDimmDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareDimmDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareDimmDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareDimmDescriptor Update a 'firmware.DimmDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareDimmDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareDimmDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareDimmDescriptor(ctx context.Context, moid string) ApiPatchFirmwareDimmDescriptorRequest {
 	return ApiPatchFirmwareDimmDescriptorRequest{
@@ -18528,13 +20277,14 @@ func (a *FirmwareApiService) PatchFirmwareDimmDescriptor(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwareDimmDescriptor
-func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwareDimmDescriptorRequest) (*FirmwareDimmDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwareDimmDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareDimmDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareDimmDescriptor")
@@ -18543,7 +20293,7 @@ func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwa
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DimmDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18570,7 +20320,7 @@ func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwa
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDimmDescriptor
@@ -18584,9 +20334,9 @@ func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18603,6 +20353,7 @@ func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18613,6 +20364,7 @@ func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18623,6 +20375,7 @@ func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18633,6 +20386,7 @@ func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18642,6 +20396,7 @@ func (a *FirmwareApiService) PatchFirmwareDimmDescriptorExecute(r ApiPatchFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18685,9 +20440,9 @@ func (r ApiPatchFirmwareDistributableRequest) Execute() (*FirmwareDistributable,
 /*
 PatchFirmwareDistributable Update a 'firmware.Distributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareDistributableRequest
 */
 func (a *FirmwareApiService) PatchFirmwareDistributable(ctx context.Context, moid string) ApiPatchFirmwareDistributableRequest {
 	return ApiPatchFirmwareDistributableRequest{
@@ -18698,7 +20453,8 @@ func (a *FirmwareApiService) PatchFirmwareDistributable(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return FirmwareDistributable
+//
+//	@return FirmwareDistributable
 func (a *FirmwareApiService) PatchFirmwareDistributableExecute(r ApiPatchFirmwareDistributableRequest) (*FirmwareDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -18713,7 +20469,7 @@ func (a *FirmwareApiService) PatchFirmwareDistributableExecute(r ApiPatchFirmwar
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/Distributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18740,7 +20496,7 @@ func (a *FirmwareApiService) PatchFirmwareDistributableExecute(r ApiPatchFirmwar
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDistributable
@@ -18754,9 +20510,9 @@ func (a *FirmwareApiService) PatchFirmwareDistributableExecute(r ApiPatchFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18773,6 +20529,7 @@ func (a *FirmwareApiService) PatchFirmwareDistributableExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18783,6 +20540,7 @@ func (a *FirmwareApiService) PatchFirmwareDistributableExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18793,6 +20551,7 @@ func (a *FirmwareApiService) PatchFirmwareDistributableExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18803,6 +20562,7 @@ func (a *FirmwareApiService) PatchFirmwareDistributableExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18812,6 +20572,7 @@ func (a *FirmwareApiService) PatchFirmwareDistributableExecute(r ApiPatchFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18848,16 +20609,16 @@ func (r ApiPatchFirmwareDriveDescriptorRequest) IfMatch(ifMatch string) ApiPatch
 	return r
 }
 
-func (r ApiPatchFirmwareDriveDescriptorRequest) Execute() (*FirmwareDriveDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareDriveDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareDriveDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareDriveDescriptor Update a 'firmware.DriveDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareDriveDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareDriveDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareDriveDescriptor(ctx context.Context, moid string) ApiPatchFirmwareDriveDescriptorRequest {
 	return ApiPatchFirmwareDriveDescriptorRequest{
@@ -18868,13 +20629,14 @@ func (a *FirmwareApiService) PatchFirmwareDriveDescriptor(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return FirmwareDriveDescriptor
-func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmwareDriveDescriptorRequest) (*FirmwareDriveDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmwareDriveDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareDriveDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareDriveDescriptor")
@@ -18883,7 +20645,7 @@ func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DriveDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18910,7 +20672,7 @@ func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDriveDescriptor
@@ -18924,9 +20686,9 @@ func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18943,6 +20705,7 @@ func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18953,6 +20716,7 @@ func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18963,6 +20727,7 @@ func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18973,6 +20738,7 @@ func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18982,6 +20748,7 @@ func (a *FirmwareApiService) PatchFirmwareDriveDescriptorExecute(r ApiPatchFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19025,9 +20792,9 @@ func (r ApiPatchFirmwareDriverDistributableRequest) Execute() (*FirmwareDriverDi
 /*
 PatchFirmwareDriverDistributable Update a 'firmware.DriverDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareDriverDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareDriverDistributableRequest
 */
 func (a *FirmwareApiService) PatchFirmwareDriverDistributable(ctx context.Context, moid string) ApiPatchFirmwareDriverDistributableRequest {
 	return ApiPatchFirmwareDriverDistributableRequest{
@@ -19038,7 +20805,8 @@ func (a *FirmwareApiService) PatchFirmwareDriverDistributable(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return FirmwareDriverDistributable
+//
+//	@return FirmwareDriverDistributable
 func (a *FirmwareApiService) PatchFirmwareDriverDistributableExecute(r ApiPatchFirmwareDriverDistributableRequest) (*FirmwareDriverDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -19053,7 +20821,7 @@ func (a *FirmwareApiService) PatchFirmwareDriverDistributableExecute(r ApiPatchF
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DriverDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19080,7 +20848,7 @@ func (a *FirmwareApiService) PatchFirmwareDriverDistributableExecute(r ApiPatchF
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDriverDistributable
@@ -19094,9 +20862,9 @@ func (a *FirmwareApiService) PatchFirmwareDriverDistributableExecute(r ApiPatchF
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19113,6 +20881,7 @@ func (a *FirmwareApiService) PatchFirmwareDriverDistributableExecute(r ApiPatchF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19123,6 +20892,7 @@ func (a *FirmwareApiService) PatchFirmwareDriverDistributableExecute(r ApiPatchF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19133,6 +20903,7 @@ func (a *FirmwareApiService) PatchFirmwareDriverDistributableExecute(r ApiPatchF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19143,6 +20914,7 @@ func (a *FirmwareApiService) PatchFirmwareDriverDistributableExecute(r ApiPatchF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19152,6 +20924,7 @@ func (a *FirmwareApiService) PatchFirmwareDriverDistributableExecute(r ApiPatchF
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19188,16 +20961,16 @@ func (r ApiPatchFirmwareGpuDescriptorRequest) IfMatch(ifMatch string) ApiPatchFi
 	return r
 }
 
-func (r ApiPatchFirmwareGpuDescriptorRequest) Execute() (*FirmwareGpuDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareGpuDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareGpuDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareGpuDescriptor Update a 'firmware.GpuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareGpuDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareGpuDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareGpuDescriptor(ctx context.Context, moid string) ApiPatchFirmwareGpuDescriptorRequest {
 	return ApiPatchFirmwareGpuDescriptorRequest{
@@ -19208,13 +20981,14 @@ func (a *FirmwareApiService) PatchFirmwareGpuDescriptor(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return FirmwareGpuDescriptor
-func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwareGpuDescriptorRequest) (*FirmwareGpuDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwareGpuDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareGpuDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareGpuDescriptor")
@@ -19223,7 +20997,7 @@ func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwar
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/GpuDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19250,7 +21024,7 @@ func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwar
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareGpuDescriptor
@@ -19264,9 +21038,9 @@ func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19283,6 +21057,7 @@ func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19293,6 +21068,7 @@ func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19303,6 +21079,7 @@ func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19313,6 +21090,7 @@ func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19322,6 +21100,7 @@ func (a *FirmwareApiService) PatchFirmwareGpuDescriptorExecute(r ApiPatchFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19358,16 +21137,16 @@ func (r ApiPatchFirmwareHbaDescriptorRequest) IfMatch(ifMatch string) ApiPatchFi
 	return r
 }
 
-func (r ApiPatchFirmwareHbaDescriptorRequest) Execute() (*FirmwareHbaDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareHbaDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareHbaDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareHbaDescriptor Update a 'firmware.HbaDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareHbaDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareHbaDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareHbaDescriptor(ctx context.Context, moid string) ApiPatchFirmwareHbaDescriptorRequest {
 	return ApiPatchFirmwareHbaDescriptorRequest{
@@ -19378,13 +21157,14 @@ func (a *FirmwareApiService) PatchFirmwareHbaDescriptor(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return FirmwareHbaDescriptor
-func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwareHbaDescriptorRequest) (*FirmwareHbaDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwareHbaDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareHbaDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareHbaDescriptor")
@@ -19393,7 +21173,7 @@ func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwar
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/HbaDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19420,7 +21200,7 @@ func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwar
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareHbaDescriptor
@@ -19434,9 +21214,9 @@ func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19453,6 +21233,7 @@ func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19463,6 +21244,7 @@ func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19473,6 +21255,7 @@ func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19483,6 +21266,7 @@ func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19492,6 +21276,7 @@ func (a *FirmwareApiService) PatchFirmwareHbaDescriptorExecute(r ApiPatchFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19528,16 +21313,16 @@ func (r ApiPatchFirmwareIomDescriptorRequest) IfMatch(ifMatch string) ApiPatchFi
 	return r
 }
 
-func (r ApiPatchFirmwareIomDescriptorRequest) Execute() (*FirmwareIomDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareIomDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareIomDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareIomDescriptor Update a 'firmware.IomDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareIomDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareIomDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareIomDescriptor(ctx context.Context, moid string) ApiPatchFirmwareIomDescriptorRequest {
 	return ApiPatchFirmwareIomDescriptorRequest{
@@ -19548,13 +21333,14 @@ func (a *FirmwareApiService) PatchFirmwareIomDescriptor(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return FirmwareIomDescriptor
-func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwareIomDescriptorRequest) (*FirmwareIomDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwareIomDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareIomDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareIomDescriptor")
@@ -19563,7 +21349,7 @@ func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwar
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/IomDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19590,7 +21376,7 @@ func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwar
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareIomDescriptor
@@ -19604,9 +21390,9 @@ func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19623,6 +21409,7 @@ func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19633,6 +21420,7 @@ func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19643,6 +21431,7 @@ func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19653,6 +21442,7 @@ func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19662,6 +21452,7 @@ func (a *FirmwareApiService) PatchFirmwareIomDescriptorExecute(r ApiPatchFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19698,16 +21489,16 @@ func (r ApiPatchFirmwareMswitchDescriptorRequest) IfMatch(ifMatch string) ApiPat
 	return r
 }
 
-func (r ApiPatchFirmwareMswitchDescriptorRequest) Execute() (*FirmwareMswitchDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareMswitchDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareMswitchDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareMswitchDescriptor Update a 'firmware.MswitchDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareMswitchDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareMswitchDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareMswitchDescriptor(ctx context.Context, moid string) ApiPatchFirmwareMswitchDescriptorRequest {
 	return ApiPatchFirmwareMswitchDescriptorRequest{
@@ -19718,13 +21509,14 @@ func (a *FirmwareApiService) PatchFirmwareMswitchDescriptor(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return FirmwareMswitchDescriptor
-func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFirmwareMswitchDescriptorRequest) (*FirmwareMswitchDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFirmwareMswitchDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareMswitchDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareMswitchDescriptor")
@@ -19733,7 +21525,7 @@ func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFir
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/MswitchDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19760,7 +21552,7 @@ func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFir
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareMswitchDescriptor
@@ -19774,9 +21566,9 @@ func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19793,6 +21585,7 @@ func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19803,6 +21596,7 @@ func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19813,6 +21607,7 @@ func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19823,6 +21618,7 @@ func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19832,6 +21628,7 @@ func (a *FirmwareApiService) PatchFirmwareMswitchDescriptorExecute(r ApiPatchFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19868,16 +21665,16 @@ func (r ApiPatchFirmwareNxosDescriptorRequest) IfMatch(ifMatch string) ApiPatchF
 	return r
 }
 
-func (r ApiPatchFirmwareNxosDescriptorRequest) Execute() (*FirmwareNxosDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareNxosDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareNxosDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareNxosDescriptor Update a 'firmware.NxosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareNxosDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareNxosDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareNxosDescriptor(ctx context.Context, moid string) ApiPatchFirmwareNxosDescriptorRequest {
 	return ApiPatchFirmwareNxosDescriptorRequest{
@@ -19888,13 +21685,14 @@ func (a *FirmwareApiService) PatchFirmwareNxosDescriptor(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwareNxosDescriptor
-func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwareNxosDescriptorRequest) (*FirmwareNxosDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwareNxosDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareNxosDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareNxosDescriptor")
@@ -19903,7 +21701,7 @@ func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwa
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/NxosDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19930,7 +21728,7 @@ func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwa
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareNxosDescriptor
@@ -19944,9 +21742,9 @@ func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19963,6 +21761,7 @@ func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19973,6 +21772,7 @@ func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19983,6 +21783,7 @@ func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19993,6 +21794,7 @@ func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20002,6 +21804,7 @@ func (a *FirmwareApiService) PatchFirmwareNxosDescriptorExecute(r ApiPatchFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20038,16 +21841,16 @@ func (r ApiPatchFirmwarePcieDescriptorRequest) IfMatch(ifMatch string) ApiPatchF
 	return r
 }
 
-func (r ApiPatchFirmwarePcieDescriptorRequest) Execute() (*FirmwarePcieDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwarePcieDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwarePcieDescriptorExecute(r)
 }
 
 /*
 PatchFirmwarePcieDescriptor Update a 'firmware.PcieDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwarePcieDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwarePcieDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwarePcieDescriptor(ctx context.Context, moid string) ApiPatchFirmwarePcieDescriptorRequest {
 	return ApiPatchFirmwarePcieDescriptorRequest{
@@ -20058,13 +21861,14 @@ func (a *FirmwareApiService) PatchFirmwarePcieDescriptor(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwarePcieDescriptor
-func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwarePcieDescriptorRequest) (*FirmwarePcieDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwarePcieDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwarePcieDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwarePcieDescriptor")
@@ -20073,7 +21877,7 @@ func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwa
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/PcieDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20100,7 +21904,7 @@ func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwa
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwarePcieDescriptor
@@ -20114,9 +21918,9 @@ func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20133,6 +21937,7 @@ func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20143,6 +21948,7 @@ func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20153,6 +21959,7 @@ func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20163,6 +21970,7 @@ func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20172,6 +21980,183 @@ func (a *FirmwareApiService) PatchFirmwarePcieDescriptorExecute(r ApiPatchFirmwa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiPatchFirmwarePolicyRequest struct {
+	ctx            context.Context
+	ApiService     *FirmwareApiService
+	moid           string
+	firmwarePolicy *FirmwarePolicy
+	ifMatch        *string
+}
+
+// The &#39;firmware.Policy&#39; resource to update.
+func (r ApiPatchFirmwarePolicyRequest) FirmwarePolicy(firmwarePolicy FirmwarePolicy) ApiPatchFirmwarePolicyRequest {
+	r.firmwarePolicy = &firmwarePolicy
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiPatchFirmwarePolicyRequest) IfMatch(ifMatch string) ApiPatchFirmwarePolicyRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiPatchFirmwarePolicyRequest) Execute() (*FirmwarePolicy, *http.Response, error) {
+	return r.ApiService.PatchFirmwarePolicyExecute(r)
+}
+
+/*
+PatchFirmwarePolicy Update a 'firmware.Policy' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwarePolicyRequest
+*/
+func (a *FirmwareApiService) PatchFirmwarePolicy(ctx context.Context, moid string) ApiPatchFirmwarePolicyRequest {
+	return ApiPatchFirmwarePolicyRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return FirmwarePolicy
+func (a *FirmwareApiService) PatchFirmwarePolicyExecute(r ApiPatchFirmwarePolicyRequest) (*FirmwarePolicy, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FirmwarePolicy
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwarePolicy")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/firmware/Policies/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.firmwarePolicy == nil {
+		return localVarReturnValue, nil, reportError("firmwarePolicy is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.firmwarePolicy
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20208,16 +22193,16 @@ func (r ApiPatchFirmwarePsuDescriptorRequest) IfMatch(ifMatch string) ApiPatchFi
 	return r
 }
 
-func (r ApiPatchFirmwarePsuDescriptorRequest) Execute() (*FirmwarePsuDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwarePsuDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwarePsuDescriptorExecute(r)
 }
 
 /*
 PatchFirmwarePsuDescriptor Update a 'firmware.PsuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwarePsuDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwarePsuDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwarePsuDescriptor(ctx context.Context, moid string) ApiPatchFirmwarePsuDescriptorRequest {
 	return ApiPatchFirmwarePsuDescriptorRequest{
@@ -20228,13 +22213,14 @@ func (a *FirmwareApiService) PatchFirmwarePsuDescriptor(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return FirmwarePsuDescriptor
-func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwarePsuDescriptorRequest) (*FirmwarePsuDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwarePsuDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwarePsuDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwarePsuDescriptor")
@@ -20243,7 +22229,7 @@ func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwar
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/PsuDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20270,7 +22256,7 @@ func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwar
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwarePsuDescriptor
@@ -20284,9 +22270,9 @@ func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20303,6 +22289,7 @@ func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20313,6 +22300,7 @@ func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20323,6 +22311,7 @@ func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20333,6 +22322,7 @@ func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20342,6 +22332,7 @@ func (a *FirmwareApiService) PatchFirmwarePsuDescriptorExecute(r ApiPatchFirmwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20385,9 +22376,9 @@ func (r ApiPatchFirmwareRunningFirmwareRequest) Execute() (*FirmwareRunningFirmw
 /*
 PatchFirmwareRunningFirmware Update a 'firmware.RunningFirmware' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareRunningFirmwareRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareRunningFirmwareRequest
 */
 func (a *FirmwareApiService) PatchFirmwareRunningFirmware(ctx context.Context, moid string) ApiPatchFirmwareRunningFirmwareRequest {
 	return ApiPatchFirmwareRunningFirmwareRequest{
@@ -20398,7 +22389,8 @@ func (a *FirmwareApiService) PatchFirmwareRunningFirmware(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return FirmwareRunningFirmware
+//
+//	@return FirmwareRunningFirmware
 func (a *FirmwareApiService) PatchFirmwareRunningFirmwareExecute(r ApiPatchFirmwareRunningFirmwareRequest) (*FirmwareRunningFirmware, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -20413,7 +22405,7 @@ func (a *FirmwareApiService) PatchFirmwareRunningFirmwareExecute(r ApiPatchFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/RunningFirmwares/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20440,7 +22432,7 @@ func (a *FirmwareApiService) PatchFirmwareRunningFirmwareExecute(r ApiPatchFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareRunningFirmware
@@ -20454,9 +22446,9 @@ func (a *FirmwareApiService) PatchFirmwareRunningFirmwareExecute(r ApiPatchFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20473,6 +22465,7 @@ func (a *FirmwareApiService) PatchFirmwareRunningFirmwareExecute(r ApiPatchFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20483,6 +22476,7 @@ func (a *FirmwareApiService) PatchFirmwareRunningFirmwareExecute(r ApiPatchFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20493,6 +22487,7 @@ func (a *FirmwareApiService) PatchFirmwareRunningFirmwareExecute(r ApiPatchFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20503,6 +22498,7 @@ func (a *FirmwareApiService) PatchFirmwareRunningFirmwareExecute(r ApiPatchFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20512,6 +22508,7 @@ func (a *FirmwareApiService) PatchFirmwareRunningFirmwareExecute(r ApiPatchFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20548,16 +22545,16 @@ func (r ApiPatchFirmwareSasExpanderDescriptorRequest) IfMatch(ifMatch string) Ap
 	return r
 }
 
-func (r ApiPatchFirmwareSasExpanderDescriptorRequest) Execute() (*FirmwareSasExpanderDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareSasExpanderDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareSasExpanderDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareSasExpanderDescriptor Update a 'firmware.SasExpanderDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareSasExpanderDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareSasExpanderDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptor(ctx context.Context, moid string) ApiPatchFirmwareSasExpanderDescriptorRequest {
 	return ApiPatchFirmwareSasExpanderDescriptorRequest{
@@ -20568,13 +22565,14 @@ func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptor(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return FirmwareSasExpanderDescriptor
-func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatchFirmwareSasExpanderDescriptorRequest) (*FirmwareSasExpanderDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatchFirmwareSasExpanderDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareSasExpanderDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareSasExpanderDescriptor")
@@ -20583,7 +22581,7 @@ func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatc
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/SasExpanderDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20610,7 +22608,7 @@ func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatc
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareSasExpanderDescriptor
@@ -20624,9 +22622,9 @@ func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatc
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20643,6 +22641,7 @@ func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20653,6 +22652,7 @@ func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20663,6 +22663,7 @@ func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20673,6 +22674,7 @@ func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20682,6 +22684,7 @@ func (a *FirmwareApiService) PatchFirmwareSasExpanderDescriptorExecute(r ApiPatc
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20725,9 +22728,9 @@ func (r ApiPatchFirmwareServerConfigurationUtilityDistributableRequest) Execute(
 /*
 PatchFirmwareServerConfigurationUtilityDistributable Update a 'firmware.ServerConfigurationUtilityDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareServerConfigurationUtilityDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareServerConfigurationUtilityDistributableRequest
 */
 func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributable(ctx context.Context, moid string) ApiPatchFirmwareServerConfigurationUtilityDistributableRequest {
 	return ApiPatchFirmwareServerConfigurationUtilityDistributableRequest{
@@ -20738,7 +22741,8 @@ func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributabl
 }
 
 // Execute executes the request
-//  @return FirmwareServerConfigurationUtilityDistributable
+//
+//	@return FirmwareServerConfigurationUtilityDistributable
 func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributableExecute(r ApiPatchFirmwareServerConfigurationUtilityDistributableRequest) (*FirmwareServerConfigurationUtilityDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -20753,7 +22757,7 @@ func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributabl
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/ServerConfigurationUtilityDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20780,7 +22784,7 @@ func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributabl
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareServerConfigurationUtilityDistributable
@@ -20794,9 +22798,9 @@ func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributabl
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20813,6 +22817,7 @@ func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributabl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20823,6 +22828,7 @@ func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributabl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20833,6 +22839,7 @@ func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributabl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20843,6 +22850,7 @@ func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributabl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20852,6 +22860,7 @@ func (a *FirmwareApiService) PatchFirmwareServerConfigurationUtilityDistributabl
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20888,16 +22897,16 @@ func (r ApiPatchFirmwareStorageControllerDescriptorRequest) IfMatch(ifMatch stri
 	return r
 }
 
-func (r ApiPatchFirmwareStorageControllerDescriptorRequest) Execute() (*FirmwareStorageControllerDescriptor, *http.Response, error) {
+func (r ApiPatchFirmwareStorageControllerDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.PatchFirmwareStorageControllerDescriptorExecute(r)
 }
 
 /*
 PatchFirmwareStorageControllerDescriptor Update a 'firmware.StorageControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareStorageControllerDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareStorageControllerDescriptorRequest
 */
 func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptor(ctx context.Context, moid string) ApiPatchFirmwareStorageControllerDescriptorRequest {
 	return ApiPatchFirmwareStorageControllerDescriptorRequest{
@@ -20908,13 +22917,14 @@ func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptor(ctx contex
 }
 
 // Execute executes the request
-//  @return FirmwareStorageControllerDescriptor
-func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r ApiPatchFirmwareStorageControllerDescriptorRequest) (*FirmwareStorageControllerDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r ApiPatchFirmwareStorageControllerDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareStorageControllerDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.PatchFirmwareStorageControllerDescriptor")
@@ -20923,7 +22933,7 @@ func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r A
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/StorageControllerDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20950,7 +22960,7 @@ func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r A
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareStorageControllerDescriptor
@@ -20964,9 +22974,9 @@ func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r A
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20983,6 +22993,7 @@ func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20993,6 +23004,7 @@ func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21003,6 +23015,7 @@ func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21013,6 +23026,7 @@ func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21022,6 +23036,7 @@ func (a *FirmwareApiService) PatchFirmwareStorageControllerDescriptorExecute(r A
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21065,9 +23080,9 @@ func (r ApiPatchFirmwareUnsupportedVersionUpgradeRequest) Execute() (*FirmwareUn
 /*
 PatchFirmwareUnsupportedVersionUpgrade Update a 'firmware.UnsupportedVersionUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareUnsupportedVersionUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareUnsupportedVersionUpgradeRequest
 */
 func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgrade(ctx context.Context, moid string) ApiPatchFirmwareUnsupportedVersionUpgradeRequest {
 	return ApiPatchFirmwareUnsupportedVersionUpgradeRequest{
@@ -21078,7 +23093,8 @@ func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgrade(ctx context.
 }
 
 // Execute executes the request
-//  @return FirmwareUnsupportedVersionUpgrade
+//
+//	@return FirmwareUnsupportedVersionUpgrade
 func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgradeExecute(r ApiPatchFirmwareUnsupportedVersionUpgradeRequest) (*FirmwareUnsupportedVersionUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -21093,7 +23109,7 @@ func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgradeExecute(r Api
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/UnsupportedVersionUpgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21120,7 +23136,7 @@ func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgradeExecute(r Api
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareUnsupportedVersionUpgrade
@@ -21134,9 +23150,9 @@ func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgradeExecute(r Api
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21153,6 +23169,7 @@ func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgradeExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21163,6 +23180,7 @@ func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgradeExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21173,6 +23191,7 @@ func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgradeExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21183,6 +23202,7 @@ func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgradeExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21192,6 +23212,7 @@ func (a *FirmwareApiService) PatchFirmwareUnsupportedVersionUpgradeExecute(r Api
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21235,9 +23256,9 @@ func (r ApiPatchFirmwareUpgradeRequest) Execute() (*FirmwareUpgrade, *http.Respo
 /*
 PatchFirmwareUpgrade Update a 'firmware.Upgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchFirmwareUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchFirmwareUpgradeRequest
 */
 func (a *FirmwareApiService) PatchFirmwareUpgrade(ctx context.Context, moid string) ApiPatchFirmwareUpgradeRequest {
 	return ApiPatchFirmwareUpgradeRequest{
@@ -21248,7 +23269,8 @@ func (a *FirmwareApiService) PatchFirmwareUpgrade(ctx context.Context, moid stri
 }
 
 // Execute executes the request
-//  @return FirmwareUpgrade
+//
+//	@return FirmwareUpgrade
 func (a *FirmwareApiService) PatchFirmwareUpgradeExecute(r ApiPatchFirmwareUpgradeRequest) (*FirmwareUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -21263,7 +23285,7 @@ func (a *FirmwareApiService) PatchFirmwareUpgradeExecute(r ApiPatchFirmwareUpgra
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/Upgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21290,7 +23312,7 @@ func (a *FirmwareApiService) PatchFirmwareUpgradeExecute(r ApiPatchFirmwareUpgra
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareUpgrade
@@ -21304,9 +23326,9 @@ func (a *FirmwareApiService) PatchFirmwareUpgradeExecute(r ApiPatchFirmwareUpgra
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21323,6 +23345,7 @@ func (a *FirmwareApiService) PatchFirmwareUpgradeExecute(r ApiPatchFirmwareUpgra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21333,6 +23356,7 @@ func (a *FirmwareApiService) PatchFirmwareUpgradeExecute(r ApiPatchFirmwareUpgra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21343,6 +23367,7 @@ func (a *FirmwareApiService) PatchFirmwareUpgradeExecute(r ApiPatchFirmwareUpgra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21353,6 +23378,7 @@ func (a *FirmwareApiService) PatchFirmwareUpgradeExecute(r ApiPatchFirmwareUpgra
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21362,6 +23388,7 @@ func (a *FirmwareApiService) PatchFirmwareUpgradeExecute(r ApiPatchFirmwareUpgra
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21398,16 +23425,16 @@ func (r ApiUpdateFirmwareBiosDescriptorRequest) IfMatch(ifMatch string) ApiUpdat
 	return r
 }
 
-func (r ApiUpdateFirmwareBiosDescriptorRequest) Execute() (*FirmwareBiosDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareBiosDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareBiosDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareBiosDescriptor Update a 'firmware.BiosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareBiosDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareBiosDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareBiosDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareBiosDescriptorRequest {
 	return ApiUpdateFirmwareBiosDescriptorRequest{
@@ -21418,13 +23445,14 @@ func (a *FirmwareApiService) UpdateFirmwareBiosDescriptor(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return FirmwareBiosDescriptor
-func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirmwareBiosDescriptorRequest) (*FirmwareBiosDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirmwareBiosDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareBiosDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareBiosDescriptor")
@@ -21433,7 +23461,7 @@ func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/BiosDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21460,7 +23488,7 @@ func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareBiosDescriptor
@@ -21474,9 +23502,9 @@ func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21493,6 +23521,7 @@ func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21503,6 +23532,7 @@ func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21513,6 +23543,7 @@ func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21523,6 +23554,7 @@ func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21532,6 +23564,7 @@ func (a *FirmwareApiService) UpdateFirmwareBiosDescriptorExecute(r ApiUpdateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21568,16 +23601,16 @@ func (r ApiUpdateFirmwareBoardControllerDescriptorRequest) IfMatch(ifMatch strin
 	return r
 }
 
-func (r ApiUpdateFirmwareBoardControllerDescriptorRequest) Execute() (*FirmwareBoardControllerDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareBoardControllerDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareBoardControllerDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareBoardControllerDescriptor Update a 'firmware.BoardControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareBoardControllerDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareBoardControllerDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareBoardControllerDescriptorRequest {
 	return ApiUpdateFirmwareBoardControllerDescriptorRequest{
@@ -21588,13 +23621,14 @@ func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptor(ctx context
 }
 
 // Execute executes the request
-//  @return FirmwareBoardControllerDescriptor
-func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r ApiUpdateFirmwareBoardControllerDescriptorRequest) (*FirmwareBoardControllerDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r ApiUpdateFirmwareBoardControllerDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareBoardControllerDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareBoardControllerDescriptor")
@@ -21603,7 +23637,7 @@ func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/BoardControllerDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21630,7 +23664,7 @@ func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r Ap
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareBoardControllerDescriptor
@@ -21644,9 +23678,9 @@ func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21663,6 +23697,7 @@ func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21673,6 +23708,7 @@ func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21683,6 +23719,7 @@ func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21693,6 +23730,7 @@ func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21702,6 +23740,7 @@ func (a *FirmwareApiService) UpdateFirmwareBoardControllerDescriptorExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21738,16 +23777,16 @@ func (r ApiUpdateFirmwareCimcDescriptorRequest) IfMatch(ifMatch string) ApiUpdat
 	return r
 }
 
-func (r ApiUpdateFirmwareCimcDescriptorRequest) Execute() (*FirmwareCimcDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareCimcDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareCimcDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareCimcDescriptor Update a 'firmware.CimcDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareCimcDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareCimcDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareCimcDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareCimcDescriptorRequest {
 	return ApiUpdateFirmwareCimcDescriptorRequest{
@@ -21758,13 +23797,14 @@ func (a *FirmwareApiService) UpdateFirmwareCimcDescriptor(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return FirmwareCimcDescriptor
-func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirmwareCimcDescriptorRequest) (*FirmwareCimcDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirmwareCimcDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareCimcDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareCimcDescriptor")
@@ -21773,7 +23813,7 @@ func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/CimcDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21800,7 +23840,7 @@ func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareCimcDescriptor
@@ -21814,9 +23854,9 @@ func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21833,6 +23873,7 @@ func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21843,6 +23884,7 @@ func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21853,6 +23895,7 @@ func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21863,6 +23906,7 @@ func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21872,6 +23916,7 @@ func (a *FirmwareApiService) UpdateFirmwareCimcDescriptorExecute(r ApiUpdateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21908,16 +23953,16 @@ func (r ApiUpdateFirmwareDimmDescriptorRequest) IfMatch(ifMatch string) ApiUpdat
 	return r
 }
 
-func (r ApiUpdateFirmwareDimmDescriptorRequest) Execute() (*FirmwareDimmDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareDimmDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareDimmDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareDimmDescriptor Update a 'firmware.DimmDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareDimmDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareDimmDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareDimmDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareDimmDescriptorRequest {
 	return ApiUpdateFirmwareDimmDescriptorRequest{
@@ -21928,13 +23973,14 @@ func (a *FirmwareApiService) UpdateFirmwareDimmDescriptor(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return FirmwareDimmDescriptor
-func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirmwareDimmDescriptorRequest) (*FirmwareDimmDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirmwareDimmDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareDimmDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareDimmDescriptor")
@@ -21943,7 +23989,7 @@ func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DimmDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21970,7 +24016,7 @@ func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDimmDescriptor
@@ -21984,9 +24030,9 @@ func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22003,6 +24049,7 @@ func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22013,6 +24060,7 @@ func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22023,6 +24071,7 @@ func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22033,6 +24082,7 @@ func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22042,6 +24092,7 @@ func (a *FirmwareApiService) UpdateFirmwareDimmDescriptorExecute(r ApiUpdateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22085,9 +24136,9 @@ func (r ApiUpdateFirmwareDistributableRequest) Execute() (*FirmwareDistributable
 /*
 UpdateFirmwareDistributable Update a 'firmware.Distributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareDistributableRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareDistributable(ctx context.Context, moid string) ApiUpdateFirmwareDistributableRequest {
 	return ApiUpdateFirmwareDistributableRequest{
@@ -22098,7 +24149,8 @@ func (a *FirmwareApiService) UpdateFirmwareDistributable(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwareDistributable
+//
+//	@return FirmwareDistributable
 func (a *FirmwareApiService) UpdateFirmwareDistributableExecute(r ApiUpdateFirmwareDistributableRequest) (*FirmwareDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -22113,7 +24165,7 @@ func (a *FirmwareApiService) UpdateFirmwareDistributableExecute(r ApiUpdateFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/Distributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22140,7 +24192,7 @@ func (a *FirmwareApiService) UpdateFirmwareDistributableExecute(r ApiUpdateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDistributable
@@ -22154,9 +24206,9 @@ func (a *FirmwareApiService) UpdateFirmwareDistributableExecute(r ApiUpdateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22173,6 +24225,7 @@ func (a *FirmwareApiService) UpdateFirmwareDistributableExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22183,6 +24236,7 @@ func (a *FirmwareApiService) UpdateFirmwareDistributableExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22193,6 +24247,7 @@ func (a *FirmwareApiService) UpdateFirmwareDistributableExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22203,6 +24258,7 @@ func (a *FirmwareApiService) UpdateFirmwareDistributableExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22212,6 +24268,7 @@ func (a *FirmwareApiService) UpdateFirmwareDistributableExecute(r ApiUpdateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22248,16 +24305,16 @@ func (r ApiUpdateFirmwareDriveDescriptorRequest) IfMatch(ifMatch string) ApiUpda
 	return r
 }
 
-func (r ApiUpdateFirmwareDriveDescriptorRequest) Execute() (*FirmwareDriveDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareDriveDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareDriveDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareDriveDescriptor Update a 'firmware.DriveDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareDriveDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareDriveDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareDriveDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareDriveDescriptorRequest {
 	return ApiUpdateFirmwareDriveDescriptorRequest{
@@ -22268,13 +24325,14 @@ func (a *FirmwareApiService) UpdateFirmwareDriveDescriptor(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return FirmwareDriveDescriptor
-func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFirmwareDriveDescriptorRequest) (*FirmwareDriveDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFirmwareDriveDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareDriveDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareDriveDescriptor")
@@ -22283,7 +24341,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFir
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DriveDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22310,7 +24368,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFir
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDriveDescriptor
@@ -22324,9 +24382,9 @@ func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22343,6 +24401,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22353,6 +24412,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22363,6 +24423,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22373,6 +24434,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22382,6 +24444,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriveDescriptorExecute(r ApiUpdateFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22425,9 +24488,9 @@ func (r ApiUpdateFirmwareDriverDistributableRequest) Execute() (*FirmwareDriverD
 /*
 UpdateFirmwareDriverDistributable Update a 'firmware.DriverDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareDriverDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareDriverDistributableRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareDriverDistributable(ctx context.Context, moid string) ApiUpdateFirmwareDriverDistributableRequest {
 	return ApiUpdateFirmwareDriverDistributableRequest{
@@ -22438,7 +24501,8 @@ func (a *FirmwareApiService) UpdateFirmwareDriverDistributable(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return FirmwareDriverDistributable
+//
+//	@return FirmwareDriverDistributable
 func (a *FirmwareApiService) UpdateFirmwareDriverDistributableExecute(r ApiUpdateFirmwareDriverDistributableRequest) (*FirmwareDriverDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -22453,7 +24517,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriverDistributableExecute(r ApiUpdat
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/DriverDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22480,7 +24544,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriverDistributableExecute(r ApiUpdat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareDriverDistributable
@@ -22494,9 +24558,9 @@ func (a *FirmwareApiService) UpdateFirmwareDriverDistributableExecute(r ApiUpdat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22513,6 +24577,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriverDistributableExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22523,6 +24588,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriverDistributableExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22533,6 +24599,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriverDistributableExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22543,6 +24610,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriverDistributableExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22552,6 +24620,7 @@ func (a *FirmwareApiService) UpdateFirmwareDriverDistributableExecute(r ApiUpdat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22588,16 +24657,16 @@ func (r ApiUpdateFirmwareGpuDescriptorRequest) IfMatch(ifMatch string) ApiUpdate
 	return r
 }
 
-func (r ApiUpdateFirmwareGpuDescriptorRequest) Execute() (*FirmwareGpuDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareGpuDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareGpuDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareGpuDescriptor Update a 'firmware.GpuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareGpuDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareGpuDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareGpuDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareGpuDescriptorRequest {
 	return ApiUpdateFirmwareGpuDescriptorRequest{
@@ -22608,13 +24677,14 @@ func (a *FirmwareApiService) UpdateFirmwareGpuDescriptor(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwareGpuDescriptor
-func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmwareGpuDescriptorRequest) (*FirmwareGpuDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmwareGpuDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareGpuDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareGpuDescriptor")
@@ -22623,7 +24693,7 @@ func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/GpuDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22650,7 +24720,7 @@ func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareGpuDescriptor
@@ -22664,9 +24734,9 @@ func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22683,6 +24753,7 @@ func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22693,6 +24764,7 @@ func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22703,6 +24775,7 @@ func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22713,6 +24786,7 @@ func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22722,6 +24796,7 @@ func (a *FirmwareApiService) UpdateFirmwareGpuDescriptorExecute(r ApiUpdateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22758,16 +24833,16 @@ func (r ApiUpdateFirmwareHbaDescriptorRequest) IfMatch(ifMatch string) ApiUpdate
 	return r
 }
 
-func (r ApiUpdateFirmwareHbaDescriptorRequest) Execute() (*FirmwareHbaDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareHbaDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareHbaDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareHbaDescriptor Update a 'firmware.HbaDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareHbaDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareHbaDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareHbaDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareHbaDescriptorRequest {
 	return ApiUpdateFirmwareHbaDescriptorRequest{
@@ -22778,13 +24853,14 @@ func (a *FirmwareApiService) UpdateFirmwareHbaDescriptor(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwareHbaDescriptor
-func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmwareHbaDescriptorRequest) (*FirmwareHbaDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmwareHbaDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareHbaDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareHbaDescriptor")
@@ -22793,7 +24869,7 @@ func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/HbaDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22820,7 +24896,7 @@ func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareHbaDescriptor
@@ -22834,9 +24910,9 @@ func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22853,6 +24929,7 @@ func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22863,6 +24940,7 @@ func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22873,6 +24951,7 @@ func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22883,6 +24962,7 @@ func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22892,6 +24972,7 @@ func (a *FirmwareApiService) UpdateFirmwareHbaDescriptorExecute(r ApiUpdateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22928,16 +25009,16 @@ func (r ApiUpdateFirmwareIomDescriptorRequest) IfMatch(ifMatch string) ApiUpdate
 	return r
 }
 
-func (r ApiUpdateFirmwareIomDescriptorRequest) Execute() (*FirmwareIomDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareIomDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareIomDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareIomDescriptor Update a 'firmware.IomDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareIomDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareIomDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareIomDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareIomDescriptorRequest {
 	return ApiUpdateFirmwareIomDescriptorRequest{
@@ -22948,13 +25029,14 @@ func (a *FirmwareApiService) UpdateFirmwareIomDescriptor(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwareIomDescriptor
-func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmwareIomDescriptorRequest) (*FirmwareIomDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmwareIomDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareIomDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareIomDescriptor")
@@ -22963,7 +25045,7 @@ func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/IomDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22990,7 +25072,7 @@ func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareIomDescriptor
@@ -23004,9 +25086,9 @@ func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23023,6 +25105,7 @@ func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23033,6 +25116,7 @@ func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23043,6 +25127,7 @@ func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23053,6 +25138,7 @@ func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23062,6 +25148,7 @@ func (a *FirmwareApiService) UpdateFirmwareIomDescriptorExecute(r ApiUpdateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23098,16 +25185,16 @@ func (r ApiUpdateFirmwareMswitchDescriptorRequest) IfMatch(ifMatch string) ApiUp
 	return r
 }
 
-func (r ApiUpdateFirmwareMswitchDescriptorRequest) Execute() (*FirmwareMswitchDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareMswitchDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareMswitchDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareMswitchDescriptor Update a 'firmware.MswitchDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareMswitchDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareMswitchDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareMswitchDescriptorRequest {
 	return ApiUpdateFirmwareMswitchDescriptorRequest{
@@ -23118,13 +25205,14 @@ func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptor(ctx context.Context
 }
 
 // Execute executes the request
-//  @return FirmwareMswitchDescriptor
-func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateFirmwareMswitchDescriptorRequest) (*FirmwareMswitchDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateFirmwareMswitchDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareMswitchDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareMswitchDescriptor")
@@ -23133,7 +25221,7 @@ func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateF
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/MswitchDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23160,7 +25248,7 @@ func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateF
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareMswitchDescriptor
@@ -23174,9 +25262,9 @@ func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateF
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23193,6 +25281,7 @@ func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23203,6 +25292,7 @@ func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23213,6 +25303,7 @@ func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23223,6 +25314,7 @@ func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23232,6 +25324,7 @@ func (a *FirmwareApiService) UpdateFirmwareMswitchDescriptorExecute(r ApiUpdateF
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23268,16 +25361,16 @@ func (r ApiUpdateFirmwareNxosDescriptorRequest) IfMatch(ifMatch string) ApiUpdat
 	return r
 }
 
-func (r ApiUpdateFirmwareNxosDescriptorRequest) Execute() (*FirmwareNxosDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareNxosDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareNxosDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareNxosDescriptor Update a 'firmware.NxosDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareNxosDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareNxosDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareNxosDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareNxosDescriptorRequest {
 	return ApiUpdateFirmwareNxosDescriptorRequest{
@@ -23288,13 +25381,14 @@ func (a *FirmwareApiService) UpdateFirmwareNxosDescriptor(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return FirmwareNxosDescriptor
-func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirmwareNxosDescriptorRequest) (*FirmwareNxosDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirmwareNxosDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareNxosDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareNxosDescriptor")
@@ -23303,7 +25397,7 @@ func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/NxosDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23330,7 +25424,7 @@ func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareNxosDescriptor
@@ -23344,9 +25438,9 @@ func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23363,6 +25457,7 @@ func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23373,6 +25468,7 @@ func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23383,6 +25479,7 @@ func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23393,6 +25490,7 @@ func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23402,6 +25500,7 @@ func (a *FirmwareApiService) UpdateFirmwareNxosDescriptorExecute(r ApiUpdateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23438,16 +25537,16 @@ func (r ApiUpdateFirmwarePcieDescriptorRequest) IfMatch(ifMatch string) ApiUpdat
 	return r
 }
 
-func (r ApiUpdateFirmwarePcieDescriptorRequest) Execute() (*FirmwarePcieDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwarePcieDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwarePcieDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwarePcieDescriptor Update a 'firmware.PcieDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwarePcieDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwarePcieDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwarePcieDescriptor(ctx context.Context, moid string) ApiUpdateFirmwarePcieDescriptorRequest {
 	return ApiUpdateFirmwarePcieDescriptorRequest{
@@ -23458,13 +25557,14 @@ func (a *FirmwareApiService) UpdateFirmwarePcieDescriptor(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return FirmwarePcieDescriptor
-func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirmwarePcieDescriptorRequest) (*FirmwarePcieDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirmwarePcieDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwarePcieDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwarePcieDescriptor")
@@ -23473,7 +25573,7 @@ func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirm
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/PcieDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23500,7 +25600,7 @@ func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwarePcieDescriptor
@@ -23514,9 +25614,9 @@ func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23533,6 +25633,7 @@ func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23543,6 +25644,7 @@ func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23553,6 +25655,7 @@ func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23563,6 +25666,7 @@ func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23572,6 +25676,183 @@ func (a *FirmwareApiService) UpdateFirmwarePcieDescriptorExecute(r ApiUpdateFirm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateFirmwarePolicyRequest struct {
+	ctx            context.Context
+	ApiService     *FirmwareApiService
+	moid           string
+	firmwarePolicy *FirmwarePolicy
+	ifMatch        *string
+}
+
+// The &#39;firmware.Policy&#39; resource to update.
+func (r ApiUpdateFirmwarePolicyRequest) FirmwarePolicy(firmwarePolicy FirmwarePolicy) ApiUpdateFirmwarePolicyRequest {
+	r.firmwarePolicy = &firmwarePolicy
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiUpdateFirmwarePolicyRequest) IfMatch(ifMatch string) ApiUpdateFirmwarePolicyRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiUpdateFirmwarePolicyRequest) Execute() (*FirmwarePolicy, *http.Response, error) {
+	return r.ApiService.UpdateFirmwarePolicyExecute(r)
+}
+
+/*
+UpdateFirmwarePolicy Update a 'firmware.Policy' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwarePolicyRequest
+*/
+func (a *FirmwareApiService) UpdateFirmwarePolicy(ctx context.Context, moid string) ApiUpdateFirmwarePolicyRequest {
+	return ApiUpdateFirmwarePolicyRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return FirmwarePolicy
+func (a *FirmwareApiService) UpdateFirmwarePolicyExecute(r ApiUpdateFirmwarePolicyRequest) (*FirmwarePolicy, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *FirmwarePolicy
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwarePolicy")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/firmware/Policies/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.firmwarePolicy == nil {
+		return localVarReturnValue, nil, reportError("firmwarePolicy is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.firmwarePolicy
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23608,16 +25889,16 @@ func (r ApiUpdateFirmwarePsuDescriptorRequest) IfMatch(ifMatch string) ApiUpdate
 	return r
 }
 
-func (r ApiUpdateFirmwarePsuDescriptorRequest) Execute() (*FirmwarePsuDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwarePsuDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwarePsuDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwarePsuDescriptor Update a 'firmware.PsuDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwarePsuDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwarePsuDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwarePsuDescriptor(ctx context.Context, moid string) ApiUpdateFirmwarePsuDescriptorRequest {
 	return ApiUpdateFirmwarePsuDescriptorRequest{
@@ -23628,13 +25909,14 @@ func (a *FirmwareApiService) UpdateFirmwarePsuDescriptor(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return FirmwarePsuDescriptor
-func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmwarePsuDescriptorRequest) (*FirmwarePsuDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmwarePsuDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwarePsuDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwarePsuDescriptor")
@@ -23643,7 +25925,7 @@ func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmw
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/PsuDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23670,7 +25952,7 @@ func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmw
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwarePsuDescriptor
@@ -23684,9 +25966,9 @@ func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23703,6 +25985,7 @@ func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23713,6 +25996,7 @@ func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23723,6 +26007,7 @@ func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23733,6 +26018,7 @@ func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23742,6 +26028,7 @@ func (a *FirmwareApiService) UpdateFirmwarePsuDescriptorExecute(r ApiUpdateFirmw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23785,9 +26072,9 @@ func (r ApiUpdateFirmwareRunningFirmwareRequest) Execute() (*FirmwareRunningFirm
 /*
 UpdateFirmwareRunningFirmware Update a 'firmware.RunningFirmware' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareRunningFirmwareRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareRunningFirmwareRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareRunningFirmware(ctx context.Context, moid string) ApiUpdateFirmwareRunningFirmwareRequest {
 	return ApiUpdateFirmwareRunningFirmwareRequest{
@@ -23798,7 +26085,8 @@ func (a *FirmwareApiService) UpdateFirmwareRunningFirmware(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return FirmwareRunningFirmware
+//
+//	@return FirmwareRunningFirmware
 func (a *FirmwareApiService) UpdateFirmwareRunningFirmwareExecute(r ApiUpdateFirmwareRunningFirmwareRequest) (*FirmwareRunningFirmware, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -23813,7 +26101,7 @@ func (a *FirmwareApiService) UpdateFirmwareRunningFirmwareExecute(r ApiUpdateFir
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/RunningFirmwares/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23840,7 +26128,7 @@ func (a *FirmwareApiService) UpdateFirmwareRunningFirmwareExecute(r ApiUpdateFir
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareRunningFirmware
@@ -23854,9 +26142,9 @@ func (a *FirmwareApiService) UpdateFirmwareRunningFirmwareExecute(r ApiUpdateFir
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23873,6 +26161,7 @@ func (a *FirmwareApiService) UpdateFirmwareRunningFirmwareExecute(r ApiUpdateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23883,6 +26172,7 @@ func (a *FirmwareApiService) UpdateFirmwareRunningFirmwareExecute(r ApiUpdateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23893,6 +26183,7 @@ func (a *FirmwareApiService) UpdateFirmwareRunningFirmwareExecute(r ApiUpdateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23903,6 +26194,7 @@ func (a *FirmwareApiService) UpdateFirmwareRunningFirmwareExecute(r ApiUpdateFir
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23912,6 +26204,7 @@ func (a *FirmwareApiService) UpdateFirmwareRunningFirmwareExecute(r ApiUpdateFir
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23948,16 +26241,16 @@ func (r ApiUpdateFirmwareSasExpanderDescriptorRequest) IfMatch(ifMatch string) A
 	return r
 }
 
-func (r ApiUpdateFirmwareSasExpanderDescriptorRequest) Execute() (*FirmwareSasExpanderDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareSasExpanderDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareSasExpanderDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareSasExpanderDescriptor Update a 'firmware.SasExpanderDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareSasExpanderDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareSasExpanderDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareSasExpanderDescriptorRequest {
 	return ApiUpdateFirmwareSasExpanderDescriptorRequest{
@@ -23968,13 +26261,14 @@ func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptor(ctx context.Con
 }
 
 // Execute executes the request
-//  @return FirmwareSasExpanderDescriptor
-func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpdateFirmwareSasExpanderDescriptorRequest) (*FirmwareSasExpanderDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpdateFirmwareSasExpanderDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareSasExpanderDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareSasExpanderDescriptor")
@@ -23983,7 +26277,7 @@ func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpd
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/SasExpanderDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24010,7 +26304,7 @@ func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpd
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareSasExpanderDescriptor
@@ -24024,9 +26318,9 @@ func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpd
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24043,6 +26337,7 @@ func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24053,6 +26348,7 @@ func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24063,6 +26359,7 @@ func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24073,6 +26370,7 @@ func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24082,6 +26380,7 @@ func (a *FirmwareApiService) UpdateFirmwareSasExpanderDescriptorExecute(r ApiUpd
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24125,9 +26424,9 @@ func (r ApiUpdateFirmwareServerConfigurationUtilityDistributableRequest) Execute
 /*
 UpdateFirmwareServerConfigurationUtilityDistributable Update a 'firmware.ServerConfigurationUtilityDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareServerConfigurationUtilityDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareServerConfigurationUtilityDistributableRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributable(ctx context.Context, moid string) ApiUpdateFirmwareServerConfigurationUtilityDistributableRequest {
 	return ApiUpdateFirmwareServerConfigurationUtilityDistributableRequest{
@@ -24138,7 +26437,8 @@ func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributab
 }
 
 // Execute executes the request
-//  @return FirmwareServerConfigurationUtilityDistributable
+//
+//	@return FirmwareServerConfigurationUtilityDistributable
 func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributableExecute(r ApiUpdateFirmwareServerConfigurationUtilityDistributableRequest) (*FirmwareServerConfigurationUtilityDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -24153,7 +26453,7 @@ func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributab
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/ServerConfigurationUtilityDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24180,7 +26480,7 @@ func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributab
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareServerConfigurationUtilityDistributable
@@ -24194,9 +26494,9 @@ func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributab
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24213,6 +26513,7 @@ func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24223,6 +26524,7 @@ func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24233,6 +26535,7 @@ func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24243,6 +26546,7 @@ func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributab
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24252,6 +26556,7 @@ func (a *FirmwareApiService) UpdateFirmwareServerConfigurationUtilityDistributab
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24288,16 +26593,16 @@ func (r ApiUpdateFirmwareStorageControllerDescriptorRequest) IfMatch(ifMatch str
 	return r
 }
 
-func (r ApiUpdateFirmwareStorageControllerDescriptorRequest) Execute() (*FirmwareStorageControllerDescriptor, *http.Response, error) {
+func (r ApiUpdateFirmwareStorageControllerDescriptorRequest) Execute() (*FirmwareComponentDescriptor, *http.Response, error) {
 	return r.ApiService.UpdateFirmwareStorageControllerDescriptorExecute(r)
 }
 
 /*
 UpdateFirmwareStorageControllerDescriptor Update a 'firmware.StorageControllerDescriptor' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareStorageControllerDescriptorRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareStorageControllerDescriptorRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptor(ctx context.Context, moid string) ApiUpdateFirmwareStorageControllerDescriptorRequest {
 	return ApiUpdateFirmwareStorageControllerDescriptorRequest{
@@ -24308,13 +26613,14 @@ func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptor(ctx conte
 }
 
 // Execute executes the request
-//  @return FirmwareStorageControllerDescriptor
-func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r ApiUpdateFirmwareStorageControllerDescriptorRequest) (*FirmwareStorageControllerDescriptor, *http.Response, error) {
+//
+//	@return FirmwareComponentDescriptor
+func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r ApiUpdateFirmwareStorageControllerDescriptorRequest) (*FirmwareComponentDescriptor, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *FirmwareStorageControllerDescriptor
+		localVarReturnValue *FirmwareComponentDescriptor
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "FirmwareApiService.UpdateFirmwareStorageControllerDescriptor")
@@ -24323,7 +26629,7 @@ func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r 
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/StorageControllerDescriptors/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24350,7 +26656,7 @@ func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r 
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareStorageControllerDescriptor
@@ -24364,9 +26670,9 @@ func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r 
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24383,6 +26689,7 @@ func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24393,6 +26700,7 @@ func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24403,6 +26711,7 @@ func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24413,6 +26722,7 @@ func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24422,6 +26732,7 @@ func (a *FirmwareApiService) UpdateFirmwareStorageControllerDescriptorExecute(r 
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24465,9 +26776,9 @@ func (r ApiUpdateFirmwareUnsupportedVersionUpgradeRequest) Execute() (*FirmwareU
 /*
 UpdateFirmwareUnsupportedVersionUpgrade Update a 'firmware.UnsupportedVersionUpgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareUnsupportedVersionUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareUnsupportedVersionUpgradeRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgrade(ctx context.Context, moid string) ApiUpdateFirmwareUnsupportedVersionUpgradeRequest {
 	return ApiUpdateFirmwareUnsupportedVersionUpgradeRequest{
@@ -24478,7 +26789,8 @@ func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgrade(ctx context
 }
 
 // Execute executes the request
-//  @return FirmwareUnsupportedVersionUpgrade
+//
+//	@return FirmwareUnsupportedVersionUpgrade
 func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgradeExecute(r ApiUpdateFirmwareUnsupportedVersionUpgradeRequest) (*FirmwareUnsupportedVersionUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -24493,7 +26805,7 @@ func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/UnsupportedVersionUpgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24520,7 +26832,7 @@ func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareUnsupportedVersionUpgrade
@@ -24534,9 +26846,9 @@ func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24553,6 +26865,7 @@ func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24563,6 +26876,7 @@ func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24573,6 +26887,7 @@ func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24583,6 +26898,7 @@ func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24592,6 +26908,7 @@ func (a *FirmwareApiService) UpdateFirmwareUnsupportedVersionUpgradeExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24635,9 +26952,9 @@ func (r ApiUpdateFirmwareUpgradeRequest) Execute() (*FirmwareUpgrade, *http.Resp
 /*
 UpdateFirmwareUpgrade Update a 'firmware.Upgrade' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateFirmwareUpgradeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateFirmwareUpgradeRequest
 */
 func (a *FirmwareApiService) UpdateFirmwareUpgrade(ctx context.Context, moid string) ApiUpdateFirmwareUpgradeRequest {
 	return ApiUpdateFirmwareUpgradeRequest{
@@ -24648,7 +26965,8 @@ func (a *FirmwareApiService) UpdateFirmwareUpgrade(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return FirmwareUpgrade
+//
+//	@return FirmwareUpgrade
 func (a *FirmwareApiService) UpdateFirmwareUpgradeExecute(r ApiUpdateFirmwareUpgradeRequest) (*FirmwareUpgrade, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -24663,7 +26981,7 @@ func (a *FirmwareApiService) UpdateFirmwareUpgradeExecute(r ApiUpdateFirmwareUpg
 	}
 
 	localVarPath := localBasePath + "/api/v1/firmware/Upgrades/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24690,7 +27008,7 @@ func (a *FirmwareApiService) UpdateFirmwareUpgradeExecute(r ApiUpdateFirmwareUpg
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.firmwareUpgrade
@@ -24704,9 +27022,9 @@ func (a *FirmwareApiService) UpdateFirmwareUpgradeExecute(r ApiUpdateFirmwareUpg
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24723,6 +27041,7 @@ func (a *FirmwareApiService) UpdateFirmwareUpgradeExecute(r ApiUpdateFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24733,6 +27052,7 @@ func (a *FirmwareApiService) UpdateFirmwareUpgradeExecute(r ApiUpdateFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24743,6 +27063,7 @@ func (a *FirmwareApiService) UpdateFirmwareUpgradeExecute(r ApiUpdateFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24753,6 +27074,7 @@ func (a *FirmwareApiService) UpdateFirmwareUpgradeExecute(r ApiUpdateFirmwareUpg
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24762,6 +27084,7 @@ func (a *FirmwareApiService) UpdateFirmwareUpgradeExecute(r ApiUpdateFirmwareUpg
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

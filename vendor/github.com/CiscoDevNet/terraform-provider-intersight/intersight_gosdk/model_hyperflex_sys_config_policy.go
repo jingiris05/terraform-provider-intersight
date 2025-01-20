@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HyperflexSysConfigPolicy type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexSysConfigPolicy{}
 
 // HyperflexSysConfigPolicy A policy specifying system configuration such as timezone, DNS servers, and NTP Servers.
 type HyperflexSysConfigPolicy struct {
@@ -25,14 +29,14 @@ type HyperflexSysConfigPolicy struct {
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
 	// The DNS Search Domain Name. This setting applies to HyperFlex Data Platform 3.0 or later only.
-	DnsDomainName *string  `json:"DnsDomainName,omitempty"`
+	DnsDomainName *string  `json:"DnsDomainName,omitempty" validate:"regexp=^$|^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\\\.)*[a-zA-Z]{2,63}$"`
 	DnsServers    []string `json:"DnsServers,omitempty"`
 	NtpServers    []string `json:"NtpServers,omitempty"`
-	// The timezone of the HyperFlex cluster's system clock. * `Pacific/Niue` -  * `Pacific/Pago_Pago` -  * `Pacific/Honolulu` -  * `Pacific/Rarotonga` -  * `Pacific/Tahiti` -  * `Pacific/Marquesas` -  * `America/Anchorage` -  * `Pacific/Gambier` -  * `America/Los_Angeles` -  * `America/Tijuana` -  * `America/Vancouver` -  * `America/Whitehorse` -  * `Pacific/Pitcairn` -  * `America/Dawson_Creek` -  * `America/Denver` -  * `America/Edmonton` -  * `America/Hermosillo` -  * `America/Mazatlan` -  * `America/Phoenix` -  * `America/Yellowknife` -  * `America/Belize` -  * `America/Chicago` -  * `America/Costa_Rica` -  * `America/El_Salvador` -  * `America/Guatemala` -  * `America/Managua` -  * `America/Mexico_City` -  * `America/Regina` -  * `America/Tegucigalpa` -  * `America/Winnipeg` -  * `Pacific/Galapagos` -  * `America/Bogota` -  * `America/Cancun` -  * `America/Cayman` -  * `America/Guayaquil` -  * `America/Havana` -  * `America/Iqaluit` -  * `America/Jamaica` -  * `America/Lima` -  * `America/Nassau` -  * `America/New_York` -  * `America/Nuuk` -  * `America/Panama` -  * `America/Port-au-Prince` -  * `America/Rio_Branco` -  * `America/Toronto` -  * `Pacific/Easter` -  * `America/Caracas` -  * `America/Asuncion` -  * `America/Barbados` -  * `America/Boa_Vista` -  * `America/Campo_Grande` -  * `America/Cuiaba` -  * `America/Curacao` -  * `America/Grand_Turk` -  * `America/Guyana` -  * `America/Halifax` -  * `America/La_Paz` -  * `America/Manaus` -  * `America/Martinique` -  * `America/Port_of_Spain` -  * `America/Porto_Velho` -  * `America/Puerto_Rico` -  * `America/Santo_Domingo` -  * `America/Thule` -  * `Atlantic/Bermuda` -  * `America/St_Johns` -  * `America/Araguaina` -  * `America/Argentina/Buenos_Aires` -  * `America/Bahia` -  * `America/Belem` -  * `America/Cayenne` -  * `America/Fortaleza` -  * `America/Godthab` -  * `America/Maceio` -  * `America/Miquelon` -  * `America/Montevideo` -  * `America/Paramaribo` -  * `America/Recife` -  * `America/Santiago` -  * `America/Sao_Paulo` -  * `Antarctica/Palmer` -  * `Antarctica/Rothera` -  * `Atlantic/Stanley` -  * `America/Noronha` -  * `Atlantic/South_Georgia` -  * `America/Scoresbysund` -  * `Atlantic/Azores` -  * `Atlantic/Cape_Verde` -  * `Africa/Abidjan` -  * `Africa/Accra` -  * `Africa/Bissau` -  * `Africa/Casablanca` -  * `Africa/El_Aaiun` -  * `Africa/Monrovia` -  * `America/Danmarkshavn` -  * `Atlantic/Canary` -  * `Atlantic/Faroe` -  * `Atlantic/Reykjavik` -  * `Etc/GMT` -  * `Europe/Dublin` -  * `Europe/Lisbon` -  * `Europe/London` -  * `Africa/Algiers` -  * `Africa/Ceuta` -  * `Africa/Lagos` -  * `Africa/Ndjamena` -  * `Africa/Tunis` -  * `Africa/Windhoek` -  * `Europe/Amsterdam` -  * `Europe/Andorra` -  * `Europe/Belgrade` -  * `Europe/Berlin` -  * `Europe/Brussels` -  * `Europe/Budapest` -  * `Europe/Copenhagen` -  * `Europe/Gibraltar` -  * `Europe/Luxembourg` -  * `Europe/Madrid` -  * `Europe/Malta` -  * `Europe/Monaco` -  * `Europe/Oslo` -  * `Europe/Paris` -  * `Europe/Prague` -  * `Europe/Rome` -  * `Europe/Stockholm` -  * `Europe/Tirane` -  * `Europe/Vienna` -  * `Europe/Warsaw` -  * `Europe/Zurich` -  * `Africa/Cairo` -  * `Africa/Johannesburg` -  * `Africa/Maputo` -  * `Africa/Tripoli` -  * `Asia/Amman` -  * `Asia/Beirut` -  * `Asia/Damascus` -  * `Asia/Gaza` -  * `Asia/Jerusalem` -  * `Asia/Nicosia` -  * `Europe/Athens` -  * `Europe/Bucharest` -  * `Europe/Chisinau` -  * `Europe/Helsinki` -  * `Europe/Istanbul` -  * `Europe/Kaliningrad` -  * `Europe/Kiev` -  * `Europe/Riga` -  * `Europe/Sofia` -  * `Europe/Tallinn` -  * `Europe/Vilnius` -  * `Africa/Khartoum` -  * `Africa/Nairobi` -  * `Antarctica/Syowa` -  * `Asia/Baghdad` -  * `Asia/Qatar` -  * `Asia/Riyadh` -  * `Europe/Minsk` -  * `Europe/Moscow` -  * `Asia/Tehran` -  * `Asia/Baku` -  * `Asia/Dubai` -  * `Asia/Tbilisi` -  * `Asia/Yerevan` -  * `Europe/Samara` -  * `Indian/Mahe` -  * `Indian/Mauritius` -  * `Indian/Reunion` -  * `Asia/Kabul` -  * `Antarctica/Mawson` -  * `Asia/Aqtau` -  * `Asia/Aqtobe` -  * `Asia/Ashgabat` -  * `Asia/Dushanbe` -  * `Asia/Karachi` -  * `Asia/Tashkent` -  * `Asia/Yekaterinburg` -  * `Indian/Kerguelen` -  * `Indian/Maldives` -  * `Asia/Calcutta` -  * `Asia/Kolkata` -  * `Asia/Colombo` -  * `Asia/Kathmandu` -  * `Asia/Katmandu` -  * `Antarctica/Vostok` -  * `Asia/Almaty` -  * `Asia/Bishkek` -  * `Asia/Dhaka` -  * `Asia/Omsk` -  * `Asia/Thimphu` -  * `Indian/Chagos` -  * `Asia/Rangoon` -  * `Indian/Cocos` -  * `Antarctica/Davis` -  * `Asia/Bangkok` -  * `Asia/Ho_Chi_Minh` -  * `Asia/Hovd` -  * `Asia/Jakarta` -  * `Asia/Krasnoyarsk` -  * `Asia/Saigon` -  * `Indian/Christmas` -  * `Antarctica/Casey` -  * `Asia/Brunei` -  * `Asia/Choibalsan` -  * `Asia/Hong_Kong` -  * `Asia/Irkutsk` -  * `Asia/Kuala_Lumpur` -  * `Asia/Macau` -  * `Asia/Makassar` -  * `Asia/Manila` -  * `Asia/Shanghai` -  * `Asia/Singapore` -  * `Asia/Taipei` -  * `Asia/Ulaanbaatar` -  * `Australia/Perth` -  * `Asia/Pyongyang` -  * `Asia/Dili` -  * `Asia/Jayapura` -  * `Asia/Seoul` -  * `Asia/Tokyo` -  * `Asia/Yakutsk` -  * `Asia/Yangon` -  * `Pacific/Palau` -  * `Australia/Adelaide` -  * `Australia/Darwin` -  * `Antarctica/DumontDUrville` -  * `Asia/Magadan` -  * `Asia/Vladivostok` -  * `Australia/Brisbane` -  * `Australia/Hobart` -  * `Australia/Sydney` -  * `Pacific/Chuuk` -  * `Pacific/Guam` -  * `Pacific/Port_Moresby` -  * `Pacific/Efate` -  * `Pacific/Guadalcanal` -  * `Pacific/Kosrae` -  * `Pacific/Norfolk` -  * `Pacific/Noumea` -  * `Pacific/Pohnpei` -  * `Asia/Kamchatka` -  * `Pacific/Auckland` -  * `Pacific/Fiji` -  * `Pacific/Funafuti` -  * `Pacific/Kwajalein` -  * `Pacific/Majuro` -  * `Pacific/Nauru` -  * `Pacific/Tarawa` -  * `Pacific/Wake` -  * `Pacific/Wallis` -  * `Pacific/Apia` -  * `Pacific/Enderbury` -  * `Pacific/Fakaofo` -  * `Pacific/Tongatapu` -  * `Pacific/Kiritimati` -
+	// The timezone of the HyperFlex cluster's system clock. * `Pacific/Niue` -  * `Africa/Abidjan` -  * `Africa/Accra` -  * `Africa/Addis_Ababa` -  * `Africa/Algiers` -  * `Africa/Asmara` -  * `Africa/Bamako` -  * `Africa/Bangui` -  * `Africa/Banjul` -  * `Africa/Bissau` -  * `Africa/Blantyre` -  * `Africa/Brazzaville` -  * `Africa/Bujumbura` -  * `Africa/Cairo` -  * `Africa/Casablanca` -  * `Africa/Ceuta` -  * `Africa/Conakry` -  * `Africa/Dakar` -  * `Africa/Dar_es_Salaam` -  * `Africa/Djibouti` -  * `Africa/Douala` -  * `Africa/El_Aaiun` -  * `Africa/Freetown` -  * `Africa/Gaborone` -  * `Africa/Harare` -  * `Africa/Johannesburg` -  * `Africa/Juba` -  * `Africa/Kampala` -  * `Africa/Khartoum` -  * `Africa/Kigali` -  * `Africa/Kinshasa` -  * `Africa/Lagos` -  * `Africa/Libreville` -  * `Africa/Lome` -  * `Africa/Luanda` -  * `Africa/Lubumbashi` -  * `Africa/Lusaka` -  * `Africa/Malabo` -  * `Africa/Maputo` -  * `Africa/Maseru` -  * `Africa/Mbabane` -  * `Africa/Mogadishu` -  * `Africa/Monrovia` -  * `Africa/Nairobi` -  * `Africa/Ndjamena` -  * `Africa/Niamey` -  * `Africa/Nouakchott` -  * `Africa/Ouagadougou` -  * `Africa/Porto-Novo` -  * `Africa/Sao_Tome` -  * `Africa/Tripoli` -  * `Africa/Tunis` -  * `Africa/Windhoek` -  * `America/Adak` -  * `America/Anchorage` -  * `America/Anguilla` -  * `America/Antigua` -  * `America/Araguaina` -  * `America/Argentina/Buenos_Aires` -  * `America/Argentina/Catamarca` -  * `America/Argentina/Cordoba` -  * `America/Argentina/Jujuy` -  * `America/Argentina/La_Rioja` -  * `America/Argentina/Mendoza` -  * `America/Argentina/Rio_Gallegos` -  * `America/Argentina/Salta` -  * `America/Argentina/San_Juan` -  * `America/Argentina/San_Luis` -  * `America/Argentina/Tucuman` -  * `America/Argentina/Ushuaia` -  * `America/Aruba` -  * `America/Asuncion` -  * `America/Atikokan` -  * `America/Bahia` -  * `America/Bahia_Banderas` -  * `America/Barbados` -  * `America/Belem` -  * `America/Belize` -  * `America/Blanc-Sablon` -  * `America/Boa_Vista` -  * `America/Bogota` -  * `America/Boise` -  * `America/Cambridge_Bay` -  * `America/Campo_Grande` -  * `America/Cancun` -  * `America/Caracas` -  * `America/Cayenne` -  * `America/Cayman` -  * `America/Chicago` -  * `America/Chihuahua` -  * `America/Costa_Rica` -  * `America/Creston` -  * `America/Cuiaba` -  * `America/Curacao` -  * `America/Danmarkshavn` -  * `America/Dawson` -  * `America/Dawson_Creek` -  * `America/Denver` -  * `America/Detroit` -  * `America/Dominica` -  * `America/Edmonton` -  * `America/Eirunepe` -  * `America/El_Salvador` -  * `America/Fortaleza` -  * `America/Glace_Bay` -  * `America/Godthab` -  * `America/Goose_Bay` -  * `America/Grand_Turk` -  * `America/Grenada` -  * `America/Guadeloupe` -  * `America/Guatemala` -  * `America/Guayaquil` -  * `America/Guyana` -  * `America/Halifax` -  * `America/Havana` -  * `America/Hermosillo` -  * `America/Indiana/Indianapolis` -  * `America/Indiana/Knox` -  * `America/Indiana/Marengo` -  * `America/Indiana/Petersburg` -  * `America/Indiana/Tell_City` -  * `America/Indiana/Vevay` -  * `America/Indiana/Vincennes` -  * `America/Indiana/Winamac` -  * `America/Inuvik` -  * `America/Iqaluit` -  * `America/Jamaica` -  * `America/Juneau` -  * `America/Kentucky/Louisville` -  * `America/Kentucky/Monticello` -  * `America/Kralendijk` -  * `America/La_Paz` -  * `America/Lima` -  * `America/Los_Angeles` -  * `America/Lower_Princes` -  * `America/Maceio` -  * `America/Managua` -  * `America/Manaus` -  * `America/Marigot` -  * `America/Martinique` -  * `America/Matamoros` -  * `America/Mazatlan` -  * `America/Menominee` -  * `America/Merida` -  * `America/Metlakatla` -  * `America/Mexico_City` -  * `America/Miquelon` -  * `America/Moncton` -  * `America/Monterrey` -  * `America/Montevideo` -  * `America/Montreal` -  * `America/Montserrat` -  * `America/Nassau` -  * `America/New_York` -  * `America/Nipigon` -  * `America/Nome` -  * `America/Noronha` -  * `America/North_Dakota/Beulah` -  * `America/North_Dakota/Center` -  * `America/North_Dakota/New_Salem` -  * `America/Ojinaga` -  * `America/Panama` -  * `America/Pangnirtung` -  * `America/Paramaribo` -  * `America/Phoenix` -  * `America/Port-au-Prince` -  * `America/Port_of_Spain` -  * `America/Porto_Velho` -  * `America/Puerto_Rico` -  * `America/Rainy_River` -  * `America/Rankin_Inlet` -  * `America/Recife` -  * `America/Regina` -  * `America/Resolute` -  * `America/Rio_Branco` -  * `America/Santa_Isabel` -  * `America/Santarem` -  * `America/Santiago` -  * `America/Santo_Domingo` -  * `America/Sao_Paulo` -  * `America/Scoresbysund` -  * `America/Shiprock` -  * `America/Sitka` -  * `America/St_Barthelemy` -  * `America/St_Johns` -  * `America/St_Kitts` -  * `America/St_Lucia` -  * `America/St_Thomas` -  * `America/St_Vincent` -  * `America/Swift_Current` -  * `America/Tegucigalpa` -  * `America/Thule` -  * `America/Thunder_Bay` -  * `America/Tijuana` -  * `America/Toronto` -  * `America/Tortola` -  * `America/Vancouver` -  * `America/Whitehorse` -  * `America/Winnipeg` -  * `America/Yakutat` -  * `America/Yellowknife` -  * `Antarctica/Casey` -  * `Antarctica/Davis` -  * `Antarctica/DumontDUrville` -  * `Antarctica/Macquarie` -  * `Antarctica/Mawson` -  * `Antarctica/McMurdo` -  * `Antarctica/Palmer` -  * `Antarctica/Rothera` -  * `Antarctica/South_Pole` -  * `Antarctica/Syowa` -  * `Antarctica/Troll` -  * `Antarctica/Vostok` -  * `Arctic/Longyearbyen` -  * `Asia/Aden` -  * `Asia/Almaty` -  * `Asia/Amman` -  * `Asia/Anadyr` -  * `Asia/Aqtau` -  * `Asia/Aqtobe` -  * `Asia/Ashgabat` -  * `Asia/Baghdad` -  * `Asia/Bahrain` -  * `Asia/Baku` -  * `Asia/Bangkok` -  * `Asia/Beirut` -  * `Asia/Bishkek` -  * `Asia/Brunei` -  * `Asia/Calcutta` -  * `Asia/Choibalsan` -  * `Asia/Chongqing` -  * `Asia/Colombo` -  * `Asia/Damascus` -  * `Asia/Dhaka` -  * `Asia/Dili` -  * `Asia/Dubai` -  * `Asia/Dushanbe` -  * `Asia/Gaza` -  * `Asia/Harbin` -  * `Asia/Hebron` -  * `Asia/Ho_Chi_Minh` -  * `Asia/Hong_Kong` -  * `Asia/Hovd` -  * `Asia/Irkutsk` -  * `Asia/Jakarta` -  * `Asia/Jayapura` -  * `Asia/Jerusalem` -  * `Asia/Kabul` -  * `Asia/Kamchatka` -  * `Asia/Karachi` -  * `Asia/Kashgar` -  * `Asia/Kathmandu` -  * `Asia/Katmandu` -  * `Asia/Khandyga` -  * `Asia/Kolkata` -  * `Asia/Krasnoyarsk` -  * `Asia/Kuala_Lumpur` -  * `Asia/Kuching` -  * `Asia/Kuwait` -  * `Asia/Macau` -  * `Asia/Magadan` -  * `Asia/Makassar` -  * `Asia/Manila` -  * `Asia/Muscat` -  * `Asia/Nicosia` -  * `Asia/Novokuznetsk` -  * `Asia/Novosibirsk` -  * `Asia/Omsk` -  * `Asia/Oral` -  * `Asia/Phnom_Penh` -  * `Asia/Pontianak` -  * `Asia/Pyongyang` -  * `Asia/Qatar` -  * `Asia/Qyzylorda` -  * `Asia/Rangoon` -  * `Asia/Riyadh` -  * `Asia/Saigon` -  * `Asia/Sakhalin` -  * `Asia/Samarkand` -  * `Asia/Seoul` -  * `Asia/Shanghai` -  * `Asia/Singapore` -  * `Asia/Taipei` -  * `Asia/Tashkent` -  * `Asia/Tbilisi` -  * `Asia/Tehran` -  * `Asia/Thimphu` -  * `Asia/Tokyo` -  * `Asia/Ulaanbaatar` -  * `Asia/Urumqi` -  * `Asia/Ust-Nera` -  * `Asia/Vientiane` -  * `Asia/Vladivostok` -  * `Asia/Yakutsk` -  * `Asia/Yekaterinburg` -  * `Asia/Yerevan` -  * `Atlantic/Azores` -  * `Atlantic/Bermuda` -  * `Atlantic/Canary` -  * `Atlantic/Cape_Verde` -  * `Atlantic/Faroe` -  * `Atlantic/Madeira` -  * `Atlantic/Reykjavik` -  * `Atlantic/South_Georgia` -  * `Atlantic/St_Helena` -  * `Atlantic/Stanley` -  * `Australia/Adelaide` -  * `Australia/Brisbane` -  * `Australia/Broken_Hill` -  * `Australia/Currie` -  * `Australia/Darwin` -  * `Australia/Eucla` -  * `Australia/Hobart` -  * `Australia/Lindeman` -  * `Australia/Lord_Howe` -  * `Australia/Melbourne` -  * `Australia/Perth` -  * `Australia/Sydney` -  * `Etc/GMT` -  * `Europe/Amsterdam` -  * `Europe/Andorra` -  * `Europe/Athens` -  * `Europe/Belgrade` -  * `Europe/Berlin` -  * `Europe/Bratislava` -  * `Europe/Brussels` -  * `Europe/Bucharest` -  * `Europe/Budapest` -  * `Europe/Busingen` -  * `Europe/Chisinau` -  * `Europe/Copenhagen` -  * `Europe/Dublin` -  * `Europe/Gibraltar` -  * `Europe/Guernsey` -  * `Europe/Helsinki` -  * `Europe/Isle_of_Man` -  * `Europe/Istanbul` -  * `Europe/Jersey` -  * `Europe/Kaliningrad` -  * `Europe/Kiev` -  * `Europe/Lisbon` -  * `Europe/Ljubljana` -  * `Europe/London` -  * `Europe/Luxembourg` -  * `Europe/Madrid` -  * `Europe/Malta` -  * `Europe/Mariehamn` -  * `Europe/Minsk` -  * `Europe/Monaco` -  * `Europe/Moscow` -  * `Europe/Oslo` -  * `Europe/Paris` -  * `Europe/Podgorica` -  * `Europe/Prague` -  * `Europe/Riga` -  * `Europe/Rome` -  * `Europe/Samara` -  * `Europe/San_Marino` -  * `Europe/Sarajevo` -  * `Europe/Simferopol` -  * `Europe/Skopje` -  * `Europe/Sofia` -  * `Europe/Stockholm` -  * `Europe/Tallinn` -  * `Europe/Tirane` -  * `Europe/Uzhgorod` -  * `Europe/Vaduz` -  * `Europe/Vatican` -  * `Europe/Vienna` -  * `Europe/Vilnius` -  * `Europe/Volgograd` -  * `Europe/Warsaw` -  * `Europe/Zagreb` -  * `Europe/Zaporozhye` -  * `Europe/Zurich` -  * `Indian/Antananarivo` -  * `Indian/Chagos` -  * `Indian/Christmas` -  * `Indian/Cocos` -  * `Indian/Comoro` -  * `Indian/Kerguelen` -  * `Indian/Mahe` -  * `Indian/Maldives` -  * `Indian/Mauritius` -  * `Indian/Mayotte` -  * `Indian/Reunion` -  * `Pacific/Apia` -  * `Pacific/Auckland` -  * `Pacific/Chatham` -  * `Pacific/Chuuk` -  * `Pacific/Easter` -  * `Pacific/Efate` -  * `Pacific/Enderbury` -  * `Pacific/Fakaofo` -  * `Pacific/Fiji` -  * `Pacific/Funafuti` -  * `Pacific/Galapagos` -  * `Pacific/Gambier` -  * `Pacific/Guadalcanal` -  * `Pacific/Guam` -  * `Pacific/Honolulu` -  * `Pacific/Johnston` -  * `Pacific/Kiritimati` -  * `Pacific/Kosrae` -  * `Pacific/Kwajalein` -  * `Pacific/Majuro` -  * `Pacific/Marquesas` -  * `Pacific/Midway` -  * `Pacific/Nauru` -  * `Pacific/Norfolk` -  * `Pacific/Noumea` -  * `Pacific/Pago_Pago` -  * `Pacific/Palau` -  * `Pacific/Pitcairn` -  * `Pacific/Pohnpei` -  * `Pacific/Port_Moresby` -  * `Pacific/Rarotonga` -  * `Pacific/Saipan` -  * `Pacific/Tahiti` -  * `Pacific/Tarawa` -  * `Pacific/Tongatapu` -  * `Pacific/Wake` -  * `Pacific/Wallis` -  * `UTC` -
 	Timezone *string `json:"Timezone,omitempty"`
 	// An array of relationships to hyperflexClusterProfile resources.
-	ClusterProfiles      []HyperflexClusterProfileRelationship `json:"ClusterProfiles,omitempty"`
-	Organization         *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	ClusterProfiles      []HyperflexClusterProfileRelationship        `json:"ClusterProfiles,omitempty"`
+	Organization         NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -89,6 +93,11 @@ func (o *HyperflexSysConfigPolicy) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.SysConfigPolicy" of the ClassId field.
+func (o *HyperflexSysConfigPolicy) GetDefaultClassId() interface{} {
+	return "hyperflex.SysConfigPolicy"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexSysConfigPolicy) GetObjectType() string {
 	if o == nil {
@@ -113,9 +122,14 @@ func (o *HyperflexSysConfigPolicy) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.SysConfigPolicy" of the ObjectType field.
+func (o *HyperflexSysConfigPolicy) GetDefaultObjectType() interface{} {
+	return "hyperflex.SysConfigPolicy"
+}
+
 // GetDnsDomainName returns the DnsDomainName field value if set, zero value otherwise.
 func (o *HyperflexSysConfigPolicy) GetDnsDomainName() string {
-	if o == nil || o.DnsDomainName == nil {
+	if o == nil || IsNil(o.DnsDomainName) {
 		var ret string
 		return ret
 	}
@@ -125,7 +139,7 @@ func (o *HyperflexSysConfigPolicy) GetDnsDomainName() string {
 // GetDnsDomainNameOk returns a tuple with the DnsDomainName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexSysConfigPolicy) GetDnsDomainNameOk() (*string, bool) {
-	if o == nil || o.DnsDomainName == nil {
+	if o == nil || IsNil(o.DnsDomainName) {
 		return nil, false
 	}
 	return o.DnsDomainName, true
@@ -133,7 +147,7 @@ func (o *HyperflexSysConfigPolicy) GetDnsDomainNameOk() (*string, bool) {
 
 // HasDnsDomainName returns a boolean if a field has been set.
 func (o *HyperflexSysConfigPolicy) HasDnsDomainName() bool {
-	if o != nil && o.DnsDomainName != nil {
+	if o != nil && !IsNil(o.DnsDomainName) {
 		return true
 	}
 
@@ -158,7 +172,7 @@ func (o *HyperflexSysConfigPolicy) GetDnsServers() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexSysConfigPolicy) GetDnsServersOk() ([]string, bool) {
-	if o == nil || o.DnsServers == nil {
+	if o == nil || IsNil(o.DnsServers) {
 		return nil, false
 	}
 	return o.DnsServers, true
@@ -166,7 +180,7 @@ func (o *HyperflexSysConfigPolicy) GetDnsServersOk() ([]string, bool) {
 
 // HasDnsServers returns a boolean if a field has been set.
 func (o *HyperflexSysConfigPolicy) HasDnsServers() bool {
-	if o != nil && o.DnsServers != nil {
+	if o != nil && !IsNil(o.DnsServers) {
 		return true
 	}
 
@@ -191,7 +205,7 @@ func (o *HyperflexSysConfigPolicy) GetNtpServers() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexSysConfigPolicy) GetNtpServersOk() ([]string, bool) {
-	if o == nil || o.NtpServers == nil {
+	if o == nil || IsNil(o.NtpServers) {
 		return nil, false
 	}
 	return o.NtpServers, true
@@ -199,7 +213,7 @@ func (o *HyperflexSysConfigPolicy) GetNtpServersOk() ([]string, bool) {
 
 // HasNtpServers returns a boolean if a field has been set.
 func (o *HyperflexSysConfigPolicy) HasNtpServers() bool {
-	if o != nil && o.NtpServers != nil {
+	if o != nil && !IsNil(o.NtpServers) {
 		return true
 	}
 
@@ -213,7 +227,7 @@ func (o *HyperflexSysConfigPolicy) SetNtpServers(v []string) {
 
 // GetTimezone returns the Timezone field value if set, zero value otherwise.
 func (o *HyperflexSysConfigPolicy) GetTimezone() string {
-	if o == nil || o.Timezone == nil {
+	if o == nil || IsNil(o.Timezone) {
 		var ret string
 		return ret
 	}
@@ -223,7 +237,7 @@ func (o *HyperflexSysConfigPolicy) GetTimezone() string {
 // GetTimezoneOk returns a tuple with the Timezone field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexSysConfigPolicy) GetTimezoneOk() (*string, bool) {
-	if o == nil || o.Timezone == nil {
+	if o == nil || IsNil(o.Timezone) {
 		return nil, false
 	}
 	return o.Timezone, true
@@ -231,7 +245,7 @@ func (o *HyperflexSysConfigPolicy) GetTimezoneOk() (*string, bool) {
 
 // HasTimezone returns a boolean if a field has been set.
 func (o *HyperflexSysConfigPolicy) HasTimezone() bool {
-	if o != nil && o.Timezone != nil {
+	if o != nil && !IsNil(o.Timezone) {
 		return true
 	}
 
@@ -256,7 +270,7 @@ func (o *HyperflexSysConfigPolicy) GetClusterProfiles() []HyperflexClusterProfil
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexSysConfigPolicy) GetClusterProfilesOk() ([]HyperflexClusterProfileRelationship, bool) {
-	if o == nil || o.ClusterProfiles == nil {
+	if o == nil || IsNil(o.ClusterProfiles) {
 		return nil, false
 	}
 	return o.ClusterProfiles, true
@@ -264,7 +278,7 @@ func (o *HyperflexSysConfigPolicy) GetClusterProfilesOk() ([]HyperflexClusterPro
 
 // HasClusterProfiles returns a boolean if a field has been set.
 func (o *HyperflexSysConfigPolicy) HasClusterProfiles() bool {
-	if o != nil && o.ClusterProfiles != nil {
+	if o != nil && !IsNil(o.ClusterProfiles) {
 		return true
 	}
 
@@ -276,55 +290,76 @@ func (o *HyperflexSysConfigPolicy) SetClusterProfiles(v []HyperflexClusterProfil
 	o.ClusterProfiles = v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexSysConfigPolicy) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexSysConfigPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *HyperflexSysConfigPolicy) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *HyperflexSysConfigPolicy) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *HyperflexSysConfigPolicy) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *HyperflexSysConfigPolicy) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 func (o HyperflexSysConfigPolicy) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexSysConfigPolicy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicy, errPolicyAbstractPolicy := json.Marshal(o.PolicyAbstractPolicy)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
 	errPolicyAbstractPolicy = json.Unmarshal([]byte(serializedPolicyAbstractPolicy), &toSerialize)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.DnsDomainName != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.DnsDomainName) {
 		toSerialize["DnsDomainName"] = o.DnsDomainName
 	}
 	if o.DnsServers != nil {
@@ -333,43 +368,84 @@ func (o HyperflexSysConfigPolicy) MarshalJSON() ([]byte, error) {
 	if o.NtpServers != nil {
 		toSerialize["NtpServers"] = o.NtpServers
 	}
-	if o.Timezone != nil {
+	if !IsNil(o.Timezone) {
 		toSerialize["Timezone"] = o.Timezone
 	}
 	if o.ClusterProfiles != nil {
 		toSerialize["ClusterProfiles"] = o.ClusterProfiles
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexSysConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexSysConfigPolicy) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexSysConfigPolicyWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
 		// The DNS Search Domain Name. This setting applies to HyperFlex Data Platform 3.0 or later only.
-		DnsDomainName *string  `json:"DnsDomainName,omitempty"`
+		DnsDomainName *string  `json:"DnsDomainName,omitempty" validate:"regexp=^$|^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\\\.)*[a-zA-Z]{2,63}$"`
 		DnsServers    []string `json:"DnsServers,omitempty"`
 		NtpServers    []string `json:"NtpServers,omitempty"`
-		// The timezone of the HyperFlex cluster's system clock. * `Pacific/Niue` -  * `Pacific/Pago_Pago` -  * `Pacific/Honolulu` -  * `Pacific/Rarotonga` -  * `Pacific/Tahiti` -  * `Pacific/Marquesas` -  * `America/Anchorage` -  * `Pacific/Gambier` -  * `America/Los_Angeles` -  * `America/Tijuana` -  * `America/Vancouver` -  * `America/Whitehorse` -  * `Pacific/Pitcairn` -  * `America/Dawson_Creek` -  * `America/Denver` -  * `America/Edmonton` -  * `America/Hermosillo` -  * `America/Mazatlan` -  * `America/Phoenix` -  * `America/Yellowknife` -  * `America/Belize` -  * `America/Chicago` -  * `America/Costa_Rica` -  * `America/El_Salvador` -  * `America/Guatemala` -  * `America/Managua` -  * `America/Mexico_City` -  * `America/Regina` -  * `America/Tegucigalpa` -  * `America/Winnipeg` -  * `Pacific/Galapagos` -  * `America/Bogota` -  * `America/Cancun` -  * `America/Cayman` -  * `America/Guayaquil` -  * `America/Havana` -  * `America/Iqaluit` -  * `America/Jamaica` -  * `America/Lima` -  * `America/Nassau` -  * `America/New_York` -  * `America/Nuuk` -  * `America/Panama` -  * `America/Port-au-Prince` -  * `America/Rio_Branco` -  * `America/Toronto` -  * `Pacific/Easter` -  * `America/Caracas` -  * `America/Asuncion` -  * `America/Barbados` -  * `America/Boa_Vista` -  * `America/Campo_Grande` -  * `America/Cuiaba` -  * `America/Curacao` -  * `America/Grand_Turk` -  * `America/Guyana` -  * `America/Halifax` -  * `America/La_Paz` -  * `America/Manaus` -  * `America/Martinique` -  * `America/Port_of_Spain` -  * `America/Porto_Velho` -  * `America/Puerto_Rico` -  * `America/Santo_Domingo` -  * `America/Thule` -  * `Atlantic/Bermuda` -  * `America/St_Johns` -  * `America/Araguaina` -  * `America/Argentina/Buenos_Aires` -  * `America/Bahia` -  * `America/Belem` -  * `America/Cayenne` -  * `America/Fortaleza` -  * `America/Godthab` -  * `America/Maceio` -  * `America/Miquelon` -  * `America/Montevideo` -  * `America/Paramaribo` -  * `America/Recife` -  * `America/Santiago` -  * `America/Sao_Paulo` -  * `Antarctica/Palmer` -  * `Antarctica/Rothera` -  * `Atlantic/Stanley` -  * `America/Noronha` -  * `Atlantic/South_Georgia` -  * `America/Scoresbysund` -  * `Atlantic/Azores` -  * `Atlantic/Cape_Verde` -  * `Africa/Abidjan` -  * `Africa/Accra` -  * `Africa/Bissau` -  * `Africa/Casablanca` -  * `Africa/El_Aaiun` -  * `Africa/Monrovia` -  * `America/Danmarkshavn` -  * `Atlantic/Canary` -  * `Atlantic/Faroe` -  * `Atlantic/Reykjavik` -  * `Etc/GMT` -  * `Europe/Dublin` -  * `Europe/Lisbon` -  * `Europe/London` -  * `Africa/Algiers` -  * `Africa/Ceuta` -  * `Africa/Lagos` -  * `Africa/Ndjamena` -  * `Africa/Tunis` -  * `Africa/Windhoek` -  * `Europe/Amsterdam` -  * `Europe/Andorra` -  * `Europe/Belgrade` -  * `Europe/Berlin` -  * `Europe/Brussels` -  * `Europe/Budapest` -  * `Europe/Copenhagen` -  * `Europe/Gibraltar` -  * `Europe/Luxembourg` -  * `Europe/Madrid` -  * `Europe/Malta` -  * `Europe/Monaco` -  * `Europe/Oslo` -  * `Europe/Paris` -  * `Europe/Prague` -  * `Europe/Rome` -  * `Europe/Stockholm` -  * `Europe/Tirane` -  * `Europe/Vienna` -  * `Europe/Warsaw` -  * `Europe/Zurich` -  * `Africa/Cairo` -  * `Africa/Johannesburg` -  * `Africa/Maputo` -  * `Africa/Tripoli` -  * `Asia/Amman` -  * `Asia/Beirut` -  * `Asia/Damascus` -  * `Asia/Gaza` -  * `Asia/Jerusalem` -  * `Asia/Nicosia` -  * `Europe/Athens` -  * `Europe/Bucharest` -  * `Europe/Chisinau` -  * `Europe/Helsinki` -  * `Europe/Istanbul` -  * `Europe/Kaliningrad` -  * `Europe/Kiev` -  * `Europe/Riga` -  * `Europe/Sofia` -  * `Europe/Tallinn` -  * `Europe/Vilnius` -  * `Africa/Khartoum` -  * `Africa/Nairobi` -  * `Antarctica/Syowa` -  * `Asia/Baghdad` -  * `Asia/Qatar` -  * `Asia/Riyadh` -  * `Europe/Minsk` -  * `Europe/Moscow` -  * `Asia/Tehran` -  * `Asia/Baku` -  * `Asia/Dubai` -  * `Asia/Tbilisi` -  * `Asia/Yerevan` -  * `Europe/Samara` -  * `Indian/Mahe` -  * `Indian/Mauritius` -  * `Indian/Reunion` -  * `Asia/Kabul` -  * `Antarctica/Mawson` -  * `Asia/Aqtau` -  * `Asia/Aqtobe` -  * `Asia/Ashgabat` -  * `Asia/Dushanbe` -  * `Asia/Karachi` -  * `Asia/Tashkent` -  * `Asia/Yekaterinburg` -  * `Indian/Kerguelen` -  * `Indian/Maldives` -  * `Asia/Calcutta` -  * `Asia/Kolkata` -  * `Asia/Colombo` -  * `Asia/Kathmandu` -  * `Asia/Katmandu` -  * `Antarctica/Vostok` -  * `Asia/Almaty` -  * `Asia/Bishkek` -  * `Asia/Dhaka` -  * `Asia/Omsk` -  * `Asia/Thimphu` -  * `Indian/Chagos` -  * `Asia/Rangoon` -  * `Indian/Cocos` -  * `Antarctica/Davis` -  * `Asia/Bangkok` -  * `Asia/Ho_Chi_Minh` -  * `Asia/Hovd` -  * `Asia/Jakarta` -  * `Asia/Krasnoyarsk` -  * `Asia/Saigon` -  * `Indian/Christmas` -  * `Antarctica/Casey` -  * `Asia/Brunei` -  * `Asia/Choibalsan` -  * `Asia/Hong_Kong` -  * `Asia/Irkutsk` -  * `Asia/Kuala_Lumpur` -  * `Asia/Macau` -  * `Asia/Makassar` -  * `Asia/Manila` -  * `Asia/Shanghai` -  * `Asia/Singapore` -  * `Asia/Taipei` -  * `Asia/Ulaanbaatar` -  * `Australia/Perth` -  * `Asia/Pyongyang` -  * `Asia/Dili` -  * `Asia/Jayapura` -  * `Asia/Seoul` -  * `Asia/Tokyo` -  * `Asia/Yakutsk` -  * `Asia/Yangon` -  * `Pacific/Palau` -  * `Australia/Adelaide` -  * `Australia/Darwin` -  * `Antarctica/DumontDUrville` -  * `Asia/Magadan` -  * `Asia/Vladivostok` -  * `Australia/Brisbane` -  * `Australia/Hobart` -  * `Australia/Sydney` -  * `Pacific/Chuuk` -  * `Pacific/Guam` -  * `Pacific/Port_Moresby` -  * `Pacific/Efate` -  * `Pacific/Guadalcanal` -  * `Pacific/Kosrae` -  * `Pacific/Norfolk` -  * `Pacific/Noumea` -  * `Pacific/Pohnpei` -  * `Asia/Kamchatka` -  * `Pacific/Auckland` -  * `Pacific/Fiji` -  * `Pacific/Funafuti` -  * `Pacific/Kwajalein` -  * `Pacific/Majuro` -  * `Pacific/Nauru` -  * `Pacific/Tarawa` -  * `Pacific/Wake` -  * `Pacific/Wallis` -  * `Pacific/Apia` -  * `Pacific/Enderbury` -  * `Pacific/Fakaofo` -  * `Pacific/Tongatapu` -  * `Pacific/Kiritimati` -
+		// The timezone of the HyperFlex cluster's system clock. * `Pacific/Niue` -  * `Africa/Abidjan` -  * `Africa/Accra` -  * `Africa/Addis_Ababa` -  * `Africa/Algiers` -  * `Africa/Asmara` -  * `Africa/Bamako` -  * `Africa/Bangui` -  * `Africa/Banjul` -  * `Africa/Bissau` -  * `Africa/Blantyre` -  * `Africa/Brazzaville` -  * `Africa/Bujumbura` -  * `Africa/Cairo` -  * `Africa/Casablanca` -  * `Africa/Ceuta` -  * `Africa/Conakry` -  * `Africa/Dakar` -  * `Africa/Dar_es_Salaam` -  * `Africa/Djibouti` -  * `Africa/Douala` -  * `Africa/El_Aaiun` -  * `Africa/Freetown` -  * `Africa/Gaborone` -  * `Africa/Harare` -  * `Africa/Johannesburg` -  * `Africa/Juba` -  * `Africa/Kampala` -  * `Africa/Khartoum` -  * `Africa/Kigali` -  * `Africa/Kinshasa` -  * `Africa/Lagos` -  * `Africa/Libreville` -  * `Africa/Lome` -  * `Africa/Luanda` -  * `Africa/Lubumbashi` -  * `Africa/Lusaka` -  * `Africa/Malabo` -  * `Africa/Maputo` -  * `Africa/Maseru` -  * `Africa/Mbabane` -  * `Africa/Mogadishu` -  * `Africa/Monrovia` -  * `Africa/Nairobi` -  * `Africa/Ndjamena` -  * `Africa/Niamey` -  * `Africa/Nouakchott` -  * `Africa/Ouagadougou` -  * `Africa/Porto-Novo` -  * `Africa/Sao_Tome` -  * `Africa/Tripoli` -  * `Africa/Tunis` -  * `Africa/Windhoek` -  * `America/Adak` -  * `America/Anchorage` -  * `America/Anguilla` -  * `America/Antigua` -  * `America/Araguaina` -  * `America/Argentina/Buenos_Aires` -  * `America/Argentina/Catamarca` -  * `America/Argentina/Cordoba` -  * `America/Argentina/Jujuy` -  * `America/Argentina/La_Rioja` -  * `America/Argentina/Mendoza` -  * `America/Argentina/Rio_Gallegos` -  * `America/Argentina/Salta` -  * `America/Argentina/San_Juan` -  * `America/Argentina/San_Luis` -  * `America/Argentina/Tucuman` -  * `America/Argentina/Ushuaia` -  * `America/Aruba` -  * `America/Asuncion` -  * `America/Atikokan` -  * `America/Bahia` -  * `America/Bahia_Banderas` -  * `America/Barbados` -  * `America/Belem` -  * `America/Belize` -  * `America/Blanc-Sablon` -  * `America/Boa_Vista` -  * `America/Bogota` -  * `America/Boise` -  * `America/Cambridge_Bay` -  * `America/Campo_Grande` -  * `America/Cancun` -  * `America/Caracas` -  * `America/Cayenne` -  * `America/Cayman` -  * `America/Chicago` -  * `America/Chihuahua` -  * `America/Costa_Rica` -  * `America/Creston` -  * `America/Cuiaba` -  * `America/Curacao` -  * `America/Danmarkshavn` -  * `America/Dawson` -  * `America/Dawson_Creek` -  * `America/Denver` -  * `America/Detroit` -  * `America/Dominica` -  * `America/Edmonton` -  * `America/Eirunepe` -  * `America/El_Salvador` -  * `America/Fortaleza` -  * `America/Glace_Bay` -  * `America/Godthab` -  * `America/Goose_Bay` -  * `America/Grand_Turk` -  * `America/Grenada` -  * `America/Guadeloupe` -  * `America/Guatemala` -  * `America/Guayaquil` -  * `America/Guyana` -  * `America/Halifax` -  * `America/Havana` -  * `America/Hermosillo` -  * `America/Indiana/Indianapolis` -  * `America/Indiana/Knox` -  * `America/Indiana/Marengo` -  * `America/Indiana/Petersburg` -  * `America/Indiana/Tell_City` -  * `America/Indiana/Vevay` -  * `America/Indiana/Vincennes` -  * `America/Indiana/Winamac` -  * `America/Inuvik` -  * `America/Iqaluit` -  * `America/Jamaica` -  * `America/Juneau` -  * `America/Kentucky/Louisville` -  * `America/Kentucky/Monticello` -  * `America/Kralendijk` -  * `America/La_Paz` -  * `America/Lima` -  * `America/Los_Angeles` -  * `America/Lower_Princes` -  * `America/Maceio` -  * `America/Managua` -  * `America/Manaus` -  * `America/Marigot` -  * `America/Martinique` -  * `America/Matamoros` -  * `America/Mazatlan` -  * `America/Menominee` -  * `America/Merida` -  * `America/Metlakatla` -  * `America/Mexico_City` -  * `America/Miquelon` -  * `America/Moncton` -  * `America/Monterrey` -  * `America/Montevideo` -  * `America/Montreal` -  * `America/Montserrat` -  * `America/Nassau` -  * `America/New_York` -  * `America/Nipigon` -  * `America/Nome` -  * `America/Noronha` -  * `America/North_Dakota/Beulah` -  * `America/North_Dakota/Center` -  * `America/North_Dakota/New_Salem` -  * `America/Ojinaga` -  * `America/Panama` -  * `America/Pangnirtung` -  * `America/Paramaribo` -  * `America/Phoenix` -  * `America/Port-au-Prince` -  * `America/Port_of_Spain` -  * `America/Porto_Velho` -  * `America/Puerto_Rico` -  * `America/Rainy_River` -  * `America/Rankin_Inlet` -  * `America/Recife` -  * `America/Regina` -  * `America/Resolute` -  * `America/Rio_Branco` -  * `America/Santa_Isabel` -  * `America/Santarem` -  * `America/Santiago` -  * `America/Santo_Domingo` -  * `America/Sao_Paulo` -  * `America/Scoresbysund` -  * `America/Shiprock` -  * `America/Sitka` -  * `America/St_Barthelemy` -  * `America/St_Johns` -  * `America/St_Kitts` -  * `America/St_Lucia` -  * `America/St_Thomas` -  * `America/St_Vincent` -  * `America/Swift_Current` -  * `America/Tegucigalpa` -  * `America/Thule` -  * `America/Thunder_Bay` -  * `America/Tijuana` -  * `America/Toronto` -  * `America/Tortola` -  * `America/Vancouver` -  * `America/Whitehorse` -  * `America/Winnipeg` -  * `America/Yakutat` -  * `America/Yellowknife` -  * `Antarctica/Casey` -  * `Antarctica/Davis` -  * `Antarctica/DumontDUrville` -  * `Antarctica/Macquarie` -  * `Antarctica/Mawson` -  * `Antarctica/McMurdo` -  * `Antarctica/Palmer` -  * `Antarctica/Rothera` -  * `Antarctica/South_Pole` -  * `Antarctica/Syowa` -  * `Antarctica/Troll` -  * `Antarctica/Vostok` -  * `Arctic/Longyearbyen` -  * `Asia/Aden` -  * `Asia/Almaty` -  * `Asia/Amman` -  * `Asia/Anadyr` -  * `Asia/Aqtau` -  * `Asia/Aqtobe` -  * `Asia/Ashgabat` -  * `Asia/Baghdad` -  * `Asia/Bahrain` -  * `Asia/Baku` -  * `Asia/Bangkok` -  * `Asia/Beirut` -  * `Asia/Bishkek` -  * `Asia/Brunei` -  * `Asia/Calcutta` -  * `Asia/Choibalsan` -  * `Asia/Chongqing` -  * `Asia/Colombo` -  * `Asia/Damascus` -  * `Asia/Dhaka` -  * `Asia/Dili` -  * `Asia/Dubai` -  * `Asia/Dushanbe` -  * `Asia/Gaza` -  * `Asia/Harbin` -  * `Asia/Hebron` -  * `Asia/Ho_Chi_Minh` -  * `Asia/Hong_Kong` -  * `Asia/Hovd` -  * `Asia/Irkutsk` -  * `Asia/Jakarta` -  * `Asia/Jayapura` -  * `Asia/Jerusalem` -  * `Asia/Kabul` -  * `Asia/Kamchatka` -  * `Asia/Karachi` -  * `Asia/Kashgar` -  * `Asia/Kathmandu` -  * `Asia/Katmandu` -  * `Asia/Khandyga` -  * `Asia/Kolkata` -  * `Asia/Krasnoyarsk` -  * `Asia/Kuala_Lumpur` -  * `Asia/Kuching` -  * `Asia/Kuwait` -  * `Asia/Macau` -  * `Asia/Magadan` -  * `Asia/Makassar` -  * `Asia/Manila` -  * `Asia/Muscat` -  * `Asia/Nicosia` -  * `Asia/Novokuznetsk` -  * `Asia/Novosibirsk` -  * `Asia/Omsk` -  * `Asia/Oral` -  * `Asia/Phnom_Penh` -  * `Asia/Pontianak` -  * `Asia/Pyongyang` -  * `Asia/Qatar` -  * `Asia/Qyzylorda` -  * `Asia/Rangoon` -  * `Asia/Riyadh` -  * `Asia/Saigon` -  * `Asia/Sakhalin` -  * `Asia/Samarkand` -  * `Asia/Seoul` -  * `Asia/Shanghai` -  * `Asia/Singapore` -  * `Asia/Taipei` -  * `Asia/Tashkent` -  * `Asia/Tbilisi` -  * `Asia/Tehran` -  * `Asia/Thimphu` -  * `Asia/Tokyo` -  * `Asia/Ulaanbaatar` -  * `Asia/Urumqi` -  * `Asia/Ust-Nera` -  * `Asia/Vientiane` -  * `Asia/Vladivostok` -  * `Asia/Yakutsk` -  * `Asia/Yekaterinburg` -  * `Asia/Yerevan` -  * `Atlantic/Azores` -  * `Atlantic/Bermuda` -  * `Atlantic/Canary` -  * `Atlantic/Cape_Verde` -  * `Atlantic/Faroe` -  * `Atlantic/Madeira` -  * `Atlantic/Reykjavik` -  * `Atlantic/South_Georgia` -  * `Atlantic/St_Helena` -  * `Atlantic/Stanley` -  * `Australia/Adelaide` -  * `Australia/Brisbane` -  * `Australia/Broken_Hill` -  * `Australia/Currie` -  * `Australia/Darwin` -  * `Australia/Eucla` -  * `Australia/Hobart` -  * `Australia/Lindeman` -  * `Australia/Lord_Howe` -  * `Australia/Melbourne` -  * `Australia/Perth` -  * `Australia/Sydney` -  * `Etc/GMT` -  * `Europe/Amsterdam` -  * `Europe/Andorra` -  * `Europe/Athens` -  * `Europe/Belgrade` -  * `Europe/Berlin` -  * `Europe/Bratislava` -  * `Europe/Brussels` -  * `Europe/Bucharest` -  * `Europe/Budapest` -  * `Europe/Busingen` -  * `Europe/Chisinau` -  * `Europe/Copenhagen` -  * `Europe/Dublin` -  * `Europe/Gibraltar` -  * `Europe/Guernsey` -  * `Europe/Helsinki` -  * `Europe/Isle_of_Man` -  * `Europe/Istanbul` -  * `Europe/Jersey` -  * `Europe/Kaliningrad` -  * `Europe/Kiev` -  * `Europe/Lisbon` -  * `Europe/Ljubljana` -  * `Europe/London` -  * `Europe/Luxembourg` -  * `Europe/Madrid` -  * `Europe/Malta` -  * `Europe/Mariehamn` -  * `Europe/Minsk` -  * `Europe/Monaco` -  * `Europe/Moscow` -  * `Europe/Oslo` -  * `Europe/Paris` -  * `Europe/Podgorica` -  * `Europe/Prague` -  * `Europe/Riga` -  * `Europe/Rome` -  * `Europe/Samara` -  * `Europe/San_Marino` -  * `Europe/Sarajevo` -  * `Europe/Simferopol` -  * `Europe/Skopje` -  * `Europe/Sofia` -  * `Europe/Stockholm` -  * `Europe/Tallinn` -  * `Europe/Tirane` -  * `Europe/Uzhgorod` -  * `Europe/Vaduz` -  * `Europe/Vatican` -  * `Europe/Vienna` -  * `Europe/Vilnius` -  * `Europe/Volgograd` -  * `Europe/Warsaw` -  * `Europe/Zagreb` -  * `Europe/Zaporozhye` -  * `Europe/Zurich` -  * `Indian/Antananarivo` -  * `Indian/Chagos` -  * `Indian/Christmas` -  * `Indian/Cocos` -  * `Indian/Comoro` -  * `Indian/Kerguelen` -  * `Indian/Mahe` -  * `Indian/Maldives` -  * `Indian/Mauritius` -  * `Indian/Mayotte` -  * `Indian/Reunion` -  * `Pacific/Apia` -  * `Pacific/Auckland` -  * `Pacific/Chatham` -  * `Pacific/Chuuk` -  * `Pacific/Easter` -  * `Pacific/Efate` -  * `Pacific/Enderbury` -  * `Pacific/Fakaofo` -  * `Pacific/Fiji` -  * `Pacific/Funafuti` -  * `Pacific/Galapagos` -  * `Pacific/Gambier` -  * `Pacific/Guadalcanal` -  * `Pacific/Guam` -  * `Pacific/Honolulu` -  * `Pacific/Johnston` -  * `Pacific/Kiritimati` -  * `Pacific/Kosrae` -  * `Pacific/Kwajalein` -  * `Pacific/Majuro` -  * `Pacific/Marquesas` -  * `Pacific/Midway` -  * `Pacific/Nauru` -  * `Pacific/Norfolk` -  * `Pacific/Noumea` -  * `Pacific/Pago_Pago` -  * `Pacific/Palau` -  * `Pacific/Pitcairn` -  * `Pacific/Pohnpei` -  * `Pacific/Port_Moresby` -  * `Pacific/Rarotonga` -  * `Pacific/Saipan` -  * `Pacific/Tahiti` -  * `Pacific/Tarawa` -  * `Pacific/Tongatapu` -  * `Pacific/Wake` -  * `Pacific/Wallis` -  * `UTC` -
 		Timezone *string `json:"Timezone,omitempty"`
 		// An array of relationships to hyperflexClusterProfile resources.
-		ClusterProfiles []HyperflexClusterProfileRelationship `json:"ClusterProfiles,omitempty"`
-		Organization    *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		ClusterProfiles []HyperflexClusterProfileRelationship        `json:"ClusterProfiles,omitempty"`
+		Organization    NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	}
 
 	varHyperflexSysConfigPolicyWithoutEmbeddedStruct := HyperflexSysConfigPolicyWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexSysConfigPolicyWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexSysConfigPolicyWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexSysConfigPolicy := _HyperflexSysConfigPolicy{}
 		varHyperflexSysConfigPolicy.ClassId = varHyperflexSysConfigPolicyWithoutEmbeddedStruct.ClassId
@@ -387,7 +463,7 @@ func (o *HyperflexSysConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHyperflexSysConfigPolicy := _HyperflexSysConfigPolicy{}
 
-	err = json.Unmarshal(bytes, &varHyperflexSysConfigPolicy)
+	err = json.Unmarshal(data, &varHyperflexSysConfigPolicy)
 	if err == nil {
 		o.PolicyAbstractPolicy = varHyperflexSysConfigPolicy.PolicyAbstractPolicy
 	} else {
@@ -396,7 +472,7 @@ func (o *HyperflexSysConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "DnsDomainName")

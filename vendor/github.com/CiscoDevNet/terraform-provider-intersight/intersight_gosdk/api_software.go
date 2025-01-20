@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -56,8 +56,8 @@ func (r ApiCreateSoftwareApplianceDistributableRequest) Execute() (*SoftwareAppl
 /*
 CreateSoftwareApplianceDistributable Create a 'software.ApplianceDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSoftwareApplianceDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareApplianceDistributableRequest
 */
 func (a *SoftwareApiService) CreateSoftwareApplianceDistributable(ctx context.Context) ApiCreateSoftwareApplianceDistributableRequest {
 	return ApiCreateSoftwareApplianceDistributableRequest{
@@ -67,7 +67,8 @@ func (a *SoftwareApiService) CreateSoftwareApplianceDistributable(ctx context.Co
 }
 
 // Execute executes the request
-//  @return SoftwareApplianceDistributable
+//
+//	@return SoftwareApplianceDistributable
 func (a *SoftwareApiService) CreateSoftwareApplianceDistributableExecute(r ApiCreateSoftwareApplianceDistributableRequest) (*SoftwareApplianceDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -108,10 +109,10 @@ func (a *SoftwareApiService) CreateSoftwareApplianceDistributableExecute(r ApiCr
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareApplianceDistributable
@@ -125,9 +126,9 @@ func (a *SoftwareApiService) CreateSoftwareApplianceDistributableExecute(r ApiCr
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -144,6 +145,7 @@ func (a *SoftwareApiService) CreateSoftwareApplianceDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -154,6 +156,7 @@ func (a *SoftwareApiService) CreateSoftwareApplianceDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -164,6 +167,7 @@ func (a *SoftwareApiService) CreateSoftwareApplianceDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -174,6 +178,7 @@ func (a *SoftwareApiService) CreateSoftwareApplianceDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -183,6 +188,371 @@ func (a *SoftwareApiService) CreateSoftwareApplianceDistributableExecute(r ApiCr
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCreateSoftwareHciBundleDistributableRequest struct {
+	ctx                            context.Context
+	ApiService                     *SoftwareApiService
+	softwareHciBundleDistributable *SoftwareHciBundleDistributable
+	ifMatch                        *string
+	ifNoneMatch                    *string
+}
+
+// The &#39;software.HciBundleDistributable&#39; resource to create.
+func (r ApiCreateSoftwareHciBundleDistributableRequest) SoftwareHciBundleDistributable(softwareHciBundleDistributable SoftwareHciBundleDistributable) ApiCreateSoftwareHciBundleDistributableRequest {
+	r.softwareHciBundleDistributable = &softwareHciBundleDistributable
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiCreateSoftwareHciBundleDistributableRequest) IfMatch(ifMatch string) ApiCreateSoftwareHciBundleDistributableRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+// For methods that apply server-side changes, If-None-Match used with the * value can be used to create a resource not known to exist, guaranteeing that another resource creation didn&#39;t happen before, losing the data of the previous put. The request will be processed only if the eventually existing resource&#39;s ETag doesn&#39;t match any of the values listed. Otherwise, the status code 412 (Precondition Failed) is used. The asterisk is a special value representing any resource. It is only useful when creating a resource, usually with PUT, to check if another resource with the identity has already been created before. The comparison with the stored ETag uses the weak comparison algorithm, meaning two resources are considered identical if the content is equivalent - they don&#39;t have to be identical byte for byte.
+func (r ApiCreateSoftwareHciBundleDistributableRequest) IfNoneMatch(ifNoneMatch string) ApiCreateSoftwareHciBundleDistributableRequest {
+	r.ifNoneMatch = &ifNoneMatch
+	return r
+}
+
+func (r ApiCreateSoftwareHciBundleDistributableRequest) Execute() (*SoftwareHciBundleDistributable, *http.Response, error) {
+	return r.ApiService.CreateSoftwareHciBundleDistributableExecute(r)
+}
+
+/*
+CreateSoftwareHciBundleDistributable Create a 'software.HciBundleDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareHciBundleDistributableRequest
+*/
+func (a *SoftwareApiService) CreateSoftwareHciBundleDistributable(ctx context.Context) ApiCreateSoftwareHciBundleDistributableRequest {
+	return ApiCreateSoftwareHciBundleDistributableRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciBundleDistributable
+func (a *SoftwareApiService) CreateSoftwareHciBundleDistributableExecute(r ApiCreateSoftwareHciBundleDistributableRequest) (*SoftwareHciBundleDistributable, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciBundleDistributable
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.CreateSoftwareHciBundleDistributable")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciBundleDistributables"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.softwareHciBundleDistributable == nil {
+		return localVarReturnValue, nil, reportError("softwareHciBundleDistributable is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	if r.ifNoneMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.softwareHciBundleDistributable
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCreateSoftwareHciDistributableRequest struct {
+	ctx                      context.Context
+	ApiService               *SoftwareApiService
+	softwareHciDistributable *SoftwareHciDistributable
+	ifMatch                  *string
+	ifNoneMatch              *string
+}
+
+// The &#39;software.HciDistributable&#39; resource to create.
+func (r ApiCreateSoftwareHciDistributableRequest) SoftwareHciDistributable(softwareHciDistributable SoftwareHciDistributable) ApiCreateSoftwareHciDistributableRequest {
+	r.softwareHciDistributable = &softwareHciDistributable
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiCreateSoftwareHciDistributableRequest) IfMatch(ifMatch string) ApiCreateSoftwareHciDistributableRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+// For methods that apply server-side changes, If-None-Match used with the * value can be used to create a resource not known to exist, guaranteeing that another resource creation didn&#39;t happen before, losing the data of the previous put. The request will be processed only if the eventually existing resource&#39;s ETag doesn&#39;t match any of the values listed. Otherwise, the status code 412 (Precondition Failed) is used. The asterisk is a special value representing any resource. It is only useful when creating a resource, usually with PUT, to check if another resource with the identity has already been created before. The comparison with the stored ETag uses the weak comparison algorithm, meaning two resources are considered identical if the content is equivalent - they don&#39;t have to be identical byte for byte.
+func (r ApiCreateSoftwareHciDistributableRequest) IfNoneMatch(ifNoneMatch string) ApiCreateSoftwareHciDistributableRequest {
+	r.ifNoneMatch = &ifNoneMatch
+	return r
+}
+
+func (r ApiCreateSoftwareHciDistributableRequest) Execute() (*SoftwareHciDistributable, *http.Response, error) {
+	return r.ApiService.CreateSoftwareHciDistributableExecute(r)
+}
+
+/*
+CreateSoftwareHciDistributable Create a 'software.HciDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareHciDistributableRequest
+*/
+func (a *SoftwareApiService) CreateSoftwareHciDistributable(ctx context.Context) ApiCreateSoftwareHciDistributableRequest {
+	return ApiCreateSoftwareHciDistributableRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciDistributable
+func (a *SoftwareApiService) CreateSoftwareHciDistributableExecute(r ApiCreateSoftwareHciDistributableRequest) (*SoftwareHciDistributable, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciDistributable
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.CreateSoftwareHciDistributable")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciDistributables"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.softwareHciDistributable == nil {
+		return localVarReturnValue, nil, reportError("softwareHciDistributable is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	if r.ifNoneMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.softwareHciDistributable
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -232,8 +602,8 @@ func (r ApiCreateSoftwareHclMetaRequest) Execute() (*SoftwareHclMeta, *http.Resp
 /*
 CreateSoftwareHclMeta Create a 'software.HclMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSoftwareHclMetaRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareHclMetaRequest
 */
 func (a *SoftwareApiService) CreateSoftwareHclMeta(ctx context.Context) ApiCreateSoftwareHclMetaRequest {
 	return ApiCreateSoftwareHclMetaRequest{
@@ -243,7 +613,8 @@ func (a *SoftwareApiService) CreateSoftwareHclMeta(ctx context.Context) ApiCreat
 }
 
 // Execute executes the request
-//  @return SoftwareHclMeta
+//
+//	@return SoftwareHclMeta
 func (a *SoftwareApiService) CreateSoftwareHclMetaExecute(r ApiCreateSoftwareHclMetaRequest) (*SoftwareHclMeta, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -284,10 +655,10 @@ func (a *SoftwareApiService) CreateSoftwareHclMetaExecute(r ApiCreateSoftwareHcl
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareHclMeta
@@ -301,9 +672,9 @@ func (a *SoftwareApiService) CreateSoftwareHclMetaExecute(r ApiCreateSoftwareHcl
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -320,6 +691,7 @@ func (a *SoftwareApiService) CreateSoftwareHclMetaExecute(r ApiCreateSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -330,6 +702,7 @@ func (a *SoftwareApiService) CreateSoftwareHclMetaExecute(r ApiCreateSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -340,6 +713,7 @@ func (a *SoftwareApiService) CreateSoftwareHclMetaExecute(r ApiCreateSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -350,6 +724,7 @@ func (a *SoftwareApiService) CreateSoftwareHclMetaExecute(r ApiCreateSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -359,6 +734,7 @@ func (a *SoftwareApiService) CreateSoftwareHclMetaExecute(r ApiCreateSoftwareHcl
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -408,8 +784,8 @@ func (r ApiCreateSoftwareHyperflexBundleDistributableRequest) Execute() (*Softwa
 /*
 CreateSoftwareHyperflexBundleDistributable Create a 'software.HyperflexBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSoftwareHyperflexBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareHyperflexBundleDistributableRequest
 */
 func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributable(ctx context.Context) ApiCreateSoftwareHyperflexBundleDistributableRequest {
 	return ApiCreateSoftwareHyperflexBundleDistributableRequest{
@@ -419,7 +795,8 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributable(ctx cont
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexBundleDistributable
+//
+//	@return SoftwareHyperflexBundleDistributable
 func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributableExecute(r ApiCreateSoftwareHyperflexBundleDistributableRequest) (*SoftwareHyperflexBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -460,10 +837,10 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributableExecute(r
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareHyperflexBundleDistributable
@@ -477,9 +854,9 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributableExecute(r
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -496,6 +873,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -506,6 +884,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -516,6 +895,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -526,6 +906,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -535,6 +916,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexBundleDistributableExecute(r
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -584,8 +966,8 @@ func (r ApiCreateSoftwareHyperflexDistributableRequest) Execute() (*SoftwareHype
 /*
 CreateSoftwareHyperflexDistributable Create a 'software.HyperflexDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSoftwareHyperflexDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareHyperflexDistributableRequest
 */
 func (a *SoftwareApiService) CreateSoftwareHyperflexDistributable(ctx context.Context) ApiCreateSoftwareHyperflexDistributableRequest {
 	return ApiCreateSoftwareHyperflexDistributableRequest{
@@ -595,7 +977,8 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexDistributable(ctx context.Co
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexDistributable
+//
+//	@return SoftwareHyperflexDistributable
 func (a *SoftwareApiService) CreateSoftwareHyperflexDistributableExecute(r ApiCreateSoftwareHyperflexDistributableRequest) (*SoftwareHyperflexDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -636,10 +1019,10 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexDistributableExecute(r ApiCr
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareHyperflexDistributable
@@ -653,9 +1036,9 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexDistributableExecute(r ApiCr
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -672,6 +1055,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -682,6 +1066,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -692,6 +1077,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -702,6 +1088,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -711,6 +1098,7 @@ func (a *SoftwareApiService) CreateSoftwareHyperflexDistributableExecute(r ApiCr
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -760,8 +1148,8 @@ func (r ApiCreateSoftwareIksBundleDistributableRequest) Execute() (*SoftwareIksB
 /*
 CreateSoftwareIksBundleDistributable Create a 'software.IksBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSoftwareIksBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareIksBundleDistributableRequest
 */
 func (a *SoftwareApiService) CreateSoftwareIksBundleDistributable(ctx context.Context) ApiCreateSoftwareIksBundleDistributableRequest {
 	return ApiCreateSoftwareIksBundleDistributableRequest{
@@ -771,7 +1159,8 @@ func (a *SoftwareApiService) CreateSoftwareIksBundleDistributable(ctx context.Co
 }
 
 // Execute executes the request
-//  @return SoftwareIksBundleDistributable
+//
+//	@return SoftwareIksBundleDistributable
 func (a *SoftwareApiService) CreateSoftwareIksBundleDistributableExecute(r ApiCreateSoftwareIksBundleDistributableRequest) (*SoftwareIksBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -812,10 +1201,10 @@ func (a *SoftwareApiService) CreateSoftwareIksBundleDistributableExecute(r ApiCr
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareIksBundleDistributable
@@ -829,9 +1218,9 @@ func (a *SoftwareApiService) CreateSoftwareIksBundleDistributableExecute(r ApiCr
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -848,6 +1237,7 @@ func (a *SoftwareApiService) CreateSoftwareIksBundleDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -858,6 +1248,7 @@ func (a *SoftwareApiService) CreateSoftwareIksBundleDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -868,6 +1259,7 @@ func (a *SoftwareApiService) CreateSoftwareIksBundleDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -878,6 +1270,7 @@ func (a *SoftwareApiService) CreateSoftwareIksBundleDistributableExecute(r ApiCr
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -887,6 +1280,7 @@ func (a *SoftwareApiService) CreateSoftwareIksBundleDistributableExecute(r ApiCr
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -936,8 +1330,8 @@ func (r ApiCreateSoftwareReleaseMetaRequest) Execute() (*SoftwareReleaseMeta, *h
 /*
 CreateSoftwareReleaseMeta Create a 'software.ReleaseMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSoftwareReleaseMetaRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareReleaseMetaRequest
 */
 func (a *SoftwareApiService) CreateSoftwareReleaseMeta(ctx context.Context) ApiCreateSoftwareReleaseMetaRequest {
 	return ApiCreateSoftwareReleaseMetaRequest{
@@ -947,7 +1341,8 @@ func (a *SoftwareApiService) CreateSoftwareReleaseMeta(ctx context.Context) ApiC
 }
 
 // Execute executes the request
-//  @return SoftwareReleaseMeta
+//
+//	@return SoftwareReleaseMeta
 func (a *SoftwareApiService) CreateSoftwareReleaseMetaExecute(r ApiCreateSoftwareReleaseMetaRequest) (*SoftwareReleaseMeta, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -988,10 +1383,10 @@ func (a *SoftwareApiService) CreateSoftwareReleaseMetaExecute(r ApiCreateSoftwar
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareReleaseMeta
@@ -1005,9 +1400,9 @@ func (a *SoftwareApiService) CreateSoftwareReleaseMetaExecute(r ApiCreateSoftwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1024,6 +1419,7 @@ func (a *SoftwareApiService) CreateSoftwareReleaseMetaExecute(r ApiCreateSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1034,6 +1430,7 @@ func (a *SoftwareApiService) CreateSoftwareReleaseMetaExecute(r ApiCreateSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1044,6 +1441,7 @@ func (a *SoftwareApiService) CreateSoftwareReleaseMetaExecute(r ApiCreateSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1054,6 +1452,7 @@ func (a *SoftwareApiService) CreateSoftwareReleaseMetaExecute(r ApiCreateSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1063,6 +1462,7 @@ func (a *SoftwareApiService) CreateSoftwareReleaseMetaExecute(r ApiCreateSoftwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1112,8 +1512,8 @@ func (r ApiCreateSoftwareSolutionDistributableRequest) Execute() (*SoftwareSolut
 /*
 CreateSoftwareSolutionDistributable Create a 'software.SolutionDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSoftwareSolutionDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareSolutionDistributableRequest
 */
 func (a *SoftwareApiService) CreateSoftwareSolutionDistributable(ctx context.Context) ApiCreateSoftwareSolutionDistributableRequest {
 	return ApiCreateSoftwareSolutionDistributableRequest{
@@ -1123,7 +1523,8 @@ func (a *SoftwareApiService) CreateSoftwareSolutionDistributable(ctx context.Con
 }
 
 // Execute executes the request
-//  @return SoftwareSolutionDistributable
+//
+//	@return SoftwareSolutionDistributable
 func (a *SoftwareApiService) CreateSoftwareSolutionDistributableExecute(r ApiCreateSoftwareSolutionDistributableRequest) (*SoftwareSolutionDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1164,10 +1565,10 @@ func (a *SoftwareApiService) CreateSoftwareSolutionDistributableExecute(r ApiCre
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareSolutionDistributable
@@ -1181,9 +1582,9 @@ func (a *SoftwareApiService) CreateSoftwareSolutionDistributableExecute(r ApiCre
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1200,6 +1601,7 @@ func (a *SoftwareApiService) CreateSoftwareSolutionDistributableExecute(r ApiCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1210,6 +1612,7 @@ func (a *SoftwareApiService) CreateSoftwareSolutionDistributableExecute(r ApiCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1220,6 +1623,7 @@ func (a *SoftwareApiService) CreateSoftwareSolutionDistributableExecute(r ApiCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1230,6 +1634,7 @@ func (a *SoftwareApiService) CreateSoftwareSolutionDistributableExecute(r ApiCre
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1239,6 +1644,7 @@ func (a *SoftwareApiService) CreateSoftwareSolutionDistributableExecute(r ApiCre
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1288,8 +1694,8 @@ func (r ApiCreateSoftwareUcsdBundleDistributableRequest) Execute() (*SoftwareUcs
 /*
 CreateSoftwareUcsdBundleDistributable Create a 'software.UcsdBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSoftwareUcsdBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareUcsdBundleDistributableRequest
 */
 func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributable(ctx context.Context) ApiCreateSoftwareUcsdBundleDistributableRequest {
 	return ApiCreateSoftwareUcsdBundleDistributableRequest{
@@ -1299,7 +1705,8 @@ func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributable(ctx context.C
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdBundleDistributable
+//
+//	@return SoftwareUcsdBundleDistributable
 func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributableExecute(r ApiCreateSoftwareUcsdBundleDistributableRequest) (*SoftwareUcsdBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1340,10 +1747,10 @@ func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributableExecute(r ApiC
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareUcsdBundleDistributable
@@ -1357,9 +1764,9 @@ func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributableExecute(r ApiC
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1376,6 +1783,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributableExecute(r ApiC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1386,6 +1794,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributableExecute(r ApiC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1396,6 +1805,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributableExecute(r ApiC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1406,6 +1816,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributableExecute(r ApiC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1415,6 +1826,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdBundleDistributableExecute(r ApiC
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1464,8 +1876,8 @@ func (r ApiCreateSoftwareUcsdDistributableRequest) Execute() (*SoftwareUcsdDistr
 /*
 CreateSoftwareUcsdDistributable Create a 'software.UcsdDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateSoftwareUcsdDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateSoftwareUcsdDistributableRequest
 */
 func (a *SoftwareApiService) CreateSoftwareUcsdDistributable(ctx context.Context) ApiCreateSoftwareUcsdDistributableRequest {
 	return ApiCreateSoftwareUcsdDistributableRequest{
@@ -1475,7 +1887,8 @@ func (a *SoftwareApiService) CreateSoftwareUcsdDistributable(ctx context.Context
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdDistributable
+//
+//	@return SoftwareUcsdDistributable
 func (a *SoftwareApiService) CreateSoftwareUcsdDistributableExecute(r ApiCreateSoftwareUcsdDistributableRequest) (*SoftwareUcsdDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1516,10 +1929,10 @@ func (a *SoftwareApiService) CreateSoftwareUcsdDistributableExecute(r ApiCreateS
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareUcsdDistributable
@@ -1533,9 +1946,9 @@ func (a *SoftwareApiService) CreateSoftwareUcsdDistributableExecute(r ApiCreateS
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1552,6 +1965,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdDistributableExecute(r ApiCreateS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1562,6 +1976,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdDistributableExecute(r ApiCreateS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1572,6 +1987,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdDistributableExecute(r ApiCreateS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1582,6 +1998,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdDistributableExecute(r ApiCreateS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1591,6 +2008,7 @@ func (a *SoftwareApiService) CreateSoftwareUcsdDistributableExecute(r ApiCreateS
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1620,9 +2038,9 @@ func (r ApiDeleteSoftwareApplianceDistributableRequest) Execute() (*http.Respons
 /*
 DeleteSoftwareApplianceDistributable Delete a 'software.ApplianceDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSoftwareApplianceDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareApplianceDistributableRequest
 */
 func (a *SoftwareApiService) DeleteSoftwareApplianceDistributable(ctx context.Context, moid string) ApiDeleteSoftwareApplianceDistributableRequest {
 	return ApiDeleteSoftwareApplianceDistributableRequest{
@@ -1646,7 +2064,7 @@ func (a *SoftwareApiService) DeleteSoftwareApplianceDistributableExecute(r ApiDe
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/ApplianceDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1679,9 +2097,9 @@ func (a *SoftwareApiService) DeleteSoftwareApplianceDistributableExecute(r ApiDe
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -1698,6 +2116,7 @@ func (a *SoftwareApiService) DeleteSoftwareApplianceDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1708,6 +2127,7 @@ func (a *SoftwareApiService) DeleteSoftwareApplianceDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1718,6 +2138,7 @@ func (a *SoftwareApiService) DeleteSoftwareApplianceDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1728,6 +2149,7 @@ func (a *SoftwareApiService) DeleteSoftwareApplianceDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1737,6 +2159,291 @@ func (a *SoftwareApiService) DeleteSoftwareApplianceDistributableExecute(r ApiDe
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiDeleteSoftwareHciBundleDistributableRequest struct {
+	ctx        context.Context
+	ApiService *SoftwareApiService
+	moid       string
+}
+
+func (r ApiDeleteSoftwareHciBundleDistributableRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeleteSoftwareHciBundleDistributableExecute(r)
+}
+
+/*
+DeleteSoftwareHciBundleDistributable Delete a 'software.HciBundleDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareHciBundleDistributableRequest
+*/
+func (a *SoftwareApiService) DeleteSoftwareHciBundleDistributable(ctx context.Context, moid string) ApiDeleteSoftwareHciBundleDistributableRequest {
+	return ApiDeleteSoftwareHciBundleDistributableRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+func (a *SoftwareApiService) DeleteSoftwareHciBundleDistributableExecute(r ApiDeleteSoftwareHciBundleDistributableRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.DeleteSoftwareHciBundleDistributable")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciBundleDistributables/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiDeleteSoftwareHciDistributableRequest struct {
+	ctx        context.Context
+	ApiService *SoftwareApiService
+	moid       string
+}
+
+func (r ApiDeleteSoftwareHciDistributableRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeleteSoftwareHciDistributableExecute(r)
+}
+
+/*
+DeleteSoftwareHciDistributable Delete a 'software.HciDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareHciDistributableRequest
+*/
+func (a *SoftwareApiService) DeleteSoftwareHciDistributable(ctx context.Context, moid string) ApiDeleteSoftwareHciDistributableRequest {
+	return ApiDeleteSoftwareHciDistributableRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+func (a *SoftwareApiService) DeleteSoftwareHciDistributableExecute(r ApiDeleteSoftwareHciDistributableRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.DeleteSoftwareHciDistributable")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciDistributables/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -1757,9 +2464,9 @@ func (r ApiDeleteSoftwareHclMetaRequest) Execute() (*http.Response, error) {
 /*
 DeleteSoftwareHclMeta Delete a 'software.HclMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSoftwareHclMetaRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareHclMetaRequest
 */
 func (a *SoftwareApiService) DeleteSoftwareHclMeta(ctx context.Context, moid string) ApiDeleteSoftwareHclMetaRequest {
 	return ApiDeleteSoftwareHclMetaRequest{
@@ -1783,7 +2490,7 @@ func (a *SoftwareApiService) DeleteSoftwareHclMetaExecute(r ApiDeleteSoftwareHcl
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HclMeta/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1816,9 +2523,9 @@ func (a *SoftwareApiService) DeleteSoftwareHclMetaExecute(r ApiDeleteSoftwareHcl
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -1835,6 +2542,7 @@ func (a *SoftwareApiService) DeleteSoftwareHclMetaExecute(r ApiDeleteSoftwareHcl
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1845,6 +2553,7 @@ func (a *SoftwareApiService) DeleteSoftwareHclMetaExecute(r ApiDeleteSoftwareHcl
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1855,6 +2564,7 @@ func (a *SoftwareApiService) DeleteSoftwareHclMetaExecute(r ApiDeleteSoftwareHcl
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1865,6 +2575,7 @@ func (a *SoftwareApiService) DeleteSoftwareHclMetaExecute(r ApiDeleteSoftwareHcl
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1874,6 +2585,7 @@ func (a *SoftwareApiService) DeleteSoftwareHclMetaExecute(r ApiDeleteSoftwareHcl
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -1894,9 +2606,9 @@ func (r ApiDeleteSoftwareHyperflexBundleDistributableRequest) Execute() (*http.R
 /*
 DeleteSoftwareHyperflexBundleDistributable Delete a 'software.HyperflexBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSoftwareHyperflexBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareHyperflexBundleDistributableRequest
 */
 func (a *SoftwareApiService) DeleteSoftwareHyperflexBundleDistributable(ctx context.Context, moid string) ApiDeleteSoftwareHyperflexBundleDistributableRequest {
 	return ApiDeleteSoftwareHyperflexBundleDistributableRequest{
@@ -1920,7 +2632,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexBundleDistributableExecute(r
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HyperflexBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1953,9 +2665,9 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexBundleDistributableExecute(r
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -1972,6 +2684,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1982,6 +2695,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -1992,6 +2706,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2002,6 +2717,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2011,6 +2727,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexBundleDistributableExecute(r
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2031,9 +2748,9 @@ func (r ApiDeleteSoftwareHyperflexDistributableRequest) Execute() (*http.Respons
 /*
 DeleteSoftwareHyperflexDistributable Delete a 'software.HyperflexDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSoftwareHyperflexDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareHyperflexDistributableRequest
 */
 func (a *SoftwareApiService) DeleteSoftwareHyperflexDistributable(ctx context.Context, moid string) ApiDeleteSoftwareHyperflexDistributableRequest {
 	return ApiDeleteSoftwareHyperflexDistributableRequest{
@@ -2057,7 +2774,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexDistributableExecute(r ApiDe
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HyperflexDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2090,9 +2807,9 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexDistributableExecute(r ApiDe
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2109,6 +2826,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2119,6 +2837,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2129,6 +2848,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2139,6 +2859,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2148,6 +2869,7 @@ func (a *SoftwareApiService) DeleteSoftwareHyperflexDistributableExecute(r ApiDe
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2168,9 +2890,9 @@ func (r ApiDeleteSoftwareIksBundleDistributableRequest) Execute() (*http.Respons
 /*
 DeleteSoftwareIksBundleDistributable Delete a 'software.IksBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSoftwareIksBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareIksBundleDistributableRequest
 */
 func (a *SoftwareApiService) DeleteSoftwareIksBundleDistributable(ctx context.Context, moid string) ApiDeleteSoftwareIksBundleDistributableRequest {
 	return ApiDeleteSoftwareIksBundleDistributableRequest{
@@ -2194,7 +2916,7 @@ func (a *SoftwareApiService) DeleteSoftwareIksBundleDistributableExecute(r ApiDe
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/IksBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2227,9 +2949,9 @@ func (a *SoftwareApiService) DeleteSoftwareIksBundleDistributableExecute(r ApiDe
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2246,6 +2968,7 @@ func (a *SoftwareApiService) DeleteSoftwareIksBundleDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2256,6 +2979,7 @@ func (a *SoftwareApiService) DeleteSoftwareIksBundleDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2266,6 +2990,7 @@ func (a *SoftwareApiService) DeleteSoftwareIksBundleDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2276,6 +3001,7 @@ func (a *SoftwareApiService) DeleteSoftwareIksBundleDistributableExecute(r ApiDe
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2285,6 +3011,7 @@ func (a *SoftwareApiService) DeleteSoftwareIksBundleDistributableExecute(r ApiDe
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2305,9 +3032,9 @@ func (r ApiDeleteSoftwareReleaseMetaRequest) Execute() (*http.Response, error) {
 /*
 DeleteSoftwareReleaseMeta Delete a 'software.ReleaseMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSoftwareReleaseMetaRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareReleaseMetaRequest
 */
 func (a *SoftwareApiService) DeleteSoftwareReleaseMeta(ctx context.Context, moid string) ApiDeleteSoftwareReleaseMetaRequest {
 	return ApiDeleteSoftwareReleaseMetaRequest{
@@ -2331,7 +3058,7 @@ func (a *SoftwareApiService) DeleteSoftwareReleaseMetaExecute(r ApiDeleteSoftwar
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/ReleaseMeta/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2364,9 +3091,9 @@ func (a *SoftwareApiService) DeleteSoftwareReleaseMetaExecute(r ApiDeleteSoftwar
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2383,6 +3110,7 @@ func (a *SoftwareApiService) DeleteSoftwareReleaseMetaExecute(r ApiDeleteSoftwar
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2393,6 +3121,7 @@ func (a *SoftwareApiService) DeleteSoftwareReleaseMetaExecute(r ApiDeleteSoftwar
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2403,6 +3132,7 @@ func (a *SoftwareApiService) DeleteSoftwareReleaseMetaExecute(r ApiDeleteSoftwar
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2413,6 +3143,7 @@ func (a *SoftwareApiService) DeleteSoftwareReleaseMetaExecute(r ApiDeleteSoftwar
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2422,6 +3153,7 @@ func (a *SoftwareApiService) DeleteSoftwareReleaseMetaExecute(r ApiDeleteSoftwar
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2442,9 +3174,9 @@ func (r ApiDeleteSoftwareSolutionDistributableRequest) Execute() (*http.Response
 /*
 DeleteSoftwareSolutionDistributable Delete a 'software.SolutionDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSoftwareSolutionDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareSolutionDistributableRequest
 */
 func (a *SoftwareApiService) DeleteSoftwareSolutionDistributable(ctx context.Context, moid string) ApiDeleteSoftwareSolutionDistributableRequest {
 	return ApiDeleteSoftwareSolutionDistributableRequest{
@@ -2468,7 +3200,7 @@ func (a *SoftwareApiService) DeleteSoftwareSolutionDistributableExecute(r ApiDel
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/SolutionDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2501,9 +3233,9 @@ func (a *SoftwareApiService) DeleteSoftwareSolutionDistributableExecute(r ApiDel
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2520,6 +3252,7 @@ func (a *SoftwareApiService) DeleteSoftwareSolutionDistributableExecute(r ApiDel
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2530,6 +3263,7 @@ func (a *SoftwareApiService) DeleteSoftwareSolutionDistributableExecute(r ApiDel
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2540,6 +3274,7 @@ func (a *SoftwareApiService) DeleteSoftwareSolutionDistributableExecute(r ApiDel
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2550,6 +3285,7 @@ func (a *SoftwareApiService) DeleteSoftwareSolutionDistributableExecute(r ApiDel
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2559,6 +3295,7 @@ func (a *SoftwareApiService) DeleteSoftwareSolutionDistributableExecute(r ApiDel
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2579,9 +3316,9 @@ func (r ApiDeleteSoftwareUcsdBundleDistributableRequest) Execute() (*http.Respon
 /*
 DeleteSoftwareUcsdBundleDistributable Delete a 'software.UcsdBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSoftwareUcsdBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareUcsdBundleDistributableRequest
 */
 func (a *SoftwareApiService) DeleteSoftwareUcsdBundleDistributable(ctx context.Context, moid string) ApiDeleteSoftwareUcsdBundleDistributableRequest {
 	return ApiDeleteSoftwareUcsdBundleDistributableRequest{
@@ -2605,7 +3342,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdBundleDistributableExecute(r ApiD
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/UcsdBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2638,9 +3375,9 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdBundleDistributableExecute(r ApiD
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2657,6 +3394,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdBundleDistributableExecute(r ApiD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2667,6 +3405,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdBundleDistributableExecute(r ApiD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2677,6 +3416,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdBundleDistributableExecute(r ApiD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2687,6 +3427,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdBundleDistributableExecute(r ApiD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2696,6 +3437,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdBundleDistributableExecute(r ApiD
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2716,9 +3458,9 @@ func (r ApiDeleteSoftwareUcsdDistributableRequest) Execute() (*http.Response, er
 /*
 DeleteSoftwareUcsdDistributable Delete a 'software.UcsdDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteSoftwareUcsdDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteSoftwareUcsdDistributableRequest
 */
 func (a *SoftwareApiService) DeleteSoftwareUcsdDistributable(ctx context.Context, moid string) ApiDeleteSoftwareUcsdDistributableRequest {
 	return ApiDeleteSoftwareUcsdDistributableRequest{
@@ -2742,7 +3484,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdDistributableExecute(r ApiDeleteS
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/UcsdDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2775,9 +3517,9 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdDistributableExecute(r ApiDeleteS
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2794,6 +3536,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdDistributableExecute(r ApiDeleteS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2804,6 +3547,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdDistributableExecute(r ApiDeleteS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2814,6 +3558,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdDistributableExecute(r ApiDeleteS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2824,6 +3569,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdDistributableExecute(r ApiDeleteS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2833,6 +3579,7 @@ func (a *SoftwareApiService) DeleteSoftwareUcsdDistributableExecute(r ApiDeleteS
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2853,9 +3600,9 @@ func (r ApiGetSoftwareApplianceDistributableByMoidRequest) Execute() (*SoftwareA
 /*
 GetSoftwareApplianceDistributableByMoid Read a 'software.ApplianceDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareApplianceDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareApplianceDistributableByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoid(ctx context.Context, moid string) ApiGetSoftwareApplianceDistributableByMoidRequest {
 	return ApiGetSoftwareApplianceDistributableByMoidRequest{
@@ -2866,7 +3613,8 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoid(ctx context
 }
 
 // Execute executes the request
-//  @return SoftwareApplianceDistributable
+//
+//	@return SoftwareApplianceDistributable
 func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoidExecute(r ApiGetSoftwareApplianceDistributableByMoidRequest) (*SoftwareApplianceDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2881,7 +3629,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoidExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/ApplianceDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2914,9 +3662,9 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoidExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2933,6 +3681,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2943,6 +3692,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2953,6 +3703,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2963,6 +3714,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2972,6 +3724,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableByMoidExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3040,7 +3793,7 @@ func (r ApiGetSoftwareApplianceDistributableListRequest) Expand(expand string) A
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareApplianceDistributableListRequest) Apply(apply string) ApiGetSoftwareApplianceDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -3077,8 +3830,8 @@ func (r ApiGetSoftwareApplianceDistributableListRequest) Execute() (*SoftwareApp
 /*
 GetSoftwareApplianceDistributableList Read a 'software.ApplianceDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareApplianceDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareApplianceDistributableListRequest
 */
 func (a *SoftwareApiService) GetSoftwareApplianceDistributableList(ctx context.Context) ApiGetSoftwareApplianceDistributableListRequest {
 	return ApiGetSoftwareApplianceDistributableListRequest{
@@ -3088,7 +3841,8 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableList(ctx context.C
 }
 
 // Execute executes the request
-//  @return SoftwareApplianceDistributableResponse
+//
+//	@return SoftwareApplianceDistributableResponse
 func (a *SoftwareApiService) GetSoftwareApplianceDistributableListExecute(r ApiGetSoftwareApplianceDistributableListRequest) (*SoftwareApplianceDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3109,37 +3863,52 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableListExecute(r ApiG
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3168,9 +3937,9 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableListExecute(r ApiG
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3187,6 +3956,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3197,6 +3967,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3207,6 +3978,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3217,6 +3989,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3226,6 +3999,7 @@ func (a *SoftwareApiService) GetSoftwareApplianceDistributableListExecute(r ApiG
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3255,9 +4029,9 @@ func (r ApiGetSoftwareDownloadHistoryByMoidRequest) Execute() (*SoftwareDownload
 /*
 GetSoftwareDownloadHistoryByMoid Read a 'software.DownloadHistory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareDownloadHistoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareDownloadHistoryByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoid(ctx context.Context, moid string) ApiGetSoftwareDownloadHistoryByMoidRequest {
 	return ApiGetSoftwareDownloadHistoryByMoidRequest{
@@ -3268,7 +4042,8 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return SoftwareDownloadHistory
+//
+//	@return SoftwareDownloadHistory
 func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoidExecute(r ApiGetSoftwareDownloadHistoryByMoidRequest) (*SoftwareDownloadHistory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3283,7 +4058,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoidExecute(r ApiGetSof
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/DownloadHistories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3316,9 +4091,9 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoidExecute(r ApiGetSof
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3335,6 +4110,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoidExecute(r ApiGetSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3345,6 +4121,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoidExecute(r ApiGetSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3355,6 +4132,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoidExecute(r ApiGetSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3365,6 +4143,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoidExecute(r ApiGetSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3374,6 +4153,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryByMoidExecute(r ApiGetSof
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3442,7 +4222,7 @@ func (r ApiGetSoftwareDownloadHistoryListRequest) Expand(expand string) ApiGetSo
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareDownloadHistoryListRequest) Apply(apply string) ApiGetSoftwareDownloadHistoryListRequest {
 	r.apply = &apply
 	return r
@@ -3479,8 +4259,8 @@ func (r ApiGetSoftwareDownloadHistoryListRequest) Execute() (*SoftwareDownloadHi
 /*
 GetSoftwareDownloadHistoryList Read a 'software.DownloadHistory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareDownloadHistoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareDownloadHistoryListRequest
 */
 func (a *SoftwareApiService) GetSoftwareDownloadHistoryList(ctx context.Context) ApiGetSoftwareDownloadHistoryListRequest {
 	return ApiGetSoftwareDownloadHistoryListRequest{
@@ -3490,7 +4270,8 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return SoftwareDownloadHistoryResponse
+//
+//	@return SoftwareDownloadHistoryResponse
 func (a *SoftwareApiService) GetSoftwareDownloadHistoryListExecute(r ApiGetSoftwareDownloadHistoryListRequest) (*SoftwareDownloadHistoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3511,37 +4292,52 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryListExecute(r ApiGetSoftw
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3570,9 +4366,9 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryListExecute(r ApiGetSoftw
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3589,6 +4385,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryListExecute(r ApiGetSoftw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3599,6 +4396,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryListExecute(r ApiGetSoftw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3609,6 +4407,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryListExecute(r ApiGetSoftw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3619,6 +4418,7 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryListExecute(r ApiGetSoftw
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3628,6 +4428,865 @@ func (a *SoftwareApiService) GetSoftwareDownloadHistoryListExecute(r ApiGetSoftw
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetSoftwareHciBundleDistributableByMoidRequest struct {
+	ctx        context.Context
+	ApiService *SoftwareApiService
+	moid       string
+}
+
+func (r ApiGetSoftwareHciBundleDistributableByMoidRequest) Execute() (*SoftwareHciBundleDistributable, *http.Response, error) {
+	return r.ApiService.GetSoftwareHciBundleDistributableByMoidExecute(r)
+}
+
+/*
+GetSoftwareHciBundleDistributableByMoid Read a 'software.HciBundleDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareHciBundleDistributableByMoidRequest
+*/
+func (a *SoftwareApiService) GetSoftwareHciBundleDistributableByMoid(ctx context.Context, moid string) ApiGetSoftwareHciBundleDistributableByMoidRequest {
+	return ApiGetSoftwareHciBundleDistributableByMoidRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciBundleDistributable
+func (a *SoftwareApiService) GetSoftwareHciBundleDistributableByMoidExecute(r ApiGetSoftwareHciBundleDistributableByMoidRequest) (*SoftwareHciBundleDistributable, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciBundleDistributable
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.GetSoftwareHciBundleDistributableByMoid")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciBundleDistributables/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetSoftwareHciBundleDistributableListRequest struct {
+	ctx         context.Context
+	ApiService  *SoftwareApiService
+	filter      *string
+	orderby     *string
+	top         *int32
+	skip        *int32
+	select_     *string
+	expand      *string
+	apply       *string
+	count       *bool
+	inlinecount *string
+	at          *string
+	tags        *string
+}
+
+// Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Filter(filter string) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.filter = &filter
+	return r
+}
+
+// Determines what properties are used to sort the collection of resources.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Orderby(orderby string) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.orderby = &orderby
+	return r
+}
+
+// Specifies the maximum number of resources to return in the response.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Top(top int32) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.top = &top
+	return r
+}
+
+// Specifies the number of resources to skip in the response.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Skip(skip int32) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.skip = &skip
+	return r
+}
+
+// Specifies a subset of properties to return.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Select_(select_ string) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.select_ = &select_
+	return r
+}
+
+// Specify additional attributes or related resources to return in addition to the primary resources.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Expand(expand string) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.expand = &expand
+	return r
+}
+
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Apply(apply string) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.apply = &apply
+	return r
+}
+
+// The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Count(count bool) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.count = &count
+	return r
+}
+
+// The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Inlinecount(inlinecount string) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.inlinecount = &inlinecount
+	return r
+}
+
+// Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) At(at string) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.at = &at
+	return r
+}
+
+// The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Tags(tags string) ApiGetSoftwareHciBundleDistributableListRequest {
+	r.tags = &tags
+	return r
+}
+
+func (r ApiGetSoftwareHciBundleDistributableListRequest) Execute() (*SoftwareHciBundleDistributableResponse, *http.Response, error) {
+	return r.ApiService.GetSoftwareHciBundleDistributableListExecute(r)
+}
+
+/*
+GetSoftwareHciBundleDistributableList Read a 'software.HciBundleDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareHciBundleDistributableListRequest
+*/
+func (a *SoftwareApiService) GetSoftwareHciBundleDistributableList(ctx context.Context) ApiGetSoftwareHciBundleDistributableListRequest {
+	return ApiGetSoftwareHciBundleDistributableListRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciBundleDistributableResponse
+func (a *SoftwareApiService) GetSoftwareHciBundleDistributableListExecute(r ApiGetSoftwareHciBundleDistributableListRequest) (*SoftwareHciBundleDistributableResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciBundleDistributableResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.GetSoftwareHciBundleDistributableList")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciBundleDistributables"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.filter != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
+	}
+	if r.orderby != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
+	}
+	if r.top != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
+	}
+	if r.select_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
+	}
+	if r.expand != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
+	}
+	if r.apply != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
+	}
+	if r.inlinecount != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
+	}
+	if r.at != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetSoftwareHciDistributableByMoidRequest struct {
+	ctx        context.Context
+	ApiService *SoftwareApiService
+	moid       string
+}
+
+func (r ApiGetSoftwareHciDistributableByMoidRequest) Execute() (*SoftwareHciDistributable, *http.Response, error) {
+	return r.ApiService.GetSoftwareHciDistributableByMoidExecute(r)
+}
+
+/*
+GetSoftwareHciDistributableByMoid Read a 'software.HciDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareHciDistributableByMoidRequest
+*/
+func (a *SoftwareApiService) GetSoftwareHciDistributableByMoid(ctx context.Context, moid string) ApiGetSoftwareHciDistributableByMoidRequest {
+	return ApiGetSoftwareHciDistributableByMoidRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciDistributable
+func (a *SoftwareApiService) GetSoftwareHciDistributableByMoidExecute(r ApiGetSoftwareHciDistributableByMoidRequest) (*SoftwareHciDistributable, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciDistributable
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.GetSoftwareHciDistributableByMoid")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciDistributables/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetSoftwareHciDistributableListRequest struct {
+	ctx         context.Context
+	ApiService  *SoftwareApiService
+	filter      *string
+	orderby     *string
+	top         *int32
+	skip        *int32
+	select_     *string
+	expand      *string
+	apply       *string
+	count       *bool
+	inlinecount *string
+	at          *string
+	tags        *string
+}
+
+// Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
+func (r ApiGetSoftwareHciDistributableListRequest) Filter(filter string) ApiGetSoftwareHciDistributableListRequest {
+	r.filter = &filter
+	return r
+}
+
+// Determines what properties are used to sort the collection of resources.
+func (r ApiGetSoftwareHciDistributableListRequest) Orderby(orderby string) ApiGetSoftwareHciDistributableListRequest {
+	r.orderby = &orderby
+	return r
+}
+
+// Specifies the maximum number of resources to return in the response.
+func (r ApiGetSoftwareHciDistributableListRequest) Top(top int32) ApiGetSoftwareHciDistributableListRequest {
+	r.top = &top
+	return r
+}
+
+// Specifies the number of resources to skip in the response.
+func (r ApiGetSoftwareHciDistributableListRequest) Skip(skip int32) ApiGetSoftwareHciDistributableListRequest {
+	r.skip = &skip
+	return r
+}
+
+// Specifies a subset of properties to return.
+func (r ApiGetSoftwareHciDistributableListRequest) Select_(select_ string) ApiGetSoftwareHciDistributableListRequest {
+	r.select_ = &select_
+	return r
+}
+
+// Specify additional attributes or related resources to return in addition to the primary resources.
+func (r ApiGetSoftwareHciDistributableListRequest) Expand(expand string) ApiGetSoftwareHciDistributableListRequest {
+	r.expand = &expand
+	return r
+}
+
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetSoftwareHciDistributableListRequest) Apply(apply string) ApiGetSoftwareHciDistributableListRequest {
+	r.apply = &apply
+	return r
+}
+
+// The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
+func (r ApiGetSoftwareHciDistributableListRequest) Count(count bool) ApiGetSoftwareHciDistributableListRequest {
+	r.count = &count
+	return r
+}
+
+// The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+func (r ApiGetSoftwareHciDistributableListRequest) Inlinecount(inlinecount string) ApiGetSoftwareHciDistributableListRequest {
+	r.inlinecount = &inlinecount
+	return r
+}
+
+// Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
+func (r ApiGetSoftwareHciDistributableListRequest) At(at string) ApiGetSoftwareHciDistributableListRequest {
+	r.at = &at
+	return r
+}
+
+// The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
+func (r ApiGetSoftwareHciDistributableListRequest) Tags(tags string) ApiGetSoftwareHciDistributableListRequest {
+	r.tags = &tags
+	return r
+}
+
+func (r ApiGetSoftwareHciDistributableListRequest) Execute() (*SoftwareHciDistributableResponse, *http.Response, error) {
+	return r.ApiService.GetSoftwareHciDistributableListExecute(r)
+}
+
+/*
+GetSoftwareHciDistributableList Read a 'software.HciDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareHciDistributableListRequest
+*/
+func (a *SoftwareApiService) GetSoftwareHciDistributableList(ctx context.Context) ApiGetSoftwareHciDistributableListRequest {
+	return ApiGetSoftwareHciDistributableListRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciDistributableResponse
+func (a *SoftwareApiService) GetSoftwareHciDistributableListExecute(r ApiGetSoftwareHciDistributableListRequest) (*SoftwareHciDistributableResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciDistributableResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.GetSoftwareHciDistributableList")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciDistributables"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.filter != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
+	}
+	if r.orderby != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
+	}
+	if r.top != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
+	}
+	if r.select_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
+	}
+	if r.expand != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
+	}
+	if r.apply != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
+	}
+	if r.inlinecount != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
+	}
+	if r.at != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3657,9 +5316,9 @@ func (r ApiGetSoftwareHclMetaByMoidRequest) Execute() (*SoftwareHclMeta, *http.R
 /*
 GetSoftwareHclMetaByMoid Read a 'software.HclMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareHclMetaByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareHclMetaByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareHclMetaByMoid(ctx context.Context, moid string) ApiGetSoftwareHclMetaByMoidRequest {
 	return ApiGetSoftwareHclMetaByMoidRequest{
@@ -3670,7 +5329,8 @@ func (a *SoftwareApiService) GetSoftwareHclMetaByMoid(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return SoftwareHclMeta
+//
+//	@return SoftwareHclMeta
 func (a *SoftwareApiService) GetSoftwareHclMetaByMoidExecute(r ApiGetSoftwareHclMetaByMoidRequest) (*SoftwareHclMeta, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3685,7 +5345,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaByMoidExecute(r ApiGetSoftwareHcl
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HclMeta/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3718,9 +5378,9 @@ func (a *SoftwareApiService) GetSoftwareHclMetaByMoidExecute(r ApiGetSoftwareHcl
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3737,6 +5397,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaByMoidExecute(r ApiGetSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3747,6 +5408,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaByMoidExecute(r ApiGetSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3757,6 +5419,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaByMoidExecute(r ApiGetSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3767,6 +5430,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaByMoidExecute(r ApiGetSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3776,6 +5440,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaByMoidExecute(r ApiGetSoftwareHcl
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3844,7 +5509,7 @@ func (r ApiGetSoftwareHclMetaListRequest) Expand(expand string) ApiGetSoftwareHc
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareHclMetaListRequest) Apply(apply string) ApiGetSoftwareHclMetaListRequest {
 	r.apply = &apply
 	return r
@@ -3881,8 +5546,8 @@ func (r ApiGetSoftwareHclMetaListRequest) Execute() (*SoftwareHclMetaResponse, *
 /*
 GetSoftwareHclMetaList Read a 'software.HclMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareHclMetaListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareHclMetaListRequest
 */
 func (a *SoftwareApiService) GetSoftwareHclMetaList(ctx context.Context) ApiGetSoftwareHclMetaListRequest {
 	return ApiGetSoftwareHclMetaListRequest{
@@ -3892,7 +5557,8 @@ func (a *SoftwareApiService) GetSoftwareHclMetaList(ctx context.Context) ApiGetS
 }
 
 // Execute executes the request
-//  @return SoftwareHclMetaResponse
+//
+//	@return SoftwareHclMetaResponse
 func (a *SoftwareApiService) GetSoftwareHclMetaListExecute(r ApiGetSoftwareHclMetaListRequest) (*SoftwareHclMetaResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3913,37 +5579,52 @@ func (a *SoftwareApiService) GetSoftwareHclMetaListExecute(r ApiGetSoftwareHclMe
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3972,9 +5653,9 @@ func (a *SoftwareApiService) GetSoftwareHclMetaListExecute(r ApiGetSoftwareHclMe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3991,6 +5672,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaListExecute(r ApiGetSoftwareHclMe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4001,6 +5683,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaListExecute(r ApiGetSoftwareHclMe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4011,6 +5694,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaListExecute(r ApiGetSoftwareHclMe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4021,6 +5705,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaListExecute(r ApiGetSoftwareHclMe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4030,6 +5715,7 @@ func (a *SoftwareApiService) GetSoftwareHclMetaListExecute(r ApiGetSoftwareHclMe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4059,9 +5745,9 @@ func (r ApiGetSoftwareHyperflexBundleDistributableByMoidRequest) Execute() (*Sof
 /*
 GetSoftwareHyperflexBundleDistributableByMoid Read a 'software.HyperflexBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareHyperflexBundleDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareHyperflexBundleDistributableByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoid(ctx context.Context, moid string) ApiGetSoftwareHyperflexBundleDistributableByMoidRequest {
 	return ApiGetSoftwareHyperflexBundleDistributableByMoidRequest{
@@ -4072,7 +5758,8 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoid(ctx c
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexBundleDistributable
+//
+//	@return SoftwareHyperflexBundleDistributable
 func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoidExecute(r ApiGetSoftwareHyperflexBundleDistributableByMoidRequest) (*SoftwareHyperflexBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4087,7 +5774,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoidExecut
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HyperflexBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4120,9 +5807,9 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoidExecut
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4139,6 +5826,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoidExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4149,6 +5837,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoidExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4159,6 +5848,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoidExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4169,6 +5859,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoidExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4178,6 +5869,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableByMoidExecut
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4246,7 +5938,7 @@ func (r ApiGetSoftwareHyperflexBundleDistributableListRequest) Expand(expand str
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareHyperflexBundleDistributableListRequest) Apply(apply string) ApiGetSoftwareHyperflexBundleDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -4283,8 +5975,8 @@ func (r ApiGetSoftwareHyperflexBundleDistributableListRequest) Execute() (*Softw
 /*
 GetSoftwareHyperflexBundleDistributableList Read a 'software.HyperflexBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareHyperflexBundleDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareHyperflexBundleDistributableListRequest
 */
 func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableList(ctx context.Context) ApiGetSoftwareHyperflexBundleDistributableListRequest {
 	return ApiGetSoftwareHyperflexBundleDistributableListRequest{
@@ -4294,7 +5986,8 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableList(ctx con
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexBundleDistributableResponse
+//
+//	@return SoftwareHyperflexBundleDistributableResponse
 func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableListExecute(r ApiGetSoftwareHyperflexBundleDistributableListRequest) (*SoftwareHyperflexBundleDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4315,37 +6008,52 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableListExecute(
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4374,9 +6082,9 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableListExecute(
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4393,6 +6101,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableListExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4403,6 +6112,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableListExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4413,6 +6123,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableListExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4423,6 +6134,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableListExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4432,6 +6144,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexBundleDistributableListExecute(
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4461,9 +6174,9 @@ func (r ApiGetSoftwareHyperflexDistributableByMoidRequest) Execute() (*SoftwareH
 /*
 GetSoftwareHyperflexDistributableByMoid Read a 'software.HyperflexDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareHyperflexDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareHyperflexDistributableByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoid(ctx context.Context, moid string) ApiGetSoftwareHyperflexDistributableByMoidRequest {
 	return ApiGetSoftwareHyperflexDistributableByMoidRequest{
@@ -4474,7 +6187,8 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoid(ctx context
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexDistributable
+//
+//	@return SoftwareHyperflexDistributable
 func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoidExecute(r ApiGetSoftwareHyperflexDistributableByMoidRequest) (*SoftwareHyperflexDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4489,7 +6203,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoidExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HyperflexDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4522,9 +6236,9 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoidExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4541,6 +6255,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4551,6 +6266,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4561,6 +6277,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4571,6 +6288,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4580,6 +6298,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableByMoidExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4648,7 +6367,7 @@ func (r ApiGetSoftwareHyperflexDistributableListRequest) Expand(expand string) A
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareHyperflexDistributableListRequest) Apply(apply string) ApiGetSoftwareHyperflexDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -4685,8 +6404,8 @@ func (r ApiGetSoftwareHyperflexDistributableListRequest) Execute() (*SoftwareHyp
 /*
 GetSoftwareHyperflexDistributableList Read a 'software.HyperflexDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareHyperflexDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareHyperflexDistributableListRequest
 */
 func (a *SoftwareApiService) GetSoftwareHyperflexDistributableList(ctx context.Context) ApiGetSoftwareHyperflexDistributableListRequest {
 	return ApiGetSoftwareHyperflexDistributableListRequest{
@@ -4696,7 +6415,8 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableList(ctx context.C
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexDistributableResponse
+//
+//	@return SoftwareHyperflexDistributableResponse
 func (a *SoftwareApiService) GetSoftwareHyperflexDistributableListExecute(r ApiGetSoftwareHyperflexDistributableListRequest) (*SoftwareHyperflexDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4717,37 +6437,52 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableListExecute(r ApiG
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4776,9 +6511,9 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableListExecute(r ApiG
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4795,6 +6530,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4805,6 +6541,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4815,6 +6552,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4825,6 +6563,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4834,6 +6573,7 @@ func (a *SoftwareApiService) GetSoftwareHyperflexDistributableListExecute(r ApiG
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4863,9 +6603,9 @@ func (r ApiGetSoftwareIksBundleDistributableByMoidRequest) Execute() (*SoftwareI
 /*
 GetSoftwareIksBundleDistributableByMoid Read a 'software.IksBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareIksBundleDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareIksBundleDistributableByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoid(ctx context.Context, moid string) ApiGetSoftwareIksBundleDistributableByMoidRequest {
 	return ApiGetSoftwareIksBundleDistributableByMoidRequest{
@@ -4876,7 +6616,8 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoid(ctx context
 }
 
 // Execute executes the request
-//  @return SoftwareIksBundleDistributable
+//
+//	@return SoftwareIksBundleDistributable
 func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoidExecute(r ApiGetSoftwareIksBundleDistributableByMoidRequest) (*SoftwareIksBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4891,7 +6632,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoidExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/IksBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4924,9 +6665,9 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoidExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4943,6 +6684,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4953,6 +6695,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4963,6 +6706,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4973,6 +6717,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4982,6 +6727,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableByMoidExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5050,7 +6796,7 @@ func (r ApiGetSoftwareIksBundleDistributableListRequest) Expand(expand string) A
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareIksBundleDistributableListRequest) Apply(apply string) ApiGetSoftwareIksBundleDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -5087,8 +6833,8 @@ func (r ApiGetSoftwareIksBundleDistributableListRequest) Execute() (*SoftwareIks
 /*
 GetSoftwareIksBundleDistributableList Read a 'software.IksBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareIksBundleDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareIksBundleDistributableListRequest
 */
 func (a *SoftwareApiService) GetSoftwareIksBundleDistributableList(ctx context.Context) ApiGetSoftwareIksBundleDistributableListRequest {
 	return ApiGetSoftwareIksBundleDistributableListRequest{
@@ -5098,7 +6844,8 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableList(ctx context.C
 }
 
 // Execute executes the request
-//  @return SoftwareIksBundleDistributableResponse
+//
+//	@return SoftwareIksBundleDistributableResponse
 func (a *SoftwareApiService) GetSoftwareIksBundleDistributableListExecute(r ApiGetSoftwareIksBundleDistributableListRequest) (*SoftwareIksBundleDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5119,37 +6866,52 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableListExecute(r ApiG
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5178,9 +6940,9 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableListExecute(r ApiG
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5197,6 +6959,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5207,6 +6970,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5217,6 +6981,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5227,6 +6992,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5236,6 +7002,7 @@ func (a *SoftwareApiService) GetSoftwareIksBundleDistributableListExecute(r ApiG
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5265,9 +7032,9 @@ func (r ApiGetSoftwareReleaseMetaByMoidRequest) Execute() (*SoftwareReleaseMeta,
 /*
 GetSoftwareReleaseMetaByMoid Read a 'software.ReleaseMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareReleaseMetaByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareReleaseMetaByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoid(ctx context.Context, moid string) ApiGetSoftwareReleaseMetaByMoidRequest {
 	return ApiGetSoftwareReleaseMetaByMoidRequest{
@@ -5278,7 +7045,8 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoid(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return SoftwareReleaseMeta
+//
+//	@return SoftwareReleaseMeta
 func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoidExecute(r ApiGetSoftwareReleaseMetaByMoidRequest) (*SoftwareReleaseMeta, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5293,7 +7061,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoidExecute(r ApiGetSoftwar
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/ReleaseMeta/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5326,9 +7094,9 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoidExecute(r ApiGetSoftwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5345,6 +7113,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoidExecute(r ApiGetSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5355,6 +7124,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoidExecute(r ApiGetSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5365,6 +7135,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoidExecute(r ApiGetSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5375,6 +7146,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoidExecute(r ApiGetSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5384,6 +7156,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaByMoidExecute(r ApiGetSoftwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5452,7 +7225,7 @@ func (r ApiGetSoftwareReleaseMetaListRequest) Expand(expand string) ApiGetSoftwa
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareReleaseMetaListRequest) Apply(apply string) ApiGetSoftwareReleaseMetaListRequest {
 	r.apply = &apply
 	return r
@@ -5489,8 +7262,8 @@ func (r ApiGetSoftwareReleaseMetaListRequest) Execute() (*SoftwareReleaseMetaRes
 /*
 GetSoftwareReleaseMetaList Read a 'software.ReleaseMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareReleaseMetaListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareReleaseMetaListRequest
 */
 func (a *SoftwareApiService) GetSoftwareReleaseMetaList(ctx context.Context) ApiGetSoftwareReleaseMetaListRequest {
 	return ApiGetSoftwareReleaseMetaListRequest{
@@ -5500,7 +7273,8 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaList(ctx context.Context) Api
 }
 
 // Execute executes the request
-//  @return SoftwareReleaseMetaResponse
+//
+//	@return SoftwareReleaseMetaResponse
 func (a *SoftwareApiService) GetSoftwareReleaseMetaListExecute(r ApiGetSoftwareReleaseMetaListRequest) (*SoftwareReleaseMetaResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5521,37 +7295,52 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaListExecute(r ApiGetSoftwareR
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5580,9 +7369,9 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaListExecute(r ApiGetSoftwareR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5599,6 +7388,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaListExecute(r ApiGetSoftwareR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5609,6 +7399,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaListExecute(r ApiGetSoftwareR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5619,6 +7410,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaListExecute(r ApiGetSoftwareR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5629,6 +7421,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaListExecute(r ApiGetSoftwareR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5638,6 +7431,7 @@ func (a *SoftwareApiService) GetSoftwareReleaseMetaListExecute(r ApiGetSoftwareR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5667,9 +7461,9 @@ func (r ApiGetSoftwareSolutionDistributableByMoidRequest) Execute() (*SoftwareSo
 /*
 GetSoftwareSolutionDistributableByMoid Read a 'software.SolutionDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareSolutionDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareSolutionDistributableByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoid(ctx context.Context, moid string) ApiGetSoftwareSolutionDistributableByMoidRequest {
 	return ApiGetSoftwareSolutionDistributableByMoidRequest{
@@ -5680,7 +7474,8 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoid(ctx context.
 }
 
 // Execute executes the request
-//  @return SoftwareSolutionDistributable
+//
+//	@return SoftwareSolutionDistributable
 func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoidExecute(r ApiGetSoftwareSolutionDistributableByMoidRequest) (*SoftwareSolutionDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5695,7 +7490,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoidExecute(r Api
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/SolutionDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5728,9 +7523,9 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoidExecute(r Api
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5747,6 +7542,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5757,6 +7553,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5767,6 +7564,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5777,6 +7575,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5786,6 +7585,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableByMoidExecute(r Api
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5854,7 +7654,7 @@ func (r ApiGetSoftwareSolutionDistributableListRequest) Expand(expand string) Ap
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareSolutionDistributableListRequest) Apply(apply string) ApiGetSoftwareSolutionDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -5891,8 +7691,8 @@ func (r ApiGetSoftwareSolutionDistributableListRequest) Execute() (*SoftwareSolu
 /*
 GetSoftwareSolutionDistributableList Read a 'software.SolutionDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareSolutionDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareSolutionDistributableListRequest
 */
 func (a *SoftwareApiService) GetSoftwareSolutionDistributableList(ctx context.Context) ApiGetSoftwareSolutionDistributableListRequest {
 	return ApiGetSoftwareSolutionDistributableListRequest{
@@ -5902,7 +7702,8 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableList(ctx context.Co
 }
 
 // Execute executes the request
-//  @return SoftwareSolutionDistributableResponse
+//
+//	@return SoftwareSolutionDistributableResponse
 func (a *SoftwareApiService) GetSoftwareSolutionDistributableListExecute(r ApiGetSoftwareSolutionDistributableListRequest) (*SoftwareSolutionDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5923,37 +7724,52 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableListExecute(r ApiGe
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5982,9 +7798,9 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableListExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6001,6 +7817,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6011,6 +7828,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6021,6 +7839,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6031,6 +7850,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6040,6 +7860,7 @@ func (a *SoftwareApiService) GetSoftwareSolutionDistributableListExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6069,9 +7890,9 @@ func (r ApiGetSoftwareUcsdBundleDistributableByMoidRequest) Execute() (*Software
 /*
 GetSoftwareUcsdBundleDistributableByMoid Read a 'software.UcsdBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareUcsdBundleDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareUcsdBundleDistributableByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoid(ctx context.Context, moid string) ApiGetSoftwareUcsdBundleDistributableByMoidRequest {
 	return ApiGetSoftwareUcsdBundleDistributableByMoidRequest{
@@ -6082,7 +7903,8 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoid(ctx contex
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdBundleDistributable
+//
+//	@return SoftwareUcsdBundleDistributable
 func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoidExecute(r ApiGetSoftwareUcsdBundleDistributableByMoidRequest) (*SoftwareUcsdBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6097,7 +7919,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoidExecute(r A
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/UcsdBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6130,9 +7952,9 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoidExecute(r A
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6149,6 +7971,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoidExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6159,6 +7982,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoidExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6169,6 +7993,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoidExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6179,6 +8004,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoidExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6188,6 +8014,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableByMoidExecute(r A
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6256,7 +8083,7 @@ func (r ApiGetSoftwareUcsdBundleDistributableListRequest) Expand(expand string) 
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareUcsdBundleDistributableListRequest) Apply(apply string) ApiGetSoftwareUcsdBundleDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -6293,8 +8120,8 @@ func (r ApiGetSoftwareUcsdBundleDistributableListRequest) Execute() (*SoftwareUc
 /*
 GetSoftwareUcsdBundleDistributableList Read a 'software.UcsdBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareUcsdBundleDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareUcsdBundleDistributableListRequest
 */
 func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableList(ctx context.Context) ApiGetSoftwareUcsdBundleDistributableListRequest {
 	return ApiGetSoftwareUcsdBundleDistributableListRequest{
@@ -6304,7 +8131,8 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableList(ctx context.
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdBundleDistributableResponse
+//
+//	@return SoftwareUcsdBundleDistributableResponse
 func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableListExecute(r ApiGetSoftwareUcsdBundleDistributableListRequest) (*SoftwareUcsdBundleDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6325,37 +8153,52 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableListExecute(r Api
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -6384,9 +8227,9 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableListExecute(r Api
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6403,6 +8246,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6413,6 +8257,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6423,6 +8268,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6433,6 +8279,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6442,6 +8289,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdBundleDistributableListExecute(r Api
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6471,9 +8319,9 @@ func (r ApiGetSoftwareUcsdDistributableByMoidRequest) Execute() (*SoftwareUcsdDi
 /*
 GetSoftwareUcsdDistributableByMoid Read a 'software.UcsdDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetSoftwareUcsdDistributableByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetSoftwareUcsdDistributableByMoidRequest
 */
 func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoid(ctx context.Context, moid string) ApiGetSoftwareUcsdDistributableByMoidRequest {
 	return ApiGetSoftwareUcsdDistributableByMoidRequest{
@@ -6484,7 +8332,8 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdDistributable
+//
+//	@return SoftwareUcsdDistributable
 func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoidExecute(r ApiGetSoftwareUcsdDistributableByMoidRequest) (*SoftwareUcsdDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6499,7 +8348,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoidExecute(r ApiGetS
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/UcsdDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6532,9 +8381,9 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoidExecute(r ApiGetS
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6551,6 +8400,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoidExecute(r ApiGetS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6561,6 +8411,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoidExecute(r ApiGetS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6571,6 +8422,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoidExecute(r ApiGetS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6581,6 +8433,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoidExecute(r ApiGetS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6590,6 +8443,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableByMoidExecute(r ApiGetS
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6658,7 +8512,7 @@ func (r ApiGetSoftwareUcsdDistributableListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetSoftwareUcsdDistributableListRequest) Apply(apply string) ApiGetSoftwareUcsdDistributableListRequest {
 	r.apply = &apply
 	return r
@@ -6695,8 +8549,8 @@ func (r ApiGetSoftwareUcsdDistributableListRequest) Execute() (*SoftwareUcsdDist
 /*
 GetSoftwareUcsdDistributableList Read a 'software.UcsdDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetSoftwareUcsdDistributableListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetSoftwareUcsdDistributableListRequest
 */
 func (a *SoftwareApiService) GetSoftwareUcsdDistributableList(ctx context.Context) ApiGetSoftwareUcsdDistributableListRequest {
 	return ApiGetSoftwareUcsdDistributableListRequest{
@@ -6706,7 +8560,8 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdDistributableResponse
+//
+//	@return SoftwareUcsdDistributableResponse
 func (a *SoftwareApiService) GetSoftwareUcsdDistributableListExecute(r ApiGetSoftwareUcsdDistributableListRequest) (*SoftwareUcsdDistributableResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6727,37 +8582,52 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableListExecute(r ApiGetSof
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -6786,9 +8656,9 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableListExecute(r ApiGetSof
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6805,6 +8675,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableListExecute(r ApiGetSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6815,6 +8686,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableListExecute(r ApiGetSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6825,6 +8697,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableListExecute(r ApiGetSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6835,6 +8708,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableListExecute(r ApiGetSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6844,6 +8718,7 @@ func (a *SoftwareApiService) GetSoftwareUcsdDistributableListExecute(r ApiGetSof
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6887,9 +8762,9 @@ func (r ApiPatchSoftwareApplianceDistributableRequest) Execute() (*SoftwareAppli
 /*
 PatchSoftwareApplianceDistributable Update a 'software.ApplianceDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSoftwareApplianceDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareApplianceDistributableRequest
 */
 func (a *SoftwareApiService) PatchSoftwareApplianceDistributable(ctx context.Context, moid string) ApiPatchSoftwareApplianceDistributableRequest {
 	return ApiPatchSoftwareApplianceDistributableRequest{
@@ -6900,7 +8775,8 @@ func (a *SoftwareApiService) PatchSoftwareApplianceDistributable(ctx context.Con
 }
 
 // Execute executes the request
-//  @return SoftwareApplianceDistributable
+//
+//	@return SoftwareApplianceDistributable
 func (a *SoftwareApiService) PatchSoftwareApplianceDistributableExecute(r ApiPatchSoftwareApplianceDistributableRequest) (*SoftwareApplianceDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -6915,7 +8791,7 @@ func (a *SoftwareApiService) PatchSoftwareApplianceDistributableExecute(r ApiPat
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/ApplianceDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6942,7 +8818,7 @@ func (a *SoftwareApiService) PatchSoftwareApplianceDistributableExecute(r ApiPat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareApplianceDistributable
@@ -6956,9 +8832,9 @@ func (a *SoftwareApiService) PatchSoftwareApplianceDistributableExecute(r ApiPat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6975,6 +8851,7 @@ func (a *SoftwareApiService) PatchSoftwareApplianceDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6985,6 +8862,7 @@ func (a *SoftwareApiService) PatchSoftwareApplianceDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6995,6 +8873,7 @@ func (a *SoftwareApiService) PatchSoftwareApplianceDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7005,6 +8884,7 @@ func (a *SoftwareApiService) PatchSoftwareApplianceDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7014,6 +8894,359 @@ func (a *SoftwareApiService) PatchSoftwareApplianceDistributableExecute(r ApiPat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiPatchSoftwareHciBundleDistributableRequest struct {
+	ctx                            context.Context
+	ApiService                     *SoftwareApiService
+	moid                           string
+	softwareHciBundleDistributable *SoftwareHciBundleDistributable
+	ifMatch                        *string
+}
+
+// The &#39;software.HciBundleDistributable&#39; resource to update.
+func (r ApiPatchSoftwareHciBundleDistributableRequest) SoftwareHciBundleDistributable(softwareHciBundleDistributable SoftwareHciBundleDistributable) ApiPatchSoftwareHciBundleDistributableRequest {
+	r.softwareHciBundleDistributable = &softwareHciBundleDistributable
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiPatchSoftwareHciBundleDistributableRequest) IfMatch(ifMatch string) ApiPatchSoftwareHciBundleDistributableRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiPatchSoftwareHciBundleDistributableRequest) Execute() (*SoftwareHciBundleDistributable, *http.Response, error) {
+	return r.ApiService.PatchSoftwareHciBundleDistributableExecute(r)
+}
+
+/*
+PatchSoftwareHciBundleDistributable Update a 'software.HciBundleDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareHciBundleDistributableRequest
+*/
+func (a *SoftwareApiService) PatchSoftwareHciBundleDistributable(ctx context.Context, moid string) ApiPatchSoftwareHciBundleDistributableRequest {
+	return ApiPatchSoftwareHciBundleDistributableRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciBundleDistributable
+func (a *SoftwareApiService) PatchSoftwareHciBundleDistributableExecute(r ApiPatchSoftwareHciBundleDistributableRequest) (*SoftwareHciBundleDistributable, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciBundleDistributable
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.PatchSoftwareHciBundleDistributable")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciBundleDistributables/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.softwareHciBundleDistributable == nil {
+		return localVarReturnValue, nil, reportError("softwareHciBundleDistributable is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.softwareHciBundleDistributable
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiPatchSoftwareHciDistributableRequest struct {
+	ctx                      context.Context
+	ApiService               *SoftwareApiService
+	moid                     string
+	softwareHciDistributable *SoftwareHciDistributable
+	ifMatch                  *string
+}
+
+// The &#39;software.HciDistributable&#39; resource to update.
+func (r ApiPatchSoftwareHciDistributableRequest) SoftwareHciDistributable(softwareHciDistributable SoftwareHciDistributable) ApiPatchSoftwareHciDistributableRequest {
+	r.softwareHciDistributable = &softwareHciDistributable
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiPatchSoftwareHciDistributableRequest) IfMatch(ifMatch string) ApiPatchSoftwareHciDistributableRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiPatchSoftwareHciDistributableRequest) Execute() (*SoftwareHciDistributable, *http.Response, error) {
+	return r.ApiService.PatchSoftwareHciDistributableExecute(r)
+}
+
+/*
+PatchSoftwareHciDistributable Update a 'software.HciDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareHciDistributableRequest
+*/
+func (a *SoftwareApiService) PatchSoftwareHciDistributable(ctx context.Context, moid string) ApiPatchSoftwareHciDistributableRequest {
+	return ApiPatchSoftwareHciDistributableRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciDistributable
+func (a *SoftwareApiService) PatchSoftwareHciDistributableExecute(r ApiPatchSoftwareHciDistributableRequest) (*SoftwareHciDistributable, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciDistributable
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.PatchSoftwareHciDistributable")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciDistributables/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.softwareHciDistributable == nil {
+		return localVarReturnValue, nil, reportError("softwareHciDistributable is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.softwareHciDistributable
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7057,9 +9290,9 @@ func (r ApiPatchSoftwareHclMetaRequest) Execute() (*SoftwareHclMeta, *http.Respo
 /*
 PatchSoftwareHclMeta Update a 'software.HclMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSoftwareHclMetaRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareHclMetaRequest
 */
 func (a *SoftwareApiService) PatchSoftwareHclMeta(ctx context.Context, moid string) ApiPatchSoftwareHclMetaRequest {
 	return ApiPatchSoftwareHclMetaRequest{
@@ -7070,7 +9303,8 @@ func (a *SoftwareApiService) PatchSoftwareHclMeta(ctx context.Context, moid stri
 }
 
 // Execute executes the request
-//  @return SoftwareHclMeta
+//
+//	@return SoftwareHclMeta
 func (a *SoftwareApiService) PatchSoftwareHclMetaExecute(r ApiPatchSoftwareHclMetaRequest) (*SoftwareHclMeta, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -7085,7 +9319,7 @@ func (a *SoftwareApiService) PatchSoftwareHclMetaExecute(r ApiPatchSoftwareHclMe
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HclMeta/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7112,7 +9346,7 @@ func (a *SoftwareApiService) PatchSoftwareHclMetaExecute(r ApiPatchSoftwareHclMe
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareHclMeta
@@ -7126,9 +9360,9 @@ func (a *SoftwareApiService) PatchSoftwareHclMetaExecute(r ApiPatchSoftwareHclMe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7145,6 +9379,7 @@ func (a *SoftwareApiService) PatchSoftwareHclMetaExecute(r ApiPatchSoftwareHclMe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7155,6 +9390,7 @@ func (a *SoftwareApiService) PatchSoftwareHclMetaExecute(r ApiPatchSoftwareHclMe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7165,6 +9401,7 @@ func (a *SoftwareApiService) PatchSoftwareHclMetaExecute(r ApiPatchSoftwareHclMe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7175,6 +9412,7 @@ func (a *SoftwareApiService) PatchSoftwareHclMetaExecute(r ApiPatchSoftwareHclMe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7184,6 +9422,7 @@ func (a *SoftwareApiService) PatchSoftwareHclMetaExecute(r ApiPatchSoftwareHclMe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7227,9 +9466,9 @@ func (r ApiPatchSoftwareHyperflexBundleDistributableRequest) Execute() (*Softwar
 /*
 PatchSoftwareHyperflexBundleDistributable Update a 'software.HyperflexBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSoftwareHyperflexBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareHyperflexBundleDistributableRequest
 */
 func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributable(ctx context.Context, moid string) ApiPatchSoftwareHyperflexBundleDistributableRequest {
 	return ApiPatchSoftwareHyperflexBundleDistributableRequest{
@@ -7240,7 +9479,8 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributable(ctx conte
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexBundleDistributable
+//
+//	@return SoftwareHyperflexBundleDistributable
 func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributableExecute(r ApiPatchSoftwareHyperflexBundleDistributableRequest) (*SoftwareHyperflexBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -7255,7 +9495,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributableExecute(r 
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HyperflexBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7282,7 +9522,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributableExecute(r 
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareHyperflexBundleDistributable
@@ -7296,9 +9536,9 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributableExecute(r 
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7315,6 +9555,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributableExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7325,6 +9566,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributableExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7335,6 +9577,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributableExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7345,6 +9588,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributableExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7354,6 +9598,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexBundleDistributableExecute(r 
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7397,9 +9642,9 @@ func (r ApiPatchSoftwareHyperflexDistributableRequest) Execute() (*SoftwareHyper
 /*
 PatchSoftwareHyperflexDistributable Update a 'software.HyperflexDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSoftwareHyperflexDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareHyperflexDistributableRequest
 */
 func (a *SoftwareApiService) PatchSoftwareHyperflexDistributable(ctx context.Context, moid string) ApiPatchSoftwareHyperflexDistributableRequest {
 	return ApiPatchSoftwareHyperflexDistributableRequest{
@@ -7410,7 +9655,8 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexDistributable(ctx context.Con
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexDistributable
+//
+//	@return SoftwareHyperflexDistributable
 func (a *SoftwareApiService) PatchSoftwareHyperflexDistributableExecute(r ApiPatchSoftwareHyperflexDistributableRequest) (*SoftwareHyperflexDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -7425,7 +9671,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexDistributableExecute(r ApiPat
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HyperflexDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7452,7 +9698,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexDistributableExecute(r ApiPat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareHyperflexDistributable
@@ -7466,9 +9712,9 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexDistributableExecute(r ApiPat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7485,6 +9731,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7495,6 +9742,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7505,6 +9753,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7515,6 +9764,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7524,6 +9774,7 @@ func (a *SoftwareApiService) PatchSoftwareHyperflexDistributableExecute(r ApiPat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7567,9 +9818,9 @@ func (r ApiPatchSoftwareIksBundleDistributableRequest) Execute() (*SoftwareIksBu
 /*
 PatchSoftwareIksBundleDistributable Update a 'software.IksBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSoftwareIksBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareIksBundleDistributableRequest
 */
 func (a *SoftwareApiService) PatchSoftwareIksBundleDistributable(ctx context.Context, moid string) ApiPatchSoftwareIksBundleDistributableRequest {
 	return ApiPatchSoftwareIksBundleDistributableRequest{
@@ -7580,7 +9831,8 @@ func (a *SoftwareApiService) PatchSoftwareIksBundleDistributable(ctx context.Con
 }
 
 // Execute executes the request
-//  @return SoftwareIksBundleDistributable
+//
+//	@return SoftwareIksBundleDistributable
 func (a *SoftwareApiService) PatchSoftwareIksBundleDistributableExecute(r ApiPatchSoftwareIksBundleDistributableRequest) (*SoftwareIksBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -7595,7 +9847,7 @@ func (a *SoftwareApiService) PatchSoftwareIksBundleDistributableExecute(r ApiPat
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/IksBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7622,7 +9874,7 @@ func (a *SoftwareApiService) PatchSoftwareIksBundleDistributableExecute(r ApiPat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareIksBundleDistributable
@@ -7636,9 +9888,9 @@ func (a *SoftwareApiService) PatchSoftwareIksBundleDistributableExecute(r ApiPat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7655,6 +9907,7 @@ func (a *SoftwareApiService) PatchSoftwareIksBundleDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7665,6 +9918,7 @@ func (a *SoftwareApiService) PatchSoftwareIksBundleDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7675,6 +9929,7 @@ func (a *SoftwareApiService) PatchSoftwareIksBundleDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7685,6 +9940,7 @@ func (a *SoftwareApiService) PatchSoftwareIksBundleDistributableExecute(r ApiPat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7694,6 +9950,7 @@ func (a *SoftwareApiService) PatchSoftwareIksBundleDistributableExecute(r ApiPat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7737,9 +9994,9 @@ func (r ApiPatchSoftwareReleaseMetaRequest) Execute() (*SoftwareReleaseMeta, *ht
 /*
 PatchSoftwareReleaseMeta Update a 'software.ReleaseMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSoftwareReleaseMetaRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareReleaseMetaRequest
 */
 func (a *SoftwareApiService) PatchSoftwareReleaseMeta(ctx context.Context, moid string) ApiPatchSoftwareReleaseMetaRequest {
 	return ApiPatchSoftwareReleaseMetaRequest{
@@ -7750,7 +10007,8 @@ func (a *SoftwareApiService) PatchSoftwareReleaseMeta(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return SoftwareReleaseMeta
+//
+//	@return SoftwareReleaseMeta
 func (a *SoftwareApiService) PatchSoftwareReleaseMetaExecute(r ApiPatchSoftwareReleaseMetaRequest) (*SoftwareReleaseMeta, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -7765,7 +10023,7 @@ func (a *SoftwareApiService) PatchSoftwareReleaseMetaExecute(r ApiPatchSoftwareR
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/ReleaseMeta/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7792,7 +10050,7 @@ func (a *SoftwareApiService) PatchSoftwareReleaseMetaExecute(r ApiPatchSoftwareR
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareReleaseMeta
@@ -7806,9 +10064,9 @@ func (a *SoftwareApiService) PatchSoftwareReleaseMetaExecute(r ApiPatchSoftwareR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7825,6 +10083,7 @@ func (a *SoftwareApiService) PatchSoftwareReleaseMetaExecute(r ApiPatchSoftwareR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7835,6 +10094,7 @@ func (a *SoftwareApiService) PatchSoftwareReleaseMetaExecute(r ApiPatchSoftwareR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7845,6 +10105,7 @@ func (a *SoftwareApiService) PatchSoftwareReleaseMetaExecute(r ApiPatchSoftwareR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7855,6 +10116,7 @@ func (a *SoftwareApiService) PatchSoftwareReleaseMetaExecute(r ApiPatchSoftwareR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7864,6 +10126,7 @@ func (a *SoftwareApiService) PatchSoftwareReleaseMetaExecute(r ApiPatchSoftwareR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7907,9 +10170,9 @@ func (r ApiPatchSoftwareSolutionDistributableRequest) Execute() (*SoftwareSoluti
 /*
 PatchSoftwareSolutionDistributable Update a 'software.SolutionDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSoftwareSolutionDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareSolutionDistributableRequest
 */
 func (a *SoftwareApiService) PatchSoftwareSolutionDistributable(ctx context.Context, moid string) ApiPatchSoftwareSolutionDistributableRequest {
 	return ApiPatchSoftwareSolutionDistributableRequest{
@@ -7920,7 +10183,8 @@ func (a *SoftwareApiService) PatchSoftwareSolutionDistributable(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return SoftwareSolutionDistributable
+//
+//	@return SoftwareSolutionDistributable
 func (a *SoftwareApiService) PatchSoftwareSolutionDistributableExecute(r ApiPatchSoftwareSolutionDistributableRequest) (*SoftwareSolutionDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -7935,7 +10199,7 @@ func (a *SoftwareApiService) PatchSoftwareSolutionDistributableExecute(r ApiPatc
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/SolutionDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7962,7 +10226,7 @@ func (a *SoftwareApiService) PatchSoftwareSolutionDistributableExecute(r ApiPatc
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareSolutionDistributable
@@ -7976,9 +10240,9 @@ func (a *SoftwareApiService) PatchSoftwareSolutionDistributableExecute(r ApiPatc
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7995,6 +10259,7 @@ func (a *SoftwareApiService) PatchSoftwareSolutionDistributableExecute(r ApiPatc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8005,6 +10270,7 @@ func (a *SoftwareApiService) PatchSoftwareSolutionDistributableExecute(r ApiPatc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8015,6 +10281,7 @@ func (a *SoftwareApiService) PatchSoftwareSolutionDistributableExecute(r ApiPatc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8025,6 +10292,7 @@ func (a *SoftwareApiService) PatchSoftwareSolutionDistributableExecute(r ApiPatc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8034,6 +10302,7 @@ func (a *SoftwareApiService) PatchSoftwareSolutionDistributableExecute(r ApiPatc
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8077,9 +10346,9 @@ func (r ApiPatchSoftwareUcsdBundleDistributableRequest) Execute() (*SoftwareUcsd
 /*
 PatchSoftwareUcsdBundleDistributable Update a 'software.UcsdBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSoftwareUcsdBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareUcsdBundleDistributableRequest
 */
 func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributable(ctx context.Context, moid string) ApiPatchSoftwareUcsdBundleDistributableRequest {
 	return ApiPatchSoftwareUcsdBundleDistributableRequest{
@@ -8090,7 +10359,8 @@ func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributable(ctx context.Co
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdBundleDistributable
+//
+//	@return SoftwareUcsdBundleDistributable
 func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributableExecute(r ApiPatchSoftwareUcsdBundleDistributableRequest) (*SoftwareUcsdBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -8105,7 +10375,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributableExecute(r ApiPa
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/UcsdBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8132,7 +10402,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributableExecute(r ApiPa
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareUcsdBundleDistributable
@@ -8146,9 +10416,9 @@ func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributableExecute(r ApiPa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8165,6 +10435,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributableExecute(r ApiPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8175,6 +10446,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributableExecute(r ApiPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8185,6 +10457,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributableExecute(r ApiPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8195,6 +10468,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributableExecute(r ApiPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8204,6 +10478,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdBundleDistributableExecute(r ApiPa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8247,9 +10522,9 @@ func (r ApiPatchSoftwareUcsdDistributableRequest) Execute() (*SoftwareUcsdDistri
 /*
 PatchSoftwareUcsdDistributable Update a 'software.UcsdDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchSoftwareUcsdDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchSoftwareUcsdDistributableRequest
 */
 func (a *SoftwareApiService) PatchSoftwareUcsdDistributable(ctx context.Context, moid string) ApiPatchSoftwareUcsdDistributableRequest {
 	return ApiPatchSoftwareUcsdDistributableRequest{
@@ -8260,7 +10535,8 @@ func (a *SoftwareApiService) PatchSoftwareUcsdDistributable(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdDistributable
+//
+//	@return SoftwareUcsdDistributable
 func (a *SoftwareApiService) PatchSoftwareUcsdDistributableExecute(r ApiPatchSoftwareUcsdDistributableRequest) (*SoftwareUcsdDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -8275,7 +10551,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdDistributableExecute(r ApiPatchSof
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/UcsdDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8302,7 +10578,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdDistributableExecute(r ApiPatchSof
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareUcsdDistributable
@@ -8316,9 +10592,9 @@ func (a *SoftwareApiService) PatchSoftwareUcsdDistributableExecute(r ApiPatchSof
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8335,6 +10611,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdDistributableExecute(r ApiPatchSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8345,6 +10622,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdDistributableExecute(r ApiPatchSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8355,6 +10633,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdDistributableExecute(r ApiPatchSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8365,6 +10644,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdDistributableExecute(r ApiPatchSof
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8374,6 +10654,7 @@ func (a *SoftwareApiService) PatchSoftwareUcsdDistributableExecute(r ApiPatchSof
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8417,9 +10698,9 @@ func (r ApiUpdateSoftwareApplianceDistributableRequest) Execute() (*SoftwareAppl
 /*
 UpdateSoftwareApplianceDistributable Update a 'software.ApplianceDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSoftwareApplianceDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareApplianceDistributableRequest
 */
 func (a *SoftwareApiService) UpdateSoftwareApplianceDistributable(ctx context.Context, moid string) ApiUpdateSoftwareApplianceDistributableRequest {
 	return ApiUpdateSoftwareApplianceDistributableRequest{
@@ -8430,7 +10711,8 @@ func (a *SoftwareApiService) UpdateSoftwareApplianceDistributable(ctx context.Co
 }
 
 // Execute executes the request
-//  @return SoftwareApplianceDistributable
+//
+//	@return SoftwareApplianceDistributable
 func (a *SoftwareApiService) UpdateSoftwareApplianceDistributableExecute(r ApiUpdateSoftwareApplianceDistributableRequest) (*SoftwareApplianceDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -8445,7 +10727,7 @@ func (a *SoftwareApiService) UpdateSoftwareApplianceDistributableExecute(r ApiUp
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/ApplianceDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8472,7 +10754,7 @@ func (a *SoftwareApiService) UpdateSoftwareApplianceDistributableExecute(r ApiUp
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareApplianceDistributable
@@ -8486,9 +10768,9 @@ func (a *SoftwareApiService) UpdateSoftwareApplianceDistributableExecute(r ApiUp
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8505,6 +10787,7 @@ func (a *SoftwareApiService) UpdateSoftwareApplianceDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8515,6 +10798,7 @@ func (a *SoftwareApiService) UpdateSoftwareApplianceDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8525,6 +10809,7 @@ func (a *SoftwareApiService) UpdateSoftwareApplianceDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8535,6 +10820,7 @@ func (a *SoftwareApiService) UpdateSoftwareApplianceDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8544,6 +10830,359 @@ func (a *SoftwareApiService) UpdateSoftwareApplianceDistributableExecute(r ApiUp
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateSoftwareHciBundleDistributableRequest struct {
+	ctx                            context.Context
+	ApiService                     *SoftwareApiService
+	moid                           string
+	softwareHciBundleDistributable *SoftwareHciBundleDistributable
+	ifMatch                        *string
+}
+
+// The &#39;software.HciBundleDistributable&#39; resource to update.
+func (r ApiUpdateSoftwareHciBundleDistributableRequest) SoftwareHciBundleDistributable(softwareHciBundleDistributable SoftwareHciBundleDistributable) ApiUpdateSoftwareHciBundleDistributableRequest {
+	r.softwareHciBundleDistributable = &softwareHciBundleDistributable
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiUpdateSoftwareHciBundleDistributableRequest) IfMatch(ifMatch string) ApiUpdateSoftwareHciBundleDistributableRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiUpdateSoftwareHciBundleDistributableRequest) Execute() (*SoftwareHciBundleDistributable, *http.Response, error) {
+	return r.ApiService.UpdateSoftwareHciBundleDistributableExecute(r)
+}
+
+/*
+UpdateSoftwareHciBundleDistributable Update a 'software.HciBundleDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareHciBundleDistributableRequest
+*/
+func (a *SoftwareApiService) UpdateSoftwareHciBundleDistributable(ctx context.Context, moid string) ApiUpdateSoftwareHciBundleDistributableRequest {
+	return ApiUpdateSoftwareHciBundleDistributableRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciBundleDistributable
+func (a *SoftwareApiService) UpdateSoftwareHciBundleDistributableExecute(r ApiUpdateSoftwareHciBundleDistributableRequest) (*SoftwareHciBundleDistributable, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciBundleDistributable
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.UpdateSoftwareHciBundleDistributable")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciBundleDistributables/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.softwareHciBundleDistributable == nil {
+		return localVarReturnValue, nil, reportError("softwareHciBundleDistributable is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.softwareHciBundleDistributable
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateSoftwareHciDistributableRequest struct {
+	ctx                      context.Context
+	ApiService               *SoftwareApiService
+	moid                     string
+	softwareHciDistributable *SoftwareHciDistributable
+	ifMatch                  *string
+}
+
+// The &#39;software.HciDistributable&#39; resource to update.
+func (r ApiUpdateSoftwareHciDistributableRequest) SoftwareHciDistributable(softwareHciDistributable SoftwareHciDistributable) ApiUpdateSoftwareHciDistributableRequest {
+	r.softwareHciDistributable = &softwareHciDistributable
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiUpdateSoftwareHciDistributableRequest) IfMatch(ifMatch string) ApiUpdateSoftwareHciDistributableRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiUpdateSoftwareHciDistributableRequest) Execute() (*SoftwareHciDistributable, *http.Response, error) {
+	return r.ApiService.UpdateSoftwareHciDistributableExecute(r)
+}
+
+/*
+UpdateSoftwareHciDistributable Update a 'software.HciDistributable' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareHciDistributableRequest
+*/
+func (a *SoftwareApiService) UpdateSoftwareHciDistributable(ctx context.Context, moid string) ApiUpdateSoftwareHciDistributableRequest {
+	return ApiUpdateSoftwareHciDistributableRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return SoftwareHciDistributable
+func (a *SoftwareApiService) UpdateSoftwareHciDistributableExecute(r ApiUpdateSoftwareHciDistributableRequest) (*SoftwareHciDistributable, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *SoftwareHciDistributable
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "SoftwareApiService.UpdateSoftwareHciDistributable")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/software/HciDistributables/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.softwareHciDistributable == nil {
+		return localVarReturnValue, nil, reportError("softwareHciDistributable is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.softwareHciDistributable
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8587,9 +11226,9 @@ func (r ApiUpdateSoftwareHclMetaRequest) Execute() (*SoftwareHclMeta, *http.Resp
 /*
 UpdateSoftwareHclMeta Update a 'software.HclMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSoftwareHclMetaRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareHclMetaRequest
 */
 func (a *SoftwareApiService) UpdateSoftwareHclMeta(ctx context.Context, moid string) ApiUpdateSoftwareHclMetaRequest {
 	return ApiUpdateSoftwareHclMetaRequest{
@@ -8600,7 +11239,8 @@ func (a *SoftwareApiService) UpdateSoftwareHclMeta(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return SoftwareHclMeta
+//
+//	@return SoftwareHclMeta
 func (a *SoftwareApiService) UpdateSoftwareHclMetaExecute(r ApiUpdateSoftwareHclMetaRequest) (*SoftwareHclMeta, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -8615,7 +11255,7 @@ func (a *SoftwareApiService) UpdateSoftwareHclMetaExecute(r ApiUpdateSoftwareHcl
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HclMeta/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8642,7 +11282,7 @@ func (a *SoftwareApiService) UpdateSoftwareHclMetaExecute(r ApiUpdateSoftwareHcl
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareHclMeta
@@ -8656,9 +11296,9 @@ func (a *SoftwareApiService) UpdateSoftwareHclMetaExecute(r ApiUpdateSoftwareHcl
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8675,6 +11315,7 @@ func (a *SoftwareApiService) UpdateSoftwareHclMetaExecute(r ApiUpdateSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8685,6 +11326,7 @@ func (a *SoftwareApiService) UpdateSoftwareHclMetaExecute(r ApiUpdateSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8695,6 +11337,7 @@ func (a *SoftwareApiService) UpdateSoftwareHclMetaExecute(r ApiUpdateSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8705,6 +11348,7 @@ func (a *SoftwareApiService) UpdateSoftwareHclMetaExecute(r ApiUpdateSoftwareHcl
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8714,6 +11358,7 @@ func (a *SoftwareApiService) UpdateSoftwareHclMetaExecute(r ApiUpdateSoftwareHcl
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8757,9 +11402,9 @@ func (r ApiUpdateSoftwareHyperflexBundleDistributableRequest) Execute() (*Softwa
 /*
 UpdateSoftwareHyperflexBundleDistributable Update a 'software.HyperflexBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSoftwareHyperflexBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareHyperflexBundleDistributableRequest
 */
 func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributable(ctx context.Context, moid string) ApiUpdateSoftwareHyperflexBundleDistributableRequest {
 	return ApiUpdateSoftwareHyperflexBundleDistributableRequest{
@@ -8770,7 +11415,8 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributable(ctx cont
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexBundleDistributable
+//
+//	@return SoftwareHyperflexBundleDistributable
 func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributableExecute(r ApiUpdateSoftwareHyperflexBundleDistributableRequest) (*SoftwareHyperflexBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -8785,7 +11431,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributableExecute(r
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HyperflexBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8812,7 +11458,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributableExecute(r
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareHyperflexBundleDistributable
@@ -8826,9 +11472,9 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributableExecute(r
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8845,6 +11491,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8855,6 +11502,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8865,6 +11513,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8875,6 +11524,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributableExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8884,6 +11534,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexBundleDistributableExecute(r
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8927,9 +11578,9 @@ func (r ApiUpdateSoftwareHyperflexDistributableRequest) Execute() (*SoftwareHype
 /*
 UpdateSoftwareHyperflexDistributable Update a 'software.HyperflexDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSoftwareHyperflexDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareHyperflexDistributableRequest
 */
 func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributable(ctx context.Context, moid string) ApiUpdateSoftwareHyperflexDistributableRequest {
 	return ApiUpdateSoftwareHyperflexDistributableRequest{
@@ -8940,7 +11591,8 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributable(ctx context.Co
 }
 
 // Execute executes the request
-//  @return SoftwareHyperflexDistributable
+//
+//	@return SoftwareHyperflexDistributable
 func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributableExecute(r ApiUpdateSoftwareHyperflexDistributableRequest) (*SoftwareHyperflexDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -8955,7 +11607,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributableExecute(r ApiUp
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/HyperflexDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8982,7 +11634,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributableExecute(r ApiUp
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareHyperflexDistributable
@@ -8996,9 +11648,9 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributableExecute(r ApiUp
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9015,6 +11667,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9025,6 +11678,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9035,6 +11689,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9045,6 +11700,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9054,6 +11710,7 @@ func (a *SoftwareApiService) UpdateSoftwareHyperflexDistributableExecute(r ApiUp
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9097,9 +11754,9 @@ func (r ApiUpdateSoftwareIksBundleDistributableRequest) Execute() (*SoftwareIksB
 /*
 UpdateSoftwareIksBundleDistributable Update a 'software.IksBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSoftwareIksBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareIksBundleDistributableRequest
 */
 func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributable(ctx context.Context, moid string) ApiUpdateSoftwareIksBundleDistributableRequest {
 	return ApiUpdateSoftwareIksBundleDistributableRequest{
@@ -9110,7 +11767,8 @@ func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributable(ctx context.Co
 }
 
 // Execute executes the request
-//  @return SoftwareIksBundleDistributable
+//
+//	@return SoftwareIksBundleDistributable
 func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributableExecute(r ApiUpdateSoftwareIksBundleDistributableRequest) (*SoftwareIksBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -9125,7 +11783,7 @@ func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributableExecute(r ApiUp
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/IksBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9152,7 +11810,7 @@ func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributableExecute(r ApiUp
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareIksBundleDistributable
@@ -9166,9 +11824,9 @@ func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributableExecute(r ApiUp
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9185,6 +11843,7 @@ func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9195,6 +11854,7 @@ func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9205,6 +11865,7 @@ func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9215,6 +11876,7 @@ func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributableExecute(r ApiUp
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9224,6 +11886,7 @@ func (a *SoftwareApiService) UpdateSoftwareIksBundleDistributableExecute(r ApiUp
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9267,9 +11930,9 @@ func (r ApiUpdateSoftwareReleaseMetaRequest) Execute() (*SoftwareReleaseMeta, *h
 /*
 UpdateSoftwareReleaseMeta Update a 'software.ReleaseMeta' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSoftwareReleaseMetaRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareReleaseMetaRequest
 */
 func (a *SoftwareApiService) UpdateSoftwareReleaseMeta(ctx context.Context, moid string) ApiUpdateSoftwareReleaseMetaRequest {
 	return ApiUpdateSoftwareReleaseMetaRequest{
@@ -9280,7 +11943,8 @@ func (a *SoftwareApiService) UpdateSoftwareReleaseMeta(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return SoftwareReleaseMeta
+//
+//	@return SoftwareReleaseMeta
 func (a *SoftwareApiService) UpdateSoftwareReleaseMetaExecute(r ApiUpdateSoftwareReleaseMetaRequest) (*SoftwareReleaseMeta, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -9295,7 +11959,7 @@ func (a *SoftwareApiService) UpdateSoftwareReleaseMetaExecute(r ApiUpdateSoftwar
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/ReleaseMeta/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9322,7 +11986,7 @@ func (a *SoftwareApiService) UpdateSoftwareReleaseMetaExecute(r ApiUpdateSoftwar
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareReleaseMeta
@@ -9336,9 +12000,9 @@ func (a *SoftwareApiService) UpdateSoftwareReleaseMetaExecute(r ApiUpdateSoftwar
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9355,6 +12019,7 @@ func (a *SoftwareApiService) UpdateSoftwareReleaseMetaExecute(r ApiUpdateSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9365,6 +12030,7 @@ func (a *SoftwareApiService) UpdateSoftwareReleaseMetaExecute(r ApiUpdateSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9375,6 +12041,7 @@ func (a *SoftwareApiService) UpdateSoftwareReleaseMetaExecute(r ApiUpdateSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9385,6 +12052,7 @@ func (a *SoftwareApiService) UpdateSoftwareReleaseMetaExecute(r ApiUpdateSoftwar
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9394,6 +12062,7 @@ func (a *SoftwareApiService) UpdateSoftwareReleaseMetaExecute(r ApiUpdateSoftwar
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9437,9 +12106,9 @@ func (r ApiUpdateSoftwareSolutionDistributableRequest) Execute() (*SoftwareSolut
 /*
 UpdateSoftwareSolutionDistributable Update a 'software.SolutionDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSoftwareSolutionDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareSolutionDistributableRequest
 */
 func (a *SoftwareApiService) UpdateSoftwareSolutionDistributable(ctx context.Context, moid string) ApiUpdateSoftwareSolutionDistributableRequest {
 	return ApiUpdateSoftwareSolutionDistributableRequest{
@@ -9450,7 +12119,8 @@ func (a *SoftwareApiService) UpdateSoftwareSolutionDistributable(ctx context.Con
 }
 
 // Execute executes the request
-//  @return SoftwareSolutionDistributable
+//
+//	@return SoftwareSolutionDistributable
 func (a *SoftwareApiService) UpdateSoftwareSolutionDistributableExecute(r ApiUpdateSoftwareSolutionDistributableRequest) (*SoftwareSolutionDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -9465,7 +12135,7 @@ func (a *SoftwareApiService) UpdateSoftwareSolutionDistributableExecute(r ApiUpd
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/SolutionDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9492,7 +12162,7 @@ func (a *SoftwareApiService) UpdateSoftwareSolutionDistributableExecute(r ApiUpd
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareSolutionDistributable
@@ -9506,9 +12176,9 @@ func (a *SoftwareApiService) UpdateSoftwareSolutionDistributableExecute(r ApiUpd
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9525,6 +12195,7 @@ func (a *SoftwareApiService) UpdateSoftwareSolutionDistributableExecute(r ApiUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9535,6 +12206,7 @@ func (a *SoftwareApiService) UpdateSoftwareSolutionDistributableExecute(r ApiUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9545,6 +12217,7 @@ func (a *SoftwareApiService) UpdateSoftwareSolutionDistributableExecute(r ApiUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9555,6 +12228,7 @@ func (a *SoftwareApiService) UpdateSoftwareSolutionDistributableExecute(r ApiUpd
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9564,6 +12238,7 @@ func (a *SoftwareApiService) UpdateSoftwareSolutionDistributableExecute(r ApiUpd
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9607,9 +12282,9 @@ func (r ApiUpdateSoftwareUcsdBundleDistributableRequest) Execute() (*SoftwareUcs
 /*
 UpdateSoftwareUcsdBundleDistributable Update a 'software.UcsdBundleDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSoftwareUcsdBundleDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareUcsdBundleDistributableRequest
 */
 func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributable(ctx context.Context, moid string) ApiUpdateSoftwareUcsdBundleDistributableRequest {
 	return ApiUpdateSoftwareUcsdBundleDistributableRequest{
@@ -9620,7 +12295,8 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributable(ctx context.C
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdBundleDistributable
+//
+//	@return SoftwareUcsdBundleDistributable
 func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributableExecute(r ApiUpdateSoftwareUcsdBundleDistributableRequest) (*SoftwareUcsdBundleDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -9635,7 +12311,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributableExecute(r ApiU
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/UcsdBundleDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9662,7 +12338,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributableExecute(r ApiU
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareUcsdBundleDistributable
@@ -9676,9 +12352,9 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributableExecute(r ApiU
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9695,6 +12371,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributableExecute(r ApiU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9705,6 +12382,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributableExecute(r ApiU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9715,6 +12393,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributableExecute(r ApiU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9725,6 +12404,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributableExecute(r ApiU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9734,6 +12414,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdBundleDistributableExecute(r ApiU
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9777,9 +12458,9 @@ func (r ApiUpdateSoftwareUcsdDistributableRequest) Execute() (*SoftwareUcsdDistr
 /*
 UpdateSoftwareUcsdDistributable Update a 'software.UcsdDistributable' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateSoftwareUcsdDistributableRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateSoftwareUcsdDistributableRequest
 */
 func (a *SoftwareApiService) UpdateSoftwareUcsdDistributable(ctx context.Context, moid string) ApiUpdateSoftwareUcsdDistributableRequest {
 	return ApiUpdateSoftwareUcsdDistributableRequest{
@@ -9790,7 +12471,8 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdDistributable(ctx context.Context
 }
 
 // Execute executes the request
-//  @return SoftwareUcsdDistributable
+//
+//	@return SoftwareUcsdDistributable
 func (a *SoftwareApiService) UpdateSoftwareUcsdDistributableExecute(r ApiUpdateSoftwareUcsdDistributableRequest) (*SoftwareUcsdDistributable, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -9805,7 +12487,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdDistributableExecute(r ApiUpdateS
 	}
 
 	localVarPath := localBasePath + "/api/v1/software/UcsdDistributables/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9832,7 +12514,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdDistributableExecute(r ApiUpdateS
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.softwareUcsdDistributable
@@ -9846,9 +12528,9 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdDistributableExecute(r ApiUpdateS
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9865,6 +12547,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdDistributableExecute(r ApiUpdateS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9875,6 +12558,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdDistributableExecute(r ApiUpdateS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9885,6 +12569,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdDistributableExecute(r ApiUpdateS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9895,6 +12580,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdDistributableExecute(r ApiUpdateS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9904,6 +12590,7 @@ func (a *SoftwareApiService) UpdateSoftwareUcsdDistributableExecute(r ApiUpdateS
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

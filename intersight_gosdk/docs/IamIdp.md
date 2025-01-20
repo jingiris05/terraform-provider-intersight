@@ -7,16 +7,18 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "iam.Idp"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "iam.Idp"]
 **DomainName** | Pointer to **string** | Email domain name of the user for this IdP. When a user enters an email during login in the Intersight home page, the IdP is picked by matching this domain name with the email domain name for authentication. | [optional] 
+**DomainNames** | Pointer to **[]string** |  | [optional] 
 **EnableSingleLogout** | Pointer to **bool** | Setting that indicates whether &#39;Single Logout (SLO)&#39; has been enabled for this IdP. | [optional] 
 **IdpEntityId** | Pointer to **string** | The Entity ID of the IdP. In SAML, the entity ID uniquely identifies the IdP or Service Provider. | [optional] [readonly] 
 **Metadata** | Pointer to **string** | SAML metadata of the IdP. | [optional] 
 **Name** | Pointer to **string** | The name of the Identity Provider, for example Cisco, Okta, or OneID. | [optional] 
 **SkipWarning** | Pointer to **bool** | When users attempt the Account URL login with an unverified Domain Name, they get a warning stating that they are logging in using an unverified Domain Name. Enable the slider if you do not wish to see the warning message. | [optional] 
 **Type** | Pointer to **string** | Authentication protocol used by the IdP. * &#x60;saml&#x60; - Use SAML as the authentication protocol for sign-on. * &#x60;oidc&#x60; - Open ID connect to be used as an authentication protocol for sign-on. * &#x60;local&#x60; - The local authentication method to be used for sign-on. Local type is set to default for the Intersight Appliance IdP. | [optional] [default to "saml"]
-**Account** | Pointer to [**IamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
-**LdapPolicy** | Pointer to [**IamLdapPolicyRelationship**](IamLdapPolicyRelationship.md) |  | [optional] 
-**System** | Pointer to [**IamSystemRelationship**](IamSystemRelationship.md) |  | [optional] 
+**Account** | Pointer to [**NullableIamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
+**LdapPolicy** | Pointer to [**NullableIamLdapPolicyRelationship**](IamLdapPolicyRelationship.md) |  | [optional] 
+**System** | Pointer to [**NullableIamSystemRelationship**](IamSystemRelationship.md) |  | [optional] 
 **UserPreferences** | Pointer to [**[]IamUserPreferenceRelationship**](IamUserPreferenceRelationship.md) | An array of relationships to iamUserPreference resources. | [optional] [readonly] 
+**UserSettings** | Pointer to [**[]IamUserSettingRelationship**](IamUserSettingRelationship.md) | An array of relationships to iamUserSetting resources. | [optional] [readonly] 
 **Usergroups** | Pointer to [**[]IamUserGroupRelationship**](IamUserGroupRelationship.md) | An array of relationships to iamUserGroup resources. | [optional] 
 **Users** | Pointer to [**[]IamUserRelationship**](IamUserRelationship.md) | An array of relationships to iamUser resources. | [optional] 
 
@@ -104,6 +106,41 @@ SetDomainName sets DomainName field to given value.
 
 HasDomainName returns a boolean if a field has been set.
 
+### GetDomainNames
+
+`func (o *IamIdp) GetDomainNames() []string`
+
+GetDomainNames returns the DomainNames field if non-nil, zero value otherwise.
+
+### GetDomainNamesOk
+
+`func (o *IamIdp) GetDomainNamesOk() (*[]string, bool)`
+
+GetDomainNamesOk returns a tuple with the DomainNames field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDomainNames
+
+`func (o *IamIdp) SetDomainNames(v []string)`
+
+SetDomainNames sets DomainNames field to given value.
+
+### HasDomainNames
+
+`func (o *IamIdp) HasDomainNames() bool`
+
+HasDomainNames returns a boolean if a field has been set.
+
+### SetDomainNamesNil
+
+`func (o *IamIdp) SetDomainNamesNil(b bool)`
+
+ SetDomainNamesNil sets the value for DomainNames to be an explicit nil
+
+### UnsetDomainNames
+`func (o *IamIdp) UnsetDomainNames()`
+
+UnsetDomainNames ensures that no value is present for DomainNames, not even an explicit nil
 ### GetEnableSingleLogout
 
 `func (o *IamIdp) GetEnableSingleLogout() bool`
@@ -279,6 +316,16 @@ SetAccount sets Account field to given value.
 
 HasAccount returns a boolean if a field has been set.
 
+### SetAccountNil
+
+`func (o *IamIdp) SetAccountNil(b bool)`
+
+ SetAccountNil sets the value for Account to be an explicit nil
+
+### UnsetAccount
+`func (o *IamIdp) UnsetAccount()`
+
+UnsetAccount ensures that no value is present for Account, not even an explicit nil
 ### GetLdapPolicy
 
 `func (o *IamIdp) GetLdapPolicy() IamLdapPolicyRelationship`
@@ -304,6 +351,16 @@ SetLdapPolicy sets LdapPolicy field to given value.
 
 HasLdapPolicy returns a boolean if a field has been set.
 
+### SetLdapPolicyNil
+
+`func (o *IamIdp) SetLdapPolicyNil(b bool)`
+
+ SetLdapPolicyNil sets the value for LdapPolicy to be an explicit nil
+
+### UnsetLdapPolicy
+`func (o *IamIdp) UnsetLdapPolicy()`
+
+UnsetLdapPolicy ensures that no value is present for LdapPolicy, not even an explicit nil
 ### GetSystem
 
 `func (o *IamIdp) GetSystem() IamSystemRelationship`
@@ -329,6 +386,16 @@ SetSystem sets System field to given value.
 
 HasSystem returns a boolean if a field has been set.
 
+### SetSystemNil
+
+`func (o *IamIdp) SetSystemNil(b bool)`
+
+ SetSystemNil sets the value for System to be an explicit nil
+
+### UnsetSystem
+`func (o *IamIdp) UnsetSystem()`
+
+UnsetSystem ensures that no value is present for System, not even an explicit nil
 ### GetUserPreferences
 
 `func (o *IamIdp) GetUserPreferences() []IamUserPreferenceRelationship`
@@ -364,6 +431,41 @@ HasUserPreferences returns a boolean if a field has been set.
 `func (o *IamIdp) UnsetUserPreferences()`
 
 UnsetUserPreferences ensures that no value is present for UserPreferences, not even an explicit nil
+### GetUserSettings
+
+`func (o *IamIdp) GetUserSettings() []IamUserSettingRelationship`
+
+GetUserSettings returns the UserSettings field if non-nil, zero value otherwise.
+
+### GetUserSettingsOk
+
+`func (o *IamIdp) GetUserSettingsOk() (*[]IamUserSettingRelationship, bool)`
+
+GetUserSettingsOk returns a tuple with the UserSettings field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUserSettings
+
+`func (o *IamIdp) SetUserSettings(v []IamUserSettingRelationship)`
+
+SetUserSettings sets UserSettings field to given value.
+
+### HasUserSettings
+
+`func (o *IamIdp) HasUserSettings() bool`
+
+HasUserSettings returns a boolean if a field has been set.
+
+### SetUserSettingsNil
+
+`func (o *IamIdp) SetUserSettingsNil(b bool)`
+
+ SetUserSettingsNil sets the value for UserSettings to be an explicit nil
+
+### UnsetUserSettings
+`func (o *IamIdp) UnsetUserSettings()`
+
+UnsetUserSettings ensures that no value is present for UserSettings, not even an explicit nil
 ### GetUsergroups
 
 `func (o *IamIdp) GetUsergroups() []IamUserGroupRelationship`

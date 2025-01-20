@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -22,7 +24,7 @@ func resourceTamAdvisoryDefinition() *schema.Resource {
 		UpdateContext: resourceTamAdvisoryDefinitionUpdate,
 		DeleteContext: resourceTamAdvisoryDefinitionDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -384,6 +386,13 @@ func resourceTamAdvisoryDefinition() *schema.Resource {
 					}
 					return
 				}},
+			"execute_on_pod": {
+				Description:  "Orion pod on which this advisory should process.\n* `tier1` - Advisory processing will be taken care in first advisory driver of multinode cluster.\n* `tier2` - Advisory processing will be taken care in second advisory driver of multinode cluster.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringInSlice([]string{"tier1", "tier2"}, false),
+				Optional:     true,
+				Default:      "tier1",
+			},
 			"external_url": {
 				Description:  "A link to an external URL describing security Advisory in more details.",
 				Type:         schema.TypeString,
@@ -460,6 +469,15 @@ func resourceTamAdvisoryDefinition() *schema.Resource {
 				},
 				ForceNew: true,
 			},
+			"other_ref_urls": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type:         schema.TypeString,
+					ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+$"), ""),
+				}},
 			"owners": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -782,6 +800,17 @@ func resourceTamAdvisoryDefinition() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1196,6 +1225,11 @@ func resourceTamAdvisoryDefinitionCreate(c context.Context, d *schema.ResourceDa
 		o.SetDescription(x)
 	}
 
+	if v, ok := d.GetOk("execute_on_pod"); ok {
+		x := (v.(string))
+		o.SetExecuteOnPod(x)
+	}
+
 	if v, ok := d.GetOk("external_url"); ok {
 		x := (v.(string))
 		o.SetExternalUrl(x)
@@ -1253,6 +1287,19 @@ func resourceTamAdvisoryDefinitionCreate(c context.Context, d *schema.ResourceDa
 		if len(p) > 0 {
 			x := p[0]
 			o.SetOrganization(x)
+		}
+	}
+
+	if v, ok := d.GetOk("other_ref_urls"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetOtherRefUrls(x)
 		}
 	}
 
@@ -1359,11 +1406,11 @@ func resourceTamAdvisoryDefinitionCreate(c context.Context, d *schema.ResourceDa
 	}
 
 	if v, ok := d.GetOk("severity"); ok {
-		p := make([]models.TamSeverity, 0, 1)
+		p := make([]models.MoBaseComplexType, 0, 1)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			l := s[i].(map[string]interface{})
-			o := models.NewTamSeverityWithDefaults()
+			o := models.NewMoBaseComplexTypeWithDefaults()
 			if v, ok := l["additional_properties"]; ok {
 				{
 					x := []byte(v.(string))
@@ -1454,14 +1501,25 @@ func resourceTamAdvisoryDefinitionCreate(c context.Context, d *schema.ResourceDa
 		}
 		return diag.Errorf("error occurred while creating TamAdvisoryDefinition: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceTamAdvisoryDefinitionRead(c, d, meta)...)
 }
 
 func resourceTamAdvisoryDefinitionRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.TamApi.GetTamAdvisoryDefinitionByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1531,6 +1589,10 @@ func resourceTamAdvisoryDefinitionRead(c context.Context, d *schema.ResourceData
 		return diag.Errorf("error occurred while setting property DomainGroupMoid in TamAdvisoryDefinition object: %s", err.Error())
 	}
 
+	if err := d.Set("execute_on_pod", (s.GetExecuteOnPod())); err != nil {
+		return diag.Errorf("error occurred while setting property ExecuteOnPod in TamAdvisoryDefinition object: %s", err.Error())
+	}
+
 	if err := d.Set("external_url", (s.GetExternalUrl())); err != nil {
 		return diag.Errorf("error occurred while setting property ExternalUrl in TamAdvisoryDefinition object: %s", err.Error())
 	}
@@ -1555,6 +1617,10 @@ func resourceTamAdvisoryDefinitionRead(c context.Context, d *schema.ResourceData
 		return diag.Errorf("error occurred while setting property Organization in TamAdvisoryDefinition object: %s", err.Error())
 	}
 
+	if err := d.Set("other_ref_urls", (s.GetOtherRefUrls())); err != nil {
+		return diag.Errorf("error occurred while setting property OtherRefUrls in TamAdvisoryDefinition object: %s", err.Error())
+	}
+
 	if err := d.Set("owners", (s.GetOwners())); err != nil {
 		return diag.Errorf("error occurred while setting property Owners in TamAdvisoryDefinition object: %s", err.Error())
 	}
@@ -1575,7 +1641,7 @@ func resourceTamAdvisoryDefinitionRead(c context.Context, d *schema.ResourceData
 		return diag.Errorf("error occurred while setting property S3DataSources in TamAdvisoryDefinition object: %s", err.Error())
 	}
 
-	if err := d.Set("severity", flattenMapTamSeverity(s.GetSeverity(), d)); err != nil {
+	if err := d.Set("severity", flattenMapMoBaseComplexType(s.GetSeverity(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Severity in TamAdvisoryDefinition object: %s", err.Error())
 	}
 
@@ -1939,6 +2005,12 @@ func resourceTamAdvisoryDefinitionUpdate(c context.Context, d *schema.ResourceDa
 		o.SetDescription(x)
 	}
 
+	if d.HasChange("execute_on_pod") {
+		v := d.Get("execute_on_pod")
+		x := (v.(string))
+		o.SetExecuteOnPod(x)
+	}
+
 	if d.HasChange("external_url") {
 		v := d.Get("external_url")
 		x := (v.(string))
@@ -2001,6 +2073,18 @@ func resourceTamAdvisoryDefinitionUpdate(c context.Context, d *schema.ResourceDa
 			x := p[0]
 			o.SetOrganization(x)
 		}
+	}
+
+	if d.HasChange("other_ref_urls") {
+		v := d.Get("other_ref_urls")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetOtherRefUrls(x)
 	}
 
 	if d.HasChange("recommendation") {
@@ -2107,11 +2191,11 @@ func resourceTamAdvisoryDefinitionUpdate(c context.Context, d *schema.ResourceDa
 
 	if d.HasChange("severity") {
 		v := d.Get("severity")
-		p := make([]models.TamSeverity, 0, 1)
+		p := make([]models.MoBaseComplexType, 0, 1)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			l := s[i].(map[string]interface{})
-			o := &models.TamSeverity{}
+			o := &models.MoBaseComplexType{}
 			if v, ok := l["additional_properties"]; ok {
 				{
 					x := []byte(v.(string))

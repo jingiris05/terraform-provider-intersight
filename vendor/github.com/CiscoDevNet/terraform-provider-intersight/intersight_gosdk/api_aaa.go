@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -56,8 +56,8 @@ func (r ApiCreateAaaRetentionPolicyRequest) Execute() (*AaaRetentionPolicy, *htt
 /*
 CreateAaaRetentionPolicy Create a 'aaa.RetentionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateAaaRetentionPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateAaaRetentionPolicyRequest
 */
 func (a *AaaApiService) CreateAaaRetentionPolicy(ctx context.Context) ApiCreateAaaRetentionPolicyRequest {
 	return ApiCreateAaaRetentionPolicyRequest{
@@ -67,7 +67,8 @@ func (a *AaaApiService) CreateAaaRetentionPolicy(ctx context.Context) ApiCreateA
 }
 
 // Execute executes the request
-//  @return AaaRetentionPolicy
+//
+//	@return AaaRetentionPolicy
 func (a *AaaApiService) CreateAaaRetentionPolicyExecute(r ApiCreateAaaRetentionPolicyRequest) (*AaaRetentionPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -108,10 +109,10 @@ func (a *AaaApiService) CreateAaaRetentionPolicyExecute(r ApiCreateAaaRetentionP
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.aaaRetentionPolicy
@@ -125,9 +126,9 @@ func (a *AaaApiService) CreateAaaRetentionPolicyExecute(r ApiCreateAaaRetentionP
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -144,6 +145,7 @@ func (a *AaaApiService) CreateAaaRetentionPolicyExecute(r ApiCreateAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -154,6 +156,7 @@ func (a *AaaApiService) CreateAaaRetentionPolicyExecute(r ApiCreateAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -164,6 +167,7 @@ func (a *AaaApiService) CreateAaaRetentionPolicyExecute(r ApiCreateAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -174,6 +178,7 @@ func (a *AaaApiService) CreateAaaRetentionPolicyExecute(r ApiCreateAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -183,6 +188,7 @@ func (a *AaaApiService) CreateAaaRetentionPolicyExecute(r ApiCreateAaaRetentionP
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -212,9 +218,9 @@ func (r ApiGetAaaAuditRecordByMoidRequest) Execute() (*AaaAuditRecord, *http.Res
 /*
 GetAaaAuditRecordByMoid Read a 'aaa.AuditRecord' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetAaaAuditRecordByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetAaaAuditRecordByMoidRequest
 */
 func (a *AaaApiService) GetAaaAuditRecordByMoid(ctx context.Context, moid string) ApiGetAaaAuditRecordByMoidRequest {
 	return ApiGetAaaAuditRecordByMoidRequest{
@@ -225,7 +231,8 @@ func (a *AaaApiService) GetAaaAuditRecordByMoid(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return AaaAuditRecord
+//
+//	@return AaaAuditRecord
 func (a *AaaApiService) GetAaaAuditRecordByMoidExecute(r ApiGetAaaAuditRecordByMoidRequest) (*AaaAuditRecord, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -240,7 +247,7 @@ func (a *AaaApiService) GetAaaAuditRecordByMoidExecute(r ApiGetAaaAuditRecordByM
 	}
 
 	localVarPath := localBasePath + "/api/v1/aaa/AuditRecords/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -273,9 +280,9 @@ func (a *AaaApiService) GetAaaAuditRecordByMoidExecute(r ApiGetAaaAuditRecordByM
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -292,6 +299,7 @@ func (a *AaaApiService) GetAaaAuditRecordByMoidExecute(r ApiGetAaaAuditRecordByM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -302,6 +310,7 @@ func (a *AaaApiService) GetAaaAuditRecordByMoidExecute(r ApiGetAaaAuditRecordByM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -312,6 +321,7 @@ func (a *AaaApiService) GetAaaAuditRecordByMoidExecute(r ApiGetAaaAuditRecordByM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -322,6 +332,7 @@ func (a *AaaApiService) GetAaaAuditRecordByMoidExecute(r ApiGetAaaAuditRecordByM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -331,6 +342,7 @@ func (a *AaaApiService) GetAaaAuditRecordByMoidExecute(r ApiGetAaaAuditRecordByM
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -399,7 +411,7 @@ func (r ApiGetAaaAuditRecordListRequest) Expand(expand string) ApiGetAaaAuditRec
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetAaaAuditRecordListRequest) Apply(apply string) ApiGetAaaAuditRecordListRequest {
 	r.apply = &apply
 	return r
@@ -436,8 +448,8 @@ func (r ApiGetAaaAuditRecordListRequest) Execute() (*AaaAuditRecordResponse, *ht
 /*
 GetAaaAuditRecordList Read a 'aaa.AuditRecord' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetAaaAuditRecordListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetAaaAuditRecordListRequest
 */
 func (a *AaaApiService) GetAaaAuditRecordList(ctx context.Context) ApiGetAaaAuditRecordListRequest {
 	return ApiGetAaaAuditRecordListRequest{
@@ -447,7 +459,8 @@ func (a *AaaApiService) GetAaaAuditRecordList(ctx context.Context) ApiGetAaaAudi
 }
 
 // Execute executes the request
-//  @return AaaAuditRecordResponse
+//
+//	@return AaaAuditRecordResponse
 func (a *AaaApiService) GetAaaAuditRecordListExecute(r ApiGetAaaAuditRecordListRequest) (*AaaAuditRecordResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -468,37 +481,52 @@ func (a *AaaApiService) GetAaaAuditRecordListExecute(r ApiGetAaaAuditRecordListR
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -527,9 +555,9 @@ func (a *AaaApiService) GetAaaAuditRecordListExecute(r ApiGetAaaAuditRecordListR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -546,6 +574,7 @@ func (a *AaaApiService) GetAaaAuditRecordListExecute(r ApiGetAaaAuditRecordListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -556,6 +585,7 @@ func (a *AaaApiService) GetAaaAuditRecordListExecute(r ApiGetAaaAuditRecordListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -566,6 +596,7 @@ func (a *AaaApiService) GetAaaAuditRecordListExecute(r ApiGetAaaAuditRecordListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -576,6 +607,7 @@ func (a *AaaApiService) GetAaaAuditRecordListExecute(r ApiGetAaaAuditRecordListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -585,6 +617,7 @@ func (a *AaaApiService) GetAaaAuditRecordListExecute(r ApiGetAaaAuditRecordListR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -614,9 +647,9 @@ func (r ApiGetAaaRetentionConfigByMoidRequest) Execute() (*AaaRetentionConfig, *
 /*
 GetAaaRetentionConfigByMoid Read a 'aaa.RetentionConfig' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetAaaRetentionConfigByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetAaaRetentionConfigByMoidRequest
 */
 func (a *AaaApiService) GetAaaRetentionConfigByMoid(ctx context.Context, moid string) ApiGetAaaRetentionConfigByMoidRequest {
 	return ApiGetAaaRetentionConfigByMoidRequest{
@@ -627,7 +660,8 @@ func (a *AaaApiService) GetAaaRetentionConfigByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return AaaRetentionConfig
+//
+//	@return AaaRetentionConfig
 func (a *AaaApiService) GetAaaRetentionConfigByMoidExecute(r ApiGetAaaRetentionConfigByMoidRequest) (*AaaRetentionConfig, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -642,7 +676,7 @@ func (a *AaaApiService) GetAaaRetentionConfigByMoidExecute(r ApiGetAaaRetentionC
 	}
 
 	localVarPath := localBasePath + "/api/v1/aaa/RetentionConfigs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -675,9 +709,9 @@ func (a *AaaApiService) GetAaaRetentionConfigByMoidExecute(r ApiGetAaaRetentionC
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -694,6 +728,7 @@ func (a *AaaApiService) GetAaaRetentionConfigByMoidExecute(r ApiGetAaaRetentionC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -704,6 +739,7 @@ func (a *AaaApiService) GetAaaRetentionConfigByMoidExecute(r ApiGetAaaRetentionC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -714,6 +750,7 @@ func (a *AaaApiService) GetAaaRetentionConfigByMoidExecute(r ApiGetAaaRetentionC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -724,6 +761,7 @@ func (a *AaaApiService) GetAaaRetentionConfigByMoidExecute(r ApiGetAaaRetentionC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -733,6 +771,7 @@ func (a *AaaApiService) GetAaaRetentionConfigByMoidExecute(r ApiGetAaaRetentionC
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -801,7 +840,7 @@ func (r ApiGetAaaRetentionConfigListRequest) Expand(expand string) ApiGetAaaRete
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetAaaRetentionConfigListRequest) Apply(apply string) ApiGetAaaRetentionConfigListRequest {
 	r.apply = &apply
 	return r
@@ -838,8 +877,8 @@ func (r ApiGetAaaRetentionConfigListRequest) Execute() (*AaaRetentionConfigRespo
 /*
 GetAaaRetentionConfigList Read a 'aaa.RetentionConfig' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetAaaRetentionConfigListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetAaaRetentionConfigListRequest
 */
 func (a *AaaApiService) GetAaaRetentionConfigList(ctx context.Context) ApiGetAaaRetentionConfigListRequest {
 	return ApiGetAaaRetentionConfigListRequest{
@@ -849,7 +888,8 @@ func (a *AaaApiService) GetAaaRetentionConfigList(ctx context.Context) ApiGetAaa
 }
 
 // Execute executes the request
-//  @return AaaRetentionConfigResponse
+//
+//	@return AaaRetentionConfigResponse
 func (a *AaaApiService) GetAaaRetentionConfigListExecute(r ApiGetAaaRetentionConfigListRequest) (*AaaRetentionConfigResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -870,37 +910,52 @@ func (a *AaaApiService) GetAaaRetentionConfigListExecute(r ApiGetAaaRetentionCon
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -929,9 +984,9 @@ func (a *AaaApiService) GetAaaRetentionConfigListExecute(r ApiGetAaaRetentionCon
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -948,6 +1003,7 @@ func (a *AaaApiService) GetAaaRetentionConfigListExecute(r ApiGetAaaRetentionCon
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -958,6 +1014,7 @@ func (a *AaaApiService) GetAaaRetentionConfigListExecute(r ApiGetAaaRetentionCon
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -968,6 +1025,7 @@ func (a *AaaApiService) GetAaaRetentionConfigListExecute(r ApiGetAaaRetentionCon
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -978,6 +1036,7 @@ func (a *AaaApiService) GetAaaRetentionConfigListExecute(r ApiGetAaaRetentionCon
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -987,6 +1046,7 @@ func (a *AaaApiService) GetAaaRetentionConfigListExecute(r ApiGetAaaRetentionCon
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1016,9 +1076,9 @@ func (r ApiGetAaaRetentionPolicyByMoidRequest) Execute() (*AaaRetentionPolicy, *
 /*
 GetAaaRetentionPolicyByMoid Read a 'aaa.RetentionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetAaaRetentionPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetAaaRetentionPolicyByMoidRequest
 */
 func (a *AaaApiService) GetAaaRetentionPolicyByMoid(ctx context.Context, moid string) ApiGetAaaRetentionPolicyByMoidRequest {
 	return ApiGetAaaRetentionPolicyByMoidRequest{
@@ -1029,7 +1089,8 @@ func (a *AaaApiService) GetAaaRetentionPolicyByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return AaaRetentionPolicy
+//
+//	@return AaaRetentionPolicy
 func (a *AaaApiService) GetAaaRetentionPolicyByMoidExecute(r ApiGetAaaRetentionPolicyByMoidRequest) (*AaaRetentionPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1044,7 +1105,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyByMoidExecute(r ApiGetAaaRetentionP
 	}
 
 	localVarPath := localBasePath + "/api/v1/aaa/RetentionPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1077,9 +1138,9 @@ func (a *AaaApiService) GetAaaRetentionPolicyByMoidExecute(r ApiGetAaaRetentionP
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1096,6 +1157,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyByMoidExecute(r ApiGetAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1106,6 +1168,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyByMoidExecute(r ApiGetAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1116,6 +1179,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyByMoidExecute(r ApiGetAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1126,6 +1190,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyByMoidExecute(r ApiGetAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1135,6 +1200,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyByMoidExecute(r ApiGetAaaRetentionP
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1203,7 +1269,7 @@ func (r ApiGetAaaRetentionPolicyListRequest) Expand(expand string) ApiGetAaaRete
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetAaaRetentionPolicyListRequest) Apply(apply string) ApiGetAaaRetentionPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -1240,8 +1306,8 @@ func (r ApiGetAaaRetentionPolicyListRequest) Execute() (*AaaRetentionPolicyRespo
 /*
 GetAaaRetentionPolicyList Read a 'aaa.RetentionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetAaaRetentionPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetAaaRetentionPolicyListRequest
 */
 func (a *AaaApiService) GetAaaRetentionPolicyList(ctx context.Context) ApiGetAaaRetentionPolicyListRequest {
 	return ApiGetAaaRetentionPolicyListRequest{
@@ -1251,7 +1317,8 @@ func (a *AaaApiService) GetAaaRetentionPolicyList(ctx context.Context) ApiGetAaa
 }
 
 // Execute executes the request
-//  @return AaaRetentionPolicyResponse
+//
+//	@return AaaRetentionPolicyResponse
 func (a *AaaApiService) GetAaaRetentionPolicyListExecute(r ApiGetAaaRetentionPolicyListRequest) (*AaaRetentionPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1272,37 +1339,52 @@ func (a *AaaApiService) GetAaaRetentionPolicyListExecute(r ApiGetAaaRetentionPol
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1331,9 +1413,9 @@ func (a *AaaApiService) GetAaaRetentionPolicyListExecute(r ApiGetAaaRetentionPol
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1350,6 +1432,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyListExecute(r ApiGetAaaRetentionPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1360,6 +1443,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyListExecute(r ApiGetAaaRetentionPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1370,6 +1454,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyListExecute(r ApiGetAaaRetentionPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1380,6 +1465,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyListExecute(r ApiGetAaaRetentionPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1389,6 +1475,7 @@ func (a *AaaApiService) GetAaaRetentionPolicyListExecute(r ApiGetAaaRetentionPol
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1432,9 +1519,9 @@ func (r ApiPatchAaaRetentionPolicyRequest) Execute() (*AaaRetentionPolicy, *http
 /*
 PatchAaaRetentionPolicy Update a 'aaa.RetentionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchAaaRetentionPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchAaaRetentionPolicyRequest
 */
 func (a *AaaApiService) PatchAaaRetentionPolicy(ctx context.Context, moid string) ApiPatchAaaRetentionPolicyRequest {
 	return ApiPatchAaaRetentionPolicyRequest{
@@ -1445,7 +1532,8 @@ func (a *AaaApiService) PatchAaaRetentionPolicy(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return AaaRetentionPolicy
+//
+//	@return AaaRetentionPolicy
 func (a *AaaApiService) PatchAaaRetentionPolicyExecute(r ApiPatchAaaRetentionPolicyRequest) (*AaaRetentionPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -1460,7 +1548,7 @@ func (a *AaaApiService) PatchAaaRetentionPolicyExecute(r ApiPatchAaaRetentionPol
 	}
 
 	localVarPath := localBasePath + "/api/v1/aaa/RetentionPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1487,7 +1575,7 @@ func (a *AaaApiService) PatchAaaRetentionPolicyExecute(r ApiPatchAaaRetentionPol
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.aaaRetentionPolicy
@@ -1501,9 +1589,9 @@ func (a *AaaApiService) PatchAaaRetentionPolicyExecute(r ApiPatchAaaRetentionPol
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1520,6 +1608,7 @@ func (a *AaaApiService) PatchAaaRetentionPolicyExecute(r ApiPatchAaaRetentionPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1530,6 +1619,7 @@ func (a *AaaApiService) PatchAaaRetentionPolicyExecute(r ApiPatchAaaRetentionPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1540,6 +1630,7 @@ func (a *AaaApiService) PatchAaaRetentionPolicyExecute(r ApiPatchAaaRetentionPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1550,6 +1641,7 @@ func (a *AaaApiService) PatchAaaRetentionPolicyExecute(r ApiPatchAaaRetentionPol
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1559,6 +1651,7 @@ func (a *AaaApiService) PatchAaaRetentionPolicyExecute(r ApiPatchAaaRetentionPol
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1602,9 +1695,9 @@ func (r ApiUpdateAaaRetentionPolicyRequest) Execute() (*AaaRetentionPolicy, *htt
 /*
 UpdateAaaRetentionPolicy Update a 'aaa.RetentionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateAaaRetentionPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateAaaRetentionPolicyRequest
 */
 func (a *AaaApiService) UpdateAaaRetentionPolicy(ctx context.Context, moid string) ApiUpdateAaaRetentionPolicyRequest {
 	return ApiUpdateAaaRetentionPolicyRequest{
@@ -1615,7 +1708,8 @@ func (a *AaaApiService) UpdateAaaRetentionPolicy(ctx context.Context, moid strin
 }
 
 // Execute executes the request
-//  @return AaaRetentionPolicy
+//
+//	@return AaaRetentionPolicy
 func (a *AaaApiService) UpdateAaaRetentionPolicyExecute(r ApiUpdateAaaRetentionPolicyRequest) (*AaaRetentionPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1630,7 +1724,7 @@ func (a *AaaApiService) UpdateAaaRetentionPolicyExecute(r ApiUpdateAaaRetentionP
 	}
 
 	localVarPath := localBasePath + "/api/v1/aaa/RetentionPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1657,7 +1751,7 @@ func (a *AaaApiService) UpdateAaaRetentionPolicyExecute(r ApiUpdateAaaRetentionP
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.aaaRetentionPolicy
@@ -1671,9 +1765,9 @@ func (a *AaaApiService) UpdateAaaRetentionPolicyExecute(r ApiUpdateAaaRetentionP
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1690,6 +1784,7 @@ func (a *AaaApiService) UpdateAaaRetentionPolicyExecute(r ApiUpdateAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1700,6 +1795,7 @@ func (a *AaaApiService) UpdateAaaRetentionPolicyExecute(r ApiUpdateAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1710,6 +1806,7 @@ func (a *AaaApiService) UpdateAaaRetentionPolicyExecute(r ApiUpdateAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1720,6 +1817,7 @@ func (a *AaaApiService) UpdateAaaRetentionPolicyExecute(r ApiUpdateAaaRetentionP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1729,6 +1827,7 @@ func (a *AaaApiService) UpdateAaaRetentionPolicyExecute(r ApiUpdateAaaRetentionP
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

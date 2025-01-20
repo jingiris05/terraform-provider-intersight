@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +23,7 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 		UpdateContext: resourceCapabilitySwitchCapabilityUpdate,
 		DeleteContext: resourceCapabilitySwitchCapabilityDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -98,7 +101,13 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 				Description: "Default Fcoe VLAN associated with this switch.",
 				Type:        schema.TypeInt,
 				Optional:    true,
-			},
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"domain_group_moid": {
 				Description: "The DomainGroup ID for this managed object.",
 				Type:        schema.TypeString,
@@ -114,12 +123,24 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 				Description: "Dynamic VIFs support on this switch.",
 				Type:        schema.TypeBool,
 				Optional:    true,
-			},
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"fan_modules_supported": {
 				Description: "Fan Modules support on this switch.",
 				Type:        schema.TypeBool,
 				Optional:    true,
-			},
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"fc_end_host_mode_reserved_vsans": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -171,21 +192,209 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 				Description: "Fc Uplink ports auto negotiation speed support on this switch.",
 				Type:        schema.TypeBool,
 				Optional:    true,
-			},
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
+			"imm_controls_vpcompression": {
+				Description: "VlanPort Compression is controlled by IMM.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"locator_beacon_supported": {
 				Description: "Locator Beacon LED support on this switch.",
 				Type:        schema.TypeBool,
 				Optional:    true,
-			},
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"max_ports": {
 				Description: "Maximum allowed physical ports on this switch.",
 				Type:        schema.TypeInt,
 				Optional:    true,
-			},
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"max_slots": {
 				Description: "Maximum allowed physical slots on this switch.",
 				Type:        schema.TypeInt,
 				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
+			"min_version_map_with_breakout_support": {
+				Description: "Minimum firmware version supported for breakout ports on this switch.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"bundle_version": {
+							Description: "Bundle version. Usually the first released bundle containing the specific device firmware version.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "firmware.VersionMap",
+						},
+						"device_firmware_version": {
+							Description: "Bundled device firmware version.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "firmware.VersionMap",
+						},
+					},
+				},
+			},
+			"min_version_map_with_locator_led_support": {
+				Description: "Minimum firmware version supported for locator leds on this switch.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"bundle_version": {
+							Description: "Bundle version. Usually the first released bundle containing the specific device firmware version.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "firmware.VersionMap",
+						},
+						"device_firmware_version": {
+							Description: "Bundled device firmware version.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "firmware.VersionMap",
+						},
+					},
+				},
+			},
+			"min_version_map_with_neg_auto25g_support": {
+				Description: "Minimum firmware version supported for 'negotiate auto 25000' port admin speed on this switch.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"bundle_version": {
+							Description: "Bundle version. Usually the first released bundle containing the specific device firmware version.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "firmware.VersionMap",
+						},
+						"device_firmware_version": {
+							Description: "Bundled device firmware version.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "firmware.VersionMap",
+						},
+					},
+				},
 			},
 			"mod_time": {
 				Description: "The time when this managed object was last modified.",
@@ -215,8 +424,8 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
-				ConfigMode:  schema.SchemaConfigModeAttr,
 				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"additional_properties": {
@@ -408,9 +617,9 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 				},
 			},
 			"pid": {
-				Description:  "Product Identifier for a Switch/Fabric-Interconnect.\n* `UCS-FI-6454` - The standard 4th generation UCS Fabric Interconnect with 54 ports.\n* `UCS-FI-64108` - The expanded 4th generation UCS Fabric Interconnect with 108 ports.\n* `UCS-FI-6536` - The standard 5th generation UCS Fabric Interconnect with 36 ports.\n* `unknown` - Unknown device type, usage is TBD.",
+				Description:  "Product Identifier for a Switch/Fabric-Interconnect.\n* `UCS-FI-6454` - The standard 4th generation UCS Fabric Interconnect with 54 ports.\n* `UCS-FI-64108` - The expanded 4th generation UCS Fabric Interconnect with 108 ports.\n* `UCS-FI-6536` - The standard 5th generation UCS Fabric Interconnect with 36 ports.\n* `UCSX-S9108-100G` - Cisco UCS Fabric Interconnect 9108 100G with 8 ports.\n* `UCS-FI-6664` - The standard 6th generation UCS Fabric Interconnect with 64 ports.\n* `unknown` - Unknown device type, usage is TBD.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringInSlice([]string{"UCS-FI-6454", "UCS-FI-64108", "UCS-FI-6536", "unknown"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"UCS-FI-6454", "UCS-FI-64108", "UCS-FI-6536", "UCSX-S9108-100G", "UCS-FI-6664", "unknown"}, false),
 				Optional:     true,
 				Default:      "UCS-FI-6454",
 			},
@@ -841,7 +1050,21 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 				Description: "Sereno Adaptor with Netflow support on this switch.",
 				Type:        schema.TypeBool,
 				Optional:    true,
-			},
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
+			"server_role_supported_on_breakout": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				}},
 			"shared_scope": {
 				Description: "Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.\nObjects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs.",
 				Type:        schema.TypeString,
@@ -863,8 +1086,8 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
-				ConfigMode:  schema.SchemaConfigModeAttr,
 				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"additional_properties": {
@@ -956,8 +1179,8 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
-				ConfigMode:  schema.SchemaConfigModeAttr,
 				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"additional_properties": {
@@ -1073,7 +1296,24 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 				Description: "The Slider rule for Unified ports on this switch.",
 				Type:        schema.TypeString,
 				Optional:    true,
-			},
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
+			"uplink_admin_port_speed_neg_auto25_gbps_supported": {
+				Description: "'Negotiate Auto 25000' admin speed support on this switch for port or port-channel\nwith Ethernet Uplink/Appliance/FCoE Uplink roles.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"version_context": {
 				Description: "The versioning info for this managed object.",
 				Type:        schema.TypeList,
@@ -1132,6 +1372,17 @@ func resourceCapabilitySwitchCapability() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1240,21 +1491,6 @@ func resourceCapabilitySwitchCapabilityCreate(c context.Context, d *schema.Resou
 
 	o.SetClassId("capability.SwitchCapability")
 
-	if v, ok := d.GetOkExists("default_fcoe_vlan"); ok {
-		x := int64(v.(int))
-		o.SetDefaultFcoeVlan(x)
-	}
-
-	if v, ok := d.GetOkExists("dynamic_vifs_supported"); ok {
-		x := (v.(bool))
-		o.SetDynamicVifsSupported(x)
-	}
-
-	if v, ok := d.GetOkExists("fan_modules_supported"); ok {
-		x := (v.(bool))
-		o.SetFanModulesSupported(x)
-	}
-
 	if v, ok := d.GetOk("fc_end_host_mode_reserved_vsans"); ok {
 		x := make([]models.CapabilityPortRange, 0)
 		s := v.([]interface{})
@@ -1309,26 +1545,6 @@ func resourceCapabilitySwitchCapabilityCreate(c context.Context, d *schema.Resou
 		}
 	}
 
-	if v, ok := d.GetOkExists("fc_uplink_ports_auto_negotiation_supported"); ok {
-		x := (v.(bool))
-		o.SetFcUplinkPortsAutoNegotiationSupported(x)
-	}
-
-	if v, ok := d.GetOkExists("locator_beacon_supported"); ok {
-		x := (v.(bool))
-		o.SetLocatorBeaconSupported(x)
-	}
-
-	if v, ok := d.GetOkExists("max_ports"); ok {
-		x := int64(v.(int))
-		o.SetMaxPorts(x)
-	}
-
-	if v, ok := d.GetOkExists("max_slots"); ok {
-		x := int64(v.(int))
-		o.SetMaxSlots(x)
-	}
-
 	if v, ok := d.GetOk("moid"); ok {
 		x := (v.(string))
 		o.SetMoid(x)
@@ -1337,127 +1553,6 @@ func resourceCapabilitySwitchCapabilityCreate(c context.Context, d *schema.Resou
 	if v, ok := d.GetOk("name"); ok {
 		x := (v.(string))
 		o.SetName(x)
-	}
-
-	if v, ok := d.GetOk("network_limits"); ok {
-		p := make([]models.CapabilitySwitchNetworkLimits, 0, 1)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			l := s[i].(map[string]interface{})
-			o := models.NewCapabilitySwitchNetworkLimitsWithDefaults()
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("capability.SwitchNetworkLimits")
-			if v, ok := l["max_compressed_port_vlan_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaxCompressedPortVlanCount(x)
-				}
-			}
-			if v, ok := l["max_uncompressed_port_vlan_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaxUncompressedPortVlanCount(x)
-				}
-			}
-			if v, ok := l["maximum_active_traffic_monitoring_sessions"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumActiveTrafficMonitoringSessions(x)
-				}
-			}
-			if v, ok := l["maximum_ethernet_port_channels"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumEthernetPortChannels(x)
-				}
-			}
-			if v, ok := l["maximum_ethernet_uplink_ports"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumEthernetUplinkPorts(x)
-				}
-			}
-			if v, ok := l["maximum_fc_port_channel_members"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumFcPortChannelMembers(x)
-				}
-			}
-			if v, ok := l["maximum_fc_port_channels"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumFcPortChannels(x)
-				}
-			}
-			if v, ok := l["maximum_igmp_groups"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumIgmpGroups(x)
-				}
-			}
-			if v, ok := l["maximum_port_channel_members"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumPortChannelMembers(x)
-				}
-			}
-			if v, ok := l["maximum_primary_vlan"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumPrimaryVlan(x)
-				}
-			}
-			if v, ok := l["maximum_secondary_vlan"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumSecondaryVlan(x)
-				}
-			}
-			if v, ok := l["maximum_secondary_vlan_per_primary"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumSecondaryVlanPerPrimary(x)
-				}
-			}
-			if v, ok := l["maximum_vifs"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVifs(x)
-				}
-			}
-			if v, ok := l["maximum_vlans"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVlans(x)
-				}
-			}
-			if v, ok := l["minimum_active_fans"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMinimumActiveFans(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			p = append(p, *o)
-		}
-		if len(p) > 0 {
-			x := p[0]
-			o.SetNetworkLimits(x)
-		}
 	}
 
 	o.SetObjectType("capability.SwitchCapability")
@@ -1953,75 +2048,22 @@ func resourceCapabilitySwitchCapabilityCreate(c context.Context, d *schema.Resou
 		}
 	}
 
-	if v, ok := d.GetOkExists("sereno_netflow_supported"); ok {
-		x := (v.(bool))
-		o.SetSerenoNetflowSupported(x)
+	if v, ok := d.GetOk("server_role_supported_on_breakout"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetServerRoleSupportedOnBreakout(x)
+		}
 	}
 
 	if v, ok := d.GetOk("sku"); ok {
 		x := (v.(string))
 		o.SetSku(x)
-	}
-
-	if v, ok := d.GetOk("storage_limits"); ok {
-		p := make([]models.CapabilitySwitchStorageLimits, 0, 1)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			l := s[i].(map[string]interface{})
-			o := models.NewCapabilitySwitchStorageLimitsWithDefaults()
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("capability.SwitchStorageLimits")
-			if v, ok := l["maximum_user_zone_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumUserZoneCount(x)
-				}
-			}
-			if v, ok := l["maximum_virtual_fc_interfaces"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVirtualFcInterfaces(x)
-				}
-			}
-			if v, ok := l["maximum_virtual_fc_interfaces_per_blade_server"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVirtualFcInterfacesPerBladeServer(x)
-				}
-			}
-			if v, ok := l["maximum_vsans"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVsans(x)
-				}
-			}
-			if v, ok := l["maximum_zone_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumZoneCount(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			p = append(p, *o)
-		}
-		if len(p) > 0 {
-			x := p[0]
-			o.SetStorageLimits(x)
-		}
 	}
 
 	if v, ok := d.GetOk("switching_mode_capabilities"); ok {
@@ -2063,55 +2105,6 @@ func resourceCapabilitySwitchCapabilityCreate(c context.Context, d *schema.Resou
 		}
 		if len(x) > 0 {
 			o.SetSwitchingModeCapabilities(x)
-		}
-	}
-
-	if v, ok := d.GetOk("system_limits"); ok {
-		p := make([]models.CapabilitySwitchSystemLimits, 0, 1)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			l := s[i].(map[string]interface{})
-			o := models.NewCapabilitySwitchSystemLimitsWithDefaults()
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("capability.SwitchSystemLimits")
-			if v, ok := l["maximum_chassis_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumChassisCount(x)
-				}
-			}
-			if v, ok := l["maximum_fex_per_domain"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumFexPerDomain(x)
-				}
-			}
-			if v, ok := l["maximum_servers_per_domain"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumServersPerDomain(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			p = append(p, *o)
-		}
-		if len(p) > 0 {
-			x := p[0]
-			o.SetSystemLimits(x)
 		}
 	}
 
@@ -2204,11 +2197,6 @@ func resourceCapabilitySwitchCapabilityCreate(c context.Context, d *schema.Resou
 		}
 	}
 
-	if v, ok := d.GetOk("unified_rule"); ok {
-		x := (v.(string))
-		o.SetUnifiedRule(x)
-	}
-
 	if v, ok := d.GetOk("vid"); ok {
 		x := (v.(string))
 		o.SetVid(x)
@@ -2224,14 +2212,25 @@ func resourceCapabilitySwitchCapabilityCreate(c context.Context, d *schema.Resou
 		}
 		return diag.Errorf("error occurred while creating CapabilitySwitchCapability: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceCapabilitySwitchCapabilityRead(c, d, meta)...)
 }
 
 func resourceCapabilitySwitchCapabilityRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.CapabilityApi.GetCapabilitySwitchCapabilityByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -2293,6 +2292,10 @@ func resourceCapabilitySwitchCapabilityRead(c context.Context, d *schema.Resourc
 		return diag.Errorf("error occurred while setting property FcUplinkPortsAutoNegotiationSupported in CapabilitySwitchCapability object: %s", err.Error())
 	}
 
+	if err := d.Set("imm_controls_vpcompression", (s.GetImmControlsVpcompression())); err != nil {
+		return diag.Errorf("error occurred while setting property ImmControlsVpcompression in CapabilitySwitchCapability object: %s", err.Error())
+	}
+
 	if err := d.Set("locator_beacon_supported", (s.GetLocatorBeaconSupported())); err != nil {
 		return diag.Errorf("error occurred while setting property LocatorBeaconSupported in CapabilitySwitchCapability object: %s", err.Error())
 	}
@@ -2303,6 +2306,18 @@ func resourceCapabilitySwitchCapabilityRead(c context.Context, d *schema.Resourc
 
 	if err := d.Set("max_slots", (s.GetMaxSlots())); err != nil {
 		return diag.Errorf("error occurred while setting property MaxSlots in CapabilitySwitchCapability object: %s", err.Error())
+	}
+
+	if err := d.Set("min_version_map_with_breakout_support", flattenMapFirmwareVersionMap(s.GetMinVersionMapWithBreakoutSupport(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property MinVersionMapWithBreakoutSupport in CapabilitySwitchCapability object: %s", err.Error())
+	}
+
+	if err := d.Set("min_version_map_with_locator_led_support", flattenMapFirmwareVersionMap(s.GetMinVersionMapWithLocatorLedSupport(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property MinVersionMapWithLocatorLedSupport in CapabilitySwitchCapability object: %s", err.Error())
+	}
+
+	if err := d.Set("min_version_map_with_neg_auto25g_support", flattenMapFirmwareVersionMap(s.GetMinVersionMapWithNegAuto25gSupport(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property MinVersionMapWithNegAuto25gSupport in CapabilitySwitchCapability object: %s", err.Error())
 	}
 
 	if err := d.Set("mod_time", (s.GetModTime()).String()); err != nil {
@@ -2381,6 +2396,10 @@ func resourceCapabilitySwitchCapabilityRead(c context.Context, d *schema.Resourc
 		return diag.Errorf("error occurred while setting property SerenoNetflowSupported in CapabilitySwitchCapability object: %s", err.Error())
 	}
 
+	if err := d.Set("server_role_supported_on_breakout", (s.GetServerRoleSupportedOnBreakout())); err != nil {
+		return diag.Errorf("error occurred while setting property ServerRoleSupportedOnBreakout in CapabilitySwitchCapability object: %s", err.Error())
+	}
+
 	if err := d.Set("shared_scope", (s.GetSharedScope())); err != nil {
 		return diag.Errorf("error occurred while setting property SharedScope in CapabilitySwitchCapability object: %s", err.Error())
 	}
@@ -2413,6 +2432,10 @@ func resourceCapabilitySwitchCapabilityRead(c context.Context, d *schema.Resourc
 		return diag.Errorf("error occurred while setting property UnifiedRule in CapabilitySwitchCapability object: %s", err.Error())
 	}
 
+	if err := d.Set("uplink_admin_port_speed_neg_auto25_gbps_supported", (s.GetUplinkAdminPortSpeedNegAuto25GbpsSupported())); err != nil {
+		return diag.Errorf("error occurred while setting property UplinkAdminPortSpeedNegAuto25GbpsSupported in CapabilitySwitchCapability object: %s", err.Error())
+	}
+
 	if err := d.Set("version_context", flattenMapMoVersionContext(s.GetVersionContext(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property VersionContext in CapabilitySwitchCapability object: %s", err.Error())
 	}
@@ -2443,24 +2466,6 @@ func resourceCapabilitySwitchCapabilityUpdate(c context.Context, d *schema.Resou
 	}
 
 	o.SetClassId("capability.SwitchCapability")
-
-	if d.HasChange("default_fcoe_vlan") {
-		v := d.Get("default_fcoe_vlan")
-		x := int64(v.(int))
-		o.SetDefaultFcoeVlan(x)
-	}
-
-	if d.HasChange("dynamic_vifs_supported") {
-		v := d.Get("dynamic_vifs_supported")
-		x := (v.(bool))
-		o.SetDynamicVifsSupported(x)
-	}
-
-	if d.HasChange("fan_modules_supported") {
-		v := d.Get("fan_modules_supported")
-		x := (v.(bool))
-		o.SetFanModulesSupported(x)
-	}
 
 	if d.HasChange("fc_end_host_mode_reserved_vsans") {
 		v := d.Get("fc_end_host_mode_reserved_vsans")
@@ -2515,30 +2520,6 @@ func resourceCapabilitySwitchCapabilityUpdate(c context.Context, d *schema.Resou
 		o.SetFcEndHostModeReservedVsans(x)
 	}
 
-	if d.HasChange("fc_uplink_ports_auto_negotiation_supported") {
-		v := d.Get("fc_uplink_ports_auto_negotiation_supported")
-		x := (v.(bool))
-		o.SetFcUplinkPortsAutoNegotiationSupported(x)
-	}
-
-	if d.HasChange("locator_beacon_supported") {
-		v := d.Get("locator_beacon_supported")
-		x := (v.(bool))
-		o.SetLocatorBeaconSupported(x)
-	}
-
-	if d.HasChange("max_ports") {
-		v := d.Get("max_ports")
-		x := int64(v.(int))
-		o.SetMaxPorts(x)
-	}
-
-	if d.HasChange("max_slots") {
-		v := d.Get("max_slots")
-		x := int64(v.(int))
-		o.SetMaxSlots(x)
-	}
-
 	if d.HasChange("moid") {
 		v := d.Get("moid")
 		x := (v.(string))
@@ -2549,128 +2530,6 @@ func resourceCapabilitySwitchCapabilityUpdate(c context.Context, d *schema.Resou
 		v := d.Get("name")
 		x := (v.(string))
 		o.SetName(x)
-	}
-
-	if d.HasChange("network_limits") {
-		v := d.Get("network_limits")
-		p := make([]models.CapabilitySwitchNetworkLimits, 0, 1)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			l := s[i].(map[string]interface{})
-			o := &models.CapabilitySwitchNetworkLimits{}
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("capability.SwitchNetworkLimits")
-			if v, ok := l["max_compressed_port_vlan_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaxCompressedPortVlanCount(x)
-				}
-			}
-			if v, ok := l["max_uncompressed_port_vlan_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaxUncompressedPortVlanCount(x)
-				}
-			}
-			if v, ok := l["maximum_active_traffic_monitoring_sessions"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumActiveTrafficMonitoringSessions(x)
-				}
-			}
-			if v, ok := l["maximum_ethernet_port_channels"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumEthernetPortChannels(x)
-				}
-			}
-			if v, ok := l["maximum_ethernet_uplink_ports"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumEthernetUplinkPorts(x)
-				}
-			}
-			if v, ok := l["maximum_fc_port_channel_members"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumFcPortChannelMembers(x)
-				}
-			}
-			if v, ok := l["maximum_fc_port_channels"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumFcPortChannels(x)
-				}
-			}
-			if v, ok := l["maximum_igmp_groups"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumIgmpGroups(x)
-				}
-			}
-			if v, ok := l["maximum_port_channel_members"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumPortChannelMembers(x)
-				}
-			}
-			if v, ok := l["maximum_primary_vlan"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumPrimaryVlan(x)
-				}
-			}
-			if v, ok := l["maximum_secondary_vlan"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumSecondaryVlan(x)
-				}
-			}
-			if v, ok := l["maximum_secondary_vlan_per_primary"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumSecondaryVlanPerPrimary(x)
-				}
-			}
-			if v, ok := l["maximum_vifs"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVifs(x)
-				}
-			}
-			if v, ok := l["maximum_vlans"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVlans(x)
-				}
-			}
-			if v, ok := l["minimum_active_fans"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMinimumActiveFans(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			p = append(p, *o)
-		}
-		if len(p) > 0 {
-			x := p[0]
-			o.SetNetworkLimits(x)
-		}
 	}
 
 	o.SetObjectType("capability.SwitchCapability")
@@ -3158,78 +3017,22 @@ func resourceCapabilitySwitchCapabilityUpdate(c context.Context, d *schema.Resou
 		o.SetReservedVsans(x)
 	}
 
-	if d.HasChange("sereno_netflow_supported") {
-		v := d.Get("sereno_netflow_supported")
-		x := (v.(bool))
-		o.SetSerenoNetflowSupported(x)
+	if d.HasChange("server_role_supported_on_breakout") {
+		v := d.Get("server_role_supported_on_breakout")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetServerRoleSupportedOnBreakout(x)
 	}
 
 	if d.HasChange("sku") {
 		v := d.Get("sku")
 		x := (v.(string))
 		o.SetSku(x)
-	}
-
-	if d.HasChange("storage_limits") {
-		v := d.Get("storage_limits")
-		p := make([]models.CapabilitySwitchStorageLimits, 0, 1)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			l := s[i].(map[string]interface{})
-			o := &models.CapabilitySwitchStorageLimits{}
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("capability.SwitchStorageLimits")
-			if v, ok := l["maximum_user_zone_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumUserZoneCount(x)
-				}
-			}
-			if v, ok := l["maximum_virtual_fc_interfaces"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVirtualFcInterfaces(x)
-				}
-			}
-			if v, ok := l["maximum_virtual_fc_interfaces_per_blade_server"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVirtualFcInterfacesPerBladeServer(x)
-				}
-			}
-			if v, ok := l["maximum_vsans"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumVsans(x)
-				}
-			}
-			if v, ok := l["maximum_zone_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumZoneCount(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			p = append(p, *o)
-		}
-		if len(p) > 0 {
-			x := p[0]
-			o.SetStorageLimits(x)
-		}
 	}
 
 	if d.HasChange("switching_mode_capabilities") {
@@ -3271,56 +3074,6 @@ func resourceCapabilitySwitchCapabilityUpdate(c context.Context, d *schema.Resou
 			x = append(x, *o)
 		}
 		o.SetSwitchingModeCapabilities(x)
-	}
-
-	if d.HasChange("system_limits") {
-		v := d.Get("system_limits")
-		p := make([]models.CapabilitySwitchSystemLimits, 0, 1)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			l := s[i].(map[string]interface{})
-			o := &models.CapabilitySwitchSystemLimits{}
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("capability.SwitchSystemLimits")
-			if v, ok := l["maximum_chassis_count"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumChassisCount(x)
-				}
-			}
-			if v, ok := l["maximum_fex_per_domain"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumFexPerDomain(x)
-				}
-			}
-			if v, ok := l["maximum_servers_per_domain"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetMaximumServersPerDomain(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			p = append(p, *o)
-		}
-		if len(p) > 0 {
-			x := p[0]
-			o.SetSystemLimits(x)
-		}
 	}
 
 	if d.HasChange("tags") {
@@ -3408,12 +3161,6 @@ func resourceCapabilitySwitchCapabilityUpdate(c context.Context, d *schema.Resou
 			x = append(x, *o)
 		}
 		o.SetUnifiedPorts(x)
-	}
-
-	if d.HasChange("unified_rule") {
-		v := d.Get("unified_rule")
-		x := (v.(string))
-		o.SetUnifiedRule(x)
 	}
 
 	if d.HasChange("vid") {

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the IamClientMeta type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IamClientMeta{}
 
 // IamClientMeta Contains meta information of the client. Currently it is used only within OAuth clients.
 type IamClientMeta struct {
@@ -80,6 +84,11 @@ func (o *IamClientMeta) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "iam.ClientMeta" of the ClassId field.
+func (o *IamClientMeta) GetDefaultClassId() interface{} {
+	return "iam.ClientMeta"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IamClientMeta) GetObjectType() string {
 	if o == nil {
@@ -104,9 +113,14 @@ func (o *IamClientMeta) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "iam.ClientMeta" of the ObjectType field.
+func (o *IamClientMeta) GetDefaultObjectType() interface{} {
+	return "iam.ClientMeta"
+}
+
 // GetDeviceModel returns the DeviceModel field value if set, zero value otherwise.
 func (o *IamClientMeta) GetDeviceModel() string {
-	if o == nil || o.DeviceModel == nil {
+	if o == nil || IsNil(o.DeviceModel) {
 		var ret string
 		return ret
 	}
@@ -116,7 +130,7 @@ func (o *IamClientMeta) GetDeviceModel() string {
 // GetDeviceModelOk returns a tuple with the DeviceModel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamClientMeta) GetDeviceModelOk() (*string, bool) {
-	if o == nil || o.DeviceModel == nil {
+	if o == nil || IsNil(o.DeviceModel) {
 		return nil, false
 	}
 	return o.DeviceModel, true
@@ -124,7 +138,7 @@ func (o *IamClientMeta) GetDeviceModelOk() (*string, bool) {
 
 // HasDeviceModel returns a boolean if a field has been set.
 func (o *IamClientMeta) HasDeviceModel() bool {
-	if o != nil && o.DeviceModel != nil {
+	if o != nil && !IsNil(o.DeviceModel) {
 		return true
 	}
 
@@ -138,7 +152,7 @@ func (o *IamClientMeta) SetDeviceModel(v string) {
 
 // GetUserAgent returns the UserAgent field value if set, zero value otherwise.
 func (o *IamClientMeta) GetUserAgent() string {
-	if o == nil || o.UserAgent == nil {
+	if o == nil || IsNil(o.UserAgent) {
 		var ret string
 		return ret
 	}
@@ -148,7 +162,7 @@ func (o *IamClientMeta) GetUserAgent() string {
 // GetUserAgentOk returns a tuple with the UserAgent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamClientMeta) GetUserAgentOk() (*string, bool) {
-	if o == nil || o.UserAgent == nil {
+	if o == nil || IsNil(o.UserAgent) {
 		return nil, false
 	}
 	return o.UserAgent, true
@@ -156,7 +170,7 @@ func (o *IamClientMeta) GetUserAgentOk() (*string, bool) {
 
 // HasUserAgent returns a boolean if a field has been set.
 func (o *IamClientMeta) HasUserAgent() bool {
-	if o != nil && o.UserAgent != nil {
+	if o != nil && !IsNil(o.UserAgent) {
 		return true
 	}
 
@@ -169,25 +183,35 @@ func (o *IamClientMeta) SetUserAgent(v string) {
 }
 
 func (o IamClientMeta) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IamClientMeta) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.DeviceModel != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.DeviceModel) {
 		toSerialize["DeviceModel"] = o.DeviceModel
 	}
-	if o.UserAgent != nil {
+	if !IsNil(o.UserAgent) {
 		toSerialize["UserAgent"] = o.UserAgent
 	}
 
@@ -195,10 +219,51 @@ func (o IamClientMeta) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IamClientMeta) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IamClientMeta) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IamClientMetaWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -212,7 +277,7 @@ func (o *IamClientMeta) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIamClientMetaWithoutEmbeddedStruct := IamClientMetaWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIamClientMetaWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIamClientMetaWithoutEmbeddedStruct)
 	if err == nil {
 		varIamClientMeta := _IamClientMeta{}
 		varIamClientMeta.ClassId = varIamClientMetaWithoutEmbeddedStruct.ClassId
@@ -226,7 +291,7 @@ func (o *IamClientMeta) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIamClientMeta := _IamClientMeta{}
 
-	err = json.Unmarshal(bytes, &varIamClientMeta)
+	err = json.Unmarshal(data, &varIamClientMeta)
 	if err == nil {
 		o.MoBaseComplexType = varIamClientMeta.MoBaseComplexType
 	} else {
@@ -235,7 +300,7 @@ func (o *IamClientMeta) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "DeviceModel")

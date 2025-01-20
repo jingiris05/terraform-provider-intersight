@@ -72,6 +72,7 @@ This complex property has following sub-properties:
   + `domain`:(string) The IPv4 domain that all users must be in. 
   + `enable_encryption`:(bool) If enabled, the endpoint encrypts all information it sends to the LDAP server. 
   + `enable_group_authorization`:(bool) If enabled, user authorization is also done at the group level for LDAP users not in the local user database. 
+  + `enable_nested_group_search`:(bool) If enabled, an extended search walks the chain of ancestry all the way to the root and returns all the groups and subgroups, each of those groups belong to recursively. 
   + `filter`:(string) Criteria to identify entries in search requests. 
   + `group_attribute`:(string) Groups to which an LDAP entry belongs. 
   + `is_password_set`:(bool)(ReadOnly) Indicates whether the value of the 'password' property has been set. 
@@ -138,6 +139,7 @@ This complex property has following sub-properties:
     + `moid`:(string) The Moid of the referenced REST resource. 
     + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
     + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+  + `marked_for_deletion`:(bool)(ReadOnly) The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `ref_mo`:(HashMap) -(ReadOnly) A reference to the original Managed Object. 
 This complex property has following sub-properties:

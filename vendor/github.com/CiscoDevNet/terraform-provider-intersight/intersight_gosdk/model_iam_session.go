@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the IamSession type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IamSession{}
 
 // IamSession The web session of a user. After a user logs into Intersight, a session object is created. Session object is deleted upon logout, idle timeout, expiry timeout, or manual deletion.
 type IamSession struct {
@@ -35,11 +39,12 @@ type IamSession struct {
 	// The client address from which last login is initiated.
 	LastLoginClient *string `json:"LastLoginClient,omitempty"`
 	// The last login time for user.
-	LastLoginTime *time.Time `json:"LastLoginTime,omitempty"`
+	LastLoginTime *time.Time                        `json:"LastLoginTime,omitempty"`
+	Scope         NullableIamSwitchScopePermissions `json:"Scope,omitempty"`
 	// Session token shared with the user agent which is used to identify the user session when API requests are received to perform authorization.
-	SessionId            *string                    `json:"SessionId,omitempty"`
-	Permission           *IamPermissionRelationship `json:"Permission,omitempty"`
-	User                 *IamUserRelationship       `json:"User,omitempty"`
+	SessionId            *string                           `json:"SessionId,omitempty"`
+	Permission           NullableIamPermissionRelationship `json:"Permission,omitempty"`
+	User                 NullableIamUserRelationship       `json:"User,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -94,6 +99,11 @@ func (o *IamSession) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "iam.Session" of the ClassId field.
+func (o *IamSession) GetDefaultClassId() interface{} {
+	return "iam.Session"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IamSession) GetObjectType() string {
 	if o == nil {
@@ -118,6 +128,11 @@ func (o *IamSession) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "iam.Session" of the ObjectType field.
+func (o *IamSession) GetDefaultObjectType() interface{} {
+	return "iam.Session"
+}
+
 // GetAccountPermissions returns the AccountPermissions field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamSession) GetAccountPermissions() []IamAccountPermissions {
 	if o == nil {
@@ -131,7 +146,7 @@ func (o *IamSession) GetAccountPermissions() []IamAccountPermissions {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamSession) GetAccountPermissionsOk() ([]IamAccountPermissions, bool) {
-	if o == nil || o.AccountPermissions == nil {
+	if o == nil || IsNil(o.AccountPermissions) {
 		return nil, false
 	}
 	return o.AccountPermissions, true
@@ -139,7 +154,7 @@ func (o *IamSession) GetAccountPermissionsOk() ([]IamAccountPermissions, bool) {
 
 // HasAccountPermissions returns a boolean if a field has been set.
 func (o *IamSession) HasAccountPermissions() bool {
-	if o != nil && o.AccountPermissions != nil {
+	if o != nil && !IsNil(o.AccountPermissions) {
 		return true
 	}
 
@@ -153,7 +168,7 @@ func (o *IamSession) SetAccountPermissions(v []IamAccountPermissions) {
 
 // GetExpiration returns the Expiration field value if set, zero value otherwise.
 func (o *IamSession) GetExpiration() time.Time {
-	if o == nil || o.Expiration == nil {
+	if o == nil || IsNil(o.Expiration) {
 		var ret time.Time
 		return ret
 	}
@@ -163,7 +178,7 @@ func (o *IamSession) GetExpiration() time.Time {
 // GetExpirationOk returns a tuple with the Expiration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamSession) GetExpirationOk() (*time.Time, bool) {
-	if o == nil || o.Expiration == nil {
+	if o == nil || IsNil(o.Expiration) {
 		return nil, false
 	}
 	return o.Expiration, true
@@ -171,7 +186,7 @@ func (o *IamSession) GetExpirationOk() (*time.Time, bool) {
 
 // HasExpiration returns a boolean if a field has been set.
 func (o *IamSession) HasExpiration() bool {
-	if o != nil && o.Expiration != nil {
+	if o != nil && !IsNil(o.Expiration) {
 		return true
 	}
 
@@ -185,7 +200,7 @@ func (o *IamSession) SetExpiration(v time.Time) {
 
 // GetFailedLogins returns the FailedLogins field value if set, zero value otherwise.
 func (o *IamSession) GetFailedLogins() int64 {
-	if o == nil || o.FailedLogins == nil {
+	if o == nil || IsNil(o.FailedLogins) {
 		var ret int64
 		return ret
 	}
@@ -195,7 +210,7 @@ func (o *IamSession) GetFailedLogins() int64 {
 // GetFailedLoginsOk returns a tuple with the FailedLogins field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamSession) GetFailedLoginsOk() (*int64, bool) {
-	if o == nil || o.FailedLogins == nil {
+	if o == nil || IsNil(o.FailedLogins) {
 		return nil, false
 	}
 	return o.FailedLogins, true
@@ -203,7 +218,7 @@ func (o *IamSession) GetFailedLoginsOk() (*int64, bool) {
 
 // HasFailedLogins returns a boolean if a field has been set.
 func (o *IamSession) HasFailedLogins() bool {
-	if o != nil && o.FailedLogins != nil {
+	if o != nil && !IsNil(o.FailedLogins) {
 		return true
 	}
 
@@ -217,7 +232,7 @@ func (o *IamSession) SetFailedLogins(v int64) {
 
 // GetIdleTimeExpiration returns the IdleTimeExpiration field value if set, zero value otherwise.
 func (o *IamSession) GetIdleTimeExpiration() time.Time {
-	if o == nil || o.IdleTimeExpiration == nil {
+	if o == nil || IsNil(o.IdleTimeExpiration) {
 		var ret time.Time
 		return ret
 	}
@@ -227,7 +242,7 @@ func (o *IamSession) GetIdleTimeExpiration() time.Time {
 // GetIdleTimeExpirationOk returns a tuple with the IdleTimeExpiration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamSession) GetIdleTimeExpirationOk() (*time.Time, bool) {
-	if o == nil || o.IdleTimeExpiration == nil {
+	if o == nil || IsNil(o.IdleTimeExpiration) {
 		return nil, false
 	}
 	return o.IdleTimeExpiration, true
@@ -235,7 +250,7 @@ func (o *IamSession) GetIdleTimeExpirationOk() (*time.Time, bool) {
 
 // HasIdleTimeExpiration returns a boolean if a field has been set.
 func (o *IamSession) HasIdleTimeExpiration() bool {
-	if o != nil && o.IdleTimeExpiration != nil {
+	if o != nil && !IsNil(o.IdleTimeExpiration) {
 		return true
 	}
 
@@ -249,7 +264,7 @@ func (o *IamSession) SetIdleTimeExpiration(v time.Time) {
 
 // GetLastLoginClient returns the LastLoginClient field value if set, zero value otherwise.
 func (o *IamSession) GetLastLoginClient() string {
-	if o == nil || o.LastLoginClient == nil {
+	if o == nil || IsNil(o.LastLoginClient) {
 		var ret string
 		return ret
 	}
@@ -259,7 +274,7 @@ func (o *IamSession) GetLastLoginClient() string {
 // GetLastLoginClientOk returns a tuple with the LastLoginClient field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamSession) GetLastLoginClientOk() (*string, bool) {
-	if o == nil || o.LastLoginClient == nil {
+	if o == nil || IsNil(o.LastLoginClient) {
 		return nil, false
 	}
 	return o.LastLoginClient, true
@@ -267,7 +282,7 @@ func (o *IamSession) GetLastLoginClientOk() (*string, bool) {
 
 // HasLastLoginClient returns a boolean if a field has been set.
 func (o *IamSession) HasLastLoginClient() bool {
-	if o != nil && o.LastLoginClient != nil {
+	if o != nil && !IsNil(o.LastLoginClient) {
 		return true
 	}
 
@@ -281,7 +296,7 @@ func (o *IamSession) SetLastLoginClient(v string) {
 
 // GetLastLoginTime returns the LastLoginTime field value if set, zero value otherwise.
 func (o *IamSession) GetLastLoginTime() time.Time {
-	if o == nil || o.LastLoginTime == nil {
+	if o == nil || IsNil(o.LastLoginTime) {
 		var ret time.Time
 		return ret
 	}
@@ -291,7 +306,7 @@ func (o *IamSession) GetLastLoginTime() time.Time {
 // GetLastLoginTimeOk returns a tuple with the LastLoginTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamSession) GetLastLoginTimeOk() (*time.Time, bool) {
-	if o == nil || o.LastLoginTime == nil {
+	if o == nil || IsNil(o.LastLoginTime) {
 		return nil, false
 	}
 	return o.LastLoginTime, true
@@ -299,7 +314,7 @@ func (o *IamSession) GetLastLoginTimeOk() (*time.Time, bool) {
 
 // HasLastLoginTime returns a boolean if a field has been set.
 func (o *IamSession) HasLastLoginTime() bool {
-	if o != nil && o.LastLoginTime != nil {
+	if o != nil && !IsNil(o.LastLoginTime) {
 		return true
 	}
 
@@ -311,9 +326,52 @@ func (o *IamSession) SetLastLoginTime(v time.Time) {
 	o.LastLoginTime = &v
 }
 
+// GetScope returns the Scope field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *IamSession) GetScope() IamSwitchScopePermissions {
+	if o == nil || IsNil(o.Scope.Get()) {
+		var ret IamSwitchScopePermissions
+		return ret
+	}
+	return *o.Scope.Get()
+}
+
+// GetScopeOk returns a tuple with the Scope field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *IamSession) GetScopeOk() (*IamSwitchScopePermissions, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Scope.Get(), o.Scope.IsSet()
+}
+
+// HasScope returns a boolean if a field has been set.
+func (o *IamSession) HasScope() bool {
+	if o != nil && o.Scope.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetScope gets a reference to the given NullableIamSwitchScopePermissions and assigns it to the Scope field.
+func (o *IamSession) SetScope(v IamSwitchScopePermissions) {
+	o.Scope.Set(&v)
+}
+
+// SetScopeNil sets the value for Scope to be an explicit nil
+func (o *IamSession) SetScopeNil() {
+	o.Scope.Set(nil)
+}
+
+// UnsetScope ensures that no value is present for Scope, not even an explicit nil
+func (o *IamSession) UnsetScope() {
+	o.Scope.Unset()
+}
+
 // GetSessionId returns the SessionId field value if set, zero value otherwise.
 func (o *IamSession) GetSessionId() string {
-	if o == nil || o.SessionId == nil {
+	if o == nil || IsNil(o.SessionId) {
 		var ret string
 		return ret
 	}
@@ -323,7 +381,7 @@ func (o *IamSession) GetSessionId() string {
 // GetSessionIdOk returns a tuple with the SessionId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamSession) GetSessionIdOk() (*string, bool) {
-	if o == nil || o.SessionId == nil {
+	if o == nil || IsNil(o.SessionId) {
 		return nil, false
 	}
 	return o.SessionId, true
@@ -331,7 +389,7 @@ func (o *IamSession) GetSessionIdOk() (*string, bool) {
 
 // HasSessionId returns a boolean if a field has been set.
 func (o *IamSession) HasSessionId() bool {
-	if o != nil && o.SessionId != nil {
+	if o != nil && !IsNil(o.SessionId) {
 		return true
 	}
 
@@ -343,122 +401,198 @@ func (o *IamSession) SetSessionId(v string) {
 	o.SessionId = &v
 }
 
-// GetPermission returns the Permission field value if set, zero value otherwise.
+// GetPermission returns the Permission field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamSession) GetPermission() IamPermissionRelationship {
-	if o == nil || o.Permission == nil {
+	if o == nil || IsNil(o.Permission.Get()) {
 		var ret IamPermissionRelationship
 		return ret
 	}
-	return *o.Permission
+	return *o.Permission.Get()
 }
 
 // GetPermissionOk returns a tuple with the Permission field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamSession) GetPermissionOk() (*IamPermissionRelationship, bool) {
-	if o == nil || o.Permission == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Permission, true
+	return o.Permission.Get(), o.Permission.IsSet()
 }
 
 // HasPermission returns a boolean if a field has been set.
 func (o *IamSession) HasPermission() bool {
-	if o != nil && o.Permission != nil {
+	if o != nil && o.Permission.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPermission gets a reference to the given IamPermissionRelationship and assigns it to the Permission field.
+// SetPermission gets a reference to the given NullableIamPermissionRelationship and assigns it to the Permission field.
 func (o *IamSession) SetPermission(v IamPermissionRelationship) {
-	o.Permission = &v
+	o.Permission.Set(&v)
 }
 
-// GetUser returns the User field value if set, zero value otherwise.
+// SetPermissionNil sets the value for Permission to be an explicit nil
+func (o *IamSession) SetPermissionNil() {
+	o.Permission.Set(nil)
+}
+
+// UnsetPermission ensures that no value is present for Permission, not even an explicit nil
+func (o *IamSession) UnsetPermission() {
+	o.Permission.Unset()
+}
+
+// GetUser returns the User field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamSession) GetUser() IamUserRelationship {
-	if o == nil || o.User == nil {
+	if o == nil || IsNil(o.User.Get()) {
 		var ret IamUserRelationship
 		return ret
 	}
-	return *o.User
+	return *o.User.Get()
 }
 
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamSession) GetUserOk() (*IamUserRelationship, bool) {
-	if o == nil || o.User == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.User, true
+	return o.User.Get(), o.User.IsSet()
 }
 
 // HasUser returns a boolean if a field has been set.
 func (o *IamSession) HasUser() bool {
-	if o != nil && o.User != nil {
+	if o != nil && o.User.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetUser gets a reference to the given IamUserRelationship and assigns it to the User field.
+// SetUser gets a reference to the given NullableIamUserRelationship and assigns it to the User field.
 func (o *IamSession) SetUser(v IamUserRelationship) {
-	o.User = &v
+	o.User.Set(&v)
+}
+
+// SetUserNil sets the value for User to be an explicit nil
+func (o *IamSession) SetUserNil() {
+	o.User.Set(nil)
+}
+
+// UnsetUser ensures that no value is present for User, not even an explicit nil
+func (o *IamSession) UnsetUser() {
+	o.User.Unset()
 }
 
 func (o IamSession) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IamSession) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedSessionAbstractSession, errSessionAbstractSession := json.Marshal(o.SessionAbstractSession)
 	if errSessionAbstractSession != nil {
-		return []byte{}, errSessionAbstractSession
+		return map[string]interface{}{}, errSessionAbstractSession
 	}
 	errSessionAbstractSession = json.Unmarshal([]byte(serializedSessionAbstractSession), &toSerialize)
 	if errSessionAbstractSession != nil {
-		return []byte{}, errSessionAbstractSession
+		return map[string]interface{}{}, errSessionAbstractSession
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.AccountPermissions != nil {
 		toSerialize["AccountPermissions"] = o.AccountPermissions
 	}
-	if o.Expiration != nil {
+	if !IsNil(o.Expiration) {
 		toSerialize["Expiration"] = o.Expiration
 	}
-	if o.FailedLogins != nil {
+	if !IsNil(o.FailedLogins) {
 		toSerialize["FailedLogins"] = o.FailedLogins
 	}
-	if o.IdleTimeExpiration != nil {
+	if !IsNil(o.IdleTimeExpiration) {
 		toSerialize["IdleTimeExpiration"] = o.IdleTimeExpiration
 	}
-	if o.LastLoginClient != nil {
+	if !IsNil(o.LastLoginClient) {
 		toSerialize["LastLoginClient"] = o.LastLoginClient
 	}
-	if o.LastLoginTime != nil {
+	if !IsNil(o.LastLoginTime) {
 		toSerialize["LastLoginTime"] = o.LastLoginTime
 	}
-	if o.SessionId != nil {
+	if o.Scope.IsSet() {
+		toSerialize["Scope"] = o.Scope.Get()
+	}
+	if !IsNil(o.SessionId) {
 		toSerialize["SessionId"] = o.SessionId
 	}
-	if o.Permission != nil {
-		toSerialize["Permission"] = o.Permission
+	if o.Permission.IsSet() {
+		toSerialize["Permission"] = o.Permission.Get()
 	}
-	if o.User != nil {
-		toSerialize["User"] = o.User
+	if o.User.IsSet() {
+		toSerialize["User"] = o.User.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IamSession) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IamSession) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IamSessionWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -474,16 +608,17 @@ func (o *IamSession) UnmarshalJSON(bytes []byte) (err error) {
 		// The client address from which last login is initiated.
 		LastLoginClient *string `json:"LastLoginClient,omitempty"`
 		// The last login time for user.
-		LastLoginTime *time.Time `json:"LastLoginTime,omitempty"`
+		LastLoginTime *time.Time                        `json:"LastLoginTime,omitempty"`
+		Scope         NullableIamSwitchScopePermissions `json:"Scope,omitempty"`
 		// Session token shared with the user agent which is used to identify the user session when API requests are received to perform authorization.
-		SessionId  *string                    `json:"SessionId,omitempty"`
-		Permission *IamPermissionRelationship `json:"Permission,omitempty"`
-		User       *IamUserRelationship       `json:"User,omitempty"`
+		SessionId  *string                           `json:"SessionId,omitempty"`
+		Permission NullableIamPermissionRelationship `json:"Permission,omitempty"`
+		User       NullableIamUserRelationship       `json:"User,omitempty"`
 	}
 
 	varIamSessionWithoutEmbeddedStruct := IamSessionWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIamSessionWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIamSessionWithoutEmbeddedStruct)
 	if err == nil {
 		varIamSession := _IamSession{}
 		varIamSession.ClassId = varIamSessionWithoutEmbeddedStruct.ClassId
@@ -494,6 +629,7 @@ func (o *IamSession) UnmarshalJSON(bytes []byte) (err error) {
 		varIamSession.IdleTimeExpiration = varIamSessionWithoutEmbeddedStruct.IdleTimeExpiration
 		varIamSession.LastLoginClient = varIamSessionWithoutEmbeddedStruct.LastLoginClient
 		varIamSession.LastLoginTime = varIamSessionWithoutEmbeddedStruct.LastLoginTime
+		varIamSession.Scope = varIamSessionWithoutEmbeddedStruct.Scope
 		varIamSession.SessionId = varIamSessionWithoutEmbeddedStruct.SessionId
 		varIamSession.Permission = varIamSessionWithoutEmbeddedStruct.Permission
 		varIamSession.User = varIamSessionWithoutEmbeddedStruct.User
@@ -504,7 +640,7 @@ func (o *IamSession) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIamSession := _IamSession{}
 
-	err = json.Unmarshal(bytes, &varIamSession)
+	err = json.Unmarshal(data, &varIamSession)
 	if err == nil {
 		o.SessionAbstractSession = varIamSession.SessionAbstractSession
 	} else {
@@ -513,7 +649,7 @@ func (o *IamSession) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AccountPermissions")
@@ -522,6 +658,7 @@ func (o *IamSession) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "IdleTimeExpiration")
 		delete(additionalProperties, "LastLoginClient")
 		delete(additionalProperties, "LastLoginTime")
+		delete(additionalProperties, "Scope")
 		delete(additionalProperties, "SessionId")
 		delete(additionalProperties, "Permission")
 		delete(additionalProperties, "User")

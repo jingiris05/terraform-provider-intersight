@@ -7,7 +7,9 @@ import (
 	"log"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,15 +23,15 @@ func resourceApplianceRestore() *schema.Resource {
 		ReadContext:   resourceApplianceRestoreRead,
 		DeleteContext: resourceApplianceRestoreDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account": {
 				Description: "A reference to a iamAccount resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
-				ConfigMode:  schema.SchemaConfigModeAttr,
 				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"additional_properties": {
@@ -349,9 +351,9 @@ func resourceApplianceRestore() *schema.Resource {
 				ForceNew: true,
 			},
 			"protocol": {
-				Description:  "Communication protocol used by the file server (e.g. scp or sftp).\n* `scp` - Secure Copy Protocol (SCP) to access the file server.\n* `sftp` - SSH File Transfer Protocol (SFTP) to access file server.",
+				Description:  "Communication protocol used by the file server (e.g. scp, sftp, or CIFS).\n* `scp` - Secure Copy Protocol (SCP) to access the file server.\n* `sftp` - SSH File Transfer Protocol (SFTP) to access file server.\n* `cifs` - Common Internet File System (CIFS) Protocol to access file server.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringInSlice([]string{"scp", "sftp"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"scp", "sftp", "cifs"}, false),
 				Optional:     true,
 				Default:      "scp",
 				ForceNew:     true,
@@ -363,9 +365,9 @@ func resourceApplianceRestore() *schema.Resource {
 				ForceNew:    true,
 			},
 			"remote_path": {
-				Description:  "File server directory to copy the file.",
+				Description:  "File server directory or share name to copy the file.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^(/[^/ ]*)+/?$"), ""),
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[^`]+$"), ""),
 				Optional:     true,
 				ForceNew:     true,
 			},
@@ -400,7 +402,7 @@ func resourceApplianceRestore() *schema.Resource {
 				}, ForceNew: true,
 			},
 			"status": {
-				Description: "Status of the restore managed object.\n* `Started` - Backup or restore process has started.\n* `Created` - Backup or restore is in created state.\n* `Failed` - Backup or restore process has failed.\n* `Completed` - Backup or restore process has completed.\n* `Copied` - Backup file has been copied.",
+				Description: "Status of the restore managed object.\n* `Started` - Backup or restore process has started.\n* `Created` - Backup or restore is in created state.\n* `Failed` - Backup or restore process has failed.\n* `Completed` - Backup or restore process has completed.\n* `Copied` - Backup file has been copied.\n* `Cleanup Failed` - Cleanup of the old backup has failed.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -445,7 +447,7 @@ func resourceApplianceRestore() *schema.Resource {
 			"username": {
 				Description:  "Username to authenticate the fileserver.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9_][a-zA-Z0-9_\\.\\-\\+]*$"), ""),
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9_][a-zA-Z0-9_\\.\\@\\\\\\-\\+]*$"), ""),
 				Optional:     true,
 				ForceNew:     true,
 			},
@@ -514,6 +516,18 @@ func resourceApplianceRestore() *schema.Resource {
 								},
 							},
 							ForceNew: true,
+						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}, ForceNew: true,
 						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
@@ -617,48 +631,6 @@ func resourceApplianceRestoreCreate(c context.Context, d *schema.ResourceData, m
 	conn := meta.(*Config)
 	var de diag.Diagnostics
 	var o = models.NewApplianceRestoreWithDefaults()
-	if v, ok := d.GetOk("account"); ok {
-		p := make([]models.IamAccountRelationship, 0, 1)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			l := s[i].(map[string]interface{})
-			o := models.NewMoMoRefWithDefaults()
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("mo.MoRef")
-			if v, ok := l["moid"]; ok {
-				{
-					x := (v.(string))
-					o.SetMoid(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			if v, ok := l["selector"]; ok {
-				{
-					x := (v.(string))
-					o.SetSelector(x)
-				}
-			}
-			p = append(p, models.MoMoRefAsIamAccountRelationship(o))
-		}
-		if len(p) > 0 {
-			x := p[0]
-			o.SetAccount(x)
-		}
-	}
 
 	if v, ok := d.GetOk("additional_properties"); ok {
 		x := []byte(v.(string))
@@ -771,14 +743,25 @@ func resourceApplianceRestoreCreate(c context.Context, d *schema.ResourceData, m
 		}
 		return diag.Errorf("error occurred while creating ApplianceRestore: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceApplianceRestoreRead(c, d, meta)...)
 }
 
 func resourceApplianceRestoreRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.ApplianceApi.GetApplianceRestoreByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

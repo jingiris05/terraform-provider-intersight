@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the IpmioverlanPolicy type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IpmioverlanPolicy{}
 
 // IpmioverlanPolicy Intelligent Platform Management Interface Over LAN Policy.
 type IpmioverlanPolicy struct {
@@ -26,13 +30,13 @@ type IpmioverlanPolicy struct {
 	ObjectType string `json:"ObjectType"`
 	// State of the IPMI Over LAN service on the endpoint.
 	Enabled *bool `json:"Enabled,omitempty"`
-	// The encryption key to use for IPMI communication. It should have an even number of hexadecimal characters and not exceed 40 characters.
-	EncryptionKey *string `json:"EncryptionKey,omitempty"`
+	// The encryption key to use for IPMI communication. It should have an even number of hexadecimal characters and not exceed 40 characters. Use “00” to disable encryption key use. This configuration is supported by all Standalone C-Series servers. FI-attached C-Series servers with firmware at minimum of 4.2.3a support this configuration. B/X-Series servers with firmware at minimum of 5.1.0.x support this configuration. IPMI commands using this key should append zeroes to the key to achieve a length of 40 characters.
+	EncryptionKey *string `json:"EncryptionKey,omitempty" validate:"regexp=^[a-fA-F0-9]*$"`
 	// Indicates whether the value of the 'encryptionKey' property has been set.
 	IsEncryptionKeySet *bool `json:"IsEncryptionKeySet,omitempty"`
-	// The highest privilege level that can be assigned to an IPMI session on a server. * `admin` - Privilege to perform all actions available through IPMI. * `user` - Privilege to perform some functions through IPMI but restriction on performing administrative tasks. * `read-only` - Privilege to view information throught IPMI but restriction on making any changes.
-	Privilege    *string                               `json:"Privilege,omitempty"`
-	Organization *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	// The highest privilege level that can be assigned to an IPMI session on a server. This configuration is supported by all Standalone C-Series servers. FI-attached C-Series servers with firmware at minimum of 4.2.3a support this configuration. B/X-Series servers with firmware at minimum of 5.1.0.x support this configuration. Privilege level user is not supported for B/X-Series servers. * `admin` - Privilege to perform all actions available through IPMI. * `user` - Privilege to perform some functions through IPMI but restriction on performing administrative tasks. * `read-only` - Privilege to view information throught IPMI but restriction on making any changes.
+	Privilege    *string                                      `json:"Privilege,omitempty"`
+	Organization NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	// An array of relationships to policyAbstractConfigProfile resources.
 	Profiles             []PolicyAbstractConfigProfileRelationship `json:"Profiles,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -95,6 +99,11 @@ func (o *IpmioverlanPolicy) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "ipmioverlan.Policy" of the ClassId field.
+func (o *IpmioverlanPolicy) GetDefaultClassId() interface{} {
+	return "ipmioverlan.Policy"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IpmioverlanPolicy) GetObjectType() string {
 	if o == nil {
@@ -119,9 +128,14 @@ func (o *IpmioverlanPolicy) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "ipmioverlan.Policy" of the ObjectType field.
+func (o *IpmioverlanPolicy) GetDefaultObjectType() interface{} {
+	return "ipmioverlan.Policy"
+}
+
 // GetEnabled returns the Enabled field value if set, zero value otherwise.
 func (o *IpmioverlanPolicy) GetEnabled() bool {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		var ret bool
 		return ret
 	}
@@ -131,7 +145,7 @@ func (o *IpmioverlanPolicy) GetEnabled() bool {
 // GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IpmioverlanPolicy) GetEnabledOk() (*bool, bool) {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		return nil, false
 	}
 	return o.Enabled, true
@@ -139,7 +153,7 @@ func (o *IpmioverlanPolicy) GetEnabledOk() (*bool, bool) {
 
 // HasEnabled returns a boolean if a field has been set.
 func (o *IpmioverlanPolicy) HasEnabled() bool {
-	if o != nil && o.Enabled != nil {
+	if o != nil && !IsNil(o.Enabled) {
 		return true
 	}
 
@@ -153,7 +167,7 @@ func (o *IpmioverlanPolicy) SetEnabled(v bool) {
 
 // GetEncryptionKey returns the EncryptionKey field value if set, zero value otherwise.
 func (o *IpmioverlanPolicy) GetEncryptionKey() string {
-	if o == nil || o.EncryptionKey == nil {
+	if o == nil || IsNil(o.EncryptionKey) {
 		var ret string
 		return ret
 	}
@@ -163,7 +177,7 @@ func (o *IpmioverlanPolicy) GetEncryptionKey() string {
 // GetEncryptionKeyOk returns a tuple with the EncryptionKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IpmioverlanPolicy) GetEncryptionKeyOk() (*string, bool) {
-	if o == nil || o.EncryptionKey == nil {
+	if o == nil || IsNil(o.EncryptionKey) {
 		return nil, false
 	}
 	return o.EncryptionKey, true
@@ -171,7 +185,7 @@ func (o *IpmioverlanPolicy) GetEncryptionKeyOk() (*string, bool) {
 
 // HasEncryptionKey returns a boolean if a field has been set.
 func (o *IpmioverlanPolicy) HasEncryptionKey() bool {
-	if o != nil && o.EncryptionKey != nil {
+	if o != nil && !IsNil(o.EncryptionKey) {
 		return true
 	}
 
@@ -185,7 +199,7 @@ func (o *IpmioverlanPolicy) SetEncryptionKey(v string) {
 
 // GetIsEncryptionKeySet returns the IsEncryptionKeySet field value if set, zero value otherwise.
 func (o *IpmioverlanPolicy) GetIsEncryptionKeySet() bool {
-	if o == nil || o.IsEncryptionKeySet == nil {
+	if o == nil || IsNil(o.IsEncryptionKeySet) {
 		var ret bool
 		return ret
 	}
@@ -195,7 +209,7 @@ func (o *IpmioverlanPolicy) GetIsEncryptionKeySet() bool {
 // GetIsEncryptionKeySetOk returns a tuple with the IsEncryptionKeySet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IpmioverlanPolicy) GetIsEncryptionKeySetOk() (*bool, bool) {
-	if o == nil || o.IsEncryptionKeySet == nil {
+	if o == nil || IsNil(o.IsEncryptionKeySet) {
 		return nil, false
 	}
 	return o.IsEncryptionKeySet, true
@@ -203,7 +217,7 @@ func (o *IpmioverlanPolicy) GetIsEncryptionKeySetOk() (*bool, bool) {
 
 // HasIsEncryptionKeySet returns a boolean if a field has been set.
 func (o *IpmioverlanPolicy) HasIsEncryptionKeySet() bool {
-	if o != nil && o.IsEncryptionKeySet != nil {
+	if o != nil && !IsNil(o.IsEncryptionKeySet) {
 		return true
 	}
 
@@ -217,7 +231,7 @@ func (o *IpmioverlanPolicy) SetIsEncryptionKeySet(v bool) {
 
 // GetPrivilege returns the Privilege field value if set, zero value otherwise.
 func (o *IpmioverlanPolicy) GetPrivilege() string {
-	if o == nil || o.Privilege == nil {
+	if o == nil || IsNil(o.Privilege) {
 		var ret string
 		return ret
 	}
@@ -227,7 +241,7 @@ func (o *IpmioverlanPolicy) GetPrivilege() string {
 // GetPrivilegeOk returns a tuple with the Privilege field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IpmioverlanPolicy) GetPrivilegeOk() (*string, bool) {
-	if o == nil || o.Privilege == nil {
+	if o == nil || IsNil(o.Privilege) {
 		return nil, false
 	}
 	return o.Privilege, true
@@ -235,7 +249,7 @@ func (o *IpmioverlanPolicy) GetPrivilegeOk() (*string, bool) {
 
 // HasPrivilege returns a boolean if a field has been set.
 func (o *IpmioverlanPolicy) HasPrivilege() bool {
-	if o != nil && o.Privilege != nil {
+	if o != nil && !IsNil(o.Privilege) {
 		return true
 	}
 
@@ -247,36 +261,47 @@ func (o *IpmioverlanPolicy) SetPrivilege(v string) {
 	o.Privilege = &v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IpmioverlanPolicy) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IpmioverlanPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *IpmioverlanPolicy) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *IpmioverlanPolicy) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *IpmioverlanPolicy) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *IpmioverlanPolicy) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 // GetProfiles returns the Profiles field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -292,7 +317,7 @@ func (o *IpmioverlanPolicy) GetProfiles() []PolicyAbstractConfigProfileRelations
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IpmioverlanPolicy) GetProfilesOk() ([]PolicyAbstractConfigProfileRelationship, bool) {
-	if o == nil || o.Profiles == nil {
+	if o == nil || IsNil(o.Profiles) {
 		return nil, false
 	}
 	return o.Profiles, true
@@ -300,7 +325,7 @@ func (o *IpmioverlanPolicy) GetProfilesOk() ([]PolicyAbstractConfigProfileRelati
 
 // HasProfiles returns a boolean if a field has been set.
 func (o *IpmioverlanPolicy) HasProfiles() bool {
-	if o != nil && o.Profiles != nil {
+	if o != nil && !IsNil(o.Profiles) {
 		return true
 	}
 
@@ -313,35 +338,45 @@ func (o *IpmioverlanPolicy) SetProfiles(v []PolicyAbstractConfigProfileRelations
 }
 
 func (o IpmioverlanPolicy) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IpmioverlanPolicy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicy, errPolicyAbstractPolicy := json.Marshal(o.PolicyAbstractPolicy)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
 	errPolicyAbstractPolicy = json.Unmarshal([]byte(serializedPolicyAbstractPolicy), &toSerialize)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Enabled != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Enabled) {
 		toSerialize["Enabled"] = o.Enabled
 	}
-	if o.EncryptionKey != nil {
+	if !IsNil(o.EncryptionKey) {
 		toSerialize["EncryptionKey"] = o.EncryptionKey
 	}
-	if o.IsEncryptionKeySet != nil {
+	if !IsNil(o.IsEncryptionKeySet) {
 		toSerialize["IsEncryptionKeySet"] = o.IsEncryptionKeySet
 	}
-	if o.Privilege != nil {
+	if !IsNil(o.Privilege) {
 		toSerialize["Privilege"] = o.Privilege
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 	if o.Profiles != nil {
 		toSerialize["Profiles"] = o.Profiles
@@ -351,10 +386,51 @@ func (o IpmioverlanPolicy) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IpmioverlanPolicy) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IpmioverlanPolicy) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IpmioverlanPolicyWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -362,20 +438,20 @@ func (o *IpmioverlanPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// State of the IPMI Over LAN service on the endpoint.
 		Enabled *bool `json:"Enabled,omitempty"`
-		// The encryption key to use for IPMI communication. It should have an even number of hexadecimal characters and not exceed 40 characters.
-		EncryptionKey *string `json:"EncryptionKey,omitempty"`
+		// The encryption key to use for IPMI communication. It should have an even number of hexadecimal characters and not exceed 40 characters. Use “00” to disable encryption key use. This configuration is supported by all Standalone C-Series servers. FI-attached C-Series servers with firmware at minimum of 4.2.3a support this configuration. B/X-Series servers with firmware at minimum of 5.1.0.x support this configuration. IPMI commands using this key should append zeroes to the key to achieve a length of 40 characters.
+		EncryptionKey *string `json:"EncryptionKey,omitempty" validate:"regexp=^[a-fA-F0-9]*$"`
 		// Indicates whether the value of the 'encryptionKey' property has been set.
 		IsEncryptionKeySet *bool `json:"IsEncryptionKeySet,omitempty"`
-		// The highest privilege level that can be assigned to an IPMI session on a server. * `admin` - Privilege to perform all actions available through IPMI. * `user` - Privilege to perform some functions through IPMI but restriction on performing administrative tasks. * `read-only` - Privilege to view information throught IPMI but restriction on making any changes.
-		Privilege    *string                               `json:"Privilege,omitempty"`
-		Organization *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		// The highest privilege level that can be assigned to an IPMI session on a server. This configuration is supported by all Standalone C-Series servers. FI-attached C-Series servers with firmware at minimum of 4.2.3a support this configuration. B/X-Series servers with firmware at minimum of 5.1.0.x support this configuration. Privilege level user is not supported for B/X-Series servers. * `admin` - Privilege to perform all actions available through IPMI. * `user` - Privilege to perform some functions through IPMI but restriction on performing administrative tasks. * `read-only` - Privilege to view information throught IPMI but restriction on making any changes.
+		Privilege    *string                                      `json:"Privilege,omitempty"`
+		Organization NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 		// An array of relationships to policyAbstractConfigProfile resources.
 		Profiles []PolicyAbstractConfigProfileRelationship `json:"Profiles,omitempty"`
 	}
 
 	varIpmioverlanPolicyWithoutEmbeddedStruct := IpmioverlanPolicyWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIpmioverlanPolicyWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIpmioverlanPolicyWithoutEmbeddedStruct)
 	if err == nil {
 		varIpmioverlanPolicy := _IpmioverlanPolicy{}
 		varIpmioverlanPolicy.ClassId = varIpmioverlanPolicyWithoutEmbeddedStruct.ClassId
@@ -393,7 +469,7 @@ func (o *IpmioverlanPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIpmioverlanPolicy := _IpmioverlanPolicy{}
 
-	err = json.Unmarshal(bytes, &varIpmioverlanPolicy)
+	err = json.Unmarshal(data, &varIpmioverlanPolicy)
 	if err == nil {
 		o.PolicyAbstractPolicy = varIpmioverlanPolicy.PolicyAbstractPolicy
 	} else {
@@ -402,7 +478,7 @@ func (o *IpmioverlanPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Enabled")

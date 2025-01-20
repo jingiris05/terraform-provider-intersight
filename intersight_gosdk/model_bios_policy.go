@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the BiosPolicy type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &BiosPolicy{}
 
 // BiosPolicy Policy for setting BIOS tokens on the endpoint.
 type BiosPolicy struct {
@@ -48,6 +52,8 @@ type BiosPolicy struct {
 	AcsControlSlot13state *string `json:"AcsControlSlot13state,omitempty"`
 	// BIOS Token for setting ACS Control Slot 14 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	AcsControlSlot14state *string `json:"AcsControlSlot14state,omitempty"`
+	// BIOS Token for setting Adaptive Refresh Management Level configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Default` - Value - Default for configuring AdaptiveRefreshMgmtLevel token. * `Level A` - Value - Level A for configuring AdaptiveRefreshMgmtLevel token. * `Level B` - Value - Level B for configuring AdaptiveRefreshMgmtLevel token. * `Level C` - Value - Level C for configuring AdaptiveRefreshMgmtLevel token.
+	AdaptiveRefreshMgmtLevel *string `json:"AdaptiveRefreshMgmtLevel,omitempty"`
 	// BIOS Token for setting Adjacent Cache Line Prefetcher configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	AdjacentCacheLinePrefetch *string `json:"AdjacentCacheLinePrefetch,omitempty"`
 	// BIOS Token for setting Enhanced Memory Test configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring AdvancedMemTest token. * `disabled` - Value - disabled for configuring AdvancedMemTest token. * `enabled` - Value - enabled for configuring AdvancedMemTest token.
@@ -80,15 +86,19 @@ type BiosPolicy struct {
 	BootPerformanceMode *string `json:"BootPerformanceMode,omitempty"`
 	// BIOS Token for setting Burst and Postponed Refresh configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	BurstAndPostponedRefresh *string `json:"BurstAndPostponedRefresh,omitempty"`
-	// BIOS Token for setting C1 Auto Demotion configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	// BIOS Token for setting C1 Auto Demotion configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring C1autoDemotion token. * `disabled` - Value - disabled for configuring C1autoDemotion token. * `enabled` - Value - enabled for configuring C1autoDemotion token.
 	C1autoDemotion *string `json:"C1autoDemotion,omitempty"`
-	// BIOS Token for setting C1 Auto UnDemotion configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	// BIOS Token for setting C1 Auto UnDemotion configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring C1autoUnDemotion token. * `disabled` - Value - disabled for configuring C1autoUnDemotion token. * `enabled` - Value - enabled for configuring C1autoUnDemotion token.
 	C1autoUnDemotion *string `json:"C1autoUnDemotion,omitempty"`
 	// BIOS Token for setting APBDIS configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `0` - Value - 0 for configuring CbsCmnApbdis token. * `1` - Value - 1 for configuring CbsCmnApbdis token. * `Auto` - Value - Auto for configuring CbsCmnApbdis token.
 	CbsCmnApbdis *string `json:"CbsCmnApbdis,omitempty"`
+	// BIOS Token for setting Fixed SOC P-State SP5 F19h configuration (0 - 2 P State).
+	CbsCmnApbdisDfPstateRs *string `json:"CbsCmnApbdisDfPstateRs,omitempty" validate:"regexp=^([0-2])$|^(platform-default)$"`
+	// BIOS Token for setting AVX512 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuAvx512 token. * `disabled` - Value - disabled for configuring CbsCmnCpuAvx512 token. * `enabled` - Value - enabled for configuring CbsCmnCpuAvx512 token.
+	CbsCmnCpuAvx512 *string `json:"CbsCmnCpuAvx512,omitempty"`
 	// BIOS Token for setting Core Performance Boost configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuCpb token. * `disabled` - Value - disabled for configuring CbsCmnCpuCpb token.
 	CbsCmnCpuCpb *string `json:"CbsCmnCpuCpb,omitempty"`
-	// BIOS Token for setting Downcore Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuGenDowncoreCtrl token. * `FOUR (2 + 2)` - Value - FOUR (2 + 2) for configuring CbsCmnCpuGenDowncoreCtrl token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token. * `SIX (3 + 3)` - Value - SIX (3 + 3) for configuring CbsCmnCpuGenDowncoreCtrl token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token. * `TWO (1 + 1)` - Value - TWO (1 + 1) for configuring CbsCmnCpuGenDowncoreCtrl token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token.
+	// BIOS Token for setting Downcore Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuGenDowncoreCtrl token. * `TWO (1 + 1)` - Value - TWO (1 + 1) for configuring CbsCmnCpuGenDowncoreCtrl token. * `FOUR (2 + 2)` - Value - FOUR (2 + 2) for configuring CbsCmnCpuGenDowncoreCtrl token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token. * `SIX (3 + 3)` - Value - SIX (3 + 3) for configuring CbsCmnCpuGenDowncoreCtrl token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token.
 	CbsCmnCpuGenDowncoreCtrl *string `json:"CbsCmnCpuGenDowncoreCtrl,omitempty"`
 	// BIOS Token for setting Global C State Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuGlobalCstateCtrl token. * `disabled` - Value - disabled for configuring CbsCmnCpuGlobalCstateCtrl token. * `enabled` - Value - enabled for configuring CbsCmnCpuGlobalCstateCtrl token.
 	CbsCmnCpuGlobalCstateCtrl *string `json:"CbsCmnCpuGlobalCstateCtrl,omitempty"`
@@ -96,47 +106,87 @@ type BiosPolicy struct {
 	CbsCmnCpuL1streamHwPrefetcher *string `json:"CbsCmnCpuL1streamHwPrefetcher,omitempty"`
 	// BIOS Token for setting L2 Stream HW Prefetcher configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuL2streamHwPrefetcher token. * `disabled` - Value - disabled for configuring CbsCmnCpuL2streamHwPrefetcher token. * `enabled` - Value - enabled for configuring CbsCmnCpuL2streamHwPrefetcher token.
 	CbsCmnCpuL2streamHwPrefetcher *string `json:"CbsCmnCpuL2streamHwPrefetcher,omitempty"`
+	// BIOS Token for setting SEV-ES ASID Space Limit configuration (1 - 1007 ASIDs).
+	CbsCmnCpuSevAsidSpaceLimit *string `json:"CbsCmnCpuSevAsidSpaceLimit,omitempty" validate:"regexp=^([1-9]|[1-9]\\\\d|[1-9]\\\\d{2}|100[0-7])$|^(platform-default)$"`
 	// BIOS Token for setting CPU SMEE configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuSmee token. * `disabled` - Value - disabled for configuring CbsCmnCpuSmee token. * `enabled` - Value - enabled for configuring CbsCmnCpuSmee token.
 	CbsCmnCpuSmee *string `json:"CbsCmnCpuSmee,omitempty"`
 	// BIOS Token for setting Streaming Stores Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuStreamingStoresCtrl token. * `disabled` - Value - disabled for configuring CbsCmnCpuStreamingStoresCtrl token. * `enabled` - Value - enabled for configuring CbsCmnCpuStreamingStoresCtrl token.
 	CbsCmnCpuStreamingStoresCtrl *string `json:"CbsCmnCpuStreamingStoresCtrl,omitempty"`
 	// BIOS Token for setting Determinism Slider configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnDeterminismSlider token. * `Performance` - Value - Performance for configuring CbsCmnDeterminismSlider token. * `Power` - Value - Power for configuring CbsCmnDeterminismSlider token.
 	CbsCmnDeterminismSlider *string `json:"CbsCmnDeterminismSlider,omitempty"`
+	// BIOS Token for setting EDC Control Throttle configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnEdcControlThrottle token. * `disabled` - Value - disabled for configuring CbsCmnEdcControlThrottle token. * `enabled` - Value - enabled for configuring CbsCmnEdcControlThrottle token.
+	CbsCmnEdcControlThrottle *string `json:"CbsCmnEdcControlThrottle,omitempty"`
 	// BIOS Token for setting Efficiency Mode Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnEfficiencyModeEn token. * `Enabled` - Value - Enabled for configuring CbsCmnEfficiencyModeEn token.
 	CbsCmnEfficiencyModeEn *string `json:"CbsCmnEfficiencyModeEn,omitempty"`
+	// BIOS Token for setting Power Profile Selection F19h configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Balanced Memory Performance Mode` - Value - Balanced Memory Performance Mode for configuring CbsCmnEfficiencyModeEnRs token. * `Efficiency Mode` - Value - Efficiency Mode for configuring CbsCmnEfficiencyModeEnRs token. * `High Performance Mode` - Value - High Performance Mode for configuring CbsCmnEfficiencyModeEnRs token. * `Maximum IO Performance Mode` - Value - Maximum IO Performance Mode for configuring CbsCmnEfficiencyModeEnRs token.
+	CbsCmnEfficiencyModeEnRs *string `json:"CbsCmnEfficiencyModeEnRs,omitempty"`
 	// BIOS Token for setting Fixed SOC P-State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnFixedSocPstate token. * `P0` - Value - P0 for configuring CbsCmnFixedSocPstate token. * `P1` - Value - P1 for configuring CbsCmnFixedSocPstate token. * `P2` - Value - P2 for configuring CbsCmnFixedSocPstate token. * `P3` - Value - P3 for configuring CbsCmnFixedSocPstate token.
 	CbsCmnFixedSocPstate *string `json:"CbsCmnFixedSocPstate,omitempty"`
 	// BIOS Token for setting IOMMU configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbNbIommu token. * `disabled` - Value - disabled for configuring CbsCmnGnbNbIommu token. * `enabled` - Value - enabled for configuring CbsCmnGnbNbIommu token.
 	CbsCmnGnbNbIommu *string `json:"CbsCmnGnbNbIommu,omitempty"`
 	// BIOS Token for setting DF C-States configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbSmuDfCstates token. * `disabled` - Value - disabled for configuring CbsCmnGnbSmuDfCstates token. * `enabled` - Value - enabled for configuring CbsCmnGnbSmuDfCstates token.
 	CbsCmnGnbSmuDfCstates *string `json:"CbsCmnGnbSmuDfCstates,omitempty"`
+	// BIOS Token for setting DF PState Frequency Optimizer configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbSmuDffoRs token. * `disabled` - Value - disabled for configuring CbsCmnGnbSmuDffoRs token. * `enabled` - Value - enabled for configuring CbsCmnGnbSmuDffoRs token.
+	CbsCmnGnbSmuDffoRs *string `json:"CbsCmnGnbSmuDffoRs,omitempty"`
+	// BIOS Token for setting DLWM Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbSmuDlwmSupport token. * `disabled` - Value - disabled for configuring CbsCmnGnbSmuDlwmSupport token. * `enabled` - Value - enabled for configuring CbsCmnGnbSmuDlwmSupport token.
+	CbsCmnGnbSmuDlwmSupport *string `json:"CbsCmnGnbSmuDlwmSupport,omitempty"`
 	// BIOS Token for setting CPPC configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbSmucppc token. * `disabled` - Value - disabled for configuring CbsCmnGnbSmucppc token. * `enabled` - Value - enabled for configuring CbsCmnGnbSmucppc token.
 	CbsCmnGnbSmucppc *string `json:"CbsCmnGnbSmucppc,omitempty"`
 	// BIOS Token for setting Bank Group Swap configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnMemCtrlBankGroupSwapDdr4 token. * `disabled` - Value - disabled for configuring CbsCmnMemCtrlBankGroupSwapDdr4 token. * `enabled` - Value - enabled for configuring CbsCmnMemCtrlBankGroupSwapDdr4 token.
 	CbsCmnMemCtrlBankGroupSwapDdr4 *string `json:"CbsCmnMemCtrlBankGroupSwapDdr4,omitempty"`
-	// BIOS Token for setting Chipset Interleave configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnMemMapBankInterleaveDdr4 token. * `disabled` - Value - disabled for configuring CbsCmnMemMapBankInterleaveDdr4 token.
+	// BIOS Token for setting Power Down Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnMemCtrllerPwrDnEnDdr token. * `disabled` - Value - disabled for configuring CbsCmnMemCtrllerPwrDnEnDdr token. * `enabled` - Value - enabled for configuring CbsCmnMemCtrllerPwrDnEnDdr token.
+	CbsCmnMemCtrllerPwrDnEnDdr *string `json:"CbsCmnMemCtrllerPwrDnEnDdr,omitempty"`
+	// BIOS Token for setting Chipset Interleave configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnMemMapBankInterleaveDdr4 token. * `disabled` - Value - disabled for configuring CbsCmnMemMapBankInterleaveDdr4 token. * `Enabled` - Value - Enabled for configuring CbsCmnMemMapBankInterleaveDdr4 token.
 	CbsCmnMemMapBankInterleaveDdr4 *string `json:"CbsCmnMemMapBankInterleaveDdr4,omitempty"`
+	// BIOS Token for setting Memory Clock Speed 7xx2 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `667MHz` - Value - 667MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `800MHz` - Value - 800MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `933MHz` - Value - 933MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1067MHz` - Value - 1067MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1200MHz` - Value - 1200MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1333MHz` - Value - 1333MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1467MHz` - Value - 1467MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1600MHz` - Value - 1600MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `Auto` - Value - Auto for configuring CbsCmnMemSpeedDdr47xx2 token.
+	CbsCmnMemSpeedDdr47xx2 *string `json:"CbsCmnMemSpeedDdr47xx2,omitempty"`
+	// BIOS Token for setting Memory Clock Speed 7xx3 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `400MHz` - Value - 400MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `800MHz` - Value - 800MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `933MHz` - Value - 933MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1067MHz` - Value - 1067MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1200MHz` - Value - 1200MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1333MHz` - Value - 1333MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1467MHz` - Value - 1467MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1600MHz` - Value - 1600MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1633MHz` - Value - 1633MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1667MHz` - Value - 1667MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1700MHz` - Value - 1700MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1733MHz` - Value - 1733MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1767MHz` - Value - 1767MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1800MHz` - Value - 1800MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `Auto` - Value - Auto for configuring CbsCmnMemSpeedDdr47xx3 token.
+	CbsCmnMemSpeedDdr47xx3 *string `json:"CbsCmnMemSpeedDdr47xx3,omitempty"`
+	// BIOS Token for setting Preferred IO 7xx2 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnPreferredIo7xx2 token. * `Manual` - Value - Manual for configuring CbsCmnPreferredIo7xx2 token.
+	CbsCmnPreferredIo7xx2 *string `json:"CbsCmnPreferredIo7xx2,omitempty"`
+	// BIOS Token for setting Preferred IO 7xx3 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnPreferredIo7xx3 token. * `Bus` - Value - Bus for configuring CbsCmnPreferredIo7xx3 token.
+	CbsCmnPreferredIo7xx3 *string `json:"CbsCmnPreferredIo7xx3,omitempty"`
 	// BIOS Token for setting cTDP Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmncTdpCtl token. * `Manual` - Value - Manual for configuring CbsCmncTdpCtl token.
 	CbsCmncTdpCtl *string `json:"CbsCmncTdpCtl,omitempty"`
-	// BIOS Token for setting CCD Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `2 CCDs` - Value - 2 CCDs for configuring CbsCpuCcdCtrlSsp token. * `3 CCDs` - Value - 3 CCDs for configuring CbsCpuCcdCtrlSsp token. * `4 CCDs` - Value - 4 CCDs for configuring CbsCpuCcdCtrlSsp token. * `6 CCDs` - Value - 6 CCDs for configuring CbsCpuCcdCtrlSsp token. * `Auto` - Value - Auto for configuring CbsCpuCcdCtrlSsp token.
+	// BIOS Token for setting xGMI Force Link Width configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `0` - Value - 0 for configuring CbsCmnxGmiForceLinkWidthRs token. * `1` - Value - 1 for configuring CbsCmnxGmiForceLinkWidthRs token. * `2` - Value - 2 for configuring CbsCmnxGmiForceLinkWidthRs token. * `Auto` - Value - Auto for configuring CbsCmnxGmiForceLinkWidthRs token.
+	CbsCmnxGmiForceLinkWidthRs *string `json:"CbsCmnxGmiForceLinkWidthRs,omitempty"`
+	// BIOS Token for setting CCD Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `2 CCDs` - Value - 2 CCDs for configuring CbsCpuCcdCtrlSsp token. * `3 CCDs` - Value - 3 CCDs for configuring CbsCpuCcdCtrlSsp token. * `4 CCDs` - Value - 4 CCDs for configuring CbsCpuCcdCtrlSsp token. * `6 CCDs` - Value - 6 CCDs for configuring CbsCpuCcdCtrlSsp token. * `8 CCDs` - Value - 8 CCDs for configuring CbsCpuCcdCtrlSsp token. * `10 CCDs` - Value - 10 CCDs for configuring CbsCpuCcdCtrlSsp token. * `Auto` - Value - Auto for configuring CbsCpuCcdCtrlSsp token.
 	CbsCpuCcdCtrlSsp *string `json:"CbsCpuCcdCtrlSsp,omitempty"`
-	// BIOS Token for setting CPU Downcore control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuCoreCtrl token. * `FIVE (5 + 0)` - Value - FIVE (5 + 0) for configuring CbsCpuCoreCtrl token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCpuCoreCtrl token. * `ONE (1 + 0)` - Value - ONE (1 + 0) for configuring CbsCpuCoreCtrl token. * `SEVEN (7 + 0)` - Value - SEVEN (7 + 0) for configuring CbsCpuCoreCtrl token. * `SIX (6 + 0)` - Value - SIX (6 + 0) for configuring CbsCpuCoreCtrl token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCpuCoreCtrl token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCpuCoreCtrl token.
+	// BIOS Token for setting CPU Downcore control 7xx3 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuCoreCtrl token. * `ONE (1 + 0)` - Value - ONE (1 + 0) for configuring CbsCpuCoreCtrl token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCpuCoreCtrl token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCpuCoreCtrl token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCpuCoreCtrl token. * `FIVE (5 + 0)` - Value - FIVE (5 + 0) for configuring CbsCpuCoreCtrl token. * `SIX (6 + 0)` - Value - SIX (6 + 0) for configuring CbsCpuCoreCtrl token. * `SEVEN (7 + 0)` - Value - SEVEN (7 + 0) for configuring CbsCpuCoreCtrl token.
 	CbsCpuCoreCtrl *string `json:"CbsCpuCoreCtrl,omitempty"`
+	// BIOS Token for setting Downcore control F19 MA0h-AFh configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuDownCoreCtrlBergamo token. * `TWO (1 + 1)` - Value - TWO (1 + 1) for configuring CbsCpuDownCoreCtrlBergamo token. * `FOUR (2 + 2)` - Value - FOUR (2 + 2) for configuring CbsCpuDownCoreCtrlBergamo token. * `SIX (3 + 3)` - Value - SIX (3 + 3) for configuring CbsCpuDownCoreCtrlBergamo token. * `EIGHT (4 + 4)` - Value - EIGHT (4 + 4) for configuring CbsCpuDownCoreCtrlBergamo token. * `TEN (5 + 5)` - Value - TEN (5 + 5) for configuring CbsCpuDownCoreCtrlBergamo token. * `TWELVE (6 + 6)` - Value - TWELVE (6 + 6) for configuring CbsCpuDownCoreCtrlBergamo token. * `FOURTEEN (7 + 7)` - Value - FOURTEEN (7 + 7) for configuring CbsCpuDownCoreCtrlBergamo token.
+	CbsCpuDownCoreCtrlBergamo *string `json:"CbsCpuDownCoreCtrlBergamo,omitempty"`
+	// BIOS Token for setting CPU Downcore control F19 M10h-1Fh configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuDownCoreCtrlGenoa token. * `ONE (1 + 0)` - Value - ONE (1 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `FIVE (5 + 0)` - Value - FIVE (5 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `SIX (6 + 0)` - Value - SIX (6 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `SEVEN (7 + 0)` - Value - SEVEN (7 + 0) for configuring CbsCpuDownCoreCtrlGenoa token.
+	CbsCpuDownCoreCtrlGenoa *string `json:"CbsCpuDownCoreCtrlGenoa,omitempty"`
 	// BIOS Token for setting CPU SMT Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuSmtCtrl token. * `disabled` - Value - disabled for configuring CbsCpuSmtCtrl token. * `enabled` - Value - enabled for configuring CbsCpuSmtCtrl token.
 	CbsCpuSmtCtrl *string `json:"CbsCpuSmtCtrl,omitempty"`
+	// BIOS Token for setting Core Watchdog Timer Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDbgCpuGenCpuWdt token. * `disabled` - Value - disabled for configuring CbsDbgCpuGenCpuWdt token. * `enabled` - Value - enabled for configuring CbsDbgCpuGenCpuWdt token.
+	CbsDbgCpuGenCpuWdt *string `json:"CbsDbgCpuGenCpuWdt,omitempty"`
+	// BIOS Token for setting Local APIC Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDbgCpuLapicMode token. * `Compatibility` - Value - Compatibility for configuring CbsDbgCpuLapicMode token. * `X2APIC` - Value - X2APIC for configuring CbsDbgCpuLapicMode token. * `XAPIC` - Value - XAPIC for configuring CbsDbgCpuLapicMode token.
+	CbsDbgCpuLapicMode *string `json:"CbsDbgCpuLapicMode,omitempty"`
 	// BIOS Token for setting SNP Memory Coverage configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDbgCpuSnpMemCover token. * `Custom` - Value - Custom for configuring CbsDbgCpuSnpMemCover token. * `disabled` - Value - disabled for configuring CbsDbgCpuSnpMemCover token. * `enabled` - Value - enabled for configuring CbsDbgCpuSnpMemCover token.
 	CbsDbgCpuSnpMemCover *string `json:"CbsDbgCpuSnpMemCover,omitempty"`
 	// BIOS Token for setting SNP Memory Size to Cover in MiB configuration (0 - 1048576 MiB).
-	CbsDbgCpuSnpMemSizeCover *string `json:"CbsDbgCpuSnpMemSizeCover,omitempty"`
+	CbsDbgCpuSnpMemSizeCover *string `json:"CbsDbgCpuSnpMemSizeCover,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-9]\\\\d{4}|[1-9]\\\\d{5}|10[0-3]\\\\d{4}|104[0-7]\\\\d{3}|1048[0-4]\\\\d{2}|10485[0-6]\\\\d|104857[0-6])$|^(platform-default)$"`
+	// BIOS Token for setting 4-link xGMI max speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `20Gbps` - Value - 20Gbps for configuring CbsDfCmn4linkMaxXgmiSpeed token. * `25Gbps` - Value - 25Gbps for configuring CbsDfCmn4linkMaxXgmiSpeed token. * `32Gbps` - Value - 32Gbps for configuring CbsDfCmn4linkMaxXgmiSpeed token. * `Auto` - Value - Auto for configuring CbsDfCmn4linkMaxXgmiSpeed token.
+	CbsDfCmn4linkMaxXgmiSpeed *string `json:"CbsDfCmn4linkMaxXgmiSpeed,omitempty"`
 	// BIOS Token for setting ACPI SRAT L3 Cache As NUMA Domain configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDfCmnAcpiSratL3numa token. * `disabled` - Value - disabled for configuring CbsDfCmnAcpiSratL3numa token. * `enabled` - Value - enabled for configuring CbsDfCmnAcpiSratL3numa token.
 	CbsDfCmnAcpiSratL3numa *string `json:"CbsDfCmnAcpiSratL3numa,omitempty"`
 	// BIOS Token for setting NUMA Nodes per Socket configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDfCmnDramNps token. * `NPS0` - Value - NPS0 for configuring CbsDfCmnDramNps token. * `NPS1` - Value - NPS1 for configuring CbsDfCmnDramNps token. * `NPS2` - Value - NPS2 for configuring CbsDfCmnDramNps token. * `NPS4` - Value - NPS4 for configuring CbsDfCmnDramNps token.
 	CbsDfCmnDramNps *string `json:"CbsDfCmnDramNps,omitempty"`
+	// BIOS Token for setting DRAM Scrub Time configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1 hour` - Value - 1 hour for configuring CbsDfCmnDramScrubTime token. * `4 hours` - Value - 4 hours for configuring CbsDfCmnDramScrubTime token. * `6 hours` - Value - 6 hours for configuring CbsDfCmnDramScrubTime token. * `8 hours` - Value - 8 hours for configuring CbsDfCmnDramScrubTime token. * `12 hours` - Value - 12 hours for configuring CbsDfCmnDramScrubTime token. * `16 hours` - Value - 16 hours for configuring CbsDfCmnDramScrubTime token. * `24 hours` - Value - 24 hours for configuring CbsDfCmnDramScrubTime token. * `48 hours` - Value - 48 hours for configuring CbsDfCmnDramScrubTime token. * `Auto` - Value - Auto for configuring CbsDfCmnDramScrubTime token. * `Disabled` - Value - Disabled for configuring CbsDfCmnDramScrubTime token.
+	CbsDfCmnDramScrubTime *string `json:"CbsDfCmnDramScrubTime,omitempty"`
 	// BIOS Token for setting AMD Memory Interleaving configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDfCmnMemIntlv token. * `Channel` - Value - Channel for configuring CbsDfCmnMemIntlv token. * `Die` - Value - Die for configuring CbsDfCmnMemIntlv token. * `None` - Value - None for configuring CbsDfCmnMemIntlv token. * `Socket` - Value - Socket for configuring CbsDfCmnMemIntlv token.
 	CbsDfCmnMemIntlv *string `json:"CbsDfCmnMemIntlv,omitempty"`
+	// BIOS Token for setting Memory Interleaving configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDfCmnMemIntlvControl token. * `disabled` - Value - disabled for configuring CbsDfCmnMemIntlvControl token. * `enabled` - Value - enabled for configuring CbsDfCmnMemIntlvControl token.
+	CbsDfCmnMemIntlvControl *string `json:"CbsDfCmnMemIntlvControl,omitempty"`
 	// BIOS Token for setting AMD Memory Interleaving Size configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `256 Bytes` - Value - 256 Bytes for configuring CbsDfCmnMemIntlvSize token. * `512 Bytes` - Value - 512 Bytes for configuring CbsDfCmnMemIntlvSize token. * `1 KB` - Value - 1 KiB for configuring CbsDfCmnMemIntlvSize token. * `2 KB` - Value - 2 KiB for configuring CbsDfCmnMemIntlvSize token. * `4 KB` - Value - 4 KiB for configuring CbsDfCmnMemIntlvSize token. * `Auto` - Value - Auto for configuring CbsDfCmnMemIntlvSize token.
 	CbsDfCmnMemIntlvSize *string `json:"CbsDfCmnMemIntlvSize,omitempty"`
-	// BIOS Token for setting SEV-SNP Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	// BIOS Token for setting xGMI Link Configuration configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `2 xGMI Links` - Value - 2 xGMI Links for configuring CbsDfDbgXgmiLinkCfg token. * `3 xGMI Links` - Value - 3 xGMI Links for configuring CbsDfDbgXgmiLinkCfg token. * `4 xGMI Links` - Value - 4 xGMI Links for configuring CbsDfDbgXgmiLinkCfg token. * `Auto` - Value - Auto for configuring CbsDfDbgXgmiLinkCfg token.
+	CbsDfDbgXgmiLinkCfg *string `json:"CbsDfDbgXgmiLinkCfg,omitempty"`
+	// BIOS Token for setting PCIe Ten Bit Tag Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsGnbDbgPcieTbtSupport token. * `disabled` - Value - disabled for configuring CbsGnbDbgPcieTbtSupport token. * `enabled` - Value - enabled for configuring CbsGnbDbgPcieTbtSupport token.
+	CbsGnbDbgPcieTbtSupport *string `json:"CbsGnbDbgPcieTbtSupport,omitempty"`
+	// BIOS Token for setting SEV-SNP Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsSevSnpSupport token. * `disabled` - Value - disabled for configuring CbsSevSnpSupport token. * `enabled` - Value - enabled for configuring CbsSevSnpSupport token.
 	CbsSevSnpSupport *string `json:"CbsSevSnpSupport,omitempty"`
 	// BIOS Token for setting Consistent Device Naming configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	CdnEnable *string `json:"CdnEnable,omitempty"`
@@ -164,7 +214,7 @@ type BiosPolicy struct {
 	ConfigTdpLevel *string `json:"ConfigTdpLevel,omitempty"`
 	// BIOS Token for setting Console Redirection configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `com-0` - Value - com-0 for configuring ConsoleRedirection token. * `com-1` - Value - com-1 for configuring ConsoleRedirection token. * `disabled` - Value - disabled for configuring ConsoleRedirection token. * `enabled` - Value - enabled for configuring ConsoleRedirection token. * `serial-port-a` - Value - serial-port-a for configuring ConsoleRedirection token.
 	ConsoleRedirection *string `json:"ConsoleRedirection,omitempty"`
-	// BIOS Token for setting Core Multi Processing configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1` - Value - 1 for configuring CoreMultiProcessing token. * `2` - Value - 2 for configuring CoreMultiProcessing token. * `3` - Value - 3 for configuring CoreMultiProcessing token. * `4` - Value - 4 for configuring CoreMultiProcessing token. * `5` - Value - 5 for configuring CoreMultiProcessing token. * `6` - Value - 6 for configuring CoreMultiProcessing token. * `7` - Value - 7 for configuring CoreMultiProcessing token. * `8` - Value - 8 for configuring CoreMultiProcessing token. * `9` - Value - 9 for configuring CoreMultiProcessing token. * `10` - Value - 10 for configuring CoreMultiProcessing token. * `11` - Value - 11 for configuring CoreMultiProcessing token. * `12` - Value - 12 for configuring CoreMultiProcessing token. * `13` - Value - 13 for configuring CoreMultiProcessing token. * `14` - Value - 14 for configuring CoreMultiProcessing token. * `15` - Value - 15 for configuring CoreMultiProcessing token. * `16` - Value - 16 for configuring CoreMultiProcessing token. * `17` - Value - 17 for configuring CoreMultiProcessing token. * `18` - Value - 18 for configuring CoreMultiProcessing token. * `19` - Value - 19 for configuring CoreMultiProcessing token. * `20` - Value - 20 for configuring CoreMultiProcessing token. * `21` - Value - 21 for configuring CoreMultiProcessing token. * `22` - Value - 22 for configuring CoreMultiProcessing token. * `23` - Value - 23 for configuring CoreMultiProcessing token. * `24` - Value - 24 for configuring CoreMultiProcessing token. * `25` - Value - 25 for configuring CoreMultiProcessing token. * `26` - Value - 26 for configuring CoreMultiProcessing token. * `27` - Value - 27 for configuring CoreMultiProcessing token. * `28` - Value - 28 for configuring CoreMultiProcessing token. * `29` - Value - 29 for configuring CoreMultiProcessing token. * `30` - Value - 30 for configuring CoreMultiProcessing token. * `31` - Value - 31 for configuring CoreMultiProcessing token. * `32` - Value - 32 for configuring CoreMultiProcessing token. * `33` - Value - 33 for configuring CoreMultiProcessing token. * `34` - Value - 34 for configuring CoreMultiProcessing token. * `35` - Value - 35 for configuring CoreMultiProcessing token. * `36` - Value - 36 for configuring CoreMultiProcessing token. * `37` - Value - 37 for configuring CoreMultiProcessing token. * `38` - Value - 38 for configuring CoreMultiProcessing token. * `39` - Value - 39 for configuring CoreMultiProcessing token. * `40` - Value - 40 for configuring CoreMultiProcessing token. * `41` - Value - 41 for configuring CoreMultiProcessing token. * `42` - Value - 42 for configuring CoreMultiProcessing token. * `43` - Value - 43 for configuring CoreMultiProcessing token. * `44` - Value - 44 for configuring CoreMultiProcessing token. * `45` - Value - 45 for configuring CoreMultiProcessing token. * `46` - Value - 46 for configuring CoreMultiProcessing token. * `47` - Value - 47 for configuring CoreMultiProcessing token. * `48` - Value - 48 for configuring CoreMultiProcessing token. * `all` - Value - all for configuring CoreMultiProcessing token.
+	// BIOS Token for setting Core Multi Processing configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1` - Value - 1 for configuring CoreMultiProcessing token. * `2` - Value - 2 for configuring CoreMultiProcessing token. * `3` - Value - 3 for configuring CoreMultiProcessing token. * `4` - Value - 4 for configuring CoreMultiProcessing token. * `5` - Value - 5 for configuring CoreMultiProcessing token. * `6` - Value - 6 for configuring CoreMultiProcessing token. * `7` - Value - 7 for configuring CoreMultiProcessing token. * `8` - Value - 8 for configuring CoreMultiProcessing token. * `9` - Value - 9 for configuring CoreMultiProcessing token. * `10` - Value - 10 for configuring CoreMultiProcessing token. * `11` - Value - 11 for configuring CoreMultiProcessing token. * `12` - Value - 12 for configuring CoreMultiProcessing token. * `13` - Value - 13 for configuring CoreMultiProcessing token. * `14` - Value - 14 for configuring CoreMultiProcessing token. * `15` - Value - 15 for configuring CoreMultiProcessing token. * `16` - Value - 16 for configuring CoreMultiProcessing token. * `17` - Value - 17 for configuring CoreMultiProcessing token. * `18` - Value - 18 for configuring CoreMultiProcessing token. * `19` - Value - 19 for configuring CoreMultiProcessing token. * `20` - Value - 20 for configuring CoreMultiProcessing token. * `21` - Value - 21 for configuring CoreMultiProcessing token. * `22` - Value - 22 for configuring CoreMultiProcessing token. * `23` - Value - 23 for configuring CoreMultiProcessing token. * `24` - Value - 24 for configuring CoreMultiProcessing token. * `25` - Value - 25 for configuring CoreMultiProcessing token. * `26` - Value - 26 for configuring CoreMultiProcessing token. * `27` - Value - 27 for configuring CoreMultiProcessing token. * `28` - Value - 28 for configuring CoreMultiProcessing token. * `29` - Value - 29 for configuring CoreMultiProcessing token. * `30` - Value - 30 for configuring CoreMultiProcessing token. * `31` - Value - 31 for configuring CoreMultiProcessing token. * `32` - Value - 32 for configuring CoreMultiProcessing token. * `33` - Value - 33 for configuring CoreMultiProcessing token. * `34` - Value - 34 for configuring CoreMultiProcessing token. * `35` - Value - 35 for configuring CoreMultiProcessing token. * `36` - Value - 36 for configuring CoreMultiProcessing token. * `37` - Value - 37 for configuring CoreMultiProcessing token. * `38` - Value - 38 for configuring CoreMultiProcessing token. * `39` - Value - 39 for configuring CoreMultiProcessing token. * `40` - Value - 40 for configuring CoreMultiProcessing token. * `41` - Value - 41 for configuring CoreMultiProcessing token. * `42` - Value - 42 for configuring CoreMultiProcessing token. * `43` - Value - 43 for configuring CoreMultiProcessing token. * `44` - Value - 44 for configuring CoreMultiProcessing token. * `45` - Value - 45 for configuring CoreMultiProcessing token. * `46` - Value - 46 for configuring CoreMultiProcessing token. * `47` - Value - 47 for configuring CoreMultiProcessing token. * `48` - Value - 48 for configuring CoreMultiProcessing token. * `49` - Value - 49 for configuring CoreMultiProcessing token. * `50` - Value - 50 for configuring CoreMultiProcessing token. * `51` - Value - 51 for configuring CoreMultiProcessing token. * `52` - Value - 52 for configuring CoreMultiProcessing token. * `53` - Value - 53 for configuring CoreMultiProcessing token. * `54` - Value - 54 for configuring CoreMultiProcessing token. * `55` - Value - 55 for configuring CoreMultiProcessing token. * `56` - Value - 56 for configuring CoreMultiProcessing token. * `57` - Value - 57 for configuring CoreMultiProcessing token. * `58` - Value - 58 for configuring CoreMultiProcessing token. * `59` - Value - 59 for configuring CoreMultiProcessing token. * `60` - Value - 60 for configuring CoreMultiProcessing token. * `61` - Value - 61 for configuring CoreMultiProcessing token. * `62` - Value - 62 for configuring CoreMultiProcessing token. * `63` - Value - 63 for configuring CoreMultiProcessing token. * `64` - Value - 64 for configuring CoreMultiProcessing token. * `all` - Value - all for configuring CoreMultiProcessing token.
 	CoreMultiProcessing *string `json:"CoreMultiProcessing,omitempty"`
 	// BIOS Token for setting Energy Performance configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `balanced-energy` - Value - balanced-energy for configuring CpuEnergyPerformance token. * `balanced-performance` - Value - balanced-performance for configuring CpuEnergyPerformance token. * `balanced-power` - Value - balanced-power for configuring CpuEnergyPerformance token. * `energy-efficient` - Value - energy-efficient for configuring CpuEnergyPerformance token. * `performance` - Value - performance for configuring CpuEnergyPerformance token. * `power` - Value - power for configuring CpuEnergyPerformance token.
 	CpuEnergyPerformance *string `json:"CpuEnergyPerformance,omitempty"`
@@ -178,7 +228,7 @@ type BiosPolicy struct {
 	CpuPerformance *string `json:"CpuPerformance,omitempty"`
 	// BIOS Token for setting Power Technology configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `custom` - Value - custom for configuring CpuPowerManagement token. * `disabled` - Value - disabled for configuring CpuPowerManagement token. * `energy-efficient` - Value - energy-efficient for configuring CpuPowerManagement token. * `performance` - Value - performance for configuring CpuPowerManagement token.
 	CpuPowerManagement *string `json:"CpuPowerManagement,omitempty"`
-	// BIOS Token for setting CR QoS configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring CrQos token. * `Mode 0 - Disable the PMem QoS Feature` - Value - Mode 0 - Disable the PMem QoS Feature for configuring CrQos token. * `Mode 1 - M2M QoS Enable and CHA QoS Disable` - Value - Mode 1 - M2M QoS Enable and CHA QoS Disable for configuring CrQos token. * `Mode 2 - M2M QoS Enable and CHA QoS Enable` - Value - Mode 2 - M2M QoS Enable and CHA QoS Enable for configuring CrQos token. * `Recipe 1` - Value - Recipe 1 for configuring CrQos token. * `Recipe 2` - Value - Recipe 2 for configuring CrQos token. * `Recipe 3` - Value - Recipe 3 for configuring CrQos token.
+	// BIOS Token for setting CR QoS configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring CrQos token. * `Mode 0 - Disable the PMem QoS Feature` - Value - Mode 0 - Disable the PMem QoS Feature for configuring CrQos token. * `Mode 1 - M2M QoS Enable and CHA QoS Disable` - Value - Mode 1 - M2M QoS Enable and CHA QoS Disable for configuring CrQos token. * `Mode 2 - M2M QoS Enable and CHA QoS Enable` - Value - Mode 2 - M2M QoS Enable and CHA QoS Enable for configuring CrQos token. * `Profile 1` - Value - Profile 1 for configuring CrQos token. * `Recipe 1` - Value - Recipe 1 for configuring CrQos token. * `Recipe 2` - Value - Recipe 2 for configuring CrQos token. * `Recipe 3` - Value - Recipe 3 for configuring CrQos token.
 	CrQos *string `json:"CrQos,omitempty"`
 	// BIOS Token for setting CR FastGo Config configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CrfastgoConfig token. * `Default` - Value - Default for configuring CrfastgoConfig token. * `Disable optimization` - Value - Disable optimization for configuring CrfastgoConfig token. * `Enable optimization` - Value - Enable optimization for configuring CrfastgoConfig token. * `Option 1` - Value - Option 1 for configuring CrfastgoConfig token. * `Option 2` - Value - Option 2 for configuring CrfastgoConfig token. * `Option 3` - Value - Option 3 for configuring CrfastgoConfig token. * `Option 4` - Value - Option 4 for configuring CrfastgoConfig token. * `Option 5` - Value - Option 5 for configuring CrfastgoConfig token.
 	CrfastgoConfig *string `json:"CrfastgoConfig,omitempty"`
@@ -186,8 +236,12 @@ type BiosPolicy struct {
 	DcpmmFirmwareDowngrade *string `json:"DcpmmFirmwareDowngrade,omitempty"`
 	// BIOS Token for setting Demand Scrub configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	DemandScrub *string `json:"DemandScrub,omitempty"`
+	// BIOS Token for setting DFX OSB configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring DfxOsbEn token. * `disabled` - Value - disabled for configuring DfxOsbEn token. * `enabled` - Value - enabled for configuring DfxOsbEn token.
+	DfxOsbEn *string `json:"DfxOsbEn,omitempty"`
 	// BIOS Token for setting Direct Cache Access Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `auto` - Value - auto for configuring DirectCacheAccess token. * `disabled` - Value - disabled for configuring DirectCacheAccess token. * `enabled` - Value - enabled for configuring DirectCacheAccess token.
 	DirectCacheAccess *string `json:"DirectCacheAccess,omitempty"`
+	// BIOS Token for setting DMA Control Opt-In Flag configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	DmaCtrlOptIn *string `json:"DmaCtrlOptIn,omitempty"`
 	// BIOS Token for setting DRAM Clock Throttling configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring DramClockThrottling token. * `Balanced` - Value - Balanced for configuring DramClockThrottling token. * `Energy Efficient` - Value - Energy Efficient for configuring DramClockThrottling token. * `Performance` - Value - Performance for configuring DramClockThrottling token.
 	DramClockThrottling *string `json:"DramClockThrottling,omitempty"`
 	// BIOS Token for setting DRAM Refresh Rate configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1x` - Value - 1x for configuring DramRefreshRate token. * `2x` - Value - 2x for configuring DramRefreshRate token. * `3x` - Value - 3x for configuring DramRefreshRate token. * `4x` - Value - 4x for configuring DramRefreshRate token. * `Auto` - Value - Auto for configuring DramRefreshRate token.
@@ -198,12 +252,18 @@ type BiosPolicy struct {
 	EadrSupport *string `json:"EadrSupport,omitempty"`
 	// BIOS Token for setting IIO eDPC Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring EdpcEn token. * `On Fatal Error` - Value - On Fatal Error for configuring EdpcEn token. * `On Fatal and Non-Fatal Errors` - Value - On Fatal and Non-Fatal Errors for configuring EdpcEn token.
 	EdpcEn *string `json:"EdpcEn,omitempty"`
-	// BIOS Token for setting External SSC Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	// BIOS Token for setting External SSC Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `0P3_Percent` - Value - 0P3_Percent for configuring EnableClockSpreadSpec token. * `0P5_Percent` - Value - 0P5_Percent for configuring EnableClockSpreadSpec token. * `disabled` - Value - disabled for configuring EnableClockSpreadSpec token. * `enabled` - Value - enabled for configuring EnableClockSpreadSpec token. * `Hardware` - Value - Hardware for configuring EnableClockSpreadSpec token. * `Off` - Value - Off for configuring EnableClockSpreadSpec token.
 	EnableClockSpreadSpec *string `json:"EnableClockSpreadSpec,omitempty"`
 	// BIOS Token for setting Multikey Total Memory Encryption  (MK-TME) configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	EnableMktme *string `json:"EnableMktme,omitempty"`
+	// BIOS Token for setting Rank Margin Tool configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	EnableRmt *string `json:"EnableRmt,omitempty"`
 	// BIOS Token for setting Software Guard Extensions  (SGX) configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	EnableSgx *string `json:"EnableSgx,omitempty"`
+	// BIOS Token for setting Trust Domain Extension  (TDX) configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	EnableTdx *string `json:"EnableTdx,omitempty"`
+	// BIOS Token for setting TDX Secure Arbitration Mode  (SEAM) Loader configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	EnableTdxSeamldr *string `json:"EnableTdxSeamldr,omitempty"`
 	// BIOS Token for setting Total Memory Encryption  (TME) configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	EnableTme *string `json:"EnableTme,omitempty"`
 	// BIOS Token for setting Energy Efficient Turbo configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
@@ -218,6 +278,8 @@ type BiosPolicy struct {
 	EppEnable *string `json:"EppEnable,omitempty"`
 	// BIOS Token for setting EPP Profile configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Balanced Performance` - Value - Balanced Performance for configuring EppProfile token. * `Balanced Power` - Value - Balanced Power for configuring EppProfile token. * `Performance` - Value - Performance for configuring EppProfile token. * `Power` - Value - Power for configuring EppProfile token.
 	EppProfile *string `json:"EppProfile,omitempty"`
+	// BIOS Token for setting Error Check Scrub configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring ErrorCheckScrub token. * `Enabled with Result Collection` - Value - Enabled with Result Collection for configuring ErrorCheckScrub token. * `Enabled without Result Collection` - Value - Enabled without Result Collection for configuring ErrorCheckScrub token.
+	ErrorCheckScrub *string `json:"ErrorCheckScrub,omitempty"`
 	// BIOS Token for setting Execute Disable Bit configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	ExecuteDisableBit *string `json:"ExecuteDisableBit,omitempty"`
 	// BIOS Token for setting Local X2 Apic configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring ExtendedApic token. * `enabled` - Value - enabled for configuring ExtendedApic token. * `X2APIC` - Value - X2APIC for configuring ExtendedApic token. * `XAPIC` - Value - XAPIC for configuring ExtendedApic token.
@@ -236,7 +298,7 @@ type BiosPolicy struct {
 	IntelDynamicSpeedSelect *string `json:"IntelDynamicSpeedSelect,omitempty"`
 	// BIOS Token for setting Intel HyperThreading Tech configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	IntelHyperThreadingTech *string `json:"IntelHyperThreadingTech,omitempty"`
-	// BIOS Token for setting Intel Speed Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Base` - Value - Base for configuring IntelSpeedSelect token. * `Config 1` - Value - Config 1 for configuring IntelSpeedSelect token. * `Config 2` - Value - Config 2 for configuring IntelSpeedSelect token. * `Config 3` - Value - Config 3 for configuring IntelSpeedSelect token. * `Config 4` - Value - Config 4 for configuring IntelSpeedSelect token.
+	// BIOS Token for setting Intel Speed Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring IntelSpeedSelect token. * `Base` - Value - Base for configuring IntelSpeedSelect token. * `Config 1` - Value - Config 1 for configuring IntelSpeedSelect token. * `Config 2` - Value - Config 2 for configuring IntelSpeedSelect token. * `Config 3` - Value - Config 3 for configuring IntelSpeedSelect token. * `Config 4` - Value - Config 4 for configuring IntelSpeedSelect token.
 	IntelSpeedSelect *string `json:"IntelSpeedSelect,omitempty"`
 	// BIOS Token for setting Intel Turbo Boost Tech configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	IntelTurboBoostTech *string `json:"IntelTurboBoostTech,omitempty"`
@@ -252,6 +314,8 @@ type BiosPolicy struct {
 	IntelVtdPassThroughDmaSupport *string `json:"IntelVtdPassThroughDmaSupport,omitempty"`
 	// BIOS Token for setting Intel VTD ATS Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	IntelVtdatsSupport *string `json:"IntelVtdatsSupport,omitempty"`
+	// BIOS Token for setting IOAT Configuration configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	IoatConfigCpm *string `json:"IoatConfigCpm,omitempty"`
 	// BIOS Token for setting IIO Error Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `No` - Value - No for configuring IohErrorEnable token. * `Yes` - Value - Yes for configuring IohErrorEnable token.
 	IohErrorEnable *string `json:"IohErrorEnable,omitempty"`
 	// BIOS Token for setting IOH Resource Allocation configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `IOH0 24k IOH1 40k` - Value - IOH0 24k IOH1 40k for configuring IohResource token. * `IOH0 32k IOH1 32k` - Value - IOH0 32k IOH1 32k for configuring IohResource token. * `IOH0 40k IOH1 24k` - Value - IOH0 40k IOH1 24k for configuring IohResource token. * `IOH0 48k IOH1 16k` - Value - IOH0 48k IOH1 16k for configuring IohResource token. * `IOH0 56k IOH1 8k` - Value - IOH0 56k IOH1 8k for configuring IohResource token.
@@ -299,13 +363,17 @@ type BiosPolicy struct {
 	// BIOS Token for setting Memory Refresh Rate configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1x Refresh` - Value - 1x Refresh for configuring MemoryRefreshRate token. * `2x Refresh` - Value - 2x Refresh for configuring MemoryRefreshRate token.
 	MemoryRefreshRate *string `json:"MemoryRefreshRate,omitempty"`
 	// BIOS Token for setting Memory Size Limit in GiB configuration (0 - 65535 GiB).
-	MemorySizeLimit *string `json:"MemorySizeLimit,omitempty"`
+	MemorySizeLimit *string `json:"MemorySizeLimit,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 	// BIOS Token for setting Memory Thermal Throttling Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `CLTT with PECI` - Value - CLTT with PECI for configuring MemoryThermalThrottling token. * `Disabled` - Value - Disabled for configuring MemoryThermalThrottling token.
 	MemoryThermalThrottling *string `json:"MemoryThermalThrottling,omitempty"`
 	// BIOS Token for setting Mirroring Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `inter-socket` - Value - inter-socket for configuring MirroringMode token. * `intra-socket` - Value - intra-socket for configuring MirroringMode token.
 	MirroringMode *string `json:"MirroringMode,omitempty"`
 	// BIOS Token for setting MMCFG BASE configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1 GB` - Value - 1 GiB for configuring MmcfgBase token. * `2 GB` - Value - 2 GiB for configuring MmcfgBase token. * `2.5 GB` - Value - 2.5 GiB for configuring MmcfgBase token. * `3 GB` - Value - 3 GiB for configuring MmcfgBase token. * `Auto` - Value - Auto for configuring MmcfgBase token.
 	MmcfgBase *string `json:"MmcfgBase,omitempty"`
+	// BIOS Token for setting MMIO High Base configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `512G` - Value - 512G for configuring MmiohBase token. * `1T` - Value - 1T for configuring MmiohBase token. * `2T` - Value - 2T for configuring MmiohBase token. * `4T` - Value - 4T for configuring MmiohBase token. * `16T` - Value - 16T for configuring MmiohBase token. * `24T` - Value - 24T for configuring MmiohBase token. * `32T` - Value - 32T for configuring MmiohBase token. * `40T` - Value - 40T for configuring MmiohBase token. * `56T` - Value - 56T for configuring MmiohBase token.
+	MmiohBase *string `json:"MmiohBase,omitempty"`
+	// BIOS Token for setting MMIO High Granularity Size configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1G` - Value - 1G for configuring MmiohSize token. * `4G` - Value - 4G for configuring MmiohSize token. * `16G` - Value - 16G for configuring MmiohSize token. * `64G` - Value - 64G for configuring MmiohSize token. * `256G` - Value - 256G for configuring MmiohSize token. * `1024G` - Value - 1024G for configuring MmiohSize token.
+	MmiohSize *string `json:"MmiohSize,omitempty"`
 	// BIOS Token for setting Network Stack configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	NetworkStack *string `json:"NetworkStack,omitempty"`
 	// BIOS Token for setting NUMA Optimized configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
@@ -322,6 +390,8 @@ type BiosPolicy struct {
 	OnboardScuStorageSwStack *string `json:"OnboardScuStorageSwStack,omitempty"`
 	// BIOS Token for setting Operation Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Test Only` - Value - Test Only for configuring OperationMode token. * `Test and Repair` - Value - Test and Repair for configuring OperationMode token.
 	OperationMode *string `json:"OperationMode,omitempty"`
+	// BIOS Token for setting Optimized Power Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	OptimizedPowerMode *string `json:"OptimizedPowerMode,omitempty"`
 	// BIOS Token for setting OS Boot Watchdog Timer configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	OsBootWatchdogTimer *string `json:"OsBootWatchdogTimer,omitempty"`
 	// BIOS Token for setting OS Boot Watchdog Timer Policy configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `do-nothing` - Value - do-nothing for configuring OsBootWatchdogTimerPolicy token. * `power-off` - Value - power-off for configuring OsBootWatchdogTimerPolicy token. * `reset` - Value - reset for configuring OsBootWatchdogTimerPolicy token.
@@ -339,23 +409,25 @@ type BiosPolicy struct {
 	// BIOS Token for setting Partial Memory Mirror Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring PartialMirrorModeConfig token. * `Percentage` - Value - Percentage for configuring PartialMirrorModeConfig token. * `Value in GB` - Value - Value in GiB for configuring PartialMirrorModeConfig token.
 	PartialMirrorModeConfig *string `json:"PartialMirrorModeConfig,omitempty"`
 	// BIOS Token for setting Partial Mirror Percentage configuration (0.00 - 50.00 Percentage).
-	PartialMirrorPercent *string `json:"PartialMirrorPercent,omitempty"`
+	PartialMirrorPercent *string `json:"PartialMirrorPercent,omitempty" validate:"regexp=^(\\\\d\\\\.\\\\d{1,2}|[1-4]\\\\d\\\\.\\\\d{1,2}|50\\\\.[0]{1,2})$|^(platform-default)$"`
 	// BIOS Token for setting Partial Mirror1 Size in GiB configuration (0 - 65535 GiB).
-	PartialMirrorValue1 *string `json:"PartialMirrorValue1,omitempty"`
+	PartialMirrorValue1 *string `json:"PartialMirrorValue1,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 	// BIOS Token for setting Partial Mirror2 Size in GiB configuration (0 - 65535 GiB).
-	PartialMirrorValue2 *string `json:"PartialMirrorValue2,omitempty"`
+	PartialMirrorValue2 *string `json:"PartialMirrorValue2,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 	// BIOS Token for setting Partial Mirror3 Size in GiB configuration (0 - 65535 GiB).
-	PartialMirrorValue3 *string `json:"PartialMirrorValue3,omitempty"`
+	PartialMirrorValue3 *string `json:"PartialMirrorValue3,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 	// BIOS Token for setting Partial Mirror4 Size in GiB configuration (0 - 65535 GiB).
-	PartialMirrorValue4 *string `json:"PartialMirrorValue4,omitempty"`
+	PartialMirrorValue4 *string `json:"PartialMirrorValue4,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 	// BIOS Token for setting Patrol Scrub configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring PatrolScrub token. * `Enable at End of POST` - Value - Enable at End of POST for configuring PatrolScrub token. * `enabled` - Value - enabled for configuring PatrolScrub token.
 	PatrolScrub *string `json:"PatrolScrub,omitempty"`
 	// BIOS Token for setting Patrol Scrub Interval configuration (5 - 23 Hour).
-	PatrolScrubDuration *string `json:"PatrolScrubDuration,omitempty"`
+	PatrolScrubDuration *string `json:"PatrolScrubDuration,omitempty" validate:"regexp=^([5-9]|1\\\\d|2[0-3])$|^(platform-default)$"`
 	// BIOS Token for setting PCIe RAS Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	PcIeRasSupport *string `json:"PcIeRasSupport,omitempty"`
 	// BIOS Token for setting NVMe SSD Hot-Plug Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	PcIeSsdHotPlugSupport *string `json:"PcIeSsdHotPlugSupport,omitempty"`
+	// BIOS Token for setting PCIe PLL SSC Percent configuration (0 - 255 (n/10)%).
+	PchPciePllSsc *string `json:"PchPciePllSsc,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])$|^(platform-default)$"`
 	// BIOS Token for setting xHCI Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	PchUsb30mode *string `json:"PchUsb30mode,omitempty"`
 	// BIOS Token for setting All PCIe Slots OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring PciOptionRoMs token. * `enabled` - Value - enabled for configuring PciOptionRoMs token. * `Legacy Only` - Value - Legacy Only for configuring PciOptionRoMs token. * `UEFI Only` - Value - UEFI Only for configuring PciOptionRoMs token.
@@ -366,15 +438,15 @@ type BiosPolicy struct {
 	PcieAriSupport *string `json:"PcieAriSupport,omitempty"`
 	// BIOS Token for setting PCIe PLL SSC configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PciePllSsc token. * `Disabled` - Value - Disabled for configuring PciePllSsc token. * `ZeroPointFive` - Value - ZeroPointFive for configuring PciePllSsc token.
 	PciePllSsc *string `json:"PciePllSsc,omitempty"`
-	// BIOS Token for setting MRAID1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMraid1linkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMraid1linkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMraid1linkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMraid1linkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMraid1linkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMraid1linkSpeed token.
+	// BIOS Token for setting MRAID1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMraid1linkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMraid1linkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMraid1linkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMraid1linkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMraid1linkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMraid1linkSpeed token. * `GEN5` - Value - GEN5 for configuring PcieSlotMraid1linkSpeed token.
 	PcieSlotMraid1linkSpeed *string `json:"PcieSlotMraid1linkSpeed,omitempty"`
 	// BIOS Token for setting MRAID1 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	PcieSlotMraid1optionRom *string `json:"PcieSlotMraid1optionRom,omitempty"`
-	// BIOS Token for setting MRAID2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMraid2linkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMraid2linkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMraid2linkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMraid2linkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMraid2linkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMraid2linkSpeed token.
+	// BIOS Token for setting MRAID2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMraid2linkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMraid2linkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMraid2linkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMraid2linkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMraid2linkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMraid2linkSpeed token. * `GEN5` - Value - GEN5 for configuring PcieSlotMraid2linkSpeed token.
 	PcieSlotMraid2linkSpeed *string `json:"PcieSlotMraid2linkSpeed,omitempty"`
 	// BIOS Token for setting MRAID2 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	PcieSlotMraid2optionRom *string `json:"PcieSlotMraid2optionRom,omitempty"`
-	// BIOS Token for setting PCIe Slot MSTOR Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMstorraidLinkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMstorraidLinkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMstorraidLinkSpeed token.
+	// BIOS Token for setting PCIe Slot MSTOR Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMstorraidLinkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMstorraidLinkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN5` - Value - GEN5 for configuring PcieSlotMstorraidLinkSpeed token.
 	PcieSlotMstorraidLinkSpeed *string `json:"PcieSlotMstorraidLinkSpeed,omitempty"`
 	// BIOS Token for setting PCIe Slot MSTOR RAID OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	PcieSlotMstorraidOptionRom *string `json:"PcieSlotMstorraidOptionRom,omitempty"`
@@ -410,6 +482,8 @@ type BiosPolicy struct {
 	PostErrorPause *string `json:"PostErrorPause,omitempty"`
 	// BIOS Token for setting Post Package Repair configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring PostPackageRepair token. * `Hard PPR` - Value - Hard PPR for configuring PostPackageRepair token.
 	PostPackageRepair *string `json:"PostPackageRepair,omitempty"`
+	// BIOS Token for setting PRMRR Size configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1G` - Value - 1G for configuring PrmrrSize token. * `2G` - Value - 2G for configuring PrmrrSize token. * `4G` - Value - 4G for configuring PrmrrSize token. * `8G` - Value - 8G for configuring PrmrrSize token. * `16G` - Value - 16G for configuring PrmrrSize token. * `32G` - Value - 32G for configuring PrmrrSize token. * `64G` - Value - 64G for configuring PrmrrSize token. * `128G` - Value - 128G for configuring PrmrrSize token. * `256G` - Value - 256G for configuring PrmrrSize token. * `512G` - Value - 512G for configuring PrmrrSize token. * `128M` - Value - 128M for configuring PrmrrSize token. * `256M` - Value - 256M for configuring PrmrrSize token. * `512M` - Value - 512M for configuring PrmrrSize token. * `Auto` - Value - Auto for configuring PrmrrSize token. * `Invalid Config.` - Value - Invalid Config for configuring PrmrrSize token.
+	PrmrrSize *string `json:"PrmrrSize,omitempty"`
 	// BIOS Token for setting Processor C1E configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	ProcessorC1e *string `json:"ProcessorC1e,omitempty"`
 	// BIOS Token for setting Processor C3 Report configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
@@ -428,7 +502,7 @@ type BiosPolicy struct {
 	PwrPerfTuning *string `json:"PwrPerfTuning,omitempty"`
 	// BIOS Token for setting QPI Link Frequency Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `6.4-gt/s` - Value - 6.4-gt/s for configuring QpiLinkFrequency token. * `7.2-gt/s` - Value - 7.2-gt/s for configuring QpiLinkFrequency token. * `8.0-gt/s` - Value - 8.0-gt/s for configuring QpiLinkFrequency token. * `9.6-gt/s` - Value - 9.6-gt/s for configuring QpiLinkFrequency token. * `auto` - Value - auto for configuring QpiLinkFrequency token.
 	QpiLinkFrequency *string `json:"QpiLinkFrequency,omitempty"`
-	// BIOS Token for setting UPI Link Frequency Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `10.4GT/s` - Value - 10.4GT/s for configuring QpiLinkSpeed token. * `11.2GT/s` - Value - 11.2GT/s for configuring QpiLinkSpeed token. * `9.6GT/s` - Value - 9.6GT/s for configuring QpiLinkSpeed token. * `Auto` - Value - Auto for configuring QpiLinkSpeed token.
+	// BIOS Token for setting UPI Link Frequency Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `10.4GT/s` - Value - 10.4GT/s for configuring QpiLinkSpeed token. * `11.2GT/s` - Value - 11.2GT/s for configuring QpiLinkSpeed token. * `12.8GT/s` - Value - 12.8GT/s for configuring QpiLinkSpeed token. * `14.4GT/s` - Value - 14.4GT/s for configuring QpiLinkSpeed token. * `16.0GT/s` - Value - 16.0GT/s for configuring QpiLinkSpeed token. * `20.0GT/s` - Value - 20.0GT/s for configuring QpiLinkSpeed token. * `9.6GT/s` - Value - 9.6GT/s for configuring QpiLinkSpeed token. * `Auto` - Value - Auto for configuring QpiLinkSpeed token.
 	QpiLinkSpeed *string `json:"QpiLinkSpeed,omitempty"`
 	// BIOS Token for setting QPI Snoop Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `auto` - Value - auto for configuring QpiSnoopMode token. * `cluster-on-die` - Value - cluster-on-die for configuring QpiSnoopMode token. * `early-snoop` - Value - early-snoop for configuring QpiSnoopMode token. * `home-directory-snoop` - Value - home-directory-snoop for configuring QpiSnoopMode token. * `home-directory-snoop-with-osb` - Value - home-directory-snoop-with-osb for configuring QpiSnoopMode token. * `home-snoop` - Value - home-snoop for configuring QpiSnoopMode token.
 	QpiSnoopMode *string `json:"QpiSnoopMode,omitempty"`
@@ -436,12 +510,18 @@ type BiosPolicy struct {
 	RankInterLeave *string `json:"RankInterLeave,omitempty"`
 	// BIOS Token for setting Redirection After BIOS POST configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Always Enable` - Value - Always Enable for configuring RedirectionAfterPost token. * `Bootloader` - Value - Bootloader for configuring RedirectionAfterPost token.
 	RedirectionAfterPost *string `json:"RedirectionAfterPost,omitempty"`
+	// BIOS Token for setting Re-Size BAR Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	ResizeBarSupport *string `json:"ResizeBarSupport,omitempty"`
+	// BIOS Token for setting Runtime Post Package Repair configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	RuntimePostPackageRepair *string `json:"RuntimePostPackageRepair,omitempty"`
 	// BIOS Token for setting SATA Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `AHCI` - Value - AHCI for configuring SataModeSelect token. * `Disabled` - Value - Disabled for configuring SataModeSelect token. * `LSI SW RAID` - Value - LSI SW RAID for configuring SataModeSelect token.
 	SataModeSelect *string `json:"SataModeSelect,omitempty"`
 	// BIOS Token for setting Memory RAS Configuration configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `adddc-sparing` - Value - adddc-sparing for configuring SelectMemoryRasConfiguration token. * `lockstep` - Value - lockstep for configuring SelectMemoryRasConfiguration token. * `maximum-performance` - Value - maximum-performance for configuring SelectMemoryRasConfiguration token. * `mirror-mode-1lm` - Value - mirror-mode-1lm for configuring SelectMemoryRasConfiguration token. * `mirroring` - Value - mirroring for configuring SelectMemoryRasConfiguration token. * `partial-mirror-mode-1lm` - Value - partial-mirror-mode-1lm for configuring SelectMemoryRasConfiguration token. * `sparing` - Value - sparing for configuring SelectMemoryRasConfiguration token.
 	SelectMemoryRasConfiguration *string `json:"SelectMemoryRasConfiguration,omitempty"`
 	// BIOS Token for setting PPR Type configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring SelectPprType token. * `Hard PPR` - Value - Hard PPR for configuring SelectPprType token. * `Soft PPR` - Value - Soft PPR for configuring SelectPprType token.
 	SelectPprType *string `json:"SelectPprType,omitempty"`
+	// BIOS Token for setting Serial Mux configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	SerialMux *string `json:"SerialMux,omitempty"`
 	// BIOS Token for setting Serial A Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SerialPortAenable *string `json:"SerialPortAenable,omitempty"`
 	// BIOS Token for setting Secured Encrypted Virtualization configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `253 ASIDs` - Value - 253 ASIDs for configuring Sev token. * `509 ASIDs` - Value - 509 ASIDs for configuring Sev token. * `Auto` - Value - Auto for configuring Sev token.
@@ -449,19 +529,19 @@ type BiosPolicy struct {
 	// BIOS Token for setting SGX Auto MP Registration Agent configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SgxAutoRegistrationAgent *string `json:"SgxAutoRegistrationAgent,omitempty"`
 	// BIOS Token for setting SGX Epoch 0 configuration (0 - ffffffffffffffff Hash byte 7-0).
-	SgxEpoch0 *string `json:"SgxEpoch0,omitempty"`
+	SgxEpoch0 *string `json:"SgxEpoch0,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 	// BIOS Token for setting SGX Epoch 1 configuration (0 - ffffffffffffffff Hash byte 7-0).
-	SgxEpoch1 *string `json:"SgxEpoch1,omitempty"`
+	SgxEpoch1 *string `json:"SgxEpoch1,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 	// BIOS Token for setting SGX Factory Reset configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SgxFactoryReset *string `json:"SgxFactoryReset,omitempty"`
 	// BIOS Token for setting SGX PubKey Hash0 configuration (0 - ffffffffffffffff Hash byte 7-0).
-	SgxLePubKeyHash0 *string `json:"SgxLePubKeyHash0,omitempty"`
+	SgxLePubKeyHash0 *string `json:"SgxLePubKeyHash0,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 	// BIOS Token for setting SGX PubKey Hash1 configuration (0 - ffffffffffffffff Hash byte 15-8).
-	SgxLePubKeyHash1 *string `json:"SgxLePubKeyHash1,omitempty"`
+	SgxLePubKeyHash1 *string `json:"SgxLePubKeyHash1,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 	// BIOS Token for setting SGX PubKey Hash2 configuration (0 - ffffffffffffffff Hash byte 23-16).
-	SgxLePubKeyHash2 *string `json:"SgxLePubKeyHash2,omitempty"`
+	SgxLePubKeyHash2 *string `json:"SgxLePubKeyHash2,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 	// BIOS Token for setting SGX PubKey Hash3 configuration (0 - ffffffffffffffff Hash byte 31-24).
-	SgxLePubKeyHash3 *string `json:"SgxLePubKeyHash3,omitempty"`
+	SgxLePubKeyHash3 *string `json:"SgxLePubKeyHash3,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 	// BIOS Token for setting SGX Write Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SgxLeWr *string `json:"SgxLeWr,omitempty"`
 	// BIOS Token for setting SGX Package Information In-Band Access configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
@@ -472,6 +552,8 @@ type BiosPolicy struct {
 	Sha1pcrBank *string `json:"Sha1pcrBank,omitempty"`
 	// BIOS Token for setting SHA256 PCR Bank configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	Sha256pcrBank *string `json:"Sha256pcrBank,omitempty"`
+	// BIOS Token for setting SHA384 PCR Bank configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	Sha384pcrBank *string `json:"Sha384pcrBank,omitempty"`
 	// BIOS Token for setting Single PCTL configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `No` - Value - No for configuring SinglePctlEnable token. * `Yes` - Value - Yes for configuring SinglePctlEnable token.
 	SinglePctlEnable *string `json:"SinglePctlEnable,omitempty"`
 	// BIOS Token for setting PCIe Slot:10 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot10linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot10linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot10linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot10linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot10linkSpeed token.
@@ -490,35 +572,35 @@ type BiosPolicy struct {
 	Slot13state *string `json:"Slot13state,omitempty"`
 	// BIOS Token for setting Slot 14 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	Slot14state *string `json:"Slot14state,omitempty"`
-	// BIOS Token for setting PCIe Slot: 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot1linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot1linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot1linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot1linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot1linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot1linkSpeed token.
+	// BIOS Token for setting PCIe Slot: 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot1linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot1linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot1linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot1linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot1linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot1linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot1linkSpeed token.
 	Slot1linkSpeed *string `json:"Slot1linkSpeed,omitempty"`
 	// BIOS Token for setting Slot 1 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot1state token. * `enabled` - Value - enabled for configuring Slot1state token. * `Legacy Only` - Value - Legacy Only for configuring Slot1state token. * `UEFI Only` - Value - UEFI Only for configuring Slot1state token.
 	Slot1state *string `json:"Slot1state,omitempty"`
-	// BIOS Token for setting PCIe Slot: 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot2linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot2linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot2linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot2linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot2linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot2linkSpeed token.
+	// BIOS Token for setting PCIe Slot: 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot2linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot2linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot2linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot2linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot2linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot2linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot2linkSpeed token.
 	Slot2linkSpeed *string `json:"Slot2linkSpeed,omitempty"`
 	// BIOS Token for setting Slot 2 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot2state token. * `enabled` - Value - enabled for configuring Slot2state token. * `Legacy Only` - Value - Legacy Only for configuring Slot2state token. * `UEFI Only` - Value - UEFI Only for configuring Slot2state token.
 	Slot2state *string `json:"Slot2state,omitempty"`
-	// BIOS Token for setting PCIe Slot: 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot3linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot3linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot3linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot3linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot3linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot3linkSpeed token.
+	// BIOS Token for setting PCIe Slot: 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot3linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot3linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot3linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot3linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot3linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot3linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot3linkSpeed token.
 	Slot3linkSpeed *string `json:"Slot3linkSpeed,omitempty"`
 	// BIOS Token for setting Slot 3 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot3state token. * `enabled` - Value - enabled for configuring Slot3state token. * `Legacy Only` - Value - Legacy Only for configuring Slot3state token. * `UEFI Only` - Value - UEFI Only for configuring Slot3state token.
 	Slot3state *string `json:"Slot3state,omitempty"`
-	// BIOS Token for setting PCIe Slot: 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot4linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot4linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot4linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot4linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot4linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot4linkSpeed token.
+	// BIOS Token for setting PCIe Slot: 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot4linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot4linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot4linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot4linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot4linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot4linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot4linkSpeed token.
 	Slot4linkSpeed *string `json:"Slot4linkSpeed,omitempty"`
 	// BIOS Token for setting Slot 4 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot4state token. * `enabled` - Value - enabled for configuring Slot4state token. * `Legacy Only` - Value - Legacy Only for configuring Slot4state token. * `UEFI Only` - Value - UEFI Only for configuring Slot4state token.
 	Slot4state *string `json:"Slot4state,omitempty"`
-	// BIOS Token for setting PCIe Slot: 5 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot5linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot5linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot5linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot5linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot5linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot5linkSpeed token.
+	// BIOS Token for setting PCIe Slot: 5 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot5linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot5linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot5linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot5linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot5linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot5linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot5linkSpeed token.
 	Slot5linkSpeed *string `json:"Slot5linkSpeed,omitempty"`
 	// BIOS Token for setting Slot 5 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot5state token. * `enabled` - Value - enabled for configuring Slot5state token. * `Legacy Only` - Value - Legacy Only for configuring Slot5state token. * `UEFI Only` - Value - UEFI Only for configuring Slot5state token.
 	Slot5state *string `json:"Slot5state,omitempty"`
-	// BIOS Token for setting PCIe Slot: 6 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot6linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot6linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot6linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot6linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot6linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot6linkSpeed token.
+	// BIOS Token for setting PCIe Slot: 6 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot6linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot6linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot6linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot6linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot6linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot6linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot6linkSpeed token.
 	Slot6linkSpeed *string `json:"Slot6linkSpeed,omitempty"`
 	// BIOS Token for setting Slot 6 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot6state token. * `enabled` - Value - enabled for configuring Slot6state token. * `Legacy Only` - Value - Legacy Only for configuring Slot6state token. * `UEFI Only` - Value - UEFI Only for configuring Slot6state token.
 	Slot6state *string `json:"Slot6state,omitempty"`
-	// BIOS Token for setting PCIe Slot: 7 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot7linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot7linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot7linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot7linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot7linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot7linkSpeed token.
+	// BIOS Token for setting PCIe Slot: 7 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot7linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot7linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot7linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot7linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot7linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot7linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot7linkSpeed token.
 	Slot7linkSpeed *string `json:"Slot7linkSpeed,omitempty"`
 	// BIOS Token for setting Slot 7 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot7state token. * `enabled` - Value - enabled for configuring Slot7state token. * `Legacy Only` - Value - Legacy Only for configuring Slot7state token. * `UEFI Only` - Value - UEFI Only for configuring Slot7state token.
 	Slot7state *string `json:"Slot7state,omitempty"`
-	// BIOS Token for setting PCIe Slot: 8 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot8linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot8linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot8linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot8linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot8linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot8linkSpeed token.
+	// BIOS Token for setting PCIe Slot: 8 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot8linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot8linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot8linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot8linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot8linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot8linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot8linkSpeed token.
 	Slot8linkSpeed *string `json:"Slot8linkSpeed,omitempty"`
 	// BIOS Token for setting Slot 8 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot8state token. * `enabled` - Value - enabled for configuring Slot8state token. * `Legacy Only` - Value - Legacy Only for configuring Slot8state token. * `UEFI Only` - Value - UEFI Only for configuring Slot8state token.
 	Slot8state *string `json:"Slot8state,omitempty"`
@@ -528,75 +610,99 @@ type BiosPolicy struct {
 	Slot9state *string `json:"Slot9state,omitempty"`
 	// BIOS Token for setting PCIe Slot:FLOM Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFlomLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFlomLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFlomLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFlomLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFlomLinkSpeed token.
 	SlotFlomLinkSpeed *string `json:"SlotFlomLinkSpeed,omitempty"`
-	// BIOS Token for setting Front NVME 10 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme10linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme10linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme10linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme10linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme10linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme10linkSpeed token.
+	// BIOS Token for setting Front NVME 10 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme10linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme10linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme10linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme10linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme10linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme10linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme10linkSpeed token.
 	SlotFrontNvme10linkSpeed *string `json:"SlotFrontNvme10linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 10 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme10optionRom *string `json:"SlotFrontNvme10optionRom,omitempty"`
-	// BIOS Token for setting Front NVME 11 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme11linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme11linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme11linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme11linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme11linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme11linkSpeed token.
+	// BIOS Token for setting Front NVME 11 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme11linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme11linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme11linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme11linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme11linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme11linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme11linkSpeed token.
 	SlotFrontNvme11linkSpeed *string `json:"SlotFrontNvme11linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 11 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme11optionRom *string `json:"SlotFrontNvme11optionRom,omitempty"`
-	// BIOS Token for setting Front NVME 12 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme12linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme12linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme12linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme12linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme12linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme12linkSpeed token.
+	// BIOS Token for setting Front NVME 12 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme12linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme12linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme12linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme12linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme12linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme12linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme12linkSpeed token.
 	SlotFrontNvme12linkSpeed *string `json:"SlotFrontNvme12linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 12 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme12optionRom *string `json:"SlotFrontNvme12optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 13 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme13linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme13linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme13linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme13linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme13linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme13linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme13linkSpeed token.
+	SlotFrontNvme13linkSpeed *string `json:"SlotFrontNvme13linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 13 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme13optionRom *string `json:"SlotFrontNvme13optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 14 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme14linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme14linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme14linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme14linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme14linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme14linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme14linkSpeed token.
+	SlotFrontNvme14linkSpeed *string `json:"SlotFrontNvme14linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 14 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme14optionRom *string `json:"SlotFrontNvme14optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 15 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme15linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme15linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme15linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme15linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme15linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme15linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme15linkSpeed token.
+	SlotFrontNvme15linkSpeed *string `json:"SlotFrontNvme15linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 15 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme15optionRom *string `json:"SlotFrontNvme15optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 16 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme16linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme16linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme16linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme16linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme16linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme16linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme16linkSpeed token.
+	SlotFrontNvme16linkSpeed *string `json:"SlotFrontNvme16linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 16 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme16optionRom *string `json:"SlotFrontNvme16optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 17 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme17linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme17linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme17linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme17linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme17linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme17linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme17linkSpeed token.
+	SlotFrontNvme17linkSpeed *string `json:"SlotFrontNvme17linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 17 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme17optionRom *string `json:"SlotFrontNvme17optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 18 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme18linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme18linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme18linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme18linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme18linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme18linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme18linkSpeed token.
+	SlotFrontNvme18linkSpeed *string `json:"SlotFrontNvme18linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 18 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme18optionRom *string `json:"SlotFrontNvme18optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 19 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme19linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme19linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme19linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme19linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme19linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme19linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme19linkSpeed token.
+	SlotFrontNvme19linkSpeed *string `json:"SlotFrontNvme19linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 19 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme19optionRom *string `json:"SlotFrontNvme19optionRom,omitempty"`
-	// BIOS Token for setting PCIe Slot:Front NVME 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme1linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme1linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme1linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme1linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme1linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme1linkSpeed token.
+	// BIOS Token for setting PCIe Slot:Front NVME 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme1linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme1linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme1linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme1linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme1linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme1linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme1linkSpeed token.
 	SlotFrontNvme1linkSpeed *string `json:"SlotFrontNvme1linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 1 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme1optionRom *string `json:"SlotFrontNvme1optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 20 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme20linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme20linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme20linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme20linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme20linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme20linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme20linkSpeed token.
+	SlotFrontNvme20linkSpeed *string `json:"SlotFrontNvme20linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 20 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme20optionRom *string `json:"SlotFrontNvme20optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 21 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme21linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme21linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme21linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme21linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme21linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme21linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme21linkSpeed token.
+	SlotFrontNvme21linkSpeed *string `json:"SlotFrontNvme21linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 21 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme21optionRom *string `json:"SlotFrontNvme21optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 22 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme22linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme22linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme22linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme22linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme22linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme22linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme22linkSpeed token.
+	SlotFrontNvme22linkSpeed *string `json:"SlotFrontNvme22linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 22 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme22optionRom *string `json:"SlotFrontNvme22optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 23 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme23linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme23linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme23linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme23linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme23linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme23linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme23linkSpeed token.
+	SlotFrontNvme23linkSpeed *string `json:"SlotFrontNvme23linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 23 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme23optionRom *string `json:"SlotFrontNvme23optionRom,omitempty"`
+	// BIOS Token for setting Front NVME 24 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme24linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme24linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme24linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme24linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme24linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme24linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme24linkSpeed token.
+	SlotFrontNvme24linkSpeed *string `json:"SlotFrontNvme24linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 24 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme24optionRom *string `json:"SlotFrontNvme24optionRom,omitempty"`
-	// BIOS Token for setting PCIe Slot:Front NVME 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme2linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme2linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme2linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme2linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme2linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme2linkSpeed token.
+	// BIOS Token for setting PCIe Slot:Front NVME 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme2linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme2linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme2linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme2linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme2linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme2linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme2linkSpeed token.
 	SlotFrontNvme2linkSpeed *string `json:"SlotFrontNvme2linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 2 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme2optionRom *string `json:"SlotFrontNvme2optionRom,omitempty"`
-	// BIOS Token for setting Front NVME 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme3linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme3linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme3linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme3linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme3linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme3linkSpeed token.
+	// BIOS Token for setting Front NVME 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme3linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme3linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme3linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme3linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme3linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme3linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme3linkSpeed token.
 	SlotFrontNvme3linkSpeed *string `json:"SlotFrontNvme3linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 3 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme3optionRom *string `json:"SlotFrontNvme3optionRom,omitempty"`
-	// BIOS Token for setting Front NVME 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme4linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme4linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme4linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme4linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme4linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme4linkSpeed token.
+	// BIOS Token for setting Front NVME 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme4linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme4linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme4linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme4linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme4linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme4linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme4linkSpeed token.
 	SlotFrontNvme4linkSpeed *string `json:"SlotFrontNvme4linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 4 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme4optionRom *string `json:"SlotFrontNvme4optionRom,omitempty"`
-	// BIOS Token for setting Front NVME 5 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme5linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme5linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme5linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme5linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme5linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme5linkSpeed token.
+	// BIOS Token for setting Front NVME 5 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme5linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme5linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme5linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme5linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme5linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme5linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme5linkSpeed token.
 	SlotFrontNvme5linkSpeed *string `json:"SlotFrontNvme5linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 5 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme5optionRom *string `json:"SlotFrontNvme5optionRom,omitempty"`
-	// BIOS Token for setting Front NVME 6 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme6linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme6linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme6linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme6linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme6linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme6linkSpeed token.
+	// BIOS Token for setting Front NVME 6 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme6linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme6linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme6linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme6linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme6linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme6linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme6linkSpeed token.
 	SlotFrontNvme6linkSpeed *string `json:"SlotFrontNvme6linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 6 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme6optionRom *string `json:"SlotFrontNvme6optionRom,omitempty"`
-	// BIOS Token for setting Front NVME 7 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme7linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme7linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme7linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme7linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme7linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme7linkSpeed token.
+	// BIOS Token for setting Front NVME 7 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme7linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme7linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme7linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme7linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme7linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme7linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme7linkSpeed token.
 	SlotFrontNvme7linkSpeed *string `json:"SlotFrontNvme7linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 7 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme7optionRom *string `json:"SlotFrontNvme7optionRom,omitempty"`
-	// BIOS Token for setting Front NVME 8 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme8linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme8linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme8linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme8linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme8linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme8linkSpeed token.
+	// BIOS Token for setting Front NVME 8 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme8linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme8linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme8linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme8linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme8linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme8linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme8linkSpeed token.
 	SlotFrontNvme8linkSpeed *string `json:"SlotFrontNvme8linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 8 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme8optionRom *string `json:"SlotFrontNvme8optionRom,omitempty"`
-	// BIOS Token for setting Front NVME 9 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme9linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme9linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme9linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme9linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme9linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme9linkSpeed token.
+	// BIOS Token for setting Front NVME 9 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme9linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme9linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme9linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme9linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme9linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme9linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme9linkSpeed token.
 	SlotFrontNvme9linkSpeed *string `json:"SlotFrontNvme9linkSpeed,omitempty"`
 	// BIOS Token for setting Front NVME 9 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotFrontNvme9optionRom *string `json:"SlotFrontNvme9optionRom,omitempty"`
@@ -630,11 +736,11 @@ type BiosPolicy struct {
 	SlotLom2link *string `json:"SlotLom2link,omitempty"`
 	// BIOS Token for setting Slot Mezz State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring SlotMezzState token. * `enabled` - Value - enabled for configuring SlotMezzState token. * `Legacy Only` - Value - Legacy Only for configuring SlotMezzState token. * `UEFI Only` - Value - UEFI Only for configuring SlotMezzState token.
 	SlotMezzState *string `json:"SlotMezzState,omitempty"`
-	// BIOS Token for setting PCIe Slot:MLOM Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotMlomLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotMlomLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotMlomLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotMlomLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotMlomLinkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotMlomLinkSpeed token.
+	// BIOS Token for setting PCIe Slot:MLOM Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotMlomLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotMlomLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotMlomLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotMlomLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotMlomLinkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotMlomLinkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotMlomLinkSpeed token.
 	SlotMlomLinkSpeed *string `json:"SlotMlomLinkSpeed,omitempty"`
 	// BIOS Token for setting PCIe Slot MLOM OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring SlotMlomState token. * `enabled` - Value - enabled for configuring SlotMlomState token. * `Legacy Only` - Value - Legacy Only for configuring SlotMlomState token. * `UEFI Only` - Value - UEFI Only for configuring SlotMlomState token.
 	SlotMlomState *string `json:"SlotMlomState,omitempty"`
-	// BIOS Token for setting MRAID Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotMraidLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotMraidLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotMraidLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotMraidLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotMraidLinkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotMraidLinkSpeed token.
+	// BIOS Token for setting MRAID Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotMraidLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotMraidLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotMraidLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotMraidLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotMraidLinkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotMraidLinkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotMraidLinkSpeed token.
 	SlotMraidLinkSpeed *string `json:"SlotMraidLinkSpeed,omitempty"`
 	// BIOS Token for setting PCIe Slot MRAID OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotMraidState *string `json:"SlotMraidState,omitempty"`
@@ -690,19 +796,19 @@ type BiosPolicy struct {
 	SlotRaidLinkSpeed *string `json:"SlotRaidLinkSpeed,omitempty"`
 	// BIOS Token for setting PCIe Slot RAID OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotRaidState *string `json:"SlotRaidState,omitempty"`
-	// BIOS Token for setting PCIe Slot:Rear NVME 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme1linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme1linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme1linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme1linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme1linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme1linkSpeed token.
+	// BIOS Token for setting PCIe Slot:Rear NVME 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme1linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme1linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme1linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme1linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme1linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme1linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotRearNvme1linkSpeed token.
 	SlotRearNvme1linkSpeed *string `json:"SlotRearNvme1linkSpeed,omitempty"`
 	// BIOS Token for setting PCIe Slot:Rear NVME 1 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotRearNvme1state *string `json:"SlotRearNvme1state,omitempty"`
-	// BIOS Token for setting PCIe Slot:Rear NVME 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme2linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme2linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme2linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme2linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme2linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme2linkSpeed token.
+	// BIOS Token for setting PCIe Slot:Rear NVME 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme2linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme2linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme2linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme2linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme2linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme2linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotRearNvme2linkSpeed token.
 	SlotRearNvme2linkSpeed *string `json:"SlotRearNvme2linkSpeed,omitempty"`
 	// BIOS Token for setting PCIe Slot:Rear NVME 2 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotRearNvme2state *string `json:"SlotRearNvme2state,omitempty"`
-	// BIOS Token for setting Rear NVME 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme3linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme3linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme3linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme3linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme3linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme3linkSpeed token.
+	// BIOS Token for setting Rear NVME 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme3linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme3linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme3linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme3linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme3linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme3linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotRearNvme3linkSpeed token.
 	SlotRearNvme3linkSpeed *string `json:"SlotRearNvme3linkSpeed,omitempty"`
 	// BIOS Token for setting PCIe Slot:Rear NVME 3 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotRearNvme3state *string `json:"SlotRearNvme3state,omitempty"`
-	// BIOS Token for setting Rear NVME 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme4linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme4linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme4linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme4linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme4linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme4linkSpeed token.
+	// BIOS Token for setting Rear NVME 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme4linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme4linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme4linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme4linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme4linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme4linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotRearNvme4linkSpeed token.
 	SlotRearNvme4linkSpeed *string `json:"SlotRearNvme4linkSpeed,omitempty"`
 	// BIOS Token for setting PCIe Slot:Rear NVME 4 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SlotRearNvme4state *string `json:"SlotRearNvme4state,omitempty"`
@@ -740,7 +846,7 @@ type BiosPolicy struct {
 	Smee *string `json:"Smee,omitempty"`
 	// BIOS Token for setting SMT Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SmtMode token. * `Off` - Value - Off for configuring SmtMode token.
 	SmtMode *string `json:"SmtMode,omitempty"`
-	// BIOS Token for setting Sub Numa Clustering configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Snc token. * `disabled` - Value - disabled for configuring Snc token. * `enabled` - Value - enabled for configuring Snc token.
+	// BIOS Token for setting Sub Numa Clustering configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Snc token. * `disabled` - Value - disabled for configuring Snc token. * `enabled` - Value - enabled for configuring Snc token. * `SNC2` - Value - SNC2 for configuring Snc token. * `SNC4` - Value - SNC4 for configuring Snc token.
 	Snc *string `json:"Snc,omitempty"`
 	// BIOS Token for setting Snoopy Mode for 2LM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	SnoopyModeFor2lm *string `json:"SnoopyModeFor2lm,omitempty"`
@@ -762,7 +868,7 @@ type BiosPolicy struct {
 	TpmPendingOperation *string `json:"TpmPendingOperation,omitempty"`
 	// BIOS Token for setting TPM Minimal Physical Presence configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	TpmPpiRequired *string `json:"TpmPpiRequired,omitempty"`
-	// BIOS Token for setting TPM Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	// BIOS Token for setting Security Device Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	TpmSupport *string `json:"TpmSupport,omitempty"`
 	// BIOS Token for setting Transparent Secure Memory Encryption configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Tsme token. * `disabled` - Value - disabled for configuring Tsme token. * `enabled` - Value - enabled for configuring Tsme token.
 	Tsme *string `json:"Tsme,omitempty"`
@@ -772,9 +878,9 @@ type BiosPolicy struct {
 	UcsmBootOrderRule *string `json:"UcsmBootOrderRule,omitempty"`
 	// BIOS Token for setting Uncore Frequency Scaling configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	UfsDisable *string `json:"UfsDisable,omitempty"`
-	// BIOS Token for setting UMA Based Clustering configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disable (All2All)` - Value - Disable (All2All) for configuring UmaBasedClustering token. * `Hemisphere (2-clusters)` - Value - Hemisphere (2-clusters) for configuring UmaBasedClustering token.
+	// BIOS Token for setting UMA Based Clustering configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disable (All2All)` - Value - Disable (All2All) for configuring UmaBasedClustering token. * `Hemisphere (2-clusters)` - Value - Hemisphere (2-clusters) for configuring UmaBasedClustering token. * `Quadrant (4-clusters)` - Value - Quadrant (4-clusters) for configuring UmaBasedClustering token.
 	UmaBasedClustering *string `json:"UmaBasedClustering,omitempty"`
-	// BIOS Token for setting UPI Link Enablement configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1` - Value - 1 for configuring UpiLinkEnablement token. * `2` - Value - 2 for configuring UpiLinkEnablement token. * `Auto` - Value - Auto for configuring UpiLinkEnablement token.
+	// BIOS Token for setting UPI Link Enablement configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1` - Value - 1 for configuring UpiLinkEnablement token. * `2` - Value - 2 for configuring UpiLinkEnablement token. * `3` - Value - 3 for configuring UpiLinkEnablement token. * `Auto` - Value - Auto for configuring UpiLinkEnablement token.
 	UpiLinkEnablement *string `json:"UpiLinkEnablement,omitempty"`
 	// BIOS Token for setting UPI Power Manangement configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 	UpiPowerManagement *string `json:"UpiPowerManagement,omitempty"`
@@ -804,11 +910,13 @@ type BiosPolicy struct {
 	VolMemoryMode *string `json:"VolMemoryMode,omitempty"`
 	// BIOS Token for setting Workload Configuration configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Balanced` - Value - Balanced for configuring WorkLoadConfig token. * `I/O Sensitive` - Value - I/O Sensitive for configuring WorkLoadConfig token. * `NUMA` - Value - NUMA for configuring WorkLoadConfig token. * `UMA` - Value - UMA for configuring WorkLoadConfig token.
 	WorkLoadConfig *string `json:"WorkLoadConfig,omitempty"`
+	// BIOS Token for setting X2APIC Opt-Out Flag configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+	X2apicOptOut *string `json:"X2apicOptOut,omitempty"`
 	// BIOS Token for setting XPT Prefetch configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring XptPrefetch token. * `disabled` - Value - disabled for configuring XptPrefetch token. * `enabled` - Value - enabled for configuring XptPrefetch token.
 	XptPrefetch *string `json:"XptPrefetch,omitempty"`
 	// BIOS Token for setting XPT Remote Prefetch configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring XptRemotePrefetch token. * `disabled` - Value - disabled for configuring XptRemotePrefetch token. * `enabled` - Value - enabled for configuring XptRemotePrefetch token.
-	XptRemotePrefetch *string                               `json:"XptRemotePrefetch,omitempty"`
-	Organization      *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	XptRemotePrefetch *string                                      `json:"XptRemotePrefetch,omitempty"`
+	Organization      NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	// An array of relationships to policyAbstractConfigProfile resources.
 	Profiles             []PolicyAbstractConfigProfileRelationship `json:"Profiles,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -848,6 +956,8 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.AcsControlSlot13state = &acsControlSlot13state
 	var acsControlSlot14state string = "platform-default"
 	this.AcsControlSlot14state = &acsControlSlot14state
+	var adaptiveRefreshMgmtLevel string = "platform-default"
+	this.AdaptiveRefreshMgmtLevel = &adaptiveRefreshMgmtLevel
 	var adjacentCacheLinePrefetch string = "platform-default"
 	this.AdjacentCacheLinePrefetch = &adjacentCacheLinePrefetch
 	var advancedMemTest string = "platform-default"
@@ -886,6 +996,10 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.C1autoUnDemotion = &c1autoUnDemotion
 	var cbsCmnApbdis string = "platform-default"
 	this.CbsCmnApbdis = &cbsCmnApbdis
+	var cbsCmnApbdisDfPstateRs string = "platform-default"
+	this.CbsCmnApbdisDfPstateRs = &cbsCmnApbdisDfPstateRs
+	var cbsCmnCpuAvx512 string = "platform-default"
+	this.CbsCmnCpuAvx512 = &cbsCmnCpuAvx512
 	var cbsCmnCpuCpb string = "platform-default"
 	this.CbsCmnCpuCpb = &cbsCmnCpuCpb
 	var cbsCmnCpuGenDowncoreCtrl string = "platform-default"
@@ -896,46 +1010,86 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.CbsCmnCpuL1streamHwPrefetcher = &cbsCmnCpuL1streamHwPrefetcher
 	var cbsCmnCpuL2streamHwPrefetcher string = "platform-default"
 	this.CbsCmnCpuL2streamHwPrefetcher = &cbsCmnCpuL2streamHwPrefetcher
+	var cbsCmnCpuSevAsidSpaceLimit string = "platform-default"
+	this.CbsCmnCpuSevAsidSpaceLimit = &cbsCmnCpuSevAsidSpaceLimit
 	var cbsCmnCpuSmee string = "platform-default"
 	this.CbsCmnCpuSmee = &cbsCmnCpuSmee
 	var cbsCmnCpuStreamingStoresCtrl string = "platform-default"
 	this.CbsCmnCpuStreamingStoresCtrl = &cbsCmnCpuStreamingStoresCtrl
 	var cbsCmnDeterminismSlider string = "platform-default"
 	this.CbsCmnDeterminismSlider = &cbsCmnDeterminismSlider
+	var cbsCmnEdcControlThrottle string = "platform-default"
+	this.CbsCmnEdcControlThrottle = &cbsCmnEdcControlThrottle
 	var cbsCmnEfficiencyModeEn string = "platform-default"
 	this.CbsCmnEfficiencyModeEn = &cbsCmnEfficiencyModeEn
+	var cbsCmnEfficiencyModeEnRs string = "platform-default"
+	this.CbsCmnEfficiencyModeEnRs = &cbsCmnEfficiencyModeEnRs
 	var cbsCmnFixedSocPstate string = "platform-default"
 	this.CbsCmnFixedSocPstate = &cbsCmnFixedSocPstate
 	var cbsCmnGnbNbIommu string = "platform-default"
 	this.CbsCmnGnbNbIommu = &cbsCmnGnbNbIommu
 	var cbsCmnGnbSmuDfCstates string = "platform-default"
 	this.CbsCmnGnbSmuDfCstates = &cbsCmnGnbSmuDfCstates
+	var cbsCmnGnbSmuDffoRs string = "platform-default"
+	this.CbsCmnGnbSmuDffoRs = &cbsCmnGnbSmuDffoRs
+	var cbsCmnGnbSmuDlwmSupport string = "platform-default"
+	this.CbsCmnGnbSmuDlwmSupport = &cbsCmnGnbSmuDlwmSupport
 	var cbsCmnGnbSmucppc string = "platform-default"
 	this.CbsCmnGnbSmucppc = &cbsCmnGnbSmucppc
 	var cbsCmnMemCtrlBankGroupSwapDdr4 string = "platform-default"
 	this.CbsCmnMemCtrlBankGroupSwapDdr4 = &cbsCmnMemCtrlBankGroupSwapDdr4
+	var cbsCmnMemCtrllerPwrDnEnDdr string = "platform-default"
+	this.CbsCmnMemCtrllerPwrDnEnDdr = &cbsCmnMemCtrllerPwrDnEnDdr
 	var cbsCmnMemMapBankInterleaveDdr4 string = "platform-default"
 	this.CbsCmnMemMapBankInterleaveDdr4 = &cbsCmnMemMapBankInterleaveDdr4
+	var cbsCmnMemSpeedDdr47xx2 string = "platform-default"
+	this.CbsCmnMemSpeedDdr47xx2 = &cbsCmnMemSpeedDdr47xx2
+	var cbsCmnMemSpeedDdr47xx3 string = "platform-default"
+	this.CbsCmnMemSpeedDdr47xx3 = &cbsCmnMemSpeedDdr47xx3
+	var cbsCmnPreferredIo7xx2 string = "platform-default"
+	this.CbsCmnPreferredIo7xx2 = &cbsCmnPreferredIo7xx2
+	var cbsCmnPreferredIo7xx3 string = "platform-default"
+	this.CbsCmnPreferredIo7xx3 = &cbsCmnPreferredIo7xx3
 	var cbsCmncTdpCtl string = "platform-default"
 	this.CbsCmncTdpCtl = &cbsCmncTdpCtl
+	var cbsCmnxGmiForceLinkWidthRs string = "platform-default"
+	this.CbsCmnxGmiForceLinkWidthRs = &cbsCmnxGmiForceLinkWidthRs
 	var cbsCpuCcdCtrlSsp string = "platform-default"
 	this.CbsCpuCcdCtrlSsp = &cbsCpuCcdCtrlSsp
 	var cbsCpuCoreCtrl string = "platform-default"
 	this.CbsCpuCoreCtrl = &cbsCpuCoreCtrl
+	var cbsCpuDownCoreCtrlBergamo string = "platform-default"
+	this.CbsCpuDownCoreCtrlBergamo = &cbsCpuDownCoreCtrlBergamo
+	var cbsCpuDownCoreCtrlGenoa string = "platform-default"
+	this.CbsCpuDownCoreCtrlGenoa = &cbsCpuDownCoreCtrlGenoa
 	var cbsCpuSmtCtrl string = "platform-default"
 	this.CbsCpuSmtCtrl = &cbsCpuSmtCtrl
+	var cbsDbgCpuGenCpuWdt string = "platform-default"
+	this.CbsDbgCpuGenCpuWdt = &cbsDbgCpuGenCpuWdt
+	var cbsDbgCpuLapicMode string = "platform-default"
+	this.CbsDbgCpuLapicMode = &cbsDbgCpuLapicMode
 	var cbsDbgCpuSnpMemCover string = "platform-default"
 	this.CbsDbgCpuSnpMemCover = &cbsDbgCpuSnpMemCover
 	var cbsDbgCpuSnpMemSizeCover string = "platform-default"
 	this.CbsDbgCpuSnpMemSizeCover = &cbsDbgCpuSnpMemSizeCover
+	var cbsDfCmn4linkMaxXgmiSpeed string = "platform-default"
+	this.CbsDfCmn4linkMaxXgmiSpeed = &cbsDfCmn4linkMaxXgmiSpeed
 	var cbsDfCmnAcpiSratL3numa string = "platform-default"
 	this.CbsDfCmnAcpiSratL3numa = &cbsDfCmnAcpiSratL3numa
 	var cbsDfCmnDramNps string = "platform-default"
 	this.CbsDfCmnDramNps = &cbsDfCmnDramNps
+	var cbsDfCmnDramScrubTime string = "platform-default"
+	this.CbsDfCmnDramScrubTime = &cbsDfCmnDramScrubTime
 	var cbsDfCmnMemIntlv string = "platform-default"
 	this.CbsDfCmnMemIntlv = &cbsDfCmnMemIntlv
+	var cbsDfCmnMemIntlvControl string = "platform-default"
+	this.CbsDfCmnMemIntlvControl = &cbsDfCmnMemIntlvControl
 	var cbsDfCmnMemIntlvSize string = "platform-default"
 	this.CbsDfCmnMemIntlvSize = &cbsDfCmnMemIntlvSize
+	var cbsDfDbgXgmiLinkCfg string = "platform-default"
+	this.CbsDfDbgXgmiLinkCfg = &cbsDfDbgXgmiLinkCfg
+	var cbsGnbDbgPcieTbtSupport string = "platform-default"
+	this.CbsGnbDbgPcieTbtSupport = &cbsGnbDbgPcieTbtSupport
 	var cbsSevSnpSupport string = "platform-default"
 	this.CbsSevSnpSupport = &cbsSevSnpSupport
 	var cdnEnable string = "platform-default"
@@ -986,8 +1140,12 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.DcpmmFirmwareDowngrade = &dcpmmFirmwareDowngrade
 	var demandScrub string = "platform-default"
 	this.DemandScrub = &demandScrub
+	var dfxOsbEn string = "platform-default"
+	this.DfxOsbEn = &dfxOsbEn
 	var directCacheAccess string = "platform-default"
 	this.DirectCacheAccess = &directCacheAccess
+	var dmaCtrlOptIn string = "platform-default"
+	this.DmaCtrlOptIn = &dmaCtrlOptIn
 	var dramClockThrottling string = "platform-default"
 	this.DramClockThrottling = &dramClockThrottling
 	var dramRefreshRate string = "platform-default"
@@ -1002,8 +1160,14 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.EnableClockSpreadSpec = &enableClockSpreadSpec
 	var enableMktme string = "platform-default"
 	this.EnableMktme = &enableMktme
+	var enableRmt string = "platform-default"
+	this.EnableRmt = &enableRmt
 	var enableSgx string = "platform-default"
 	this.EnableSgx = &enableSgx
+	var enableTdx string = "platform-default"
+	this.EnableTdx = &enableTdx
+	var enableTdxSeamldr string = "platform-default"
+	this.EnableTdxSeamldr = &enableTdxSeamldr
 	var enableTme string = "platform-default"
 	this.EnableTme = &enableTme
 	var energyEfficientTurbo string = "platform-default"
@@ -1018,6 +1182,8 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.EppEnable = &eppEnable
 	var eppProfile string = "platform-default"
 	this.EppProfile = &eppProfile
+	var errorCheckScrub string = "platform-default"
+	this.ErrorCheckScrub = &errorCheckScrub
 	var executeDisableBit string = "platform-default"
 	this.ExecuteDisableBit = &executeDisableBit
 	var extendedApic string = "platform-default"
@@ -1052,6 +1218,8 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.IntelVtdPassThroughDmaSupport = &intelVtdPassThroughDmaSupport
 	var intelVtdatsSupport string = "platform-default"
 	this.IntelVtdatsSupport = &intelVtdatsSupport
+	var ioatConfigCpm string = "platform-default"
+	this.IoatConfigCpm = &ioatConfigCpm
 	var iohErrorEnable string = "platform-default"
 	this.IohErrorEnable = &iohErrorEnable
 	var iohResource string = "platform-default"
@@ -1106,6 +1274,10 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.MirroringMode = &mirroringMode
 	var mmcfgBase string = "platform-default"
 	this.MmcfgBase = &mmcfgBase
+	var mmiohBase string = "platform-default"
+	this.MmiohBase = &mmiohBase
+	var mmiohSize string = "platform-default"
+	this.MmiohSize = &mmiohSize
 	var networkStack string = "platform-default"
 	this.NetworkStack = &networkStack
 	var numaOptimized string = "platform-default"
@@ -1122,6 +1294,8 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.OnboardScuStorageSwStack = &onboardScuStorageSwStack
 	var operationMode string = "platform-default"
 	this.OperationMode = &operationMode
+	var optimizedPowerMode string = "platform-default"
+	this.OptimizedPowerMode = &optimizedPowerMode
 	var osBootWatchdogTimer string = "platform-default"
 	this.OsBootWatchdogTimer = &osBootWatchdogTimer
 	var osBootWatchdogTimerPolicy string = "platform-default"
@@ -1156,6 +1330,8 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.PcIeRasSupport = &pcIeRasSupport
 	var pcIeSsdHotPlugSupport string = "platform-default"
 	this.PcIeSsdHotPlugSupport = &pcIeSsdHotPlugSupport
+	var pchPciePllSsc string = "platform-default"
+	this.PchPciePllSsc = &pchPciePllSsc
 	var pchUsb30mode string = "platform-default"
 	this.PchUsb30mode = &pchUsb30mode
 	var pciOptionRoMs string = "platform-default"
@@ -1210,6 +1386,8 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.PostErrorPause = &postErrorPause
 	var postPackageRepair string = "platform-default"
 	this.PostPackageRepair = &postPackageRepair
+	var prmrrSize string = "platform-default"
+	this.PrmrrSize = &prmrrSize
 	var processorC1e string = "platform-default"
 	this.ProcessorC1e = &processorC1e
 	var processorC3report string = "platform-default"
@@ -1236,12 +1414,18 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.RankInterLeave = &rankInterLeave
 	var redirectionAfterPost string = "platform-default"
 	this.RedirectionAfterPost = &redirectionAfterPost
+	var resizeBarSupport string = "platform-default"
+	this.ResizeBarSupport = &resizeBarSupport
+	var runtimePostPackageRepair string = "platform-default"
+	this.RuntimePostPackageRepair = &runtimePostPackageRepair
 	var sataModeSelect string = "platform-default"
 	this.SataModeSelect = &sataModeSelect
 	var selectMemoryRasConfiguration string = "platform-default"
 	this.SelectMemoryRasConfiguration = &selectMemoryRasConfiguration
 	var selectPprType string = "platform-default"
 	this.SelectPprType = &selectPprType
+	var serialMux string = "platform-default"
+	this.SerialMux = &serialMux
 	var serialPortAenable string = "platform-default"
 	this.SerialPortAenable = &serialPortAenable
 	var sev string = "platform-default"
@@ -1272,6 +1456,8 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.Sha1pcrBank = &sha1pcrBank
 	var sha256pcrBank string = "platform-default"
 	this.Sha256pcrBank = &sha256pcrBank
+	var sha384pcrBank string = "platform-default"
+	this.Sha384pcrBank = &sha384pcrBank
 	var singlePctlEnable string = "platform-default"
 	this.SinglePctlEnable = &singlePctlEnable
 	var slot10linkSpeed string = "platform-default"
@@ -1340,32 +1526,56 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.SlotFrontNvme12linkSpeed = &slotFrontNvme12linkSpeed
 	var slotFrontNvme12optionRom string = "platform-default"
 	this.SlotFrontNvme12optionRom = &slotFrontNvme12optionRom
+	var slotFrontNvme13linkSpeed string = "platform-default"
+	this.SlotFrontNvme13linkSpeed = &slotFrontNvme13linkSpeed
 	var slotFrontNvme13optionRom string = "platform-default"
 	this.SlotFrontNvme13optionRom = &slotFrontNvme13optionRom
+	var slotFrontNvme14linkSpeed string = "platform-default"
+	this.SlotFrontNvme14linkSpeed = &slotFrontNvme14linkSpeed
 	var slotFrontNvme14optionRom string = "platform-default"
 	this.SlotFrontNvme14optionRom = &slotFrontNvme14optionRom
+	var slotFrontNvme15linkSpeed string = "platform-default"
+	this.SlotFrontNvme15linkSpeed = &slotFrontNvme15linkSpeed
 	var slotFrontNvme15optionRom string = "platform-default"
 	this.SlotFrontNvme15optionRom = &slotFrontNvme15optionRom
+	var slotFrontNvme16linkSpeed string = "platform-default"
+	this.SlotFrontNvme16linkSpeed = &slotFrontNvme16linkSpeed
 	var slotFrontNvme16optionRom string = "platform-default"
 	this.SlotFrontNvme16optionRom = &slotFrontNvme16optionRom
+	var slotFrontNvme17linkSpeed string = "platform-default"
+	this.SlotFrontNvme17linkSpeed = &slotFrontNvme17linkSpeed
 	var slotFrontNvme17optionRom string = "platform-default"
 	this.SlotFrontNvme17optionRom = &slotFrontNvme17optionRom
+	var slotFrontNvme18linkSpeed string = "platform-default"
+	this.SlotFrontNvme18linkSpeed = &slotFrontNvme18linkSpeed
 	var slotFrontNvme18optionRom string = "platform-default"
 	this.SlotFrontNvme18optionRom = &slotFrontNvme18optionRom
+	var slotFrontNvme19linkSpeed string = "platform-default"
+	this.SlotFrontNvme19linkSpeed = &slotFrontNvme19linkSpeed
 	var slotFrontNvme19optionRom string = "platform-default"
 	this.SlotFrontNvme19optionRom = &slotFrontNvme19optionRom
 	var slotFrontNvme1linkSpeed string = "platform-default"
 	this.SlotFrontNvme1linkSpeed = &slotFrontNvme1linkSpeed
 	var slotFrontNvme1optionRom string = "platform-default"
 	this.SlotFrontNvme1optionRom = &slotFrontNvme1optionRom
+	var slotFrontNvme20linkSpeed string = "platform-default"
+	this.SlotFrontNvme20linkSpeed = &slotFrontNvme20linkSpeed
 	var slotFrontNvme20optionRom string = "platform-default"
 	this.SlotFrontNvme20optionRom = &slotFrontNvme20optionRom
+	var slotFrontNvme21linkSpeed string = "platform-default"
+	this.SlotFrontNvme21linkSpeed = &slotFrontNvme21linkSpeed
 	var slotFrontNvme21optionRom string = "platform-default"
 	this.SlotFrontNvme21optionRom = &slotFrontNvme21optionRom
+	var slotFrontNvme22linkSpeed string = "platform-default"
+	this.SlotFrontNvme22linkSpeed = &slotFrontNvme22linkSpeed
 	var slotFrontNvme22optionRom string = "platform-default"
 	this.SlotFrontNvme22optionRom = &slotFrontNvme22optionRom
+	var slotFrontNvme23linkSpeed string = "platform-default"
+	this.SlotFrontNvme23linkSpeed = &slotFrontNvme23linkSpeed
 	var slotFrontNvme23optionRom string = "platform-default"
 	this.SlotFrontNvme23optionRom = &slotFrontNvme23optionRom
+	var slotFrontNvme24linkSpeed string = "platform-default"
+	this.SlotFrontNvme24linkSpeed = &slotFrontNvme24linkSpeed
 	var slotFrontNvme24optionRom string = "platform-default"
 	this.SlotFrontNvme24optionRom = &slotFrontNvme24optionRom
 	var slotFrontNvme2linkSpeed string = "platform-default"
@@ -1604,6 +1814,8 @@ func NewBiosPolicy(classId string, objectType string) *BiosPolicy {
 	this.VolMemoryMode = &volMemoryMode
 	var workLoadConfig string = "platform-default"
 	this.WorkLoadConfig = &workLoadConfig
+	var x2apicOptOut string = "platform-default"
+	this.X2apicOptOut = &x2apicOptOut
 	var xptPrefetch string = "platform-default"
 	this.XptPrefetch = &xptPrefetch
 	var xptRemotePrefetch string = "platform-default"
@@ -1644,6 +1856,8 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.AcsControlSlot13state = &acsControlSlot13state
 	var acsControlSlot14state string = "platform-default"
 	this.AcsControlSlot14state = &acsControlSlot14state
+	var adaptiveRefreshMgmtLevel string = "platform-default"
+	this.AdaptiveRefreshMgmtLevel = &adaptiveRefreshMgmtLevel
 	var adjacentCacheLinePrefetch string = "platform-default"
 	this.AdjacentCacheLinePrefetch = &adjacentCacheLinePrefetch
 	var advancedMemTest string = "platform-default"
@@ -1682,6 +1896,10 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.C1autoUnDemotion = &c1autoUnDemotion
 	var cbsCmnApbdis string = "platform-default"
 	this.CbsCmnApbdis = &cbsCmnApbdis
+	var cbsCmnApbdisDfPstateRs string = "platform-default"
+	this.CbsCmnApbdisDfPstateRs = &cbsCmnApbdisDfPstateRs
+	var cbsCmnCpuAvx512 string = "platform-default"
+	this.CbsCmnCpuAvx512 = &cbsCmnCpuAvx512
 	var cbsCmnCpuCpb string = "platform-default"
 	this.CbsCmnCpuCpb = &cbsCmnCpuCpb
 	var cbsCmnCpuGenDowncoreCtrl string = "platform-default"
@@ -1692,46 +1910,86 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.CbsCmnCpuL1streamHwPrefetcher = &cbsCmnCpuL1streamHwPrefetcher
 	var cbsCmnCpuL2streamHwPrefetcher string = "platform-default"
 	this.CbsCmnCpuL2streamHwPrefetcher = &cbsCmnCpuL2streamHwPrefetcher
+	var cbsCmnCpuSevAsidSpaceLimit string = "platform-default"
+	this.CbsCmnCpuSevAsidSpaceLimit = &cbsCmnCpuSevAsidSpaceLimit
 	var cbsCmnCpuSmee string = "platform-default"
 	this.CbsCmnCpuSmee = &cbsCmnCpuSmee
 	var cbsCmnCpuStreamingStoresCtrl string = "platform-default"
 	this.CbsCmnCpuStreamingStoresCtrl = &cbsCmnCpuStreamingStoresCtrl
 	var cbsCmnDeterminismSlider string = "platform-default"
 	this.CbsCmnDeterminismSlider = &cbsCmnDeterminismSlider
+	var cbsCmnEdcControlThrottle string = "platform-default"
+	this.CbsCmnEdcControlThrottle = &cbsCmnEdcControlThrottle
 	var cbsCmnEfficiencyModeEn string = "platform-default"
 	this.CbsCmnEfficiencyModeEn = &cbsCmnEfficiencyModeEn
+	var cbsCmnEfficiencyModeEnRs string = "platform-default"
+	this.CbsCmnEfficiencyModeEnRs = &cbsCmnEfficiencyModeEnRs
 	var cbsCmnFixedSocPstate string = "platform-default"
 	this.CbsCmnFixedSocPstate = &cbsCmnFixedSocPstate
 	var cbsCmnGnbNbIommu string = "platform-default"
 	this.CbsCmnGnbNbIommu = &cbsCmnGnbNbIommu
 	var cbsCmnGnbSmuDfCstates string = "platform-default"
 	this.CbsCmnGnbSmuDfCstates = &cbsCmnGnbSmuDfCstates
+	var cbsCmnGnbSmuDffoRs string = "platform-default"
+	this.CbsCmnGnbSmuDffoRs = &cbsCmnGnbSmuDffoRs
+	var cbsCmnGnbSmuDlwmSupport string = "platform-default"
+	this.CbsCmnGnbSmuDlwmSupport = &cbsCmnGnbSmuDlwmSupport
 	var cbsCmnGnbSmucppc string = "platform-default"
 	this.CbsCmnGnbSmucppc = &cbsCmnGnbSmucppc
 	var cbsCmnMemCtrlBankGroupSwapDdr4 string = "platform-default"
 	this.CbsCmnMemCtrlBankGroupSwapDdr4 = &cbsCmnMemCtrlBankGroupSwapDdr4
+	var cbsCmnMemCtrllerPwrDnEnDdr string = "platform-default"
+	this.CbsCmnMemCtrllerPwrDnEnDdr = &cbsCmnMemCtrllerPwrDnEnDdr
 	var cbsCmnMemMapBankInterleaveDdr4 string = "platform-default"
 	this.CbsCmnMemMapBankInterleaveDdr4 = &cbsCmnMemMapBankInterleaveDdr4
+	var cbsCmnMemSpeedDdr47xx2 string = "platform-default"
+	this.CbsCmnMemSpeedDdr47xx2 = &cbsCmnMemSpeedDdr47xx2
+	var cbsCmnMemSpeedDdr47xx3 string = "platform-default"
+	this.CbsCmnMemSpeedDdr47xx3 = &cbsCmnMemSpeedDdr47xx3
+	var cbsCmnPreferredIo7xx2 string = "platform-default"
+	this.CbsCmnPreferredIo7xx2 = &cbsCmnPreferredIo7xx2
+	var cbsCmnPreferredIo7xx3 string = "platform-default"
+	this.CbsCmnPreferredIo7xx3 = &cbsCmnPreferredIo7xx3
 	var cbsCmncTdpCtl string = "platform-default"
 	this.CbsCmncTdpCtl = &cbsCmncTdpCtl
+	var cbsCmnxGmiForceLinkWidthRs string = "platform-default"
+	this.CbsCmnxGmiForceLinkWidthRs = &cbsCmnxGmiForceLinkWidthRs
 	var cbsCpuCcdCtrlSsp string = "platform-default"
 	this.CbsCpuCcdCtrlSsp = &cbsCpuCcdCtrlSsp
 	var cbsCpuCoreCtrl string = "platform-default"
 	this.CbsCpuCoreCtrl = &cbsCpuCoreCtrl
+	var cbsCpuDownCoreCtrlBergamo string = "platform-default"
+	this.CbsCpuDownCoreCtrlBergamo = &cbsCpuDownCoreCtrlBergamo
+	var cbsCpuDownCoreCtrlGenoa string = "platform-default"
+	this.CbsCpuDownCoreCtrlGenoa = &cbsCpuDownCoreCtrlGenoa
 	var cbsCpuSmtCtrl string = "platform-default"
 	this.CbsCpuSmtCtrl = &cbsCpuSmtCtrl
+	var cbsDbgCpuGenCpuWdt string = "platform-default"
+	this.CbsDbgCpuGenCpuWdt = &cbsDbgCpuGenCpuWdt
+	var cbsDbgCpuLapicMode string = "platform-default"
+	this.CbsDbgCpuLapicMode = &cbsDbgCpuLapicMode
 	var cbsDbgCpuSnpMemCover string = "platform-default"
 	this.CbsDbgCpuSnpMemCover = &cbsDbgCpuSnpMemCover
 	var cbsDbgCpuSnpMemSizeCover string = "platform-default"
 	this.CbsDbgCpuSnpMemSizeCover = &cbsDbgCpuSnpMemSizeCover
+	var cbsDfCmn4linkMaxXgmiSpeed string = "platform-default"
+	this.CbsDfCmn4linkMaxXgmiSpeed = &cbsDfCmn4linkMaxXgmiSpeed
 	var cbsDfCmnAcpiSratL3numa string = "platform-default"
 	this.CbsDfCmnAcpiSratL3numa = &cbsDfCmnAcpiSratL3numa
 	var cbsDfCmnDramNps string = "platform-default"
 	this.CbsDfCmnDramNps = &cbsDfCmnDramNps
+	var cbsDfCmnDramScrubTime string = "platform-default"
+	this.CbsDfCmnDramScrubTime = &cbsDfCmnDramScrubTime
 	var cbsDfCmnMemIntlv string = "platform-default"
 	this.CbsDfCmnMemIntlv = &cbsDfCmnMemIntlv
+	var cbsDfCmnMemIntlvControl string = "platform-default"
+	this.CbsDfCmnMemIntlvControl = &cbsDfCmnMemIntlvControl
 	var cbsDfCmnMemIntlvSize string = "platform-default"
 	this.CbsDfCmnMemIntlvSize = &cbsDfCmnMemIntlvSize
+	var cbsDfDbgXgmiLinkCfg string = "platform-default"
+	this.CbsDfDbgXgmiLinkCfg = &cbsDfDbgXgmiLinkCfg
+	var cbsGnbDbgPcieTbtSupport string = "platform-default"
+	this.CbsGnbDbgPcieTbtSupport = &cbsGnbDbgPcieTbtSupport
 	var cbsSevSnpSupport string = "platform-default"
 	this.CbsSevSnpSupport = &cbsSevSnpSupport
 	var cdnEnable string = "platform-default"
@@ -1782,8 +2040,12 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.DcpmmFirmwareDowngrade = &dcpmmFirmwareDowngrade
 	var demandScrub string = "platform-default"
 	this.DemandScrub = &demandScrub
+	var dfxOsbEn string = "platform-default"
+	this.DfxOsbEn = &dfxOsbEn
 	var directCacheAccess string = "platform-default"
 	this.DirectCacheAccess = &directCacheAccess
+	var dmaCtrlOptIn string = "platform-default"
+	this.DmaCtrlOptIn = &dmaCtrlOptIn
 	var dramClockThrottling string = "platform-default"
 	this.DramClockThrottling = &dramClockThrottling
 	var dramRefreshRate string = "platform-default"
@@ -1798,8 +2060,14 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.EnableClockSpreadSpec = &enableClockSpreadSpec
 	var enableMktme string = "platform-default"
 	this.EnableMktme = &enableMktme
+	var enableRmt string = "platform-default"
+	this.EnableRmt = &enableRmt
 	var enableSgx string = "platform-default"
 	this.EnableSgx = &enableSgx
+	var enableTdx string = "platform-default"
+	this.EnableTdx = &enableTdx
+	var enableTdxSeamldr string = "platform-default"
+	this.EnableTdxSeamldr = &enableTdxSeamldr
 	var enableTme string = "platform-default"
 	this.EnableTme = &enableTme
 	var energyEfficientTurbo string = "platform-default"
@@ -1814,6 +2082,8 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.EppEnable = &eppEnable
 	var eppProfile string = "platform-default"
 	this.EppProfile = &eppProfile
+	var errorCheckScrub string = "platform-default"
+	this.ErrorCheckScrub = &errorCheckScrub
 	var executeDisableBit string = "platform-default"
 	this.ExecuteDisableBit = &executeDisableBit
 	var extendedApic string = "platform-default"
@@ -1848,6 +2118,8 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.IntelVtdPassThroughDmaSupport = &intelVtdPassThroughDmaSupport
 	var intelVtdatsSupport string = "platform-default"
 	this.IntelVtdatsSupport = &intelVtdatsSupport
+	var ioatConfigCpm string = "platform-default"
+	this.IoatConfigCpm = &ioatConfigCpm
 	var iohErrorEnable string = "platform-default"
 	this.IohErrorEnable = &iohErrorEnable
 	var iohResource string = "platform-default"
@@ -1902,6 +2174,10 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.MirroringMode = &mirroringMode
 	var mmcfgBase string = "platform-default"
 	this.MmcfgBase = &mmcfgBase
+	var mmiohBase string = "platform-default"
+	this.MmiohBase = &mmiohBase
+	var mmiohSize string = "platform-default"
+	this.MmiohSize = &mmiohSize
 	var networkStack string = "platform-default"
 	this.NetworkStack = &networkStack
 	var numaOptimized string = "platform-default"
@@ -1918,6 +2194,8 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.OnboardScuStorageSwStack = &onboardScuStorageSwStack
 	var operationMode string = "platform-default"
 	this.OperationMode = &operationMode
+	var optimizedPowerMode string = "platform-default"
+	this.OptimizedPowerMode = &optimizedPowerMode
 	var osBootWatchdogTimer string = "platform-default"
 	this.OsBootWatchdogTimer = &osBootWatchdogTimer
 	var osBootWatchdogTimerPolicy string = "platform-default"
@@ -1952,6 +2230,8 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.PcIeRasSupport = &pcIeRasSupport
 	var pcIeSsdHotPlugSupport string = "platform-default"
 	this.PcIeSsdHotPlugSupport = &pcIeSsdHotPlugSupport
+	var pchPciePllSsc string = "platform-default"
+	this.PchPciePllSsc = &pchPciePllSsc
 	var pchUsb30mode string = "platform-default"
 	this.PchUsb30mode = &pchUsb30mode
 	var pciOptionRoMs string = "platform-default"
@@ -2006,6 +2286,8 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.PostErrorPause = &postErrorPause
 	var postPackageRepair string = "platform-default"
 	this.PostPackageRepair = &postPackageRepair
+	var prmrrSize string = "platform-default"
+	this.PrmrrSize = &prmrrSize
 	var processorC1e string = "platform-default"
 	this.ProcessorC1e = &processorC1e
 	var processorC3report string = "platform-default"
@@ -2032,12 +2314,18 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.RankInterLeave = &rankInterLeave
 	var redirectionAfterPost string = "platform-default"
 	this.RedirectionAfterPost = &redirectionAfterPost
+	var resizeBarSupport string = "platform-default"
+	this.ResizeBarSupport = &resizeBarSupport
+	var runtimePostPackageRepair string = "platform-default"
+	this.RuntimePostPackageRepair = &runtimePostPackageRepair
 	var sataModeSelect string = "platform-default"
 	this.SataModeSelect = &sataModeSelect
 	var selectMemoryRasConfiguration string = "platform-default"
 	this.SelectMemoryRasConfiguration = &selectMemoryRasConfiguration
 	var selectPprType string = "platform-default"
 	this.SelectPprType = &selectPprType
+	var serialMux string = "platform-default"
+	this.SerialMux = &serialMux
 	var serialPortAenable string = "platform-default"
 	this.SerialPortAenable = &serialPortAenable
 	var sev string = "platform-default"
@@ -2068,6 +2356,8 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.Sha1pcrBank = &sha1pcrBank
 	var sha256pcrBank string = "platform-default"
 	this.Sha256pcrBank = &sha256pcrBank
+	var sha384pcrBank string = "platform-default"
+	this.Sha384pcrBank = &sha384pcrBank
 	var singlePctlEnable string = "platform-default"
 	this.SinglePctlEnable = &singlePctlEnable
 	var slot10linkSpeed string = "platform-default"
@@ -2136,32 +2426,56 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.SlotFrontNvme12linkSpeed = &slotFrontNvme12linkSpeed
 	var slotFrontNvme12optionRom string = "platform-default"
 	this.SlotFrontNvme12optionRom = &slotFrontNvme12optionRom
+	var slotFrontNvme13linkSpeed string = "platform-default"
+	this.SlotFrontNvme13linkSpeed = &slotFrontNvme13linkSpeed
 	var slotFrontNvme13optionRom string = "platform-default"
 	this.SlotFrontNvme13optionRom = &slotFrontNvme13optionRom
+	var slotFrontNvme14linkSpeed string = "platform-default"
+	this.SlotFrontNvme14linkSpeed = &slotFrontNvme14linkSpeed
 	var slotFrontNvme14optionRom string = "platform-default"
 	this.SlotFrontNvme14optionRom = &slotFrontNvme14optionRom
+	var slotFrontNvme15linkSpeed string = "platform-default"
+	this.SlotFrontNvme15linkSpeed = &slotFrontNvme15linkSpeed
 	var slotFrontNvme15optionRom string = "platform-default"
 	this.SlotFrontNvme15optionRom = &slotFrontNvme15optionRom
+	var slotFrontNvme16linkSpeed string = "platform-default"
+	this.SlotFrontNvme16linkSpeed = &slotFrontNvme16linkSpeed
 	var slotFrontNvme16optionRom string = "platform-default"
 	this.SlotFrontNvme16optionRom = &slotFrontNvme16optionRom
+	var slotFrontNvme17linkSpeed string = "platform-default"
+	this.SlotFrontNvme17linkSpeed = &slotFrontNvme17linkSpeed
 	var slotFrontNvme17optionRom string = "platform-default"
 	this.SlotFrontNvme17optionRom = &slotFrontNvme17optionRom
+	var slotFrontNvme18linkSpeed string = "platform-default"
+	this.SlotFrontNvme18linkSpeed = &slotFrontNvme18linkSpeed
 	var slotFrontNvme18optionRom string = "platform-default"
 	this.SlotFrontNvme18optionRom = &slotFrontNvme18optionRom
+	var slotFrontNvme19linkSpeed string = "platform-default"
+	this.SlotFrontNvme19linkSpeed = &slotFrontNvme19linkSpeed
 	var slotFrontNvme19optionRom string = "platform-default"
 	this.SlotFrontNvme19optionRom = &slotFrontNvme19optionRom
 	var slotFrontNvme1linkSpeed string = "platform-default"
 	this.SlotFrontNvme1linkSpeed = &slotFrontNvme1linkSpeed
 	var slotFrontNvme1optionRom string = "platform-default"
 	this.SlotFrontNvme1optionRom = &slotFrontNvme1optionRom
+	var slotFrontNvme20linkSpeed string = "platform-default"
+	this.SlotFrontNvme20linkSpeed = &slotFrontNvme20linkSpeed
 	var slotFrontNvme20optionRom string = "platform-default"
 	this.SlotFrontNvme20optionRom = &slotFrontNvme20optionRom
+	var slotFrontNvme21linkSpeed string = "platform-default"
+	this.SlotFrontNvme21linkSpeed = &slotFrontNvme21linkSpeed
 	var slotFrontNvme21optionRom string = "platform-default"
 	this.SlotFrontNvme21optionRom = &slotFrontNvme21optionRom
+	var slotFrontNvme22linkSpeed string = "platform-default"
+	this.SlotFrontNvme22linkSpeed = &slotFrontNvme22linkSpeed
 	var slotFrontNvme22optionRom string = "platform-default"
 	this.SlotFrontNvme22optionRom = &slotFrontNvme22optionRom
+	var slotFrontNvme23linkSpeed string = "platform-default"
+	this.SlotFrontNvme23linkSpeed = &slotFrontNvme23linkSpeed
 	var slotFrontNvme23optionRom string = "platform-default"
 	this.SlotFrontNvme23optionRom = &slotFrontNvme23optionRom
+	var slotFrontNvme24linkSpeed string = "platform-default"
+	this.SlotFrontNvme24linkSpeed = &slotFrontNvme24linkSpeed
 	var slotFrontNvme24optionRom string = "platform-default"
 	this.SlotFrontNvme24optionRom = &slotFrontNvme24optionRom
 	var slotFrontNvme2linkSpeed string = "platform-default"
@@ -2400,6 +2714,8 @@ func NewBiosPolicyWithDefaults() *BiosPolicy {
 	this.VolMemoryMode = &volMemoryMode
 	var workLoadConfig string = "platform-default"
 	this.WorkLoadConfig = &workLoadConfig
+	var x2apicOptOut string = "platform-default"
+	this.X2apicOptOut = &x2apicOptOut
 	var xptPrefetch string = "platform-default"
 	this.XptPrefetch = &xptPrefetch
 	var xptRemotePrefetch string = "platform-default"
@@ -2431,6 +2747,11 @@ func (o *BiosPolicy) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "bios.Policy" of the ClassId field.
+func (o *BiosPolicy) GetDefaultClassId() interface{} {
+	return "bios.Policy"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *BiosPolicy) GetObjectType() string {
 	if o == nil {
@@ -2455,9 +2776,14 @@ func (o *BiosPolicy) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "bios.Policy" of the ObjectType field.
+func (o *BiosPolicy) GetDefaultObjectType() interface{} {
+	return "bios.Policy"
+}
+
 // GetAcsControlGpu1state returns the AcsControlGpu1state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlGpu1state() string {
-	if o == nil || o.AcsControlGpu1state == nil {
+	if o == nil || IsNil(o.AcsControlGpu1state) {
 		var ret string
 		return ret
 	}
@@ -2467,7 +2793,7 @@ func (o *BiosPolicy) GetAcsControlGpu1state() string {
 // GetAcsControlGpu1stateOk returns a tuple with the AcsControlGpu1state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlGpu1stateOk() (*string, bool) {
-	if o == nil || o.AcsControlGpu1state == nil {
+	if o == nil || IsNil(o.AcsControlGpu1state) {
 		return nil, false
 	}
 	return o.AcsControlGpu1state, true
@@ -2475,7 +2801,7 @@ func (o *BiosPolicy) GetAcsControlGpu1stateOk() (*string, bool) {
 
 // HasAcsControlGpu1state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlGpu1state() bool {
-	if o != nil && o.AcsControlGpu1state != nil {
+	if o != nil && !IsNil(o.AcsControlGpu1state) {
 		return true
 	}
 
@@ -2489,7 +2815,7 @@ func (o *BiosPolicy) SetAcsControlGpu1state(v string) {
 
 // GetAcsControlGpu2state returns the AcsControlGpu2state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlGpu2state() string {
-	if o == nil || o.AcsControlGpu2state == nil {
+	if o == nil || IsNil(o.AcsControlGpu2state) {
 		var ret string
 		return ret
 	}
@@ -2499,7 +2825,7 @@ func (o *BiosPolicy) GetAcsControlGpu2state() string {
 // GetAcsControlGpu2stateOk returns a tuple with the AcsControlGpu2state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlGpu2stateOk() (*string, bool) {
-	if o == nil || o.AcsControlGpu2state == nil {
+	if o == nil || IsNil(o.AcsControlGpu2state) {
 		return nil, false
 	}
 	return o.AcsControlGpu2state, true
@@ -2507,7 +2833,7 @@ func (o *BiosPolicy) GetAcsControlGpu2stateOk() (*string, bool) {
 
 // HasAcsControlGpu2state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlGpu2state() bool {
-	if o != nil && o.AcsControlGpu2state != nil {
+	if o != nil && !IsNil(o.AcsControlGpu2state) {
 		return true
 	}
 
@@ -2521,7 +2847,7 @@ func (o *BiosPolicy) SetAcsControlGpu2state(v string) {
 
 // GetAcsControlGpu3state returns the AcsControlGpu3state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlGpu3state() string {
-	if o == nil || o.AcsControlGpu3state == nil {
+	if o == nil || IsNil(o.AcsControlGpu3state) {
 		var ret string
 		return ret
 	}
@@ -2531,7 +2857,7 @@ func (o *BiosPolicy) GetAcsControlGpu3state() string {
 // GetAcsControlGpu3stateOk returns a tuple with the AcsControlGpu3state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlGpu3stateOk() (*string, bool) {
-	if o == nil || o.AcsControlGpu3state == nil {
+	if o == nil || IsNil(o.AcsControlGpu3state) {
 		return nil, false
 	}
 	return o.AcsControlGpu3state, true
@@ -2539,7 +2865,7 @@ func (o *BiosPolicy) GetAcsControlGpu3stateOk() (*string, bool) {
 
 // HasAcsControlGpu3state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlGpu3state() bool {
-	if o != nil && o.AcsControlGpu3state != nil {
+	if o != nil && !IsNil(o.AcsControlGpu3state) {
 		return true
 	}
 
@@ -2553,7 +2879,7 @@ func (o *BiosPolicy) SetAcsControlGpu3state(v string) {
 
 // GetAcsControlGpu4state returns the AcsControlGpu4state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlGpu4state() string {
-	if o == nil || o.AcsControlGpu4state == nil {
+	if o == nil || IsNil(o.AcsControlGpu4state) {
 		var ret string
 		return ret
 	}
@@ -2563,7 +2889,7 @@ func (o *BiosPolicy) GetAcsControlGpu4state() string {
 // GetAcsControlGpu4stateOk returns a tuple with the AcsControlGpu4state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlGpu4stateOk() (*string, bool) {
-	if o == nil || o.AcsControlGpu4state == nil {
+	if o == nil || IsNil(o.AcsControlGpu4state) {
 		return nil, false
 	}
 	return o.AcsControlGpu4state, true
@@ -2571,7 +2897,7 @@ func (o *BiosPolicy) GetAcsControlGpu4stateOk() (*string, bool) {
 
 // HasAcsControlGpu4state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlGpu4state() bool {
-	if o != nil && o.AcsControlGpu4state != nil {
+	if o != nil && !IsNil(o.AcsControlGpu4state) {
 		return true
 	}
 
@@ -2585,7 +2911,7 @@ func (o *BiosPolicy) SetAcsControlGpu4state(v string) {
 
 // GetAcsControlGpu5state returns the AcsControlGpu5state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlGpu5state() string {
-	if o == nil || o.AcsControlGpu5state == nil {
+	if o == nil || IsNil(o.AcsControlGpu5state) {
 		var ret string
 		return ret
 	}
@@ -2595,7 +2921,7 @@ func (o *BiosPolicy) GetAcsControlGpu5state() string {
 // GetAcsControlGpu5stateOk returns a tuple with the AcsControlGpu5state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlGpu5stateOk() (*string, bool) {
-	if o == nil || o.AcsControlGpu5state == nil {
+	if o == nil || IsNil(o.AcsControlGpu5state) {
 		return nil, false
 	}
 	return o.AcsControlGpu5state, true
@@ -2603,7 +2929,7 @@ func (o *BiosPolicy) GetAcsControlGpu5stateOk() (*string, bool) {
 
 // HasAcsControlGpu5state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlGpu5state() bool {
-	if o != nil && o.AcsControlGpu5state != nil {
+	if o != nil && !IsNil(o.AcsControlGpu5state) {
 		return true
 	}
 
@@ -2617,7 +2943,7 @@ func (o *BiosPolicy) SetAcsControlGpu5state(v string) {
 
 // GetAcsControlGpu6state returns the AcsControlGpu6state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlGpu6state() string {
-	if o == nil || o.AcsControlGpu6state == nil {
+	if o == nil || IsNil(o.AcsControlGpu6state) {
 		var ret string
 		return ret
 	}
@@ -2627,7 +2953,7 @@ func (o *BiosPolicy) GetAcsControlGpu6state() string {
 // GetAcsControlGpu6stateOk returns a tuple with the AcsControlGpu6state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlGpu6stateOk() (*string, bool) {
-	if o == nil || o.AcsControlGpu6state == nil {
+	if o == nil || IsNil(o.AcsControlGpu6state) {
 		return nil, false
 	}
 	return o.AcsControlGpu6state, true
@@ -2635,7 +2961,7 @@ func (o *BiosPolicy) GetAcsControlGpu6stateOk() (*string, bool) {
 
 // HasAcsControlGpu6state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlGpu6state() bool {
-	if o != nil && o.AcsControlGpu6state != nil {
+	if o != nil && !IsNil(o.AcsControlGpu6state) {
 		return true
 	}
 
@@ -2649,7 +2975,7 @@ func (o *BiosPolicy) SetAcsControlGpu6state(v string) {
 
 // GetAcsControlGpu7state returns the AcsControlGpu7state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlGpu7state() string {
-	if o == nil || o.AcsControlGpu7state == nil {
+	if o == nil || IsNil(o.AcsControlGpu7state) {
 		var ret string
 		return ret
 	}
@@ -2659,7 +2985,7 @@ func (o *BiosPolicy) GetAcsControlGpu7state() string {
 // GetAcsControlGpu7stateOk returns a tuple with the AcsControlGpu7state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlGpu7stateOk() (*string, bool) {
-	if o == nil || o.AcsControlGpu7state == nil {
+	if o == nil || IsNil(o.AcsControlGpu7state) {
 		return nil, false
 	}
 	return o.AcsControlGpu7state, true
@@ -2667,7 +2993,7 @@ func (o *BiosPolicy) GetAcsControlGpu7stateOk() (*string, bool) {
 
 // HasAcsControlGpu7state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlGpu7state() bool {
-	if o != nil && o.AcsControlGpu7state != nil {
+	if o != nil && !IsNil(o.AcsControlGpu7state) {
 		return true
 	}
 
@@ -2681,7 +3007,7 @@ func (o *BiosPolicy) SetAcsControlGpu7state(v string) {
 
 // GetAcsControlGpu8state returns the AcsControlGpu8state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlGpu8state() string {
-	if o == nil || o.AcsControlGpu8state == nil {
+	if o == nil || IsNil(o.AcsControlGpu8state) {
 		var ret string
 		return ret
 	}
@@ -2691,7 +3017,7 @@ func (o *BiosPolicy) GetAcsControlGpu8state() string {
 // GetAcsControlGpu8stateOk returns a tuple with the AcsControlGpu8state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlGpu8stateOk() (*string, bool) {
-	if o == nil || o.AcsControlGpu8state == nil {
+	if o == nil || IsNil(o.AcsControlGpu8state) {
 		return nil, false
 	}
 	return o.AcsControlGpu8state, true
@@ -2699,7 +3025,7 @@ func (o *BiosPolicy) GetAcsControlGpu8stateOk() (*string, bool) {
 
 // HasAcsControlGpu8state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlGpu8state() bool {
-	if o != nil && o.AcsControlGpu8state != nil {
+	if o != nil && !IsNil(o.AcsControlGpu8state) {
 		return true
 	}
 
@@ -2713,7 +3039,7 @@ func (o *BiosPolicy) SetAcsControlGpu8state(v string) {
 
 // GetAcsControlSlot11state returns the AcsControlSlot11state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlSlot11state() string {
-	if o == nil || o.AcsControlSlot11state == nil {
+	if o == nil || IsNil(o.AcsControlSlot11state) {
 		var ret string
 		return ret
 	}
@@ -2723,7 +3049,7 @@ func (o *BiosPolicy) GetAcsControlSlot11state() string {
 // GetAcsControlSlot11stateOk returns a tuple with the AcsControlSlot11state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlSlot11stateOk() (*string, bool) {
-	if o == nil || o.AcsControlSlot11state == nil {
+	if o == nil || IsNil(o.AcsControlSlot11state) {
 		return nil, false
 	}
 	return o.AcsControlSlot11state, true
@@ -2731,7 +3057,7 @@ func (o *BiosPolicy) GetAcsControlSlot11stateOk() (*string, bool) {
 
 // HasAcsControlSlot11state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlSlot11state() bool {
-	if o != nil && o.AcsControlSlot11state != nil {
+	if o != nil && !IsNil(o.AcsControlSlot11state) {
 		return true
 	}
 
@@ -2745,7 +3071,7 @@ func (o *BiosPolicy) SetAcsControlSlot11state(v string) {
 
 // GetAcsControlSlot12state returns the AcsControlSlot12state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlSlot12state() string {
-	if o == nil || o.AcsControlSlot12state == nil {
+	if o == nil || IsNil(o.AcsControlSlot12state) {
 		var ret string
 		return ret
 	}
@@ -2755,7 +3081,7 @@ func (o *BiosPolicy) GetAcsControlSlot12state() string {
 // GetAcsControlSlot12stateOk returns a tuple with the AcsControlSlot12state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlSlot12stateOk() (*string, bool) {
-	if o == nil || o.AcsControlSlot12state == nil {
+	if o == nil || IsNil(o.AcsControlSlot12state) {
 		return nil, false
 	}
 	return o.AcsControlSlot12state, true
@@ -2763,7 +3089,7 @@ func (o *BiosPolicy) GetAcsControlSlot12stateOk() (*string, bool) {
 
 // HasAcsControlSlot12state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlSlot12state() bool {
-	if o != nil && o.AcsControlSlot12state != nil {
+	if o != nil && !IsNil(o.AcsControlSlot12state) {
 		return true
 	}
 
@@ -2777,7 +3103,7 @@ func (o *BiosPolicy) SetAcsControlSlot12state(v string) {
 
 // GetAcsControlSlot13state returns the AcsControlSlot13state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlSlot13state() string {
-	if o == nil || o.AcsControlSlot13state == nil {
+	if o == nil || IsNil(o.AcsControlSlot13state) {
 		var ret string
 		return ret
 	}
@@ -2787,7 +3113,7 @@ func (o *BiosPolicy) GetAcsControlSlot13state() string {
 // GetAcsControlSlot13stateOk returns a tuple with the AcsControlSlot13state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlSlot13stateOk() (*string, bool) {
-	if o == nil || o.AcsControlSlot13state == nil {
+	if o == nil || IsNil(o.AcsControlSlot13state) {
 		return nil, false
 	}
 	return o.AcsControlSlot13state, true
@@ -2795,7 +3121,7 @@ func (o *BiosPolicy) GetAcsControlSlot13stateOk() (*string, bool) {
 
 // HasAcsControlSlot13state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlSlot13state() bool {
-	if o != nil && o.AcsControlSlot13state != nil {
+	if o != nil && !IsNil(o.AcsControlSlot13state) {
 		return true
 	}
 
@@ -2809,7 +3135,7 @@ func (o *BiosPolicy) SetAcsControlSlot13state(v string) {
 
 // GetAcsControlSlot14state returns the AcsControlSlot14state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAcsControlSlot14state() string {
-	if o == nil || o.AcsControlSlot14state == nil {
+	if o == nil || IsNil(o.AcsControlSlot14state) {
 		var ret string
 		return ret
 	}
@@ -2819,7 +3145,7 @@ func (o *BiosPolicy) GetAcsControlSlot14state() string {
 // GetAcsControlSlot14stateOk returns a tuple with the AcsControlSlot14state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAcsControlSlot14stateOk() (*string, bool) {
-	if o == nil || o.AcsControlSlot14state == nil {
+	if o == nil || IsNil(o.AcsControlSlot14state) {
 		return nil, false
 	}
 	return o.AcsControlSlot14state, true
@@ -2827,7 +3153,7 @@ func (o *BiosPolicy) GetAcsControlSlot14stateOk() (*string, bool) {
 
 // HasAcsControlSlot14state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAcsControlSlot14state() bool {
-	if o != nil && o.AcsControlSlot14state != nil {
+	if o != nil && !IsNil(o.AcsControlSlot14state) {
 		return true
 	}
 
@@ -2839,9 +3165,41 @@ func (o *BiosPolicy) SetAcsControlSlot14state(v string) {
 	o.AcsControlSlot14state = &v
 }
 
+// GetAdaptiveRefreshMgmtLevel returns the AdaptiveRefreshMgmtLevel field value if set, zero value otherwise.
+func (o *BiosPolicy) GetAdaptiveRefreshMgmtLevel() string {
+	if o == nil || IsNil(o.AdaptiveRefreshMgmtLevel) {
+		var ret string
+		return ret
+	}
+	return *o.AdaptiveRefreshMgmtLevel
+}
+
+// GetAdaptiveRefreshMgmtLevelOk returns a tuple with the AdaptiveRefreshMgmtLevel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetAdaptiveRefreshMgmtLevelOk() (*string, bool) {
+	if o == nil || IsNil(o.AdaptiveRefreshMgmtLevel) {
+		return nil, false
+	}
+	return o.AdaptiveRefreshMgmtLevel, true
+}
+
+// HasAdaptiveRefreshMgmtLevel returns a boolean if a field has been set.
+func (o *BiosPolicy) HasAdaptiveRefreshMgmtLevel() bool {
+	if o != nil && !IsNil(o.AdaptiveRefreshMgmtLevel) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdaptiveRefreshMgmtLevel gets a reference to the given string and assigns it to the AdaptiveRefreshMgmtLevel field.
+func (o *BiosPolicy) SetAdaptiveRefreshMgmtLevel(v string) {
+	o.AdaptiveRefreshMgmtLevel = &v
+}
+
 // GetAdjacentCacheLinePrefetch returns the AdjacentCacheLinePrefetch field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAdjacentCacheLinePrefetch() string {
-	if o == nil || o.AdjacentCacheLinePrefetch == nil {
+	if o == nil || IsNil(o.AdjacentCacheLinePrefetch) {
 		var ret string
 		return ret
 	}
@@ -2851,7 +3209,7 @@ func (o *BiosPolicy) GetAdjacentCacheLinePrefetch() string {
 // GetAdjacentCacheLinePrefetchOk returns a tuple with the AdjacentCacheLinePrefetch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAdjacentCacheLinePrefetchOk() (*string, bool) {
-	if o == nil || o.AdjacentCacheLinePrefetch == nil {
+	if o == nil || IsNil(o.AdjacentCacheLinePrefetch) {
 		return nil, false
 	}
 	return o.AdjacentCacheLinePrefetch, true
@@ -2859,7 +3217,7 @@ func (o *BiosPolicy) GetAdjacentCacheLinePrefetchOk() (*string, bool) {
 
 // HasAdjacentCacheLinePrefetch returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAdjacentCacheLinePrefetch() bool {
-	if o != nil && o.AdjacentCacheLinePrefetch != nil {
+	if o != nil && !IsNil(o.AdjacentCacheLinePrefetch) {
 		return true
 	}
 
@@ -2873,7 +3231,7 @@ func (o *BiosPolicy) SetAdjacentCacheLinePrefetch(v string) {
 
 // GetAdvancedMemTest returns the AdvancedMemTest field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAdvancedMemTest() string {
-	if o == nil || o.AdvancedMemTest == nil {
+	if o == nil || IsNil(o.AdvancedMemTest) {
 		var ret string
 		return ret
 	}
@@ -2883,7 +3241,7 @@ func (o *BiosPolicy) GetAdvancedMemTest() string {
 // GetAdvancedMemTestOk returns a tuple with the AdvancedMemTest field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAdvancedMemTestOk() (*string, bool) {
-	if o == nil || o.AdvancedMemTest == nil {
+	if o == nil || IsNil(o.AdvancedMemTest) {
 		return nil, false
 	}
 	return o.AdvancedMemTest, true
@@ -2891,7 +3249,7 @@ func (o *BiosPolicy) GetAdvancedMemTestOk() (*string, bool) {
 
 // HasAdvancedMemTest returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAdvancedMemTest() bool {
-	if o != nil && o.AdvancedMemTest != nil {
+	if o != nil && !IsNil(o.AdvancedMemTest) {
 		return true
 	}
 
@@ -2905,7 +3263,7 @@ func (o *BiosPolicy) SetAdvancedMemTest(v string) {
 
 // GetAllUsbDevices returns the AllUsbDevices field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAllUsbDevices() string {
-	if o == nil || o.AllUsbDevices == nil {
+	if o == nil || IsNil(o.AllUsbDevices) {
 		var ret string
 		return ret
 	}
@@ -2915,7 +3273,7 @@ func (o *BiosPolicy) GetAllUsbDevices() string {
 // GetAllUsbDevicesOk returns a tuple with the AllUsbDevices field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAllUsbDevicesOk() (*string, bool) {
-	if o == nil || o.AllUsbDevices == nil {
+	if o == nil || IsNil(o.AllUsbDevices) {
 		return nil, false
 	}
 	return o.AllUsbDevices, true
@@ -2923,7 +3281,7 @@ func (o *BiosPolicy) GetAllUsbDevicesOk() (*string, bool) {
 
 // HasAllUsbDevices returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAllUsbDevices() bool {
-	if o != nil && o.AllUsbDevices != nil {
+	if o != nil && !IsNil(o.AllUsbDevices) {
 		return true
 	}
 
@@ -2937,7 +3295,7 @@ func (o *BiosPolicy) SetAllUsbDevices(v string) {
 
 // GetAltitude returns the Altitude field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAltitude() string {
-	if o == nil || o.Altitude == nil {
+	if o == nil || IsNil(o.Altitude) {
 		var ret string
 		return ret
 	}
@@ -2947,7 +3305,7 @@ func (o *BiosPolicy) GetAltitude() string {
 // GetAltitudeOk returns a tuple with the Altitude field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAltitudeOk() (*string, bool) {
-	if o == nil || o.Altitude == nil {
+	if o == nil || IsNil(o.Altitude) {
 		return nil, false
 	}
 	return o.Altitude, true
@@ -2955,7 +3313,7 @@ func (o *BiosPolicy) GetAltitudeOk() (*string, bool) {
 
 // HasAltitude returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAltitude() bool {
-	if o != nil && o.Altitude != nil {
+	if o != nil && !IsNil(o.Altitude) {
 		return true
 	}
 
@@ -2969,7 +3327,7 @@ func (o *BiosPolicy) SetAltitude(v string) {
 
 // GetAspmSupport returns the AspmSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAspmSupport() string {
-	if o == nil || o.AspmSupport == nil {
+	if o == nil || IsNil(o.AspmSupport) {
 		var ret string
 		return ret
 	}
@@ -2979,7 +3337,7 @@ func (o *BiosPolicy) GetAspmSupport() string {
 // GetAspmSupportOk returns a tuple with the AspmSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAspmSupportOk() (*string, bool) {
-	if o == nil || o.AspmSupport == nil {
+	if o == nil || IsNil(o.AspmSupport) {
 		return nil, false
 	}
 	return o.AspmSupport, true
@@ -2987,7 +3345,7 @@ func (o *BiosPolicy) GetAspmSupportOk() (*string, bool) {
 
 // HasAspmSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAspmSupport() bool {
-	if o != nil && o.AspmSupport != nil {
+	if o != nil && !IsNil(o.AspmSupport) {
 		return true
 	}
 
@@ -3001,7 +3359,7 @@ func (o *BiosPolicy) SetAspmSupport(v string) {
 
 // GetAssertNmiOnPerr returns the AssertNmiOnPerr field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAssertNmiOnPerr() string {
-	if o == nil || o.AssertNmiOnPerr == nil {
+	if o == nil || IsNil(o.AssertNmiOnPerr) {
 		var ret string
 		return ret
 	}
@@ -3011,7 +3369,7 @@ func (o *BiosPolicy) GetAssertNmiOnPerr() string {
 // GetAssertNmiOnPerrOk returns a tuple with the AssertNmiOnPerr field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAssertNmiOnPerrOk() (*string, bool) {
-	if o == nil || o.AssertNmiOnPerr == nil {
+	if o == nil || IsNil(o.AssertNmiOnPerr) {
 		return nil, false
 	}
 	return o.AssertNmiOnPerr, true
@@ -3019,7 +3377,7 @@ func (o *BiosPolicy) GetAssertNmiOnPerrOk() (*string, bool) {
 
 // HasAssertNmiOnPerr returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAssertNmiOnPerr() bool {
-	if o != nil && o.AssertNmiOnPerr != nil {
+	if o != nil && !IsNil(o.AssertNmiOnPerr) {
 		return true
 	}
 
@@ -3033,7 +3391,7 @@ func (o *BiosPolicy) SetAssertNmiOnPerr(v string) {
 
 // GetAssertNmiOnSerr returns the AssertNmiOnSerr field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAssertNmiOnSerr() string {
-	if o == nil || o.AssertNmiOnSerr == nil {
+	if o == nil || IsNil(o.AssertNmiOnSerr) {
 		var ret string
 		return ret
 	}
@@ -3043,7 +3401,7 @@ func (o *BiosPolicy) GetAssertNmiOnSerr() string {
 // GetAssertNmiOnSerrOk returns a tuple with the AssertNmiOnSerr field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAssertNmiOnSerrOk() (*string, bool) {
-	if o == nil || o.AssertNmiOnSerr == nil {
+	if o == nil || IsNil(o.AssertNmiOnSerr) {
 		return nil, false
 	}
 	return o.AssertNmiOnSerr, true
@@ -3051,7 +3409,7 @@ func (o *BiosPolicy) GetAssertNmiOnSerrOk() (*string, bool) {
 
 // HasAssertNmiOnSerr returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAssertNmiOnSerr() bool {
-	if o != nil && o.AssertNmiOnSerr != nil {
+	if o != nil && !IsNil(o.AssertNmiOnSerr) {
 		return true
 	}
 
@@ -3065,7 +3423,7 @@ func (o *BiosPolicy) SetAssertNmiOnSerr(v string) {
 
 // GetAutoCcState returns the AutoCcState field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAutoCcState() string {
-	if o == nil || o.AutoCcState == nil {
+	if o == nil || IsNil(o.AutoCcState) {
 		var ret string
 		return ret
 	}
@@ -3075,7 +3433,7 @@ func (o *BiosPolicy) GetAutoCcState() string {
 // GetAutoCcStateOk returns a tuple with the AutoCcState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAutoCcStateOk() (*string, bool) {
-	if o == nil || o.AutoCcState == nil {
+	if o == nil || IsNil(o.AutoCcState) {
 		return nil, false
 	}
 	return o.AutoCcState, true
@@ -3083,7 +3441,7 @@ func (o *BiosPolicy) GetAutoCcStateOk() (*string, bool) {
 
 // HasAutoCcState returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAutoCcState() bool {
-	if o != nil && o.AutoCcState != nil {
+	if o != nil && !IsNil(o.AutoCcState) {
 		return true
 	}
 
@@ -3097,7 +3455,7 @@ func (o *BiosPolicy) SetAutoCcState(v string) {
 
 // GetAutonumousCstateEnable returns the AutonumousCstateEnable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetAutonumousCstateEnable() string {
-	if o == nil || o.AutonumousCstateEnable == nil {
+	if o == nil || IsNil(o.AutonumousCstateEnable) {
 		var ret string
 		return ret
 	}
@@ -3107,7 +3465,7 @@ func (o *BiosPolicy) GetAutonumousCstateEnable() string {
 // GetAutonumousCstateEnableOk returns a tuple with the AutonumousCstateEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetAutonumousCstateEnableOk() (*string, bool) {
-	if o == nil || o.AutonumousCstateEnable == nil {
+	if o == nil || IsNil(o.AutonumousCstateEnable) {
 		return nil, false
 	}
 	return o.AutonumousCstateEnable, true
@@ -3115,7 +3473,7 @@ func (o *BiosPolicy) GetAutonumousCstateEnableOk() (*string, bool) {
 
 // HasAutonumousCstateEnable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasAutonumousCstateEnable() bool {
-	if o != nil && o.AutonumousCstateEnable != nil {
+	if o != nil && !IsNil(o.AutonumousCstateEnable) {
 		return true
 	}
 
@@ -3129,7 +3487,7 @@ func (o *BiosPolicy) SetAutonumousCstateEnable(v string) {
 
 // GetBaudRate returns the BaudRate field value if set, zero value otherwise.
 func (o *BiosPolicy) GetBaudRate() string {
-	if o == nil || o.BaudRate == nil {
+	if o == nil || IsNil(o.BaudRate) {
 		var ret string
 		return ret
 	}
@@ -3139,7 +3497,7 @@ func (o *BiosPolicy) GetBaudRate() string {
 // GetBaudRateOk returns a tuple with the BaudRate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetBaudRateOk() (*string, bool) {
-	if o == nil || o.BaudRate == nil {
+	if o == nil || IsNil(o.BaudRate) {
 		return nil, false
 	}
 	return o.BaudRate, true
@@ -3147,7 +3505,7 @@ func (o *BiosPolicy) GetBaudRateOk() (*string, bool) {
 
 // HasBaudRate returns a boolean if a field has been set.
 func (o *BiosPolicy) HasBaudRate() bool {
-	if o != nil && o.BaudRate != nil {
+	if o != nil && !IsNil(o.BaudRate) {
 		return true
 	}
 
@@ -3161,7 +3519,7 @@ func (o *BiosPolicy) SetBaudRate(v string) {
 
 // GetBmeDmaMitigation returns the BmeDmaMitigation field value if set, zero value otherwise.
 func (o *BiosPolicy) GetBmeDmaMitigation() string {
-	if o == nil || o.BmeDmaMitigation == nil {
+	if o == nil || IsNil(o.BmeDmaMitigation) {
 		var ret string
 		return ret
 	}
@@ -3171,7 +3529,7 @@ func (o *BiosPolicy) GetBmeDmaMitigation() string {
 // GetBmeDmaMitigationOk returns a tuple with the BmeDmaMitigation field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetBmeDmaMitigationOk() (*string, bool) {
-	if o == nil || o.BmeDmaMitigation == nil {
+	if o == nil || IsNil(o.BmeDmaMitigation) {
 		return nil, false
 	}
 	return o.BmeDmaMitigation, true
@@ -3179,7 +3537,7 @@ func (o *BiosPolicy) GetBmeDmaMitigationOk() (*string, bool) {
 
 // HasBmeDmaMitigation returns a boolean if a field has been set.
 func (o *BiosPolicy) HasBmeDmaMitigation() bool {
-	if o != nil && o.BmeDmaMitigation != nil {
+	if o != nil && !IsNil(o.BmeDmaMitigation) {
 		return true
 	}
 
@@ -3193,7 +3551,7 @@ func (o *BiosPolicy) SetBmeDmaMitigation(v string) {
 
 // GetBootOptionNumRetry returns the BootOptionNumRetry field value if set, zero value otherwise.
 func (o *BiosPolicy) GetBootOptionNumRetry() string {
-	if o == nil || o.BootOptionNumRetry == nil {
+	if o == nil || IsNil(o.BootOptionNumRetry) {
 		var ret string
 		return ret
 	}
@@ -3203,7 +3561,7 @@ func (o *BiosPolicy) GetBootOptionNumRetry() string {
 // GetBootOptionNumRetryOk returns a tuple with the BootOptionNumRetry field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetBootOptionNumRetryOk() (*string, bool) {
-	if o == nil || o.BootOptionNumRetry == nil {
+	if o == nil || IsNil(o.BootOptionNumRetry) {
 		return nil, false
 	}
 	return o.BootOptionNumRetry, true
@@ -3211,7 +3569,7 @@ func (o *BiosPolicy) GetBootOptionNumRetryOk() (*string, bool) {
 
 // HasBootOptionNumRetry returns a boolean if a field has been set.
 func (o *BiosPolicy) HasBootOptionNumRetry() bool {
-	if o != nil && o.BootOptionNumRetry != nil {
+	if o != nil && !IsNil(o.BootOptionNumRetry) {
 		return true
 	}
 
@@ -3225,7 +3583,7 @@ func (o *BiosPolicy) SetBootOptionNumRetry(v string) {
 
 // GetBootOptionReCoolDown returns the BootOptionReCoolDown field value if set, zero value otherwise.
 func (o *BiosPolicy) GetBootOptionReCoolDown() string {
-	if o == nil || o.BootOptionReCoolDown == nil {
+	if o == nil || IsNil(o.BootOptionReCoolDown) {
 		var ret string
 		return ret
 	}
@@ -3235,7 +3593,7 @@ func (o *BiosPolicy) GetBootOptionReCoolDown() string {
 // GetBootOptionReCoolDownOk returns a tuple with the BootOptionReCoolDown field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetBootOptionReCoolDownOk() (*string, bool) {
-	if o == nil || o.BootOptionReCoolDown == nil {
+	if o == nil || IsNil(o.BootOptionReCoolDown) {
 		return nil, false
 	}
 	return o.BootOptionReCoolDown, true
@@ -3243,7 +3601,7 @@ func (o *BiosPolicy) GetBootOptionReCoolDownOk() (*string, bool) {
 
 // HasBootOptionReCoolDown returns a boolean if a field has been set.
 func (o *BiosPolicy) HasBootOptionReCoolDown() bool {
-	if o != nil && o.BootOptionReCoolDown != nil {
+	if o != nil && !IsNil(o.BootOptionReCoolDown) {
 		return true
 	}
 
@@ -3257,7 +3615,7 @@ func (o *BiosPolicy) SetBootOptionReCoolDown(v string) {
 
 // GetBootOptionRetry returns the BootOptionRetry field value if set, zero value otherwise.
 func (o *BiosPolicy) GetBootOptionRetry() string {
-	if o == nil || o.BootOptionRetry == nil {
+	if o == nil || IsNil(o.BootOptionRetry) {
 		var ret string
 		return ret
 	}
@@ -3267,7 +3625,7 @@ func (o *BiosPolicy) GetBootOptionRetry() string {
 // GetBootOptionRetryOk returns a tuple with the BootOptionRetry field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetBootOptionRetryOk() (*string, bool) {
-	if o == nil || o.BootOptionRetry == nil {
+	if o == nil || IsNil(o.BootOptionRetry) {
 		return nil, false
 	}
 	return o.BootOptionRetry, true
@@ -3275,7 +3633,7 @@ func (o *BiosPolicy) GetBootOptionRetryOk() (*string, bool) {
 
 // HasBootOptionRetry returns a boolean if a field has been set.
 func (o *BiosPolicy) HasBootOptionRetry() bool {
-	if o != nil && o.BootOptionRetry != nil {
+	if o != nil && !IsNil(o.BootOptionRetry) {
 		return true
 	}
 
@@ -3289,7 +3647,7 @@ func (o *BiosPolicy) SetBootOptionRetry(v string) {
 
 // GetBootPerformanceMode returns the BootPerformanceMode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetBootPerformanceMode() string {
-	if o == nil || o.BootPerformanceMode == nil {
+	if o == nil || IsNil(o.BootPerformanceMode) {
 		var ret string
 		return ret
 	}
@@ -3299,7 +3657,7 @@ func (o *BiosPolicy) GetBootPerformanceMode() string {
 // GetBootPerformanceModeOk returns a tuple with the BootPerformanceMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetBootPerformanceModeOk() (*string, bool) {
-	if o == nil || o.BootPerformanceMode == nil {
+	if o == nil || IsNil(o.BootPerformanceMode) {
 		return nil, false
 	}
 	return o.BootPerformanceMode, true
@@ -3307,7 +3665,7 @@ func (o *BiosPolicy) GetBootPerformanceModeOk() (*string, bool) {
 
 // HasBootPerformanceMode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasBootPerformanceMode() bool {
-	if o != nil && o.BootPerformanceMode != nil {
+	if o != nil && !IsNil(o.BootPerformanceMode) {
 		return true
 	}
 
@@ -3321,7 +3679,7 @@ func (o *BiosPolicy) SetBootPerformanceMode(v string) {
 
 // GetBurstAndPostponedRefresh returns the BurstAndPostponedRefresh field value if set, zero value otherwise.
 func (o *BiosPolicy) GetBurstAndPostponedRefresh() string {
-	if o == nil || o.BurstAndPostponedRefresh == nil {
+	if o == nil || IsNil(o.BurstAndPostponedRefresh) {
 		var ret string
 		return ret
 	}
@@ -3331,7 +3689,7 @@ func (o *BiosPolicy) GetBurstAndPostponedRefresh() string {
 // GetBurstAndPostponedRefreshOk returns a tuple with the BurstAndPostponedRefresh field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetBurstAndPostponedRefreshOk() (*string, bool) {
-	if o == nil || o.BurstAndPostponedRefresh == nil {
+	if o == nil || IsNil(o.BurstAndPostponedRefresh) {
 		return nil, false
 	}
 	return o.BurstAndPostponedRefresh, true
@@ -3339,7 +3697,7 @@ func (o *BiosPolicy) GetBurstAndPostponedRefreshOk() (*string, bool) {
 
 // HasBurstAndPostponedRefresh returns a boolean if a field has been set.
 func (o *BiosPolicy) HasBurstAndPostponedRefresh() bool {
-	if o != nil && o.BurstAndPostponedRefresh != nil {
+	if o != nil && !IsNil(o.BurstAndPostponedRefresh) {
 		return true
 	}
 
@@ -3353,7 +3711,7 @@ func (o *BiosPolicy) SetBurstAndPostponedRefresh(v string) {
 
 // GetC1autoDemotion returns the C1autoDemotion field value if set, zero value otherwise.
 func (o *BiosPolicy) GetC1autoDemotion() string {
-	if o == nil || o.C1autoDemotion == nil {
+	if o == nil || IsNil(o.C1autoDemotion) {
 		var ret string
 		return ret
 	}
@@ -3363,7 +3721,7 @@ func (o *BiosPolicy) GetC1autoDemotion() string {
 // GetC1autoDemotionOk returns a tuple with the C1autoDemotion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetC1autoDemotionOk() (*string, bool) {
-	if o == nil || o.C1autoDemotion == nil {
+	if o == nil || IsNil(o.C1autoDemotion) {
 		return nil, false
 	}
 	return o.C1autoDemotion, true
@@ -3371,7 +3729,7 @@ func (o *BiosPolicy) GetC1autoDemotionOk() (*string, bool) {
 
 // HasC1autoDemotion returns a boolean if a field has been set.
 func (o *BiosPolicy) HasC1autoDemotion() bool {
-	if o != nil && o.C1autoDemotion != nil {
+	if o != nil && !IsNil(o.C1autoDemotion) {
 		return true
 	}
 
@@ -3385,7 +3743,7 @@ func (o *BiosPolicy) SetC1autoDemotion(v string) {
 
 // GetC1autoUnDemotion returns the C1autoUnDemotion field value if set, zero value otherwise.
 func (o *BiosPolicy) GetC1autoUnDemotion() string {
-	if o == nil || o.C1autoUnDemotion == nil {
+	if o == nil || IsNil(o.C1autoUnDemotion) {
 		var ret string
 		return ret
 	}
@@ -3395,7 +3753,7 @@ func (o *BiosPolicy) GetC1autoUnDemotion() string {
 // GetC1autoUnDemotionOk returns a tuple with the C1autoUnDemotion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetC1autoUnDemotionOk() (*string, bool) {
-	if o == nil || o.C1autoUnDemotion == nil {
+	if o == nil || IsNil(o.C1autoUnDemotion) {
 		return nil, false
 	}
 	return o.C1autoUnDemotion, true
@@ -3403,7 +3761,7 @@ func (o *BiosPolicy) GetC1autoUnDemotionOk() (*string, bool) {
 
 // HasC1autoUnDemotion returns a boolean if a field has been set.
 func (o *BiosPolicy) HasC1autoUnDemotion() bool {
-	if o != nil && o.C1autoUnDemotion != nil {
+	if o != nil && !IsNil(o.C1autoUnDemotion) {
 		return true
 	}
 
@@ -3417,7 +3775,7 @@ func (o *BiosPolicy) SetC1autoUnDemotion(v string) {
 
 // GetCbsCmnApbdis returns the CbsCmnApbdis field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnApbdis() string {
-	if o == nil || o.CbsCmnApbdis == nil {
+	if o == nil || IsNil(o.CbsCmnApbdis) {
 		var ret string
 		return ret
 	}
@@ -3427,7 +3785,7 @@ func (o *BiosPolicy) GetCbsCmnApbdis() string {
 // GetCbsCmnApbdisOk returns a tuple with the CbsCmnApbdis field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnApbdisOk() (*string, bool) {
-	if o == nil || o.CbsCmnApbdis == nil {
+	if o == nil || IsNil(o.CbsCmnApbdis) {
 		return nil, false
 	}
 	return o.CbsCmnApbdis, true
@@ -3435,7 +3793,7 @@ func (o *BiosPolicy) GetCbsCmnApbdisOk() (*string, bool) {
 
 // HasCbsCmnApbdis returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnApbdis() bool {
-	if o != nil && o.CbsCmnApbdis != nil {
+	if o != nil && !IsNil(o.CbsCmnApbdis) {
 		return true
 	}
 
@@ -3447,9 +3805,73 @@ func (o *BiosPolicy) SetCbsCmnApbdis(v string) {
 	o.CbsCmnApbdis = &v
 }
 
+// GetCbsCmnApbdisDfPstateRs returns the CbsCmnApbdisDfPstateRs field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnApbdisDfPstateRs() string {
+	if o == nil || IsNil(o.CbsCmnApbdisDfPstateRs) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnApbdisDfPstateRs
+}
+
+// GetCbsCmnApbdisDfPstateRsOk returns a tuple with the CbsCmnApbdisDfPstateRs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnApbdisDfPstateRsOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnApbdisDfPstateRs) {
+		return nil, false
+	}
+	return o.CbsCmnApbdisDfPstateRs, true
+}
+
+// HasCbsCmnApbdisDfPstateRs returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnApbdisDfPstateRs() bool {
+	if o != nil && !IsNil(o.CbsCmnApbdisDfPstateRs) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnApbdisDfPstateRs gets a reference to the given string and assigns it to the CbsCmnApbdisDfPstateRs field.
+func (o *BiosPolicy) SetCbsCmnApbdisDfPstateRs(v string) {
+	o.CbsCmnApbdisDfPstateRs = &v
+}
+
+// GetCbsCmnCpuAvx512 returns the CbsCmnCpuAvx512 field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnCpuAvx512() string {
+	if o == nil || IsNil(o.CbsCmnCpuAvx512) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnCpuAvx512
+}
+
+// GetCbsCmnCpuAvx512Ok returns a tuple with the CbsCmnCpuAvx512 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnCpuAvx512Ok() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnCpuAvx512) {
+		return nil, false
+	}
+	return o.CbsCmnCpuAvx512, true
+}
+
+// HasCbsCmnCpuAvx512 returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnCpuAvx512() bool {
+	if o != nil && !IsNil(o.CbsCmnCpuAvx512) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnCpuAvx512 gets a reference to the given string and assigns it to the CbsCmnCpuAvx512 field.
+func (o *BiosPolicy) SetCbsCmnCpuAvx512(v string) {
+	o.CbsCmnCpuAvx512 = &v
+}
+
 // GetCbsCmnCpuCpb returns the CbsCmnCpuCpb field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnCpuCpb() string {
-	if o == nil || o.CbsCmnCpuCpb == nil {
+	if o == nil || IsNil(o.CbsCmnCpuCpb) {
 		var ret string
 		return ret
 	}
@@ -3459,7 +3881,7 @@ func (o *BiosPolicy) GetCbsCmnCpuCpb() string {
 // GetCbsCmnCpuCpbOk returns a tuple with the CbsCmnCpuCpb field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnCpuCpbOk() (*string, bool) {
-	if o == nil || o.CbsCmnCpuCpb == nil {
+	if o == nil || IsNil(o.CbsCmnCpuCpb) {
 		return nil, false
 	}
 	return o.CbsCmnCpuCpb, true
@@ -3467,7 +3889,7 @@ func (o *BiosPolicy) GetCbsCmnCpuCpbOk() (*string, bool) {
 
 // HasCbsCmnCpuCpb returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnCpuCpb() bool {
-	if o != nil && o.CbsCmnCpuCpb != nil {
+	if o != nil && !IsNil(o.CbsCmnCpuCpb) {
 		return true
 	}
 
@@ -3481,7 +3903,7 @@ func (o *BiosPolicy) SetCbsCmnCpuCpb(v string) {
 
 // GetCbsCmnCpuGenDowncoreCtrl returns the CbsCmnCpuGenDowncoreCtrl field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnCpuGenDowncoreCtrl() string {
-	if o == nil || o.CbsCmnCpuGenDowncoreCtrl == nil {
+	if o == nil || IsNil(o.CbsCmnCpuGenDowncoreCtrl) {
 		var ret string
 		return ret
 	}
@@ -3491,7 +3913,7 @@ func (o *BiosPolicy) GetCbsCmnCpuGenDowncoreCtrl() string {
 // GetCbsCmnCpuGenDowncoreCtrlOk returns a tuple with the CbsCmnCpuGenDowncoreCtrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnCpuGenDowncoreCtrlOk() (*string, bool) {
-	if o == nil || o.CbsCmnCpuGenDowncoreCtrl == nil {
+	if o == nil || IsNil(o.CbsCmnCpuGenDowncoreCtrl) {
 		return nil, false
 	}
 	return o.CbsCmnCpuGenDowncoreCtrl, true
@@ -3499,7 +3921,7 @@ func (o *BiosPolicy) GetCbsCmnCpuGenDowncoreCtrlOk() (*string, bool) {
 
 // HasCbsCmnCpuGenDowncoreCtrl returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnCpuGenDowncoreCtrl() bool {
-	if o != nil && o.CbsCmnCpuGenDowncoreCtrl != nil {
+	if o != nil && !IsNil(o.CbsCmnCpuGenDowncoreCtrl) {
 		return true
 	}
 
@@ -3513,7 +3935,7 @@ func (o *BiosPolicy) SetCbsCmnCpuGenDowncoreCtrl(v string) {
 
 // GetCbsCmnCpuGlobalCstateCtrl returns the CbsCmnCpuGlobalCstateCtrl field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnCpuGlobalCstateCtrl() string {
-	if o == nil || o.CbsCmnCpuGlobalCstateCtrl == nil {
+	if o == nil || IsNil(o.CbsCmnCpuGlobalCstateCtrl) {
 		var ret string
 		return ret
 	}
@@ -3523,7 +3945,7 @@ func (o *BiosPolicy) GetCbsCmnCpuGlobalCstateCtrl() string {
 // GetCbsCmnCpuGlobalCstateCtrlOk returns a tuple with the CbsCmnCpuGlobalCstateCtrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnCpuGlobalCstateCtrlOk() (*string, bool) {
-	if o == nil || o.CbsCmnCpuGlobalCstateCtrl == nil {
+	if o == nil || IsNil(o.CbsCmnCpuGlobalCstateCtrl) {
 		return nil, false
 	}
 	return o.CbsCmnCpuGlobalCstateCtrl, true
@@ -3531,7 +3953,7 @@ func (o *BiosPolicy) GetCbsCmnCpuGlobalCstateCtrlOk() (*string, bool) {
 
 // HasCbsCmnCpuGlobalCstateCtrl returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnCpuGlobalCstateCtrl() bool {
-	if o != nil && o.CbsCmnCpuGlobalCstateCtrl != nil {
+	if o != nil && !IsNil(o.CbsCmnCpuGlobalCstateCtrl) {
 		return true
 	}
 
@@ -3545,7 +3967,7 @@ func (o *BiosPolicy) SetCbsCmnCpuGlobalCstateCtrl(v string) {
 
 // GetCbsCmnCpuL1streamHwPrefetcher returns the CbsCmnCpuL1streamHwPrefetcher field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnCpuL1streamHwPrefetcher() string {
-	if o == nil || o.CbsCmnCpuL1streamHwPrefetcher == nil {
+	if o == nil || IsNil(o.CbsCmnCpuL1streamHwPrefetcher) {
 		var ret string
 		return ret
 	}
@@ -3555,7 +3977,7 @@ func (o *BiosPolicy) GetCbsCmnCpuL1streamHwPrefetcher() string {
 // GetCbsCmnCpuL1streamHwPrefetcherOk returns a tuple with the CbsCmnCpuL1streamHwPrefetcher field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnCpuL1streamHwPrefetcherOk() (*string, bool) {
-	if o == nil || o.CbsCmnCpuL1streamHwPrefetcher == nil {
+	if o == nil || IsNil(o.CbsCmnCpuL1streamHwPrefetcher) {
 		return nil, false
 	}
 	return o.CbsCmnCpuL1streamHwPrefetcher, true
@@ -3563,7 +3985,7 @@ func (o *BiosPolicy) GetCbsCmnCpuL1streamHwPrefetcherOk() (*string, bool) {
 
 // HasCbsCmnCpuL1streamHwPrefetcher returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnCpuL1streamHwPrefetcher() bool {
-	if o != nil && o.CbsCmnCpuL1streamHwPrefetcher != nil {
+	if o != nil && !IsNil(o.CbsCmnCpuL1streamHwPrefetcher) {
 		return true
 	}
 
@@ -3577,7 +3999,7 @@ func (o *BiosPolicy) SetCbsCmnCpuL1streamHwPrefetcher(v string) {
 
 // GetCbsCmnCpuL2streamHwPrefetcher returns the CbsCmnCpuL2streamHwPrefetcher field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnCpuL2streamHwPrefetcher() string {
-	if o == nil || o.CbsCmnCpuL2streamHwPrefetcher == nil {
+	if o == nil || IsNil(o.CbsCmnCpuL2streamHwPrefetcher) {
 		var ret string
 		return ret
 	}
@@ -3587,7 +4009,7 @@ func (o *BiosPolicy) GetCbsCmnCpuL2streamHwPrefetcher() string {
 // GetCbsCmnCpuL2streamHwPrefetcherOk returns a tuple with the CbsCmnCpuL2streamHwPrefetcher field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnCpuL2streamHwPrefetcherOk() (*string, bool) {
-	if o == nil || o.CbsCmnCpuL2streamHwPrefetcher == nil {
+	if o == nil || IsNil(o.CbsCmnCpuL2streamHwPrefetcher) {
 		return nil, false
 	}
 	return o.CbsCmnCpuL2streamHwPrefetcher, true
@@ -3595,7 +4017,7 @@ func (o *BiosPolicy) GetCbsCmnCpuL2streamHwPrefetcherOk() (*string, bool) {
 
 // HasCbsCmnCpuL2streamHwPrefetcher returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnCpuL2streamHwPrefetcher() bool {
-	if o != nil && o.CbsCmnCpuL2streamHwPrefetcher != nil {
+	if o != nil && !IsNil(o.CbsCmnCpuL2streamHwPrefetcher) {
 		return true
 	}
 
@@ -3607,9 +4029,41 @@ func (o *BiosPolicy) SetCbsCmnCpuL2streamHwPrefetcher(v string) {
 	o.CbsCmnCpuL2streamHwPrefetcher = &v
 }
 
+// GetCbsCmnCpuSevAsidSpaceLimit returns the CbsCmnCpuSevAsidSpaceLimit field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnCpuSevAsidSpaceLimit() string {
+	if o == nil || IsNil(o.CbsCmnCpuSevAsidSpaceLimit) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnCpuSevAsidSpaceLimit
+}
+
+// GetCbsCmnCpuSevAsidSpaceLimitOk returns a tuple with the CbsCmnCpuSevAsidSpaceLimit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnCpuSevAsidSpaceLimitOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnCpuSevAsidSpaceLimit) {
+		return nil, false
+	}
+	return o.CbsCmnCpuSevAsidSpaceLimit, true
+}
+
+// HasCbsCmnCpuSevAsidSpaceLimit returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnCpuSevAsidSpaceLimit() bool {
+	if o != nil && !IsNil(o.CbsCmnCpuSevAsidSpaceLimit) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnCpuSevAsidSpaceLimit gets a reference to the given string and assigns it to the CbsCmnCpuSevAsidSpaceLimit field.
+func (o *BiosPolicy) SetCbsCmnCpuSevAsidSpaceLimit(v string) {
+	o.CbsCmnCpuSevAsidSpaceLimit = &v
+}
+
 // GetCbsCmnCpuSmee returns the CbsCmnCpuSmee field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnCpuSmee() string {
-	if o == nil || o.CbsCmnCpuSmee == nil {
+	if o == nil || IsNil(o.CbsCmnCpuSmee) {
 		var ret string
 		return ret
 	}
@@ -3619,7 +4073,7 @@ func (o *BiosPolicy) GetCbsCmnCpuSmee() string {
 // GetCbsCmnCpuSmeeOk returns a tuple with the CbsCmnCpuSmee field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnCpuSmeeOk() (*string, bool) {
-	if o == nil || o.CbsCmnCpuSmee == nil {
+	if o == nil || IsNil(o.CbsCmnCpuSmee) {
 		return nil, false
 	}
 	return o.CbsCmnCpuSmee, true
@@ -3627,7 +4081,7 @@ func (o *BiosPolicy) GetCbsCmnCpuSmeeOk() (*string, bool) {
 
 // HasCbsCmnCpuSmee returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnCpuSmee() bool {
-	if o != nil && o.CbsCmnCpuSmee != nil {
+	if o != nil && !IsNil(o.CbsCmnCpuSmee) {
 		return true
 	}
 
@@ -3641,7 +4095,7 @@ func (o *BiosPolicy) SetCbsCmnCpuSmee(v string) {
 
 // GetCbsCmnCpuStreamingStoresCtrl returns the CbsCmnCpuStreamingStoresCtrl field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnCpuStreamingStoresCtrl() string {
-	if o == nil || o.CbsCmnCpuStreamingStoresCtrl == nil {
+	if o == nil || IsNil(o.CbsCmnCpuStreamingStoresCtrl) {
 		var ret string
 		return ret
 	}
@@ -3651,7 +4105,7 @@ func (o *BiosPolicy) GetCbsCmnCpuStreamingStoresCtrl() string {
 // GetCbsCmnCpuStreamingStoresCtrlOk returns a tuple with the CbsCmnCpuStreamingStoresCtrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnCpuStreamingStoresCtrlOk() (*string, bool) {
-	if o == nil || o.CbsCmnCpuStreamingStoresCtrl == nil {
+	if o == nil || IsNil(o.CbsCmnCpuStreamingStoresCtrl) {
 		return nil, false
 	}
 	return o.CbsCmnCpuStreamingStoresCtrl, true
@@ -3659,7 +4113,7 @@ func (o *BiosPolicy) GetCbsCmnCpuStreamingStoresCtrlOk() (*string, bool) {
 
 // HasCbsCmnCpuStreamingStoresCtrl returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnCpuStreamingStoresCtrl() bool {
-	if o != nil && o.CbsCmnCpuStreamingStoresCtrl != nil {
+	if o != nil && !IsNil(o.CbsCmnCpuStreamingStoresCtrl) {
 		return true
 	}
 
@@ -3673,7 +4127,7 @@ func (o *BiosPolicy) SetCbsCmnCpuStreamingStoresCtrl(v string) {
 
 // GetCbsCmnDeterminismSlider returns the CbsCmnDeterminismSlider field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnDeterminismSlider() string {
-	if o == nil || o.CbsCmnDeterminismSlider == nil {
+	if o == nil || IsNil(o.CbsCmnDeterminismSlider) {
 		var ret string
 		return ret
 	}
@@ -3683,7 +4137,7 @@ func (o *BiosPolicy) GetCbsCmnDeterminismSlider() string {
 // GetCbsCmnDeterminismSliderOk returns a tuple with the CbsCmnDeterminismSlider field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnDeterminismSliderOk() (*string, bool) {
-	if o == nil || o.CbsCmnDeterminismSlider == nil {
+	if o == nil || IsNil(o.CbsCmnDeterminismSlider) {
 		return nil, false
 	}
 	return o.CbsCmnDeterminismSlider, true
@@ -3691,7 +4145,7 @@ func (o *BiosPolicy) GetCbsCmnDeterminismSliderOk() (*string, bool) {
 
 // HasCbsCmnDeterminismSlider returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnDeterminismSlider() bool {
-	if o != nil && o.CbsCmnDeterminismSlider != nil {
+	if o != nil && !IsNil(o.CbsCmnDeterminismSlider) {
 		return true
 	}
 
@@ -3703,9 +4157,41 @@ func (o *BiosPolicy) SetCbsCmnDeterminismSlider(v string) {
 	o.CbsCmnDeterminismSlider = &v
 }
 
+// GetCbsCmnEdcControlThrottle returns the CbsCmnEdcControlThrottle field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnEdcControlThrottle() string {
+	if o == nil || IsNil(o.CbsCmnEdcControlThrottle) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnEdcControlThrottle
+}
+
+// GetCbsCmnEdcControlThrottleOk returns a tuple with the CbsCmnEdcControlThrottle field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnEdcControlThrottleOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnEdcControlThrottle) {
+		return nil, false
+	}
+	return o.CbsCmnEdcControlThrottle, true
+}
+
+// HasCbsCmnEdcControlThrottle returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnEdcControlThrottle() bool {
+	if o != nil && !IsNil(o.CbsCmnEdcControlThrottle) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnEdcControlThrottle gets a reference to the given string and assigns it to the CbsCmnEdcControlThrottle field.
+func (o *BiosPolicy) SetCbsCmnEdcControlThrottle(v string) {
+	o.CbsCmnEdcControlThrottle = &v
+}
+
 // GetCbsCmnEfficiencyModeEn returns the CbsCmnEfficiencyModeEn field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnEfficiencyModeEn() string {
-	if o == nil || o.CbsCmnEfficiencyModeEn == nil {
+	if o == nil || IsNil(o.CbsCmnEfficiencyModeEn) {
 		var ret string
 		return ret
 	}
@@ -3715,7 +4201,7 @@ func (o *BiosPolicy) GetCbsCmnEfficiencyModeEn() string {
 // GetCbsCmnEfficiencyModeEnOk returns a tuple with the CbsCmnEfficiencyModeEn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnEfficiencyModeEnOk() (*string, bool) {
-	if o == nil || o.CbsCmnEfficiencyModeEn == nil {
+	if o == nil || IsNil(o.CbsCmnEfficiencyModeEn) {
 		return nil, false
 	}
 	return o.CbsCmnEfficiencyModeEn, true
@@ -3723,7 +4209,7 @@ func (o *BiosPolicy) GetCbsCmnEfficiencyModeEnOk() (*string, bool) {
 
 // HasCbsCmnEfficiencyModeEn returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnEfficiencyModeEn() bool {
-	if o != nil && o.CbsCmnEfficiencyModeEn != nil {
+	if o != nil && !IsNil(o.CbsCmnEfficiencyModeEn) {
 		return true
 	}
 
@@ -3735,9 +4221,41 @@ func (o *BiosPolicy) SetCbsCmnEfficiencyModeEn(v string) {
 	o.CbsCmnEfficiencyModeEn = &v
 }
 
+// GetCbsCmnEfficiencyModeEnRs returns the CbsCmnEfficiencyModeEnRs field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnEfficiencyModeEnRs() string {
+	if o == nil || IsNil(o.CbsCmnEfficiencyModeEnRs) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnEfficiencyModeEnRs
+}
+
+// GetCbsCmnEfficiencyModeEnRsOk returns a tuple with the CbsCmnEfficiencyModeEnRs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnEfficiencyModeEnRsOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnEfficiencyModeEnRs) {
+		return nil, false
+	}
+	return o.CbsCmnEfficiencyModeEnRs, true
+}
+
+// HasCbsCmnEfficiencyModeEnRs returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnEfficiencyModeEnRs() bool {
+	if o != nil && !IsNil(o.CbsCmnEfficiencyModeEnRs) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnEfficiencyModeEnRs gets a reference to the given string and assigns it to the CbsCmnEfficiencyModeEnRs field.
+func (o *BiosPolicy) SetCbsCmnEfficiencyModeEnRs(v string) {
+	o.CbsCmnEfficiencyModeEnRs = &v
+}
+
 // GetCbsCmnFixedSocPstate returns the CbsCmnFixedSocPstate field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnFixedSocPstate() string {
-	if o == nil || o.CbsCmnFixedSocPstate == nil {
+	if o == nil || IsNil(o.CbsCmnFixedSocPstate) {
 		var ret string
 		return ret
 	}
@@ -3747,7 +4265,7 @@ func (o *BiosPolicy) GetCbsCmnFixedSocPstate() string {
 // GetCbsCmnFixedSocPstateOk returns a tuple with the CbsCmnFixedSocPstate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnFixedSocPstateOk() (*string, bool) {
-	if o == nil || o.CbsCmnFixedSocPstate == nil {
+	if o == nil || IsNil(o.CbsCmnFixedSocPstate) {
 		return nil, false
 	}
 	return o.CbsCmnFixedSocPstate, true
@@ -3755,7 +4273,7 @@ func (o *BiosPolicy) GetCbsCmnFixedSocPstateOk() (*string, bool) {
 
 // HasCbsCmnFixedSocPstate returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnFixedSocPstate() bool {
-	if o != nil && o.CbsCmnFixedSocPstate != nil {
+	if o != nil && !IsNil(o.CbsCmnFixedSocPstate) {
 		return true
 	}
 
@@ -3769,7 +4287,7 @@ func (o *BiosPolicy) SetCbsCmnFixedSocPstate(v string) {
 
 // GetCbsCmnGnbNbIommu returns the CbsCmnGnbNbIommu field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnGnbNbIommu() string {
-	if o == nil || o.CbsCmnGnbNbIommu == nil {
+	if o == nil || IsNil(o.CbsCmnGnbNbIommu) {
 		var ret string
 		return ret
 	}
@@ -3779,7 +4297,7 @@ func (o *BiosPolicy) GetCbsCmnGnbNbIommu() string {
 // GetCbsCmnGnbNbIommuOk returns a tuple with the CbsCmnGnbNbIommu field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnGnbNbIommuOk() (*string, bool) {
-	if o == nil || o.CbsCmnGnbNbIommu == nil {
+	if o == nil || IsNil(o.CbsCmnGnbNbIommu) {
 		return nil, false
 	}
 	return o.CbsCmnGnbNbIommu, true
@@ -3787,7 +4305,7 @@ func (o *BiosPolicy) GetCbsCmnGnbNbIommuOk() (*string, bool) {
 
 // HasCbsCmnGnbNbIommu returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnGnbNbIommu() bool {
-	if o != nil && o.CbsCmnGnbNbIommu != nil {
+	if o != nil && !IsNil(o.CbsCmnGnbNbIommu) {
 		return true
 	}
 
@@ -3801,7 +4319,7 @@ func (o *BiosPolicy) SetCbsCmnGnbNbIommu(v string) {
 
 // GetCbsCmnGnbSmuDfCstates returns the CbsCmnGnbSmuDfCstates field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnGnbSmuDfCstates() string {
-	if o == nil || o.CbsCmnGnbSmuDfCstates == nil {
+	if o == nil || IsNil(o.CbsCmnGnbSmuDfCstates) {
 		var ret string
 		return ret
 	}
@@ -3811,7 +4329,7 @@ func (o *BiosPolicy) GetCbsCmnGnbSmuDfCstates() string {
 // GetCbsCmnGnbSmuDfCstatesOk returns a tuple with the CbsCmnGnbSmuDfCstates field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnGnbSmuDfCstatesOk() (*string, bool) {
-	if o == nil || o.CbsCmnGnbSmuDfCstates == nil {
+	if o == nil || IsNil(o.CbsCmnGnbSmuDfCstates) {
 		return nil, false
 	}
 	return o.CbsCmnGnbSmuDfCstates, true
@@ -3819,7 +4337,7 @@ func (o *BiosPolicy) GetCbsCmnGnbSmuDfCstatesOk() (*string, bool) {
 
 // HasCbsCmnGnbSmuDfCstates returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnGnbSmuDfCstates() bool {
-	if o != nil && o.CbsCmnGnbSmuDfCstates != nil {
+	if o != nil && !IsNil(o.CbsCmnGnbSmuDfCstates) {
 		return true
 	}
 
@@ -3831,9 +4349,73 @@ func (o *BiosPolicy) SetCbsCmnGnbSmuDfCstates(v string) {
 	o.CbsCmnGnbSmuDfCstates = &v
 }
 
+// GetCbsCmnGnbSmuDffoRs returns the CbsCmnGnbSmuDffoRs field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnGnbSmuDffoRs() string {
+	if o == nil || IsNil(o.CbsCmnGnbSmuDffoRs) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnGnbSmuDffoRs
+}
+
+// GetCbsCmnGnbSmuDffoRsOk returns a tuple with the CbsCmnGnbSmuDffoRs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnGnbSmuDffoRsOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnGnbSmuDffoRs) {
+		return nil, false
+	}
+	return o.CbsCmnGnbSmuDffoRs, true
+}
+
+// HasCbsCmnGnbSmuDffoRs returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnGnbSmuDffoRs() bool {
+	if o != nil && !IsNil(o.CbsCmnGnbSmuDffoRs) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnGnbSmuDffoRs gets a reference to the given string and assigns it to the CbsCmnGnbSmuDffoRs field.
+func (o *BiosPolicy) SetCbsCmnGnbSmuDffoRs(v string) {
+	o.CbsCmnGnbSmuDffoRs = &v
+}
+
+// GetCbsCmnGnbSmuDlwmSupport returns the CbsCmnGnbSmuDlwmSupport field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnGnbSmuDlwmSupport() string {
+	if o == nil || IsNil(o.CbsCmnGnbSmuDlwmSupport) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnGnbSmuDlwmSupport
+}
+
+// GetCbsCmnGnbSmuDlwmSupportOk returns a tuple with the CbsCmnGnbSmuDlwmSupport field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnGnbSmuDlwmSupportOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnGnbSmuDlwmSupport) {
+		return nil, false
+	}
+	return o.CbsCmnGnbSmuDlwmSupport, true
+}
+
+// HasCbsCmnGnbSmuDlwmSupport returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnGnbSmuDlwmSupport() bool {
+	if o != nil && !IsNil(o.CbsCmnGnbSmuDlwmSupport) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnGnbSmuDlwmSupport gets a reference to the given string and assigns it to the CbsCmnGnbSmuDlwmSupport field.
+func (o *BiosPolicy) SetCbsCmnGnbSmuDlwmSupport(v string) {
+	o.CbsCmnGnbSmuDlwmSupport = &v
+}
+
 // GetCbsCmnGnbSmucppc returns the CbsCmnGnbSmucppc field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnGnbSmucppc() string {
-	if o == nil || o.CbsCmnGnbSmucppc == nil {
+	if o == nil || IsNil(o.CbsCmnGnbSmucppc) {
 		var ret string
 		return ret
 	}
@@ -3843,7 +4425,7 @@ func (o *BiosPolicy) GetCbsCmnGnbSmucppc() string {
 // GetCbsCmnGnbSmucppcOk returns a tuple with the CbsCmnGnbSmucppc field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnGnbSmucppcOk() (*string, bool) {
-	if o == nil || o.CbsCmnGnbSmucppc == nil {
+	if o == nil || IsNil(o.CbsCmnGnbSmucppc) {
 		return nil, false
 	}
 	return o.CbsCmnGnbSmucppc, true
@@ -3851,7 +4433,7 @@ func (o *BiosPolicy) GetCbsCmnGnbSmucppcOk() (*string, bool) {
 
 // HasCbsCmnGnbSmucppc returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnGnbSmucppc() bool {
-	if o != nil && o.CbsCmnGnbSmucppc != nil {
+	if o != nil && !IsNil(o.CbsCmnGnbSmucppc) {
 		return true
 	}
 
@@ -3865,7 +4447,7 @@ func (o *BiosPolicy) SetCbsCmnGnbSmucppc(v string) {
 
 // GetCbsCmnMemCtrlBankGroupSwapDdr4 returns the CbsCmnMemCtrlBankGroupSwapDdr4 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnMemCtrlBankGroupSwapDdr4() string {
-	if o == nil || o.CbsCmnMemCtrlBankGroupSwapDdr4 == nil {
+	if o == nil || IsNil(o.CbsCmnMemCtrlBankGroupSwapDdr4) {
 		var ret string
 		return ret
 	}
@@ -3875,7 +4457,7 @@ func (o *BiosPolicy) GetCbsCmnMemCtrlBankGroupSwapDdr4() string {
 // GetCbsCmnMemCtrlBankGroupSwapDdr4Ok returns a tuple with the CbsCmnMemCtrlBankGroupSwapDdr4 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnMemCtrlBankGroupSwapDdr4Ok() (*string, bool) {
-	if o == nil || o.CbsCmnMemCtrlBankGroupSwapDdr4 == nil {
+	if o == nil || IsNil(o.CbsCmnMemCtrlBankGroupSwapDdr4) {
 		return nil, false
 	}
 	return o.CbsCmnMemCtrlBankGroupSwapDdr4, true
@@ -3883,7 +4465,7 @@ func (o *BiosPolicy) GetCbsCmnMemCtrlBankGroupSwapDdr4Ok() (*string, bool) {
 
 // HasCbsCmnMemCtrlBankGroupSwapDdr4 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnMemCtrlBankGroupSwapDdr4() bool {
-	if o != nil && o.CbsCmnMemCtrlBankGroupSwapDdr4 != nil {
+	if o != nil && !IsNil(o.CbsCmnMemCtrlBankGroupSwapDdr4) {
 		return true
 	}
 
@@ -3895,9 +4477,41 @@ func (o *BiosPolicy) SetCbsCmnMemCtrlBankGroupSwapDdr4(v string) {
 	o.CbsCmnMemCtrlBankGroupSwapDdr4 = &v
 }
 
+// GetCbsCmnMemCtrllerPwrDnEnDdr returns the CbsCmnMemCtrllerPwrDnEnDdr field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnMemCtrllerPwrDnEnDdr() string {
+	if o == nil || IsNil(o.CbsCmnMemCtrllerPwrDnEnDdr) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnMemCtrllerPwrDnEnDdr
+}
+
+// GetCbsCmnMemCtrllerPwrDnEnDdrOk returns a tuple with the CbsCmnMemCtrllerPwrDnEnDdr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnMemCtrllerPwrDnEnDdrOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnMemCtrllerPwrDnEnDdr) {
+		return nil, false
+	}
+	return o.CbsCmnMemCtrllerPwrDnEnDdr, true
+}
+
+// HasCbsCmnMemCtrllerPwrDnEnDdr returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnMemCtrllerPwrDnEnDdr() bool {
+	if o != nil && !IsNil(o.CbsCmnMemCtrllerPwrDnEnDdr) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnMemCtrllerPwrDnEnDdr gets a reference to the given string and assigns it to the CbsCmnMemCtrllerPwrDnEnDdr field.
+func (o *BiosPolicy) SetCbsCmnMemCtrllerPwrDnEnDdr(v string) {
+	o.CbsCmnMemCtrllerPwrDnEnDdr = &v
+}
+
 // GetCbsCmnMemMapBankInterleaveDdr4 returns the CbsCmnMemMapBankInterleaveDdr4 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmnMemMapBankInterleaveDdr4() string {
-	if o == nil || o.CbsCmnMemMapBankInterleaveDdr4 == nil {
+	if o == nil || IsNil(o.CbsCmnMemMapBankInterleaveDdr4) {
 		var ret string
 		return ret
 	}
@@ -3907,7 +4521,7 @@ func (o *BiosPolicy) GetCbsCmnMemMapBankInterleaveDdr4() string {
 // GetCbsCmnMemMapBankInterleaveDdr4Ok returns a tuple with the CbsCmnMemMapBankInterleaveDdr4 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmnMemMapBankInterleaveDdr4Ok() (*string, bool) {
-	if o == nil || o.CbsCmnMemMapBankInterleaveDdr4 == nil {
+	if o == nil || IsNil(o.CbsCmnMemMapBankInterleaveDdr4) {
 		return nil, false
 	}
 	return o.CbsCmnMemMapBankInterleaveDdr4, true
@@ -3915,7 +4529,7 @@ func (o *BiosPolicy) GetCbsCmnMemMapBankInterleaveDdr4Ok() (*string, bool) {
 
 // HasCbsCmnMemMapBankInterleaveDdr4 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmnMemMapBankInterleaveDdr4() bool {
-	if o != nil && o.CbsCmnMemMapBankInterleaveDdr4 != nil {
+	if o != nil && !IsNil(o.CbsCmnMemMapBankInterleaveDdr4) {
 		return true
 	}
 
@@ -3927,9 +4541,137 @@ func (o *BiosPolicy) SetCbsCmnMemMapBankInterleaveDdr4(v string) {
 	o.CbsCmnMemMapBankInterleaveDdr4 = &v
 }
 
+// GetCbsCmnMemSpeedDdr47xx2 returns the CbsCmnMemSpeedDdr47xx2 field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnMemSpeedDdr47xx2() string {
+	if o == nil || IsNil(o.CbsCmnMemSpeedDdr47xx2) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnMemSpeedDdr47xx2
+}
+
+// GetCbsCmnMemSpeedDdr47xx2Ok returns a tuple with the CbsCmnMemSpeedDdr47xx2 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnMemSpeedDdr47xx2Ok() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnMemSpeedDdr47xx2) {
+		return nil, false
+	}
+	return o.CbsCmnMemSpeedDdr47xx2, true
+}
+
+// HasCbsCmnMemSpeedDdr47xx2 returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnMemSpeedDdr47xx2() bool {
+	if o != nil && !IsNil(o.CbsCmnMemSpeedDdr47xx2) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnMemSpeedDdr47xx2 gets a reference to the given string and assigns it to the CbsCmnMemSpeedDdr47xx2 field.
+func (o *BiosPolicy) SetCbsCmnMemSpeedDdr47xx2(v string) {
+	o.CbsCmnMemSpeedDdr47xx2 = &v
+}
+
+// GetCbsCmnMemSpeedDdr47xx3 returns the CbsCmnMemSpeedDdr47xx3 field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnMemSpeedDdr47xx3() string {
+	if o == nil || IsNil(o.CbsCmnMemSpeedDdr47xx3) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnMemSpeedDdr47xx3
+}
+
+// GetCbsCmnMemSpeedDdr47xx3Ok returns a tuple with the CbsCmnMemSpeedDdr47xx3 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnMemSpeedDdr47xx3Ok() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnMemSpeedDdr47xx3) {
+		return nil, false
+	}
+	return o.CbsCmnMemSpeedDdr47xx3, true
+}
+
+// HasCbsCmnMemSpeedDdr47xx3 returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnMemSpeedDdr47xx3() bool {
+	if o != nil && !IsNil(o.CbsCmnMemSpeedDdr47xx3) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnMemSpeedDdr47xx3 gets a reference to the given string and assigns it to the CbsCmnMemSpeedDdr47xx3 field.
+func (o *BiosPolicy) SetCbsCmnMemSpeedDdr47xx3(v string) {
+	o.CbsCmnMemSpeedDdr47xx3 = &v
+}
+
+// GetCbsCmnPreferredIo7xx2 returns the CbsCmnPreferredIo7xx2 field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnPreferredIo7xx2() string {
+	if o == nil || IsNil(o.CbsCmnPreferredIo7xx2) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnPreferredIo7xx2
+}
+
+// GetCbsCmnPreferredIo7xx2Ok returns a tuple with the CbsCmnPreferredIo7xx2 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnPreferredIo7xx2Ok() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnPreferredIo7xx2) {
+		return nil, false
+	}
+	return o.CbsCmnPreferredIo7xx2, true
+}
+
+// HasCbsCmnPreferredIo7xx2 returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnPreferredIo7xx2() bool {
+	if o != nil && !IsNil(o.CbsCmnPreferredIo7xx2) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnPreferredIo7xx2 gets a reference to the given string and assigns it to the CbsCmnPreferredIo7xx2 field.
+func (o *BiosPolicy) SetCbsCmnPreferredIo7xx2(v string) {
+	o.CbsCmnPreferredIo7xx2 = &v
+}
+
+// GetCbsCmnPreferredIo7xx3 returns the CbsCmnPreferredIo7xx3 field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnPreferredIo7xx3() string {
+	if o == nil || IsNil(o.CbsCmnPreferredIo7xx3) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnPreferredIo7xx3
+}
+
+// GetCbsCmnPreferredIo7xx3Ok returns a tuple with the CbsCmnPreferredIo7xx3 field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnPreferredIo7xx3Ok() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnPreferredIo7xx3) {
+		return nil, false
+	}
+	return o.CbsCmnPreferredIo7xx3, true
+}
+
+// HasCbsCmnPreferredIo7xx3 returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnPreferredIo7xx3() bool {
+	if o != nil && !IsNil(o.CbsCmnPreferredIo7xx3) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnPreferredIo7xx3 gets a reference to the given string and assigns it to the CbsCmnPreferredIo7xx3 field.
+func (o *BiosPolicy) SetCbsCmnPreferredIo7xx3(v string) {
+	o.CbsCmnPreferredIo7xx3 = &v
+}
+
 // GetCbsCmncTdpCtl returns the CbsCmncTdpCtl field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCmncTdpCtl() string {
-	if o == nil || o.CbsCmncTdpCtl == nil {
+	if o == nil || IsNil(o.CbsCmncTdpCtl) {
 		var ret string
 		return ret
 	}
@@ -3939,7 +4681,7 @@ func (o *BiosPolicy) GetCbsCmncTdpCtl() string {
 // GetCbsCmncTdpCtlOk returns a tuple with the CbsCmncTdpCtl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCmncTdpCtlOk() (*string, bool) {
-	if o == nil || o.CbsCmncTdpCtl == nil {
+	if o == nil || IsNil(o.CbsCmncTdpCtl) {
 		return nil, false
 	}
 	return o.CbsCmncTdpCtl, true
@@ -3947,7 +4689,7 @@ func (o *BiosPolicy) GetCbsCmncTdpCtlOk() (*string, bool) {
 
 // HasCbsCmncTdpCtl returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCmncTdpCtl() bool {
-	if o != nil && o.CbsCmncTdpCtl != nil {
+	if o != nil && !IsNil(o.CbsCmncTdpCtl) {
 		return true
 	}
 
@@ -3959,9 +4701,41 @@ func (o *BiosPolicy) SetCbsCmncTdpCtl(v string) {
 	o.CbsCmncTdpCtl = &v
 }
 
+// GetCbsCmnxGmiForceLinkWidthRs returns the CbsCmnxGmiForceLinkWidthRs field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCmnxGmiForceLinkWidthRs() string {
+	if o == nil || IsNil(o.CbsCmnxGmiForceLinkWidthRs) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCmnxGmiForceLinkWidthRs
+}
+
+// GetCbsCmnxGmiForceLinkWidthRsOk returns a tuple with the CbsCmnxGmiForceLinkWidthRs field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCmnxGmiForceLinkWidthRsOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCmnxGmiForceLinkWidthRs) {
+		return nil, false
+	}
+	return o.CbsCmnxGmiForceLinkWidthRs, true
+}
+
+// HasCbsCmnxGmiForceLinkWidthRs returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCmnxGmiForceLinkWidthRs() bool {
+	if o != nil && !IsNil(o.CbsCmnxGmiForceLinkWidthRs) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCmnxGmiForceLinkWidthRs gets a reference to the given string and assigns it to the CbsCmnxGmiForceLinkWidthRs field.
+func (o *BiosPolicy) SetCbsCmnxGmiForceLinkWidthRs(v string) {
+	o.CbsCmnxGmiForceLinkWidthRs = &v
+}
+
 // GetCbsCpuCcdCtrlSsp returns the CbsCpuCcdCtrlSsp field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCpuCcdCtrlSsp() string {
-	if o == nil || o.CbsCpuCcdCtrlSsp == nil {
+	if o == nil || IsNil(o.CbsCpuCcdCtrlSsp) {
 		var ret string
 		return ret
 	}
@@ -3971,7 +4745,7 @@ func (o *BiosPolicy) GetCbsCpuCcdCtrlSsp() string {
 // GetCbsCpuCcdCtrlSspOk returns a tuple with the CbsCpuCcdCtrlSsp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCpuCcdCtrlSspOk() (*string, bool) {
-	if o == nil || o.CbsCpuCcdCtrlSsp == nil {
+	if o == nil || IsNil(o.CbsCpuCcdCtrlSsp) {
 		return nil, false
 	}
 	return o.CbsCpuCcdCtrlSsp, true
@@ -3979,7 +4753,7 @@ func (o *BiosPolicy) GetCbsCpuCcdCtrlSspOk() (*string, bool) {
 
 // HasCbsCpuCcdCtrlSsp returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCpuCcdCtrlSsp() bool {
-	if o != nil && o.CbsCpuCcdCtrlSsp != nil {
+	if o != nil && !IsNil(o.CbsCpuCcdCtrlSsp) {
 		return true
 	}
 
@@ -3993,7 +4767,7 @@ func (o *BiosPolicy) SetCbsCpuCcdCtrlSsp(v string) {
 
 // GetCbsCpuCoreCtrl returns the CbsCpuCoreCtrl field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCpuCoreCtrl() string {
-	if o == nil || o.CbsCpuCoreCtrl == nil {
+	if o == nil || IsNil(o.CbsCpuCoreCtrl) {
 		var ret string
 		return ret
 	}
@@ -4003,7 +4777,7 @@ func (o *BiosPolicy) GetCbsCpuCoreCtrl() string {
 // GetCbsCpuCoreCtrlOk returns a tuple with the CbsCpuCoreCtrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCpuCoreCtrlOk() (*string, bool) {
-	if o == nil || o.CbsCpuCoreCtrl == nil {
+	if o == nil || IsNil(o.CbsCpuCoreCtrl) {
 		return nil, false
 	}
 	return o.CbsCpuCoreCtrl, true
@@ -4011,7 +4785,7 @@ func (o *BiosPolicy) GetCbsCpuCoreCtrlOk() (*string, bool) {
 
 // HasCbsCpuCoreCtrl returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCpuCoreCtrl() bool {
-	if o != nil && o.CbsCpuCoreCtrl != nil {
+	if o != nil && !IsNil(o.CbsCpuCoreCtrl) {
 		return true
 	}
 
@@ -4023,9 +4797,73 @@ func (o *BiosPolicy) SetCbsCpuCoreCtrl(v string) {
 	o.CbsCpuCoreCtrl = &v
 }
 
+// GetCbsCpuDownCoreCtrlBergamo returns the CbsCpuDownCoreCtrlBergamo field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCpuDownCoreCtrlBergamo() string {
+	if o == nil || IsNil(o.CbsCpuDownCoreCtrlBergamo) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCpuDownCoreCtrlBergamo
+}
+
+// GetCbsCpuDownCoreCtrlBergamoOk returns a tuple with the CbsCpuDownCoreCtrlBergamo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCpuDownCoreCtrlBergamoOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCpuDownCoreCtrlBergamo) {
+		return nil, false
+	}
+	return o.CbsCpuDownCoreCtrlBergamo, true
+}
+
+// HasCbsCpuDownCoreCtrlBergamo returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCpuDownCoreCtrlBergamo() bool {
+	if o != nil && !IsNil(o.CbsCpuDownCoreCtrlBergamo) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCpuDownCoreCtrlBergamo gets a reference to the given string and assigns it to the CbsCpuDownCoreCtrlBergamo field.
+func (o *BiosPolicy) SetCbsCpuDownCoreCtrlBergamo(v string) {
+	o.CbsCpuDownCoreCtrlBergamo = &v
+}
+
+// GetCbsCpuDownCoreCtrlGenoa returns the CbsCpuDownCoreCtrlGenoa field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsCpuDownCoreCtrlGenoa() string {
+	if o == nil || IsNil(o.CbsCpuDownCoreCtrlGenoa) {
+		var ret string
+		return ret
+	}
+	return *o.CbsCpuDownCoreCtrlGenoa
+}
+
+// GetCbsCpuDownCoreCtrlGenoaOk returns a tuple with the CbsCpuDownCoreCtrlGenoa field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsCpuDownCoreCtrlGenoaOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsCpuDownCoreCtrlGenoa) {
+		return nil, false
+	}
+	return o.CbsCpuDownCoreCtrlGenoa, true
+}
+
+// HasCbsCpuDownCoreCtrlGenoa returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsCpuDownCoreCtrlGenoa() bool {
+	if o != nil && !IsNil(o.CbsCpuDownCoreCtrlGenoa) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsCpuDownCoreCtrlGenoa gets a reference to the given string and assigns it to the CbsCpuDownCoreCtrlGenoa field.
+func (o *BiosPolicy) SetCbsCpuDownCoreCtrlGenoa(v string) {
+	o.CbsCpuDownCoreCtrlGenoa = &v
+}
+
 // GetCbsCpuSmtCtrl returns the CbsCpuSmtCtrl field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsCpuSmtCtrl() string {
-	if o == nil || o.CbsCpuSmtCtrl == nil {
+	if o == nil || IsNil(o.CbsCpuSmtCtrl) {
 		var ret string
 		return ret
 	}
@@ -4035,7 +4873,7 @@ func (o *BiosPolicy) GetCbsCpuSmtCtrl() string {
 // GetCbsCpuSmtCtrlOk returns a tuple with the CbsCpuSmtCtrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsCpuSmtCtrlOk() (*string, bool) {
-	if o == nil || o.CbsCpuSmtCtrl == nil {
+	if o == nil || IsNil(o.CbsCpuSmtCtrl) {
 		return nil, false
 	}
 	return o.CbsCpuSmtCtrl, true
@@ -4043,7 +4881,7 @@ func (o *BiosPolicy) GetCbsCpuSmtCtrlOk() (*string, bool) {
 
 // HasCbsCpuSmtCtrl returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsCpuSmtCtrl() bool {
-	if o != nil && o.CbsCpuSmtCtrl != nil {
+	if o != nil && !IsNil(o.CbsCpuSmtCtrl) {
 		return true
 	}
 
@@ -4055,9 +4893,73 @@ func (o *BiosPolicy) SetCbsCpuSmtCtrl(v string) {
 	o.CbsCpuSmtCtrl = &v
 }
 
+// GetCbsDbgCpuGenCpuWdt returns the CbsDbgCpuGenCpuWdt field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsDbgCpuGenCpuWdt() string {
+	if o == nil || IsNil(o.CbsDbgCpuGenCpuWdt) {
+		var ret string
+		return ret
+	}
+	return *o.CbsDbgCpuGenCpuWdt
+}
+
+// GetCbsDbgCpuGenCpuWdtOk returns a tuple with the CbsDbgCpuGenCpuWdt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsDbgCpuGenCpuWdtOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsDbgCpuGenCpuWdt) {
+		return nil, false
+	}
+	return o.CbsDbgCpuGenCpuWdt, true
+}
+
+// HasCbsDbgCpuGenCpuWdt returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsDbgCpuGenCpuWdt() bool {
+	if o != nil && !IsNil(o.CbsDbgCpuGenCpuWdt) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsDbgCpuGenCpuWdt gets a reference to the given string and assigns it to the CbsDbgCpuGenCpuWdt field.
+func (o *BiosPolicy) SetCbsDbgCpuGenCpuWdt(v string) {
+	o.CbsDbgCpuGenCpuWdt = &v
+}
+
+// GetCbsDbgCpuLapicMode returns the CbsDbgCpuLapicMode field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsDbgCpuLapicMode() string {
+	if o == nil || IsNil(o.CbsDbgCpuLapicMode) {
+		var ret string
+		return ret
+	}
+	return *o.CbsDbgCpuLapicMode
+}
+
+// GetCbsDbgCpuLapicModeOk returns a tuple with the CbsDbgCpuLapicMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsDbgCpuLapicModeOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsDbgCpuLapicMode) {
+		return nil, false
+	}
+	return o.CbsDbgCpuLapicMode, true
+}
+
+// HasCbsDbgCpuLapicMode returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsDbgCpuLapicMode() bool {
+	if o != nil && !IsNil(o.CbsDbgCpuLapicMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsDbgCpuLapicMode gets a reference to the given string and assigns it to the CbsDbgCpuLapicMode field.
+func (o *BiosPolicy) SetCbsDbgCpuLapicMode(v string) {
+	o.CbsDbgCpuLapicMode = &v
+}
+
 // GetCbsDbgCpuSnpMemCover returns the CbsDbgCpuSnpMemCover field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsDbgCpuSnpMemCover() string {
-	if o == nil || o.CbsDbgCpuSnpMemCover == nil {
+	if o == nil || IsNil(o.CbsDbgCpuSnpMemCover) {
 		var ret string
 		return ret
 	}
@@ -4067,7 +4969,7 @@ func (o *BiosPolicy) GetCbsDbgCpuSnpMemCover() string {
 // GetCbsDbgCpuSnpMemCoverOk returns a tuple with the CbsDbgCpuSnpMemCover field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsDbgCpuSnpMemCoverOk() (*string, bool) {
-	if o == nil || o.CbsDbgCpuSnpMemCover == nil {
+	if o == nil || IsNil(o.CbsDbgCpuSnpMemCover) {
 		return nil, false
 	}
 	return o.CbsDbgCpuSnpMemCover, true
@@ -4075,7 +4977,7 @@ func (o *BiosPolicy) GetCbsDbgCpuSnpMemCoverOk() (*string, bool) {
 
 // HasCbsDbgCpuSnpMemCover returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsDbgCpuSnpMemCover() bool {
-	if o != nil && o.CbsDbgCpuSnpMemCover != nil {
+	if o != nil && !IsNil(o.CbsDbgCpuSnpMemCover) {
 		return true
 	}
 
@@ -4089,7 +4991,7 @@ func (o *BiosPolicy) SetCbsDbgCpuSnpMemCover(v string) {
 
 // GetCbsDbgCpuSnpMemSizeCover returns the CbsDbgCpuSnpMemSizeCover field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsDbgCpuSnpMemSizeCover() string {
-	if o == nil || o.CbsDbgCpuSnpMemSizeCover == nil {
+	if o == nil || IsNil(o.CbsDbgCpuSnpMemSizeCover) {
 		var ret string
 		return ret
 	}
@@ -4099,7 +5001,7 @@ func (o *BiosPolicy) GetCbsDbgCpuSnpMemSizeCover() string {
 // GetCbsDbgCpuSnpMemSizeCoverOk returns a tuple with the CbsDbgCpuSnpMemSizeCover field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsDbgCpuSnpMemSizeCoverOk() (*string, bool) {
-	if o == nil || o.CbsDbgCpuSnpMemSizeCover == nil {
+	if o == nil || IsNil(o.CbsDbgCpuSnpMemSizeCover) {
 		return nil, false
 	}
 	return o.CbsDbgCpuSnpMemSizeCover, true
@@ -4107,7 +5009,7 @@ func (o *BiosPolicy) GetCbsDbgCpuSnpMemSizeCoverOk() (*string, bool) {
 
 // HasCbsDbgCpuSnpMemSizeCover returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsDbgCpuSnpMemSizeCover() bool {
-	if o != nil && o.CbsDbgCpuSnpMemSizeCover != nil {
+	if o != nil && !IsNil(o.CbsDbgCpuSnpMemSizeCover) {
 		return true
 	}
 
@@ -4119,9 +5021,41 @@ func (o *BiosPolicy) SetCbsDbgCpuSnpMemSizeCover(v string) {
 	o.CbsDbgCpuSnpMemSizeCover = &v
 }
 
+// GetCbsDfCmn4linkMaxXgmiSpeed returns the CbsDfCmn4linkMaxXgmiSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsDfCmn4linkMaxXgmiSpeed() string {
+	if o == nil || IsNil(o.CbsDfCmn4linkMaxXgmiSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.CbsDfCmn4linkMaxXgmiSpeed
+}
+
+// GetCbsDfCmn4linkMaxXgmiSpeedOk returns a tuple with the CbsDfCmn4linkMaxXgmiSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsDfCmn4linkMaxXgmiSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsDfCmn4linkMaxXgmiSpeed) {
+		return nil, false
+	}
+	return o.CbsDfCmn4linkMaxXgmiSpeed, true
+}
+
+// HasCbsDfCmn4linkMaxXgmiSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsDfCmn4linkMaxXgmiSpeed() bool {
+	if o != nil && !IsNil(o.CbsDfCmn4linkMaxXgmiSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsDfCmn4linkMaxXgmiSpeed gets a reference to the given string and assigns it to the CbsDfCmn4linkMaxXgmiSpeed field.
+func (o *BiosPolicy) SetCbsDfCmn4linkMaxXgmiSpeed(v string) {
+	o.CbsDfCmn4linkMaxXgmiSpeed = &v
+}
+
 // GetCbsDfCmnAcpiSratL3numa returns the CbsDfCmnAcpiSratL3numa field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsDfCmnAcpiSratL3numa() string {
-	if o == nil || o.CbsDfCmnAcpiSratL3numa == nil {
+	if o == nil || IsNil(o.CbsDfCmnAcpiSratL3numa) {
 		var ret string
 		return ret
 	}
@@ -4131,7 +5065,7 @@ func (o *BiosPolicy) GetCbsDfCmnAcpiSratL3numa() string {
 // GetCbsDfCmnAcpiSratL3numaOk returns a tuple with the CbsDfCmnAcpiSratL3numa field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsDfCmnAcpiSratL3numaOk() (*string, bool) {
-	if o == nil || o.CbsDfCmnAcpiSratL3numa == nil {
+	if o == nil || IsNil(o.CbsDfCmnAcpiSratL3numa) {
 		return nil, false
 	}
 	return o.CbsDfCmnAcpiSratL3numa, true
@@ -4139,7 +5073,7 @@ func (o *BiosPolicy) GetCbsDfCmnAcpiSratL3numaOk() (*string, bool) {
 
 // HasCbsDfCmnAcpiSratL3numa returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsDfCmnAcpiSratL3numa() bool {
-	if o != nil && o.CbsDfCmnAcpiSratL3numa != nil {
+	if o != nil && !IsNil(o.CbsDfCmnAcpiSratL3numa) {
 		return true
 	}
 
@@ -4153,7 +5087,7 @@ func (o *BiosPolicy) SetCbsDfCmnAcpiSratL3numa(v string) {
 
 // GetCbsDfCmnDramNps returns the CbsDfCmnDramNps field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsDfCmnDramNps() string {
-	if o == nil || o.CbsDfCmnDramNps == nil {
+	if o == nil || IsNil(o.CbsDfCmnDramNps) {
 		var ret string
 		return ret
 	}
@@ -4163,7 +5097,7 @@ func (o *BiosPolicy) GetCbsDfCmnDramNps() string {
 // GetCbsDfCmnDramNpsOk returns a tuple with the CbsDfCmnDramNps field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsDfCmnDramNpsOk() (*string, bool) {
-	if o == nil || o.CbsDfCmnDramNps == nil {
+	if o == nil || IsNil(o.CbsDfCmnDramNps) {
 		return nil, false
 	}
 	return o.CbsDfCmnDramNps, true
@@ -4171,7 +5105,7 @@ func (o *BiosPolicy) GetCbsDfCmnDramNpsOk() (*string, bool) {
 
 // HasCbsDfCmnDramNps returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsDfCmnDramNps() bool {
-	if o != nil && o.CbsDfCmnDramNps != nil {
+	if o != nil && !IsNil(o.CbsDfCmnDramNps) {
 		return true
 	}
 
@@ -4183,9 +5117,41 @@ func (o *BiosPolicy) SetCbsDfCmnDramNps(v string) {
 	o.CbsDfCmnDramNps = &v
 }
 
+// GetCbsDfCmnDramScrubTime returns the CbsDfCmnDramScrubTime field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsDfCmnDramScrubTime() string {
+	if o == nil || IsNil(o.CbsDfCmnDramScrubTime) {
+		var ret string
+		return ret
+	}
+	return *o.CbsDfCmnDramScrubTime
+}
+
+// GetCbsDfCmnDramScrubTimeOk returns a tuple with the CbsDfCmnDramScrubTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsDfCmnDramScrubTimeOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsDfCmnDramScrubTime) {
+		return nil, false
+	}
+	return o.CbsDfCmnDramScrubTime, true
+}
+
+// HasCbsDfCmnDramScrubTime returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsDfCmnDramScrubTime() bool {
+	if o != nil && !IsNil(o.CbsDfCmnDramScrubTime) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsDfCmnDramScrubTime gets a reference to the given string and assigns it to the CbsDfCmnDramScrubTime field.
+func (o *BiosPolicy) SetCbsDfCmnDramScrubTime(v string) {
+	o.CbsDfCmnDramScrubTime = &v
+}
+
 // GetCbsDfCmnMemIntlv returns the CbsDfCmnMemIntlv field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsDfCmnMemIntlv() string {
-	if o == nil || o.CbsDfCmnMemIntlv == nil {
+	if o == nil || IsNil(o.CbsDfCmnMemIntlv) {
 		var ret string
 		return ret
 	}
@@ -4195,7 +5161,7 @@ func (o *BiosPolicy) GetCbsDfCmnMemIntlv() string {
 // GetCbsDfCmnMemIntlvOk returns a tuple with the CbsDfCmnMemIntlv field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsDfCmnMemIntlvOk() (*string, bool) {
-	if o == nil || o.CbsDfCmnMemIntlv == nil {
+	if o == nil || IsNil(o.CbsDfCmnMemIntlv) {
 		return nil, false
 	}
 	return o.CbsDfCmnMemIntlv, true
@@ -4203,7 +5169,7 @@ func (o *BiosPolicy) GetCbsDfCmnMemIntlvOk() (*string, bool) {
 
 // HasCbsDfCmnMemIntlv returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsDfCmnMemIntlv() bool {
-	if o != nil && o.CbsDfCmnMemIntlv != nil {
+	if o != nil && !IsNil(o.CbsDfCmnMemIntlv) {
 		return true
 	}
 
@@ -4215,9 +5181,41 @@ func (o *BiosPolicy) SetCbsDfCmnMemIntlv(v string) {
 	o.CbsDfCmnMemIntlv = &v
 }
 
+// GetCbsDfCmnMemIntlvControl returns the CbsDfCmnMemIntlvControl field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsDfCmnMemIntlvControl() string {
+	if o == nil || IsNil(o.CbsDfCmnMemIntlvControl) {
+		var ret string
+		return ret
+	}
+	return *o.CbsDfCmnMemIntlvControl
+}
+
+// GetCbsDfCmnMemIntlvControlOk returns a tuple with the CbsDfCmnMemIntlvControl field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsDfCmnMemIntlvControlOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsDfCmnMemIntlvControl) {
+		return nil, false
+	}
+	return o.CbsDfCmnMemIntlvControl, true
+}
+
+// HasCbsDfCmnMemIntlvControl returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsDfCmnMemIntlvControl() bool {
+	if o != nil && !IsNil(o.CbsDfCmnMemIntlvControl) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsDfCmnMemIntlvControl gets a reference to the given string and assigns it to the CbsDfCmnMemIntlvControl field.
+func (o *BiosPolicy) SetCbsDfCmnMemIntlvControl(v string) {
+	o.CbsDfCmnMemIntlvControl = &v
+}
+
 // GetCbsDfCmnMemIntlvSize returns the CbsDfCmnMemIntlvSize field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsDfCmnMemIntlvSize() string {
-	if o == nil || o.CbsDfCmnMemIntlvSize == nil {
+	if o == nil || IsNil(o.CbsDfCmnMemIntlvSize) {
 		var ret string
 		return ret
 	}
@@ -4227,7 +5225,7 @@ func (o *BiosPolicy) GetCbsDfCmnMemIntlvSize() string {
 // GetCbsDfCmnMemIntlvSizeOk returns a tuple with the CbsDfCmnMemIntlvSize field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsDfCmnMemIntlvSizeOk() (*string, bool) {
-	if o == nil || o.CbsDfCmnMemIntlvSize == nil {
+	if o == nil || IsNil(o.CbsDfCmnMemIntlvSize) {
 		return nil, false
 	}
 	return o.CbsDfCmnMemIntlvSize, true
@@ -4235,7 +5233,7 @@ func (o *BiosPolicy) GetCbsDfCmnMemIntlvSizeOk() (*string, bool) {
 
 // HasCbsDfCmnMemIntlvSize returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsDfCmnMemIntlvSize() bool {
-	if o != nil && o.CbsDfCmnMemIntlvSize != nil {
+	if o != nil && !IsNil(o.CbsDfCmnMemIntlvSize) {
 		return true
 	}
 
@@ -4247,9 +5245,73 @@ func (o *BiosPolicy) SetCbsDfCmnMemIntlvSize(v string) {
 	o.CbsDfCmnMemIntlvSize = &v
 }
 
+// GetCbsDfDbgXgmiLinkCfg returns the CbsDfDbgXgmiLinkCfg field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsDfDbgXgmiLinkCfg() string {
+	if o == nil || IsNil(o.CbsDfDbgXgmiLinkCfg) {
+		var ret string
+		return ret
+	}
+	return *o.CbsDfDbgXgmiLinkCfg
+}
+
+// GetCbsDfDbgXgmiLinkCfgOk returns a tuple with the CbsDfDbgXgmiLinkCfg field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsDfDbgXgmiLinkCfgOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsDfDbgXgmiLinkCfg) {
+		return nil, false
+	}
+	return o.CbsDfDbgXgmiLinkCfg, true
+}
+
+// HasCbsDfDbgXgmiLinkCfg returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsDfDbgXgmiLinkCfg() bool {
+	if o != nil && !IsNil(o.CbsDfDbgXgmiLinkCfg) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsDfDbgXgmiLinkCfg gets a reference to the given string and assigns it to the CbsDfDbgXgmiLinkCfg field.
+func (o *BiosPolicy) SetCbsDfDbgXgmiLinkCfg(v string) {
+	o.CbsDfDbgXgmiLinkCfg = &v
+}
+
+// GetCbsGnbDbgPcieTbtSupport returns the CbsGnbDbgPcieTbtSupport field value if set, zero value otherwise.
+func (o *BiosPolicy) GetCbsGnbDbgPcieTbtSupport() string {
+	if o == nil || IsNil(o.CbsGnbDbgPcieTbtSupport) {
+		var ret string
+		return ret
+	}
+	return *o.CbsGnbDbgPcieTbtSupport
+}
+
+// GetCbsGnbDbgPcieTbtSupportOk returns a tuple with the CbsGnbDbgPcieTbtSupport field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetCbsGnbDbgPcieTbtSupportOk() (*string, bool) {
+	if o == nil || IsNil(o.CbsGnbDbgPcieTbtSupport) {
+		return nil, false
+	}
+	return o.CbsGnbDbgPcieTbtSupport, true
+}
+
+// HasCbsGnbDbgPcieTbtSupport returns a boolean if a field has been set.
+func (o *BiosPolicy) HasCbsGnbDbgPcieTbtSupport() bool {
+	if o != nil && !IsNil(o.CbsGnbDbgPcieTbtSupport) {
+		return true
+	}
+
+	return false
+}
+
+// SetCbsGnbDbgPcieTbtSupport gets a reference to the given string and assigns it to the CbsGnbDbgPcieTbtSupport field.
+func (o *BiosPolicy) SetCbsGnbDbgPcieTbtSupport(v string) {
+	o.CbsGnbDbgPcieTbtSupport = &v
+}
+
 // GetCbsSevSnpSupport returns the CbsSevSnpSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCbsSevSnpSupport() string {
-	if o == nil || o.CbsSevSnpSupport == nil {
+	if o == nil || IsNil(o.CbsSevSnpSupport) {
 		var ret string
 		return ret
 	}
@@ -4259,7 +5321,7 @@ func (o *BiosPolicy) GetCbsSevSnpSupport() string {
 // GetCbsSevSnpSupportOk returns a tuple with the CbsSevSnpSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCbsSevSnpSupportOk() (*string, bool) {
-	if o == nil || o.CbsSevSnpSupport == nil {
+	if o == nil || IsNil(o.CbsSevSnpSupport) {
 		return nil, false
 	}
 	return o.CbsSevSnpSupport, true
@@ -4267,7 +5329,7 @@ func (o *BiosPolicy) GetCbsSevSnpSupportOk() (*string, bool) {
 
 // HasCbsSevSnpSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCbsSevSnpSupport() bool {
-	if o != nil && o.CbsSevSnpSupport != nil {
+	if o != nil && !IsNil(o.CbsSevSnpSupport) {
 		return true
 	}
 
@@ -4281,7 +5343,7 @@ func (o *BiosPolicy) SetCbsSevSnpSupport(v string) {
 
 // GetCdnEnable returns the CdnEnable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCdnEnable() string {
-	if o == nil || o.CdnEnable == nil {
+	if o == nil || IsNil(o.CdnEnable) {
 		var ret string
 		return ret
 	}
@@ -4291,7 +5353,7 @@ func (o *BiosPolicy) GetCdnEnable() string {
 // GetCdnEnableOk returns a tuple with the CdnEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCdnEnableOk() (*string, bool) {
-	if o == nil || o.CdnEnable == nil {
+	if o == nil || IsNil(o.CdnEnable) {
 		return nil, false
 	}
 	return o.CdnEnable, true
@@ -4299,7 +5361,7 @@ func (o *BiosPolicy) GetCdnEnableOk() (*string, bool) {
 
 // HasCdnEnable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCdnEnable() bool {
-	if o != nil && o.CdnEnable != nil {
+	if o != nil && !IsNil(o.CdnEnable) {
 		return true
 	}
 
@@ -4313,7 +5375,7 @@ func (o *BiosPolicy) SetCdnEnable(v string) {
 
 // GetCdnSupport returns the CdnSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCdnSupport() string {
-	if o == nil || o.CdnSupport == nil {
+	if o == nil || IsNil(o.CdnSupport) {
 		var ret string
 		return ret
 	}
@@ -4323,7 +5385,7 @@ func (o *BiosPolicy) GetCdnSupport() string {
 // GetCdnSupportOk returns a tuple with the CdnSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCdnSupportOk() (*string, bool) {
-	if o == nil || o.CdnSupport == nil {
+	if o == nil || IsNil(o.CdnSupport) {
 		return nil, false
 	}
 	return o.CdnSupport, true
@@ -4331,7 +5393,7 @@ func (o *BiosPolicy) GetCdnSupportOk() (*string, bool) {
 
 // HasCdnSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCdnSupport() bool {
-	if o != nil && o.CdnSupport != nil {
+	if o != nil && !IsNil(o.CdnSupport) {
 		return true
 	}
 
@@ -4345,7 +5407,7 @@ func (o *BiosPolicy) SetCdnSupport(v string) {
 
 // GetChannelInterLeave returns the ChannelInterLeave field value if set, zero value otherwise.
 func (o *BiosPolicy) GetChannelInterLeave() string {
-	if o == nil || o.ChannelInterLeave == nil {
+	if o == nil || IsNil(o.ChannelInterLeave) {
 		var ret string
 		return ret
 	}
@@ -4355,7 +5417,7 @@ func (o *BiosPolicy) GetChannelInterLeave() string {
 // GetChannelInterLeaveOk returns a tuple with the ChannelInterLeave field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetChannelInterLeaveOk() (*string, bool) {
-	if o == nil || o.ChannelInterLeave == nil {
+	if o == nil || IsNil(o.ChannelInterLeave) {
 		return nil, false
 	}
 	return o.ChannelInterLeave, true
@@ -4363,7 +5425,7 @@ func (o *BiosPolicy) GetChannelInterLeaveOk() (*string, bool) {
 
 // HasChannelInterLeave returns a boolean if a field has been set.
 func (o *BiosPolicy) HasChannelInterLeave() bool {
-	if o != nil && o.ChannelInterLeave != nil {
+	if o != nil && !IsNil(o.ChannelInterLeave) {
 		return true
 	}
 
@@ -4377,7 +5439,7 @@ func (o *BiosPolicy) SetChannelInterLeave(v string) {
 
 // GetCiscoAdaptiveMemTraining returns the CiscoAdaptiveMemTraining field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCiscoAdaptiveMemTraining() string {
-	if o == nil || o.CiscoAdaptiveMemTraining == nil {
+	if o == nil || IsNil(o.CiscoAdaptiveMemTraining) {
 		var ret string
 		return ret
 	}
@@ -4387,7 +5449,7 @@ func (o *BiosPolicy) GetCiscoAdaptiveMemTraining() string {
 // GetCiscoAdaptiveMemTrainingOk returns a tuple with the CiscoAdaptiveMemTraining field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCiscoAdaptiveMemTrainingOk() (*string, bool) {
-	if o == nil || o.CiscoAdaptiveMemTraining == nil {
+	if o == nil || IsNil(o.CiscoAdaptiveMemTraining) {
 		return nil, false
 	}
 	return o.CiscoAdaptiveMemTraining, true
@@ -4395,7 +5457,7 @@ func (o *BiosPolicy) GetCiscoAdaptiveMemTrainingOk() (*string, bool) {
 
 // HasCiscoAdaptiveMemTraining returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCiscoAdaptiveMemTraining() bool {
-	if o != nil && o.CiscoAdaptiveMemTraining != nil {
+	if o != nil && !IsNil(o.CiscoAdaptiveMemTraining) {
 		return true
 	}
 
@@ -4409,7 +5471,7 @@ func (o *BiosPolicy) SetCiscoAdaptiveMemTraining(v string) {
 
 // GetCiscoDebugLevel returns the CiscoDebugLevel field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCiscoDebugLevel() string {
-	if o == nil || o.CiscoDebugLevel == nil {
+	if o == nil || IsNil(o.CiscoDebugLevel) {
 		var ret string
 		return ret
 	}
@@ -4419,7 +5481,7 @@ func (o *BiosPolicy) GetCiscoDebugLevel() string {
 // GetCiscoDebugLevelOk returns a tuple with the CiscoDebugLevel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCiscoDebugLevelOk() (*string, bool) {
-	if o == nil || o.CiscoDebugLevel == nil {
+	if o == nil || IsNil(o.CiscoDebugLevel) {
 		return nil, false
 	}
 	return o.CiscoDebugLevel, true
@@ -4427,7 +5489,7 @@ func (o *BiosPolicy) GetCiscoDebugLevelOk() (*string, bool) {
 
 // HasCiscoDebugLevel returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCiscoDebugLevel() bool {
-	if o != nil && o.CiscoDebugLevel != nil {
+	if o != nil && !IsNil(o.CiscoDebugLevel) {
 		return true
 	}
 
@@ -4441,7 +5503,7 @@ func (o *BiosPolicy) SetCiscoDebugLevel(v string) {
 
 // GetCiscoOpromLaunchOptimization returns the CiscoOpromLaunchOptimization field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCiscoOpromLaunchOptimization() string {
-	if o == nil || o.CiscoOpromLaunchOptimization == nil {
+	if o == nil || IsNil(o.CiscoOpromLaunchOptimization) {
 		var ret string
 		return ret
 	}
@@ -4451,7 +5513,7 @@ func (o *BiosPolicy) GetCiscoOpromLaunchOptimization() string {
 // GetCiscoOpromLaunchOptimizationOk returns a tuple with the CiscoOpromLaunchOptimization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCiscoOpromLaunchOptimizationOk() (*string, bool) {
-	if o == nil || o.CiscoOpromLaunchOptimization == nil {
+	if o == nil || IsNil(o.CiscoOpromLaunchOptimization) {
 		return nil, false
 	}
 	return o.CiscoOpromLaunchOptimization, true
@@ -4459,7 +5521,7 @@ func (o *BiosPolicy) GetCiscoOpromLaunchOptimizationOk() (*string, bool) {
 
 // HasCiscoOpromLaunchOptimization returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCiscoOpromLaunchOptimization() bool {
-	if o != nil && o.CiscoOpromLaunchOptimization != nil {
+	if o != nil && !IsNil(o.CiscoOpromLaunchOptimization) {
 		return true
 	}
 
@@ -4473,7 +5535,7 @@ func (o *BiosPolicy) SetCiscoOpromLaunchOptimization(v string) {
 
 // GetCiscoXgmiMaxSpeed returns the CiscoXgmiMaxSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCiscoXgmiMaxSpeed() string {
-	if o == nil || o.CiscoXgmiMaxSpeed == nil {
+	if o == nil || IsNil(o.CiscoXgmiMaxSpeed) {
 		var ret string
 		return ret
 	}
@@ -4483,7 +5545,7 @@ func (o *BiosPolicy) GetCiscoXgmiMaxSpeed() string {
 // GetCiscoXgmiMaxSpeedOk returns a tuple with the CiscoXgmiMaxSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCiscoXgmiMaxSpeedOk() (*string, bool) {
-	if o == nil || o.CiscoXgmiMaxSpeed == nil {
+	if o == nil || IsNil(o.CiscoXgmiMaxSpeed) {
 		return nil, false
 	}
 	return o.CiscoXgmiMaxSpeed, true
@@ -4491,7 +5553,7 @@ func (o *BiosPolicy) GetCiscoXgmiMaxSpeedOk() (*string, bool) {
 
 // HasCiscoXgmiMaxSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCiscoXgmiMaxSpeed() bool {
-	if o != nil && o.CiscoXgmiMaxSpeed != nil {
+	if o != nil && !IsNil(o.CiscoXgmiMaxSpeed) {
 		return true
 	}
 
@@ -4505,7 +5567,7 @@ func (o *BiosPolicy) SetCiscoXgmiMaxSpeed(v string) {
 
 // GetCkeLowPolicy returns the CkeLowPolicy field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCkeLowPolicy() string {
-	if o == nil || o.CkeLowPolicy == nil {
+	if o == nil || IsNil(o.CkeLowPolicy) {
 		var ret string
 		return ret
 	}
@@ -4515,7 +5577,7 @@ func (o *BiosPolicy) GetCkeLowPolicy() string {
 // GetCkeLowPolicyOk returns a tuple with the CkeLowPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCkeLowPolicyOk() (*string, bool) {
-	if o == nil || o.CkeLowPolicy == nil {
+	if o == nil || IsNil(o.CkeLowPolicy) {
 		return nil, false
 	}
 	return o.CkeLowPolicy, true
@@ -4523,7 +5585,7 @@ func (o *BiosPolicy) GetCkeLowPolicyOk() (*string, bool) {
 
 // HasCkeLowPolicy returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCkeLowPolicy() bool {
-	if o != nil && o.CkeLowPolicy != nil {
+	if o != nil && !IsNil(o.CkeLowPolicy) {
 		return true
 	}
 
@@ -4537,7 +5599,7 @@ func (o *BiosPolicy) SetCkeLowPolicy(v string) {
 
 // GetClosedLoopThermThrotl returns the ClosedLoopThermThrotl field value if set, zero value otherwise.
 func (o *BiosPolicy) GetClosedLoopThermThrotl() string {
-	if o == nil || o.ClosedLoopThermThrotl == nil {
+	if o == nil || IsNil(o.ClosedLoopThermThrotl) {
 		var ret string
 		return ret
 	}
@@ -4547,7 +5609,7 @@ func (o *BiosPolicy) GetClosedLoopThermThrotl() string {
 // GetClosedLoopThermThrotlOk returns a tuple with the ClosedLoopThermThrotl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetClosedLoopThermThrotlOk() (*string, bool) {
-	if o == nil || o.ClosedLoopThermThrotl == nil {
+	if o == nil || IsNil(o.ClosedLoopThermThrotl) {
 		return nil, false
 	}
 	return o.ClosedLoopThermThrotl, true
@@ -4555,7 +5617,7 @@ func (o *BiosPolicy) GetClosedLoopThermThrotlOk() (*string, bool) {
 
 // HasClosedLoopThermThrotl returns a boolean if a field has been set.
 func (o *BiosPolicy) HasClosedLoopThermThrotl() bool {
-	if o != nil && o.ClosedLoopThermThrotl != nil {
+	if o != nil && !IsNil(o.ClosedLoopThermThrotl) {
 		return true
 	}
 
@@ -4569,7 +5631,7 @@ func (o *BiosPolicy) SetClosedLoopThermThrotl(v string) {
 
 // GetCmciEnable returns the CmciEnable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCmciEnable() string {
-	if o == nil || o.CmciEnable == nil {
+	if o == nil || IsNil(o.CmciEnable) {
 		var ret string
 		return ret
 	}
@@ -4579,7 +5641,7 @@ func (o *BiosPolicy) GetCmciEnable() string {
 // GetCmciEnableOk returns a tuple with the CmciEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCmciEnableOk() (*string, bool) {
-	if o == nil || o.CmciEnable == nil {
+	if o == nil || IsNil(o.CmciEnable) {
 		return nil, false
 	}
 	return o.CmciEnable, true
@@ -4587,7 +5649,7 @@ func (o *BiosPolicy) GetCmciEnableOk() (*string, bool) {
 
 // HasCmciEnable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCmciEnable() bool {
-	if o != nil && o.CmciEnable != nil {
+	if o != nil && !IsNil(o.CmciEnable) {
 		return true
 	}
 
@@ -4601,7 +5663,7 @@ func (o *BiosPolicy) SetCmciEnable(v string) {
 
 // GetConfigTdp returns the ConfigTdp field value if set, zero value otherwise.
 func (o *BiosPolicy) GetConfigTdp() string {
-	if o == nil || o.ConfigTdp == nil {
+	if o == nil || IsNil(o.ConfigTdp) {
 		var ret string
 		return ret
 	}
@@ -4611,7 +5673,7 @@ func (o *BiosPolicy) GetConfigTdp() string {
 // GetConfigTdpOk returns a tuple with the ConfigTdp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetConfigTdpOk() (*string, bool) {
-	if o == nil || o.ConfigTdp == nil {
+	if o == nil || IsNil(o.ConfigTdp) {
 		return nil, false
 	}
 	return o.ConfigTdp, true
@@ -4619,7 +5681,7 @@ func (o *BiosPolicy) GetConfigTdpOk() (*string, bool) {
 
 // HasConfigTdp returns a boolean if a field has been set.
 func (o *BiosPolicy) HasConfigTdp() bool {
-	if o != nil && o.ConfigTdp != nil {
+	if o != nil && !IsNil(o.ConfigTdp) {
 		return true
 	}
 
@@ -4633,7 +5695,7 @@ func (o *BiosPolicy) SetConfigTdp(v string) {
 
 // GetConfigTdpLevel returns the ConfigTdpLevel field value if set, zero value otherwise.
 func (o *BiosPolicy) GetConfigTdpLevel() string {
-	if o == nil || o.ConfigTdpLevel == nil {
+	if o == nil || IsNil(o.ConfigTdpLevel) {
 		var ret string
 		return ret
 	}
@@ -4643,7 +5705,7 @@ func (o *BiosPolicy) GetConfigTdpLevel() string {
 // GetConfigTdpLevelOk returns a tuple with the ConfigTdpLevel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetConfigTdpLevelOk() (*string, bool) {
-	if o == nil || o.ConfigTdpLevel == nil {
+	if o == nil || IsNil(o.ConfigTdpLevel) {
 		return nil, false
 	}
 	return o.ConfigTdpLevel, true
@@ -4651,7 +5713,7 @@ func (o *BiosPolicy) GetConfigTdpLevelOk() (*string, bool) {
 
 // HasConfigTdpLevel returns a boolean if a field has been set.
 func (o *BiosPolicy) HasConfigTdpLevel() bool {
-	if o != nil && o.ConfigTdpLevel != nil {
+	if o != nil && !IsNil(o.ConfigTdpLevel) {
 		return true
 	}
 
@@ -4665,7 +5727,7 @@ func (o *BiosPolicy) SetConfigTdpLevel(v string) {
 
 // GetConsoleRedirection returns the ConsoleRedirection field value if set, zero value otherwise.
 func (o *BiosPolicy) GetConsoleRedirection() string {
-	if o == nil || o.ConsoleRedirection == nil {
+	if o == nil || IsNil(o.ConsoleRedirection) {
 		var ret string
 		return ret
 	}
@@ -4675,7 +5737,7 @@ func (o *BiosPolicy) GetConsoleRedirection() string {
 // GetConsoleRedirectionOk returns a tuple with the ConsoleRedirection field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetConsoleRedirectionOk() (*string, bool) {
-	if o == nil || o.ConsoleRedirection == nil {
+	if o == nil || IsNil(o.ConsoleRedirection) {
 		return nil, false
 	}
 	return o.ConsoleRedirection, true
@@ -4683,7 +5745,7 @@ func (o *BiosPolicy) GetConsoleRedirectionOk() (*string, bool) {
 
 // HasConsoleRedirection returns a boolean if a field has been set.
 func (o *BiosPolicy) HasConsoleRedirection() bool {
-	if o != nil && o.ConsoleRedirection != nil {
+	if o != nil && !IsNil(o.ConsoleRedirection) {
 		return true
 	}
 
@@ -4697,7 +5759,7 @@ func (o *BiosPolicy) SetConsoleRedirection(v string) {
 
 // GetCoreMultiProcessing returns the CoreMultiProcessing field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCoreMultiProcessing() string {
-	if o == nil || o.CoreMultiProcessing == nil {
+	if o == nil || IsNil(o.CoreMultiProcessing) {
 		var ret string
 		return ret
 	}
@@ -4707,7 +5769,7 @@ func (o *BiosPolicy) GetCoreMultiProcessing() string {
 // GetCoreMultiProcessingOk returns a tuple with the CoreMultiProcessing field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCoreMultiProcessingOk() (*string, bool) {
-	if o == nil || o.CoreMultiProcessing == nil {
+	if o == nil || IsNil(o.CoreMultiProcessing) {
 		return nil, false
 	}
 	return o.CoreMultiProcessing, true
@@ -4715,7 +5777,7 @@ func (o *BiosPolicy) GetCoreMultiProcessingOk() (*string, bool) {
 
 // HasCoreMultiProcessing returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCoreMultiProcessing() bool {
-	if o != nil && o.CoreMultiProcessing != nil {
+	if o != nil && !IsNil(o.CoreMultiProcessing) {
 		return true
 	}
 
@@ -4729,7 +5791,7 @@ func (o *BiosPolicy) SetCoreMultiProcessing(v string) {
 
 // GetCpuEnergyPerformance returns the CpuEnergyPerformance field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCpuEnergyPerformance() string {
-	if o == nil || o.CpuEnergyPerformance == nil {
+	if o == nil || IsNil(o.CpuEnergyPerformance) {
 		var ret string
 		return ret
 	}
@@ -4739,7 +5801,7 @@ func (o *BiosPolicy) GetCpuEnergyPerformance() string {
 // GetCpuEnergyPerformanceOk returns a tuple with the CpuEnergyPerformance field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCpuEnergyPerformanceOk() (*string, bool) {
-	if o == nil || o.CpuEnergyPerformance == nil {
+	if o == nil || IsNil(o.CpuEnergyPerformance) {
 		return nil, false
 	}
 	return o.CpuEnergyPerformance, true
@@ -4747,7 +5809,7 @@ func (o *BiosPolicy) GetCpuEnergyPerformanceOk() (*string, bool) {
 
 // HasCpuEnergyPerformance returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCpuEnergyPerformance() bool {
-	if o != nil && o.CpuEnergyPerformance != nil {
+	if o != nil && !IsNil(o.CpuEnergyPerformance) {
 		return true
 	}
 
@@ -4761,7 +5823,7 @@ func (o *BiosPolicy) SetCpuEnergyPerformance(v string) {
 
 // GetCpuFrequencyFloor returns the CpuFrequencyFloor field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCpuFrequencyFloor() string {
-	if o == nil || o.CpuFrequencyFloor == nil {
+	if o == nil || IsNil(o.CpuFrequencyFloor) {
 		var ret string
 		return ret
 	}
@@ -4771,7 +5833,7 @@ func (o *BiosPolicy) GetCpuFrequencyFloor() string {
 // GetCpuFrequencyFloorOk returns a tuple with the CpuFrequencyFloor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCpuFrequencyFloorOk() (*string, bool) {
-	if o == nil || o.CpuFrequencyFloor == nil {
+	if o == nil || IsNil(o.CpuFrequencyFloor) {
 		return nil, false
 	}
 	return o.CpuFrequencyFloor, true
@@ -4779,7 +5841,7 @@ func (o *BiosPolicy) GetCpuFrequencyFloorOk() (*string, bool) {
 
 // HasCpuFrequencyFloor returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCpuFrequencyFloor() bool {
-	if o != nil && o.CpuFrequencyFloor != nil {
+	if o != nil && !IsNil(o.CpuFrequencyFloor) {
 		return true
 	}
 
@@ -4793,7 +5855,7 @@ func (o *BiosPolicy) SetCpuFrequencyFloor(v string) {
 
 // GetCpuPaLimit returns the CpuPaLimit field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCpuPaLimit() string {
-	if o == nil || o.CpuPaLimit == nil {
+	if o == nil || IsNil(o.CpuPaLimit) {
 		var ret string
 		return ret
 	}
@@ -4803,7 +5865,7 @@ func (o *BiosPolicy) GetCpuPaLimit() string {
 // GetCpuPaLimitOk returns a tuple with the CpuPaLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCpuPaLimitOk() (*string, bool) {
-	if o == nil || o.CpuPaLimit == nil {
+	if o == nil || IsNil(o.CpuPaLimit) {
 		return nil, false
 	}
 	return o.CpuPaLimit, true
@@ -4811,7 +5873,7 @@ func (o *BiosPolicy) GetCpuPaLimitOk() (*string, bool) {
 
 // HasCpuPaLimit returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCpuPaLimit() bool {
-	if o != nil && o.CpuPaLimit != nil {
+	if o != nil && !IsNil(o.CpuPaLimit) {
 		return true
 	}
 
@@ -4825,7 +5887,7 @@ func (o *BiosPolicy) SetCpuPaLimit(v string) {
 
 // GetCpuPerfEnhancement returns the CpuPerfEnhancement field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCpuPerfEnhancement() string {
-	if o == nil || o.CpuPerfEnhancement == nil {
+	if o == nil || IsNil(o.CpuPerfEnhancement) {
 		var ret string
 		return ret
 	}
@@ -4835,7 +5897,7 @@ func (o *BiosPolicy) GetCpuPerfEnhancement() string {
 // GetCpuPerfEnhancementOk returns a tuple with the CpuPerfEnhancement field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCpuPerfEnhancementOk() (*string, bool) {
-	if o == nil || o.CpuPerfEnhancement == nil {
+	if o == nil || IsNil(o.CpuPerfEnhancement) {
 		return nil, false
 	}
 	return o.CpuPerfEnhancement, true
@@ -4843,7 +5905,7 @@ func (o *BiosPolicy) GetCpuPerfEnhancementOk() (*string, bool) {
 
 // HasCpuPerfEnhancement returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCpuPerfEnhancement() bool {
-	if o != nil && o.CpuPerfEnhancement != nil {
+	if o != nil && !IsNil(o.CpuPerfEnhancement) {
 		return true
 	}
 
@@ -4857,7 +5919,7 @@ func (o *BiosPolicy) SetCpuPerfEnhancement(v string) {
 
 // GetCpuPerformance returns the CpuPerformance field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCpuPerformance() string {
-	if o == nil || o.CpuPerformance == nil {
+	if o == nil || IsNil(o.CpuPerformance) {
 		var ret string
 		return ret
 	}
@@ -4867,7 +5929,7 @@ func (o *BiosPolicy) GetCpuPerformance() string {
 // GetCpuPerformanceOk returns a tuple with the CpuPerformance field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCpuPerformanceOk() (*string, bool) {
-	if o == nil || o.CpuPerformance == nil {
+	if o == nil || IsNil(o.CpuPerformance) {
 		return nil, false
 	}
 	return o.CpuPerformance, true
@@ -4875,7 +5937,7 @@ func (o *BiosPolicy) GetCpuPerformanceOk() (*string, bool) {
 
 // HasCpuPerformance returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCpuPerformance() bool {
-	if o != nil && o.CpuPerformance != nil {
+	if o != nil && !IsNil(o.CpuPerformance) {
 		return true
 	}
 
@@ -4889,7 +5951,7 @@ func (o *BiosPolicy) SetCpuPerformance(v string) {
 
 // GetCpuPowerManagement returns the CpuPowerManagement field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCpuPowerManagement() string {
-	if o == nil || o.CpuPowerManagement == nil {
+	if o == nil || IsNil(o.CpuPowerManagement) {
 		var ret string
 		return ret
 	}
@@ -4899,7 +5961,7 @@ func (o *BiosPolicy) GetCpuPowerManagement() string {
 // GetCpuPowerManagementOk returns a tuple with the CpuPowerManagement field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCpuPowerManagementOk() (*string, bool) {
-	if o == nil || o.CpuPowerManagement == nil {
+	if o == nil || IsNil(o.CpuPowerManagement) {
 		return nil, false
 	}
 	return o.CpuPowerManagement, true
@@ -4907,7 +5969,7 @@ func (o *BiosPolicy) GetCpuPowerManagementOk() (*string, bool) {
 
 // HasCpuPowerManagement returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCpuPowerManagement() bool {
-	if o != nil && o.CpuPowerManagement != nil {
+	if o != nil && !IsNil(o.CpuPowerManagement) {
 		return true
 	}
 
@@ -4921,7 +5983,7 @@ func (o *BiosPolicy) SetCpuPowerManagement(v string) {
 
 // GetCrQos returns the CrQos field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCrQos() string {
-	if o == nil || o.CrQos == nil {
+	if o == nil || IsNil(o.CrQos) {
 		var ret string
 		return ret
 	}
@@ -4931,7 +5993,7 @@ func (o *BiosPolicy) GetCrQos() string {
 // GetCrQosOk returns a tuple with the CrQos field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCrQosOk() (*string, bool) {
-	if o == nil || o.CrQos == nil {
+	if o == nil || IsNil(o.CrQos) {
 		return nil, false
 	}
 	return o.CrQos, true
@@ -4939,7 +6001,7 @@ func (o *BiosPolicy) GetCrQosOk() (*string, bool) {
 
 // HasCrQos returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCrQos() bool {
-	if o != nil && o.CrQos != nil {
+	if o != nil && !IsNil(o.CrQos) {
 		return true
 	}
 
@@ -4953,7 +6015,7 @@ func (o *BiosPolicy) SetCrQos(v string) {
 
 // GetCrfastgoConfig returns the CrfastgoConfig field value if set, zero value otherwise.
 func (o *BiosPolicy) GetCrfastgoConfig() string {
-	if o == nil || o.CrfastgoConfig == nil {
+	if o == nil || IsNil(o.CrfastgoConfig) {
 		var ret string
 		return ret
 	}
@@ -4963,7 +6025,7 @@ func (o *BiosPolicy) GetCrfastgoConfig() string {
 // GetCrfastgoConfigOk returns a tuple with the CrfastgoConfig field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetCrfastgoConfigOk() (*string, bool) {
-	if o == nil || o.CrfastgoConfig == nil {
+	if o == nil || IsNil(o.CrfastgoConfig) {
 		return nil, false
 	}
 	return o.CrfastgoConfig, true
@@ -4971,7 +6033,7 @@ func (o *BiosPolicy) GetCrfastgoConfigOk() (*string, bool) {
 
 // HasCrfastgoConfig returns a boolean if a field has been set.
 func (o *BiosPolicy) HasCrfastgoConfig() bool {
-	if o != nil && o.CrfastgoConfig != nil {
+	if o != nil && !IsNil(o.CrfastgoConfig) {
 		return true
 	}
 
@@ -4985,7 +6047,7 @@ func (o *BiosPolicy) SetCrfastgoConfig(v string) {
 
 // GetDcpmmFirmwareDowngrade returns the DcpmmFirmwareDowngrade field value if set, zero value otherwise.
 func (o *BiosPolicy) GetDcpmmFirmwareDowngrade() string {
-	if o == nil || o.DcpmmFirmwareDowngrade == nil {
+	if o == nil || IsNil(o.DcpmmFirmwareDowngrade) {
 		var ret string
 		return ret
 	}
@@ -4995,7 +6057,7 @@ func (o *BiosPolicy) GetDcpmmFirmwareDowngrade() string {
 // GetDcpmmFirmwareDowngradeOk returns a tuple with the DcpmmFirmwareDowngrade field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetDcpmmFirmwareDowngradeOk() (*string, bool) {
-	if o == nil || o.DcpmmFirmwareDowngrade == nil {
+	if o == nil || IsNil(o.DcpmmFirmwareDowngrade) {
 		return nil, false
 	}
 	return o.DcpmmFirmwareDowngrade, true
@@ -5003,7 +6065,7 @@ func (o *BiosPolicy) GetDcpmmFirmwareDowngradeOk() (*string, bool) {
 
 // HasDcpmmFirmwareDowngrade returns a boolean if a field has been set.
 func (o *BiosPolicy) HasDcpmmFirmwareDowngrade() bool {
-	if o != nil && o.DcpmmFirmwareDowngrade != nil {
+	if o != nil && !IsNil(o.DcpmmFirmwareDowngrade) {
 		return true
 	}
 
@@ -5017,7 +6079,7 @@ func (o *BiosPolicy) SetDcpmmFirmwareDowngrade(v string) {
 
 // GetDemandScrub returns the DemandScrub field value if set, zero value otherwise.
 func (o *BiosPolicy) GetDemandScrub() string {
-	if o == nil || o.DemandScrub == nil {
+	if o == nil || IsNil(o.DemandScrub) {
 		var ret string
 		return ret
 	}
@@ -5027,7 +6089,7 @@ func (o *BiosPolicy) GetDemandScrub() string {
 // GetDemandScrubOk returns a tuple with the DemandScrub field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetDemandScrubOk() (*string, bool) {
-	if o == nil || o.DemandScrub == nil {
+	if o == nil || IsNil(o.DemandScrub) {
 		return nil, false
 	}
 	return o.DemandScrub, true
@@ -5035,7 +6097,7 @@ func (o *BiosPolicy) GetDemandScrubOk() (*string, bool) {
 
 // HasDemandScrub returns a boolean if a field has been set.
 func (o *BiosPolicy) HasDemandScrub() bool {
-	if o != nil && o.DemandScrub != nil {
+	if o != nil && !IsNil(o.DemandScrub) {
 		return true
 	}
 
@@ -5047,9 +6109,41 @@ func (o *BiosPolicy) SetDemandScrub(v string) {
 	o.DemandScrub = &v
 }
 
+// GetDfxOsbEn returns the DfxOsbEn field value if set, zero value otherwise.
+func (o *BiosPolicy) GetDfxOsbEn() string {
+	if o == nil || IsNil(o.DfxOsbEn) {
+		var ret string
+		return ret
+	}
+	return *o.DfxOsbEn
+}
+
+// GetDfxOsbEnOk returns a tuple with the DfxOsbEn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetDfxOsbEnOk() (*string, bool) {
+	if o == nil || IsNil(o.DfxOsbEn) {
+		return nil, false
+	}
+	return o.DfxOsbEn, true
+}
+
+// HasDfxOsbEn returns a boolean if a field has been set.
+func (o *BiosPolicy) HasDfxOsbEn() bool {
+	if o != nil && !IsNil(o.DfxOsbEn) {
+		return true
+	}
+
+	return false
+}
+
+// SetDfxOsbEn gets a reference to the given string and assigns it to the DfxOsbEn field.
+func (o *BiosPolicy) SetDfxOsbEn(v string) {
+	o.DfxOsbEn = &v
+}
+
 // GetDirectCacheAccess returns the DirectCacheAccess field value if set, zero value otherwise.
 func (o *BiosPolicy) GetDirectCacheAccess() string {
-	if o == nil || o.DirectCacheAccess == nil {
+	if o == nil || IsNil(o.DirectCacheAccess) {
 		var ret string
 		return ret
 	}
@@ -5059,7 +6153,7 @@ func (o *BiosPolicy) GetDirectCacheAccess() string {
 // GetDirectCacheAccessOk returns a tuple with the DirectCacheAccess field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetDirectCacheAccessOk() (*string, bool) {
-	if o == nil || o.DirectCacheAccess == nil {
+	if o == nil || IsNil(o.DirectCacheAccess) {
 		return nil, false
 	}
 	return o.DirectCacheAccess, true
@@ -5067,7 +6161,7 @@ func (o *BiosPolicy) GetDirectCacheAccessOk() (*string, bool) {
 
 // HasDirectCacheAccess returns a boolean if a field has been set.
 func (o *BiosPolicy) HasDirectCacheAccess() bool {
-	if o != nil && o.DirectCacheAccess != nil {
+	if o != nil && !IsNil(o.DirectCacheAccess) {
 		return true
 	}
 
@@ -5079,9 +6173,41 @@ func (o *BiosPolicy) SetDirectCacheAccess(v string) {
 	o.DirectCacheAccess = &v
 }
 
+// GetDmaCtrlOptIn returns the DmaCtrlOptIn field value if set, zero value otherwise.
+func (o *BiosPolicy) GetDmaCtrlOptIn() string {
+	if o == nil || IsNil(o.DmaCtrlOptIn) {
+		var ret string
+		return ret
+	}
+	return *o.DmaCtrlOptIn
+}
+
+// GetDmaCtrlOptInOk returns a tuple with the DmaCtrlOptIn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetDmaCtrlOptInOk() (*string, bool) {
+	if o == nil || IsNil(o.DmaCtrlOptIn) {
+		return nil, false
+	}
+	return o.DmaCtrlOptIn, true
+}
+
+// HasDmaCtrlOptIn returns a boolean if a field has been set.
+func (o *BiosPolicy) HasDmaCtrlOptIn() bool {
+	if o != nil && !IsNil(o.DmaCtrlOptIn) {
+		return true
+	}
+
+	return false
+}
+
+// SetDmaCtrlOptIn gets a reference to the given string and assigns it to the DmaCtrlOptIn field.
+func (o *BiosPolicy) SetDmaCtrlOptIn(v string) {
+	o.DmaCtrlOptIn = &v
+}
+
 // GetDramClockThrottling returns the DramClockThrottling field value if set, zero value otherwise.
 func (o *BiosPolicy) GetDramClockThrottling() string {
-	if o == nil || o.DramClockThrottling == nil {
+	if o == nil || IsNil(o.DramClockThrottling) {
 		var ret string
 		return ret
 	}
@@ -5091,7 +6217,7 @@ func (o *BiosPolicy) GetDramClockThrottling() string {
 // GetDramClockThrottlingOk returns a tuple with the DramClockThrottling field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetDramClockThrottlingOk() (*string, bool) {
-	if o == nil || o.DramClockThrottling == nil {
+	if o == nil || IsNil(o.DramClockThrottling) {
 		return nil, false
 	}
 	return o.DramClockThrottling, true
@@ -5099,7 +6225,7 @@ func (o *BiosPolicy) GetDramClockThrottlingOk() (*string, bool) {
 
 // HasDramClockThrottling returns a boolean if a field has been set.
 func (o *BiosPolicy) HasDramClockThrottling() bool {
-	if o != nil && o.DramClockThrottling != nil {
+	if o != nil && !IsNil(o.DramClockThrottling) {
 		return true
 	}
 
@@ -5113,7 +6239,7 @@ func (o *BiosPolicy) SetDramClockThrottling(v string) {
 
 // GetDramRefreshRate returns the DramRefreshRate field value if set, zero value otherwise.
 func (o *BiosPolicy) GetDramRefreshRate() string {
-	if o == nil || o.DramRefreshRate == nil {
+	if o == nil || IsNil(o.DramRefreshRate) {
 		var ret string
 		return ret
 	}
@@ -5123,7 +6249,7 @@ func (o *BiosPolicy) GetDramRefreshRate() string {
 // GetDramRefreshRateOk returns a tuple with the DramRefreshRate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetDramRefreshRateOk() (*string, bool) {
-	if o == nil || o.DramRefreshRate == nil {
+	if o == nil || IsNil(o.DramRefreshRate) {
 		return nil, false
 	}
 	return o.DramRefreshRate, true
@@ -5131,7 +6257,7 @@ func (o *BiosPolicy) GetDramRefreshRateOk() (*string, bool) {
 
 // HasDramRefreshRate returns a boolean if a field has been set.
 func (o *BiosPolicy) HasDramRefreshRate() bool {
-	if o != nil && o.DramRefreshRate != nil {
+	if o != nil && !IsNil(o.DramRefreshRate) {
 		return true
 	}
 
@@ -5145,7 +6271,7 @@ func (o *BiosPolicy) SetDramRefreshRate(v string) {
 
 // GetDramSwThermalThrottling returns the DramSwThermalThrottling field value if set, zero value otherwise.
 func (o *BiosPolicy) GetDramSwThermalThrottling() string {
-	if o == nil || o.DramSwThermalThrottling == nil {
+	if o == nil || IsNil(o.DramSwThermalThrottling) {
 		var ret string
 		return ret
 	}
@@ -5155,7 +6281,7 @@ func (o *BiosPolicy) GetDramSwThermalThrottling() string {
 // GetDramSwThermalThrottlingOk returns a tuple with the DramSwThermalThrottling field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetDramSwThermalThrottlingOk() (*string, bool) {
-	if o == nil || o.DramSwThermalThrottling == nil {
+	if o == nil || IsNil(o.DramSwThermalThrottling) {
 		return nil, false
 	}
 	return o.DramSwThermalThrottling, true
@@ -5163,7 +6289,7 @@ func (o *BiosPolicy) GetDramSwThermalThrottlingOk() (*string, bool) {
 
 // HasDramSwThermalThrottling returns a boolean if a field has been set.
 func (o *BiosPolicy) HasDramSwThermalThrottling() bool {
-	if o != nil && o.DramSwThermalThrottling != nil {
+	if o != nil && !IsNil(o.DramSwThermalThrottling) {
 		return true
 	}
 
@@ -5177,7 +6303,7 @@ func (o *BiosPolicy) SetDramSwThermalThrottling(v string) {
 
 // GetEadrSupport returns the EadrSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEadrSupport() string {
-	if o == nil || o.EadrSupport == nil {
+	if o == nil || IsNil(o.EadrSupport) {
 		var ret string
 		return ret
 	}
@@ -5187,7 +6313,7 @@ func (o *BiosPolicy) GetEadrSupport() string {
 // GetEadrSupportOk returns a tuple with the EadrSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEadrSupportOk() (*string, bool) {
-	if o == nil || o.EadrSupport == nil {
+	if o == nil || IsNil(o.EadrSupport) {
 		return nil, false
 	}
 	return o.EadrSupport, true
@@ -5195,7 +6321,7 @@ func (o *BiosPolicy) GetEadrSupportOk() (*string, bool) {
 
 // HasEadrSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEadrSupport() bool {
-	if o != nil && o.EadrSupport != nil {
+	if o != nil && !IsNil(o.EadrSupport) {
 		return true
 	}
 
@@ -5209,7 +6335,7 @@ func (o *BiosPolicy) SetEadrSupport(v string) {
 
 // GetEdpcEn returns the EdpcEn field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEdpcEn() string {
-	if o == nil || o.EdpcEn == nil {
+	if o == nil || IsNil(o.EdpcEn) {
 		var ret string
 		return ret
 	}
@@ -5219,7 +6345,7 @@ func (o *BiosPolicy) GetEdpcEn() string {
 // GetEdpcEnOk returns a tuple with the EdpcEn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEdpcEnOk() (*string, bool) {
-	if o == nil || o.EdpcEn == nil {
+	if o == nil || IsNil(o.EdpcEn) {
 		return nil, false
 	}
 	return o.EdpcEn, true
@@ -5227,7 +6353,7 @@ func (o *BiosPolicy) GetEdpcEnOk() (*string, bool) {
 
 // HasEdpcEn returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEdpcEn() bool {
-	if o != nil && o.EdpcEn != nil {
+	if o != nil && !IsNil(o.EdpcEn) {
 		return true
 	}
 
@@ -5241,7 +6367,7 @@ func (o *BiosPolicy) SetEdpcEn(v string) {
 
 // GetEnableClockSpreadSpec returns the EnableClockSpreadSpec field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEnableClockSpreadSpec() string {
-	if o == nil || o.EnableClockSpreadSpec == nil {
+	if o == nil || IsNil(o.EnableClockSpreadSpec) {
 		var ret string
 		return ret
 	}
@@ -5251,7 +6377,7 @@ func (o *BiosPolicy) GetEnableClockSpreadSpec() string {
 // GetEnableClockSpreadSpecOk returns a tuple with the EnableClockSpreadSpec field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEnableClockSpreadSpecOk() (*string, bool) {
-	if o == nil || o.EnableClockSpreadSpec == nil {
+	if o == nil || IsNil(o.EnableClockSpreadSpec) {
 		return nil, false
 	}
 	return o.EnableClockSpreadSpec, true
@@ -5259,7 +6385,7 @@ func (o *BiosPolicy) GetEnableClockSpreadSpecOk() (*string, bool) {
 
 // HasEnableClockSpreadSpec returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEnableClockSpreadSpec() bool {
-	if o != nil && o.EnableClockSpreadSpec != nil {
+	if o != nil && !IsNil(o.EnableClockSpreadSpec) {
 		return true
 	}
 
@@ -5273,7 +6399,7 @@ func (o *BiosPolicy) SetEnableClockSpreadSpec(v string) {
 
 // GetEnableMktme returns the EnableMktme field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEnableMktme() string {
-	if o == nil || o.EnableMktme == nil {
+	if o == nil || IsNil(o.EnableMktme) {
 		var ret string
 		return ret
 	}
@@ -5283,7 +6409,7 @@ func (o *BiosPolicy) GetEnableMktme() string {
 // GetEnableMktmeOk returns a tuple with the EnableMktme field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEnableMktmeOk() (*string, bool) {
-	if o == nil || o.EnableMktme == nil {
+	if o == nil || IsNil(o.EnableMktme) {
 		return nil, false
 	}
 	return o.EnableMktme, true
@@ -5291,7 +6417,7 @@ func (o *BiosPolicy) GetEnableMktmeOk() (*string, bool) {
 
 // HasEnableMktme returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEnableMktme() bool {
-	if o != nil && o.EnableMktme != nil {
+	if o != nil && !IsNil(o.EnableMktme) {
 		return true
 	}
 
@@ -5303,9 +6429,41 @@ func (o *BiosPolicy) SetEnableMktme(v string) {
 	o.EnableMktme = &v
 }
 
+// GetEnableRmt returns the EnableRmt field value if set, zero value otherwise.
+func (o *BiosPolicy) GetEnableRmt() string {
+	if o == nil || IsNil(o.EnableRmt) {
+		var ret string
+		return ret
+	}
+	return *o.EnableRmt
+}
+
+// GetEnableRmtOk returns a tuple with the EnableRmt field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetEnableRmtOk() (*string, bool) {
+	if o == nil || IsNil(o.EnableRmt) {
+		return nil, false
+	}
+	return o.EnableRmt, true
+}
+
+// HasEnableRmt returns a boolean if a field has been set.
+func (o *BiosPolicy) HasEnableRmt() bool {
+	if o != nil && !IsNil(o.EnableRmt) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableRmt gets a reference to the given string and assigns it to the EnableRmt field.
+func (o *BiosPolicy) SetEnableRmt(v string) {
+	o.EnableRmt = &v
+}
+
 // GetEnableSgx returns the EnableSgx field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEnableSgx() string {
-	if o == nil || o.EnableSgx == nil {
+	if o == nil || IsNil(o.EnableSgx) {
 		var ret string
 		return ret
 	}
@@ -5315,7 +6473,7 @@ func (o *BiosPolicy) GetEnableSgx() string {
 // GetEnableSgxOk returns a tuple with the EnableSgx field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEnableSgxOk() (*string, bool) {
-	if o == nil || o.EnableSgx == nil {
+	if o == nil || IsNil(o.EnableSgx) {
 		return nil, false
 	}
 	return o.EnableSgx, true
@@ -5323,7 +6481,7 @@ func (o *BiosPolicy) GetEnableSgxOk() (*string, bool) {
 
 // HasEnableSgx returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEnableSgx() bool {
-	if o != nil && o.EnableSgx != nil {
+	if o != nil && !IsNil(o.EnableSgx) {
 		return true
 	}
 
@@ -5335,9 +6493,73 @@ func (o *BiosPolicy) SetEnableSgx(v string) {
 	o.EnableSgx = &v
 }
 
+// GetEnableTdx returns the EnableTdx field value if set, zero value otherwise.
+func (o *BiosPolicy) GetEnableTdx() string {
+	if o == nil || IsNil(o.EnableTdx) {
+		var ret string
+		return ret
+	}
+	return *o.EnableTdx
+}
+
+// GetEnableTdxOk returns a tuple with the EnableTdx field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetEnableTdxOk() (*string, bool) {
+	if o == nil || IsNil(o.EnableTdx) {
+		return nil, false
+	}
+	return o.EnableTdx, true
+}
+
+// HasEnableTdx returns a boolean if a field has been set.
+func (o *BiosPolicy) HasEnableTdx() bool {
+	if o != nil && !IsNil(o.EnableTdx) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableTdx gets a reference to the given string and assigns it to the EnableTdx field.
+func (o *BiosPolicy) SetEnableTdx(v string) {
+	o.EnableTdx = &v
+}
+
+// GetEnableTdxSeamldr returns the EnableTdxSeamldr field value if set, zero value otherwise.
+func (o *BiosPolicy) GetEnableTdxSeamldr() string {
+	if o == nil || IsNil(o.EnableTdxSeamldr) {
+		var ret string
+		return ret
+	}
+	return *o.EnableTdxSeamldr
+}
+
+// GetEnableTdxSeamldrOk returns a tuple with the EnableTdxSeamldr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetEnableTdxSeamldrOk() (*string, bool) {
+	if o == nil || IsNil(o.EnableTdxSeamldr) {
+		return nil, false
+	}
+	return o.EnableTdxSeamldr, true
+}
+
+// HasEnableTdxSeamldr returns a boolean if a field has been set.
+func (o *BiosPolicy) HasEnableTdxSeamldr() bool {
+	if o != nil && !IsNil(o.EnableTdxSeamldr) {
+		return true
+	}
+
+	return false
+}
+
+// SetEnableTdxSeamldr gets a reference to the given string and assigns it to the EnableTdxSeamldr field.
+func (o *BiosPolicy) SetEnableTdxSeamldr(v string) {
+	o.EnableTdxSeamldr = &v
+}
+
 // GetEnableTme returns the EnableTme field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEnableTme() string {
-	if o == nil || o.EnableTme == nil {
+	if o == nil || IsNil(o.EnableTme) {
 		var ret string
 		return ret
 	}
@@ -5347,7 +6569,7 @@ func (o *BiosPolicy) GetEnableTme() string {
 // GetEnableTmeOk returns a tuple with the EnableTme field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEnableTmeOk() (*string, bool) {
-	if o == nil || o.EnableTme == nil {
+	if o == nil || IsNil(o.EnableTme) {
 		return nil, false
 	}
 	return o.EnableTme, true
@@ -5355,7 +6577,7 @@ func (o *BiosPolicy) GetEnableTmeOk() (*string, bool) {
 
 // HasEnableTme returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEnableTme() bool {
-	if o != nil && o.EnableTme != nil {
+	if o != nil && !IsNil(o.EnableTme) {
 		return true
 	}
 
@@ -5369,7 +6591,7 @@ func (o *BiosPolicy) SetEnableTme(v string) {
 
 // GetEnergyEfficientTurbo returns the EnergyEfficientTurbo field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEnergyEfficientTurbo() string {
-	if o == nil || o.EnergyEfficientTurbo == nil {
+	if o == nil || IsNil(o.EnergyEfficientTurbo) {
 		var ret string
 		return ret
 	}
@@ -5379,7 +6601,7 @@ func (o *BiosPolicy) GetEnergyEfficientTurbo() string {
 // GetEnergyEfficientTurboOk returns a tuple with the EnergyEfficientTurbo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEnergyEfficientTurboOk() (*string, bool) {
-	if o == nil || o.EnergyEfficientTurbo == nil {
+	if o == nil || IsNil(o.EnergyEfficientTurbo) {
 		return nil, false
 	}
 	return o.EnergyEfficientTurbo, true
@@ -5387,7 +6609,7 @@ func (o *BiosPolicy) GetEnergyEfficientTurboOk() (*string, bool) {
 
 // HasEnergyEfficientTurbo returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEnergyEfficientTurbo() bool {
-	if o != nil && o.EnergyEfficientTurbo != nil {
+	if o != nil && !IsNil(o.EnergyEfficientTurbo) {
 		return true
 	}
 
@@ -5401,7 +6623,7 @@ func (o *BiosPolicy) SetEnergyEfficientTurbo(v string) {
 
 // GetEngPerfTuning returns the EngPerfTuning field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEngPerfTuning() string {
-	if o == nil || o.EngPerfTuning == nil {
+	if o == nil || IsNil(o.EngPerfTuning) {
 		var ret string
 		return ret
 	}
@@ -5411,7 +6633,7 @@ func (o *BiosPolicy) GetEngPerfTuning() string {
 // GetEngPerfTuningOk returns a tuple with the EngPerfTuning field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEngPerfTuningOk() (*string, bool) {
-	if o == nil || o.EngPerfTuning == nil {
+	if o == nil || IsNil(o.EngPerfTuning) {
 		return nil, false
 	}
 	return o.EngPerfTuning, true
@@ -5419,7 +6641,7 @@ func (o *BiosPolicy) GetEngPerfTuningOk() (*string, bool) {
 
 // HasEngPerfTuning returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEngPerfTuning() bool {
-	if o != nil && o.EngPerfTuning != nil {
+	if o != nil && !IsNil(o.EngPerfTuning) {
 		return true
 	}
 
@@ -5433,7 +6655,7 @@ func (o *BiosPolicy) SetEngPerfTuning(v string) {
 
 // GetEnhancedIntelSpeedStepTech returns the EnhancedIntelSpeedStepTech field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEnhancedIntelSpeedStepTech() string {
-	if o == nil || o.EnhancedIntelSpeedStepTech == nil {
+	if o == nil || IsNil(o.EnhancedIntelSpeedStepTech) {
 		var ret string
 		return ret
 	}
@@ -5443,7 +6665,7 @@ func (o *BiosPolicy) GetEnhancedIntelSpeedStepTech() string {
 // GetEnhancedIntelSpeedStepTechOk returns a tuple with the EnhancedIntelSpeedStepTech field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEnhancedIntelSpeedStepTechOk() (*string, bool) {
-	if o == nil || o.EnhancedIntelSpeedStepTech == nil {
+	if o == nil || IsNil(o.EnhancedIntelSpeedStepTech) {
 		return nil, false
 	}
 	return o.EnhancedIntelSpeedStepTech, true
@@ -5451,7 +6673,7 @@ func (o *BiosPolicy) GetEnhancedIntelSpeedStepTechOk() (*string, bool) {
 
 // HasEnhancedIntelSpeedStepTech returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEnhancedIntelSpeedStepTech() bool {
-	if o != nil && o.EnhancedIntelSpeedStepTech != nil {
+	if o != nil && !IsNil(o.EnhancedIntelSpeedStepTech) {
 		return true
 	}
 
@@ -5465,7 +6687,7 @@ func (o *BiosPolicy) SetEnhancedIntelSpeedStepTech(v string) {
 
 // GetEpochUpdate returns the EpochUpdate field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEpochUpdate() string {
-	if o == nil || o.EpochUpdate == nil {
+	if o == nil || IsNil(o.EpochUpdate) {
 		var ret string
 		return ret
 	}
@@ -5475,7 +6697,7 @@ func (o *BiosPolicy) GetEpochUpdate() string {
 // GetEpochUpdateOk returns a tuple with the EpochUpdate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEpochUpdateOk() (*string, bool) {
-	if o == nil || o.EpochUpdate == nil {
+	if o == nil || IsNil(o.EpochUpdate) {
 		return nil, false
 	}
 	return o.EpochUpdate, true
@@ -5483,7 +6705,7 @@ func (o *BiosPolicy) GetEpochUpdateOk() (*string, bool) {
 
 // HasEpochUpdate returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEpochUpdate() bool {
-	if o != nil && o.EpochUpdate != nil {
+	if o != nil && !IsNil(o.EpochUpdate) {
 		return true
 	}
 
@@ -5497,7 +6719,7 @@ func (o *BiosPolicy) SetEpochUpdate(v string) {
 
 // GetEppEnable returns the EppEnable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEppEnable() string {
-	if o == nil || o.EppEnable == nil {
+	if o == nil || IsNil(o.EppEnable) {
 		var ret string
 		return ret
 	}
@@ -5507,7 +6729,7 @@ func (o *BiosPolicy) GetEppEnable() string {
 // GetEppEnableOk returns a tuple with the EppEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEppEnableOk() (*string, bool) {
-	if o == nil || o.EppEnable == nil {
+	if o == nil || IsNil(o.EppEnable) {
 		return nil, false
 	}
 	return o.EppEnable, true
@@ -5515,7 +6737,7 @@ func (o *BiosPolicy) GetEppEnableOk() (*string, bool) {
 
 // HasEppEnable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEppEnable() bool {
-	if o != nil && o.EppEnable != nil {
+	if o != nil && !IsNil(o.EppEnable) {
 		return true
 	}
 
@@ -5529,7 +6751,7 @@ func (o *BiosPolicy) SetEppEnable(v string) {
 
 // GetEppProfile returns the EppProfile field value if set, zero value otherwise.
 func (o *BiosPolicy) GetEppProfile() string {
-	if o == nil || o.EppProfile == nil {
+	if o == nil || IsNil(o.EppProfile) {
 		var ret string
 		return ret
 	}
@@ -5539,7 +6761,7 @@ func (o *BiosPolicy) GetEppProfile() string {
 // GetEppProfileOk returns a tuple with the EppProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetEppProfileOk() (*string, bool) {
-	if o == nil || o.EppProfile == nil {
+	if o == nil || IsNil(o.EppProfile) {
 		return nil, false
 	}
 	return o.EppProfile, true
@@ -5547,7 +6769,7 @@ func (o *BiosPolicy) GetEppProfileOk() (*string, bool) {
 
 // HasEppProfile returns a boolean if a field has been set.
 func (o *BiosPolicy) HasEppProfile() bool {
-	if o != nil && o.EppProfile != nil {
+	if o != nil && !IsNil(o.EppProfile) {
 		return true
 	}
 
@@ -5559,9 +6781,41 @@ func (o *BiosPolicy) SetEppProfile(v string) {
 	o.EppProfile = &v
 }
 
+// GetErrorCheckScrub returns the ErrorCheckScrub field value if set, zero value otherwise.
+func (o *BiosPolicy) GetErrorCheckScrub() string {
+	if o == nil || IsNil(o.ErrorCheckScrub) {
+		var ret string
+		return ret
+	}
+	return *o.ErrorCheckScrub
+}
+
+// GetErrorCheckScrubOk returns a tuple with the ErrorCheckScrub field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetErrorCheckScrubOk() (*string, bool) {
+	if o == nil || IsNil(o.ErrorCheckScrub) {
+		return nil, false
+	}
+	return o.ErrorCheckScrub, true
+}
+
+// HasErrorCheckScrub returns a boolean if a field has been set.
+func (o *BiosPolicy) HasErrorCheckScrub() bool {
+	if o != nil && !IsNil(o.ErrorCheckScrub) {
+		return true
+	}
+
+	return false
+}
+
+// SetErrorCheckScrub gets a reference to the given string and assigns it to the ErrorCheckScrub field.
+func (o *BiosPolicy) SetErrorCheckScrub(v string) {
+	o.ErrorCheckScrub = &v
+}
+
 // GetExecuteDisableBit returns the ExecuteDisableBit field value if set, zero value otherwise.
 func (o *BiosPolicy) GetExecuteDisableBit() string {
-	if o == nil || o.ExecuteDisableBit == nil {
+	if o == nil || IsNil(o.ExecuteDisableBit) {
 		var ret string
 		return ret
 	}
@@ -5571,7 +6825,7 @@ func (o *BiosPolicy) GetExecuteDisableBit() string {
 // GetExecuteDisableBitOk returns a tuple with the ExecuteDisableBit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetExecuteDisableBitOk() (*string, bool) {
-	if o == nil || o.ExecuteDisableBit == nil {
+	if o == nil || IsNil(o.ExecuteDisableBit) {
 		return nil, false
 	}
 	return o.ExecuteDisableBit, true
@@ -5579,7 +6833,7 @@ func (o *BiosPolicy) GetExecuteDisableBitOk() (*string, bool) {
 
 // HasExecuteDisableBit returns a boolean if a field has been set.
 func (o *BiosPolicy) HasExecuteDisableBit() bool {
-	if o != nil && o.ExecuteDisableBit != nil {
+	if o != nil && !IsNil(o.ExecuteDisableBit) {
 		return true
 	}
 
@@ -5593,7 +6847,7 @@ func (o *BiosPolicy) SetExecuteDisableBit(v string) {
 
 // GetExtendedApic returns the ExtendedApic field value if set, zero value otherwise.
 func (o *BiosPolicy) GetExtendedApic() string {
-	if o == nil || o.ExtendedApic == nil {
+	if o == nil || IsNil(o.ExtendedApic) {
 		var ret string
 		return ret
 	}
@@ -5603,7 +6857,7 @@ func (o *BiosPolicy) GetExtendedApic() string {
 // GetExtendedApicOk returns a tuple with the ExtendedApic field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetExtendedApicOk() (*string, bool) {
-	if o == nil || o.ExtendedApic == nil {
+	if o == nil || IsNil(o.ExtendedApic) {
 		return nil, false
 	}
 	return o.ExtendedApic, true
@@ -5611,7 +6865,7 @@ func (o *BiosPolicy) GetExtendedApicOk() (*string, bool) {
 
 // HasExtendedApic returns a boolean if a field has been set.
 func (o *BiosPolicy) HasExtendedApic() bool {
-	if o != nil && o.ExtendedApic != nil {
+	if o != nil && !IsNil(o.ExtendedApic) {
 		return true
 	}
 
@@ -5625,7 +6879,7 @@ func (o *BiosPolicy) SetExtendedApic(v string) {
 
 // GetFlowControl returns the FlowControl field value if set, zero value otherwise.
 func (o *BiosPolicy) GetFlowControl() string {
-	if o == nil || o.FlowControl == nil {
+	if o == nil || IsNil(o.FlowControl) {
 		var ret string
 		return ret
 	}
@@ -5635,7 +6889,7 @@ func (o *BiosPolicy) GetFlowControl() string {
 // GetFlowControlOk returns a tuple with the FlowControl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetFlowControlOk() (*string, bool) {
-	if o == nil || o.FlowControl == nil {
+	if o == nil || IsNil(o.FlowControl) {
 		return nil, false
 	}
 	return o.FlowControl, true
@@ -5643,7 +6897,7 @@ func (o *BiosPolicy) GetFlowControlOk() (*string, bool) {
 
 // HasFlowControl returns a boolean if a field has been set.
 func (o *BiosPolicy) HasFlowControl() bool {
-	if o != nil && o.FlowControl != nil {
+	if o != nil && !IsNil(o.FlowControl) {
 		return true
 	}
 
@@ -5657,7 +6911,7 @@ func (o *BiosPolicy) SetFlowControl(v string) {
 
 // GetFrb2enable returns the Frb2enable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetFrb2enable() string {
-	if o == nil || o.Frb2enable == nil {
+	if o == nil || IsNil(o.Frb2enable) {
 		var ret string
 		return ret
 	}
@@ -5667,7 +6921,7 @@ func (o *BiosPolicy) GetFrb2enable() string {
 // GetFrb2enableOk returns a tuple with the Frb2enable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetFrb2enableOk() (*string, bool) {
-	if o == nil || o.Frb2enable == nil {
+	if o == nil || IsNil(o.Frb2enable) {
 		return nil, false
 	}
 	return o.Frb2enable, true
@@ -5675,7 +6929,7 @@ func (o *BiosPolicy) GetFrb2enableOk() (*string, bool) {
 
 // HasFrb2enable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasFrb2enable() bool {
-	if o != nil && o.Frb2enable != nil {
+	if o != nil && !IsNil(o.Frb2enable) {
 		return true
 	}
 
@@ -5689,7 +6943,7 @@ func (o *BiosPolicy) SetFrb2enable(v string) {
 
 // GetHardwarePrefetch returns the HardwarePrefetch field value if set, zero value otherwise.
 func (o *BiosPolicy) GetHardwarePrefetch() string {
-	if o == nil || o.HardwarePrefetch == nil {
+	if o == nil || IsNil(o.HardwarePrefetch) {
 		var ret string
 		return ret
 	}
@@ -5699,7 +6953,7 @@ func (o *BiosPolicy) GetHardwarePrefetch() string {
 // GetHardwarePrefetchOk returns a tuple with the HardwarePrefetch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetHardwarePrefetchOk() (*string, bool) {
-	if o == nil || o.HardwarePrefetch == nil {
+	if o == nil || IsNil(o.HardwarePrefetch) {
 		return nil, false
 	}
 	return o.HardwarePrefetch, true
@@ -5707,7 +6961,7 @@ func (o *BiosPolicy) GetHardwarePrefetchOk() (*string, bool) {
 
 // HasHardwarePrefetch returns a boolean if a field has been set.
 func (o *BiosPolicy) HasHardwarePrefetch() bool {
-	if o != nil && o.HardwarePrefetch != nil {
+	if o != nil && !IsNil(o.HardwarePrefetch) {
 		return true
 	}
 
@@ -5721,7 +6975,7 @@ func (o *BiosPolicy) SetHardwarePrefetch(v string) {
 
 // GetHwpmEnable returns the HwpmEnable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetHwpmEnable() string {
-	if o == nil || o.HwpmEnable == nil {
+	if o == nil || IsNil(o.HwpmEnable) {
 		var ret string
 		return ret
 	}
@@ -5731,7 +6985,7 @@ func (o *BiosPolicy) GetHwpmEnable() string {
 // GetHwpmEnableOk returns a tuple with the HwpmEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetHwpmEnableOk() (*string, bool) {
-	if o == nil || o.HwpmEnable == nil {
+	if o == nil || IsNil(o.HwpmEnable) {
 		return nil, false
 	}
 	return o.HwpmEnable, true
@@ -5739,7 +6993,7 @@ func (o *BiosPolicy) GetHwpmEnableOk() (*string, bool) {
 
 // HasHwpmEnable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasHwpmEnable() bool {
-	if o != nil && o.HwpmEnable != nil {
+	if o != nil && !IsNil(o.HwpmEnable) {
 		return true
 	}
 
@@ -5753,7 +7007,7 @@ func (o *BiosPolicy) SetHwpmEnable(v string) {
 
 // GetImcInterleave returns the ImcInterleave field value if set, zero value otherwise.
 func (o *BiosPolicy) GetImcInterleave() string {
-	if o == nil || o.ImcInterleave == nil {
+	if o == nil || IsNil(o.ImcInterleave) {
 		var ret string
 		return ret
 	}
@@ -5763,7 +7017,7 @@ func (o *BiosPolicy) GetImcInterleave() string {
 // GetImcInterleaveOk returns a tuple with the ImcInterleave field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetImcInterleaveOk() (*string, bool) {
-	if o == nil || o.ImcInterleave == nil {
+	if o == nil || IsNil(o.ImcInterleave) {
 		return nil, false
 	}
 	return o.ImcInterleave, true
@@ -5771,7 +7025,7 @@ func (o *BiosPolicy) GetImcInterleaveOk() (*string, bool) {
 
 // HasImcInterleave returns a boolean if a field has been set.
 func (o *BiosPolicy) HasImcInterleave() bool {
-	if o != nil && o.ImcInterleave != nil {
+	if o != nil && !IsNil(o.ImcInterleave) {
 		return true
 	}
 
@@ -5785,7 +7039,7 @@ func (o *BiosPolicy) SetImcInterleave(v string) {
 
 // GetIntelDynamicSpeedSelect returns the IntelDynamicSpeedSelect field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelDynamicSpeedSelect() string {
-	if o == nil || o.IntelDynamicSpeedSelect == nil {
+	if o == nil || IsNil(o.IntelDynamicSpeedSelect) {
 		var ret string
 		return ret
 	}
@@ -5795,7 +7049,7 @@ func (o *BiosPolicy) GetIntelDynamicSpeedSelect() string {
 // GetIntelDynamicSpeedSelectOk returns a tuple with the IntelDynamicSpeedSelect field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelDynamicSpeedSelectOk() (*string, bool) {
-	if o == nil || o.IntelDynamicSpeedSelect == nil {
+	if o == nil || IsNil(o.IntelDynamicSpeedSelect) {
 		return nil, false
 	}
 	return o.IntelDynamicSpeedSelect, true
@@ -5803,7 +7057,7 @@ func (o *BiosPolicy) GetIntelDynamicSpeedSelectOk() (*string, bool) {
 
 // HasIntelDynamicSpeedSelect returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelDynamicSpeedSelect() bool {
-	if o != nil && o.IntelDynamicSpeedSelect != nil {
+	if o != nil && !IsNil(o.IntelDynamicSpeedSelect) {
 		return true
 	}
 
@@ -5817,7 +7071,7 @@ func (o *BiosPolicy) SetIntelDynamicSpeedSelect(v string) {
 
 // GetIntelHyperThreadingTech returns the IntelHyperThreadingTech field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelHyperThreadingTech() string {
-	if o == nil || o.IntelHyperThreadingTech == nil {
+	if o == nil || IsNil(o.IntelHyperThreadingTech) {
 		var ret string
 		return ret
 	}
@@ -5827,7 +7081,7 @@ func (o *BiosPolicy) GetIntelHyperThreadingTech() string {
 // GetIntelHyperThreadingTechOk returns a tuple with the IntelHyperThreadingTech field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelHyperThreadingTechOk() (*string, bool) {
-	if o == nil || o.IntelHyperThreadingTech == nil {
+	if o == nil || IsNil(o.IntelHyperThreadingTech) {
 		return nil, false
 	}
 	return o.IntelHyperThreadingTech, true
@@ -5835,7 +7089,7 @@ func (o *BiosPolicy) GetIntelHyperThreadingTechOk() (*string, bool) {
 
 // HasIntelHyperThreadingTech returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelHyperThreadingTech() bool {
-	if o != nil && o.IntelHyperThreadingTech != nil {
+	if o != nil && !IsNil(o.IntelHyperThreadingTech) {
 		return true
 	}
 
@@ -5849,7 +7103,7 @@ func (o *BiosPolicy) SetIntelHyperThreadingTech(v string) {
 
 // GetIntelSpeedSelect returns the IntelSpeedSelect field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelSpeedSelect() string {
-	if o == nil || o.IntelSpeedSelect == nil {
+	if o == nil || IsNil(o.IntelSpeedSelect) {
 		var ret string
 		return ret
 	}
@@ -5859,7 +7113,7 @@ func (o *BiosPolicy) GetIntelSpeedSelect() string {
 // GetIntelSpeedSelectOk returns a tuple with the IntelSpeedSelect field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelSpeedSelectOk() (*string, bool) {
-	if o == nil || o.IntelSpeedSelect == nil {
+	if o == nil || IsNil(o.IntelSpeedSelect) {
 		return nil, false
 	}
 	return o.IntelSpeedSelect, true
@@ -5867,7 +7121,7 @@ func (o *BiosPolicy) GetIntelSpeedSelectOk() (*string, bool) {
 
 // HasIntelSpeedSelect returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelSpeedSelect() bool {
-	if o != nil && o.IntelSpeedSelect != nil {
+	if o != nil && !IsNil(o.IntelSpeedSelect) {
 		return true
 	}
 
@@ -5881,7 +7135,7 @@ func (o *BiosPolicy) SetIntelSpeedSelect(v string) {
 
 // GetIntelTurboBoostTech returns the IntelTurboBoostTech field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelTurboBoostTech() string {
-	if o == nil || o.IntelTurboBoostTech == nil {
+	if o == nil || IsNil(o.IntelTurboBoostTech) {
 		var ret string
 		return ret
 	}
@@ -5891,7 +7145,7 @@ func (o *BiosPolicy) GetIntelTurboBoostTech() string {
 // GetIntelTurboBoostTechOk returns a tuple with the IntelTurboBoostTech field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelTurboBoostTechOk() (*string, bool) {
-	if o == nil || o.IntelTurboBoostTech == nil {
+	if o == nil || IsNil(o.IntelTurboBoostTech) {
 		return nil, false
 	}
 	return o.IntelTurboBoostTech, true
@@ -5899,7 +7153,7 @@ func (o *BiosPolicy) GetIntelTurboBoostTechOk() (*string, bool) {
 
 // HasIntelTurboBoostTech returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelTurboBoostTech() bool {
-	if o != nil && o.IntelTurboBoostTech != nil {
+	if o != nil && !IsNil(o.IntelTurboBoostTech) {
 		return true
 	}
 
@@ -5913,7 +7167,7 @@ func (o *BiosPolicy) SetIntelTurboBoostTech(v string) {
 
 // GetIntelVirtualizationTechnology returns the IntelVirtualizationTechnology field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelVirtualizationTechnology() string {
-	if o == nil || o.IntelVirtualizationTechnology == nil {
+	if o == nil || IsNil(o.IntelVirtualizationTechnology) {
 		var ret string
 		return ret
 	}
@@ -5923,7 +7177,7 @@ func (o *BiosPolicy) GetIntelVirtualizationTechnology() string {
 // GetIntelVirtualizationTechnologyOk returns a tuple with the IntelVirtualizationTechnology field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelVirtualizationTechnologyOk() (*string, bool) {
-	if o == nil || o.IntelVirtualizationTechnology == nil {
+	if o == nil || IsNil(o.IntelVirtualizationTechnology) {
 		return nil, false
 	}
 	return o.IntelVirtualizationTechnology, true
@@ -5931,7 +7185,7 @@ func (o *BiosPolicy) GetIntelVirtualizationTechnologyOk() (*string, bool) {
 
 // HasIntelVirtualizationTechnology returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelVirtualizationTechnology() bool {
-	if o != nil && o.IntelVirtualizationTechnology != nil {
+	if o != nil && !IsNil(o.IntelVirtualizationTechnology) {
 		return true
 	}
 
@@ -5945,7 +7199,7 @@ func (o *BiosPolicy) SetIntelVirtualizationTechnology(v string) {
 
 // GetIntelVtForDirectedIo returns the IntelVtForDirectedIo field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelVtForDirectedIo() string {
-	if o == nil || o.IntelVtForDirectedIo == nil {
+	if o == nil || IsNil(o.IntelVtForDirectedIo) {
 		var ret string
 		return ret
 	}
@@ -5955,7 +7209,7 @@ func (o *BiosPolicy) GetIntelVtForDirectedIo() string {
 // GetIntelVtForDirectedIoOk returns a tuple with the IntelVtForDirectedIo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelVtForDirectedIoOk() (*string, bool) {
-	if o == nil || o.IntelVtForDirectedIo == nil {
+	if o == nil || IsNil(o.IntelVtForDirectedIo) {
 		return nil, false
 	}
 	return o.IntelVtForDirectedIo, true
@@ -5963,7 +7217,7 @@ func (o *BiosPolicy) GetIntelVtForDirectedIoOk() (*string, bool) {
 
 // HasIntelVtForDirectedIo returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelVtForDirectedIo() bool {
-	if o != nil && o.IntelVtForDirectedIo != nil {
+	if o != nil && !IsNil(o.IntelVtForDirectedIo) {
 		return true
 	}
 
@@ -5977,7 +7231,7 @@ func (o *BiosPolicy) SetIntelVtForDirectedIo(v string) {
 
 // GetIntelVtdCoherencySupport returns the IntelVtdCoherencySupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelVtdCoherencySupport() string {
-	if o == nil || o.IntelVtdCoherencySupport == nil {
+	if o == nil || IsNil(o.IntelVtdCoherencySupport) {
 		var ret string
 		return ret
 	}
@@ -5987,7 +7241,7 @@ func (o *BiosPolicy) GetIntelVtdCoherencySupport() string {
 // GetIntelVtdCoherencySupportOk returns a tuple with the IntelVtdCoherencySupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelVtdCoherencySupportOk() (*string, bool) {
-	if o == nil || o.IntelVtdCoherencySupport == nil {
+	if o == nil || IsNil(o.IntelVtdCoherencySupport) {
 		return nil, false
 	}
 	return o.IntelVtdCoherencySupport, true
@@ -5995,7 +7249,7 @@ func (o *BiosPolicy) GetIntelVtdCoherencySupportOk() (*string, bool) {
 
 // HasIntelVtdCoherencySupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelVtdCoherencySupport() bool {
-	if o != nil && o.IntelVtdCoherencySupport != nil {
+	if o != nil && !IsNil(o.IntelVtdCoherencySupport) {
 		return true
 	}
 
@@ -6009,7 +7263,7 @@ func (o *BiosPolicy) SetIntelVtdCoherencySupport(v string) {
 
 // GetIntelVtdInterruptRemapping returns the IntelVtdInterruptRemapping field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelVtdInterruptRemapping() string {
-	if o == nil || o.IntelVtdInterruptRemapping == nil {
+	if o == nil || IsNil(o.IntelVtdInterruptRemapping) {
 		var ret string
 		return ret
 	}
@@ -6019,7 +7273,7 @@ func (o *BiosPolicy) GetIntelVtdInterruptRemapping() string {
 // GetIntelVtdInterruptRemappingOk returns a tuple with the IntelVtdInterruptRemapping field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelVtdInterruptRemappingOk() (*string, bool) {
-	if o == nil || o.IntelVtdInterruptRemapping == nil {
+	if o == nil || IsNil(o.IntelVtdInterruptRemapping) {
 		return nil, false
 	}
 	return o.IntelVtdInterruptRemapping, true
@@ -6027,7 +7281,7 @@ func (o *BiosPolicy) GetIntelVtdInterruptRemappingOk() (*string, bool) {
 
 // HasIntelVtdInterruptRemapping returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelVtdInterruptRemapping() bool {
-	if o != nil && o.IntelVtdInterruptRemapping != nil {
+	if o != nil && !IsNil(o.IntelVtdInterruptRemapping) {
 		return true
 	}
 
@@ -6041,7 +7295,7 @@ func (o *BiosPolicy) SetIntelVtdInterruptRemapping(v string) {
 
 // GetIntelVtdPassThroughDmaSupport returns the IntelVtdPassThroughDmaSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelVtdPassThroughDmaSupport() string {
-	if o == nil || o.IntelVtdPassThroughDmaSupport == nil {
+	if o == nil || IsNil(o.IntelVtdPassThroughDmaSupport) {
 		var ret string
 		return ret
 	}
@@ -6051,7 +7305,7 @@ func (o *BiosPolicy) GetIntelVtdPassThroughDmaSupport() string {
 // GetIntelVtdPassThroughDmaSupportOk returns a tuple with the IntelVtdPassThroughDmaSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelVtdPassThroughDmaSupportOk() (*string, bool) {
-	if o == nil || o.IntelVtdPassThroughDmaSupport == nil {
+	if o == nil || IsNil(o.IntelVtdPassThroughDmaSupport) {
 		return nil, false
 	}
 	return o.IntelVtdPassThroughDmaSupport, true
@@ -6059,7 +7313,7 @@ func (o *BiosPolicy) GetIntelVtdPassThroughDmaSupportOk() (*string, bool) {
 
 // HasIntelVtdPassThroughDmaSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelVtdPassThroughDmaSupport() bool {
-	if o != nil && o.IntelVtdPassThroughDmaSupport != nil {
+	if o != nil && !IsNil(o.IntelVtdPassThroughDmaSupport) {
 		return true
 	}
 
@@ -6073,7 +7327,7 @@ func (o *BiosPolicy) SetIntelVtdPassThroughDmaSupport(v string) {
 
 // GetIntelVtdatsSupport returns the IntelVtdatsSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIntelVtdatsSupport() string {
-	if o == nil || o.IntelVtdatsSupport == nil {
+	if o == nil || IsNil(o.IntelVtdatsSupport) {
 		var ret string
 		return ret
 	}
@@ -6083,7 +7337,7 @@ func (o *BiosPolicy) GetIntelVtdatsSupport() string {
 // GetIntelVtdatsSupportOk returns a tuple with the IntelVtdatsSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIntelVtdatsSupportOk() (*string, bool) {
-	if o == nil || o.IntelVtdatsSupport == nil {
+	if o == nil || IsNil(o.IntelVtdatsSupport) {
 		return nil, false
 	}
 	return o.IntelVtdatsSupport, true
@@ -6091,7 +7345,7 @@ func (o *BiosPolicy) GetIntelVtdatsSupportOk() (*string, bool) {
 
 // HasIntelVtdatsSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIntelVtdatsSupport() bool {
-	if o != nil && o.IntelVtdatsSupport != nil {
+	if o != nil && !IsNil(o.IntelVtdatsSupport) {
 		return true
 	}
 
@@ -6103,9 +7357,41 @@ func (o *BiosPolicy) SetIntelVtdatsSupport(v string) {
 	o.IntelVtdatsSupport = &v
 }
 
+// GetIoatConfigCpm returns the IoatConfigCpm field value if set, zero value otherwise.
+func (o *BiosPolicy) GetIoatConfigCpm() string {
+	if o == nil || IsNil(o.IoatConfigCpm) {
+		var ret string
+		return ret
+	}
+	return *o.IoatConfigCpm
+}
+
+// GetIoatConfigCpmOk returns a tuple with the IoatConfigCpm field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetIoatConfigCpmOk() (*string, bool) {
+	if o == nil || IsNil(o.IoatConfigCpm) {
+		return nil, false
+	}
+	return o.IoatConfigCpm, true
+}
+
+// HasIoatConfigCpm returns a boolean if a field has been set.
+func (o *BiosPolicy) HasIoatConfigCpm() bool {
+	if o != nil && !IsNil(o.IoatConfigCpm) {
+		return true
+	}
+
+	return false
+}
+
+// SetIoatConfigCpm gets a reference to the given string and assigns it to the IoatConfigCpm field.
+func (o *BiosPolicy) SetIoatConfigCpm(v string) {
+	o.IoatConfigCpm = &v
+}
+
 // GetIohErrorEnable returns the IohErrorEnable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIohErrorEnable() string {
-	if o == nil || o.IohErrorEnable == nil {
+	if o == nil || IsNil(o.IohErrorEnable) {
 		var ret string
 		return ret
 	}
@@ -6115,7 +7401,7 @@ func (o *BiosPolicy) GetIohErrorEnable() string {
 // GetIohErrorEnableOk returns a tuple with the IohErrorEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIohErrorEnableOk() (*string, bool) {
-	if o == nil || o.IohErrorEnable == nil {
+	if o == nil || IsNil(o.IohErrorEnable) {
 		return nil, false
 	}
 	return o.IohErrorEnable, true
@@ -6123,7 +7409,7 @@ func (o *BiosPolicy) GetIohErrorEnableOk() (*string, bool) {
 
 // HasIohErrorEnable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIohErrorEnable() bool {
-	if o != nil && o.IohErrorEnable != nil {
+	if o != nil && !IsNil(o.IohErrorEnable) {
 		return true
 	}
 
@@ -6137,7 +7423,7 @@ func (o *BiosPolicy) SetIohErrorEnable(v string) {
 
 // GetIohResource returns the IohResource field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIohResource() string {
-	if o == nil || o.IohResource == nil {
+	if o == nil || IsNil(o.IohResource) {
 		var ret string
 		return ret
 	}
@@ -6147,7 +7433,7 @@ func (o *BiosPolicy) GetIohResource() string {
 // GetIohResourceOk returns a tuple with the IohResource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIohResourceOk() (*string, bool) {
-	if o == nil || o.IohResource == nil {
+	if o == nil || IsNil(o.IohResource) {
 		return nil, false
 	}
 	return o.IohResource, true
@@ -6155,7 +7441,7 @@ func (o *BiosPolicy) GetIohResourceOk() (*string, bool) {
 
 // HasIohResource returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIohResource() bool {
-	if o != nil && o.IohResource != nil {
+	if o != nil && !IsNil(o.IohResource) {
 		return true
 	}
 
@@ -6169,7 +7455,7 @@ func (o *BiosPolicy) SetIohResource(v string) {
 
 // GetIpPrefetch returns the IpPrefetch field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIpPrefetch() string {
-	if o == nil || o.IpPrefetch == nil {
+	if o == nil || IsNil(o.IpPrefetch) {
 		var ret string
 		return ret
 	}
@@ -6179,7 +7465,7 @@ func (o *BiosPolicy) GetIpPrefetch() string {
 // GetIpPrefetchOk returns a tuple with the IpPrefetch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIpPrefetchOk() (*string, bool) {
-	if o == nil || o.IpPrefetch == nil {
+	if o == nil || IsNil(o.IpPrefetch) {
 		return nil, false
 	}
 	return o.IpPrefetch, true
@@ -6187,7 +7473,7 @@ func (o *BiosPolicy) GetIpPrefetchOk() (*string, bool) {
 
 // HasIpPrefetch returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIpPrefetch() bool {
-	if o != nil && o.IpPrefetch != nil {
+	if o != nil && !IsNil(o.IpPrefetch) {
 		return true
 	}
 
@@ -6201,7 +7487,7 @@ func (o *BiosPolicy) SetIpPrefetch(v string) {
 
 // GetIpv4http returns the Ipv4http field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIpv4http() string {
-	if o == nil || o.Ipv4http == nil {
+	if o == nil || IsNil(o.Ipv4http) {
 		var ret string
 		return ret
 	}
@@ -6211,7 +7497,7 @@ func (o *BiosPolicy) GetIpv4http() string {
 // GetIpv4httpOk returns a tuple with the Ipv4http field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIpv4httpOk() (*string, bool) {
-	if o == nil || o.Ipv4http == nil {
+	if o == nil || IsNil(o.Ipv4http) {
 		return nil, false
 	}
 	return o.Ipv4http, true
@@ -6219,7 +7505,7 @@ func (o *BiosPolicy) GetIpv4httpOk() (*string, bool) {
 
 // HasIpv4http returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIpv4http() bool {
-	if o != nil && o.Ipv4http != nil {
+	if o != nil && !IsNil(o.Ipv4http) {
 		return true
 	}
 
@@ -6233,7 +7519,7 @@ func (o *BiosPolicy) SetIpv4http(v string) {
 
 // GetIpv4pxe returns the Ipv4pxe field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIpv4pxe() string {
-	if o == nil || o.Ipv4pxe == nil {
+	if o == nil || IsNil(o.Ipv4pxe) {
 		var ret string
 		return ret
 	}
@@ -6243,7 +7529,7 @@ func (o *BiosPolicy) GetIpv4pxe() string {
 // GetIpv4pxeOk returns a tuple with the Ipv4pxe field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIpv4pxeOk() (*string, bool) {
-	if o == nil || o.Ipv4pxe == nil {
+	if o == nil || IsNil(o.Ipv4pxe) {
 		return nil, false
 	}
 	return o.Ipv4pxe, true
@@ -6251,7 +7537,7 @@ func (o *BiosPolicy) GetIpv4pxeOk() (*string, bool) {
 
 // HasIpv4pxe returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIpv4pxe() bool {
-	if o != nil && o.Ipv4pxe != nil {
+	if o != nil && !IsNil(o.Ipv4pxe) {
 		return true
 	}
 
@@ -6265,7 +7551,7 @@ func (o *BiosPolicy) SetIpv4pxe(v string) {
 
 // GetIpv6http returns the Ipv6http field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIpv6http() string {
-	if o == nil || o.Ipv6http == nil {
+	if o == nil || IsNil(o.Ipv6http) {
 		var ret string
 		return ret
 	}
@@ -6275,7 +7561,7 @@ func (o *BiosPolicy) GetIpv6http() string {
 // GetIpv6httpOk returns a tuple with the Ipv6http field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIpv6httpOk() (*string, bool) {
-	if o == nil || o.Ipv6http == nil {
+	if o == nil || IsNil(o.Ipv6http) {
 		return nil, false
 	}
 	return o.Ipv6http, true
@@ -6283,7 +7569,7 @@ func (o *BiosPolicy) GetIpv6httpOk() (*string, bool) {
 
 // HasIpv6http returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIpv6http() bool {
-	if o != nil && o.Ipv6http != nil {
+	if o != nil && !IsNil(o.Ipv6http) {
 		return true
 	}
 
@@ -6297,7 +7583,7 @@ func (o *BiosPolicy) SetIpv6http(v string) {
 
 // GetIpv6pxe returns the Ipv6pxe field value if set, zero value otherwise.
 func (o *BiosPolicy) GetIpv6pxe() string {
-	if o == nil || o.Ipv6pxe == nil {
+	if o == nil || IsNil(o.Ipv6pxe) {
 		var ret string
 		return ret
 	}
@@ -6307,7 +7593,7 @@ func (o *BiosPolicy) GetIpv6pxe() string {
 // GetIpv6pxeOk returns a tuple with the Ipv6pxe field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetIpv6pxeOk() (*string, bool) {
-	if o == nil || o.Ipv6pxe == nil {
+	if o == nil || IsNil(o.Ipv6pxe) {
 		return nil, false
 	}
 	return o.Ipv6pxe, true
@@ -6315,7 +7601,7 @@ func (o *BiosPolicy) GetIpv6pxeOk() (*string, bool) {
 
 // HasIpv6pxe returns a boolean if a field has been set.
 func (o *BiosPolicy) HasIpv6pxe() bool {
-	if o != nil && o.Ipv6pxe != nil {
+	if o != nil && !IsNil(o.Ipv6pxe) {
 		return true
 	}
 
@@ -6329,7 +7615,7 @@ func (o *BiosPolicy) SetIpv6pxe(v string) {
 
 // GetKtiPrefetch returns the KtiPrefetch field value if set, zero value otherwise.
 func (o *BiosPolicy) GetKtiPrefetch() string {
-	if o == nil || o.KtiPrefetch == nil {
+	if o == nil || IsNil(o.KtiPrefetch) {
 		var ret string
 		return ret
 	}
@@ -6339,7 +7625,7 @@ func (o *BiosPolicy) GetKtiPrefetch() string {
 // GetKtiPrefetchOk returns a tuple with the KtiPrefetch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetKtiPrefetchOk() (*string, bool) {
-	if o == nil || o.KtiPrefetch == nil {
+	if o == nil || IsNil(o.KtiPrefetch) {
 		return nil, false
 	}
 	return o.KtiPrefetch, true
@@ -6347,7 +7633,7 @@ func (o *BiosPolicy) GetKtiPrefetchOk() (*string, bool) {
 
 // HasKtiPrefetch returns a boolean if a field has been set.
 func (o *BiosPolicy) HasKtiPrefetch() bool {
-	if o != nil && o.KtiPrefetch != nil {
+	if o != nil && !IsNil(o.KtiPrefetch) {
 		return true
 	}
 
@@ -6361,7 +7647,7 @@ func (o *BiosPolicy) SetKtiPrefetch(v string) {
 
 // GetLegacyOsRedirection returns the LegacyOsRedirection field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLegacyOsRedirection() string {
-	if o == nil || o.LegacyOsRedirection == nil {
+	if o == nil || IsNil(o.LegacyOsRedirection) {
 		var ret string
 		return ret
 	}
@@ -6371,7 +7657,7 @@ func (o *BiosPolicy) GetLegacyOsRedirection() string {
 // GetLegacyOsRedirectionOk returns a tuple with the LegacyOsRedirection field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLegacyOsRedirectionOk() (*string, bool) {
-	if o == nil || o.LegacyOsRedirection == nil {
+	if o == nil || IsNil(o.LegacyOsRedirection) {
 		return nil, false
 	}
 	return o.LegacyOsRedirection, true
@@ -6379,7 +7665,7 @@ func (o *BiosPolicy) GetLegacyOsRedirectionOk() (*string, bool) {
 
 // HasLegacyOsRedirection returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLegacyOsRedirection() bool {
-	if o != nil && o.LegacyOsRedirection != nil {
+	if o != nil && !IsNil(o.LegacyOsRedirection) {
 		return true
 	}
 
@@ -6393,7 +7679,7 @@ func (o *BiosPolicy) SetLegacyOsRedirection(v string) {
 
 // GetLegacyUsbSupport returns the LegacyUsbSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLegacyUsbSupport() string {
-	if o == nil || o.LegacyUsbSupport == nil {
+	if o == nil || IsNil(o.LegacyUsbSupport) {
 		var ret string
 		return ret
 	}
@@ -6403,7 +7689,7 @@ func (o *BiosPolicy) GetLegacyUsbSupport() string {
 // GetLegacyUsbSupportOk returns a tuple with the LegacyUsbSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLegacyUsbSupportOk() (*string, bool) {
-	if o == nil || o.LegacyUsbSupport == nil {
+	if o == nil || IsNil(o.LegacyUsbSupport) {
 		return nil, false
 	}
 	return o.LegacyUsbSupport, true
@@ -6411,7 +7697,7 @@ func (o *BiosPolicy) GetLegacyUsbSupportOk() (*string, bool) {
 
 // HasLegacyUsbSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLegacyUsbSupport() bool {
-	if o != nil && o.LegacyUsbSupport != nil {
+	if o != nil && !IsNil(o.LegacyUsbSupport) {
 		return true
 	}
 
@@ -6425,7 +7711,7 @@ func (o *BiosPolicy) SetLegacyUsbSupport(v string) {
 
 // GetLlcAlloc returns the LlcAlloc field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLlcAlloc() string {
-	if o == nil || o.LlcAlloc == nil {
+	if o == nil || IsNil(o.LlcAlloc) {
 		var ret string
 		return ret
 	}
@@ -6435,7 +7721,7 @@ func (o *BiosPolicy) GetLlcAlloc() string {
 // GetLlcAllocOk returns a tuple with the LlcAlloc field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLlcAllocOk() (*string, bool) {
-	if o == nil || o.LlcAlloc == nil {
+	if o == nil || IsNil(o.LlcAlloc) {
 		return nil, false
 	}
 	return o.LlcAlloc, true
@@ -6443,7 +7729,7 @@ func (o *BiosPolicy) GetLlcAllocOk() (*string, bool) {
 
 // HasLlcAlloc returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLlcAlloc() bool {
-	if o != nil && o.LlcAlloc != nil {
+	if o != nil && !IsNil(o.LlcAlloc) {
 		return true
 	}
 
@@ -6457,7 +7743,7 @@ func (o *BiosPolicy) SetLlcAlloc(v string) {
 
 // GetLlcPrefetch returns the LlcPrefetch field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLlcPrefetch() string {
-	if o == nil || o.LlcPrefetch == nil {
+	if o == nil || IsNil(o.LlcPrefetch) {
 		var ret string
 		return ret
 	}
@@ -6467,7 +7753,7 @@ func (o *BiosPolicy) GetLlcPrefetch() string {
 // GetLlcPrefetchOk returns a tuple with the LlcPrefetch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLlcPrefetchOk() (*string, bool) {
-	if o == nil || o.LlcPrefetch == nil {
+	if o == nil || IsNil(o.LlcPrefetch) {
 		return nil, false
 	}
 	return o.LlcPrefetch, true
@@ -6475,7 +7761,7 @@ func (o *BiosPolicy) GetLlcPrefetchOk() (*string, bool) {
 
 // HasLlcPrefetch returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLlcPrefetch() bool {
-	if o != nil && o.LlcPrefetch != nil {
+	if o != nil && !IsNil(o.LlcPrefetch) {
 		return true
 	}
 
@@ -6489,7 +7775,7 @@ func (o *BiosPolicy) SetLlcPrefetch(v string) {
 
 // GetLomPort0state returns the LomPort0state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLomPort0state() string {
-	if o == nil || o.LomPort0state == nil {
+	if o == nil || IsNil(o.LomPort0state) {
 		var ret string
 		return ret
 	}
@@ -6499,7 +7785,7 @@ func (o *BiosPolicy) GetLomPort0state() string {
 // GetLomPort0stateOk returns a tuple with the LomPort0state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLomPort0stateOk() (*string, bool) {
-	if o == nil || o.LomPort0state == nil {
+	if o == nil || IsNil(o.LomPort0state) {
 		return nil, false
 	}
 	return o.LomPort0state, true
@@ -6507,7 +7793,7 @@ func (o *BiosPolicy) GetLomPort0stateOk() (*string, bool) {
 
 // HasLomPort0state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLomPort0state() bool {
-	if o != nil && o.LomPort0state != nil {
+	if o != nil && !IsNil(o.LomPort0state) {
 		return true
 	}
 
@@ -6521,7 +7807,7 @@ func (o *BiosPolicy) SetLomPort0state(v string) {
 
 // GetLomPort1state returns the LomPort1state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLomPort1state() string {
-	if o == nil || o.LomPort1state == nil {
+	if o == nil || IsNil(o.LomPort1state) {
 		var ret string
 		return ret
 	}
@@ -6531,7 +7817,7 @@ func (o *BiosPolicy) GetLomPort1state() string {
 // GetLomPort1stateOk returns a tuple with the LomPort1state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLomPort1stateOk() (*string, bool) {
-	if o == nil || o.LomPort1state == nil {
+	if o == nil || IsNil(o.LomPort1state) {
 		return nil, false
 	}
 	return o.LomPort1state, true
@@ -6539,7 +7825,7 @@ func (o *BiosPolicy) GetLomPort1stateOk() (*string, bool) {
 
 // HasLomPort1state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLomPort1state() bool {
-	if o != nil && o.LomPort1state != nil {
+	if o != nil && !IsNil(o.LomPort1state) {
 		return true
 	}
 
@@ -6553,7 +7839,7 @@ func (o *BiosPolicy) SetLomPort1state(v string) {
 
 // GetLomPort2state returns the LomPort2state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLomPort2state() string {
-	if o == nil || o.LomPort2state == nil {
+	if o == nil || IsNil(o.LomPort2state) {
 		var ret string
 		return ret
 	}
@@ -6563,7 +7849,7 @@ func (o *BiosPolicy) GetLomPort2state() string {
 // GetLomPort2stateOk returns a tuple with the LomPort2state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLomPort2stateOk() (*string, bool) {
-	if o == nil || o.LomPort2state == nil {
+	if o == nil || IsNil(o.LomPort2state) {
 		return nil, false
 	}
 	return o.LomPort2state, true
@@ -6571,7 +7857,7 @@ func (o *BiosPolicy) GetLomPort2stateOk() (*string, bool) {
 
 // HasLomPort2state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLomPort2state() bool {
-	if o != nil && o.LomPort2state != nil {
+	if o != nil && !IsNil(o.LomPort2state) {
 		return true
 	}
 
@@ -6585,7 +7871,7 @@ func (o *BiosPolicy) SetLomPort2state(v string) {
 
 // GetLomPort3state returns the LomPort3state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLomPort3state() string {
-	if o == nil || o.LomPort3state == nil {
+	if o == nil || IsNil(o.LomPort3state) {
 		var ret string
 		return ret
 	}
@@ -6595,7 +7881,7 @@ func (o *BiosPolicy) GetLomPort3state() string {
 // GetLomPort3stateOk returns a tuple with the LomPort3state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLomPort3stateOk() (*string, bool) {
-	if o == nil || o.LomPort3state == nil {
+	if o == nil || IsNil(o.LomPort3state) {
 		return nil, false
 	}
 	return o.LomPort3state, true
@@ -6603,7 +7889,7 @@ func (o *BiosPolicy) GetLomPort3stateOk() (*string, bool) {
 
 // HasLomPort3state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLomPort3state() bool {
-	if o != nil && o.LomPort3state != nil {
+	if o != nil && !IsNil(o.LomPort3state) {
 		return true
 	}
 
@@ -6617,7 +7903,7 @@ func (o *BiosPolicy) SetLomPort3state(v string) {
 
 // GetLomPortsAllState returns the LomPortsAllState field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLomPortsAllState() string {
-	if o == nil || o.LomPortsAllState == nil {
+	if o == nil || IsNil(o.LomPortsAllState) {
 		var ret string
 		return ret
 	}
@@ -6627,7 +7913,7 @@ func (o *BiosPolicy) GetLomPortsAllState() string {
 // GetLomPortsAllStateOk returns a tuple with the LomPortsAllState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLomPortsAllStateOk() (*string, bool) {
-	if o == nil || o.LomPortsAllState == nil {
+	if o == nil || IsNil(o.LomPortsAllState) {
 		return nil, false
 	}
 	return o.LomPortsAllState, true
@@ -6635,7 +7921,7 @@ func (o *BiosPolicy) GetLomPortsAllStateOk() (*string, bool) {
 
 // HasLomPortsAllState returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLomPortsAllState() bool {
-	if o != nil && o.LomPortsAllState != nil {
+	if o != nil && !IsNil(o.LomPortsAllState) {
 		return true
 	}
 
@@ -6649,7 +7935,7 @@ func (o *BiosPolicy) SetLomPortsAllState(v string) {
 
 // GetLvDdrMode returns the LvDdrMode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetLvDdrMode() string {
-	if o == nil || o.LvDdrMode == nil {
+	if o == nil || IsNil(o.LvDdrMode) {
 		var ret string
 		return ret
 	}
@@ -6659,7 +7945,7 @@ func (o *BiosPolicy) GetLvDdrMode() string {
 // GetLvDdrModeOk returns a tuple with the LvDdrMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetLvDdrModeOk() (*string, bool) {
-	if o == nil || o.LvDdrMode == nil {
+	if o == nil || IsNil(o.LvDdrMode) {
 		return nil, false
 	}
 	return o.LvDdrMode, true
@@ -6667,7 +7953,7 @@ func (o *BiosPolicy) GetLvDdrModeOk() (*string, bool) {
 
 // HasLvDdrMode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasLvDdrMode() bool {
-	if o != nil && o.LvDdrMode != nil {
+	if o != nil && !IsNil(o.LvDdrMode) {
 		return true
 	}
 
@@ -6681,7 +7967,7 @@ func (o *BiosPolicy) SetLvDdrMode(v string) {
 
 // GetMakeDeviceNonBootable returns the MakeDeviceNonBootable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetMakeDeviceNonBootable() string {
-	if o == nil || o.MakeDeviceNonBootable == nil {
+	if o == nil || IsNil(o.MakeDeviceNonBootable) {
 		var ret string
 		return ret
 	}
@@ -6691,7 +7977,7 @@ func (o *BiosPolicy) GetMakeDeviceNonBootable() string {
 // GetMakeDeviceNonBootableOk returns a tuple with the MakeDeviceNonBootable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetMakeDeviceNonBootableOk() (*string, bool) {
-	if o == nil || o.MakeDeviceNonBootable == nil {
+	if o == nil || IsNil(o.MakeDeviceNonBootable) {
 		return nil, false
 	}
 	return o.MakeDeviceNonBootable, true
@@ -6699,7 +7985,7 @@ func (o *BiosPolicy) GetMakeDeviceNonBootableOk() (*string, bool) {
 
 // HasMakeDeviceNonBootable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasMakeDeviceNonBootable() bool {
-	if o != nil && o.MakeDeviceNonBootable != nil {
+	if o != nil && !IsNil(o.MakeDeviceNonBootable) {
 		return true
 	}
 
@@ -6713,7 +7999,7 @@ func (o *BiosPolicy) SetMakeDeviceNonBootable(v string) {
 
 // GetMemoryBandwidthBoost returns the MemoryBandwidthBoost field value if set, zero value otherwise.
 func (o *BiosPolicy) GetMemoryBandwidthBoost() string {
-	if o == nil || o.MemoryBandwidthBoost == nil {
+	if o == nil || IsNil(o.MemoryBandwidthBoost) {
 		var ret string
 		return ret
 	}
@@ -6723,7 +8009,7 @@ func (o *BiosPolicy) GetMemoryBandwidthBoost() string {
 // GetMemoryBandwidthBoostOk returns a tuple with the MemoryBandwidthBoost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetMemoryBandwidthBoostOk() (*string, bool) {
-	if o == nil || o.MemoryBandwidthBoost == nil {
+	if o == nil || IsNil(o.MemoryBandwidthBoost) {
 		return nil, false
 	}
 	return o.MemoryBandwidthBoost, true
@@ -6731,7 +8017,7 @@ func (o *BiosPolicy) GetMemoryBandwidthBoostOk() (*string, bool) {
 
 // HasMemoryBandwidthBoost returns a boolean if a field has been set.
 func (o *BiosPolicy) HasMemoryBandwidthBoost() bool {
-	if o != nil && o.MemoryBandwidthBoost != nil {
+	if o != nil && !IsNil(o.MemoryBandwidthBoost) {
 		return true
 	}
 
@@ -6745,7 +8031,7 @@ func (o *BiosPolicy) SetMemoryBandwidthBoost(v string) {
 
 // GetMemoryInterLeave returns the MemoryInterLeave field value if set, zero value otherwise.
 func (o *BiosPolicy) GetMemoryInterLeave() string {
-	if o == nil || o.MemoryInterLeave == nil {
+	if o == nil || IsNil(o.MemoryInterLeave) {
 		var ret string
 		return ret
 	}
@@ -6755,7 +8041,7 @@ func (o *BiosPolicy) GetMemoryInterLeave() string {
 // GetMemoryInterLeaveOk returns a tuple with the MemoryInterLeave field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetMemoryInterLeaveOk() (*string, bool) {
-	if o == nil || o.MemoryInterLeave == nil {
+	if o == nil || IsNil(o.MemoryInterLeave) {
 		return nil, false
 	}
 	return o.MemoryInterLeave, true
@@ -6763,7 +8049,7 @@ func (o *BiosPolicy) GetMemoryInterLeaveOk() (*string, bool) {
 
 // HasMemoryInterLeave returns a boolean if a field has been set.
 func (o *BiosPolicy) HasMemoryInterLeave() bool {
-	if o != nil && o.MemoryInterLeave != nil {
+	if o != nil && !IsNil(o.MemoryInterLeave) {
 		return true
 	}
 
@@ -6777,7 +8063,7 @@ func (o *BiosPolicy) SetMemoryInterLeave(v string) {
 
 // GetMemoryMappedIoAbove4gb returns the MemoryMappedIoAbove4gb field value if set, zero value otherwise.
 func (o *BiosPolicy) GetMemoryMappedIoAbove4gb() string {
-	if o == nil || o.MemoryMappedIoAbove4gb == nil {
+	if o == nil || IsNil(o.MemoryMappedIoAbove4gb) {
 		var ret string
 		return ret
 	}
@@ -6787,7 +8073,7 @@ func (o *BiosPolicy) GetMemoryMappedIoAbove4gb() string {
 // GetMemoryMappedIoAbove4gbOk returns a tuple with the MemoryMappedIoAbove4gb field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetMemoryMappedIoAbove4gbOk() (*string, bool) {
-	if o == nil || o.MemoryMappedIoAbove4gb == nil {
+	if o == nil || IsNil(o.MemoryMappedIoAbove4gb) {
 		return nil, false
 	}
 	return o.MemoryMappedIoAbove4gb, true
@@ -6795,7 +8081,7 @@ func (o *BiosPolicy) GetMemoryMappedIoAbove4gbOk() (*string, bool) {
 
 // HasMemoryMappedIoAbove4gb returns a boolean if a field has been set.
 func (o *BiosPolicy) HasMemoryMappedIoAbove4gb() bool {
-	if o != nil && o.MemoryMappedIoAbove4gb != nil {
+	if o != nil && !IsNil(o.MemoryMappedIoAbove4gb) {
 		return true
 	}
 
@@ -6809,7 +8095,7 @@ func (o *BiosPolicy) SetMemoryMappedIoAbove4gb(v string) {
 
 // GetMemoryRefreshRate returns the MemoryRefreshRate field value if set, zero value otherwise.
 func (o *BiosPolicy) GetMemoryRefreshRate() string {
-	if o == nil || o.MemoryRefreshRate == nil {
+	if o == nil || IsNil(o.MemoryRefreshRate) {
 		var ret string
 		return ret
 	}
@@ -6819,7 +8105,7 @@ func (o *BiosPolicy) GetMemoryRefreshRate() string {
 // GetMemoryRefreshRateOk returns a tuple with the MemoryRefreshRate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetMemoryRefreshRateOk() (*string, bool) {
-	if o == nil || o.MemoryRefreshRate == nil {
+	if o == nil || IsNil(o.MemoryRefreshRate) {
 		return nil, false
 	}
 	return o.MemoryRefreshRate, true
@@ -6827,7 +8113,7 @@ func (o *BiosPolicy) GetMemoryRefreshRateOk() (*string, bool) {
 
 // HasMemoryRefreshRate returns a boolean if a field has been set.
 func (o *BiosPolicy) HasMemoryRefreshRate() bool {
-	if o != nil && o.MemoryRefreshRate != nil {
+	if o != nil && !IsNil(o.MemoryRefreshRate) {
 		return true
 	}
 
@@ -6841,7 +8127,7 @@ func (o *BiosPolicy) SetMemoryRefreshRate(v string) {
 
 // GetMemorySizeLimit returns the MemorySizeLimit field value if set, zero value otherwise.
 func (o *BiosPolicy) GetMemorySizeLimit() string {
-	if o == nil || o.MemorySizeLimit == nil {
+	if o == nil || IsNil(o.MemorySizeLimit) {
 		var ret string
 		return ret
 	}
@@ -6851,7 +8137,7 @@ func (o *BiosPolicy) GetMemorySizeLimit() string {
 // GetMemorySizeLimitOk returns a tuple with the MemorySizeLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetMemorySizeLimitOk() (*string, bool) {
-	if o == nil || o.MemorySizeLimit == nil {
+	if o == nil || IsNil(o.MemorySizeLimit) {
 		return nil, false
 	}
 	return o.MemorySizeLimit, true
@@ -6859,7 +8145,7 @@ func (o *BiosPolicy) GetMemorySizeLimitOk() (*string, bool) {
 
 // HasMemorySizeLimit returns a boolean if a field has been set.
 func (o *BiosPolicy) HasMemorySizeLimit() bool {
-	if o != nil && o.MemorySizeLimit != nil {
+	if o != nil && !IsNil(o.MemorySizeLimit) {
 		return true
 	}
 
@@ -6873,7 +8159,7 @@ func (o *BiosPolicy) SetMemorySizeLimit(v string) {
 
 // GetMemoryThermalThrottling returns the MemoryThermalThrottling field value if set, zero value otherwise.
 func (o *BiosPolicy) GetMemoryThermalThrottling() string {
-	if o == nil || o.MemoryThermalThrottling == nil {
+	if o == nil || IsNil(o.MemoryThermalThrottling) {
 		var ret string
 		return ret
 	}
@@ -6883,7 +8169,7 @@ func (o *BiosPolicy) GetMemoryThermalThrottling() string {
 // GetMemoryThermalThrottlingOk returns a tuple with the MemoryThermalThrottling field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetMemoryThermalThrottlingOk() (*string, bool) {
-	if o == nil || o.MemoryThermalThrottling == nil {
+	if o == nil || IsNil(o.MemoryThermalThrottling) {
 		return nil, false
 	}
 	return o.MemoryThermalThrottling, true
@@ -6891,7 +8177,7 @@ func (o *BiosPolicy) GetMemoryThermalThrottlingOk() (*string, bool) {
 
 // HasMemoryThermalThrottling returns a boolean if a field has been set.
 func (o *BiosPolicy) HasMemoryThermalThrottling() bool {
-	if o != nil && o.MemoryThermalThrottling != nil {
+	if o != nil && !IsNil(o.MemoryThermalThrottling) {
 		return true
 	}
 
@@ -6905,7 +8191,7 @@ func (o *BiosPolicy) SetMemoryThermalThrottling(v string) {
 
 // GetMirroringMode returns the MirroringMode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetMirroringMode() string {
-	if o == nil || o.MirroringMode == nil {
+	if o == nil || IsNil(o.MirroringMode) {
 		var ret string
 		return ret
 	}
@@ -6915,7 +8201,7 @@ func (o *BiosPolicy) GetMirroringMode() string {
 // GetMirroringModeOk returns a tuple with the MirroringMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetMirroringModeOk() (*string, bool) {
-	if o == nil || o.MirroringMode == nil {
+	if o == nil || IsNil(o.MirroringMode) {
 		return nil, false
 	}
 	return o.MirroringMode, true
@@ -6923,7 +8209,7 @@ func (o *BiosPolicy) GetMirroringModeOk() (*string, bool) {
 
 // HasMirroringMode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasMirroringMode() bool {
-	if o != nil && o.MirroringMode != nil {
+	if o != nil && !IsNil(o.MirroringMode) {
 		return true
 	}
 
@@ -6937,7 +8223,7 @@ func (o *BiosPolicy) SetMirroringMode(v string) {
 
 // GetMmcfgBase returns the MmcfgBase field value if set, zero value otherwise.
 func (o *BiosPolicy) GetMmcfgBase() string {
-	if o == nil || o.MmcfgBase == nil {
+	if o == nil || IsNil(o.MmcfgBase) {
 		var ret string
 		return ret
 	}
@@ -6947,7 +8233,7 @@ func (o *BiosPolicy) GetMmcfgBase() string {
 // GetMmcfgBaseOk returns a tuple with the MmcfgBase field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetMmcfgBaseOk() (*string, bool) {
-	if o == nil || o.MmcfgBase == nil {
+	if o == nil || IsNil(o.MmcfgBase) {
 		return nil, false
 	}
 	return o.MmcfgBase, true
@@ -6955,7 +8241,7 @@ func (o *BiosPolicy) GetMmcfgBaseOk() (*string, bool) {
 
 // HasMmcfgBase returns a boolean if a field has been set.
 func (o *BiosPolicy) HasMmcfgBase() bool {
-	if o != nil && o.MmcfgBase != nil {
+	if o != nil && !IsNil(o.MmcfgBase) {
 		return true
 	}
 
@@ -6967,9 +8253,73 @@ func (o *BiosPolicy) SetMmcfgBase(v string) {
 	o.MmcfgBase = &v
 }
 
+// GetMmiohBase returns the MmiohBase field value if set, zero value otherwise.
+func (o *BiosPolicy) GetMmiohBase() string {
+	if o == nil || IsNil(o.MmiohBase) {
+		var ret string
+		return ret
+	}
+	return *o.MmiohBase
+}
+
+// GetMmiohBaseOk returns a tuple with the MmiohBase field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetMmiohBaseOk() (*string, bool) {
+	if o == nil || IsNil(o.MmiohBase) {
+		return nil, false
+	}
+	return o.MmiohBase, true
+}
+
+// HasMmiohBase returns a boolean if a field has been set.
+func (o *BiosPolicy) HasMmiohBase() bool {
+	if o != nil && !IsNil(o.MmiohBase) {
+		return true
+	}
+
+	return false
+}
+
+// SetMmiohBase gets a reference to the given string and assigns it to the MmiohBase field.
+func (o *BiosPolicy) SetMmiohBase(v string) {
+	o.MmiohBase = &v
+}
+
+// GetMmiohSize returns the MmiohSize field value if set, zero value otherwise.
+func (o *BiosPolicy) GetMmiohSize() string {
+	if o == nil || IsNil(o.MmiohSize) {
+		var ret string
+		return ret
+	}
+	return *o.MmiohSize
+}
+
+// GetMmiohSizeOk returns a tuple with the MmiohSize field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetMmiohSizeOk() (*string, bool) {
+	if o == nil || IsNil(o.MmiohSize) {
+		return nil, false
+	}
+	return o.MmiohSize, true
+}
+
+// HasMmiohSize returns a boolean if a field has been set.
+func (o *BiosPolicy) HasMmiohSize() bool {
+	if o != nil && !IsNil(o.MmiohSize) {
+		return true
+	}
+
+	return false
+}
+
+// SetMmiohSize gets a reference to the given string and assigns it to the MmiohSize field.
+func (o *BiosPolicy) SetMmiohSize(v string) {
+	o.MmiohSize = &v
+}
+
 // GetNetworkStack returns the NetworkStack field value if set, zero value otherwise.
 func (o *BiosPolicy) GetNetworkStack() string {
-	if o == nil || o.NetworkStack == nil {
+	if o == nil || IsNil(o.NetworkStack) {
 		var ret string
 		return ret
 	}
@@ -6979,7 +8329,7 @@ func (o *BiosPolicy) GetNetworkStack() string {
 // GetNetworkStackOk returns a tuple with the NetworkStack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetNetworkStackOk() (*string, bool) {
-	if o == nil || o.NetworkStack == nil {
+	if o == nil || IsNil(o.NetworkStack) {
 		return nil, false
 	}
 	return o.NetworkStack, true
@@ -6987,7 +8337,7 @@ func (o *BiosPolicy) GetNetworkStackOk() (*string, bool) {
 
 // HasNetworkStack returns a boolean if a field has been set.
 func (o *BiosPolicy) HasNetworkStack() bool {
-	if o != nil && o.NetworkStack != nil {
+	if o != nil && !IsNil(o.NetworkStack) {
 		return true
 	}
 
@@ -7001,7 +8351,7 @@ func (o *BiosPolicy) SetNetworkStack(v string) {
 
 // GetNumaOptimized returns the NumaOptimized field value if set, zero value otherwise.
 func (o *BiosPolicy) GetNumaOptimized() string {
-	if o == nil || o.NumaOptimized == nil {
+	if o == nil || IsNil(o.NumaOptimized) {
 		var ret string
 		return ret
 	}
@@ -7011,7 +8361,7 @@ func (o *BiosPolicy) GetNumaOptimized() string {
 // GetNumaOptimizedOk returns a tuple with the NumaOptimized field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetNumaOptimizedOk() (*string, bool) {
-	if o == nil || o.NumaOptimized == nil {
+	if o == nil || IsNil(o.NumaOptimized) {
 		return nil, false
 	}
 	return o.NumaOptimized, true
@@ -7019,7 +8369,7 @@ func (o *BiosPolicy) GetNumaOptimizedOk() (*string, bool) {
 
 // HasNumaOptimized returns a boolean if a field has been set.
 func (o *BiosPolicy) HasNumaOptimized() bool {
-	if o != nil && o.NumaOptimized != nil {
+	if o != nil && !IsNil(o.NumaOptimized) {
 		return true
 	}
 
@@ -7033,7 +8383,7 @@ func (o *BiosPolicy) SetNumaOptimized(v string) {
 
 // GetNvmdimmPerformConfig returns the NvmdimmPerformConfig field value if set, zero value otherwise.
 func (o *BiosPolicy) GetNvmdimmPerformConfig() string {
-	if o == nil || o.NvmdimmPerformConfig == nil {
+	if o == nil || IsNil(o.NvmdimmPerformConfig) {
 		var ret string
 		return ret
 	}
@@ -7043,7 +8393,7 @@ func (o *BiosPolicy) GetNvmdimmPerformConfig() string {
 // GetNvmdimmPerformConfigOk returns a tuple with the NvmdimmPerformConfig field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetNvmdimmPerformConfigOk() (*string, bool) {
-	if o == nil || o.NvmdimmPerformConfig == nil {
+	if o == nil || IsNil(o.NvmdimmPerformConfig) {
 		return nil, false
 	}
 	return o.NvmdimmPerformConfig, true
@@ -7051,7 +8401,7 @@ func (o *BiosPolicy) GetNvmdimmPerformConfigOk() (*string, bool) {
 
 // HasNvmdimmPerformConfig returns a boolean if a field has been set.
 func (o *BiosPolicy) HasNvmdimmPerformConfig() bool {
-	if o != nil && o.NvmdimmPerformConfig != nil {
+	if o != nil && !IsNil(o.NvmdimmPerformConfig) {
 		return true
 	}
 
@@ -7065,7 +8415,7 @@ func (o *BiosPolicy) SetNvmdimmPerformConfig(v string) {
 
 // GetOnboard10gbitLom returns the Onboard10gbitLom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetOnboard10gbitLom() string {
-	if o == nil || o.Onboard10gbitLom == nil {
+	if o == nil || IsNil(o.Onboard10gbitLom) {
 		var ret string
 		return ret
 	}
@@ -7075,7 +8425,7 @@ func (o *BiosPolicy) GetOnboard10gbitLom() string {
 // GetOnboard10gbitLomOk returns a tuple with the Onboard10gbitLom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetOnboard10gbitLomOk() (*string, bool) {
-	if o == nil || o.Onboard10gbitLom == nil {
+	if o == nil || IsNil(o.Onboard10gbitLom) {
 		return nil, false
 	}
 	return o.Onboard10gbitLom, true
@@ -7083,7 +8433,7 @@ func (o *BiosPolicy) GetOnboard10gbitLomOk() (*string, bool) {
 
 // HasOnboard10gbitLom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOnboard10gbitLom() bool {
-	if o != nil && o.Onboard10gbitLom != nil {
+	if o != nil && !IsNil(o.Onboard10gbitLom) {
 		return true
 	}
 
@@ -7097,7 +8447,7 @@ func (o *BiosPolicy) SetOnboard10gbitLom(v string) {
 
 // GetOnboardGbitLom returns the OnboardGbitLom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetOnboardGbitLom() string {
-	if o == nil || o.OnboardGbitLom == nil {
+	if o == nil || IsNil(o.OnboardGbitLom) {
 		var ret string
 		return ret
 	}
@@ -7107,7 +8457,7 @@ func (o *BiosPolicy) GetOnboardGbitLom() string {
 // GetOnboardGbitLomOk returns a tuple with the OnboardGbitLom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetOnboardGbitLomOk() (*string, bool) {
-	if o == nil || o.OnboardGbitLom == nil {
+	if o == nil || IsNil(o.OnboardGbitLom) {
 		return nil, false
 	}
 	return o.OnboardGbitLom, true
@@ -7115,7 +8465,7 @@ func (o *BiosPolicy) GetOnboardGbitLomOk() (*string, bool) {
 
 // HasOnboardGbitLom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOnboardGbitLom() bool {
-	if o != nil && o.OnboardGbitLom != nil {
+	if o != nil && !IsNil(o.OnboardGbitLom) {
 		return true
 	}
 
@@ -7129,7 +8479,7 @@ func (o *BiosPolicy) SetOnboardGbitLom(v string) {
 
 // GetOnboardScuStorageSupport returns the OnboardScuStorageSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetOnboardScuStorageSupport() string {
-	if o == nil || o.OnboardScuStorageSupport == nil {
+	if o == nil || IsNil(o.OnboardScuStorageSupport) {
 		var ret string
 		return ret
 	}
@@ -7139,7 +8489,7 @@ func (o *BiosPolicy) GetOnboardScuStorageSupport() string {
 // GetOnboardScuStorageSupportOk returns a tuple with the OnboardScuStorageSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetOnboardScuStorageSupportOk() (*string, bool) {
-	if o == nil || o.OnboardScuStorageSupport == nil {
+	if o == nil || IsNil(o.OnboardScuStorageSupport) {
 		return nil, false
 	}
 	return o.OnboardScuStorageSupport, true
@@ -7147,7 +8497,7 @@ func (o *BiosPolicy) GetOnboardScuStorageSupportOk() (*string, bool) {
 
 // HasOnboardScuStorageSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOnboardScuStorageSupport() bool {
-	if o != nil && o.OnboardScuStorageSupport != nil {
+	if o != nil && !IsNil(o.OnboardScuStorageSupport) {
 		return true
 	}
 
@@ -7161,7 +8511,7 @@ func (o *BiosPolicy) SetOnboardScuStorageSupport(v string) {
 
 // GetOnboardScuStorageSwStack returns the OnboardScuStorageSwStack field value if set, zero value otherwise.
 func (o *BiosPolicy) GetOnboardScuStorageSwStack() string {
-	if o == nil || o.OnboardScuStorageSwStack == nil {
+	if o == nil || IsNil(o.OnboardScuStorageSwStack) {
 		var ret string
 		return ret
 	}
@@ -7171,7 +8521,7 @@ func (o *BiosPolicy) GetOnboardScuStorageSwStack() string {
 // GetOnboardScuStorageSwStackOk returns a tuple with the OnboardScuStorageSwStack field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetOnboardScuStorageSwStackOk() (*string, bool) {
-	if o == nil || o.OnboardScuStorageSwStack == nil {
+	if o == nil || IsNil(o.OnboardScuStorageSwStack) {
 		return nil, false
 	}
 	return o.OnboardScuStorageSwStack, true
@@ -7179,7 +8529,7 @@ func (o *BiosPolicy) GetOnboardScuStorageSwStackOk() (*string, bool) {
 
 // HasOnboardScuStorageSwStack returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOnboardScuStorageSwStack() bool {
-	if o != nil && o.OnboardScuStorageSwStack != nil {
+	if o != nil && !IsNil(o.OnboardScuStorageSwStack) {
 		return true
 	}
 
@@ -7193,7 +8543,7 @@ func (o *BiosPolicy) SetOnboardScuStorageSwStack(v string) {
 
 // GetOperationMode returns the OperationMode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetOperationMode() string {
-	if o == nil || o.OperationMode == nil {
+	if o == nil || IsNil(o.OperationMode) {
 		var ret string
 		return ret
 	}
@@ -7203,7 +8553,7 @@ func (o *BiosPolicy) GetOperationMode() string {
 // GetOperationModeOk returns a tuple with the OperationMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetOperationModeOk() (*string, bool) {
-	if o == nil || o.OperationMode == nil {
+	if o == nil || IsNil(o.OperationMode) {
 		return nil, false
 	}
 	return o.OperationMode, true
@@ -7211,7 +8561,7 @@ func (o *BiosPolicy) GetOperationModeOk() (*string, bool) {
 
 // HasOperationMode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOperationMode() bool {
-	if o != nil && o.OperationMode != nil {
+	if o != nil && !IsNil(o.OperationMode) {
 		return true
 	}
 
@@ -7223,9 +8573,41 @@ func (o *BiosPolicy) SetOperationMode(v string) {
 	o.OperationMode = &v
 }
 
+// GetOptimizedPowerMode returns the OptimizedPowerMode field value if set, zero value otherwise.
+func (o *BiosPolicy) GetOptimizedPowerMode() string {
+	if o == nil || IsNil(o.OptimizedPowerMode) {
+		var ret string
+		return ret
+	}
+	return *o.OptimizedPowerMode
+}
+
+// GetOptimizedPowerModeOk returns a tuple with the OptimizedPowerMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetOptimizedPowerModeOk() (*string, bool) {
+	if o == nil || IsNil(o.OptimizedPowerMode) {
+		return nil, false
+	}
+	return o.OptimizedPowerMode, true
+}
+
+// HasOptimizedPowerMode returns a boolean if a field has been set.
+func (o *BiosPolicy) HasOptimizedPowerMode() bool {
+	if o != nil && !IsNil(o.OptimizedPowerMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetOptimizedPowerMode gets a reference to the given string and assigns it to the OptimizedPowerMode field.
+func (o *BiosPolicy) SetOptimizedPowerMode(v string) {
+	o.OptimizedPowerMode = &v
+}
+
 // GetOsBootWatchdogTimer returns the OsBootWatchdogTimer field value if set, zero value otherwise.
 func (o *BiosPolicy) GetOsBootWatchdogTimer() string {
-	if o == nil || o.OsBootWatchdogTimer == nil {
+	if o == nil || IsNil(o.OsBootWatchdogTimer) {
 		var ret string
 		return ret
 	}
@@ -7235,7 +8617,7 @@ func (o *BiosPolicy) GetOsBootWatchdogTimer() string {
 // GetOsBootWatchdogTimerOk returns a tuple with the OsBootWatchdogTimer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetOsBootWatchdogTimerOk() (*string, bool) {
-	if o == nil || o.OsBootWatchdogTimer == nil {
+	if o == nil || IsNil(o.OsBootWatchdogTimer) {
 		return nil, false
 	}
 	return o.OsBootWatchdogTimer, true
@@ -7243,7 +8625,7 @@ func (o *BiosPolicy) GetOsBootWatchdogTimerOk() (*string, bool) {
 
 // HasOsBootWatchdogTimer returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOsBootWatchdogTimer() bool {
-	if o != nil && o.OsBootWatchdogTimer != nil {
+	if o != nil && !IsNil(o.OsBootWatchdogTimer) {
 		return true
 	}
 
@@ -7257,7 +8639,7 @@ func (o *BiosPolicy) SetOsBootWatchdogTimer(v string) {
 
 // GetOsBootWatchdogTimerPolicy returns the OsBootWatchdogTimerPolicy field value if set, zero value otherwise.
 func (o *BiosPolicy) GetOsBootWatchdogTimerPolicy() string {
-	if o == nil || o.OsBootWatchdogTimerPolicy == nil {
+	if o == nil || IsNil(o.OsBootWatchdogTimerPolicy) {
 		var ret string
 		return ret
 	}
@@ -7267,7 +8649,7 @@ func (o *BiosPolicy) GetOsBootWatchdogTimerPolicy() string {
 // GetOsBootWatchdogTimerPolicyOk returns a tuple with the OsBootWatchdogTimerPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetOsBootWatchdogTimerPolicyOk() (*string, bool) {
-	if o == nil || o.OsBootWatchdogTimerPolicy == nil {
+	if o == nil || IsNil(o.OsBootWatchdogTimerPolicy) {
 		return nil, false
 	}
 	return o.OsBootWatchdogTimerPolicy, true
@@ -7275,7 +8657,7 @@ func (o *BiosPolicy) GetOsBootWatchdogTimerPolicyOk() (*string, bool) {
 
 // HasOsBootWatchdogTimerPolicy returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOsBootWatchdogTimerPolicy() bool {
-	if o != nil && o.OsBootWatchdogTimerPolicy != nil {
+	if o != nil && !IsNil(o.OsBootWatchdogTimerPolicy) {
 		return true
 	}
 
@@ -7289,7 +8671,7 @@ func (o *BiosPolicy) SetOsBootWatchdogTimerPolicy(v string) {
 
 // GetOsBootWatchdogTimerTimeout returns the OsBootWatchdogTimerTimeout field value if set, zero value otherwise.
 func (o *BiosPolicy) GetOsBootWatchdogTimerTimeout() string {
-	if o == nil || o.OsBootWatchdogTimerTimeout == nil {
+	if o == nil || IsNil(o.OsBootWatchdogTimerTimeout) {
 		var ret string
 		return ret
 	}
@@ -7299,7 +8681,7 @@ func (o *BiosPolicy) GetOsBootWatchdogTimerTimeout() string {
 // GetOsBootWatchdogTimerTimeoutOk returns a tuple with the OsBootWatchdogTimerTimeout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetOsBootWatchdogTimerTimeoutOk() (*string, bool) {
-	if o == nil || o.OsBootWatchdogTimerTimeout == nil {
+	if o == nil || IsNil(o.OsBootWatchdogTimerTimeout) {
 		return nil, false
 	}
 	return o.OsBootWatchdogTimerTimeout, true
@@ -7307,7 +8689,7 @@ func (o *BiosPolicy) GetOsBootWatchdogTimerTimeoutOk() (*string, bool) {
 
 // HasOsBootWatchdogTimerTimeout returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOsBootWatchdogTimerTimeout() bool {
-	if o != nil && o.OsBootWatchdogTimerTimeout != nil {
+	if o != nil && !IsNil(o.OsBootWatchdogTimerTimeout) {
 		return true
 	}
 
@@ -7321,7 +8703,7 @@ func (o *BiosPolicy) SetOsBootWatchdogTimerTimeout(v string) {
 
 // GetOutOfBandMgmtPort returns the OutOfBandMgmtPort field value if set, zero value otherwise.
 func (o *BiosPolicy) GetOutOfBandMgmtPort() string {
-	if o == nil || o.OutOfBandMgmtPort == nil {
+	if o == nil || IsNil(o.OutOfBandMgmtPort) {
 		var ret string
 		return ret
 	}
@@ -7331,7 +8713,7 @@ func (o *BiosPolicy) GetOutOfBandMgmtPort() string {
 // GetOutOfBandMgmtPortOk returns a tuple with the OutOfBandMgmtPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetOutOfBandMgmtPortOk() (*string, bool) {
-	if o == nil || o.OutOfBandMgmtPort == nil {
+	if o == nil || IsNil(o.OutOfBandMgmtPort) {
 		return nil, false
 	}
 	return o.OutOfBandMgmtPort, true
@@ -7339,7 +8721,7 @@ func (o *BiosPolicy) GetOutOfBandMgmtPortOk() (*string, bool) {
 
 // HasOutOfBandMgmtPort returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOutOfBandMgmtPort() bool {
-	if o != nil && o.OutOfBandMgmtPort != nil {
+	if o != nil && !IsNil(o.OutOfBandMgmtPort) {
 		return true
 	}
 
@@ -7353,7 +8735,7 @@ func (o *BiosPolicy) SetOutOfBandMgmtPort(v string) {
 
 // GetPackageCstateLimit returns the PackageCstateLimit field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPackageCstateLimit() string {
-	if o == nil || o.PackageCstateLimit == nil {
+	if o == nil || IsNil(o.PackageCstateLimit) {
 		var ret string
 		return ret
 	}
@@ -7363,7 +8745,7 @@ func (o *BiosPolicy) GetPackageCstateLimit() string {
 // GetPackageCstateLimitOk returns a tuple with the PackageCstateLimit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPackageCstateLimitOk() (*string, bool) {
-	if o == nil || o.PackageCstateLimit == nil {
+	if o == nil || IsNil(o.PackageCstateLimit) {
 		return nil, false
 	}
 	return o.PackageCstateLimit, true
@@ -7371,7 +8753,7 @@ func (o *BiosPolicy) GetPackageCstateLimitOk() (*string, bool) {
 
 // HasPackageCstateLimit returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPackageCstateLimit() bool {
-	if o != nil && o.PackageCstateLimit != nil {
+	if o != nil && !IsNil(o.PackageCstateLimit) {
 		return true
 	}
 
@@ -7385,7 +8767,7 @@ func (o *BiosPolicy) SetPackageCstateLimit(v string) {
 
 // GetPanicHighWatermark returns the PanicHighWatermark field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPanicHighWatermark() string {
-	if o == nil || o.PanicHighWatermark == nil {
+	if o == nil || IsNil(o.PanicHighWatermark) {
 		var ret string
 		return ret
 	}
@@ -7395,7 +8777,7 @@ func (o *BiosPolicy) GetPanicHighWatermark() string {
 // GetPanicHighWatermarkOk returns a tuple with the PanicHighWatermark field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPanicHighWatermarkOk() (*string, bool) {
-	if o == nil || o.PanicHighWatermark == nil {
+	if o == nil || IsNil(o.PanicHighWatermark) {
 		return nil, false
 	}
 	return o.PanicHighWatermark, true
@@ -7403,7 +8785,7 @@ func (o *BiosPolicy) GetPanicHighWatermarkOk() (*string, bool) {
 
 // HasPanicHighWatermark returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPanicHighWatermark() bool {
-	if o != nil && o.PanicHighWatermark != nil {
+	if o != nil && !IsNil(o.PanicHighWatermark) {
 		return true
 	}
 
@@ -7417,7 +8799,7 @@ func (o *BiosPolicy) SetPanicHighWatermark(v string) {
 
 // GetPartialCacheLineSparing returns the PartialCacheLineSparing field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPartialCacheLineSparing() string {
-	if o == nil || o.PartialCacheLineSparing == nil {
+	if o == nil || IsNil(o.PartialCacheLineSparing) {
 		var ret string
 		return ret
 	}
@@ -7427,7 +8809,7 @@ func (o *BiosPolicy) GetPartialCacheLineSparing() string {
 // GetPartialCacheLineSparingOk returns a tuple with the PartialCacheLineSparing field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPartialCacheLineSparingOk() (*string, bool) {
-	if o == nil || o.PartialCacheLineSparing == nil {
+	if o == nil || IsNil(o.PartialCacheLineSparing) {
 		return nil, false
 	}
 	return o.PartialCacheLineSparing, true
@@ -7435,7 +8817,7 @@ func (o *BiosPolicy) GetPartialCacheLineSparingOk() (*string, bool) {
 
 // HasPartialCacheLineSparing returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPartialCacheLineSparing() bool {
-	if o != nil && o.PartialCacheLineSparing != nil {
+	if o != nil && !IsNil(o.PartialCacheLineSparing) {
 		return true
 	}
 
@@ -7449,7 +8831,7 @@ func (o *BiosPolicy) SetPartialCacheLineSparing(v string) {
 
 // GetPartialMirrorModeConfig returns the PartialMirrorModeConfig field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPartialMirrorModeConfig() string {
-	if o == nil || o.PartialMirrorModeConfig == nil {
+	if o == nil || IsNil(o.PartialMirrorModeConfig) {
 		var ret string
 		return ret
 	}
@@ -7459,7 +8841,7 @@ func (o *BiosPolicy) GetPartialMirrorModeConfig() string {
 // GetPartialMirrorModeConfigOk returns a tuple with the PartialMirrorModeConfig field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPartialMirrorModeConfigOk() (*string, bool) {
-	if o == nil || o.PartialMirrorModeConfig == nil {
+	if o == nil || IsNil(o.PartialMirrorModeConfig) {
 		return nil, false
 	}
 	return o.PartialMirrorModeConfig, true
@@ -7467,7 +8849,7 @@ func (o *BiosPolicy) GetPartialMirrorModeConfigOk() (*string, bool) {
 
 // HasPartialMirrorModeConfig returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPartialMirrorModeConfig() bool {
-	if o != nil && o.PartialMirrorModeConfig != nil {
+	if o != nil && !IsNil(o.PartialMirrorModeConfig) {
 		return true
 	}
 
@@ -7481,7 +8863,7 @@ func (o *BiosPolicy) SetPartialMirrorModeConfig(v string) {
 
 // GetPartialMirrorPercent returns the PartialMirrorPercent field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPartialMirrorPercent() string {
-	if o == nil || o.PartialMirrorPercent == nil {
+	if o == nil || IsNil(o.PartialMirrorPercent) {
 		var ret string
 		return ret
 	}
@@ -7491,7 +8873,7 @@ func (o *BiosPolicy) GetPartialMirrorPercent() string {
 // GetPartialMirrorPercentOk returns a tuple with the PartialMirrorPercent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPartialMirrorPercentOk() (*string, bool) {
-	if o == nil || o.PartialMirrorPercent == nil {
+	if o == nil || IsNil(o.PartialMirrorPercent) {
 		return nil, false
 	}
 	return o.PartialMirrorPercent, true
@@ -7499,7 +8881,7 @@ func (o *BiosPolicy) GetPartialMirrorPercentOk() (*string, bool) {
 
 // HasPartialMirrorPercent returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPartialMirrorPercent() bool {
-	if o != nil && o.PartialMirrorPercent != nil {
+	if o != nil && !IsNil(o.PartialMirrorPercent) {
 		return true
 	}
 
@@ -7513,7 +8895,7 @@ func (o *BiosPolicy) SetPartialMirrorPercent(v string) {
 
 // GetPartialMirrorValue1 returns the PartialMirrorValue1 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPartialMirrorValue1() string {
-	if o == nil || o.PartialMirrorValue1 == nil {
+	if o == nil || IsNil(o.PartialMirrorValue1) {
 		var ret string
 		return ret
 	}
@@ -7523,7 +8905,7 @@ func (o *BiosPolicy) GetPartialMirrorValue1() string {
 // GetPartialMirrorValue1Ok returns a tuple with the PartialMirrorValue1 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPartialMirrorValue1Ok() (*string, bool) {
-	if o == nil || o.PartialMirrorValue1 == nil {
+	if o == nil || IsNil(o.PartialMirrorValue1) {
 		return nil, false
 	}
 	return o.PartialMirrorValue1, true
@@ -7531,7 +8913,7 @@ func (o *BiosPolicy) GetPartialMirrorValue1Ok() (*string, bool) {
 
 // HasPartialMirrorValue1 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPartialMirrorValue1() bool {
-	if o != nil && o.PartialMirrorValue1 != nil {
+	if o != nil && !IsNil(o.PartialMirrorValue1) {
 		return true
 	}
 
@@ -7545,7 +8927,7 @@ func (o *BiosPolicy) SetPartialMirrorValue1(v string) {
 
 // GetPartialMirrorValue2 returns the PartialMirrorValue2 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPartialMirrorValue2() string {
-	if o == nil || o.PartialMirrorValue2 == nil {
+	if o == nil || IsNil(o.PartialMirrorValue2) {
 		var ret string
 		return ret
 	}
@@ -7555,7 +8937,7 @@ func (o *BiosPolicy) GetPartialMirrorValue2() string {
 // GetPartialMirrorValue2Ok returns a tuple with the PartialMirrorValue2 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPartialMirrorValue2Ok() (*string, bool) {
-	if o == nil || o.PartialMirrorValue2 == nil {
+	if o == nil || IsNil(o.PartialMirrorValue2) {
 		return nil, false
 	}
 	return o.PartialMirrorValue2, true
@@ -7563,7 +8945,7 @@ func (o *BiosPolicy) GetPartialMirrorValue2Ok() (*string, bool) {
 
 // HasPartialMirrorValue2 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPartialMirrorValue2() bool {
-	if o != nil && o.PartialMirrorValue2 != nil {
+	if o != nil && !IsNil(o.PartialMirrorValue2) {
 		return true
 	}
 
@@ -7577,7 +8959,7 @@ func (o *BiosPolicy) SetPartialMirrorValue2(v string) {
 
 // GetPartialMirrorValue3 returns the PartialMirrorValue3 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPartialMirrorValue3() string {
-	if o == nil || o.PartialMirrorValue3 == nil {
+	if o == nil || IsNil(o.PartialMirrorValue3) {
 		var ret string
 		return ret
 	}
@@ -7587,7 +8969,7 @@ func (o *BiosPolicy) GetPartialMirrorValue3() string {
 // GetPartialMirrorValue3Ok returns a tuple with the PartialMirrorValue3 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPartialMirrorValue3Ok() (*string, bool) {
-	if o == nil || o.PartialMirrorValue3 == nil {
+	if o == nil || IsNil(o.PartialMirrorValue3) {
 		return nil, false
 	}
 	return o.PartialMirrorValue3, true
@@ -7595,7 +8977,7 @@ func (o *BiosPolicy) GetPartialMirrorValue3Ok() (*string, bool) {
 
 // HasPartialMirrorValue3 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPartialMirrorValue3() bool {
-	if o != nil && o.PartialMirrorValue3 != nil {
+	if o != nil && !IsNil(o.PartialMirrorValue3) {
 		return true
 	}
 
@@ -7609,7 +8991,7 @@ func (o *BiosPolicy) SetPartialMirrorValue3(v string) {
 
 // GetPartialMirrorValue4 returns the PartialMirrorValue4 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPartialMirrorValue4() string {
-	if o == nil || o.PartialMirrorValue4 == nil {
+	if o == nil || IsNil(o.PartialMirrorValue4) {
 		var ret string
 		return ret
 	}
@@ -7619,7 +9001,7 @@ func (o *BiosPolicy) GetPartialMirrorValue4() string {
 // GetPartialMirrorValue4Ok returns a tuple with the PartialMirrorValue4 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPartialMirrorValue4Ok() (*string, bool) {
-	if o == nil || o.PartialMirrorValue4 == nil {
+	if o == nil || IsNil(o.PartialMirrorValue4) {
 		return nil, false
 	}
 	return o.PartialMirrorValue4, true
@@ -7627,7 +9009,7 @@ func (o *BiosPolicy) GetPartialMirrorValue4Ok() (*string, bool) {
 
 // HasPartialMirrorValue4 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPartialMirrorValue4() bool {
-	if o != nil && o.PartialMirrorValue4 != nil {
+	if o != nil && !IsNil(o.PartialMirrorValue4) {
 		return true
 	}
 
@@ -7641,7 +9023,7 @@ func (o *BiosPolicy) SetPartialMirrorValue4(v string) {
 
 // GetPatrolScrub returns the PatrolScrub field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPatrolScrub() string {
-	if o == nil || o.PatrolScrub == nil {
+	if o == nil || IsNil(o.PatrolScrub) {
 		var ret string
 		return ret
 	}
@@ -7651,7 +9033,7 @@ func (o *BiosPolicy) GetPatrolScrub() string {
 // GetPatrolScrubOk returns a tuple with the PatrolScrub field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPatrolScrubOk() (*string, bool) {
-	if o == nil || o.PatrolScrub == nil {
+	if o == nil || IsNil(o.PatrolScrub) {
 		return nil, false
 	}
 	return o.PatrolScrub, true
@@ -7659,7 +9041,7 @@ func (o *BiosPolicy) GetPatrolScrubOk() (*string, bool) {
 
 // HasPatrolScrub returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPatrolScrub() bool {
-	if o != nil && o.PatrolScrub != nil {
+	if o != nil && !IsNil(o.PatrolScrub) {
 		return true
 	}
 
@@ -7673,7 +9055,7 @@ func (o *BiosPolicy) SetPatrolScrub(v string) {
 
 // GetPatrolScrubDuration returns the PatrolScrubDuration field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPatrolScrubDuration() string {
-	if o == nil || o.PatrolScrubDuration == nil {
+	if o == nil || IsNil(o.PatrolScrubDuration) {
 		var ret string
 		return ret
 	}
@@ -7683,7 +9065,7 @@ func (o *BiosPolicy) GetPatrolScrubDuration() string {
 // GetPatrolScrubDurationOk returns a tuple with the PatrolScrubDuration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPatrolScrubDurationOk() (*string, bool) {
-	if o == nil || o.PatrolScrubDuration == nil {
+	if o == nil || IsNil(o.PatrolScrubDuration) {
 		return nil, false
 	}
 	return o.PatrolScrubDuration, true
@@ -7691,7 +9073,7 @@ func (o *BiosPolicy) GetPatrolScrubDurationOk() (*string, bool) {
 
 // HasPatrolScrubDuration returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPatrolScrubDuration() bool {
-	if o != nil && o.PatrolScrubDuration != nil {
+	if o != nil && !IsNil(o.PatrolScrubDuration) {
 		return true
 	}
 
@@ -7705,7 +9087,7 @@ func (o *BiosPolicy) SetPatrolScrubDuration(v string) {
 
 // GetPcIeRasSupport returns the PcIeRasSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcIeRasSupport() string {
-	if o == nil || o.PcIeRasSupport == nil {
+	if o == nil || IsNil(o.PcIeRasSupport) {
 		var ret string
 		return ret
 	}
@@ -7715,7 +9097,7 @@ func (o *BiosPolicy) GetPcIeRasSupport() string {
 // GetPcIeRasSupportOk returns a tuple with the PcIeRasSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcIeRasSupportOk() (*string, bool) {
-	if o == nil || o.PcIeRasSupport == nil {
+	if o == nil || IsNil(o.PcIeRasSupport) {
 		return nil, false
 	}
 	return o.PcIeRasSupport, true
@@ -7723,7 +9105,7 @@ func (o *BiosPolicy) GetPcIeRasSupportOk() (*string, bool) {
 
 // HasPcIeRasSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcIeRasSupport() bool {
-	if o != nil && o.PcIeRasSupport != nil {
+	if o != nil && !IsNil(o.PcIeRasSupport) {
 		return true
 	}
 
@@ -7737,7 +9119,7 @@ func (o *BiosPolicy) SetPcIeRasSupport(v string) {
 
 // GetPcIeSsdHotPlugSupport returns the PcIeSsdHotPlugSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcIeSsdHotPlugSupport() string {
-	if o == nil || o.PcIeSsdHotPlugSupport == nil {
+	if o == nil || IsNil(o.PcIeSsdHotPlugSupport) {
 		var ret string
 		return ret
 	}
@@ -7747,7 +9129,7 @@ func (o *BiosPolicy) GetPcIeSsdHotPlugSupport() string {
 // GetPcIeSsdHotPlugSupportOk returns a tuple with the PcIeSsdHotPlugSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcIeSsdHotPlugSupportOk() (*string, bool) {
-	if o == nil || o.PcIeSsdHotPlugSupport == nil {
+	if o == nil || IsNil(o.PcIeSsdHotPlugSupport) {
 		return nil, false
 	}
 	return o.PcIeSsdHotPlugSupport, true
@@ -7755,7 +9137,7 @@ func (o *BiosPolicy) GetPcIeSsdHotPlugSupportOk() (*string, bool) {
 
 // HasPcIeSsdHotPlugSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcIeSsdHotPlugSupport() bool {
-	if o != nil && o.PcIeSsdHotPlugSupport != nil {
+	if o != nil && !IsNil(o.PcIeSsdHotPlugSupport) {
 		return true
 	}
 
@@ -7767,9 +9149,41 @@ func (o *BiosPolicy) SetPcIeSsdHotPlugSupport(v string) {
 	o.PcIeSsdHotPlugSupport = &v
 }
 
+// GetPchPciePllSsc returns the PchPciePllSsc field value if set, zero value otherwise.
+func (o *BiosPolicy) GetPchPciePllSsc() string {
+	if o == nil || IsNil(o.PchPciePllSsc) {
+		var ret string
+		return ret
+	}
+	return *o.PchPciePllSsc
+}
+
+// GetPchPciePllSscOk returns a tuple with the PchPciePllSsc field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetPchPciePllSscOk() (*string, bool) {
+	if o == nil || IsNil(o.PchPciePllSsc) {
+		return nil, false
+	}
+	return o.PchPciePllSsc, true
+}
+
+// HasPchPciePllSsc returns a boolean if a field has been set.
+func (o *BiosPolicy) HasPchPciePllSsc() bool {
+	if o != nil && !IsNil(o.PchPciePllSsc) {
+		return true
+	}
+
+	return false
+}
+
+// SetPchPciePllSsc gets a reference to the given string and assigns it to the PchPciePllSsc field.
+func (o *BiosPolicy) SetPchPciePllSsc(v string) {
+	o.PchPciePllSsc = &v
+}
+
 // GetPchUsb30mode returns the PchUsb30mode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPchUsb30mode() string {
-	if o == nil || o.PchUsb30mode == nil {
+	if o == nil || IsNil(o.PchUsb30mode) {
 		var ret string
 		return ret
 	}
@@ -7779,7 +9193,7 @@ func (o *BiosPolicy) GetPchUsb30mode() string {
 // GetPchUsb30modeOk returns a tuple with the PchUsb30mode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPchUsb30modeOk() (*string, bool) {
-	if o == nil || o.PchUsb30mode == nil {
+	if o == nil || IsNil(o.PchUsb30mode) {
 		return nil, false
 	}
 	return o.PchUsb30mode, true
@@ -7787,7 +9201,7 @@ func (o *BiosPolicy) GetPchUsb30modeOk() (*string, bool) {
 
 // HasPchUsb30mode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPchUsb30mode() bool {
-	if o != nil && o.PchUsb30mode != nil {
+	if o != nil && !IsNil(o.PchUsb30mode) {
 		return true
 	}
 
@@ -7801,7 +9215,7 @@ func (o *BiosPolicy) SetPchUsb30mode(v string) {
 
 // GetPciOptionRoMs returns the PciOptionRoMs field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPciOptionRoMs() string {
-	if o == nil || o.PciOptionRoMs == nil {
+	if o == nil || IsNil(o.PciOptionRoMs) {
 		var ret string
 		return ret
 	}
@@ -7811,7 +9225,7 @@ func (o *BiosPolicy) GetPciOptionRoMs() string {
 // GetPciOptionRoMsOk returns a tuple with the PciOptionRoMs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPciOptionRoMsOk() (*string, bool) {
-	if o == nil || o.PciOptionRoMs == nil {
+	if o == nil || IsNil(o.PciOptionRoMs) {
 		return nil, false
 	}
 	return o.PciOptionRoMs, true
@@ -7819,7 +9233,7 @@ func (o *BiosPolicy) GetPciOptionRoMsOk() (*string, bool) {
 
 // HasPciOptionRoMs returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPciOptionRoMs() bool {
-	if o != nil && o.PciOptionRoMs != nil {
+	if o != nil && !IsNil(o.PciOptionRoMs) {
 		return true
 	}
 
@@ -7833,7 +9247,7 @@ func (o *BiosPolicy) SetPciOptionRoMs(v string) {
 
 // GetPciRomClp returns the PciRomClp field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPciRomClp() string {
-	if o == nil || o.PciRomClp == nil {
+	if o == nil || IsNil(o.PciRomClp) {
 		var ret string
 		return ret
 	}
@@ -7843,7 +9257,7 @@ func (o *BiosPolicy) GetPciRomClp() string {
 // GetPciRomClpOk returns a tuple with the PciRomClp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPciRomClpOk() (*string, bool) {
-	if o == nil || o.PciRomClp == nil {
+	if o == nil || IsNil(o.PciRomClp) {
 		return nil, false
 	}
 	return o.PciRomClp, true
@@ -7851,7 +9265,7 @@ func (o *BiosPolicy) GetPciRomClpOk() (*string, bool) {
 
 // HasPciRomClp returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPciRomClp() bool {
-	if o != nil && o.PciRomClp != nil {
+	if o != nil && !IsNil(o.PciRomClp) {
 		return true
 	}
 
@@ -7865,7 +9279,7 @@ func (o *BiosPolicy) SetPciRomClp(v string) {
 
 // GetPcieAriSupport returns the PcieAriSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieAriSupport() string {
-	if o == nil || o.PcieAriSupport == nil {
+	if o == nil || IsNil(o.PcieAriSupport) {
 		var ret string
 		return ret
 	}
@@ -7875,7 +9289,7 @@ func (o *BiosPolicy) GetPcieAriSupport() string {
 // GetPcieAriSupportOk returns a tuple with the PcieAriSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieAriSupportOk() (*string, bool) {
-	if o == nil || o.PcieAriSupport == nil {
+	if o == nil || IsNil(o.PcieAriSupport) {
 		return nil, false
 	}
 	return o.PcieAriSupport, true
@@ -7883,7 +9297,7 @@ func (o *BiosPolicy) GetPcieAriSupportOk() (*string, bool) {
 
 // HasPcieAriSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieAriSupport() bool {
-	if o != nil && o.PcieAriSupport != nil {
+	if o != nil && !IsNil(o.PcieAriSupport) {
 		return true
 	}
 
@@ -7897,7 +9311,7 @@ func (o *BiosPolicy) SetPcieAriSupport(v string) {
 
 // GetPciePllSsc returns the PciePllSsc field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPciePllSsc() string {
-	if o == nil || o.PciePllSsc == nil {
+	if o == nil || IsNil(o.PciePllSsc) {
 		var ret string
 		return ret
 	}
@@ -7907,7 +9321,7 @@ func (o *BiosPolicy) GetPciePllSsc() string {
 // GetPciePllSscOk returns a tuple with the PciePllSsc field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPciePllSscOk() (*string, bool) {
-	if o == nil || o.PciePllSsc == nil {
+	if o == nil || IsNil(o.PciePllSsc) {
 		return nil, false
 	}
 	return o.PciePllSsc, true
@@ -7915,7 +9329,7 @@ func (o *BiosPolicy) GetPciePllSscOk() (*string, bool) {
 
 // HasPciePllSsc returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPciePllSsc() bool {
-	if o != nil && o.PciePllSsc != nil {
+	if o != nil && !IsNil(o.PciePllSsc) {
 		return true
 	}
 
@@ -7929,7 +9343,7 @@ func (o *BiosPolicy) SetPciePllSsc(v string) {
 
 // GetPcieSlotMraid1linkSpeed returns the PcieSlotMraid1linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotMraid1linkSpeed() string {
-	if o == nil || o.PcieSlotMraid1linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotMraid1linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -7939,7 +9353,7 @@ func (o *BiosPolicy) GetPcieSlotMraid1linkSpeed() string {
 // GetPcieSlotMraid1linkSpeedOk returns a tuple with the PcieSlotMraid1linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotMraid1linkSpeedOk() (*string, bool) {
-	if o == nil || o.PcieSlotMraid1linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotMraid1linkSpeed) {
 		return nil, false
 	}
 	return o.PcieSlotMraid1linkSpeed, true
@@ -7947,7 +9361,7 @@ func (o *BiosPolicy) GetPcieSlotMraid1linkSpeedOk() (*string, bool) {
 
 // HasPcieSlotMraid1linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotMraid1linkSpeed() bool {
-	if o != nil && o.PcieSlotMraid1linkSpeed != nil {
+	if o != nil && !IsNil(o.PcieSlotMraid1linkSpeed) {
 		return true
 	}
 
@@ -7961,7 +9375,7 @@ func (o *BiosPolicy) SetPcieSlotMraid1linkSpeed(v string) {
 
 // GetPcieSlotMraid1optionRom returns the PcieSlotMraid1optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotMraid1optionRom() string {
-	if o == nil || o.PcieSlotMraid1optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotMraid1optionRom) {
 		var ret string
 		return ret
 	}
@@ -7971,7 +9385,7 @@ func (o *BiosPolicy) GetPcieSlotMraid1optionRom() string {
 // GetPcieSlotMraid1optionRomOk returns a tuple with the PcieSlotMraid1optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotMraid1optionRomOk() (*string, bool) {
-	if o == nil || o.PcieSlotMraid1optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotMraid1optionRom) {
 		return nil, false
 	}
 	return o.PcieSlotMraid1optionRom, true
@@ -7979,7 +9393,7 @@ func (o *BiosPolicy) GetPcieSlotMraid1optionRomOk() (*string, bool) {
 
 // HasPcieSlotMraid1optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotMraid1optionRom() bool {
-	if o != nil && o.PcieSlotMraid1optionRom != nil {
+	if o != nil && !IsNil(o.PcieSlotMraid1optionRom) {
 		return true
 	}
 
@@ -7993,7 +9407,7 @@ func (o *BiosPolicy) SetPcieSlotMraid1optionRom(v string) {
 
 // GetPcieSlotMraid2linkSpeed returns the PcieSlotMraid2linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotMraid2linkSpeed() string {
-	if o == nil || o.PcieSlotMraid2linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotMraid2linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -8003,7 +9417,7 @@ func (o *BiosPolicy) GetPcieSlotMraid2linkSpeed() string {
 // GetPcieSlotMraid2linkSpeedOk returns a tuple with the PcieSlotMraid2linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotMraid2linkSpeedOk() (*string, bool) {
-	if o == nil || o.PcieSlotMraid2linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotMraid2linkSpeed) {
 		return nil, false
 	}
 	return o.PcieSlotMraid2linkSpeed, true
@@ -8011,7 +9425,7 @@ func (o *BiosPolicy) GetPcieSlotMraid2linkSpeedOk() (*string, bool) {
 
 // HasPcieSlotMraid2linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotMraid2linkSpeed() bool {
-	if o != nil && o.PcieSlotMraid2linkSpeed != nil {
+	if o != nil && !IsNil(o.PcieSlotMraid2linkSpeed) {
 		return true
 	}
 
@@ -8025,7 +9439,7 @@ func (o *BiosPolicy) SetPcieSlotMraid2linkSpeed(v string) {
 
 // GetPcieSlotMraid2optionRom returns the PcieSlotMraid2optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotMraid2optionRom() string {
-	if o == nil || o.PcieSlotMraid2optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotMraid2optionRom) {
 		var ret string
 		return ret
 	}
@@ -8035,7 +9449,7 @@ func (o *BiosPolicy) GetPcieSlotMraid2optionRom() string {
 // GetPcieSlotMraid2optionRomOk returns a tuple with the PcieSlotMraid2optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotMraid2optionRomOk() (*string, bool) {
-	if o == nil || o.PcieSlotMraid2optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotMraid2optionRom) {
 		return nil, false
 	}
 	return o.PcieSlotMraid2optionRom, true
@@ -8043,7 +9457,7 @@ func (o *BiosPolicy) GetPcieSlotMraid2optionRomOk() (*string, bool) {
 
 // HasPcieSlotMraid2optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotMraid2optionRom() bool {
-	if o != nil && o.PcieSlotMraid2optionRom != nil {
+	if o != nil && !IsNil(o.PcieSlotMraid2optionRom) {
 		return true
 	}
 
@@ -8057,7 +9471,7 @@ func (o *BiosPolicy) SetPcieSlotMraid2optionRom(v string) {
 
 // GetPcieSlotMstorraidLinkSpeed returns the PcieSlotMstorraidLinkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotMstorraidLinkSpeed() string {
-	if o == nil || o.PcieSlotMstorraidLinkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotMstorraidLinkSpeed) {
 		var ret string
 		return ret
 	}
@@ -8067,7 +9481,7 @@ func (o *BiosPolicy) GetPcieSlotMstorraidLinkSpeed() string {
 // GetPcieSlotMstorraidLinkSpeedOk returns a tuple with the PcieSlotMstorraidLinkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotMstorraidLinkSpeedOk() (*string, bool) {
-	if o == nil || o.PcieSlotMstorraidLinkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotMstorraidLinkSpeed) {
 		return nil, false
 	}
 	return o.PcieSlotMstorraidLinkSpeed, true
@@ -8075,7 +9489,7 @@ func (o *BiosPolicy) GetPcieSlotMstorraidLinkSpeedOk() (*string, bool) {
 
 // HasPcieSlotMstorraidLinkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotMstorraidLinkSpeed() bool {
-	if o != nil && o.PcieSlotMstorraidLinkSpeed != nil {
+	if o != nil && !IsNil(o.PcieSlotMstorraidLinkSpeed) {
 		return true
 	}
 
@@ -8089,7 +9503,7 @@ func (o *BiosPolicy) SetPcieSlotMstorraidLinkSpeed(v string) {
 
 // GetPcieSlotMstorraidOptionRom returns the PcieSlotMstorraidOptionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotMstorraidOptionRom() string {
-	if o == nil || o.PcieSlotMstorraidOptionRom == nil {
+	if o == nil || IsNil(o.PcieSlotMstorraidOptionRom) {
 		var ret string
 		return ret
 	}
@@ -8099,7 +9513,7 @@ func (o *BiosPolicy) GetPcieSlotMstorraidOptionRom() string {
 // GetPcieSlotMstorraidOptionRomOk returns a tuple with the PcieSlotMstorraidOptionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotMstorraidOptionRomOk() (*string, bool) {
-	if o == nil || o.PcieSlotMstorraidOptionRom == nil {
+	if o == nil || IsNil(o.PcieSlotMstorraidOptionRom) {
 		return nil, false
 	}
 	return o.PcieSlotMstorraidOptionRom, true
@@ -8107,7 +9521,7 @@ func (o *BiosPolicy) GetPcieSlotMstorraidOptionRomOk() (*string, bool) {
 
 // HasPcieSlotMstorraidOptionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotMstorraidOptionRom() bool {
-	if o != nil && o.PcieSlotMstorraidOptionRom != nil {
+	if o != nil && !IsNil(o.PcieSlotMstorraidOptionRom) {
 		return true
 	}
 
@@ -8121,7 +9535,7 @@ func (o *BiosPolicy) SetPcieSlotMstorraidOptionRom(v string) {
 
 // GetPcieSlotNvme1linkSpeed returns the PcieSlotNvme1linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme1linkSpeed() string {
-	if o == nil || o.PcieSlotNvme1linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme1linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -8131,7 +9545,7 @@ func (o *BiosPolicy) GetPcieSlotNvme1linkSpeed() string {
 // GetPcieSlotNvme1linkSpeedOk returns a tuple with the PcieSlotNvme1linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme1linkSpeedOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme1linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme1linkSpeed) {
 		return nil, false
 	}
 	return o.PcieSlotNvme1linkSpeed, true
@@ -8139,7 +9553,7 @@ func (o *BiosPolicy) GetPcieSlotNvme1linkSpeedOk() (*string, bool) {
 
 // HasPcieSlotNvme1linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme1linkSpeed() bool {
-	if o != nil && o.PcieSlotNvme1linkSpeed != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme1linkSpeed) {
 		return true
 	}
 
@@ -8153,7 +9567,7 @@ func (o *BiosPolicy) SetPcieSlotNvme1linkSpeed(v string) {
 
 // GetPcieSlotNvme1optionRom returns the PcieSlotNvme1optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme1optionRom() string {
-	if o == nil || o.PcieSlotNvme1optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme1optionRom) {
 		var ret string
 		return ret
 	}
@@ -8163,7 +9577,7 @@ func (o *BiosPolicy) GetPcieSlotNvme1optionRom() string {
 // GetPcieSlotNvme1optionRomOk returns a tuple with the PcieSlotNvme1optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme1optionRomOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme1optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme1optionRom) {
 		return nil, false
 	}
 	return o.PcieSlotNvme1optionRom, true
@@ -8171,7 +9585,7 @@ func (o *BiosPolicy) GetPcieSlotNvme1optionRomOk() (*string, bool) {
 
 // HasPcieSlotNvme1optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme1optionRom() bool {
-	if o != nil && o.PcieSlotNvme1optionRom != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme1optionRom) {
 		return true
 	}
 
@@ -8185,7 +9599,7 @@ func (o *BiosPolicy) SetPcieSlotNvme1optionRom(v string) {
 
 // GetPcieSlotNvme2linkSpeed returns the PcieSlotNvme2linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme2linkSpeed() string {
-	if o == nil || o.PcieSlotNvme2linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme2linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -8195,7 +9609,7 @@ func (o *BiosPolicy) GetPcieSlotNvme2linkSpeed() string {
 // GetPcieSlotNvme2linkSpeedOk returns a tuple with the PcieSlotNvme2linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme2linkSpeedOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme2linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme2linkSpeed) {
 		return nil, false
 	}
 	return o.PcieSlotNvme2linkSpeed, true
@@ -8203,7 +9617,7 @@ func (o *BiosPolicy) GetPcieSlotNvme2linkSpeedOk() (*string, bool) {
 
 // HasPcieSlotNvme2linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme2linkSpeed() bool {
-	if o != nil && o.PcieSlotNvme2linkSpeed != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme2linkSpeed) {
 		return true
 	}
 
@@ -8217,7 +9631,7 @@ func (o *BiosPolicy) SetPcieSlotNvme2linkSpeed(v string) {
 
 // GetPcieSlotNvme2optionRom returns the PcieSlotNvme2optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme2optionRom() string {
-	if o == nil || o.PcieSlotNvme2optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme2optionRom) {
 		var ret string
 		return ret
 	}
@@ -8227,7 +9641,7 @@ func (o *BiosPolicy) GetPcieSlotNvme2optionRom() string {
 // GetPcieSlotNvme2optionRomOk returns a tuple with the PcieSlotNvme2optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme2optionRomOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme2optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme2optionRom) {
 		return nil, false
 	}
 	return o.PcieSlotNvme2optionRom, true
@@ -8235,7 +9649,7 @@ func (o *BiosPolicy) GetPcieSlotNvme2optionRomOk() (*string, bool) {
 
 // HasPcieSlotNvme2optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme2optionRom() bool {
-	if o != nil && o.PcieSlotNvme2optionRom != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme2optionRom) {
 		return true
 	}
 
@@ -8249,7 +9663,7 @@ func (o *BiosPolicy) SetPcieSlotNvme2optionRom(v string) {
 
 // GetPcieSlotNvme3linkSpeed returns the PcieSlotNvme3linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme3linkSpeed() string {
-	if o == nil || o.PcieSlotNvme3linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme3linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -8259,7 +9673,7 @@ func (o *BiosPolicy) GetPcieSlotNvme3linkSpeed() string {
 // GetPcieSlotNvme3linkSpeedOk returns a tuple with the PcieSlotNvme3linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme3linkSpeedOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme3linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme3linkSpeed) {
 		return nil, false
 	}
 	return o.PcieSlotNvme3linkSpeed, true
@@ -8267,7 +9681,7 @@ func (o *BiosPolicy) GetPcieSlotNvme3linkSpeedOk() (*string, bool) {
 
 // HasPcieSlotNvme3linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme3linkSpeed() bool {
-	if o != nil && o.PcieSlotNvme3linkSpeed != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme3linkSpeed) {
 		return true
 	}
 
@@ -8281,7 +9695,7 @@ func (o *BiosPolicy) SetPcieSlotNvme3linkSpeed(v string) {
 
 // GetPcieSlotNvme3optionRom returns the PcieSlotNvme3optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme3optionRom() string {
-	if o == nil || o.PcieSlotNvme3optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme3optionRom) {
 		var ret string
 		return ret
 	}
@@ -8291,7 +9705,7 @@ func (o *BiosPolicy) GetPcieSlotNvme3optionRom() string {
 // GetPcieSlotNvme3optionRomOk returns a tuple with the PcieSlotNvme3optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme3optionRomOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme3optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme3optionRom) {
 		return nil, false
 	}
 	return o.PcieSlotNvme3optionRom, true
@@ -8299,7 +9713,7 @@ func (o *BiosPolicy) GetPcieSlotNvme3optionRomOk() (*string, bool) {
 
 // HasPcieSlotNvme3optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme3optionRom() bool {
-	if o != nil && o.PcieSlotNvme3optionRom != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme3optionRom) {
 		return true
 	}
 
@@ -8313,7 +9727,7 @@ func (o *BiosPolicy) SetPcieSlotNvme3optionRom(v string) {
 
 // GetPcieSlotNvme4linkSpeed returns the PcieSlotNvme4linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme4linkSpeed() string {
-	if o == nil || o.PcieSlotNvme4linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme4linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -8323,7 +9737,7 @@ func (o *BiosPolicy) GetPcieSlotNvme4linkSpeed() string {
 // GetPcieSlotNvme4linkSpeedOk returns a tuple with the PcieSlotNvme4linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme4linkSpeedOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme4linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme4linkSpeed) {
 		return nil, false
 	}
 	return o.PcieSlotNvme4linkSpeed, true
@@ -8331,7 +9745,7 @@ func (o *BiosPolicy) GetPcieSlotNvme4linkSpeedOk() (*string, bool) {
 
 // HasPcieSlotNvme4linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme4linkSpeed() bool {
-	if o != nil && o.PcieSlotNvme4linkSpeed != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme4linkSpeed) {
 		return true
 	}
 
@@ -8345,7 +9759,7 @@ func (o *BiosPolicy) SetPcieSlotNvme4linkSpeed(v string) {
 
 // GetPcieSlotNvme4optionRom returns the PcieSlotNvme4optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme4optionRom() string {
-	if o == nil || o.PcieSlotNvme4optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme4optionRom) {
 		var ret string
 		return ret
 	}
@@ -8355,7 +9769,7 @@ func (o *BiosPolicy) GetPcieSlotNvme4optionRom() string {
 // GetPcieSlotNvme4optionRomOk returns a tuple with the PcieSlotNvme4optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme4optionRomOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme4optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme4optionRom) {
 		return nil, false
 	}
 	return o.PcieSlotNvme4optionRom, true
@@ -8363,7 +9777,7 @@ func (o *BiosPolicy) GetPcieSlotNvme4optionRomOk() (*string, bool) {
 
 // HasPcieSlotNvme4optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme4optionRom() bool {
-	if o != nil && o.PcieSlotNvme4optionRom != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme4optionRom) {
 		return true
 	}
 
@@ -8377,7 +9791,7 @@ func (o *BiosPolicy) SetPcieSlotNvme4optionRom(v string) {
 
 // GetPcieSlotNvme5linkSpeed returns the PcieSlotNvme5linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme5linkSpeed() string {
-	if o == nil || o.PcieSlotNvme5linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme5linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -8387,7 +9801,7 @@ func (o *BiosPolicy) GetPcieSlotNvme5linkSpeed() string {
 // GetPcieSlotNvme5linkSpeedOk returns a tuple with the PcieSlotNvme5linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme5linkSpeedOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme5linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme5linkSpeed) {
 		return nil, false
 	}
 	return o.PcieSlotNvme5linkSpeed, true
@@ -8395,7 +9809,7 @@ func (o *BiosPolicy) GetPcieSlotNvme5linkSpeedOk() (*string, bool) {
 
 // HasPcieSlotNvme5linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme5linkSpeed() bool {
-	if o != nil && o.PcieSlotNvme5linkSpeed != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme5linkSpeed) {
 		return true
 	}
 
@@ -8409,7 +9823,7 @@ func (o *BiosPolicy) SetPcieSlotNvme5linkSpeed(v string) {
 
 // GetPcieSlotNvme5optionRom returns the PcieSlotNvme5optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme5optionRom() string {
-	if o == nil || o.PcieSlotNvme5optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme5optionRom) {
 		var ret string
 		return ret
 	}
@@ -8419,7 +9833,7 @@ func (o *BiosPolicy) GetPcieSlotNvme5optionRom() string {
 // GetPcieSlotNvme5optionRomOk returns a tuple with the PcieSlotNvme5optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme5optionRomOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme5optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme5optionRom) {
 		return nil, false
 	}
 	return o.PcieSlotNvme5optionRom, true
@@ -8427,7 +9841,7 @@ func (o *BiosPolicy) GetPcieSlotNvme5optionRomOk() (*string, bool) {
 
 // HasPcieSlotNvme5optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme5optionRom() bool {
-	if o != nil && o.PcieSlotNvme5optionRom != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme5optionRom) {
 		return true
 	}
 
@@ -8441,7 +9855,7 @@ func (o *BiosPolicy) SetPcieSlotNvme5optionRom(v string) {
 
 // GetPcieSlotNvme6linkSpeed returns the PcieSlotNvme6linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme6linkSpeed() string {
-	if o == nil || o.PcieSlotNvme6linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme6linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -8451,7 +9865,7 @@ func (o *BiosPolicy) GetPcieSlotNvme6linkSpeed() string {
 // GetPcieSlotNvme6linkSpeedOk returns a tuple with the PcieSlotNvme6linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme6linkSpeedOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme6linkSpeed == nil {
+	if o == nil || IsNil(o.PcieSlotNvme6linkSpeed) {
 		return nil, false
 	}
 	return o.PcieSlotNvme6linkSpeed, true
@@ -8459,7 +9873,7 @@ func (o *BiosPolicy) GetPcieSlotNvme6linkSpeedOk() (*string, bool) {
 
 // HasPcieSlotNvme6linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme6linkSpeed() bool {
-	if o != nil && o.PcieSlotNvme6linkSpeed != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme6linkSpeed) {
 		return true
 	}
 
@@ -8473,7 +9887,7 @@ func (o *BiosPolicy) SetPcieSlotNvme6linkSpeed(v string) {
 
 // GetPcieSlotNvme6optionRom returns the PcieSlotNvme6optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotNvme6optionRom() string {
-	if o == nil || o.PcieSlotNvme6optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme6optionRom) {
 		var ret string
 		return ret
 	}
@@ -8483,7 +9897,7 @@ func (o *BiosPolicy) GetPcieSlotNvme6optionRom() string {
 // GetPcieSlotNvme6optionRomOk returns a tuple with the PcieSlotNvme6optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotNvme6optionRomOk() (*string, bool) {
-	if o == nil || o.PcieSlotNvme6optionRom == nil {
+	if o == nil || IsNil(o.PcieSlotNvme6optionRom) {
 		return nil, false
 	}
 	return o.PcieSlotNvme6optionRom, true
@@ -8491,7 +9905,7 @@ func (o *BiosPolicy) GetPcieSlotNvme6optionRomOk() (*string, bool) {
 
 // HasPcieSlotNvme6optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotNvme6optionRom() bool {
-	if o != nil && o.PcieSlotNvme6optionRom != nil {
+	if o != nil && !IsNil(o.PcieSlotNvme6optionRom) {
 		return true
 	}
 
@@ -8505,7 +9919,7 @@ func (o *BiosPolicy) SetPcieSlotNvme6optionRom(v string) {
 
 // GetPcieSlotsCdnEnable returns the PcieSlotsCdnEnable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPcieSlotsCdnEnable() string {
-	if o == nil || o.PcieSlotsCdnEnable == nil {
+	if o == nil || IsNil(o.PcieSlotsCdnEnable) {
 		var ret string
 		return ret
 	}
@@ -8515,7 +9929,7 @@ func (o *BiosPolicy) GetPcieSlotsCdnEnable() string {
 // GetPcieSlotsCdnEnableOk returns a tuple with the PcieSlotsCdnEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPcieSlotsCdnEnableOk() (*string, bool) {
-	if o == nil || o.PcieSlotsCdnEnable == nil {
+	if o == nil || IsNil(o.PcieSlotsCdnEnable) {
 		return nil, false
 	}
 	return o.PcieSlotsCdnEnable, true
@@ -8523,7 +9937,7 @@ func (o *BiosPolicy) GetPcieSlotsCdnEnableOk() (*string, bool) {
 
 // HasPcieSlotsCdnEnable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPcieSlotsCdnEnable() bool {
-	if o != nil && o.PcieSlotsCdnEnable != nil {
+	if o != nil && !IsNil(o.PcieSlotsCdnEnable) {
 		return true
 	}
 
@@ -8537,7 +9951,7 @@ func (o *BiosPolicy) SetPcieSlotsCdnEnable(v string) {
 
 // GetPopSupport returns the PopSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPopSupport() string {
-	if o == nil || o.PopSupport == nil {
+	if o == nil || IsNil(o.PopSupport) {
 		var ret string
 		return ret
 	}
@@ -8547,7 +9961,7 @@ func (o *BiosPolicy) GetPopSupport() string {
 // GetPopSupportOk returns a tuple with the PopSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPopSupportOk() (*string, bool) {
-	if o == nil || o.PopSupport == nil {
+	if o == nil || IsNil(o.PopSupport) {
 		return nil, false
 	}
 	return o.PopSupport, true
@@ -8555,7 +9969,7 @@ func (o *BiosPolicy) GetPopSupportOk() (*string, bool) {
 
 // HasPopSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPopSupport() bool {
-	if o != nil && o.PopSupport != nil {
+	if o != nil && !IsNil(o.PopSupport) {
 		return true
 	}
 
@@ -8569,7 +9983,7 @@ func (o *BiosPolicy) SetPopSupport(v string) {
 
 // GetPostErrorPause returns the PostErrorPause field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPostErrorPause() string {
-	if o == nil || o.PostErrorPause == nil {
+	if o == nil || IsNil(o.PostErrorPause) {
 		var ret string
 		return ret
 	}
@@ -8579,7 +9993,7 @@ func (o *BiosPolicy) GetPostErrorPause() string {
 // GetPostErrorPauseOk returns a tuple with the PostErrorPause field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPostErrorPauseOk() (*string, bool) {
-	if o == nil || o.PostErrorPause == nil {
+	if o == nil || IsNil(o.PostErrorPause) {
 		return nil, false
 	}
 	return o.PostErrorPause, true
@@ -8587,7 +10001,7 @@ func (o *BiosPolicy) GetPostErrorPauseOk() (*string, bool) {
 
 // HasPostErrorPause returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPostErrorPause() bool {
-	if o != nil && o.PostErrorPause != nil {
+	if o != nil && !IsNil(o.PostErrorPause) {
 		return true
 	}
 
@@ -8601,7 +10015,7 @@ func (o *BiosPolicy) SetPostErrorPause(v string) {
 
 // GetPostPackageRepair returns the PostPackageRepair field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPostPackageRepair() string {
-	if o == nil || o.PostPackageRepair == nil {
+	if o == nil || IsNil(o.PostPackageRepair) {
 		var ret string
 		return ret
 	}
@@ -8611,7 +10025,7 @@ func (o *BiosPolicy) GetPostPackageRepair() string {
 // GetPostPackageRepairOk returns a tuple with the PostPackageRepair field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPostPackageRepairOk() (*string, bool) {
-	if o == nil || o.PostPackageRepair == nil {
+	if o == nil || IsNil(o.PostPackageRepair) {
 		return nil, false
 	}
 	return o.PostPackageRepair, true
@@ -8619,7 +10033,7 @@ func (o *BiosPolicy) GetPostPackageRepairOk() (*string, bool) {
 
 // HasPostPackageRepair returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPostPackageRepair() bool {
-	if o != nil && o.PostPackageRepair != nil {
+	if o != nil && !IsNil(o.PostPackageRepair) {
 		return true
 	}
 
@@ -8631,9 +10045,41 @@ func (o *BiosPolicy) SetPostPackageRepair(v string) {
 	o.PostPackageRepair = &v
 }
 
+// GetPrmrrSize returns the PrmrrSize field value if set, zero value otherwise.
+func (o *BiosPolicy) GetPrmrrSize() string {
+	if o == nil || IsNil(o.PrmrrSize) {
+		var ret string
+		return ret
+	}
+	return *o.PrmrrSize
+}
+
+// GetPrmrrSizeOk returns a tuple with the PrmrrSize field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetPrmrrSizeOk() (*string, bool) {
+	if o == nil || IsNil(o.PrmrrSize) {
+		return nil, false
+	}
+	return o.PrmrrSize, true
+}
+
+// HasPrmrrSize returns a boolean if a field has been set.
+func (o *BiosPolicy) HasPrmrrSize() bool {
+	if o != nil && !IsNil(o.PrmrrSize) {
+		return true
+	}
+
+	return false
+}
+
+// SetPrmrrSize gets a reference to the given string and assigns it to the PrmrrSize field.
+func (o *BiosPolicy) SetPrmrrSize(v string) {
+	o.PrmrrSize = &v
+}
+
 // GetProcessorC1e returns the ProcessorC1e field value if set, zero value otherwise.
 func (o *BiosPolicy) GetProcessorC1e() string {
-	if o == nil || o.ProcessorC1e == nil {
+	if o == nil || IsNil(o.ProcessorC1e) {
 		var ret string
 		return ret
 	}
@@ -8643,7 +10089,7 @@ func (o *BiosPolicy) GetProcessorC1e() string {
 // GetProcessorC1eOk returns a tuple with the ProcessorC1e field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetProcessorC1eOk() (*string, bool) {
-	if o == nil || o.ProcessorC1e == nil {
+	if o == nil || IsNil(o.ProcessorC1e) {
 		return nil, false
 	}
 	return o.ProcessorC1e, true
@@ -8651,7 +10097,7 @@ func (o *BiosPolicy) GetProcessorC1eOk() (*string, bool) {
 
 // HasProcessorC1e returns a boolean if a field has been set.
 func (o *BiosPolicy) HasProcessorC1e() bool {
-	if o != nil && o.ProcessorC1e != nil {
+	if o != nil && !IsNil(o.ProcessorC1e) {
 		return true
 	}
 
@@ -8665,7 +10111,7 @@ func (o *BiosPolicy) SetProcessorC1e(v string) {
 
 // GetProcessorC3report returns the ProcessorC3report field value if set, zero value otherwise.
 func (o *BiosPolicy) GetProcessorC3report() string {
-	if o == nil || o.ProcessorC3report == nil {
+	if o == nil || IsNil(o.ProcessorC3report) {
 		var ret string
 		return ret
 	}
@@ -8675,7 +10121,7 @@ func (o *BiosPolicy) GetProcessorC3report() string {
 // GetProcessorC3reportOk returns a tuple with the ProcessorC3report field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetProcessorC3reportOk() (*string, bool) {
-	if o == nil || o.ProcessorC3report == nil {
+	if o == nil || IsNil(o.ProcessorC3report) {
 		return nil, false
 	}
 	return o.ProcessorC3report, true
@@ -8683,7 +10129,7 @@ func (o *BiosPolicy) GetProcessorC3reportOk() (*string, bool) {
 
 // HasProcessorC3report returns a boolean if a field has been set.
 func (o *BiosPolicy) HasProcessorC3report() bool {
-	if o != nil && o.ProcessorC3report != nil {
+	if o != nil && !IsNil(o.ProcessorC3report) {
 		return true
 	}
 
@@ -8697,7 +10143,7 @@ func (o *BiosPolicy) SetProcessorC3report(v string) {
 
 // GetProcessorC6report returns the ProcessorC6report field value if set, zero value otherwise.
 func (o *BiosPolicy) GetProcessorC6report() string {
-	if o == nil || o.ProcessorC6report == nil {
+	if o == nil || IsNil(o.ProcessorC6report) {
 		var ret string
 		return ret
 	}
@@ -8707,7 +10153,7 @@ func (o *BiosPolicy) GetProcessorC6report() string {
 // GetProcessorC6reportOk returns a tuple with the ProcessorC6report field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetProcessorC6reportOk() (*string, bool) {
-	if o == nil || o.ProcessorC6report == nil {
+	if o == nil || IsNil(o.ProcessorC6report) {
 		return nil, false
 	}
 	return o.ProcessorC6report, true
@@ -8715,7 +10161,7 @@ func (o *BiosPolicy) GetProcessorC6reportOk() (*string, bool) {
 
 // HasProcessorC6report returns a boolean if a field has been set.
 func (o *BiosPolicy) HasProcessorC6report() bool {
-	if o != nil && o.ProcessorC6report != nil {
+	if o != nil && !IsNil(o.ProcessorC6report) {
 		return true
 	}
 
@@ -8729,7 +10175,7 @@ func (o *BiosPolicy) SetProcessorC6report(v string) {
 
 // GetProcessorCstate returns the ProcessorCstate field value if set, zero value otherwise.
 func (o *BiosPolicy) GetProcessorCstate() string {
-	if o == nil || o.ProcessorCstate == nil {
+	if o == nil || IsNil(o.ProcessorCstate) {
 		var ret string
 		return ret
 	}
@@ -8739,7 +10185,7 @@ func (o *BiosPolicy) GetProcessorCstate() string {
 // GetProcessorCstateOk returns a tuple with the ProcessorCstate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetProcessorCstateOk() (*string, bool) {
-	if o == nil || o.ProcessorCstate == nil {
+	if o == nil || IsNil(o.ProcessorCstate) {
 		return nil, false
 	}
 	return o.ProcessorCstate, true
@@ -8747,7 +10193,7 @@ func (o *BiosPolicy) GetProcessorCstateOk() (*string, bool) {
 
 // HasProcessorCstate returns a boolean if a field has been set.
 func (o *BiosPolicy) HasProcessorCstate() bool {
-	if o != nil && o.ProcessorCstate != nil {
+	if o != nil && !IsNil(o.ProcessorCstate) {
 		return true
 	}
 
@@ -8761,7 +10207,7 @@ func (o *BiosPolicy) SetProcessorCstate(v string) {
 
 // GetPsata returns the Psata field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPsata() string {
-	if o == nil || o.Psata == nil {
+	if o == nil || IsNil(o.Psata) {
 		var ret string
 		return ret
 	}
@@ -8771,7 +10217,7 @@ func (o *BiosPolicy) GetPsata() string {
 // GetPsataOk returns a tuple with the Psata field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPsataOk() (*string, bool) {
-	if o == nil || o.Psata == nil {
+	if o == nil || IsNil(o.Psata) {
 		return nil, false
 	}
 	return o.Psata, true
@@ -8779,7 +10225,7 @@ func (o *BiosPolicy) GetPsataOk() (*string, bool) {
 
 // HasPsata returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPsata() bool {
-	if o != nil && o.Psata != nil {
+	if o != nil && !IsNil(o.Psata) {
 		return true
 	}
 
@@ -8793,7 +10239,7 @@ func (o *BiosPolicy) SetPsata(v string) {
 
 // GetPstateCoordType returns the PstateCoordType field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPstateCoordType() string {
-	if o == nil || o.PstateCoordType == nil {
+	if o == nil || IsNil(o.PstateCoordType) {
 		var ret string
 		return ret
 	}
@@ -8803,7 +10249,7 @@ func (o *BiosPolicy) GetPstateCoordType() string {
 // GetPstateCoordTypeOk returns a tuple with the PstateCoordType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPstateCoordTypeOk() (*string, bool) {
-	if o == nil || o.PstateCoordType == nil {
+	if o == nil || IsNil(o.PstateCoordType) {
 		return nil, false
 	}
 	return o.PstateCoordType, true
@@ -8811,7 +10257,7 @@ func (o *BiosPolicy) GetPstateCoordTypeOk() (*string, bool) {
 
 // HasPstateCoordType returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPstateCoordType() bool {
-	if o != nil && o.PstateCoordType != nil {
+	if o != nil && !IsNil(o.PstateCoordType) {
 		return true
 	}
 
@@ -8825,7 +10271,7 @@ func (o *BiosPolicy) SetPstateCoordType(v string) {
 
 // GetPuttyKeyPad returns the PuttyKeyPad field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPuttyKeyPad() string {
-	if o == nil || o.PuttyKeyPad == nil {
+	if o == nil || IsNil(o.PuttyKeyPad) {
 		var ret string
 		return ret
 	}
@@ -8835,7 +10281,7 @@ func (o *BiosPolicy) GetPuttyKeyPad() string {
 // GetPuttyKeyPadOk returns a tuple with the PuttyKeyPad field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPuttyKeyPadOk() (*string, bool) {
-	if o == nil || o.PuttyKeyPad == nil {
+	if o == nil || IsNil(o.PuttyKeyPad) {
 		return nil, false
 	}
 	return o.PuttyKeyPad, true
@@ -8843,7 +10289,7 @@ func (o *BiosPolicy) GetPuttyKeyPadOk() (*string, bool) {
 
 // HasPuttyKeyPad returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPuttyKeyPad() bool {
-	if o != nil && o.PuttyKeyPad != nil {
+	if o != nil && !IsNil(o.PuttyKeyPad) {
 		return true
 	}
 
@@ -8857,7 +10303,7 @@ func (o *BiosPolicy) SetPuttyKeyPad(v string) {
 
 // GetPwrPerfTuning returns the PwrPerfTuning field value if set, zero value otherwise.
 func (o *BiosPolicy) GetPwrPerfTuning() string {
-	if o == nil || o.PwrPerfTuning == nil {
+	if o == nil || IsNil(o.PwrPerfTuning) {
 		var ret string
 		return ret
 	}
@@ -8867,7 +10313,7 @@ func (o *BiosPolicy) GetPwrPerfTuning() string {
 // GetPwrPerfTuningOk returns a tuple with the PwrPerfTuning field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetPwrPerfTuningOk() (*string, bool) {
-	if o == nil || o.PwrPerfTuning == nil {
+	if o == nil || IsNil(o.PwrPerfTuning) {
 		return nil, false
 	}
 	return o.PwrPerfTuning, true
@@ -8875,7 +10321,7 @@ func (o *BiosPolicy) GetPwrPerfTuningOk() (*string, bool) {
 
 // HasPwrPerfTuning returns a boolean if a field has been set.
 func (o *BiosPolicy) HasPwrPerfTuning() bool {
-	if o != nil && o.PwrPerfTuning != nil {
+	if o != nil && !IsNil(o.PwrPerfTuning) {
 		return true
 	}
 
@@ -8889,7 +10335,7 @@ func (o *BiosPolicy) SetPwrPerfTuning(v string) {
 
 // GetQpiLinkFrequency returns the QpiLinkFrequency field value if set, zero value otherwise.
 func (o *BiosPolicy) GetQpiLinkFrequency() string {
-	if o == nil || o.QpiLinkFrequency == nil {
+	if o == nil || IsNil(o.QpiLinkFrequency) {
 		var ret string
 		return ret
 	}
@@ -8899,7 +10345,7 @@ func (o *BiosPolicy) GetQpiLinkFrequency() string {
 // GetQpiLinkFrequencyOk returns a tuple with the QpiLinkFrequency field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetQpiLinkFrequencyOk() (*string, bool) {
-	if o == nil || o.QpiLinkFrequency == nil {
+	if o == nil || IsNil(o.QpiLinkFrequency) {
 		return nil, false
 	}
 	return o.QpiLinkFrequency, true
@@ -8907,7 +10353,7 @@ func (o *BiosPolicy) GetQpiLinkFrequencyOk() (*string, bool) {
 
 // HasQpiLinkFrequency returns a boolean if a field has been set.
 func (o *BiosPolicy) HasQpiLinkFrequency() bool {
-	if o != nil && o.QpiLinkFrequency != nil {
+	if o != nil && !IsNil(o.QpiLinkFrequency) {
 		return true
 	}
 
@@ -8921,7 +10367,7 @@ func (o *BiosPolicy) SetQpiLinkFrequency(v string) {
 
 // GetQpiLinkSpeed returns the QpiLinkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetQpiLinkSpeed() string {
-	if o == nil || o.QpiLinkSpeed == nil {
+	if o == nil || IsNil(o.QpiLinkSpeed) {
 		var ret string
 		return ret
 	}
@@ -8931,7 +10377,7 @@ func (o *BiosPolicy) GetQpiLinkSpeed() string {
 // GetQpiLinkSpeedOk returns a tuple with the QpiLinkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetQpiLinkSpeedOk() (*string, bool) {
-	if o == nil || o.QpiLinkSpeed == nil {
+	if o == nil || IsNil(o.QpiLinkSpeed) {
 		return nil, false
 	}
 	return o.QpiLinkSpeed, true
@@ -8939,7 +10385,7 @@ func (o *BiosPolicy) GetQpiLinkSpeedOk() (*string, bool) {
 
 // HasQpiLinkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasQpiLinkSpeed() bool {
-	if o != nil && o.QpiLinkSpeed != nil {
+	if o != nil && !IsNil(o.QpiLinkSpeed) {
 		return true
 	}
 
@@ -8953,7 +10399,7 @@ func (o *BiosPolicy) SetQpiLinkSpeed(v string) {
 
 // GetQpiSnoopMode returns the QpiSnoopMode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetQpiSnoopMode() string {
-	if o == nil || o.QpiSnoopMode == nil {
+	if o == nil || IsNil(o.QpiSnoopMode) {
 		var ret string
 		return ret
 	}
@@ -8963,7 +10409,7 @@ func (o *BiosPolicy) GetQpiSnoopMode() string {
 // GetQpiSnoopModeOk returns a tuple with the QpiSnoopMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetQpiSnoopModeOk() (*string, bool) {
-	if o == nil || o.QpiSnoopMode == nil {
+	if o == nil || IsNil(o.QpiSnoopMode) {
 		return nil, false
 	}
 	return o.QpiSnoopMode, true
@@ -8971,7 +10417,7 @@ func (o *BiosPolicy) GetQpiSnoopModeOk() (*string, bool) {
 
 // HasQpiSnoopMode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasQpiSnoopMode() bool {
-	if o != nil && o.QpiSnoopMode != nil {
+	if o != nil && !IsNil(o.QpiSnoopMode) {
 		return true
 	}
 
@@ -8985,7 +10431,7 @@ func (o *BiosPolicy) SetQpiSnoopMode(v string) {
 
 // GetRankInterLeave returns the RankInterLeave field value if set, zero value otherwise.
 func (o *BiosPolicy) GetRankInterLeave() string {
-	if o == nil || o.RankInterLeave == nil {
+	if o == nil || IsNil(o.RankInterLeave) {
 		var ret string
 		return ret
 	}
@@ -8995,7 +10441,7 @@ func (o *BiosPolicy) GetRankInterLeave() string {
 // GetRankInterLeaveOk returns a tuple with the RankInterLeave field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetRankInterLeaveOk() (*string, bool) {
-	if o == nil || o.RankInterLeave == nil {
+	if o == nil || IsNil(o.RankInterLeave) {
 		return nil, false
 	}
 	return o.RankInterLeave, true
@@ -9003,7 +10449,7 @@ func (o *BiosPolicy) GetRankInterLeaveOk() (*string, bool) {
 
 // HasRankInterLeave returns a boolean if a field has been set.
 func (o *BiosPolicy) HasRankInterLeave() bool {
-	if o != nil && o.RankInterLeave != nil {
+	if o != nil && !IsNil(o.RankInterLeave) {
 		return true
 	}
 
@@ -9017,7 +10463,7 @@ func (o *BiosPolicy) SetRankInterLeave(v string) {
 
 // GetRedirectionAfterPost returns the RedirectionAfterPost field value if set, zero value otherwise.
 func (o *BiosPolicy) GetRedirectionAfterPost() string {
-	if o == nil || o.RedirectionAfterPost == nil {
+	if o == nil || IsNil(o.RedirectionAfterPost) {
 		var ret string
 		return ret
 	}
@@ -9027,7 +10473,7 @@ func (o *BiosPolicy) GetRedirectionAfterPost() string {
 // GetRedirectionAfterPostOk returns a tuple with the RedirectionAfterPost field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetRedirectionAfterPostOk() (*string, bool) {
-	if o == nil || o.RedirectionAfterPost == nil {
+	if o == nil || IsNil(o.RedirectionAfterPost) {
 		return nil, false
 	}
 	return o.RedirectionAfterPost, true
@@ -9035,7 +10481,7 @@ func (o *BiosPolicy) GetRedirectionAfterPostOk() (*string, bool) {
 
 // HasRedirectionAfterPost returns a boolean if a field has been set.
 func (o *BiosPolicy) HasRedirectionAfterPost() bool {
-	if o != nil && o.RedirectionAfterPost != nil {
+	if o != nil && !IsNil(o.RedirectionAfterPost) {
 		return true
 	}
 
@@ -9047,9 +10493,73 @@ func (o *BiosPolicy) SetRedirectionAfterPost(v string) {
 	o.RedirectionAfterPost = &v
 }
 
+// GetResizeBarSupport returns the ResizeBarSupport field value if set, zero value otherwise.
+func (o *BiosPolicy) GetResizeBarSupport() string {
+	if o == nil || IsNil(o.ResizeBarSupport) {
+		var ret string
+		return ret
+	}
+	return *o.ResizeBarSupport
+}
+
+// GetResizeBarSupportOk returns a tuple with the ResizeBarSupport field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetResizeBarSupportOk() (*string, bool) {
+	if o == nil || IsNil(o.ResizeBarSupport) {
+		return nil, false
+	}
+	return o.ResizeBarSupport, true
+}
+
+// HasResizeBarSupport returns a boolean if a field has been set.
+func (o *BiosPolicy) HasResizeBarSupport() bool {
+	if o != nil && !IsNil(o.ResizeBarSupport) {
+		return true
+	}
+
+	return false
+}
+
+// SetResizeBarSupport gets a reference to the given string and assigns it to the ResizeBarSupport field.
+func (o *BiosPolicy) SetResizeBarSupport(v string) {
+	o.ResizeBarSupport = &v
+}
+
+// GetRuntimePostPackageRepair returns the RuntimePostPackageRepair field value if set, zero value otherwise.
+func (o *BiosPolicy) GetRuntimePostPackageRepair() string {
+	if o == nil || IsNil(o.RuntimePostPackageRepair) {
+		var ret string
+		return ret
+	}
+	return *o.RuntimePostPackageRepair
+}
+
+// GetRuntimePostPackageRepairOk returns a tuple with the RuntimePostPackageRepair field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetRuntimePostPackageRepairOk() (*string, bool) {
+	if o == nil || IsNil(o.RuntimePostPackageRepair) {
+		return nil, false
+	}
+	return o.RuntimePostPackageRepair, true
+}
+
+// HasRuntimePostPackageRepair returns a boolean if a field has been set.
+func (o *BiosPolicy) HasRuntimePostPackageRepair() bool {
+	if o != nil && !IsNil(o.RuntimePostPackageRepair) {
+		return true
+	}
+
+	return false
+}
+
+// SetRuntimePostPackageRepair gets a reference to the given string and assigns it to the RuntimePostPackageRepair field.
+func (o *BiosPolicy) SetRuntimePostPackageRepair(v string) {
+	o.RuntimePostPackageRepair = &v
+}
+
 // GetSataModeSelect returns the SataModeSelect field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSataModeSelect() string {
-	if o == nil || o.SataModeSelect == nil {
+	if o == nil || IsNil(o.SataModeSelect) {
 		var ret string
 		return ret
 	}
@@ -9059,7 +10569,7 @@ func (o *BiosPolicy) GetSataModeSelect() string {
 // GetSataModeSelectOk returns a tuple with the SataModeSelect field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSataModeSelectOk() (*string, bool) {
-	if o == nil || o.SataModeSelect == nil {
+	if o == nil || IsNil(o.SataModeSelect) {
 		return nil, false
 	}
 	return o.SataModeSelect, true
@@ -9067,7 +10577,7 @@ func (o *BiosPolicy) GetSataModeSelectOk() (*string, bool) {
 
 // HasSataModeSelect returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSataModeSelect() bool {
-	if o != nil && o.SataModeSelect != nil {
+	if o != nil && !IsNil(o.SataModeSelect) {
 		return true
 	}
 
@@ -9081,7 +10591,7 @@ func (o *BiosPolicy) SetSataModeSelect(v string) {
 
 // GetSelectMemoryRasConfiguration returns the SelectMemoryRasConfiguration field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSelectMemoryRasConfiguration() string {
-	if o == nil || o.SelectMemoryRasConfiguration == nil {
+	if o == nil || IsNil(o.SelectMemoryRasConfiguration) {
 		var ret string
 		return ret
 	}
@@ -9091,7 +10601,7 @@ func (o *BiosPolicy) GetSelectMemoryRasConfiguration() string {
 // GetSelectMemoryRasConfigurationOk returns a tuple with the SelectMemoryRasConfiguration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSelectMemoryRasConfigurationOk() (*string, bool) {
-	if o == nil || o.SelectMemoryRasConfiguration == nil {
+	if o == nil || IsNil(o.SelectMemoryRasConfiguration) {
 		return nil, false
 	}
 	return o.SelectMemoryRasConfiguration, true
@@ -9099,7 +10609,7 @@ func (o *BiosPolicy) GetSelectMemoryRasConfigurationOk() (*string, bool) {
 
 // HasSelectMemoryRasConfiguration returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSelectMemoryRasConfiguration() bool {
-	if o != nil && o.SelectMemoryRasConfiguration != nil {
+	if o != nil && !IsNil(o.SelectMemoryRasConfiguration) {
 		return true
 	}
 
@@ -9113,7 +10623,7 @@ func (o *BiosPolicy) SetSelectMemoryRasConfiguration(v string) {
 
 // GetSelectPprType returns the SelectPprType field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSelectPprType() string {
-	if o == nil || o.SelectPprType == nil {
+	if o == nil || IsNil(o.SelectPprType) {
 		var ret string
 		return ret
 	}
@@ -9123,7 +10633,7 @@ func (o *BiosPolicy) GetSelectPprType() string {
 // GetSelectPprTypeOk returns a tuple with the SelectPprType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSelectPprTypeOk() (*string, bool) {
-	if o == nil || o.SelectPprType == nil {
+	if o == nil || IsNil(o.SelectPprType) {
 		return nil, false
 	}
 	return o.SelectPprType, true
@@ -9131,7 +10641,7 @@ func (o *BiosPolicy) GetSelectPprTypeOk() (*string, bool) {
 
 // HasSelectPprType returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSelectPprType() bool {
-	if o != nil && o.SelectPprType != nil {
+	if o != nil && !IsNil(o.SelectPprType) {
 		return true
 	}
 
@@ -9143,9 +10653,41 @@ func (o *BiosPolicy) SetSelectPprType(v string) {
 	o.SelectPprType = &v
 }
 
+// GetSerialMux returns the SerialMux field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSerialMux() string {
+	if o == nil || IsNil(o.SerialMux) {
+		var ret string
+		return ret
+	}
+	return *o.SerialMux
+}
+
+// GetSerialMuxOk returns a tuple with the SerialMux field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSerialMuxOk() (*string, bool) {
+	if o == nil || IsNil(o.SerialMux) {
+		return nil, false
+	}
+	return o.SerialMux, true
+}
+
+// HasSerialMux returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSerialMux() bool {
+	if o != nil && !IsNil(o.SerialMux) {
+		return true
+	}
+
+	return false
+}
+
+// SetSerialMux gets a reference to the given string and assigns it to the SerialMux field.
+func (o *BiosPolicy) SetSerialMux(v string) {
+	o.SerialMux = &v
+}
+
 // GetSerialPortAenable returns the SerialPortAenable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSerialPortAenable() string {
-	if o == nil || o.SerialPortAenable == nil {
+	if o == nil || IsNil(o.SerialPortAenable) {
 		var ret string
 		return ret
 	}
@@ -9155,7 +10697,7 @@ func (o *BiosPolicy) GetSerialPortAenable() string {
 // GetSerialPortAenableOk returns a tuple with the SerialPortAenable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSerialPortAenableOk() (*string, bool) {
-	if o == nil || o.SerialPortAenable == nil {
+	if o == nil || IsNil(o.SerialPortAenable) {
 		return nil, false
 	}
 	return o.SerialPortAenable, true
@@ -9163,7 +10705,7 @@ func (o *BiosPolicy) GetSerialPortAenableOk() (*string, bool) {
 
 // HasSerialPortAenable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSerialPortAenable() bool {
-	if o != nil && o.SerialPortAenable != nil {
+	if o != nil && !IsNil(o.SerialPortAenable) {
 		return true
 	}
 
@@ -9177,7 +10719,7 @@ func (o *BiosPolicy) SetSerialPortAenable(v string) {
 
 // GetSev returns the Sev field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSev() string {
-	if o == nil || o.Sev == nil {
+	if o == nil || IsNil(o.Sev) {
 		var ret string
 		return ret
 	}
@@ -9187,7 +10729,7 @@ func (o *BiosPolicy) GetSev() string {
 // GetSevOk returns a tuple with the Sev field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSevOk() (*string, bool) {
-	if o == nil || o.Sev == nil {
+	if o == nil || IsNil(o.Sev) {
 		return nil, false
 	}
 	return o.Sev, true
@@ -9195,7 +10737,7 @@ func (o *BiosPolicy) GetSevOk() (*string, bool) {
 
 // HasSev returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSev() bool {
-	if o != nil && o.Sev != nil {
+	if o != nil && !IsNil(o.Sev) {
 		return true
 	}
 
@@ -9209,7 +10751,7 @@ func (o *BiosPolicy) SetSev(v string) {
 
 // GetSgxAutoRegistrationAgent returns the SgxAutoRegistrationAgent field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxAutoRegistrationAgent() string {
-	if o == nil || o.SgxAutoRegistrationAgent == nil {
+	if o == nil || IsNil(o.SgxAutoRegistrationAgent) {
 		var ret string
 		return ret
 	}
@@ -9219,7 +10761,7 @@ func (o *BiosPolicy) GetSgxAutoRegistrationAgent() string {
 // GetSgxAutoRegistrationAgentOk returns a tuple with the SgxAutoRegistrationAgent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxAutoRegistrationAgentOk() (*string, bool) {
-	if o == nil || o.SgxAutoRegistrationAgent == nil {
+	if o == nil || IsNil(o.SgxAutoRegistrationAgent) {
 		return nil, false
 	}
 	return o.SgxAutoRegistrationAgent, true
@@ -9227,7 +10769,7 @@ func (o *BiosPolicy) GetSgxAutoRegistrationAgentOk() (*string, bool) {
 
 // HasSgxAutoRegistrationAgent returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxAutoRegistrationAgent() bool {
-	if o != nil && o.SgxAutoRegistrationAgent != nil {
+	if o != nil && !IsNil(o.SgxAutoRegistrationAgent) {
 		return true
 	}
 
@@ -9241,7 +10783,7 @@ func (o *BiosPolicy) SetSgxAutoRegistrationAgent(v string) {
 
 // GetSgxEpoch0 returns the SgxEpoch0 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxEpoch0() string {
-	if o == nil || o.SgxEpoch0 == nil {
+	if o == nil || IsNil(o.SgxEpoch0) {
 		var ret string
 		return ret
 	}
@@ -9251,7 +10793,7 @@ func (o *BiosPolicy) GetSgxEpoch0() string {
 // GetSgxEpoch0Ok returns a tuple with the SgxEpoch0 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxEpoch0Ok() (*string, bool) {
-	if o == nil || o.SgxEpoch0 == nil {
+	if o == nil || IsNil(o.SgxEpoch0) {
 		return nil, false
 	}
 	return o.SgxEpoch0, true
@@ -9259,7 +10801,7 @@ func (o *BiosPolicy) GetSgxEpoch0Ok() (*string, bool) {
 
 // HasSgxEpoch0 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxEpoch0() bool {
-	if o != nil && o.SgxEpoch0 != nil {
+	if o != nil && !IsNil(o.SgxEpoch0) {
 		return true
 	}
 
@@ -9273,7 +10815,7 @@ func (o *BiosPolicy) SetSgxEpoch0(v string) {
 
 // GetSgxEpoch1 returns the SgxEpoch1 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxEpoch1() string {
-	if o == nil || o.SgxEpoch1 == nil {
+	if o == nil || IsNil(o.SgxEpoch1) {
 		var ret string
 		return ret
 	}
@@ -9283,7 +10825,7 @@ func (o *BiosPolicy) GetSgxEpoch1() string {
 // GetSgxEpoch1Ok returns a tuple with the SgxEpoch1 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxEpoch1Ok() (*string, bool) {
-	if o == nil || o.SgxEpoch1 == nil {
+	if o == nil || IsNil(o.SgxEpoch1) {
 		return nil, false
 	}
 	return o.SgxEpoch1, true
@@ -9291,7 +10833,7 @@ func (o *BiosPolicy) GetSgxEpoch1Ok() (*string, bool) {
 
 // HasSgxEpoch1 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxEpoch1() bool {
-	if o != nil && o.SgxEpoch1 != nil {
+	if o != nil && !IsNil(o.SgxEpoch1) {
 		return true
 	}
 
@@ -9305,7 +10847,7 @@ func (o *BiosPolicy) SetSgxEpoch1(v string) {
 
 // GetSgxFactoryReset returns the SgxFactoryReset field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxFactoryReset() string {
-	if o == nil || o.SgxFactoryReset == nil {
+	if o == nil || IsNil(o.SgxFactoryReset) {
 		var ret string
 		return ret
 	}
@@ -9315,7 +10857,7 @@ func (o *BiosPolicy) GetSgxFactoryReset() string {
 // GetSgxFactoryResetOk returns a tuple with the SgxFactoryReset field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxFactoryResetOk() (*string, bool) {
-	if o == nil || o.SgxFactoryReset == nil {
+	if o == nil || IsNil(o.SgxFactoryReset) {
 		return nil, false
 	}
 	return o.SgxFactoryReset, true
@@ -9323,7 +10865,7 @@ func (o *BiosPolicy) GetSgxFactoryResetOk() (*string, bool) {
 
 // HasSgxFactoryReset returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxFactoryReset() bool {
-	if o != nil && o.SgxFactoryReset != nil {
+	if o != nil && !IsNil(o.SgxFactoryReset) {
 		return true
 	}
 
@@ -9337,7 +10879,7 @@ func (o *BiosPolicy) SetSgxFactoryReset(v string) {
 
 // GetSgxLePubKeyHash0 returns the SgxLePubKeyHash0 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxLePubKeyHash0() string {
-	if o == nil || o.SgxLePubKeyHash0 == nil {
+	if o == nil || IsNil(o.SgxLePubKeyHash0) {
 		var ret string
 		return ret
 	}
@@ -9347,7 +10889,7 @@ func (o *BiosPolicy) GetSgxLePubKeyHash0() string {
 // GetSgxLePubKeyHash0Ok returns a tuple with the SgxLePubKeyHash0 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxLePubKeyHash0Ok() (*string, bool) {
-	if o == nil || o.SgxLePubKeyHash0 == nil {
+	if o == nil || IsNil(o.SgxLePubKeyHash0) {
 		return nil, false
 	}
 	return o.SgxLePubKeyHash0, true
@@ -9355,7 +10897,7 @@ func (o *BiosPolicy) GetSgxLePubKeyHash0Ok() (*string, bool) {
 
 // HasSgxLePubKeyHash0 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxLePubKeyHash0() bool {
-	if o != nil && o.SgxLePubKeyHash0 != nil {
+	if o != nil && !IsNil(o.SgxLePubKeyHash0) {
 		return true
 	}
 
@@ -9369,7 +10911,7 @@ func (o *BiosPolicy) SetSgxLePubKeyHash0(v string) {
 
 // GetSgxLePubKeyHash1 returns the SgxLePubKeyHash1 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxLePubKeyHash1() string {
-	if o == nil || o.SgxLePubKeyHash1 == nil {
+	if o == nil || IsNil(o.SgxLePubKeyHash1) {
 		var ret string
 		return ret
 	}
@@ -9379,7 +10921,7 @@ func (o *BiosPolicy) GetSgxLePubKeyHash1() string {
 // GetSgxLePubKeyHash1Ok returns a tuple with the SgxLePubKeyHash1 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxLePubKeyHash1Ok() (*string, bool) {
-	if o == nil || o.SgxLePubKeyHash1 == nil {
+	if o == nil || IsNil(o.SgxLePubKeyHash1) {
 		return nil, false
 	}
 	return o.SgxLePubKeyHash1, true
@@ -9387,7 +10929,7 @@ func (o *BiosPolicy) GetSgxLePubKeyHash1Ok() (*string, bool) {
 
 // HasSgxLePubKeyHash1 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxLePubKeyHash1() bool {
-	if o != nil && o.SgxLePubKeyHash1 != nil {
+	if o != nil && !IsNil(o.SgxLePubKeyHash1) {
 		return true
 	}
 
@@ -9401,7 +10943,7 @@ func (o *BiosPolicy) SetSgxLePubKeyHash1(v string) {
 
 // GetSgxLePubKeyHash2 returns the SgxLePubKeyHash2 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxLePubKeyHash2() string {
-	if o == nil || o.SgxLePubKeyHash2 == nil {
+	if o == nil || IsNil(o.SgxLePubKeyHash2) {
 		var ret string
 		return ret
 	}
@@ -9411,7 +10953,7 @@ func (o *BiosPolicy) GetSgxLePubKeyHash2() string {
 // GetSgxLePubKeyHash2Ok returns a tuple with the SgxLePubKeyHash2 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxLePubKeyHash2Ok() (*string, bool) {
-	if o == nil || o.SgxLePubKeyHash2 == nil {
+	if o == nil || IsNil(o.SgxLePubKeyHash2) {
 		return nil, false
 	}
 	return o.SgxLePubKeyHash2, true
@@ -9419,7 +10961,7 @@ func (o *BiosPolicy) GetSgxLePubKeyHash2Ok() (*string, bool) {
 
 // HasSgxLePubKeyHash2 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxLePubKeyHash2() bool {
-	if o != nil && o.SgxLePubKeyHash2 != nil {
+	if o != nil && !IsNil(o.SgxLePubKeyHash2) {
 		return true
 	}
 
@@ -9433,7 +10975,7 @@ func (o *BiosPolicy) SetSgxLePubKeyHash2(v string) {
 
 // GetSgxLePubKeyHash3 returns the SgxLePubKeyHash3 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxLePubKeyHash3() string {
-	if o == nil || o.SgxLePubKeyHash3 == nil {
+	if o == nil || IsNil(o.SgxLePubKeyHash3) {
 		var ret string
 		return ret
 	}
@@ -9443,7 +10985,7 @@ func (o *BiosPolicy) GetSgxLePubKeyHash3() string {
 // GetSgxLePubKeyHash3Ok returns a tuple with the SgxLePubKeyHash3 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxLePubKeyHash3Ok() (*string, bool) {
-	if o == nil || o.SgxLePubKeyHash3 == nil {
+	if o == nil || IsNil(o.SgxLePubKeyHash3) {
 		return nil, false
 	}
 	return o.SgxLePubKeyHash3, true
@@ -9451,7 +10993,7 @@ func (o *BiosPolicy) GetSgxLePubKeyHash3Ok() (*string, bool) {
 
 // HasSgxLePubKeyHash3 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxLePubKeyHash3() bool {
-	if o != nil && o.SgxLePubKeyHash3 != nil {
+	if o != nil && !IsNil(o.SgxLePubKeyHash3) {
 		return true
 	}
 
@@ -9465,7 +11007,7 @@ func (o *BiosPolicy) SetSgxLePubKeyHash3(v string) {
 
 // GetSgxLeWr returns the SgxLeWr field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxLeWr() string {
-	if o == nil || o.SgxLeWr == nil {
+	if o == nil || IsNil(o.SgxLeWr) {
 		var ret string
 		return ret
 	}
@@ -9475,7 +11017,7 @@ func (o *BiosPolicy) GetSgxLeWr() string {
 // GetSgxLeWrOk returns a tuple with the SgxLeWr field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxLeWrOk() (*string, bool) {
-	if o == nil || o.SgxLeWr == nil {
+	if o == nil || IsNil(o.SgxLeWr) {
 		return nil, false
 	}
 	return o.SgxLeWr, true
@@ -9483,7 +11025,7 @@ func (o *BiosPolicy) GetSgxLeWrOk() (*string, bool) {
 
 // HasSgxLeWr returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxLeWr() bool {
-	if o != nil && o.SgxLeWr != nil {
+	if o != nil && !IsNil(o.SgxLeWr) {
 		return true
 	}
 
@@ -9497,7 +11039,7 @@ func (o *BiosPolicy) SetSgxLeWr(v string) {
 
 // GetSgxPackageInfoInBandAccess returns the SgxPackageInfoInBandAccess field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxPackageInfoInBandAccess() string {
-	if o == nil || o.SgxPackageInfoInBandAccess == nil {
+	if o == nil || IsNil(o.SgxPackageInfoInBandAccess) {
 		var ret string
 		return ret
 	}
@@ -9507,7 +11049,7 @@ func (o *BiosPolicy) GetSgxPackageInfoInBandAccess() string {
 // GetSgxPackageInfoInBandAccessOk returns a tuple with the SgxPackageInfoInBandAccess field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxPackageInfoInBandAccessOk() (*string, bool) {
-	if o == nil || o.SgxPackageInfoInBandAccess == nil {
+	if o == nil || IsNil(o.SgxPackageInfoInBandAccess) {
 		return nil, false
 	}
 	return o.SgxPackageInfoInBandAccess, true
@@ -9515,7 +11057,7 @@ func (o *BiosPolicy) GetSgxPackageInfoInBandAccessOk() (*string, bool) {
 
 // HasSgxPackageInfoInBandAccess returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxPackageInfoInBandAccess() bool {
-	if o != nil && o.SgxPackageInfoInBandAccess != nil {
+	if o != nil && !IsNil(o.SgxPackageInfoInBandAccess) {
 		return true
 	}
 
@@ -9529,7 +11071,7 @@ func (o *BiosPolicy) SetSgxPackageInfoInBandAccess(v string) {
 
 // GetSgxQos returns the SgxQos field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSgxQos() string {
-	if o == nil || o.SgxQos == nil {
+	if o == nil || IsNil(o.SgxQos) {
 		var ret string
 		return ret
 	}
@@ -9539,7 +11081,7 @@ func (o *BiosPolicy) GetSgxQos() string {
 // GetSgxQosOk returns a tuple with the SgxQos field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSgxQosOk() (*string, bool) {
-	if o == nil || o.SgxQos == nil {
+	if o == nil || IsNil(o.SgxQos) {
 		return nil, false
 	}
 	return o.SgxQos, true
@@ -9547,7 +11089,7 @@ func (o *BiosPolicy) GetSgxQosOk() (*string, bool) {
 
 // HasSgxQos returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSgxQos() bool {
-	if o != nil && o.SgxQos != nil {
+	if o != nil && !IsNil(o.SgxQos) {
 		return true
 	}
 
@@ -9561,7 +11103,7 @@ func (o *BiosPolicy) SetSgxQos(v string) {
 
 // GetSha1pcrBank returns the Sha1pcrBank field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSha1pcrBank() string {
-	if o == nil || o.Sha1pcrBank == nil {
+	if o == nil || IsNil(o.Sha1pcrBank) {
 		var ret string
 		return ret
 	}
@@ -9571,7 +11113,7 @@ func (o *BiosPolicy) GetSha1pcrBank() string {
 // GetSha1pcrBankOk returns a tuple with the Sha1pcrBank field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSha1pcrBankOk() (*string, bool) {
-	if o == nil || o.Sha1pcrBank == nil {
+	if o == nil || IsNil(o.Sha1pcrBank) {
 		return nil, false
 	}
 	return o.Sha1pcrBank, true
@@ -9579,7 +11121,7 @@ func (o *BiosPolicy) GetSha1pcrBankOk() (*string, bool) {
 
 // HasSha1pcrBank returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSha1pcrBank() bool {
-	if o != nil && o.Sha1pcrBank != nil {
+	if o != nil && !IsNil(o.Sha1pcrBank) {
 		return true
 	}
 
@@ -9593,7 +11135,7 @@ func (o *BiosPolicy) SetSha1pcrBank(v string) {
 
 // GetSha256pcrBank returns the Sha256pcrBank field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSha256pcrBank() string {
-	if o == nil || o.Sha256pcrBank == nil {
+	if o == nil || IsNil(o.Sha256pcrBank) {
 		var ret string
 		return ret
 	}
@@ -9603,7 +11145,7 @@ func (o *BiosPolicy) GetSha256pcrBank() string {
 // GetSha256pcrBankOk returns a tuple with the Sha256pcrBank field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSha256pcrBankOk() (*string, bool) {
-	if o == nil || o.Sha256pcrBank == nil {
+	if o == nil || IsNil(o.Sha256pcrBank) {
 		return nil, false
 	}
 	return o.Sha256pcrBank, true
@@ -9611,7 +11153,7 @@ func (o *BiosPolicy) GetSha256pcrBankOk() (*string, bool) {
 
 // HasSha256pcrBank returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSha256pcrBank() bool {
-	if o != nil && o.Sha256pcrBank != nil {
+	if o != nil && !IsNil(o.Sha256pcrBank) {
 		return true
 	}
 
@@ -9623,9 +11165,41 @@ func (o *BiosPolicy) SetSha256pcrBank(v string) {
 	o.Sha256pcrBank = &v
 }
 
+// GetSha384pcrBank returns the Sha384pcrBank field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSha384pcrBank() string {
+	if o == nil || IsNil(o.Sha384pcrBank) {
+		var ret string
+		return ret
+	}
+	return *o.Sha384pcrBank
+}
+
+// GetSha384pcrBankOk returns a tuple with the Sha384pcrBank field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSha384pcrBankOk() (*string, bool) {
+	if o == nil || IsNil(o.Sha384pcrBank) {
+		return nil, false
+	}
+	return o.Sha384pcrBank, true
+}
+
+// HasSha384pcrBank returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSha384pcrBank() bool {
+	if o != nil && !IsNil(o.Sha384pcrBank) {
+		return true
+	}
+
+	return false
+}
+
+// SetSha384pcrBank gets a reference to the given string and assigns it to the Sha384pcrBank field.
+func (o *BiosPolicy) SetSha384pcrBank(v string) {
+	o.Sha384pcrBank = &v
+}
+
 // GetSinglePctlEnable returns the SinglePctlEnable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSinglePctlEnable() string {
-	if o == nil || o.SinglePctlEnable == nil {
+	if o == nil || IsNil(o.SinglePctlEnable) {
 		var ret string
 		return ret
 	}
@@ -9635,7 +11209,7 @@ func (o *BiosPolicy) GetSinglePctlEnable() string {
 // GetSinglePctlEnableOk returns a tuple with the SinglePctlEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSinglePctlEnableOk() (*string, bool) {
-	if o == nil || o.SinglePctlEnable == nil {
+	if o == nil || IsNil(o.SinglePctlEnable) {
 		return nil, false
 	}
 	return o.SinglePctlEnable, true
@@ -9643,7 +11217,7 @@ func (o *BiosPolicy) GetSinglePctlEnableOk() (*string, bool) {
 
 // HasSinglePctlEnable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSinglePctlEnable() bool {
-	if o != nil && o.SinglePctlEnable != nil {
+	if o != nil && !IsNil(o.SinglePctlEnable) {
 		return true
 	}
 
@@ -9657,7 +11231,7 @@ func (o *BiosPolicy) SetSinglePctlEnable(v string) {
 
 // GetSlot10linkSpeed returns the Slot10linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot10linkSpeed() string {
-	if o == nil || o.Slot10linkSpeed == nil {
+	if o == nil || IsNil(o.Slot10linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -9667,7 +11241,7 @@ func (o *BiosPolicy) GetSlot10linkSpeed() string {
 // GetSlot10linkSpeedOk returns a tuple with the Slot10linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot10linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot10linkSpeed == nil {
+	if o == nil || IsNil(o.Slot10linkSpeed) {
 		return nil, false
 	}
 	return o.Slot10linkSpeed, true
@@ -9675,7 +11249,7 @@ func (o *BiosPolicy) GetSlot10linkSpeedOk() (*string, bool) {
 
 // HasSlot10linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot10linkSpeed() bool {
-	if o != nil && o.Slot10linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot10linkSpeed) {
 		return true
 	}
 
@@ -9689,7 +11263,7 @@ func (o *BiosPolicy) SetSlot10linkSpeed(v string) {
 
 // GetSlot10state returns the Slot10state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot10state() string {
-	if o == nil || o.Slot10state == nil {
+	if o == nil || IsNil(o.Slot10state) {
 		var ret string
 		return ret
 	}
@@ -9699,7 +11273,7 @@ func (o *BiosPolicy) GetSlot10state() string {
 // GetSlot10stateOk returns a tuple with the Slot10state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot10stateOk() (*string, bool) {
-	if o == nil || o.Slot10state == nil {
+	if o == nil || IsNil(o.Slot10state) {
 		return nil, false
 	}
 	return o.Slot10state, true
@@ -9707,7 +11281,7 @@ func (o *BiosPolicy) GetSlot10stateOk() (*string, bool) {
 
 // HasSlot10state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot10state() bool {
-	if o != nil && o.Slot10state != nil {
+	if o != nil && !IsNil(o.Slot10state) {
 		return true
 	}
 
@@ -9721,7 +11295,7 @@ func (o *BiosPolicy) SetSlot10state(v string) {
 
 // GetSlot11linkSpeed returns the Slot11linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot11linkSpeed() string {
-	if o == nil || o.Slot11linkSpeed == nil {
+	if o == nil || IsNil(o.Slot11linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -9731,7 +11305,7 @@ func (o *BiosPolicy) GetSlot11linkSpeed() string {
 // GetSlot11linkSpeedOk returns a tuple with the Slot11linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot11linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot11linkSpeed == nil {
+	if o == nil || IsNil(o.Slot11linkSpeed) {
 		return nil, false
 	}
 	return o.Slot11linkSpeed, true
@@ -9739,7 +11313,7 @@ func (o *BiosPolicy) GetSlot11linkSpeedOk() (*string, bool) {
 
 // HasSlot11linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot11linkSpeed() bool {
-	if o != nil && o.Slot11linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot11linkSpeed) {
 		return true
 	}
 
@@ -9753,7 +11327,7 @@ func (o *BiosPolicy) SetSlot11linkSpeed(v string) {
 
 // GetSlot11state returns the Slot11state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot11state() string {
-	if o == nil || o.Slot11state == nil {
+	if o == nil || IsNil(o.Slot11state) {
 		var ret string
 		return ret
 	}
@@ -9763,7 +11337,7 @@ func (o *BiosPolicy) GetSlot11state() string {
 // GetSlot11stateOk returns a tuple with the Slot11state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot11stateOk() (*string, bool) {
-	if o == nil || o.Slot11state == nil {
+	if o == nil || IsNil(o.Slot11state) {
 		return nil, false
 	}
 	return o.Slot11state, true
@@ -9771,7 +11345,7 @@ func (o *BiosPolicy) GetSlot11stateOk() (*string, bool) {
 
 // HasSlot11state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot11state() bool {
-	if o != nil && o.Slot11state != nil {
+	if o != nil && !IsNil(o.Slot11state) {
 		return true
 	}
 
@@ -9785,7 +11359,7 @@ func (o *BiosPolicy) SetSlot11state(v string) {
 
 // GetSlot12linkSpeed returns the Slot12linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot12linkSpeed() string {
-	if o == nil || o.Slot12linkSpeed == nil {
+	if o == nil || IsNil(o.Slot12linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -9795,7 +11369,7 @@ func (o *BiosPolicy) GetSlot12linkSpeed() string {
 // GetSlot12linkSpeedOk returns a tuple with the Slot12linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot12linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot12linkSpeed == nil {
+	if o == nil || IsNil(o.Slot12linkSpeed) {
 		return nil, false
 	}
 	return o.Slot12linkSpeed, true
@@ -9803,7 +11377,7 @@ func (o *BiosPolicy) GetSlot12linkSpeedOk() (*string, bool) {
 
 // HasSlot12linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot12linkSpeed() bool {
-	if o != nil && o.Slot12linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot12linkSpeed) {
 		return true
 	}
 
@@ -9817,7 +11391,7 @@ func (o *BiosPolicy) SetSlot12linkSpeed(v string) {
 
 // GetSlot12state returns the Slot12state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot12state() string {
-	if o == nil || o.Slot12state == nil {
+	if o == nil || IsNil(o.Slot12state) {
 		var ret string
 		return ret
 	}
@@ -9827,7 +11401,7 @@ func (o *BiosPolicy) GetSlot12state() string {
 // GetSlot12stateOk returns a tuple with the Slot12state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot12stateOk() (*string, bool) {
-	if o == nil || o.Slot12state == nil {
+	if o == nil || IsNil(o.Slot12state) {
 		return nil, false
 	}
 	return o.Slot12state, true
@@ -9835,7 +11409,7 @@ func (o *BiosPolicy) GetSlot12stateOk() (*string, bool) {
 
 // HasSlot12state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot12state() bool {
-	if o != nil && o.Slot12state != nil {
+	if o != nil && !IsNil(o.Slot12state) {
 		return true
 	}
 
@@ -9849,7 +11423,7 @@ func (o *BiosPolicy) SetSlot12state(v string) {
 
 // GetSlot13state returns the Slot13state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot13state() string {
-	if o == nil || o.Slot13state == nil {
+	if o == nil || IsNil(o.Slot13state) {
 		var ret string
 		return ret
 	}
@@ -9859,7 +11433,7 @@ func (o *BiosPolicy) GetSlot13state() string {
 // GetSlot13stateOk returns a tuple with the Slot13state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot13stateOk() (*string, bool) {
-	if o == nil || o.Slot13state == nil {
+	if o == nil || IsNil(o.Slot13state) {
 		return nil, false
 	}
 	return o.Slot13state, true
@@ -9867,7 +11441,7 @@ func (o *BiosPolicy) GetSlot13stateOk() (*string, bool) {
 
 // HasSlot13state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot13state() bool {
-	if o != nil && o.Slot13state != nil {
+	if o != nil && !IsNil(o.Slot13state) {
 		return true
 	}
 
@@ -9881,7 +11455,7 @@ func (o *BiosPolicy) SetSlot13state(v string) {
 
 // GetSlot14state returns the Slot14state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot14state() string {
-	if o == nil || o.Slot14state == nil {
+	if o == nil || IsNil(o.Slot14state) {
 		var ret string
 		return ret
 	}
@@ -9891,7 +11465,7 @@ func (o *BiosPolicy) GetSlot14state() string {
 // GetSlot14stateOk returns a tuple with the Slot14state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot14stateOk() (*string, bool) {
-	if o == nil || o.Slot14state == nil {
+	if o == nil || IsNil(o.Slot14state) {
 		return nil, false
 	}
 	return o.Slot14state, true
@@ -9899,7 +11473,7 @@ func (o *BiosPolicy) GetSlot14stateOk() (*string, bool) {
 
 // HasSlot14state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot14state() bool {
-	if o != nil && o.Slot14state != nil {
+	if o != nil && !IsNil(o.Slot14state) {
 		return true
 	}
 
@@ -9913,7 +11487,7 @@ func (o *BiosPolicy) SetSlot14state(v string) {
 
 // GetSlot1linkSpeed returns the Slot1linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot1linkSpeed() string {
-	if o == nil || o.Slot1linkSpeed == nil {
+	if o == nil || IsNil(o.Slot1linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -9923,7 +11497,7 @@ func (o *BiosPolicy) GetSlot1linkSpeed() string {
 // GetSlot1linkSpeedOk returns a tuple with the Slot1linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot1linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot1linkSpeed == nil {
+	if o == nil || IsNil(o.Slot1linkSpeed) {
 		return nil, false
 	}
 	return o.Slot1linkSpeed, true
@@ -9931,7 +11505,7 @@ func (o *BiosPolicy) GetSlot1linkSpeedOk() (*string, bool) {
 
 // HasSlot1linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot1linkSpeed() bool {
-	if o != nil && o.Slot1linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot1linkSpeed) {
 		return true
 	}
 
@@ -9945,7 +11519,7 @@ func (o *BiosPolicy) SetSlot1linkSpeed(v string) {
 
 // GetSlot1state returns the Slot1state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot1state() string {
-	if o == nil || o.Slot1state == nil {
+	if o == nil || IsNil(o.Slot1state) {
 		var ret string
 		return ret
 	}
@@ -9955,7 +11529,7 @@ func (o *BiosPolicy) GetSlot1state() string {
 // GetSlot1stateOk returns a tuple with the Slot1state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot1stateOk() (*string, bool) {
-	if o == nil || o.Slot1state == nil {
+	if o == nil || IsNil(o.Slot1state) {
 		return nil, false
 	}
 	return o.Slot1state, true
@@ -9963,7 +11537,7 @@ func (o *BiosPolicy) GetSlot1stateOk() (*string, bool) {
 
 // HasSlot1state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot1state() bool {
-	if o != nil && o.Slot1state != nil {
+	if o != nil && !IsNil(o.Slot1state) {
 		return true
 	}
 
@@ -9977,7 +11551,7 @@ func (o *BiosPolicy) SetSlot1state(v string) {
 
 // GetSlot2linkSpeed returns the Slot2linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot2linkSpeed() string {
-	if o == nil || o.Slot2linkSpeed == nil {
+	if o == nil || IsNil(o.Slot2linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -9987,7 +11561,7 @@ func (o *BiosPolicy) GetSlot2linkSpeed() string {
 // GetSlot2linkSpeedOk returns a tuple with the Slot2linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot2linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot2linkSpeed == nil {
+	if o == nil || IsNil(o.Slot2linkSpeed) {
 		return nil, false
 	}
 	return o.Slot2linkSpeed, true
@@ -9995,7 +11569,7 @@ func (o *BiosPolicy) GetSlot2linkSpeedOk() (*string, bool) {
 
 // HasSlot2linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot2linkSpeed() bool {
-	if o != nil && o.Slot2linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot2linkSpeed) {
 		return true
 	}
 
@@ -10009,7 +11583,7 @@ func (o *BiosPolicy) SetSlot2linkSpeed(v string) {
 
 // GetSlot2state returns the Slot2state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot2state() string {
-	if o == nil || o.Slot2state == nil {
+	if o == nil || IsNil(o.Slot2state) {
 		var ret string
 		return ret
 	}
@@ -10019,7 +11593,7 @@ func (o *BiosPolicy) GetSlot2state() string {
 // GetSlot2stateOk returns a tuple with the Slot2state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot2stateOk() (*string, bool) {
-	if o == nil || o.Slot2state == nil {
+	if o == nil || IsNil(o.Slot2state) {
 		return nil, false
 	}
 	return o.Slot2state, true
@@ -10027,7 +11601,7 @@ func (o *BiosPolicy) GetSlot2stateOk() (*string, bool) {
 
 // HasSlot2state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot2state() bool {
-	if o != nil && o.Slot2state != nil {
+	if o != nil && !IsNil(o.Slot2state) {
 		return true
 	}
 
@@ -10041,7 +11615,7 @@ func (o *BiosPolicy) SetSlot2state(v string) {
 
 // GetSlot3linkSpeed returns the Slot3linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot3linkSpeed() string {
-	if o == nil || o.Slot3linkSpeed == nil {
+	if o == nil || IsNil(o.Slot3linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10051,7 +11625,7 @@ func (o *BiosPolicy) GetSlot3linkSpeed() string {
 // GetSlot3linkSpeedOk returns a tuple with the Slot3linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot3linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot3linkSpeed == nil {
+	if o == nil || IsNil(o.Slot3linkSpeed) {
 		return nil, false
 	}
 	return o.Slot3linkSpeed, true
@@ -10059,7 +11633,7 @@ func (o *BiosPolicy) GetSlot3linkSpeedOk() (*string, bool) {
 
 // HasSlot3linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot3linkSpeed() bool {
-	if o != nil && o.Slot3linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot3linkSpeed) {
 		return true
 	}
 
@@ -10073,7 +11647,7 @@ func (o *BiosPolicy) SetSlot3linkSpeed(v string) {
 
 // GetSlot3state returns the Slot3state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot3state() string {
-	if o == nil || o.Slot3state == nil {
+	if o == nil || IsNil(o.Slot3state) {
 		var ret string
 		return ret
 	}
@@ -10083,7 +11657,7 @@ func (o *BiosPolicy) GetSlot3state() string {
 // GetSlot3stateOk returns a tuple with the Slot3state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot3stateOk() (*string, bool) {
-	if o == nil || o.Slot3state == nil {
+	if o == nil || IsNil(o.Slot3state) {
 		return nil, false
 	}
 	return o.Slot3state, true
@@ -10091,7 +11665,7 @@ func (o *BiosPolicy) GetSlot3stateOk() (*string, bool) {
 
 // HasSlot3state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot3state() bool {
-	if o != nil && o.Slot3state != nil {
+	if o != nil && !IsNil(o.Slot3state) {
 		return true
 	}
 
@@ -10105,7 +11679,7 @@ func (o *BiosPolicy) SetSlot3state(v string) {
 
 // GetSlot4linkSpeed returns the Slot4linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot4linkSpeed() string {
-	if o == nil || o.Slot4linkSpeed == nil {
+	if o == nil || IsNil(o.Slot4linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10115,7 +11689,7 @@ func (o *BiosPolicy) GetSlot4linkSpeed() string {
 // GetSlot4linkSpeedOk returns a tuple with the Slot4linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot4linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot4linkSpeed == nil {
+	if o == nil || IsNil(o.Slot4linkSpeed) {
 		return nil, false
 	}
 	return o.Slot4linkSpeed, true
@@ -10123,7 +11697,7 @@ func (o *BiosPolicy) GetSlot4linkSpeedOk() (*string, bool) {
 
 // HasSlot4linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot4linkSpeed() bool {
-	if o != nil && o.Slot4linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot4linkSpeed) {
 		return true
 	}
 
@@ -10137,7 +11711,7 @@ func (o *BiosPolicy) SetSlot4linkSpeed(v string) {
 
 // GetSlot4state returns the Slot4state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot4state() string {
-	if o == nil || o.Slot4state == nil {
+	if o == nil || IsNil(o.Slot4state) {
 		var ret string
 		return ret
 	}
@@ -10147,7 +11721,7 @@ func (o *BiosPolicy) GetSlot4state() string {
 // GetSlot4stateOk returns a tuple with the Slot4state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot4stateOk() (*string, bool) {
-	if o == nil || o.Slot4state == nil {
+	if o == nil || IsNil(o.Slot4state) {
 		return nil, false
 	}
 	return o.Slot4state, true
@@ -10155,7 +11729,7 @@ func (o *BiosPolicy) GetSlot4stateOk() (*string, bool) {
 
 // HasSlot4state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot4state() bool {
-	if o != nil && o.Slot4state != nil {
+	if o != nil && !IsNil(o.Slot4state) {
 		return true
 	}
 
@@ -10169,7 +11743,7 @@ func (o *BiosPolicy) SetSlot4state(v string) {
 
 // GetSlot5linkSpeed returns the Slot5linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot5linkSpeed() string {
-	if o == nil || o.Slot5linkSpeed == nil {
+	if o == nil || IsNil(o.Slot5linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10179,7 +11753,7 @@ func (o *BiosPolicy) GetSlot5linkSpeed() string {
 // GetSlot5linkSpeedOk returns a tuple with the Slot5linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot5linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot5linkSpeed == nil {
+	if o == nil || IsNil(o.Slot5linkSpeed) {
 		return nil, false
 	}
 	return o.Slot5linkSpeed, true
@@ -10187,7 +11761,7 @@ func (o *BiosPolicy) GetSlot5linkSpeedOk() (*string, bool) {
 
 // HasSlot5linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot5linkSpeed() bool {
-	if o != nil && o.Slot5linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot5linkSpeed) {
 		return true
 	}
 
@@ -10201,7 +11775,7 @@ func (o *BiosPolicy) SetSlot5linkSpeed(v string) {
 
 // GetSlot5state returns the Slot5state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot5state() string {
-	if o == nil || o.Slot5state == nil {
+	if o == nil || IsNil(o.Slot5state) {
 		var ret string
 		return ret
 	}
@@ -10211,7 +11785,7 @@ func (o *BiosPolicy) GetSlot5state() string {
 // GetSlot5stateOk returns a tuple with the Slot5state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot5stateOk() (*string, bool) {
-	if o == nil || o.Slot5state == nil {
+	if o == nil || IsNil(o.Slot5state) {
 		return nil, false
 	}
 	return o.Slot5state, true
@@ -10219,7 +11793,7 @@ func (o *BiosPolicy) GetSlot5stateOk() (*string, bool) {
 
 // HasSlot5state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot5state() bool {
-	if o != nil && o.Slot5state != nil {
+	if o != nil && !IsNil(o.Slot5state) {
 		return true
 	}
 
@@ -10233,7 +11807,7 @@ func (o *BiosPolicy) SetSlot5state(v string) {
 
 // GetSlot6linkSpeed returns the Slot6linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot6linkSpeed() string {
-	if o == nil || o.Slot6linkSpeed == nil {
+	if o == nil || IsNil(o.Slot6linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10243,7 +11817,7 @@ func (o *BiosPolicy) GetSlot6linkSpeed() string {
 // GetSlot6linkSpeedOk returns a tuple with the Slot6linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot6linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot6linkSpeed == nil {
+	if o == nil || IsNil(o.Slot6linkSpeed) {
 		return nil, false
 	}
 	return o.Slot6linkSpeed, true
@@ -10251,7 +11825,7 @@ func (o *BiosPolicy) GetSlot6linkSpeedOk() (*string, bool) {
 
 // HasSlot6linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot6linkSpeed() bool {
-	if o != nil && o.Slot6linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot6linkSpeed) {
 		return true
 	}
 
@@ -10265,7 +11839,7 @@ func (o *BiosPolicy) SetSlot6linkSpeed(v string) {
 
 // GetSlot6state returns the Slot6state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot6state() string {
-	if o == nil || o.Slot6state == nil {
+	if o == nil || IsNil(o.Slot6state) {
 		var ret string
 		return ret
 	}
@@ -10275,7 +11849,7 @@ func (o *BiosPolicy) GetSlot6state() string {
 // GetSlot6stateOk returns a tuple with the Slot6state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot6stateOk() (*string, bool) {
-	if o == nil || o.Slot6state == nil {
+	if o == nil || IsNil(o.Slot6state) {
 		return nil, false
 	}
 	return o.Slot6state, true
@@ -10283,7 +11857,7 @@ func (o *BiosPolicy) GetSlot6stateOk() (*string, bool) {
 
 // HasSlot6state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot6state() bool {
-	if o != nil && o.Slot6state != nil {
+	if o != nil && !IsNil(o.Slot6state) {
 		return true
 	}
 
@@ -10297,7 +11871,7 @@ func (o *BiosPolicy) SetSlot6state(v string) {
 
 // GetSlot7linkSpeed returns the Slot7linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot7linkSpeed() string {
-	if o == nil || o.Slot7linkSpeed == nil {
+	if o == nil || IsNil(o.Slot7linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10307,7 +11881,7 @@ func (o *BiosPolicy) GetSlot7linkSpeed() string {
 // GetSlot7linkSpeedOk returns a tuple with the Slot7linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot7linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot7linkSpeed == nil {
+	if o == nil || IsNil(o.Slot7linkSpeed) {
 		return nil, false
 	}
 	return o.Slot7linkSpeed, true
@@ -10315,7 +11889,7 @@ func (o *BiosPolicy) GetSlot7linkSpeedOk() (*string, bool) {
 
 // HasSlot7linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot7linkSpeed() bool {
-	if o != nil && o.Slot7linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot7linkSpeed) {
 		return true
 	}
 
@@ -10329,7 +11903,7 @@ func (o *BiosPolicy) SetSlot7linkSpeed(v string) {
 
 // GetSlot7state returns the Slot7state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot7state() string {
-	if o == nil || o.Slot7state == nil {
+	if o == nil || IsNil(o.Slot7state) {
 		var ret string
 		return ret
 	}
@@ -10339,7 +11913,7 @@ func (o *BiosPolicy) GetSlot7state() string {
 // GetSlot7stateOk returns a tuple with the Slot7state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot7stateOk() (*string, bool) {
-	if o == nil || o.Slot7state == nil {
+	if o == nil || IsNil(o.Slot7state) {
 		return nil, false
 	}
 	return o.Slot7state, true
@@ -10347,7 +11921,7 @@ func (o *BiosPolicy) GetSlot7stateOk() (*string, bool) {
 
 // HasSlot7state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot7state() bool {
-	if o != nil && o.Slot7state != nil {
+	if o != nil && !IsNil(o.Slot7state) {
 		return true
 	}
 
@@ -10361,7 +11935,7 @@ func (o *BiosPolicy) SetSlot7state(v string) {
 
 // GetSlot8linkSpeed returns the Slot8linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot8linkSpeed() string {
-	if o == nil || o.Slot8linkSpeed == nil {
+	if o == nil || IsNil(o.Slot8linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10371,7 +11945,7 @@ func (o *BiosPolicy) GetSlot8linkSpeed() string {
 // GetSlot8linkSpeedOk returns a tuple with the Slot8linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot8linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot8linkSpeed == nil {
+	if o == nil || IsNil(o.Slot8linkSpeed) {
 		return nil, false
 	}
 	return o.Slot8linkSpeed, true
@@ -10379,7 +11953,7 @@ func (o *BiosPolicy) GetSlot8linkSpeedOk() (*string, bool) {
 
 // HasSlot8linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot8linkSpeed() bool {
-	if o != nil && o.Slot8linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot8linkSpeed) {
 		return true
 	}
 
@@ -10393,7 +11967,7 @@ func (o *BiosPolicy) SetSlot8linkSpeed(v string) {
 
 // GetSlot8state returns the Slot8state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot8state() string {
-	if o == nil || o.Slot8state == nil {
+	if o == nil || IsNil(o.Slot8state) {
 		var ret string
 		return ret
 	}
@@ -10403,7 +11977,7 @@ func (o *BiosPolicy) GetSlot8state() string {
 // GetSlot8stateOk returns a tuple with the Slot8state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot8stateOk() (*string, bool) {
-	if o == nil || o.Slot8state == nil {
+	if o == nil || IsNil(o.Slot8state) {
 		return nil, false
 	}
 	return o.Slot8state, true
@@ -10411,7 +11985,7 @@ func (o *BiosPolicy) GetSlot8stateOk() (*string, bool) {
 
 // HasSlot8state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot8state() bool {
-	if o != nil && o.Slot8state != nil {
+	if o != nil && !IsNil(o.Slot8state) {
 		return true
 	}
 
@@ -10425,7 +11999,7 @@ func (o *BiosPolicy) SetSlot8state(v string) {
 
 // GetSlot9linkSpeed returns the Slot9linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot9linkSpeed() string {
-	if o == nil || o.Slot9linkSpeed == nil {
+	if o == nil || IsNil(o.Slot9linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10435,7 +12009,7 @@ func (o *BiosPolicy) GetSlot9linkSpeed() string {
 // GetSlot9linkSpeedOk returns a tuple with the Slot9linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot9linkSpeedOk() (*string, bool) {
-	if o == nil || o.Slot9linkSpeed == nil {
+	if o == nil || IsNil(o.Slot9linkSpeed) {
 		return nil, false
 	}
 	return o.Slot9linkSpeed, true
@@ -10443,7 +12017,7 @@ func (o *BiosPolicy) GetSlot9linkSpeedOk() (*string, bool) {
 
 // HasSlot9linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot9linkSpeed() bool {
-	if o != nil && o.Slot9linkSpeed != nil {
+	if o != nil && !IsNil(o.Slot9linkSpeed) {
 		return true
 	}
 
@@ -10457,7 +12031,7 @@ func (o *BiosPolicy) SetSlot9linkSpeed(v string) {
 
 // GetSlot9state returns the Slot9state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlot9state() string {
-	if o == nil || o.Slot9state == nil {
+	if o == nil || IsNil(o.Slot9state) {
 		var ret string
 		return ret
 	}
@@ -10467,7 +12041,7 @@ func (o *BiosPolicy) GetSlot9state() string {
 // GetSlot9stateOk returns a tuple with the Slot9state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlot9stateOk() (*string, bool) {
-	if o == nil || o.Slot9state == nil {
+	if o == nil || IsNil(o.Slot9state) {
 		return nil, false
 	}
 	return o.Slot9state, true
@@ -10475,7 +12049,7 @@ func (o *BiosPolicy) GetSlot9stateOk() (*string, bool) {
 
 // HasSlot9state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlot9state() bool {
-	if o != nil && o.Slot9state != nil {
+	if o != nil && !IsNil(o.Slot9state) {
 		return true
 	}
 
@@ -10489,7 +12063,7 @@ func (o *BiosPolicy) SetSlot9state(v string) {
 
 // GetSlotFlomLinkSpeed returns the SlotFlomLinkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFlomLinkSpeed() string {
-	if o == nil || o.SlotFlomLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotFlomLinkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10499,7 +12073,7 @@ func (o *BiosPolicy) GetSlotFlomLinkSpeed() string {
 // GetSlotFlomLinkSpeedOk returns a tuple with the SlotFlomLinkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFlomLinkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFlomLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotFlomLinkSpeed) {
 		return nil, false
 	}
 	return o.SlotFlomLinkSpeed, true
@@ -10507,7 +12081,7 @@ func (o *BiosPolicy) GetSlotFlomLinkSpeedOk() (*string, bool) {
 
 // HasSlotFlomLinkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFlomLinkSpeed() bool {
-	if o != nil && o.SlotFlomLinkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFlomLinkSpeed) {
 		return true
 	}
 
@@ -10521,7 +12095,7 @@ func (o *BiosPolicy) SetSlotFlomLinkSpeed(v string) {
 
 // GetSlotFrontNvme10linkSpeed returns the SlotFrontNvme10linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme10linkSpeed() string {
-	if o == nil || o.SlotFrontNvme10linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme10linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10531,7 +12105,7 @@ func (o *BiosPolicy) GetSlotFrontNvme10linkSpeed() string {
 // GetSlotFrontNvme10linkSpeedOk returns a tuple with the SlotFrontNvme10linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme10linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme10linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme10linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme10linkSpeed, true
@@ -10539,7 +12113,7 @@ func (o *BiosPolicy) GetSlotFrontNvme10linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme10linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme10linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme10linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme10linkSpeed) {
 		return true
 	}
 
@@ -10553,7 +12127,7 @@ func (o *BiosPolicy) SetSlotFrontNvme10linkSpeed(v string) {
 
 // GetSlotFrontNvme10optionRom returns the SlotFrontNvme10optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme10optionRom() string {
-	if o == nil || o.SlotFrontNvme10optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme10optionRom) {
 		var ret string
 		return ret
 	}
@@ -10563,7 +12137,7 @@ func (o *BiosPolicy) GetSlotFrontNvme10optionRom() string {
 // GetSlotFrontNvme10optionRomOk returns a tuple with the SlotFrontNvme10optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme10optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme10optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme10optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme10optionRom, true
@@ -10571,7 +12145,7 @@ func (o *BiosPolicy) GetSlotFrontNvme10optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme10optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme10optionRom() bool {
-	if o != nil && o.SlotFrontNvme10optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme10optionRom) {
 		return true
 	}
 
@@ -10585,7 +12159,7 @@ func (o *BiosPolicy) SetSlotFrontNvme10optionRom(v string) {
 
 // GetSlotFrontNvme11linkSpeed returns the SlotFrontNvme11linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme11linkSpeed() string {
-	if o == nil || o.SlotFrontNvme11linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme11linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10595,7 +12169,7 @@ func (o *BiosPolicy) GetSlotFrontNvme11linkSpeed() string {
 // GetSlotFrontNvme11linkSpeedOk returns a tuple with the SlotFrontNvme11linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme11linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme11linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme11linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme11linkSpeed, true
@@ -10603,7 +12177,7 @@ func (o *BiosPolicy) GetSlotFrontNvme11linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme11linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme11linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme11linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme11linkSpeed) {
 		return true
 	}
 
@@ -10617,7 +12191,7 @@ func (o *BiosPolicy) SetSlotFrontNvme11linkSpeed(v string) {
 
 // GetSlotFrontNvme11optionRom returns the SlotFrontNvme11optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme11optionRom() string {
-	if o == nil || o.SlotFrontNvme11optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme11optionRom) {
 		var ret string
 		return ret
 	}
@@ -10627,7 +12201,7 @@ func (o *BiosPolicy) GetSlotFrontNvme11optionRom() string {
 // GetSlotFrontNvme11optionRomOk returns a tuple with the SlotFrontNvme11optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme11optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme11optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme11optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme11optionRom, true
@@ -10635,7 +12209,7 @@ func (o *BiosPolicy) GetSlotFrontNvme11optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme11optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme11optionRom() bool {
-	if o != nil && o.SlotFrontNvme11optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme11optionRom) {
 		return true
 	}
 
@@ -10649,7 +12223,7 @@ func (o *BiosPolicy) SetSlotFrontNvme11optionRom(v string) {
 
 // GetSlotFrontNvme12linkSpeed returns the SlotFrontNvme12linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme12linkSpeed() string {
-	if o == nil || o.SlotFrontNvme12linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme12linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10659,7 +12233,7 @@ func (o *BiosPolicy) GetSlotFrontNvme12linkSpeed() string {
 // GetSlotFrontNvme12linkSpeedOk returns a tuple with the SlotFrontNvme12linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme12linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme12linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme12linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme12linkSpeed, true
@@ -10667,7 +12241,7 @@ func (o *BiosPolicy) GetSlotFrontNvme12linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme12linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme12linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme12linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme12linkSpeed) {
 		return true
 	}
 
@@ -10681,7 +12255,7 @@ func (o *BiosPolicy) SetSlotFrontNvme12linkSpeed(v string) {
 
 // GetSlotFrontNvme12optionRom returns the SlotFrontNvme12optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme12optionRom() string {
-	if o == nil || o.SlotFrontNvme12optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme12optionRom) {
 		var ret string
 		return ret
 	}
@@ -10691,7 +12265,7 @@ func (o *BiosPolicy) GetSlotFrontNvme12optionRom() string {
 // GetSlotFrontNvme12optionRomOk returns a tuple with the SlotFrontNvme12optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme12optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme12optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme12optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme12optionRom, true
@@ -10699,7 +12273,7 @@ func (o *BiosPolicy) GetSlotFrontNvme12optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme12optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme12optionRom() bool {
-	if o != nil && o.SlotFrontNvme12optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme12optionRom) {
 		return true
 	}
 
@@ -10711,9 +12285,41 @@ func (o *BiosPolicy) SetSlotFrontNvme12optionRom(v string) {
 	o.SlotFrontNvme12optionRom = &v
 }
 
+// GetSlotFrontNvme13linkSpeed returns the SlotFrontNvme13linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme13linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme13linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme13linkSpeed
+}
+
+// GetSlotFrontNvme13linkSpeedOk returns a tuple with the SlotFrontNvme13linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme13linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme13linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme13linkSpeed, true
+}
+
+// HasSlotFrontNvme13linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme13linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme13linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme13linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme13linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme13linkSpeed(v string) {
+	o.SlotFrontNvme13linkSpeed = &v
+}
+
 // GetSlotFrontNvme13optionRom returns the SlotFrontNvme13optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme13optionRom() string {
-	if o == nil || o.SlotFrontNvme13optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme13optionRom) {
 		var ret string
 		return ret
 	}
@@ -10723,7 +12329,7 @@ func (o *BiosPolicy) GetSlotFrontNvme13optionRom() string {
 // GetSlotFrontNvme13optionRomOk returns a tuple with the SlotFrontNvme13optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme13optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme13optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme13optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme13optionRom, true
@@ -10731,7 +12337,7 @@ func (o *BiosPolicy) GetSlotFrontNvme13optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme13optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme13optionRom() bool {
-	if o != nil && o.SlotFrontNvme13optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme13optionRom) {
 		return true
 	}
 
@@ -10743,9 +12349,41 @@ func (o *BiosPolicy) SetSlotFrontNvme13optionRom(v string) {
 	o.SlotFrontNvme13optionRom = &v
 }
 
+// GetSlotFrontNvme14linkSpeed returns the SlotFrontNvme14linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme14linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme14linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme14linkSpeed
+}
+
+// GetSlotFrontNvme14linkSpeedOk returns a tuple with the SlotFrontNvme14linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme14linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme14linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme14linkSpeed, true
+}
+
+// HasSlotFrontNvme14linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme14linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme14linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme14linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme14linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme14linkSpeed(v string) {
+	o.SlotFrontNvme14linkSpeed = &v
+}
+
 // GetSlotFrontNvme14optionRom returns the SlotFrontNvme14optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme14optionRom() string {
-	if o == nil || o.SlotFrontNvme14optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme14optionRom) {
 		var ret string
 		return ret
 	}
@@ -10755,7 +12393,7 @@ func (o *BiosPolicy) GetSlotFrontNvme14optionRom() string {
 // GetSlotFrontNvme14optionRomOk returns a tuple with the SlotFrontNvme14optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme14optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme14optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme14optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme14optionRom, true
@@ -10763,7 +12401,7 @@ func (o *BiosPolicy) GetSlotFrontNvme14optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme14optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme14optionRom() bool {
-	if o != nil && o.SlotFrontNvme14optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme14optionRom) {
 		return true
 	}
 
@@ -10775,9 +12413,41 @@ func (o *BiosPolicy) SetSlotFrontNvme14optionRom(v string) {
 	o.SlotFrontNvme14optionRom = &v
 }
 
+// GetSlotFrontNvme15linkSpeed returns the SlotFrontNvme15linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme15linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme15linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme15linkSpeed
+}
+
+// GetSlotFrontNvme15linkSpeedOk returns a tuple with the SlotFrontNvme15linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme15linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme15linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme15linkSpeed, true
+}
+
+// HasSlotFrontNvme15linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme15linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme15linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme15linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme15linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme15linkSpeed(v string) {
+	o.SlotFrontNvme15linkSpeed = &v
+}
+
 // GetSlotFrontNvme15optionRom returns the SlotFrontNvme15optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme15optionRom() string {
-	if o == nil || o.SlotFrontNvme15optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme15optionRom) {
 		var ret string
 		return ret
 	}
@@ -10787,7 +12457,7 @@ func (o *BiosPolicy) GetSlotFrontNvme15optionRom() string {
 // GetSlotFrontNvme15optionRomOk returns a tuple with the SlotFrontNvme15optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme15optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme15optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme15optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme15optionRom, true
@@ -10795,7 +12465,7 @@ func (o *BiosPolicy) GetSlotFrontNvme15optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme15optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme15optionRom() bool {
-	if o != nil && o.SlotFrontNvme15optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme15optionRom) {
 		return true
 	}
 
@@ -10807,9 +12477,41 @@ func (o *BiosPolicy) SetSlotFrontNvme15optionRom(v string) {
 	o.SlotFrontNvme15optionRom = &v
 }
 
+// GetSlotFrontNvme16linkSpeed returns the SlotFrontNvme16linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme16linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme16linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme16linkSpeed
+}
+
+// GetSlotFrontNvme16linkSpeedOk returns a tuple with the SlotFrontNvme16linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme16linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme16linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme16linkSpeed, true
+}
+
+// HasSlotFrontNvme16linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme16linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme16linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme16linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme16linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme16linkSpeed(v string) {
+	o.SlotFrontNvme16linkSpeed = &v
+}
+
 // GetSlotFrontNvme16optionRom returns the SlotFrontNvme16optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme16optionRom() string {
-	if o == nil || o.SlotFrontNvme16optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme16optionRom) {
 		var ret string
 		return ret
 	}
@@ -10819,7 +12521,7 @@ func (o *BiosPolicy) GetSlotFrontNvme16optionRom() string {
 // GetSlotFrontNvme16optionRomOk returns a tuple with the SlotFrontNvme16optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme16optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme16optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme16optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme16optionRom, true
@@ -10827,7 +12529,7 @@ func (o *BiosPolicy) GetSlotFrontNvme16optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme16optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme16optionRom() bool {
-	if o != nil && o.SlotFrontNvme16optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme16optionRom) {
 		return true
 	}
 
@@ -10839,9 +12541,41 @@ func (o *BiosPolicy) SetSlotFrontNvme16optionRom(v string) {
 	o.SlotFrontNvme16optionRom = &v
 }
 
+// GetSlotFrontNvme17linkSpeed returns the SlotFrontNvme17linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme17linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme17linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme17linkSpeed
+}
+
+// GetSlotFrontNvme17linkSpeedOk returns a tuple with the SlotFrontNvme17linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme17linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme17linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme17linkSpeed, true
+}
+
+// HasSlotFrontNvme17linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme17linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme17linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme17linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme17linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme17linkSpeed(v string) {
+	o.SlotFrontNvme17linkSpeed = &v
+}
+
 // GetSlotFrontNvme17optionRom returns the SlotFrontNvme17optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme17optionRom() string {
-	if o == nil || o.SlotFrontNvme17optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme17optionRom) {
 		var ret string
 		return ret
 	}
@@ -10851,7 +12585,7 @@ func (o *BiosPolicy) GetSlotFrontNvme17optionRom() string {
 // GetSlotFrontNvme17optionRomOk returns a tuple with the SlotFrontNvme17optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme17optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme17optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme17optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme17optionRom, true
@@ -10859,7 +12593,7 @@ func (o *BiosPolicy) GetSlotFrontNvme17optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme17optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme17optionRom() bool {
-	if o != nil && o.SlotFrontNvme17optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme17optionRom) {
 		return true
 	}
 
@@ -10871,9 +12605,41 @@ func (o *BiosPolicy) SetSlotFrontNvme17optionRom(v string) {
 	o.SlotFrontNvme17optionRom = &v
 }
 
+// GetSlotFrontNvme18linkSpeed returns the SlotFrontNvme18linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme18linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme18linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme18linkSpeed
+}
+
+// GetSlotFrontNvme18linkSpeedOk returns a tuple with the SlotFrontNvme18linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme18linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme18linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme18linkSpeed, true
+}
+
+// HasSlotFrontNvme18linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme18linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme18linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme18linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme18linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme18linkSpeed(v string) {
+	o.SlotFrontNvme18linkSpeed = &v
+}
+
 // GetSlotFrontNvme18optionRom returns the SlotFrontNvme18optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme18optionRom() string {
-	if o == nil || o.SlotFrontNvme18optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme18optionRom) {
 		var ret string
 		return ret
 	}
@@ -10883,7 +12649,7 @@ func (o *BiosPolicy) GetSlotFrontNvme18optionRom() string {
 // GetSlotFrontNvme18optionRomOk returns a tuple with the SlotFrontNvme18optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme18optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme18optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme18optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme18optionRom, true
@@ -10891,7 +12657,7 @@ func (o *BiosPolicy) GetSlotFrontNvme18optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme18optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme18optionRom() bool {
-	if o != nil && o.SlotFrontNvme18optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme18optionRom) {
 		return true
 	}
 
@@ -10903,9 +12669,41 @@ func (o *BiosPolicy) SetSlotFrontNvme18optionRom(v string) {
 	o.SlotFrontNvme18optionRom = &v
 }
 
+// GetSlotFrontNvme19linkSpeed returns the SlotFrontNvme19linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme19linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme19linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme19linkSpeed
+}
+
+// GetSlotFrontNvme19linkSpeedOk returns a tuple with the SlotFrontNvme19linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme19linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme19linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme19linkSpeed, true
+}
+
+// HasSlotFrontNvme19linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme19linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme19linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme19linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme19linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme19linkSpeed(v string) {
+	o.SlotFrontNvme19linkSpeed = &v
+}
+
 // GetSlotFrontNvme19optionRom returns the SlotFrontNvme19optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme19optionRom() string {
-	if o == nil || o.SlotFrontNvme19optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme19optionRom) {
 		var ret string
 		return ret
 	}
@@ -10915,7 +12713,7 @@ func (o *BiosPolicy) GetSlotFrontNvme19optionRom() string {
 // GetSlotFrontNvme19optionRomOk returns a tuple with the SlotFrontNvme19optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme19optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme19optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme19optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme19optionRom, true
@@ -10923,7 +12721,7 @@ func (o *BiosPolicy) GetSlotFrontNvme19optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme19optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme19optionRom() bool {
-	if o != nil && o.SlotFrontNvme19optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme19optionRom) {
 		return true
 	}
 
@@ -10937,7 +12735,7 @@ func (o *BiosPolicy) SetSlotFrontNvme19optionRom(v string) {
 
 // GetSlotFrontNvme1linkSpeed returns the SlotFrontNvme1linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme1linkSpeed() string {
-	if o == nil || o.SlotFrontNvme1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme1linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -10947,7 +12745,7 @@ func (o *BiosPolicy) GetSlotFrontNvme1linkSpeed() string {
 // GetSlotFrontNvme1linkSpeedOk returns a tuple with the SlotFrontNvme1linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme1linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme1linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme1linkSpeed, true
@@ -10955,7 +12753,7 @@ func (o *BiosPolicy) GetSlotFrontNvme1linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme1linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme1linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme1linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme1linkSpeed) {
 		return true
 	}
 
@@ -10969,7 +12767,7 @@ func (o *BiosPolicy) SetSlotFrontNvme1linkSpeed(v string) {
 
 // GetSlotFrontNvme1optionRom returns the SlotFrontNvme1optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme1optionRom() string {
-	if o == nil || o.SlotFrontNvme1optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme1optionRom) {
 		var ret string
 		return ret
 	}
@@ -10979,7 +12777,7 @@ func (o *BiosPolicy) GetSlotFrontNvme1optionRom() string {
 // GetSlotFrontNvme1optionRomOk returns a tuple with the SlotFrontNvme1optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme1optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme1optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme1optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme1optionRom, true
@@ -10987,7 +12785,7 @@ func (o *BiosPolicy) GetSlotFrontNvme1optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme1optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme1optionRom() bool {
-	if o != nil && o.SlotFrontNvme1optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme1optionRom) {
 		return true
 	}
 
@@ -10999,9 +12797,41 @@ func (o *BiosPolicy) SetSlotFrontNvme1optionRom(v string) {
 	o.SlotFrontNvme1optionRom = &v
 }
 
+// GetSlotFrontNvme20linkSpeed returns the SlotFrontNvme20linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme20linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme20linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme20linkSpeed
+}
+
+// GetSlotFrontNvme20linkSpeedOk returns a tuple with the SlotFrontNvme20linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme20linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme20linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme20linkSpeed, true
+}
+
+// HasSlotFrontNvme20linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme20linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme20linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme20linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme20linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme20linkSpeed(v string) {
+	o.SlotFrontNvme20linkSpeed = &v
+}
+
 // GetSlotFrontNvme20optionRom returns the SlotFrontNvme20optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme20optionRom() string {
-	if o == nil || o.SlotFrontNvme20optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme20optionRom) {
 		var ret string
 		return ret
 	}
@@ -11011,7 +12841,7 @@ func (o *BiosPolicy) GetSlotFrontNvme20optionRom() string {
 // GetSlotFrontNvme20optionRomOk returns a tuple with the SlotFrontNvme20optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme20optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme20optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme20optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme20optionRom, true
@@ -11019,7 +12849,7 @@ func (o *BiosPolicy) GetSlotFrontNvme20optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme20optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme20optionRom() bool {
-	if o != nil && o.SlotFrontNvme20optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme20optionRom) {
 		return true
 	}
 
@@ -11031,9 +12861,41 @@ func (o *BiosPolicy) SetSlotFrontNvme20optionRom(v string) {
 	o.SlotFrontNvme20optionRom = &v
 }
 
+// GetSlotFrontNvme21linkSpeed returns the SlotFrontNvme21linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme21linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme21linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme21linkSpeed
+}
+
+// GetSlotFrontNvme21linkSpeedOk returns a tuple with the SlotFrontNvme21linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme21linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme21linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme21linkSpeed, true
+}
+
+// HasSlotFrontNvme21linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme21linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme21linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme21linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme21linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme21linkSpeed(v string) {
+	o.SlotFrontNvme21linkSpeed = &v
+}
+
 // GetSlotFrontNvme21optionRom returns the SlotFrontNvme21optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme21optionRom() string {
-	if o == nil || o.SlotFrontNvme21optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme21optionRom) {
 		var ret string
 		return ret
 	}
@@ -11043,7 +12905,7 @@ func (o *BiosPolicy) GetSlotFrontNvme21optionRom() string {
 // GetSlotFrontNvme21optionRomOk returns a tuple with the SlotFrontNvme21optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme21optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme21optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme21optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme21optionRom, true
@@ -11051,7 +12913,7 @@ func (o *BiosPolicy) GetSlotFrontNvme21optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme21optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme21optionRom() bool {
-	if o != nil && o.SlotFrontNvme21optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme21optionRom) {
 		return true
 	}
 
@@ -11063,9 +12925,41 @@ func (o *BiosPolicy) SetSlotFrontNvme21optionRom(v string) {
 	o.SlotFrontNvme21optionRom = &v
 }
 
+// GetSlotFrontNvme22linkSpeed returns the SlotFrontNvme22linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme22linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme22linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme22linkSpeed
+}
+
+// GetSlotFrontNvme22linkSpeedOk returns a tuple with the SlotFrontNvme22linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme22linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme22linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme22linkSpeed, true
+}
+
+// HasSlotFrontNvme22linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme22linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme22linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme22linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme22linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme22linkSpeed(v string) {
+	o.SlotFrontNvme22linkSpeed = &v
+}
+
 // GetSlotFrontNvme22optionRom returns the SlotFrontNvme22optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme22optionRom() string {
-	if o == nil || o.SlotFrontNvme22optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme22optionRom) {
 		var ret string
 		return ret
 	}
@@ -11075,7 +12969,7 @@ func (o *BiosPolicy) GetSlotFrontNvme22optionRom() string {
 // GetSlotFrontNvme22optionRomOk returns a tuple with the SlotFrontNvme22optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme22optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme22optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme22optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme22optionRom, true
@@ -11083,7 +12977,7 @@ func (o *BiosPolicy) GetSlotFrontNvme22optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme22optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme22optionRom() bool {
-	if o != nil && o.SlotFrontNvme22optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme22optionRom) {
 		return true
 	}
 
@@ -11095,9 +12989,41 @@ func (o *BiosPolicy) SetSlotFrontNvme22optionRom(v string) {
 	o.SlotFrontNvme22optionRom = &v
 }
 
+// GetSlotFrontNvme23linkSpeed returns the SlotFrontNvme23linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme23linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme23linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme23linkSpeed
+}
+
+// GetSlotFrontNvme23linkSpeedOk returns a tuple with the SlotFrontNvme23linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme23linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme23linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme23linkSpeed, true
+}
+
+// HasSlotFrontNvme23linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme23linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme23linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme23linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme23linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme23linkSpeed(v string) {
+	o.SlotFrontNvme23linkSpeed = &v
+}
+
 // GetSlotFrontNvme23optionRom returns the SlotFrontNvme23optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme23optionRom() string {
-	if o == nil || o.SlotFrontNvme23optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme23optionRom) {
 		var ret string
 		return ret
 	}
@@ -11107,7 +13033,7 @@ func (o *BiosPolicy) GetSlotFrontNvme23optionRom() string {
 // GetSlotFrontNvme23optionRomOk returns a tuple with the SlotFrontNvme23optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme23optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme23optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme23optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme23optionRom, true
@@ -11115,7 +13041,7 @@ func (o *BiosPolicy) GetSlotFrontNvme23optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme23optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme23optionRom() bool {
-	if o != nil && o.SlotFrontNvme23optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme23optionRom) {
 		return true
 	}
 
@@ -11127,9 +13053,41 @@ func (o *BiosPolicy) SetSlotFrontNvme23optionRom(v string) {
 	o.SlotFrontNvme23optionRom = &v
 }
 
+// GetSlotFrontNvme24linkSpeed returns the SlotFrontNvme24linkSpeed field value if set, zero value otherwise.
+func (o *BiosPolicy) GetSlotFrontNvme24linkSpeed() string {
+	if o == nil || IsNil(o.SlotFrontNvme24linkSpeed) {
+		var ret string
+		return ret
+	}
+	return *o.SlotFrontNvme24linkSpeed
+}
+
+// GetSlotFrontNvme24linkSpeedOk returns a tuple with the SlotFrontNvme24linkSpeed field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetSlotFrontNvme24linkSpeedOk() (*string, bool) {
+	if o == nil || IsNil(o.SlotFrontNvme24linkSpeed) {
+		return nil, false
+	}
+	return o.SlotFrontNvme24linkSpeed, true
+}
+
+// HasSlotFrontNvme24linkSpeed returns a boolean if a field has been set.
+func (o *BiosPolicy) HasSlotFrontNvme24linkSpeed() bool {
+	if o != nil && !IsNil(o.SlotFrontNvme24linkSpeed) {
+		return true
+	}
+
+	return false
+}
+
+// SetSlotFrontNvme24linkSpeed gets a reference to the given string and assigns it to the SlotFrontNvme24linkSpeed field.
+func (o *BiosPolicy) SetSlotFrontNvme24linkSpeed(v string) {
+	o.SlotFrontNvme24linkSpeed = &v
+}
+
 // GetSlotFrontNvme24optionRom returns the SlotFrontNvme24optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme24optionRom() string {
-	if o == nil || o.SlotFrontNvme24optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme24optionRom) {
 		var ret string
 		return ret
 	}
@@ -11139,7 +13097,7 @@ func (o *BiosPolicy) GetSlotFrontNvme24optionRom() string {
 // GetSlotFrontNvme24optionRomOk returns a tuple with the SlotFrontNvme24optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme24optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme24optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme24optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme24optionRom, true
@@ -11147,7 +13105,7 @@ func (o *BiosPolicy) GetSlotFrontNvme24optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme24optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme24optionRom() bool {
-	if o != nil && o.SlotFrontNvme24optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme24optionRom) {
 		return true
 	}
 
@@ -11161,7 +13119,7 @@ func (o *BiosPolicy) SetSlotFrontNvme24optionRom(v string) {
 
 // GetSlotFrontNvme2linkSpeed returns the SlotFrontNvme2linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme2linkSpeed() string {
-	if o == nil || o.SlotFrontNvme2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme2linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11171,7 +13129,7 @@ func (o *BiosPolicy) GetSlotFrontNvme2linkSpeed() string {
 // GetSlotFrontNvme2linkSpeedOk returns a tuple with the SlotFrontNvme2linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme2linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme2linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme2linkSpeed, true
@@ -11179,7 +13137,7 @@ func (o *BiosPolicy) GetSlotFrontNvme2linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme2linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme2linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme2linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme2linkSpeed) {
 		return true
 	}
 
@@ -11193,7 +13151,7 @@ func (o *BiosPolicy) SetSlotFrontNvme2linkSpeed(v string) {
 
 // GetSlotFrontNvme2optionRom returns the SlotFrontNvme2optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme2optionRom() string {
-	if o == nil || o.SlotFrontNvme2optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme2optionRom) {
 		var ret string
 		return ret
 	}
@@ -11203,7 +13161,7 @@ func (o *BiosPolicy) GetSlotFrontNvme2optionRom() string {
 // GetSlotFrontNvme2optionRomOk returns a tuple with the SlotFrontNvme2optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme2optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme2optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme2optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme2optionRom, true
@@ -11211,7 +13169,7 @@ func (o *BiosPolicy) GetSlotFrontNvme2optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme2optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme2optionRom() bool {
-	if o != nil && o.SlotFrontNvme2optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme2optionRom) {
 		return true
 	}
 
@@ -11225,7 +13183,7 @@ func (o *BiosPolicy) SetSlotFrontNvme2optionRom(v string) {
 
 // GetSlotFrontNvme3linkSpeed returns the SlotFrontNvme3linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme3linkSpeed() string {
-	if o == nil || o.SlotFrontNvme3linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme3linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11235,7 +13193,7 @@ func (o *BiosPolicy) GetSlotFrontNvme3linkSpeed() string {
 // GetSlotFrontNvme3linkSpeedOk returns a tuple with the SlotFrontNvme3linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme3linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme3linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme3linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme3linkSpeed, true
@@ -11243,7 +13201,7 @@ func (o *BiosPolicy) GetSlotFrontNvme3linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme3linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme3linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme3linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme3linkSpeed) {
 		return true
 	}
 
@@ -11257,7 +13215,7 @@ func (o *BiosPolicy) SetSlotFrontNvme3linkSpeed(v string) {
 
 // GetSlotFrontNvme3optionRom returns the SlotFrontNvme3optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme3optionRom() string {
-	if o == nil || o.SlotFrontNvme3optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme3optionRom) {
 		var ret string
 		return ret
 	}
@@ -11267,7 +13225,7 @@ func (o *BiosPolicy) GetSlotFrontNvme3optionRom() string {
 // GetSlotFrontNvme3optionRomOk returns a tuple with the SlotFrontNvme3optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme3optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme3optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme3optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme3optionRom, true
@@ -11275,7 +13233,7 @@ func (o *BiosPolicy) GetSlotFrontNvme3optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme3optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme3optionRom() bool {
-	if o != nil && o.SlotFrontNvme3optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme3optionRom) {
 		return true
 	}
 
@@ -11289,7 +13247,7 @@ func (o *BiosPolicy) SetSlotFrontNvme3optionRom(v string) {
 
 // GetSlotFrontNvme4linkSpeed returns the SlotFrontNvme4linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme4linkSpeed() string {
-	if o == nil || o.SlotFrontNvme4linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme4linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11299,7 +13257,7 @@ func (o *BiosPolicy) GetSlotFrontNvme4linkSpeed() string {
 // GetSlotFrontNvme4linkSpeedOk returns a tuple with the SlotFrontNvme4linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme4linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme4linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme4linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme4linkSpeed, true
@@ -11307,7 +13265,7 @@ func (o *BiosPolicy) GetSlotFrontNvme4linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme4linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme4linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme4linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme4linkSpeed) {
 		return true
 	}
 
@@ -11321,7 +13279,7 @@ func (o *BiosPolicy) SetSlotFrontNvme4linkSpeed(v string) {
 
 // GetSlotFrontNvme4optionRom returns the SlotFrontNvme4optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme4optionRom() string {
-	if o == nil || o.SlotFrontNvme4optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme4optionRom) {
 		var ret string
 		return ret
 	}
@@ -11331,7 +13289,7 @@ func (o *BiosPolicy) GetSlotFrontNvme4optionRom() string {
 // GetSlotFrontNvme4optionRomOk returns a tuple with the SlotFrontNvme4optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme4optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme4optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme4optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme4optionRom, true
@@ -11339,7 +13297,7 @@ func (o *BiosPolicy) GetSlotFrontNvme4optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme4optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme4optionRom() bool {
-	if o != nil && o.SlotFrontNvme4optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme4optionRom) {
 		return true
 	}
 
@@ -11353,7 +13311,7 @@ func (o *BiosPolicy) SetSlotFrontNvme4optionRom(v string) {
 
 // GetSlotFrontNvme5linkSpeed returns the SlotFrontNvme5linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme5linkSpeed() string {
-	if o == nil || o.SlotFrontNvme5linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme5linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11363,7 +13321,7 @@ func (o *BiosPolicy) GetSlotFrontNvme5linkSpeed() string {
 // GetSlotFrontNvme5linkSpeedOk returns a tuple with the SlotFrontNvme5linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme5linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme5linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme5linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme5linkSpeed, true
@@ -11371,7 +13329,7 @@ func (o *BiosPolicy) GetSlotFrontNvme5linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme5linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme5linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme5linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme5linkSpeed) {
 		return true
 	}
 
@@ -11385,7 +13343,7 @@ func (o *BiosPolicy) SetSlotFrontNvme5linkSpeed(v string) {
 
 // GetSlotFrontNvme5optionRom returns the SlotFrontNvme5optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme5optionRom() string {
-	if o == nil || o.SlotFrontNvme5optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme5optionRom) {
 		var ret string
 		return ret
 	}
@@ -11395,7 +13353,7 @@ func (o *BiosPolicy) GetSlotFrontNvme5optionRom() string {
 // GetSlotFrontNvme5optionRomOk returns a tuple with the SlotFrontNvme5optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme5optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme5optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme5optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme5optionRom, true
@@ -11403,7 +13361,7 @@ func (o *BiosPolicy) GetSlotFrontNvme5optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme5optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme5optionRom() bool {
-	if o != nil && o.SlotFrontNvme5optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme5optionRom) {
 		return true
 	}
 
@@ -11417,7 +13375,7 @@ func (o *BiosPolicy) SetSlotFrontNvme5optionRom(v string) {
 
 // GetSlotFrontNvme6linkSpeed returns the SlotFrontNvme6linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme6linkSpeed() string {
-	if o == nil || o.SlotFrontNvme6linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme6linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11427,7 +13385,7 @@ func (o *BiosPolicy) GetSlotFrontNvme6linkSpeed() string {
 // GetSlotFrontNvme6linkSpeedOk returns a tuple with the SlotFrontNvme6linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme6linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme6linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme6linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme6linkSpeed, true
@@ -11435,7 +13393,7 @@ func (o *BiosPolicy) GetSlotFrontNvme6linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme6linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme6linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme6linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme6linkSpeed) {
 		return true
 	}
 
@@ -11449,7 +13407,7 @@ func (o *BiosPolicy) SetSlotFrontNvme6linkSpeed(v string) {
 
 // GetSlotFrontNvme6optionRom returns the SlotFrontNvme6optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme6optionRom() string {
-	if o == nil || o.SlotFrontNvme6optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme6optionRom) {
 		var ret string
 		return ret
 	}
@@ -11459,7 +13417,7 @@ func (o *BiosPolicy) GetSlotFrontNvme6optionRom() string {
 // GetSlotFrontNvme6optionRomOk returns a tuple with the SlotFrontNvme6optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme6optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme6optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme6optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme6optionRom, true
@@ -11467,7 +13425,7 @@ func (o *BiosPolicy) GetSlotFrontNvme6optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme6optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme6optionRom() bool {
-	if o != nil && o.SlotFrontNvme6optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme6optionRom) {
 		return true
 	}
 
@@ -11481,7 +13439,7 @@ func (o *BiosPolicy) SetSlotFrontNvme6optionRom(v string) {
 
 // GetSlotFrontNvme7linkSpeed returns the SlotFrontNvme7linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme7linkSpeed() string {
-	if o == nil || o.SlotFrontNvme7linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme7linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11491,7 +13449,7 @@ func (o *BiosPolicy) GetSlotFrontNvme7linkSpeed() string {
 // GetSlotFrontNvme7linkSpeedOk returns a tuple with the SlotFrontNvme7linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme7linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme7linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme7linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme7linkSpeed, true
@@ -11499,7 +13457,7 @@ func (o *BiosPolicy) GetSlotFrontNvme7linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme7linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme7linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme7linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme7linkSpeed) {
 		return true
 	}
 
@@ -11513,7 +13471,7 @@ func (o *BiosPolicy) SetSlotFrontNvme7linkSpeed(v string) {
 
 // GetSlotFrontNvme7optionRom returns the SlotFrontNvme7optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme7optionRom() string {
-	if o == nil || o.SlotFrontNvme7optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme7optionRom) {
 		var ret string
 		return ret
 	}
@@ -11523,7 +13481,7 @@ func (o *BiosPolicy) GetSlotFrontNvme7optionRom() string {
 // GetSlotFrontNvme7optionRomOk returns a tuple with the SlotFrontNvme7optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme7optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme7optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme7optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme7optionRom, true
@@ -11531,7 +13489,7 @@ func (o *BiosPolicy) GetSlotFrontNvme7optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme7optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme7optionRom() bool {
-	if o != nil && o.SlotFrontNvme7optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme7optionRom) {
 		return true
 	}
 
@@ -11545,7 +13503,7 @@ func (o *BiosPolicy) SetSlotFrontNvme7optionRom(v string) {
 
 // GetSlotFrontNvme8linkSpeed returns the SlotFrontNvme8linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme8linkSpeed() string {
-	if o == nil || o.SlotFrontNvme8linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme8linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11555,7 +13513,7 @@ func (o *BiosPolicy) GetSlotFrontNvme8linkSpeed() string {
 // GetSlotFrontNvme8linkSpeedOk returns a tuple with the SlotFrontNvme8linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme8linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme8linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme8linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme8linkSpeed, true
@@ -11563,7 +13521,7 @@ func (o *BiosPolicy) GetSlotFrontNvme8linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme8linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme8linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme8linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme8linkSpeed) {
 		return true
 	}
 
@@ -11577,7 +13535,7 @@ func (o *BiosPolicy) SetSlotFrontNvme8linkSpeed(v string) {
 
 // GetSlotFrontNvme8optionRom returns the SlotFrontNvme8optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme8optionRom() string {
-	if o == nil || o.SlotFrontNvme8optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme8optionRom) {
 		var ret string
 		return ret
 	}
@@ -11587,7 +13545,7 @@ func (o *BiosPolicy) GetSlotFrontNvme8optionRom() string {
 // GetSlotFrontNvme8optionRomOk returns a tuple with the SlotFrontNvme8optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme8optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme8optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme8optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme8optionRom, true
@@ -11595,7 +13553,7 @@ func (o *BiosPolicy) GetSlotFrontNvme8optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme8optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme8optionRom() bool {
-	if o != nil && o.SlotFrontNvme8optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme8optionRom) {
 		return true
 	}
 
@@ -11609,7 +13567,7 @@ func (o *BiosPolicy) SetSlotFrontNvme8optionRom(v string) {
 
 // GetSlotFrontNvme9linkSpeed returns the SlotFrontNvme9linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme9linkSpeed() string {
-	if o == nil || o.SlotFrontNvme9linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme9linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11619,7 +13577,7 @@ func (o *BiosPolicy) GetSlotFrontNvme9linkSpeed() string {
 // GetSlotFrontNvme9linkSpeedOk returns a tuple with the SlotFrontNvme9linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme9linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme9linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontNvme9linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontNvme9linkSpeed, true
@@ -11627,7 +13585,7 @@ func (o *BiosPolicy) GetSlotFrontNvme9linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontNvme9linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme9linkSpeed() bool {
-	if o != nil && o.SlotFrontNvme9linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme9linkSpeed) {
 		return true
 	}
 
@@ -11641,7 +13599,7 @@ func (o *BiosPolicy) SetSlotFrontNvme9linkSpeed(v string) {
 
 // GetSlotFrontNvme9optionRom returns the SlotFrontNvme9optionRom field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontNvme9optionRom() string {
-	if o == nil || o.SlotFrontNvme9optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme9optionRom) {
 		var ret string
 		return ret
 	}
@@ -11651,7 +13609,7 @@ func (o *BiosPolicy) GetSlotFrontNvme9optionRom() string {
 // GetSlotFrontNvme9optionRomOk returns a tuple with the SlotFrontNvme9optionRom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontNvme9optionRomOk() (*string, bool) {
-	if o == nil || o.SlotFrontNvme9optionRom == nil {
+	if o == nil || IsNil(o.SlotFrontNvme9optionRom) {
 		return nil, false
 	}
 	return o.SlotFrontNvme9optionRom, true
@@ -11659,7 +13617,7 @@ func (o *BiosPolicy) GetSlotFrontNvme9optionRomOk() (*string, bool) {
 
 // HasSlotFrontNvme9optionRom returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontNvme9optionRom() bool {
-	if o != nil && o.SlotFrontNvme9optionRom != nil {
+	if o != nil && !IsNil(o.SlotFrontNvme9optionRom) {
 		return true
 	}
 
@@ -11673,7 +13631,7 @@ func (o *BiosPolicy) SetSlotFrontNvme9optionRom(v string) {
 
 // GetSlotFrontSlot5linkSpeed returns the SlotFrontSlot5linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontSlot5linkSpeed() string {
-	if o == nil || o.SlotFrontSlot5linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontSlot5linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11683,7 +13641,7 @@ func (o *BiosPolicy) GetSlotFrontSlot5linkSpeed() string {
 // GetSlotFrontSlot5linkSpeedOk returns a tuple with the SlotFrontSlot5linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontSlot5linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontSlot5linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontSlot5linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontSlot5linkSpeed, true
@@ -11691,7 +13649,7 @@ func (o *BiosPolicy) GetSlotFrontSlot5linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontSlot5linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontSlot5linkSpeed() bool {
-	if o != nil && o.SlotFrontSlot5linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontSlot5linkSpeed) {
 		return true
 	}
 
@@ -11705,7 +13663,7 @@ func (o *BiosPolicy) SetSlotFrontSlot5linkSpeed(v string) {
 
 // GetSlotFrontSlot6linkSpeed returns the SlotFrontSlot6linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotFrontSlot6linkSpeed() string {
-	if o == nil || o.SlotFrontSlot6linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontSlot6linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -11715,7 +13673,7 @@ func (o *BiosPolicy) GetSlotFrontSlot6linkSpeed() string {
 // GetSlotFrontSlot6linkSpeedOk returns a tuple with the SlotFrontSlot6linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotFrontSlot6linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotFrontSlot6linkSpeed == nil {
+	if o == nil || IsNil(o.SlotFrontSlot6linkSpeed) {
 		return nil, false
 	}
 	return o.SlotFrontSlot6linkSpeed, true
@@ -11723,7 +13681,7 @@ func (o *BiosPolicy) GetSlotFrontSlot6linkSpeedOk() (*string, bool) {
 
 // HasSlotFrontSlot6linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotFrontSlot6linkSpeed() bool {
-	if o != nil && o.SlotFrontSlot6linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotFrontSlot6linkSpeed) {
 		return true
 	}
 
@@ -11737,7 +13695,7 @@ func (o *BiosPolicy) SetSlotFrontSlot6linkSpeed(v string) {
 
 // GetSlotGpu1state returns the SlotGpu1state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotGpu1state() string {
-	if o == nil || o.SlotGpu1state == nil {
+	if o == nil || IsNil(o.SlotGpu1state) {
 		var ret string
 		return ret
 	}
@@ -11747,7 +13705,7 @@ func (o *BiosPolicy) GetSlotGpu1state() string {
 // GetSlotGpu1stateOk returns a tuple with the SlotGpu1state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotGpu1stateOk() (*string, bool) {
-	if o == nil || o.SlotGpu1state == nil {
+	if o == nil || IsNil(o.SlotGpu1state) {
 		return nil, false
 	}
 	return o.SlotGpu1state, true
@@ -11755,7 +13713,7 @@ func (o *BiosPolicy) GetSlotGpu1stateOk() (*string, bool) {
 
 // HasSlotGpu1state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotGpu1state() bool {
-	if o != nil && o.SlotGpu1state != nil {
+	if o != nil && !IsNil(o.SlotGpu1state) {
 		return true
 	}
 
@@ -11769,7 +13727,7 @@ func (o *BiosPolicy) SetSlotGpu1state(v string) {
 
 // GetSlotGpu2state returns the SlotGpu2state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotGpu2state() string {
-	if o == nil || o.SlotGpu2state == nil {
+	if o == nil || IsNil(o.SlotGpu2state) {
 		var ret string
 		return ret
 	}
@@ -11779,7 +13737,7 @@ func (o *BiosPolicy) GetSlotGpu2state() string {
 // GetSlotGpu2stateOk returns a tuple with the SlotGpu2state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotGpu2stateOk() (*string, bool) {
-	if o == nil || o.SlotGpu2state == nil {
+	if o == nil || IsNil(o.SlotGpu2state) {
 		return nil, false
 	}
 	return o.SlotGpu2state, true
@@ -11787,7 +13745,7 @@ func (o *BiosPolicy) GetSlotGpu2stateOk() (*string, bool) {
 
 // HasSlotGpu2state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotGpu2state() bool {
-	if o != nil && o.SlotGpu2state != nil {
+	if o != nil && !IsNil(o.SlotGpu2state) {
 		return true
 	}
 
@@ -11801,7 +13759,7 @@ func (o *BiosPolicy) SetSlotGpu2state(v string) {
 
 // GetSlotGpu3state returns the SlotGpu3state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotGpu3state() string {
-	if o == nil || o.SlotGpu3state == nil {
+	if o == nil || IsNil(o.SlotGpu3state) {
 		var ret string
 		return ret
 	}
@@ -11811,7 +13769,7 @@ func (o *BiosPolicy) GetSlotGpu3state() string {
 // GetSlotGpu3stateOk returns a tuple with the SlotGpu3state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotGpu3stateOk() (*string, bool) {
-	if o == nil || o.SlotGpu3state == nil {
+	if o == nil || IsNil(o.SlotGpu3state) {
 		return nil, false
 	}
 	return o.SlotGpu3state, true
@@ -11819,7 +13777,7 @@ func (o *BiosPolicy) GetSlotGpu3stateOk() (*string, bool) {
 
 // HasSlotGpu3state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotGpu3state() bool {
-	if o != nil && o.SlotGpu3state != nil {
+	if o != nil && !IsNil(o.SlotGpu3state) {
 		return true
 	}
 
@@ -11833,7 +13791,7 @@ func (o *BiosPolicy) SetSlotGpu3state(v string) {
 
 // GetSlotGpu4state returns the SlotGpu4state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotGpu4state() string {
-	if o == nil || o.SlotGpu4state == nil {
+	if o == nil || IsNil(o.SlotGpu4state) {
 		var ret string
 		return ret
 	}
@@ -11843,7 +13801,7 @@ func (o *BiosPolicy) GetSlotGpu4state() string {
 // GetSlotGpu4stateOk returns a tuple with the SlotGpu4state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotGpu4stateOk() (*string, bool) {
-	if o == nil || o.SlotGpu4state == nil {
+	if o == nil || IsNil(o.SlotGpu4state) {
 		return nil, false
 	}
 	return o.SlotGpu4state, true
@@ -11851,7 +13809,7 @@ func (o *BiosPolicy) GetSlotGpu4stateOk() (*string, bool) {
 
 // HasSlotGpu4state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotGpu4state() bool {
-	if o != nil && o.SlotGpu4state != nil {
+	if o != nil && !IsNil(o.SlotGpu4state) {
 		return true
 	}
 
@@ -11865,7 +13823,7 @@ func (o *BiosPolicy) SetSlotGpu4state(v string) {
 
 // GetSlotGpu5state returns the SlotGpu5state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotGpu5state() string {
-	if o == nil || o.SlotGpu5state == nil {
+	if o == nil || IsNil(o.SlotGpu5state) {
 		var ret string
 		return ret
 	}
@@ -11875,7 +13833,7 @@ func (o *BiosPolicy) GetSlotGpu5state() string {
 // GetSlotGpu5stateOk returns a tuple with the SlotGpu5state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotGpu5stateOk() (*string, bool) {
-	if o == nil || o.SlotGpu5state == nil {
+	if o == nil || IsNil(o.SlotGpu5state) {
 		return nil, false
 	}
 	return o.SlotGpu5state, true
@@ -11883,7 +13841,7 @@ func (o *BiosPolicy) GetSlotGpu5stateOk() (*string, bool) {
 
 // HasSlotGpu5state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotGpu5state() bool {
-	if o != nil && o.SlotGpu5state != nil {
+	if o != nil && !IsNil(o.SlotGpu5state) {
 		return true
 	}
 
@@ -11897,7 +13855,7 @@ func (o *BiosPolicy) SetSlotGpu5state(v string) {
 
 // GetSlotGpu6state returns the SlotGpu6state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotGpu6state() string {
-	if o == nil || o.SlotGpu6state == nil {
+	if o == nil || IsNil(o.SlotGpu6state) {
 		var ret string
 		return ret
 	}
@@ -11907,7 +13865,7 @@ func (o *BiosPolicy) GetSlotGpu6state() string {
 // GetSlotGpu6stateOk returns a tuple with the SlotGpu6state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotGpu6stateOk() (*string, bool) {
-	if o == nil || o.SlotGpu6state == nil {
+	if o == nil || IsNil(o.SlotGpu6state) {
 		return nil, false
 	}
 	return o.SlotGpu6state, true
@@ -11915,7 +13873,7 @@ func (o *BiosPolicy) GetSlotGpu6stateOk() (*string, bool) {
 
 // HasSlotGpu6state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotGpu6state() bool {
-	if o != nil && o.SlotGpu6state != nil {
+	if o != nil && !IsNil(o.SlotGpu6state) {
 		return true
 	}
 
@@ -11929,7 +13887,7 @@ func (o *BiosPolicy) SetSlotGpu6state(v string) {
 
 // GetSlotGpu7state returns the SlotGpu7state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotGpu7state() string {
-	if o == nil || o.SlotGpu7state == nil {
+	if o == nil || IsNil(o.SlotGpu7state) {
 		var ret string
 		return ret
 	}
@@ -11939,7 +13897,7 @@ func (o *BiosPolicy) GetSlotGpu7state() string {
 // GetSlotGpu7stateOk returns a tuple with the SlotGpu7state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotGpu7stateOk() (*string, bool) {
-	if o == nil || o.SlotGpu7state == nil {
+	if o == nil || IsNil(o.SlotGpu7state) {
 		return nil, false
 	}
 	return o.SlotGpu7state, true
@@ -11947,7 +13905,7 @@ func (o *BiosPolicy) GetSlotGpu7stateOk() (*string, bool) {
 
 // HasSlotGpu7state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotGpu7state() bool {
-	if o != nil && o.SlotGpu7state != nil {
+	if o != nil && !IsNil(o.SlotGpu7state) {
 		return true
 	}
 
@@ -11961,7 +13919,7 @@ func (o *BiosPolicy) SetSlotGpu7state(v string) {
 
 // GetSlotGpu8state returns the SlotGpu8state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotGpu8state() string {
-	if o == nil || o.SlotGpu8state == nil {
+	if o == nil || IsNil(o.SlotGpu8state) {
 		var ret string
 		return ret
 	}
@@ -11971,7 +13929,7 @@ func (o *BiosPolicy) GetSlotGpu8state() string {
 // GetSlotGpu8stateOk returns a tuple with the SlotGpu8state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotGpu8stateOk() (*string, bool) {
-	if o == nil || o.SlotGpu8state == nil {
+	if o == nil || IsNil(o.SlotGpu8state) {
 		return nil, false
 	}
 	return o.SlotGpu8state, true
@@ -11979,7 +13937,7 @@ func (o *BiosPolicy) GetSlotGpu8stateOk() (*string, bool) {
 
 // HasSlotGpu8state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotGpu8state() bool {
-	if o != nil && o.SlotGpu8state != nil {
+	if o != nil && !IsNil(o.SlotGpu8state) {
 		return true
 	}
 
@@ -11993,7 +13951,7 @@ func (o *BiosPolicy) SetSlotGpu8state(v string) {
 
 // GetSlotHbaLinkSpeed returns the SlotHbaLinkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotHbaLinkSpeed() string {
-	if o == nil || o.SlotHbaLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotHbaLinkSpeed) {
 		var ret string
 		return ret
 	}
@@ -12003,7 +13961,7 @@ func (o *BiosPolicy) GetSlotHbaLinkSpeed() string {
 // GetSlotHbaLinkSpeedOk returns a tuple with the SlotHbaLinkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotHbaLinkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotHbaLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotHbaLinkSpeed) {
 		return nil, false
 	}
 	return o.SlotHbaLinkSpeed, true
@@ -12011,7 +13969,7 @@ func (o *BiosPolicy) GetSlotHbaLinkSpeedOk() (*string, bool) {
 
 // HasSlotHbaLinkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotHbaLinkSpeed() bool {
-	if o != nil && o.SlotHbaLinkSpeed != nil {
+	if o != nil && !IsNil(o.SlotHbaLinkSpeed) {
 		return true
 	}
 
@@ -12025,7 +13983,7 @@ func (o *BiosPolicy) SetSlotHbaLinkSpeed(v string) {
 
 // GetSlotHbaState returns the SlotHbaState field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotHbaState() string {
-	if o == nil || o.SlotHbaState == nil {
+	if o == nil || IsNil(o.SlotHbaState) {
 		var ret string
 		return ret
 	}
@@ -12035,7 +13993,7 @@ func (o *BiosPolicy) GetSlotHbaState() string {
 // GetSlotHbaStateOk returns a tuple with the SlotHbaState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotHbaStateOk() (*string, bool) {
-	if o == nil || o.SlotHbaState == nil {
+	if o == nil || IsNil(o.SlotHbaState) {
 		return nil, false
 	}
 	return o.SlotHbaState, true
@@ -12043,7 +14001,7 @@ func (o *BiosPolicy) GetSlotHbaStateOk() (*string, bool) {
 
 // HasSlotHbaState returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotHbaState() bool {
-	if o != nil && o.SlotHbaState != nil {
+	if o != nil && !IsNil(o.SlotHbaState) {
 		return true
 	}
 
@@ -12057,7 +14015,7 @@ func (o *BiosPolicy) SetSlotHbaState(v string) {
 
 // GetSlotLom1link returns the SlotLom1link field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotLom1link() string {
-	if o == nil || o.SlotLom1link == nil {
+	if o == nil || IsNil(o.SlotLom1link) {
 		var ret string
 		return ret
 	}
@@ -12067,7 +14025,7 @@ func (o *BiosPolicy) GetSlotLom1link() string {
 // GetSlotLom1linkOk returns a tuple with the SlotLom1link field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotLom1linkOk() (*string, bool) {
-	if o == nil || o.SlotLom1link == nil {
+	if o == nil || IsNil(o.SlotLom1link) {
 		return nil, false
 	}
 	return o.SlotLom1link, true
@@ -12075,7 +14033,7 @@ func (o *BiosPolicy) GetSlotLom1linkOk() (*string, bool) {
 
 // HasSlotLom1link returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotLom1link() bool {
-	if o != nil && o.SlotLom1link != nil {
+	if o != nil && !IsNil(o.SlotLom1link) {
 		return true
 	}
 
@@ -12089,7 +14047,7 @@ func (o *BiosPolicy) SetSlotLom1link(v string) {
 
 // GetSlotLom2link returns the SlotLom2link field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotLom2link() string {
-	if o == nil || o.SlotLom2link == nil {
+	if o == nil || IsNil(o.SlotLom2link) {
 		var ret string
 		return ret
 	}
@@ -12099,7 +14057,7 @@ func (o *BiosPolicy) GetSlotLom2link() string {
 // GetSlotLom2linkOk returns a tuple with the SlotLom2link field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotLom2linkOk() (*string, bool) {
-	if o == nil || o.SlotLom2link == nil {
+	if o == nil || IsNil(o.SlotLom2link) {
 		return nil, false
 	}
 	return o.SlotLom2link, true
@@ -12107,7 +14065,7 @@ func (o *BiosPolicy) GetSlotLom2linkOk() (*string, bool) {
 
 // HasSlotLom2link returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotLom2link() bool {
-	if o != nil && o.SlotLom2link != nil {
+	if o != nil && !IsNil(o.SlotLom2link) {
 		return true
 	}
 
@@ -12121,7 +14079,7 @@ func (o *BiosPolicy) SetSlotLom2link(v string) {
 
 // GetSlotMezzState returns the SlotMezzState field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotMezzState() string {
-	if o == nil || o.SlotMezzState == nil {
+	if o == nil || IsNil(o.SlotMezzState) {
 		var ret string
 		return ret
 	}
@@ -12131,7 +14089,7 @@ func (o *BiosPolicy) GetSlotMezzState() string {
 // GetSlotMezzStateOk returns a tuple with the SlotMezzState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotMezzStateOk() (*string, bool) {
-	if o == nil || o.SlotMezzState == nil {
+	if o == nil || IsNil(o.SlotMezzState) {
 		return nil, false
 	}
 	return o.SlotMezzState, true
@@ -12139,7 +14097,7 @@ func (o *BiosPolicy) GetSlotMezzStateOk() (*string, bool) {
 
 // HasSlotMezzState returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotMezzState() bool {
-	if o != nil && o.SlotMezzState != nil {
+	if o != nil && !IsNil(o.SlotMezzState) {
 		return true
 	}
 
@@ -12153,7 +14111,7 @@ func (o *BiosPolicy) SetSlotMezzState(v string) {
 
 // GetSlotMlomLinkSpeed returns the SlotMlomLinkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotMlomLinkSpeed() string {
-	if o == nil || o.SlotMlomLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotMlomLinkSpeed) {
 		var ret string
 		return ret
 	}
@@ -12163,7 +14121,7 @@ func (o *BiosPolicy) GetSlotMlomLinkSpeed() string {
 // GetSlotMlomLinkSpeedOk returns a tuple with the SlotMlomLinkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotMlomLinkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotMlomLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotMlomLinkSpeed) {
 		return nil, false
 	}
 	return o.SlotMlomLinkSpeed, true
@@ -12171,7 +14129,7 @@ func (o *BiosPolicy) GetSlotMlomLinkSpeedOk() (*string, bool) {
 
 // HasSlotMlomLinkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotMlomLinkSpeed() bool {
-	if o != nil && o.SlotMlomLinkSpeed != nil {
+	if o != nil && !IsNil(o.SlotMlomLinkSpeed) {
 		return true
 	}
 
@@ -12185,7 +14143,7 @@ func (o *BiosPolicy) SetSlotMlomLinkSpeed(v string) {
 
 // GetSlotMlomState returns the SlotMlomState field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotMlomState() string {
-	if o == nil || o.SlotMlomState == nil {
+	if o == nil || IsNil(o.SlotMlomState) {
 		var ret string
 		return ret
 	}
@@ -12195,7 +14153,7 @@ func (o *BiosPolicy) GetSlotMlomState() string {
 // GetSlotMlomStateOk returns a tuple with the SlotMlomState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotMlomStateOk() (*string, bool) {
-	if o == nil || o.SlotMlomState == nil {
+	if o == nil || IsNil(o.SlotMlomState) {
 		return nil, false
 	}
 	return o.SlotMlomState, true
@@ -12203,7 +14161,7 @@ func (o *BiosPolicy) GetSlotMlomStateOk() (*string, bool) {
 
 // HasSlotMlomState returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotMlomState() bool {
-	if o != nil && o.SlotMlomState != nil {
+	if o != nil && !IsNil(o.SlotMlomState) {
 		return true
 	}
 
@@ -12217,7 +14175,7 @@ func (o *BiosPolicy) SetSlotMlomState(v string) {
 
 // GetSlotMraidLinkSpeed returns the SlotMraidLinkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotMraidLinkSpeed() string {
-	if o == nil || o.SlotMraidLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotMraidLinkSpeed) {
 		var ret string
 		return ret
 	}
@@ -12227,7 +14185,7 @@ func (o *BiosPolicy) GetSlotMraidLinkSpeed() string {
 // GetSlotMraidLinkSpeedOk returns a tuple with the SlotMraidLinkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotMraidLinkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotMraidLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotMraidLinkSpeed) {
 		return nil, false
 	}
 	return o.SlotMraidLinkSpeed, true
@@ -12235,7 +14193,7 @@ func (o *BiosPolicy) GetSlotMraidLinkSpeedOk() (*string, bool) {
 
 // HasSlotMraidLinkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotMraidLinkSpeed() bool {
-	if o != nil && o.SlotMraidLinkSpeed != nil {
+	if o != nil && !IsNil(o.SlotMraidLinkSpeed) {
 		return true
 	}
 
@@ -12249,7 +14207,7 @@ func (o *BiosPolicy) SetSlotMraidLinkSpeed(v string) {
 
 // GetSlotMraidState returns the SlotMraidState field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotMraidState() string {
-	if o == nil || o.SlotMraidState == nil {
+	if o == nil || IsNil(o.SlotMraidState) {
 		var ret string
 		return ret
 	}
@@ -12259,7 +14217,7 @@ func (o *BiosPolicy) GetSlotMraidState() string {
 // GetSlotMraidStateOk returns a tuple with the SlotMraidState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotMraidStateOk() (*string, bool) {
-	if o == nil || o.SlotMraidState == nil {
+	if o == nil || IsNil(o.SlotMraidState) {
 		return nil, false
 	}
 	return o.SlotMraidState, true
@@ -12267,7 +14225,7 @@ func (o *BiosPolicy) GetSlotMraidStateOk() (*string, bool) {
 
 // HasSlotMraidState returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotMraidState() bool {
-	if o != nil && o.SlotMraidState != nil {
+	if o != nil && !IsNil(o.SlotMraidState) {
 		return true
 	}
 
@@ -12281,7 +14239,7 @@ func (o *BiosPolicy) SetSlotMraidState(v string) {
 
 // GetSlotN10state returns the SlotN10state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN10state() string {
-	if o == nil || o.SlotN10state == nil {
+	if o == nil || IsNil(o.SlotN10state) {
 		var ret string
 		return ret
 	}
@@ -12291,7 +14249,7 @@ func (o *BiosPolicy) GetSlotN10state() string {
 // GetSlotN10stateOk returns a tuple with the SlotN10state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN10stateOk() (*string, bool) {
-	if o == nil || o.SlotN10state == nil {
+	if o == nil || IsNil(o.SlotN10state) {
 		return nil, false
 	}
 	return o.SlotN10state, true
@@ -12299,7 +14257,7 @@ func (o *BiosPolicy) GetSlotN10stateOk() (*string, bool) {
 
 // HasSlotN10state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN10state() bool {
-	if o != nil && o.SlotN10state != nil {
+	if o != nil && !IsNil(o.SlotN10state) {
 		return true
 	}
 
@@ -12313,7 +14271,7 @@ func (o *BiosPolicy) SetSlotN10state(v string) {
 
 // GetSlotN11state returns the SlotN11state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN11state() string {
-	if o == nil || o.SlotN11state == nil {
+	if o == nil || IsNil(o.SlotN11state) {
 		var ret string
 		return ret
 	}
@@ -12323,7 +14281,7 @@ func (o *BiosPolicy) GetSlotN11state() string {
 // GetSlotN11stateOk returns a tuple with the SlotN11state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN11stateOk() (*string, bool) {
-	if o == nil || o.SlotN11state == nil {
+	if o == nil || IsNil(o.SlotN11state) {
 		return nil, false
 	}
 	return o.SlotN11state, true
@@ -12331,7 +14289,7 @@ func (o *BiosPolicy) GetSlotN11stateOk() (*string, bool) {
 
 // HasSlotN11state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN11state() bool {
-	if o != nil && o.SlotN11state != nil {
+	if o != nil && !IsNil(o.SlotN11state) {
 		return true
 	}
 
@@ -12345,7 +14303,7 @@ func (o *BiosPolicy) SetSlotN11state(v string) {
 
 // GetSlotN12state returns the SlotN12state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN12state() string {
-	if o == nil || o.SlotN12state == nil {
+	if o == nil || IsNil(o.SlotN12state) {
 		var ret string
 		return ret
 	}
@@ -12355,7 +14313,7 @@ func (o *BiosPolicy) GetSlotN12state() string {
 // GetSlotN12stateOk returns a tuple with the SlotN12state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN12stateOk() (*string, bool) {
-	if o == nil || o.SlotN12state == nil {
+	if o == nil || IsNil(o.SlotN12state) {
 		return nil, false
 	}
 	return o.SlotN12state, true
@@ -12363,7 +14321,7 @@ func (o *BiosPolicy) GetSlotN12stateOk() (*string, bool) {
 
 // HasSlotN12state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN12state() bool {
-	if o != nil && o.SlotN12state != nil {
+	if o != nil && !IsNil(o.SlotN12state) {
 		return true
 	}
 
@@ -12377,7 +14335,7 @@ func (o *BiosPolicy) SetSlotN12state(v string) {
 
 // GetSlotN13state returns the SlotN13state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN13state() string {
-	if o == nil || o.SlotN13state == nil {
+	if o == nil || IsNil(o.SlotN13state) {
 		var ret string
 		return ret
 	}
@@ -12387,7 +14345,7 @@ func (o *BiosPolicy) GetSlotN13state() string {
 // GetSlotN13stateOk returns a tuple with the SlotN13state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN13stateOk() (*string, bool) {
-	if o == nil || o.SlotN13state == nil {
+	if o == nil || IsNil(o.SlotN13state) {
 		return nil, false
 	}
 	return o.SlotN13state, true
@@ -12395,7 +14353,7 @@ func (o *BiosPolicy) GetSlotN13stateOk() (*string, bool) {
 
 // HasSlotN13state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN13state() bool {
-	if o != nil && o.SlotN13state != nil {
+	if o != nil && !IsNil(o.SlotN13state) {
 		return true
 	}
 
@@ -12409,7 +14367,7 @@ func (o *BiosPolicy) SetSlotN13state(v string) {
 
 // GetSlotN14state returns the SlotN14state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN14state() string {
-	if o == nil || o.SlotN14state == nil {
+	if o == nil || IsNil(o.SlotN14state) {
 		var ret string
 		return ret
 	}
@@ -12419,7 +14377,7 @@ func (o *BiosPolicy) GetSlotN14state() string {
 // GetSlotN14stateOk returns a tuple with the SlotN14state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN14stateOk() (*string, bool) {
-	if o == nil || o.SlotN14state == nil {
+	if o == nil || IsNil(o.SlotN14state) {
 		return nil, false
 	}
 	return o.SlotN14state, true
@@ -12427,7 +14385,7 @@ func (o *BiosPolicy) GetSlotN14stateOk() (*string, bool) {
 
 // HasSlotN14state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN14state() bool {
-	if o != nil && o.SlotN14state != nil {
+	if o != nil && !IsNil(o.SlotN14state) {
 		return true
 	}
 
@@ -12441,7 +14399,7 @@ func (o *BiosPolicy) SetSlotN14state(v string) {
 
 // GetSlotN15state returns the SlotN15state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN15state() string {
-	if o == nil || o.SlotN15state == nil {
+	if o == nil || IsNil(o.SlotN15state) {
 		var ret string
 		return ret
 	}
@@ -12451,7 +14409,7 @@ func (o *BiosPolicy) GetSlotN15state() string {
 // GetSlotN15stateOk returns a tuple with the SlotN15state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN15stateOk() (*string, bool) {
-	if o == nil || o.SlotN15state == nil {
+	if o == nil || IsNil(o.SlotN15state) {
 		return nil, false
 	}
 	return o.SlotN15state, true
@@ -12459,7 +14417,7 @@ func (o *BiosPolicy) GetSlotN15stateOk() (*string, bool) {
 
 // HasSlotN15state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN15state() bool {
-	if o != nil && o.SlotN15state != nil {
+	if o != nil && !IsNil(o.SlotN15state) {
 		return true
 	}
 
@@ -12473,7 +14431,7 @@ func (o *BiosPolicy) SetSlotN15state(v string) {
 
 // GetSlotN16state returns the SlotN16state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN16state() string {
-	if o == nil || o.SlotN16state == nil {
+	if o == nil || IsNil(o.SlotN16state) {
 		var ret string
 		return ret
 	}
@@ -12483,7 +14441,7 @@ func (o *BiosPolicy) GetSlotN16state() string {
 // GetSlotN16stateOk returns a tuple with the SlotN16state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN16stateOk() (*string, bool) {
-	if o == nil || o.SlotN16state == nil {
+	if o == nil || IsNil(o.SlotN16state) {
 		return nil, false
 	}
 	return o.SlotN16state, true
@@ -12491,7 +14449,7 @@ func (o *BiosPolicy) GetSlotN16stateOk() (*string, bool) {
 
 // HasSlotN16state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN16state() bool {
-	if o != nil && o.SlotN16state != nil {
+	if o != nil && !IsNil(o.SlotN16state) {
 		return true
 	}
 
@@ -12505,7 +14463,7 @@ func (o *BiosPolicy) SetSlotN16state(v string) {
 
 // GetSlotN17state returns the SlotN17state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN17state() string {
-	if o == nil || o.SlotN17state == nil {
+	if o == nil || IsNil(o.SlotN17state) {
 		var ret string
 		return ret
 	}
@@ -12515,7 +14473,7 @@ func (o *BiosPolicy) GetSlotN17state() string {
 // GetSlotN17stateOk returns a tuple with the SlotN17state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN17stateOk() (*string, bool) {
-	if o == nil || o.SlotN17state == nil {
+	if o == nil || IsNil(o.SlotN17state) {
 		return nil, false
 	}
 	return o.SlotN17state, true
@@ -12523,7 +14481,7 @@ func (o *BiosPolicy) GetSlotN17stateOk() (*string, bool) {
 
 // HasSlotN17state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN17state() bool {
-	if o != nil && o.SlotN17state != nil {
+	if o != nil && !IsNil(o.SlotN17state) {
 		return true
 	}
 
@@ -12537,7 +14495,7 @@ func (o *BiosPolicy) SetSlotN17state(v string) {
 
 // GetSlotN18state returns the SlotN18state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN18state() string {
-	if o == nil || o.SlotN18state == nil {
+	if o == nil || IsNil(o.SlotN18state) {
 		var ret string
 		return ret
 	}
@@ -12547,7 +14505,7 @@ func (o *BiosPolicy) GetSlotN18state() string {
 // GetSlotN18stateOk returns a tuple with the SlotN18state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN18stateOk() (*string, bool) {
-	if o == nil || o.SlotN18state == nil {
+	if o == nil || IsNil(o.SlotN18state) {
 		return nil, false
 	}
 	return o.SlotN18state, true
@@ -12555,7 +14513,7 @@ func (o *BiosPolicy) GetSlotN18stateOk() (*string, bool) {
 
 // HasSlotN18state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN18state() bool {
-	if o != nil && o.SlotN18state != nil {
+	if o != nil && !IsNil(o.SlotN18state) {
 		return true
 	}
 
@@ -12569,7 +14527,7 @@ func (o *BiosPolicy) SetSlotN18state(v string) {
 
 // GetSlotN19state returns the SlotN19state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN19state() string {
-	if o == nil || o.SlotN19state == nil {
+	if o == nil || IsNil(o.SlotN19state) {
 		var ret string
 		return ret
 	}
@@ -12579,7 +14537,7 @@ func (o *BiosPolicy) GetSlotN19state() string {
 // GetSlotN19stateOk returns a tuple with the SlotN19state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN19stateOk() (*string, bool) {
-	if o == nil || o.SlotN19state == nil {
+	if o == nil || IsNil(o.SlotN19state) {
 		return nil, false
 	}
 	return o.SlotN19state, true
@@ -12587,7 +14545,7 @@ func (o *BiosPolicy) GetSlotN19stateOk() (*string, bool) {
 
 // HasSlotN19state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN19state() bool {
-	if o != nil && o.SlotN19state != nil {
+	if o != nil && !IsNil(o.SlotN19state) {
 		return true
 	}
 
@@ -12601,7 +14559,7 @@ func (o *BiosPolicy) SetSlotN19state(v string) {
 
 // GetSlotN1state returns the SlotN1state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN1state() string {
-	if o == nil || o.SlotN1state == nil {
+	if o == nil || IsNil(o.SlotN1state) {
 		var ret string
 		return ret
 	}
@@ -12611,7 +14569,7 @@ func (o *BiosPolicy) GetSlotN1state() string {
 // GetSlotN1stateOk returns a tuple with the SlotN1state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN1stateOk() (*string, bool) {
-	if o == nil || o.SlotN1state == nil {
+	if o == nil || IsNil(o.SlotN1state) {
 		return nil, false
 	}
 	return o.SlotN1state, true
@@ -12619,7 +14577,7 @@ func (o *BiosPolicy) GetSlotN1stateOk() (*string, bool) {
 
 // HasSlotN1state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN1state() bool {
-	if o != nil && o.SlotN1state != nil {
+	if o != nil && !IsNil(o.SlotN1state) {
 		return true
 	}
 
@@ -12633,7 +14591,7 @@ func (o *BiosPolicy) SetSlotN1state(v string) {
 
 // GetSlotN20state returns the SlotN20state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN20state() string {
-	if o == nil || o.SlotN20state == nil {
+	if o == nil || IsNil(o.SlotN20state) {
 		var ret string
 		return ret
 	}
@@ -12643,7 +14601,7 @@ func (o *BiosPolicy) GetSlotN20state() string {
 // GetSlotN20stateOk returns a tuple with the SlotN20state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN20stateOk() (*string, bool) {
-	if o == nil || o.SlotN20state == nil {
+	if o == nil || IsNil(o.SlotN20state) {
 		return nil, false
 	}
 	return o.SlotN20state, true
@@ -12651,7 +14609,7 @@ func (o *BiosPolicy) GetSlotN20stateOk() (*string, bool) {
 
 // HasSlotN20state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN20state() bool {
-	if o != nil && o.SlotN20state != nil {
+	if o != nil && !IsNil(o.SlotN20state) {
 		return true
 	}
 
@@ -12665,7 +14623,7 @@ func (o *BiosPolicy) SetSlotN20state(v string) {
 
 // GetSlotN21state returns the SlotN21state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN21state() string {
-	if o == nil || o.SlotN21state == nil {
+	if o == nil || IsNil(o.SlotN21state) {
 		var ret string
 		return ret
 	}
@@ -12675,7 +14633,7 @@ func (o *BiosPolicy) GetSlotN21state() string {
 // GetSlotN21stateOk returns a tuple with the SlotN21state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN21stateOk() (*string, bool) {
-	if o == nil || o.SlotN21state == nil {
+	if o == nil || IsNil(o.SlotN21state) {
 		return nil, false
 	}
 	return o.SlotN21state, true
@@ -12683,7 +14641,7 @@ func (o *BiosPolicy) GetSlotN21stateOk() (*string, bool) {
 
 // HasSlotN21state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN21state() bool {
-	if o != nil && o.SlotN21state != nil {
+	if o != nil && !IsNil(o.SlotN21state) {
 		return true
 	}
 
@@ -12697,7 +14655,7 @@ func (o *BiosPolicy) SetSlotN21state(v string) {
 
 // GetSlotN22state returns the SlotN22state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN22state() string {
-	if o == nil || o.SlotN22state == nil {
+	if o == nil || IsNil(o.SlotN22state) {
 		var ret string
 		return ret
 	}
@@ -12707,7 +14665,7 @@ func (o *BiosPolicy) GetSlotN22state() string {
 // GetSlotN22stateOk returns a tuple with the SlotN22state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN22stateOk() (*string, bool) {
-	if o == nil || o.SlotN22state == nil {
+	if o == nil || IsNil(o.SlotN22state) {
 		return nil, false
 	}
 	return o.SlotN22state, true
@@ -12715,7 +14673,7 @@ func (o *BiosPolicy) GetSlotN22stateOk() (*string, bool) {
 
 // HasSlotN22state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN22state() bool {
-	if o != nil && o.SlotN22state != nil {
+	if o != nil && !IsNil(o.SlotN22state) {
 		return true
 	}
 
@@ -12729,7 +14687,7 @@ func (o *BiosPolicy) SetSlotN22state(v string) {
 
 // GetSlotN23state returns the SlotN23state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN23state() string {
-	if o == nil || o.SlotN23state == nil {
+	if o == nil || IsNil(o.SlotN23state) {
 		var ret string
 		return ret
 	}
@@ -12739,7 +14697,7 @@ func (o *BiosPolicy) GetSlotN23state() string {
 // GetSlotN23stateOk returns a tuple with the SlotN23state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN23stateOk() (*string, bool) {
-	if o == nil || o.SlotN23state == nil {
+	if o == nil || IsNil(o.SlotN23state) {
 		return nil, false
 	}
 	return o.SlotN23state, true
@@ -12747,7 +14705,7 @@ func (o *BiosPolicy) GetSlotN23stateOk() (*string, bool) {
 
 // HasSlotN23state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN23state() bool {
-	if o != nil && o.SlotN23state != nil {
+	if o != nil && !IsNil(o.SlotN23state) {
 		return true
 	}
 
@@ -12761,7 +14719,7 @@ func (o *BiosPolicy) SetSlotN23state(v string) {
 
 // GetSlotN24state returns the SlotN24state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN24state() string {
-	if o == nil || o.SlotN24state == nil {
+	if o == nil || IsNil(o.SlotN24state) {
 		var ret string
 		return ret
 	}
@@ -12771,7 +14729,7 @@ func (o *BiosPolicy) GetSlotN24state() string {
 // GetSlotN24stateOk returns a tuple with the SlotN24state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN24stateOk() (*string, bool) {
-	if o == nil || o.SlotN24state == nil {
+	if o == nil || IsNil(o.SlotN24state) {
 		return nil, false
 	}
 	return o.SlotN24state, true
@@ -12779,7 +14737,7 @@ func (o *BiosPolicy) GetSlotN24stateOk() (*string, bool) {
 
 // HasSlotN24state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN24state() bool {
-	if o != nil && o.SlotN24state != nil {
+	if o != nil && !IsNil(o.SlotN24state) {
 		return true
 	}
 
@@ -12793,7 +14751,7 @@ func (o *BiosPolicy) SetSlotN24state(v string) {
 
 // GetSlotN2state returns the SlotN2state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN2state() string {
-	if o == nil || o.SlotN2state == nil {
+	if o == nil || IsNil(o.SlotN2state) {
 		var ret string
 		return ret
 	}
@@ -12803,7 +14761,7 @@ func (o *BiosPolicy) GetSlotN2state() string {
 // GetSlotN2stateOk returns a tuple with the SlotN2state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN2stateOk() (*string, bool) {
-	if o == nil || o.SlotN2state == nil {
+	if o == nil || IsNil(o.SlotN2state) {
 		return nil, false
 	}
 	return o.SlotN2state, true
@@ -12811,7 +14769,7 @@ func (o *BiosPolicy) GetSlotN2stateOk() (*string, bool) {
 
 // HasSlotN2state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN2state() bool {
-	if o != nil && o.SlotN2state != nil {
+	if o != nil && !IsNil(o.SlotN2state) {
 		return true
 	}
 
@@ -12825,7 +14783,7 @@ func (o *BiosPolicy) SetSlotN2state(v string) {
 
 // GetSlotN3state returns the SlotN3state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN3state() string {
-	if o == nil || o.SlotN3state == nil {
+	if o == nil || IsNil(o.SlotN3state) {
 		var ret string
 		return ret
 	}
@@ -12835,7 +14793,7 @@ func (o *BiosPolicy) GetSlotN3state() string {
 // GetSlotN3stateOk returns a tuple with the SlotN3state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN3stateOk() (*string, bool) {
-	if o == nil || o.SlotN3state == nil {
+	if o == nil || IsNil(o.SlotN3state) {
 		return nil, false
 	}
 	return o.SlotN3state, true
@@ -12843,7 +14801,7 @@ func (o *BiosPolicy) GetSlotN3stateOk() (*string, bool) {
 
 // HasSlotN3state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN3state() bool {
-	if o != nil && o.SlotN3state != nil {
+	if o != nil && !IsNil(o.SlotN3state) {
 		return true
 	}
 
@@ -12857,7 +14815,7 @@ func (o *BiosPolicy) SetSlotN3state(v string) {
 
 // GetSlotN4state returns the SlotN4state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN4state() string {
-	if o == nil || o.SlotN4state == nil {
+	if o == nil || IsNil(o.SlotN4state) {
 		var ret string
 		return ret
 	}
@@ -12867,7 +14825,7 @@ func (o *BiosPolicy) GetSlotN4state() string {
 // GetSlotN4stateOk returns a tuple with the SlotN4state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN4stateOk() (*string, bool) {
-	if o == nil || o.SlotN4state == nil {
+	if o == nil || IsNil(o.SlotN4state) {
 		return nil, false
 	}
 	return o.SlotN4state, true
@@ -12875,7 +14833,7 @@ func (o *BiosPolicy) GetSlotN4stateOk() (*string, bool) {
 
 // HasSlotN4state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN4state() bool {
-	if o != nil && o.SlotN4state != nil {
+	if o != nil && !IsNil(o.SlotN4state) {
 		return true
 	}
 
@@ -12889,7 +14847,7 @@ func (o *BiosPolicy) SetSlotN4state(v string) {
 
 // GetSlotN5state returns the SlotN5state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN5state() string {
-	if o == nil || o.SlotN5state == nil {
+	if o == nil || IsNil(o.SlotN5state) {
 		var ret string
 		return ret
 	}
@@ -12899,7 +14857,7 @@ func (o *BiosPolicy) GetSlotN5state() string {
 // GetSlotN5stateOk returns a tuple with the SlotN5state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN5stateOk() (*string, bool) {
-	if o == nil || o.SlotN5state == nil {
+	if o == nil || IsNil(o.SlotN5state) {
 		return nil, false
 	}
 	return o.SlotN5state, true
@@ -12907,7 +14865,7 @@ func (o *BiosPolicy) GetSlotN5stateOk() (*string, bool) {
 
 // HasSlotN5state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN5state() bool {
-	if o != nil && o.SlotN5state != nil {
+	if o != nil && !IsNil(o.SlotN5state) {
 		return true
 	}
 
@@ -12921,7 +14879,7 @@ func (o *BiosPolicy) SetSlotN5state(v string) {
 
 // GetSlotN6state returns the SlotN6state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN6state() string {
-	if o == nil || o.SlotN6state == nil {
+	if o == nil || IsNil(o.SlotN6state) {
 		var ret string
 		return ret
 	}
@@ -12931,7 +14889,7 @@ func (o *BiosPolicy) GetSlotN6state() string {
 // GetSlotN6stateOk returns a tuple with the SlotN6state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN6stateOk() (*string, bool) {
-	if o == nil || o.SlotN6state == nil {
+	if o == nil || IsNil(o.SlotN6state) {
 		return nil, false
 	}
 	return o.SlotN6state, true
@@ -12939,7 +14897,7 @@ func (o *BiosPolicy) GetSlotN6stateOk() (*string, bool) {
 
 // HasSlotN6state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN6state() bool {
-	if o != nil && o.SlotN6state != nil {
+	if o != nil && !IsNil(o.SlotN6state) {
 		return true
 	}
 
@@ -12953,7 +14911,7 @@ func (o *BiosPolicy) SetSlotN6state(v string) {
 
 // GetSlotN7state returns the SlotN7state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN7state() string {
-	if o == nil || o.SlotN7state == nil {
+	if o == nil || IsNil(o.SlotN7state) {
 		var ret string
 		return ret
 	}
@@ -12963,7 +14921,7 @@ func (o *BiosPolicy) GetSlotN7state() string {
 // GetSlotN7stateOk returns a tuple with the SlotN7state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN7stateOk() (*string, bool) {
-	if o == nil || o.SlotN7state == nil {
+	if o == nil || IsNil(o.SlotN7state) {
 		return nil, false
 	}
 	return o.SlotN7state, true
@@ -12971,7 +14929,7 @@ func (o *BiosPolicy) GetSlotN7stateOk() (*string, bool) {
 
 // HasSlotN7state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN7state() bool {
-	if o != nil && o.SlotN7state != nil {
+	if o != nil && !IsNil(o.SlotN7state) {
 		return true
 	}
 
@@ -12985,7 +14943,7 @@ func (o *BiosPolicy) SetSlotN7state(v string) {
 
 // GetSlotN8state returns the SlotN8state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN8state() string {
-	if o == nil || o.SlotN8state == nil {
+	if o == nil || IsNil(o.SlotN8state) {
 		var ret string
 		return ret
 	}
@@ -12995,7 +14953,7 @@ func (o *BiosPolicy) GetSlotN8state() string {
 // GetSlotN8stateOk returns a tuple with the SlotN8state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN8stateOk() (*string, bool) {
-	if o == nil || o.SlotN8state == nil {
+	if o == nil || IsNil(o.SlotN8state) {
 		return nil, false
 	}
 	return o.SlotN8state, true
@@ -13003,7 +14961,7 @@ func (o *BiosPolicy) GetSlotN8stateOk() (*string, bool) {
 
 // HasSlotN8state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN8state() bool {
-	if o != nil && o.SlotN8state != nil {
+	if o != nil && !IsNil(o.SlotN8state) {
 		return true
 	}
 
@@ -13017,7 +14975,7 @@ func (o *BiosPolicy) SetSlotN8state(v string) {
 
 // GetSlotN9state returns the SlotN9state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotN9state() string {
-	if o == nil || o.SlotN9state == nil {
+	if o == nil || IsNil(o.SlotN9state) {
 		var ret string
 		return ret
 	}
@@ -13027,7 +14985,7 @@ func (o *BiosPolicy) GetSlotN9state() string {
 // GetSlotN9stateOk returns a tuple with the SlotN9state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotN9stateOk() (*string, bool) {
-	if o == nil || o.SlotN9state == nil {
+	if o == nil || IsNil(o.SlotN9state) {
 		return nil, false
 	}
 	return o.SlotN9state, true
@@ -13035,7 +14993,7 @@ func (o *BiosPolicy) GetSlotN9stateOk() (*string, bool) {
 
 // HasSlotN9state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotN9state() bool {
-	if o != nil && o.SlotN9state != nil {
+	if o != nil && !IsNil(o.SlotN9state) {
 		return true
 	}
 
@@ -13049,7 +15007,7 @@ func (o *BiosPolicy) SetSlotN9state(v string) {
 
 // GetSlotRaidLinkSpeed returns the SlotRaidLinkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRaidLinkSpeed() string {
-	if o == nil || o.SlotRaidLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotRaidLinkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13059,7 +15017,7 @@ func (o *BiosPolicy) GetSlotRaidLinkSpeed() string {
 // GetSlotRaidLinkSpeedOk returns a tuple with the SlotRaidLinkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRaidLinkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRaidLinkSpeed == nil {
+	if o == nil || IsNil(o.SlotRaidLinkSpeed) {
 		return nil, false
 	}
 	return o.SlotRaidLinkSpeed, true
@@ -13067,7 +15025,7 @@ func (o *BiosPolicy) GetSlotRaidLinkSpeedOk() (*string, bool) {
 
 // HasSlotRaidLinkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRaidLinkSpeed() bool {
-	if o != nil && o.SlotRaidLinkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRaidLinkSpeed) {
 		return true
 	}
 
@@ -13081,7 +15039,7 @@ func (o *BiosPolicy) SetSlotRaidLinkSpeed(v string) {
 
 // GetSlotRaidState returns the SlotRaidState field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRaidState() string {
-	if o == nil || o.SlotRaidState == nil {
+	if o == nil || IsNil(o.SlotRaidState) {
 		var ret string
 		return ret
 	}
@@ -13091,7 +15049,7 @@ func (o *BiosPolicy) GetSlotRaidState() string {
 // GetSlotRaidStateOk returns a tuple with the SlotRaidState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRaidStateOk() (*string, bool) {
-	if o == nil || o.SlotRaidState == nil {
+	if o == nil || IsNil(o.SlotRaidState) {
 		return nil, false
 	}
 	return o.SlotRaidState, true
@@ -13099,7 +15057,7 @@ func (o *BiosPolicy) GetSlotRaidStateOk() (*string, bool) {
 
 // HasSlotRaidState returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRaidState() bool {
-	if o != nil && o.SlotRaidState != nil {
+	if o != nil && !IsNil(o.SlotRaidState) {
 		return true
 	}
 
@@ -13113,7 +15071,7 @@ func (o *BiosPolicy) SetSlotRaidState(v string) {
 
 // GetSlotRearNvme1linkSpeed returns the SlotRearNvme1linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme1linkSpeed() string {
-	if o == nil || o.SlotRearNvme1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRearNvme1linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13123,7 +15081,7 @@ func (o *BiosPolicy) GetSlotRearNvme1linkSpeed() string {
 // GetSlotRearNvme1linkSpeedOk returns a tuple with the SlotRearNvme1linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme1linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRearNvme1linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRearNvme1linkSpeed, true
@@ -13131,7 +15089,7 @@ func (o *BiosPolicy) GetSlotRearNvme1linkSpeedOk() (*string, bool) {
 
 // HasSlotRearNvme1linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme1linkSpeed() bool {
-	if o != nil && o.SlotRearNvme1linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRearNvme1linkSpeed) {
 		return true
 	}
 
@@ -13145,7 +15103,7 @@ func (o *BiosPolicy) SetSlotRearNvme1linkSpeed(v string) {
 
 // GetSlotRearNvme1state returns the SlotRearNvme1state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme1state() string {
-	if o == nil || o.SlotRearNvme1state == nil {
+	if o == nil || IsNil(o.SlotRearNvme1state) {
 		var ret string
 		return ret
 	}
@@ -13155,7 +15113,7 @@ func (o *BiosPolicy) GetSlotRearNvme1state() string {
 // GetSlotRearNvme1stateOk returns a tuple with the SlotRearNvme1state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme1stateOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme1state == nil {
+	if o == nil || IsNil(o.SlotRearNvme1state) {
 		return nil, false
 	}
 	return o.SlotRearNvme1state, true
@@ -13163,7 +15121,7 @@ func (o *BiosPolicy) GetSlotRearNvme1stateOk() (*string, bool) {
 
 // HasSlotRearNvme1state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme1state() bool {
-	if o != nil && o.SlotRearNvme1state != nil {
+	if o != nil && !IsNil(o.SlotRearNvme1state) {
 		return true
 	}
 
@@ -13177,7 +15135,7 @@ func (o *BiosPolicy) SetSlotRearNvme1state(v string) {
 
 // GetSlotRearNvme2linkSpeed returns the SlotRearNvme2linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme2linkSpeed() string {
-	if o == nil || o.SlotRearNvme2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRearNvme2linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13187,7 +15145,7 @@ func (o *BiosPolicy) GetSlotRearNvme2linkSpeed() string {
 // GetSlotRearNvme2linkSpeedOk returns a tuple with the SlotRearNvme2linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme2linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRearNvme2linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRearNvme2linkSpeed, true
@@ -13195,7 +15153,7 @@ func (o *BiosPolicy) GetSlotRearNvme2linkSpeedOk() (*string, bool) {
 
 // HasSlotRearNvme2linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme2linkSpeed() bool {
-	if o != nil && o.SlotRearNvme2linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRearNvme2linkSpeed) {
 		return true
 	}
 
@@ -13209,7 +15167,7 @@ func (o *BiosPolicy) SetSlotRearNvme2linkSpeed(v string) {
 
 // GetSlotRearNvme2state returns the SlotRearNvme2state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme2state() string {
-	if o == nil || o.SlotRearNvme2state == nil {
+	if o == nil || IsNil(o.SlotRearNvme2state) {
 		var ret string
 		return ret
 	}
@@ -13219,7 +15177,7 @@ func (o *BiosPolicy) GetSlotRearNvme2state() string {
 // GetSlotRearNvme2stateOk returns a tuple with the SlotRearNvme2state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme2stateOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme2state == nil {
+	if o == nil || IsNil(o.SlotRearNvme2state) {
 		return nil, false
 	}
 	return o.SlotRearNvme2state, true
@@ -13227,7 +15185,7 @@ func (o *BiosPolicy) GetSlotRearNvme2stateOk() (*string, bool) {
 
 // HasSlotRearNvme2state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme2state() bool {
-	if o != nil && o.SlotRearNvme2state != nil {
+	if o != nil && !IsNil(o.SlotRearNvme2state) {
 		return true
 	}
 
@@ -13241,7 +15199,7 @@ func (o *BiosPolicy) SetSlotRearNvme2state(v string) {
 
 // GetSlotRearNvme3linkSpeed returns the SlotRearNvme3linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme3linkSpeed() string {
-	if o == nil || o.SlotRearNvme3linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRearNvme3linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13251,7 +15209,7 @@ func (o *BiosPolicy) GetSlotRearNvme3linkSpeed() string {
 // GetSlotRearNvme3linkSpeedOk returns a tuple with the SlotRearNvme3linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme3linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme3linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRearNvme3linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRearNvme3linkSpeed, true
@@ -13259,7 +15217,7 @@ func (o *BiosPolicy) GetSlotRearNvme3linkSpeedOk() (*string, bool) {
 
 // HasSlotRearNvme3linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme3linkSpeed() bool {
-	if o != nil && o.SlotRearNvme3linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRearNvme3linkSpeed) {
 		return true
 	}
 
@@ -13273,7 +15231,7 @@ func (o *BiosPolicy) SetSlotRearNvme3linkSpeed(v string) {
 
 // GetSlotRearNvme3state returns the SlotRearNvme3state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme3state() string {
-	if o == nil || o.SlotRearNvme3state == nil {
+	if o == nil || IsNil(o.SlotRearNvme3state) {
 		var ret string
 		return ret
 	}
@@ -13283,7 +15241,7 @@ func (o *BiosPolicy) GetSlotRearNvme3state() string {
 // GetSlotRearNvme3stateOk returns a tuple with the SlotRearNvme3state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme3stateOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme3state == nil {
+	if o == nil || IsNil(o.SlotRearNvme3state) {
 		return nil, false
 	}
 	return o.SlotRearNvme3state, true
@@ -13291,7 +15249,7 @@ func (o *BiosPolicy) GetSlotRearNvme3stateOk() (*string, bool) {
 
 // HasSlotRearNvme3state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme3state() bool {
-	if o != nil && o.SlotRearNvme3state != nil {
+	if o != nil && !IsNil(o.SlotRearNvme3state) {
 		return true
 	}
 
@@ -13305,7 +15263,7 @@ func (o *BiosPolicy) SetSlotRearNvme3state(v string) {
 
 // GetSlotRearNvme4linkSpeed returns the SlotRearNvme4linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme4linkSpeed() string {
-	if o == nil || o.SlotRearNvme4linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRearNvme4linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13315,7 +15273,7 @@ func (o *BiosPolicy) GetSlotRearNvme4linkSpeed() string {
 // GetSlotRearNvme4linkSpeedOk returns a tuple with the SlotRearNvme4linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme4linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme4linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRearNvme4linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRearNvme4linkSpeed, true
@@ -13323,7 +15281,7 @@ func (o *BiosPolicy) GetSlotRearNvme4linkSpeedOk() (*string, bool) {
 
 // HasSlotRearNvme4linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme4linkSpeed() bool {
-	if o != nil && o.SlotRearNvme4linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRearNvme4linkSpeed) {
 		return true
 	}
 
@@ -13337,7 +15295,7 @@ func (o *BiosPolicy) SetSlotRearNvme4linkSpeed(v string) {
 
 // GetSlotRearNvme4state returns the SlotRearNvme4state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme4state() string {
-	if o == nil || o.SlotRearNvme4state == nil {
+	if o == nil || IsNil(o.SlotRearNvme4state) {
 		var ret string
 		return ret
 	}
@@ -13347,7 +15305,7 @@ func (o *BiosPolicy) GetSlotRearNvme4state() string {
 // GetSlotRearNvme4stateOk returns a tuple with the SlotRearNvme4state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme4stateOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme4state == nil {
+	if o == nil || IsNil(o.SlotRearNvme4state) {
 		return nil, false
 	}
 	return o.SlotRearNvme4state, true
@@ -13355,7 +15313,7 @@ func (o *BiosPolicy) GetSlotRearNvme4stateOk() (*string, bool) {
 
 // HasSlotRearNvme4state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme4state() bool {
-	if o != nil && o.SlotRearNvme4state != nil {
+	if o != nil && !IsNil(o.SlotRearNvme4state) {
 		return true
 	}
 
@@ -13369,7 +15327,7 @@ func (o *BiosPolicy) SetSlotRearNvme4state(v string) {
 
 // GetSlotRearNvme5state returns the SlotRearNvme5state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme5state() string {
-	if o == nil || o.SlotRearNvme5state == nil {
+	if o == nil || IsNil(o.SlotRearNvme5state) {
 		var ret string
 		return ret
 	}
@@ -13379,7 +15337,7 @@ func (o *BiosPolicy) GetSlotRearNvme5state() string {
 // GetSlotRearNvme5stateOk returns a tuple with the SlotRearNvme5state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme5stateOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme5state == nil {
+	if o == nil || IsNil(o.SlotRearNvme5state) {
 		return nil, false
 	}
 	return o.SlotRearNvme5state, true
@@ -13387,7 +15345,7 @@ func (o *BiosPolicy) GetSlotRearNvme5stateOk() (*string, bool) {
 
 // HasSlotRearNvme5state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme5state() bool {
-	if o != nil && o.SlotRearNvme5state != nil {
+	if o != nil && !IsNil(o.SlotRearNvme5state) {
 		return true
 	}
 
@@ -13401,7 +15359,7 @@ func (o *BiosPolicy) SetSlotRearNvme5state(v string) {
 
 // GetSlotRearNvme6state returns the SlotRearNvme6state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme6state() string {
-	if o == nil || o.SlotRearNvme6state == nil {
+	if o == nil || IsNil(o.SlotRearNvme6state) {
 		var ret string
 		return ret
 	}
@@ -13411,7 +15369,7 @@ func (o *BiosPolicy) GetSlotRearNvme6state() string {
 // GetSlotRearNvme6stateOk returns a tuple with the SlotRearNvme6state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme6stateOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme6state == nil {
+	if o == nil || IsNil(o.SlotRearNvme6state) {
 		return nil, false
 	}
 	return o.SlotRearNvme6state, true
@@ -13419,7 +15377,7 @@ func (o *BiosPolicy) GetSlotRearNvme6stateOk() (*string, bool) {
 
 // HasSlotRearNvme6state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme6state() bool {
-	if o != nil && o.SlotRearNvme6state != nil {
+	if o != nil && !IsNil(o.SlotRearNvme6state) {
 		return true
 	}
 
@@ -13433,7 +15391,7 @@ func (o *BiosPolicy) SetSlotRearNvme6state(v string) {
 
 // GetSlotRearNvme7state returns the SlotRearNvme7state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme7state() string {
-	if o == nil || o.SlotRearNvme7state == nil {
+	if o == nil || IsNil(o.SlotRearNvme7state) {
 		var ret string
 		return ret
 	}
@@ -13443,7 +15401,7 @@ func (o *BiosPolicy) GetSlotRearNvme7state() string {
 // GetSlotRearNvme7stateOk returns a tuple with the SlotRearNvme7state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme7stateOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme7state == nil {
+	if o == nil || IsNil(o.SlotRearNvme7state) {
 		return nil, false
 	}
 	return o.SlotRearNvme7state, true
@@ -13451,7 +15409,7 @@ func (o *BiosPolicy) GetSlotRearNvme7stateOk() (*string, bool) {
 
 // HasSlotRearNvme7state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme7state() bool {
-	if o != nil && o.SlotRearNvme7state != nil {
+	if o != nil && !IsNil(o.SlotRearNvme7state) {
 		return true
 	}
 
@@ -13465,7 +15423,7 @@ func (o *BiosPolicy) SetSlotRearNvme7state(v string) {
 
 // GetSlotRearNvme8state returns the SlotRearNvme8state field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRearNvme8state() string {
-	if o == nil || o.SlotRearNvme8state == nil {
+	if o == nil || IsNil(o.SlotRearNvme8state) {
 		var ret string
 		return ret
 	}
@@ -13475,7 +15433,7 @@ func (o *BiosPolicy) GetSlotRearNvme8state() string {
 // GetSlotRearNvme8stateOk returns a tuple with the SlotRearNvme8state field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRearNvme8stateOk() (*string, bool) {
-	if o == nil || o.SlotRearNvme8state == nil {
+	if o == nil || IsNil(o.SlotRearNvme8state) {
 		return nil, false
 	}
 	return o.SlotRearNvme8state, true
@@ -13483,7 +15441,7 @@ func (o *BiosPolicy) GetSlotRearNvme8stateOk() (*string, bool) {
 
 // HasSlotRearNvme8state returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRearNvme8state() bool {
-	if o != nil && o.SlotRearNvme8state != nil {
+	if o != nil && !IsNil(o.SlotRearNvme8state) {
 		return true
 	}
 
@@ -13497,7 +15455,7 @@ func (o *BiosPolicy) SetSlotRearNvme8state(v string) {
 
 // GetSlotRiser1linkSpeed returns the SlotRiser1linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRiser1linkSpeed() string {
-	if o == nil || o.SlotRiser1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser1linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13507,7 +15465,7 @@ func (o *BiosPolicy) GetSlotRiser1linkSpeed() string {
 // GetSlotRiser1linkSpeedOk returns a tuple with the SlotRiser1linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRiser1linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRiser1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser1linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRiser1linkSpeed, true
@@ -13515,7 +15473,7 @@ func (o *BiosPolicy) GetSlotRiser1linkSpeedOk() (*string, bool) {
 
 // HasSlotRiser1linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRiser1linkSpeed() bool {
-	if o != nil && o.SlotRiser1linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRiser1linkSpeed) {
 		return true
 	}
 
@@ -13529,7 +15487,7 @@ func (o *BiosPolicy) SetSlotRiser1linkSpeed(v string) {
 
 // GetSlotRiser1slot1linkSpeed returns the SlotRiser1slot1linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRiser1slot1linkSpeed() string {
-	if o == nil || o.SlotRiser1slot1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser1slot1linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13539,7 +15497,7 @@ func (o *BiosPolicy) GetSlotRiser1slot1linkSpeed() string {
 // GetSlotRiser1slot1linkSpeedOk returns a tuple with the SlotRiser1slot1linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRiser1slot1linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRiser1slot1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser1slot1linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRiser1slot1linkSpeed, true
@@ -13547,7 +15505,7 @@ func (o *BiosPolicy) GetSlotRiser1slot1linkSpeedOk() (*string, bool) {
 
 // HasSlotRiser1slot1linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRiser1slot1linkSpeed() bool {
-	if o != nil && o.SlotRiser1slot1linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRiser1slot1linkSpeed) {
 		return true
 	}
 
@@ -13561,7 +15519,7 @@ func (o *BiosPolicy) SetSlotRiser1slot1linkSpeed(v string) {
 
 // GetSlotRiser1slot2linkSpeed returns the SlotRiser1slot2linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRiser1slot2linkSpeed() string {
-	if o == nil || o.SlotRiser1slot2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser1slot2linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13571,7 +15529,7 @@ func (o *BiosPolicy) GetSlotRiser1slot2linkSpeed() string {
 // GetSlotRiser1slot2linkSpeedOk returns a tuple with the SlotRiser1slot2linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRiser1slot2linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRiser1slot2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser1slot2linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRiser1slot2linkSpeed, true
@@ -13579,7 +15537,7 @@ func (o *BiosPolicy) GetSlotRiser1slot2linkSpeedOk() (*string, bool) {
 
 // HasSlotRiser1slot2linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRiser1slot2linkSpeed() bool {
-	if o != nil && o.SlotRiser1slot2linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRiser1slot2linkSpeed) {
 		return true
 	}
 
@@ -13593,7 +15551,7 @@ func (o *BiosPolicy) SetSlotRiser1slot2linkSpeed(v string) {
 
 // GetSlotRiser1slot3linkSpeed returns the SlotRiser1slot3linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRiser1slot3linkSpeed() string {
-	if o == nil || o.SlotRiser1slot3linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser1slot3linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13603,7 +15561,7 @@ func (o *BiosPolicy) GetSlotRiser1slot3linkSpeed() string {
 // GetSlotRiser1slot3linkSpeedOk returns a tuple with the SlotRiser1slot3linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRiser1slot3linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRiser1slot3linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser1slot3linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRiser1slot3linkSpeed, true
@@ -13611,7 +15569,7 @@ func (o *BiosPolicy) GetSlotRiser1slot3linkSpeedOk() (*string, bool) {
 
 // HasSlotRiser1slot3linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRiser1slot3linkSpeed() bool {
-	if o != nil && o.SlotRiser1slot3linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRiser1slot3linkSpeed) {
 		return true
 	}
 
@@ -13625,7 +15583,7 @@ func (o *BiosPolicy) SetSlotRiser1slot3linkSpeed(v string) {
 
 // GetSlotRiser2linkSpeed returns the SlotRiser2linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRiser2linkSpeed() string {
-	if o == nil || o.SlotRiser2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser2linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13635,7 +15593,7 @@ func (o *BiosPolicy) GetSlotRiser2linkSpeed() string {
 // GetSlotRiser2linkSpeedOk returns a tuple with the SlotRiser2linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRiser2linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRiser2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser2linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRiser2linkSpeed, true
@@ -13643,7 +15601,7 @@ func (o *BiosPolicy) GetSlotRiser2linkSpeedOk() (*string, bool) {
 
 // HasSlotRiser2linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRiser2linkSpeed() bool {
-	if o != nil && o.SlotRiser2linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRiser2linkSpeed) {
 		return true
 	}
 
@@ -13657,7 +15615,7 @@ func (o *BiosPolicy) SetSlotRiser2linkSpeed(v string) {
 
 // GetSlotRiser2slot4linkSpeed returns the SlotRiser2slot4linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRiser2slot4linkSpeed() string {
-	if o == nil || o.SlotRiser2slot4linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser2slot4linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13667,7 +15625,7 @@ func (o *BiosPolicy) GetSlotRiser2slot4linkSpeed() string {
 // GetSlotRiser2slot4linkSpeedOk returns a tuple with the SlotRiser2slot4linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRiser2slot4linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRiser2slot4linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser2slot4linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRiser2slot4linkSpeed, true
@@ -13675,7 +15633,7 @@ func (o *BiosPolicy) GetSlotRiser2slot4linkSpeedOk() (*string, bool) {
 
 // HasSlotRiser2slot4linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRiser2slot4linkSpeed() bool {
-	if o != nil && o.SlotRiser2slot4linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRiser2slot4linkSpeed) {
 		return true
 	}
 
@@ -13689,7 +15647,7 @@ func (o *BiosPolicy) SetSlotRiser2slot4linkSpeed(v string) {
 
 // GetSlotRiser2slot5linkSpeed returns the SlotRiser2slot5linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRiser2slot5linkSpeed() string {
-	if o == nil || o.SlotRiser2slot5linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser2slot5linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13699,7 +15657,7 @@ func (o *BiosPolicy) GetSlotRiser2slot5linkSpeed() string {
 // GetSlotRiser2slot5linkSpeedOk returns a tuple with the SlotRiser2slot5linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRiser2slot5linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRiser2slot5linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser2slot5linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRiser2slot5linkSpeed, true
@@ -13707,7 +15665,7 @@ func (o *BiosPolicy) GetSlotRiser2slot5linkSpeedOk() (*string, bool) {
 
 // HasSlotRiser2slot5linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRiser2slot5linkSpeed() bool {
-	if o != nil && o.SlotRiser2slot5linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRiser2slot5linkSpeed) {
 		return true
 	}
 
@@ -13721,7 +15679,7 @@ func (o *BiosPolicy) SetSlotRiser2slot5linkSpeed(v string) {
 
 // GetSlotRiser2slot6linkSpeed returns the SlotRiser2slot6linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotRiser2slot6linkSpeed() string {
-	if o == nil || o.SlotRiser2slot6linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser2slot6linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13731,7 +15689,7 @@ func (o *BiosPolicy) GetSlotRiser2slot6linkSpeed() string {
 // GetSlotRiser2slot6linkSpeedOk returns a tuple with the SlotRiser2slot6linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotRiser2slot6linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotRiser2slot6linkSpeed == nil {
+	if o == nil || IsNil(o.SlotRiser2slot6linkSpeed) {
 		return nil, false
 	}
 	return o.SlotRiser2slot6linkSpeed, true
@@ -13739,7 +15697,7 @@ func (o *BiosPolicy) GetSlotRiser2slot6linkSpeedOk() (*string, bool) {
 
 // HasSlotRiser2slot6linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotRiser2slot6linkSpeed() bool {
-	if o != nil && o.SlotRiser2slot6linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotRiser2slot6linkSpeed) {
 		return true
 	}
 
@@ -13753,7 +15711,7 @@ func (o *BiosPolicy) SetSlotRiser2slot6linkSpeed(v string) {
 
 // GetSlotSasState returns the SlotSasState field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotSasState() string {
-	if o == nil || o.SlotSasState == nil {
+	if o == nil || IsNil(o.SlotSasState) {
 		var ret string
 		return ret
 	}
@@ -13763,7 +15721,7 @@ func (o *BiosPolicy) GetSlotSasState() string {
 // GetSlotSasStateOk returns a tuple with the SlotSasState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotSasStateOk() (*string, bool) {
-	if o == nil || o.SlotSasState == nil {
+	if o == nil || IsNil(o.SlotSasState) {
 		return nil, false
 	}
 	return o.SlotSasState, true
@@ -13771,7 +15729,7 @@ func (o *BiosPolicy) GetSlotSasStateOk() (*string, bool) {
 
 // HasSlotSasState returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotSasState() bool {
-	if o != nil && o.SlotSasState != nil {
+	if o != nil && !IsNil(o.SlotSasState) {
 		return true
 	}
 
@@ -13785,7 +15743,7 @@ func (o *BiosPolicy) SetSlotSasState(v string) {
 
 // GetSlotSsdSlot1linkSpeed returns the SlotSsdSlot1linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotSsdSlot1linkSpeed() string {
-	if o == nil || o.SlotSsdSlot1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotSsdSlot1linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13795,7 +15753,7 @@ func (o *BiosPolicy) GetSlotSsdSlot1linkSpeed() string {
 // GetSlotSsdSlot1linkSpeedOk returns a tuple with the SlotSsdSlot1linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotSsdSlot1linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotSsdSlot1linkSpeed == nil {
+	if o == nil || IsNil(o.SlotSsdSlot1linkSpeed) {
 		return nil, false
 	}
 	return o.SlotSsdSlot1linkSpeed, true
@@ -13803,7 +15761,7 @@ func (o *BiosPolicy) GetSlotSsdSlot1linkSpeedOk() (*string, bool) {
 
 // HasSlotSsdSlot1linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotSsdSlot1linkSpeed() bool {
-	if o != nil && o.SlotSsdSlot1linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotSsdSlot1linkSpeed) {
 		return true
 	}
 
@@ -13817,7 +15775,7 @@ func (o *BiosPolicy) SetSlotSsdSlot1linkSpeed(v string) {
 
 // GetSlotSsdSlot2linkSpeed returns the SlotSsdSlot2linkSpeed field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSlotSsdSlot2linkSpeed() string {
-	if o == nil || o.SlotSsdSlot2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotSsdSlot2linkSpeed) {
 		var ret string
 		return ret
 	}
@@ -13827,7 +15785,7 @@ func (o *BiosPolicy) GetSlotSsdSlot2linkSpeed() string {
 // GetSlotSsdSlot2linkSpeedOk returns a tuple with the SlotSsdSlot2linkSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSlotSsdSlot2linkSpeedOk() (*string, bool) {
-	if o == nil || o.SlotSsdSlot2linkSpeed == nil {
+	if o == nil || IsNil(o.SlotSsdSlot2linkSpeed) {
 		return nil, false
 	}
 	return o.SlotSsdSlot2linkSpeed, true
@@ -13835,7 +15793,7 @@ func (o *BiosPolicy) GetSlotSsdSlot2linkSpeedOk() (*string, bool) {
 
 // HasSlotSsdSlot2linkSpeed returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSlotSsdSlot2linkSpeed() bool {
-	if o != nil && o.SlotSsdSlot2linkSpeed != nil {
+	if o != nil && !IsNil(o.SlotSsdSlot2linkSpeed) {
 		return true
 	}
 
@@ -13849,7 +15807,7 @@ func (o *BiosPolicy) SetSlotSsdSlot2linkSpeed(v string) {
 
 // GetSmee returns the Smee field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSmee() string {
-	if o == nil || o.Smee == nil {
+	if o == nil || IsNil(o.Smee) {
 		var ret string
 		return ret
 	}
@@ -13859,7 +15817,7 @@ func (o *BiosPolicy) GetSmee() string {
 // GetSmeeOk returns a tuple with the Smee field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSmeeOk() (*string, bool) {
-	if o == nil || o.Smee == nil {
+	if o == nil || IsNil(o.Smee) {
 		return nil, false
 	}
 	return o.Smee, true
@@ -13867,7 +15825,7 @@ func (o *BiosPolicy) GetSmeeOk() (*string, bool) {
 
 // HasSmee returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSmee() bool {
-	if o != nil && o.Smee != nil {
+	if o != nil && !IsNil(o.Smee) {
 		return true
 	}
 
@@ -13881,7 +15839,7 @@ func (o *BiosPolicy) SetSmee(v string) {
 
 // GetSmtMode returns the SmtMode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSmtMode() string {
-	if o == nil || o.SmtMode == nil {
+	if o == nil || IsNil(o.SmtMode) {
 		var ret string
 		return ret
 	}
@@ -13891,7 +15849,7 @@ func (o *BiosPolicy) GetSmtMode() string {
 // GetSmtModeOk returns a tuple with the SmtMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSmtModeOk() (*string, bool) {
-	if o == nil || o.SmtMode == nil {
+	if o == nil || IsNil(o.SmtMode) {
 		return nil, false
 	}
 	return o.SmtMode, true
@@ -13899,7 +15857,7 @@ func (o *BiosPolicy) GetSmtModeOk() (*string, bool) {
 
 // HasSmtMode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSmtMode() bool {
-	if o != nil && o.SmtMode != nil {
+	if o != nil && !IsNil(o.SmtMode) {
 		return true
 	}
 
@@ -13913,7 +15871,7 @@ func (o *BiosPolicy) SetSmtMode(v string) {
 
 // GetSnc returns the Snc field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSnc() string {
-	if o == nil || o.Snc == nil {
+	if o == nil || IsNil(o.Snc) {
 		var ret string
 		return ret
 	}
@@ -13923,7 +15881,7 @@ func (o *BiosPolicy) GetSnc() string {
 // GetSncOk returns a tuple with the Snc field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSncOk() (*string, bool) {
-	if o == nil || o.Snc == nil {
+	if o == nil || IsNil(o.Snc) {
 		return nil, false
 	}
 	return o.Snc, true
@@ -13931,7 +15889,7 @@ func (o *BiosPolicy) GetSncOk() (*string, bool) {
 
 // HasSnc returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSnc() bool {
-	if o != nil && o.Snc != nil {
+	if o != nil && !IsNil(o.Snc) {
 		return true
 	}
 
@@ -13945,7 +15903,7 @@ func (o *BiosPolicy) SetSnc(v string) {
 
 // GetSnoopyModeFor2lm returns the SnoopyModeFor2lm field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSnoopyModeFor2lm() string {
-	if o == nil || o.SnoopyModeFor2lm == nil {
+	if o == nil || IsNil(o.SnoopyModeFor2lm) {
 		var ret string
 		return ret
 	}
@@ -13955,7 +15913,7 @@ func (o *BiosPolicy) GetSnoopyModeFor2lm() string {
 // GetSnoopyModeFor2lmOk returns a tuple with the SnoopyModeFor2lm field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSnoopyModeFor2lmOk() (*string, bool) {
-	if o == nil || o.SnoopyModeFor2lm == nil {
+	if o == nil || IsNil(o.SnoopyModeFor2lm) {
 		return nil, false
 	}
 	return o.SnoopyModeFor2lm, true
@@ -13963,7 +15921,7 @@ func (o *BiosPolicy) GetSnoopyModeFor2lmOk() (*string, bool) {
 
 // HasSnoopyModeFor2lm returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSnoopyModeFor2lm() bool {
-	if o != nil && o.SnoopyModeFor2lm != nil {
+	if o != nil && !IsNil(o.SnoopyModeFor2lm) {
 		return true
 	}
 
@@ -13977,7 +15935,7 @@ func (o *BiosPolicy) SetSnoopyModeFor2lm(v string) {
 
 // GetSnoopyModeForAd returns the SnoopyModeForAd field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSnoopyModeForAd() string {
-	if o == nil || o.SnoopyModeForAd == nil {
+	if o == nil || IsNil(o.SnoopyModeForAd) {
 		var ret string
 		return ret
 	}
@@ -13987,7 +15945,7 @@ func (o *BiosPolicy) GetSnoopyModeForAd() string {
 // GetSnoopyModeForAdOk returns a tuple with the SnoopyModeForAd field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSnoopyModeForAdOk() (*string, bool) {
-	if o == nil || o.SnoopyModeForAd == nil {
+	if o == nil || IsNil(o.SnoopyModeForAd) {
 		return nil, false
 	}
 	return o.SnoopyModeForAd, true
@@ -13995,7 +15953,7 @@ func (o *BiosPolicy) GetSnoopyModeForAdOk() (*string, bool) {
 
 // HasSnoopyModeForAd returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSnoopyModeForAd() bool {
-	if o != nil && o.SnoopyModeForAd != nil {
+	if o != nil && !IsNil(o.SnoopyModeForAd) {
 		return true
 	}
 
@@ -14009,7 +15967,7 @@ func (o *BiosPolicy) SetSnoopyModeForAd(v string) {
 
 // GetSparingMode returns the SparingMode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSparingMode() string {
-	if o == nil || o.SparingMode == nil {
+	if o == nil || IsNil(o.SparingMode) {
 		var ret string
 		return ret
 	}
@@ -14019,7 +15977,7 @@ func (o *BiosPolicy) GetSparingMode() string {
 // GetSparingModeOk returns a tuple with the SparingMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSparingModeOk() (*string, bool) {
-	if o == nil || o.SparingMode == nil {
+	if o == nil || IsNil(o.SparingMode) {
 		return nil, false
 	}
 	return o.SparingMode, true
@@ -14027,7 +15985,7 @@ func (o *BiosPolicy) GetSparingModeOk() (*string, bool) {
 
 // HasSparingMode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSparingMode() bool {
-	if o != nil && o.SparingMode != nil {
+	if o != nil && !IsNil(o.SparingMode) {
 		return true
 	}
 
@@ -14041,7 +15999,7 @@ func (o *BiosPolicy) SetSparingMode(v string) {
 
 // GetSrIov returns the SrIov field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSrIov() string {
-	if o == nil || o.SrIov == nil {
+	if o == nil || IsNil(o.SrIov) {
 		var ret string
 		return ret
 	}
@@ -14051,7 +16009,7 @@ func (o *BiosPolicy) GetSrIov() string {
 // GetSrIovOk returns a tuple with the SrIov field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSrIovOk() (*string, bool) {
-	if o == nil || o.SrIov == nil {
+	if o == nil || IsNil(o.SrIov) {
 		return nil, false
 	}
 	return o.SrIov, true
@@ -14059,7 +16017,7 @@ func (o *BiosPolicy) GetSrIovOk() (*string, bool) {
 
 // HasSrIov returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSrIov() bool {
-	if o != nil && o.SrIov != nil {
+	if o != nil && !IsNil(o.SrIov) {
 		return true
 	}
 
@@ -14073,7 +16031,7 @@ func (o *BiosPolicy) SetSrIov(v string) {
 
 // GetStreamerPrefetch returns the StreamerPrefetch field value if set, zero value otherwise.
 func (o *BiosPolicy) GetStreamerPrefetch() string {
-	if o == nil || o.StreamerPrefetch == nil {
+	if o == nil || IsNil(o.StreamerPrefetch) {
 		var ret string
 		return ret
 	}
@@ -14083,7 +16041,7 @@ func (o *BiosPolicy) GetStreamerPrefetch() string {
 // GetStreamerPrefetchOk returns a tuple with the StreamerPrefetch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetStreamerPrefetchOk() (*string, bool) {
-	if o == nil || o.StreamerPrefetch == nil {
+	if o == nil || IsNil(o.StreamerPrefetch) {
 		return nil, false
 	}
 	return o.StreamerPrefetch, true
@@ -14091,7 +16049,7 @@ func (o *BiosPolicy) GetStreamerPrefetchOk() (*string, bool) {
 
 // HasStreamerPrefetch returns a boolean if a field has been set.
 func (o *BiosPolicy) HasStreamerPrefetch() bool {
-	if o != nil && o.StreamerPrefetch != nil {
+	if o != nil && !IsNil(o.StreamerPrefetch) {
 		return true
 	}
 
@@ -14105,7 +16063,7 @@ func (o *BiosPolicy) SetStreamerPrefetch(v string) {
 
 // GetSvmMode returns the SvmMode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetSvmMode() string {
-	if o == nil || o.SvmMode == nil {
+	if o == nil || IsNil(o.SvmMode) {
 		var ret string
 		return ret
 	}
@@ -14115,7 +16073,7 @@ func (o *BiosPolicy) GetSvmMode() string {
 // GetSvmModeOk returns a tuple with the SvmMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetSvmModeOk() (*string, bool) {
-	if o == nil || o.SvmMode == nil {
+	if o == nil || IsNil(o.SvmMode) {
 		return nil, false
 	}
 	return o.SvmMode, true
@@ -14123,7 +16081,7 @@ func (o *BiosPolicy) GetSvmModeOk() (*string, bool) {
 
 // HasSvmMode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasSvmMode() bool {
-	if o != nil && o.SvmMode != nil {
+	if o != nil && !IsNil(o.SvmMode) {
 		return true
 	}
 
@@ -14137,7 +16095,7 @@ func (o *BiosPolicy) SetSvmMode(v string) {
 
 // GetTerminalType returns the TerminalType field value if set, zero value otherwise.
 func (o *BiosPolicy) GetTerminalType() string {
-	if o == nil || o.TerminalType == nil {
+	if o == nil || IsNil(o.TerminalType) {
 		var ret string
 		return ret
 	}
@@ -14147,7 +16105,7 @@ func (o *BiosPolicy) GetTerminalType() string {
 // GetTerminalTypeOk returns a tuple with the TerminalType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetTerminalTypeOk() (*string, bool) {
-	if o == nil || o.TerminalType == nil {
+	if o == nil || IsNil(o.TerminalType) {
 		return nil, false
 	}
 	return o.TerminalType, true
@@ -14155,7 +16113,7 @@ func (o *BiosPolicy) GetTerminalTypeOk() (*string, bool) {
 
 // HasTerminalType returns a boolean if a field has been set.
 func (o *BiosPolicy) HasTerminalType() bool {
-	if o != nil && o.TerminalType != nil {
+	if o != nil && !IsNil(o.TerminalType) {
 		return true
 	}
 
@@ -14169,7 +16127,7 @@ func (o *BiosPolicy) SetTerminalType(v string) {
 
 // GetTpmControl returns the TpmControl field value if set, zero value otherwise.
 func (o *BiosPolicy) GetTpmControl() string {
-	if o == nil || o.TpmControl == nil {
+	if o == nil || IsNil(o.TpmControl) {
 		var ret string
 		return ret
 	}
@@ -14179,7 +16137,7 @@ func (o *BiosPolicy) GetTpmControl() string {
 // GetTpmControlOk returns a tuple with the TpmControl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetTpmControlOk() (*string, bool) {
-	if o == nil || o.TpmControl == nil {
+	if o == nil || IsNil(o.TpmControl) {
 		return nil, false
 	}
 	return o.TpmControl, true
@@ -14187,7 +16145,7 @@ func (o *BiosPolicy) GetTpmControlOk() (*string, bool) {
 
 // HasTpmControl returns a boolean if a field has been set.
 func (o *BiosPolicy) HasTpmControl() bool {
-	if o != nil && o.TpmControl != nil {
+	if o != nil && !IsNil(o.TpmControl) {
 		return true
 	}
 
@@ -14201,7 +16159,7 @@ func (o *BiosPolicy) SetTpmControl(v string) {
 
 // GetTpmPendingOperation returns the TpmPendingOperation field value if set, zero value otherwise.
 func (o *BiosPolicy) GetTpmPendingOperation() string {
-	if o == nil || o.TpmPendingOperation == nil {
+	if o == nil || IsNil(o.TpmPendingOperation) {
 		var ret string
 		return ret
 	}
@@ -14211,7 +16169,7 @@ func (o *BiosPolicy) GetTpmPendingOperation() string {
 // GetTpmPendingOperationOk returns a tuple with the TpmPendingOperation field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetTpmPendingOperationOk() (*string, bool) {
-	if o == nil || o.TpmPendingOperation == nil {
+	if o == nil || IsNil(o.TpmPendingOperation) {
 		return nil, false
 	}
 	return o.TpmPendingOperation, true
@@ -14219,7 +16177,7 @@ func (o *BiosPolicy) GetTpmPendingOperationOk() (*string, bool) {
 
 // HasTpmPendingOperation returns a boolean if a field has been set.
 func (o *BiosPolicy) HasTpmPendingOperation() bool {
-	if o != nil && o.TpmPendingOperation != nil {
+	if o != nil && !IsNil(o.TpmPendingOperation) {
 		return true
 	}
 
@@ -14233,7 +16191,7 @@ func (o *BiosPolicy) SetTpmPendingOperation(v string) {
 
 // GetTpmPpiRequired returns the TpmPpiRequired field value if set, zero value otherwise.
 func (o *BiosPolicy) GetTpmPpiRequired() string {
-	if o == nil || o.TpmPpiRequired == nil {
+	if o == nil || IsNil(o.TpmPpiRequired) {
 		var ret string
 		return ret
 	}
@@ -14243,7 +16201,7 @@ func (o *BiosPolicy) GetTpmPpiRequired() string {
 // GetTpmPpiRequiredOk returns a tuple with the TpmPpiRequired field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetTpmPpiRequiredOk() (*string, bool) {
-	if o == nil || o.TpmPpiRequired == nil {
+	if o == nil || IsNil(o.TpmPpiRequired) {
 		return nil, false
 	}
 	return o.TpmPpiRequired, true
@@ -14251,7 +16209,7 @@ func (o *BiosPolicy) GetTpmPpiRequiredOk() (*string, bool) {
 
 // HasTpmPpiRequired returns a boolean if a field has been set.
 func (o *BiosPolicy) HasTpmPpiRequired() bool {
-	if o != nil && o.TpmPpiRequired != nil {
+	if o != nil && !IsNil(o.TpmPpiRequired) {
 		return true
 	}
 
@@ -14265,7 +16223,7 @@ func (o *BiosPolicy) SetTpmPpiRequired(v string) {
 
 // GetTpmSupport returns the TpmSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetTpmSupport() string {
-	if o == nil || o.TpmSupport == nil {
+	if o == nil || IsNil(o.TpmSupport) {
 		var ret string
 		return ret
 	}
@@ -14275,7 +16233,7 @@ func (o *BiosPolicy) GetTpmSupport() string {
 // GetTpmSupportOk returns a tuple with the TpmSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetTpmSupportOk() (*string, bool) {
-	if o == nil || o.TpmSupport == nil {
+	if o == nil || IsNil(o.TpmSupport) {
 		return nil, false
 	}
 	return o.TpmSupport, true
@@ -14283,7 +16241,7 @@ func (o *BiosPolicy) GetTpmSupportOk() (*string, bool) {
 
 // HasTpmSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasTpmSupport() bool {
-	if o != nil && o.TpmSupport != nil {
+	if o != nil && !IsNil(o.TpmSupport) {
 		return true
 	}
 
@@ -14297,7 +16255,7 @@ func (o *BiosPolicy) SetTpmSupport(v string) {
 
 // GetTsme returns the Tsme field value if set, zero value otherwise.
 func (o *BiosPolicy) GetTsme() string {
-	if o == nil || o.Tsme == nil {
+	if o == nil || IsNil(o.Tsme) {
 		var ret string
 		return ret
 	}
@@ -14307,7 +16265,7 @@ func (o *BiosPolicy) GetTsme() string {
 // GetTsmeOk returns a tuple with the Tsme field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetTsmeOk() (*string, bool) {
-	if o == nil || o.Tsme == nil {
+	if o == nil || IsNil(o.Tsme) {
 		return nil, false
 	}
 	return o.Tsme, true
@@ -14315,7 +16273,7 @@ func (o *BiosPolicy) GetTsmeOk() (*string, bool) {
 
 // HasTsme returns a boolean if a field has been set.
 func (o *BiosPolicy) HasTsme() bool {
-	if o != nil && o.Tsme != nil {
+	if o != nil && !IsNil(o.Tsme) {
 		return true
 	}
 
@@ -14329,7 +16287,7 @@ func (o *BiosPolicy) SetTsme(v string) {
 
 // GetTxtSupport returns the TxtSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetTxtSupport() string {
-	if o == nil || o.TxtSupport == nil {
+	if o == nil || IsNil(o.TxtSupport) {
 		var ret string
 		return ret
 	}
@@ -14339,7 +16297,7 @@ func (o *BiosPolicy) GetTxtSupport() string {
 // GetTxtSupportOk returns a tuple with the TxtSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetTxtSupportOk() (*string, bool) {
-	if o == nil || o.TxtSupport == nil {
+	if o == nil || IsNil(o.TxtSupport) {
 		return nil, false
 	}
 	return o.TxtSupport, true
@@ -14347,7 +16305,7 @@ func (o *BiosPolicy) GetTxtSupportOk() (*string, bool) {
 
 // HasTxtSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasTxtSupport() bool {
-	if o != nil && o.TxtSupport != nil {
+	if o != nil && !IsNil(o.TxtSupport) {
 		return true
 	}
 
@@ -14361,7 +16319,7 @@ func (o *BiosPolicy) SetTxtSupport(v string) {
 
 // GetUcsmBootOrderRule returns the UcsmBootOrderRule field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUcsmBootOrderRule() string {
-	if o == nil || o.UcsmBootOrderRule == nil {
+	if o == nil || IsNil(o.UcsmBootOrderRule) {
 		var ret string
 		return ret
 	}
@@ -14371,7 +16329,7 @@ func (o *BiosPolicy) GetUcsmBootOrderRule() string {
 // GetUcsmBootOrderRuleOk returns a tuple with the UcsmBootOrderRule field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUcsmBootOrderRuleOk() (*string, bool) {
-	if o == nil || o.UcsmBootOrderRule == nil {
+	if o == nil || IsNil(o.UcsmBootOrderRule) {
 		return nil, false
 	}
 	return o.UcsmBootOrderRule, true
@@ -14379,7 +16337,7 @@ func (o *BiosPolicy) GetUcsmBootOrderRuleOk() (*string, bool) {
 
 // HasUcsmBootOrderRule returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUcsmBootOrderRule() bool {
-	if o != nil && o.UcsmBootOrderRule != nil {
+	if o != nil && !IsNil(o.UcsmBootOrderRule) {
 		return true
 	}
 
@@ -14393,7 +16351,7 @@ func (o *BiosPolicy) SetUcsmBootOrderRule(v string) {
 
 // GetUfsDisable returns the UfsDisable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUfsDisable() string {
-	if o == nil || o.UfsDisable == nil {
+	if o == nil || IsNil(o.UfsDisable) {
 		var ret string
 		return ret
 	}
@@ -14403,7 +16361,7 @@ func (o *BiosPolicy) GetUfsDisable() string {
 // GetUfsDisableOk returns a tuple with the UfsDisable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUfsDisableOk() (*string, bool) {
-	if o == nil || o.UfsDisable == nil {
+	if o == nil || IsNil(o.UfsDisable) {
 		return nil, false
 	}
 	return o.UfsDisable, true
@@ -14411,7 +16369,7 @@ func (o *BiosPolicy) GetUfsDisableOk() (*string, bool) {
 
 // HasUfsDisable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUfsDisable() bool {
-	if o != nil && o.UfsDisable != nil {
+	if o != nil && !IsNil(o.UfsDisable) {
 		return true
 	}
 
@@ -14425,7 +16383,7 @@ func (o *BiosPolicy) SetUfsDisable(v string) {
 
 // GetUmaBasedClustering returns the UmaBasedClustering field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUmaBasedClustering() string {
-	if o == nil || o.UmaBasedClustering == nil {
+	if o == nil || IsNil(o.UmaBasedClustering) {
 		var ret string
 		return ret
 	}
@@ -14435,7 +16393,7 @@ func (o *BiosPolicy) GetUmaBasedClustering() string {
 // GetUmaBasedClusteringOk returns a tuple with the UmaBasedClustering field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUmaBasedClusteringOk() (*string, bool) {
-	if o == nil || o.UmaBasedClustering == nil {
+	if o == nil || IsNil(o.UmaBasedClustering) {
 		return nil, false
 	}
 	return o.UmaBasedClustering, true
@@ -14443,7 +16401,7 @@ func (o *BiosPolicy) GetUmaBasedClusteringOk() (*string, bool) {
 
 // HasUmaBasedClustering returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUmaBasedClustering() bool {
-	if o != nil && o.UmaBasedClustering != nil {
+	if o != nil && !IsNil(o.UmaBasedClustering) {
 		return true
 	}
 
@@ -14457,7 +16415,7 @@ func (o *BiosPolicy) SetUmaBasedClustering(v string) {
 
 // GetUpiLinkEnablement returns the UpiLinkEnablement field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUpiLinkEnablement() string {
-	if o == nil || o.UpiLinkEnablement == nil {
+	if o == nil || IsNil(o.UpiLinkEnablement) {
 		var ret string
 		return ret
 	}
@@ -14467,7 +16425,7 @@ func (o *BiosPolicy) GetUpiLinkEnablement() string {
 // GetUpiLinkEnablementOk returns a tuple with the UpiLinkEnablement field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUpiLinkEnablementOk() (*string, bool) {
-	if o == nil || o.UpiLinkEnablement == nil {
+	if o == nil || IsNil(o.UpiLinkEnablement) {
 		return nil, false
 	}
 	return o.UpiLinkEnablement, true
@@ -14475,7 +16433,7 @@ func (o *BiosPolicy) GetUpiLinkEnablementOk() (*string, bool) {
 
 // HasUpiLinkEnablement returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUpiLinkEnablement() bool {
-	if o != nil && o.UpiLinkEnablement != nil {
+	if o != nil && !IsNil(o.UpiLinkEnablement) {
 		return true
 	}
 
@@ -14489,7 +16447,7 @@ func (o *BiosPolicy) SetUpiLinkEnablement(v string) {
 
 // GetUpiPowerManagement returns the UpiPowerManagement field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUpiPowerManagement() string {
-	if o == nil || o.UpiPowerManagement == nil {
+	if o == nil || IsNil(o.UpiPowerManagement) {
 		var ret string
 		return ret
 	}
@@ -14499,7 +16457,7 @@ func (o *BiosPolicy) GetUpiPowerManagement() string {
 // GetUpiPowerManagementOk returns a tuple with the UpiPowerManagement field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUpiPowerManagementOk() (*string, bool) {
-	if o == nil || o.UpiPowerManagement == nil {
+	if o == nil || IsNil(o.UpiPowerManagement) {
 		return nil, false
 	}
 	return o.UpiPowerManagement, true
@@ -14507,7 +16465,7 @@ func (o *BiosPolicy) GetUpiPowerManagementOk() (*string, bool) {
 
 // HasUpiPowerManagement returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUpiPowerManagement() bool {
-	if o != nil && o.UpiPowerManagement != nil {
+	if o != nil && !IsNil(o.UpiPowerManagement) {
 		return true
 	}
 
@@ -14521,7 +16479,7 @@ func (o *BiosPolicy) SetUpiPowerManagement(v string) {
 
 // GetUsbEmul6064 returns the UsbEmul6064 field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUsbEmul6064() string {
-	if o == nil || o.UsbEmul6064 == nil {
+	if o == nil || IsNil(o.UsbEmul6064) {
 		var ret string
 		return ret
 	}
@@ -14531,7 +16489,7 @@ func (o *BiosPolicy) GetUsbEmul6064() string {
 // GetUsbEmul6064Ok returns a tuple with the UsbEmul6064 field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUsbEmul6064Ok() (*string, bool) {
-	if o == nil || o.UsbEmul6064 == nil {
+	if o == nil || IsNil(o.UsbEmul6064) {
 		return nil, false
 	}
 	return o.UsbEmul6064, true
@@ -14539,7 +16497,7 @@ func (o *BiosPolicy) GetUsbEmul6064Ok() (*string, bool) {
 
 // HasUsbEmul6064 returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUsbEmul6064() bool {
-	if o != nil && o.UsbEmul6064 != nil {
+	if o != nil && !IsNil(o.UsbEmul6064) {
 		return true
 	}
 
@@ -14553,7 +16511,7 @@ func (o *BiosPolicy) SetUsbEmul6064(v string) {
 
 // GetUsbPortFront returns the UsbPortFront field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUsbPortFront() string {
-	if o == nil || o.UsbPortFront == nil {
+	if o == nil || IsNil(o.UsbPortFront) {
 		var ret string
 		return ret
 	}
@@ -14563,7 +16521,7 @@ func (o *BiosPolicy) GetUsbPortFront() string {
 // GetUsbPortFrontOk returns a tuple with the UsbPortFront field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUsbPortFrontOk() (*string, bool) {
-	if o == nil || o.UsbPortFront == nil {
+	if o == nil || IsNil(o.UsbPortFront) {
 		return nil, false
 	}
 	return o.UsbPortFront, true
@@ -14571,7 +16529,7 @@ func (o *BiosPolicy) GetUsbPortFrontOk() (*string, bool) {
 
 // HasUsbPortFront returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUsbPortFront() bool {
-	if o != nil && o.UsbPortFront != nil {
+	if o != nil && !IsNil(o.UsbPortFront) {
 		return true
 	}
 
@@ -14585,7 +16543,7 @@ func (o *BiosPolicy) SetUsbPortFront(v string) {
 
 // GetUsbPortInternal returns the UsbPortInternal field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUsbPortInternal() string {
-	if o == nil || o.UsbPortInternal == nil {
+	if o == nil || IsNil(o.UsbPortInternal) {
 		var ret string
 		return ret
 	}
@@ -14595,7 +16553,7 @@ func (o *BiosPolicy) GetUsbPortInternal() string {
 // GetUsbPortInternalOk returns a tuple with the UsbPortInternal field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUsbPortInternalOk() (*string, bool) {
-	if o == nil || o.UsbPortInternal == nil {
+	if o == nil || IsNil(o.UsbPortInternal) {
 		return nil, false
 	}
 	return o.UsbPortInternal, true
@@ -14603,7 +16561,7 @@ func (o *BiosPolicy) GetUsbPortInternalOk() (*string, bool) {
 
 // HasUsbPortInternal returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUsbPortInternal() bool {
-	if o != nil && o.UsbPortInternal != nil {
+	if o != nil && !IsNil(o.UsbPortInternal) {
 		return true
 	}
 
@@ -14617,7 +16575,7 @@ func (o *BiosPolicy) SetUsbPortInternal(v string) {
 
 // GetUsbPortKvm returns the UsbPortKvm field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUsbPortKvm() string {
-	if o == nil || o.UsbPortKvm == nil {
+	if o == nil || IsNil(o.UsbPortKvm) {
 		var ret string
 		return ret
 	}
@@ -14627,7 +16585,7 @@ func (o *BiosPolicy) GetUsbPortKvm() string {
 // GetUsbPortKvmOk returns a tuple with the UsbPortKvm field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUsbPortKvmOk() (*string, bool) {
-	if o == nil || o.UsbPortKvm == nil {
+	if o == nil || IsNil(o.UsbPortKvm) {
 		return nil, false
 	}
 	return o.UsbPortKvm, true
@@ -14635,7 +16593,7 @@ func (o *BiosPolicy) GetUsbPortKvmOk() (*string, bool) {
 
 // HasUsbPortKvm returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUsbPortKvm() bool {
-	if o != nil && o.UsbPortKvm != nil {
+	if o != nil && !IsNil(o.UsbPortKvm) {
 		return true
 	}
 
@@ -14649,7 +16607,7 @@ func (o *BiosPolicy) SetUsbPortKvm(v string) {
 
 // GetUsbPortRear returns the UsbPortRear field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUsbPortRear() string {
-	if o == nil || o.UsbPortRear == nil {
+	if o == nil || IsNil(o.UsbPortRear) {
 		var ret string
 		return ret
 	}
@@ -14659,7 +16617,7 @@ func (o *BiosPolicy) GetUsbPortRear() string {
 // GetUsbPortRearOk returns a tuple with the UsbPortRear field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUsbPortRearOk() (*string, bool) {
-	if o == nil || o.UsbPortRear == nil {
+	if o == nil || IsNil(o.UsbPortRear) {
 		return nil, false
 	}
 	return o.UsbPortRear, true
@@ -14667,7 +16625,7 @@ func (o *BiosPolicy) GetUsbPortRearOk() (*string, bool) {
 
 // HasUsbPortRear returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUsbPortRear() bool {
-	if o != nil && o.UsbPortRear != nil {
+	if o != nil && !IsNil(o.UsbPortRear) {
 		return true
 	}
 
@@ -14681,7 +16639,7 @@ func (o *BiosPolicy) SetUsbPortRear(v string) {
 
 // GetUsbPortSdCard returns the UsbPortSdCard field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUsbPortSdCard() string {
-	if o == nil || o.UsbPortSdCard == nil {
+	if o == nil || IsNil(o.UsbPortSdCard) {
 		var ret string
 		return ret
 	}
@@ -14691,7 +16649,7 @@ func (o *BiosPolicy) GetUsbPortSdCard() string {
 // GetUsbPortSdCardOk returns a tuple with the UsbPortSdCard field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUsbPortSdCardOk() (*string, bool) {
-	if o == nil || o.UsbPortSdCard == nil {
+	if o == nil || IsNil(o.UsbPortSdCard) {
 		return nil, false
 	}
 	return o.UsbPortSdCard, true
@@ -14699,7 +16657,7 @@ func (o *BiosPolicy) GetUsbPortSdCardOk() (*string, bool) {
 
 // HasUsbPortSdCard returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUsbPortSdCard() bool {
-	if o != nil && o.UsbPortSdCard != nil {
+	if o != nil && !IsNil(o.UsbPortSdCard) {
 		return true
 	}
 
@@ -14713,7 +16671,7 @@ func (o *BiosPolicy) SetUsbPortSdCard(v string) {
 
 // GetUsbPortVmedia returns the UsbPortVmedia field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUsbPortVmedia() string {
-	if o == nil || o.UsbPortVmedia == nil {
+	if o == nil || IsNil(o.UsbPortVmedia) {
 		var ret string
 		return ret
 	}
@@ -14723,7 +16681,7 @@ func (o *BiosPolicy) GetUsbPortVmedia() string {
 // GetUsbPortVmediaOk returns a tuple with the UsbPortVmedia field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUsbPortVmediaOk() (*string, bool) {
-	if o == nil || o.UsbPortVmedia == nil {
+	if o == nil || IsNil(o.UsbPortVmedia) {
 		return nil, false
 	}
 	return o.UsbPortVmedia, true
@@ -14731,7 +16689,7 @@ func (o *BiosPolicy) GetUsbPortVmediaOk() (*string, bool) {
 
 // HasUsbPortVmedia returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUsbPortVmedia() bool {
-	if o != nil && o.UsbPortVmedia != nil {
+	if o != nil && !IsNil(o.UsbPortVmedia) {
 		return true
 	}
 
@@ -14745,7 +16703,7 @@ func (o *BiosPolicy) SetUsbPortVmedia(v string) {
 
 // GetUsbXhciSupport returns the UsbXhciSupport field value if set, zero value otherwise.
 func (o *BiosPolicy) GetUsbXhciSupport() string {
-	if o == nil || o.UsbXhciSupport == nil {
+	if o == nil || IsNil(o.UsbXhciSupport) {
 		var ret string
 		return ret
 	}
@@ -14755,7 +16713,7 @@ func (o *BiosPolicy) GetUsbXhciSupport() string {
 // GetUsbXhciSupportOk returns a tuple with the UsbXhciSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetUsbXhciSupportOk() (*string, bool) {
-	if o == nil || o.UsbXhciSupport == nil {
+	if o == nil || IsNil(o.UsbXhciSupport) {
 		return nil, false
 	}
 	return o.UsbXhciSupport, true
@@ -14763,7 +16721,7 @@ func (o *BiosPolicy) GetUsbXhciSupportOk() (*string, bool) {
 
 // HasUsbXhciSupport returns a boolean if a field has been set.
 func (o *BiosPolicy) HasUsbXhciSupport() bool {
-	if o != nil && o.UsbXhciSupport != nil {
+	if o != nil && !IsNil(o.UsbXhciSupport) {
 		return true
 	}
 
@@ -14777,7 +16735,7 @@ func (o *BiosPolicy) SetUsbXhciSupport(v string) {
 
 // GetVgaPriority returns the VgaPriority field value if set, zero value otherwise.
 func (o *BiosPolicy) GetVgaPriority() string {
-	if o == nil || o.VgaPriority == nil {
+	if o == nil || IsNil(o.VgaPriority) {
 		var ret string
 		return ret
 	}
@@ -14787,7 +16745,7 @@ func (o *BiosPolicy) GetVgaPriority() string {
 // GetVgaPriorityOk returns a tuple with the VgaPriority field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetVgaPriorityOk() (*string, bool) {
-	if o == nil || o.VgaPriority == nil {
+	if o == nil || IsNil(o.VgaPriority) {
 		return nil, false
 	}
 	return o.VgaPriority, true
@@ -14795,7 +16753,7 @@ func (o *BiosPolicy) GetVgaPriorityOk() (*string, bool) {
 
 // HasVgaPriority returns a boolean if a field has been set.
 func (o *BiosPolicy) HasVgaPriority() bool {
-	if o != nil && o.VgaPriority != nil {
+	if o != nil && !IsNil(o.VgaPriority) {
 		return true
 	}
 
@@ -14809,7 +16767,7 @@ func (o *BiosPolicy) SetVgaPriority(v string) {
 
 // GetVirtualNuma returns the VirtualNuma field value if set, zero value otherwise.
 func (o *BiosPolicy) GetVirtualNuma() string {
-	if o == nil || o.VirtualNuma == nil {
+	if o == nil || IsNil(o.VirtualNuma) {
 		var ret string
 		return ret
 	}
@@ -14819,7 +16777,7 @@ func (o *BiosPolicy) GetVirtualNuma() string {
 // GetVirtualNumaOk returns a tuple with the VirtualNuma field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetVirtualNumaOk() (*string, bool) {
-	if o == nil || o.VirtualNuma == nil {
+	if o == nil || IsNil(o.VirtualNuma) {
 		return nil, false
 	}
 	return o.VirtualNuma, true
@@ -14827,7 +16785,7 @@ func (o *BiosPolicy) GetVirtualNumaOk() (*string, bool) {
 
 // HasVirtualNuma returns a boolean if a field has been set.
 func (o *BiosPolicy) HasVirtualNuma() bool {
-	if o != nil && o.VirtualNuma != nil {
+	if o != nil && !IsNil(o.VirtualNuma) {
 		return true
 	}
 
@@ -14841,7 +16799,7 @@ func (o *BiosPolicy) SetVirtualNuma(v string) {
 
 // GetVmdEnable returns the VmdEnable field value if set, zero value otherwise.
 func (o *BiosPolicy) GetVmdEnable() string {
-	if o == nil || o.VmdEnable == nil {
+	if o == nil || IsNil(o.VmdEnable) {
 		var ret string
 		return ret
 	}
@@ -14851,7 +16809,7 @@ func (o *BiosPolicy) GetVmdEnable() string {
 // GetVmdEnableOk returns a tuple with the VmdEnable field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetVmdEnableOk() (*string, bool) {
-	if o == nil || o.VmdEnable == nil {
+	if o == nil || IsNil(o.VmdEnable) {
 		return nil, false
 	}
 	return o.VmdEnable, true
@@ -14859,7 +16817,7 @@ func (o *BiosPolicy) GetVmdEnableOk() (*string, bool) {
 
 // HasVmdEnable returns a boolean if a field has been set.
 func (o *BiosPolicy) HasVmdEnable() bool {
-	if o != nil && o.VmdEnable != nil {
+	if o != nil && !IsNil(o.VmdEnable) {
 		return true
 	}
 
@@ -14873,7 +16831,7 @@ func (o *BiosPolicy) SetVmdEnable(v string) {
 
 // GetVolMemoryMode returns the VolMemoryMode field value if set, zero value otherwise.
 func (o *BiosPolicy) GetVolMemoryMode() string {
-	if o == nil || o.VolMemoryMode == nil {
+	if o == nil || IsNil(o.VolMemoryMode) {
 		var ret string
 		return ret
 	}
@@ -14883,7 +16841,7 @@ func (o *BiosPolicy) GetVolMemoryMode() string {
 // GetVolMemoryModeOk returns a tuple with the VolMemoryMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetVolMemoryModeOk() (*string, bool) {
-	if o == nil || o.VolMemoryMode == nil {
+	if o == nil || IsNil(o.VolMemoryMode) {
 		return nil, false
 	}
 	return o.VolMemoryMode, true
@@ -14891,7 +16849,7 @@ func (o *BiosPolicy) GetVolMemoryModeOk() (*string, bool) {
 
 // HasVolMemoryMode returns a boolean if a field has been set.
 func (o *BiosPolicy) HasVolMemoryMode() bool {
-	if o != nil && o.VolMemoryMode != nil {
+	if o != nil && !IsNil(o.VolMemoryMode) {
 		return true
 	}
 
@@ -14905,7 +16863,7 @@ func (o *BiosPolicy) SetVolMemoryMode(v string) {
 
 // GetWorkLoadConfig returns the WorkLoadConfig field value if set, zero value otherwise.
 func (o *BiosPolicy) GetWorkLoadConfig() string {
-	if o == nil || o.WorkLoadConfig == nil {
+	if o == nil || IsNil(o.WorkLoadConfig) {
 		var ret string
 		return ret
 	}
@@ -14915,7 +16873,7 @@ func (o *BiosPolicy) GetWorkLoadConfig() string {
 // GetWorkLoadConfigOk returns a tuple with the WorkLoadConfig field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetWorkLoadConfigOk() (*string, bool) {
-	if o == nil || o.WorkLoadConfig == nil {
+	if o == nil || IsNil(o.WorkLoadConfig) {
 		return nil, false
 	}
 	return o.WorkLoadConfig, true
@@ -14923,7 +16881,7 @@ func (o *BiosPolicy) GetWorkLoadConfigOk() (*string, bool) {
 
 // HasWorkLoadConfig returns a boolean if a field has been set.
 func (o *BiosPolicy) HasWorkLoadConfig() bool {
-	if o != nil && o.WorkLoadConfig != nil {
+	if o != nil && !IsNil(o.WorkLoadConfig) {
 		return true
 	}
 
@@ -14935,9 +16893,41 @@ func (o *BiosPolicy) SetWorkLoadConfig(v string) {
 	o.WorkLoadConfig = &v
 }
 
+// GetX2apicOptOut returns the X2apicOptOut field value if set, zero value otherwise.
+func (o *BiosPolicy) GetX2apicOptOut() string {
+	if o == nil || IsNil(o.X2apicOptOut) {
+		var ret string
+		return ret
+	}
+	return *o.X2apicOptOut
+}
+
+// GetX2apicOptOutOk returns a tuple with the X2apicOptOut field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *BiosPolicy) GetX2apicOptOutOk() (*string, bool) {
+	if o == nil || IsNil(o.X2apicOptOut) {
+		return nil, false
+	}
+	return o.X2apicOptOut, true
+}
+
+// HasX2apicOptOut returns a boolean if a field has been set.
+func (o *BiosPolicy) HasX2apicOptOut() bool {
+	if o != nil && !IsNil(o.X2apicOptOut) {
+		return true
+	}
+
+	return false
+}
+
+// SetX2apicOptOut gets a reference to the given string and assigns it to the X2apicOptOut field.
+func (o *BiosPolicy) SetX2apicOptOut(v string) {
+	o.X2apicOptOut = &v
+}
+
 // GetXptPrefetch returns the XptPrefetch field value if set, zero value otherwise.
 func (o *BiosPolicy) GetXptPrefetch() string {
-	if o == nil || o.XptPrefetch == nil {
+	if o == nil || IsNil(o.XptPrefetch) {
 		var ret string
 		return ret
 	}
@@ -14947,7 +16937,7 @@ func (o *BiosPolicy) GetXptPrefetch() string {
 // GetXptPrefetchOk returns a tuple with the XptPrefetch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetXptPrefetchOk() (*string, bool) {
-	if o == nil || o.XptPrefetch == nil {
+	if o == nil || IsNil(o.XptPrefetch) {
 		return nil, false
 	}
 	return o.XptPrefetch, true
@@ -14955,7 +16945,7 @@ func (o *BiosPolicy) GetXptPrefetchOk() (*string, bool) {
 
 // HasXptPrefetch returns a boolean if a field has been set.
 func (o *BiosPolicy) HasXptPrefetch() bool {
-	if o != nil && o.XptPrefetch != nil {
+	if o != nil && !IsNil(o.XptPrefetch) {
 		return true
 	}
 
@@ -14969,7 +16959,7 @@ func (o *BiosPolicy) SetXptPrefetch(v string) {
 
 // GetXptRemotePrefetch returns the XptRemotePrefetch field value if set, zero value otherwise.
 func (o *BiosPolicy) GetXptRemotePrefetch() string {
-	if o == nil || o.XptRemotePrefetch == nil {
+	if o == nil || IsNil(o.XptRemotePrefetch) {
 		var ret string
 		return ret
 	}
@@ -14979,7 +16969,7 @@ func (o *BiosPolicy) GetXptRemotePrefetch() string {
 // GetXptRemotePrefetchOk returns a tuple with the XptRemotePrefetch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BiosPolicy) GetXptRemotePrefetchOk() (*string, bool) {
-	if o == nil || o.XptRemotePrefetch == nil {
+	if o == nil || IsNil(o.XptRemotePrefetch) {
 		return nil, false
 	}
 	return o.XptRemotePrefetch, true
@@ -14987,7 +16977,7 @@ func (o *BiosPolicy) GetXptRemotePrefetchOk() (*string, bool) {
 
 // HasXptRemotePrefetch returns a boolean if a field has been set.
 func (o *BiosPolicy) HasXptRemotePrefetch() bool {
-	if o != nil && o.XptRemotePrefetch != nil {
+	if o != nil && !IsNil(o.XptRemotePrefetch) {
 		return true
 	}
 
@@ -14999,36 +16989,47 @@ func (o *BiosPolicy) SetXptRemotePrefetch(v string) {
 	o.XptRemotePrefetch = &v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BiosPolicy) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BiosPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *BiosPolicy) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *BiosPolicy) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *BiosPolicy) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *BiosPolicy) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 // GetProfiles returns the Profiles field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -15044,7 +17045,7 @@ func (o *BiosPolicy) GetProfiles() []PolicyAbstractConfigProfileRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *BiosPolicy) GetProfilesOk() ([]PolicyAbstractConfigProfileRelationship, bool) {
-	if o == nil || o.Profiles == nil {
+	if o == nil || IsNil(o.Profiles) {
 		return nil, false
 	}
 	return o.Profiles, true
@@ -15052,7 +17053,7 @@ func (o *BiosPolicy) GetProfilesOk() ([]PolicyAbstractConfigProfileRelationship,
 
 // HasProfiles returns a boolean if a field has been set.
 func (o *BiosPolicy) HasProfiles() bool {
-	if o != nil && o.Profiles != nil {
+	if o != nil && !IsNil(o.Profiles) {
 		return true
 	}
 
@@ -15065,1199 +17066,1365 @@ func (o *BiosPolicy) SetProfiles(v []PolicyAbstractConfigProfileRelationship) {
 }
 
 func (o BiosPolicy) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o BiosPolicy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicy, errPolicyAbstractPolicy := json.Marshal(o.PolicyAbstractPolicy)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
 	errPolicyAbstractPolicy = json.Unmarshal([]byte(serializedPolicyAbstractPolicy), &toSerialize)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AcsControlGpu1state != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AcsControlGpu1state) {
 		toSerialize["AcsControlGpu1state"] = o.AcsControlGpu1state
 	}
-	if o.AcsControlGpu2state != nil {
+	if !IsNil(o.AcsControlGpu2state) {
 		toSerialize["AcsControlGpu2state"] = o.AcsControlGpu2state
 	}
-	if o.AcsControlGpu3state != nil {
+	if !IsNil(o.AcsControlGpu3state) {
 		toSerialize["AcsControlGpu3state"] = o.AcsControlGpu3state
 	}
-	if o.AcsControlGpu4state != nil {
+	if !IsNil(o.AcsControlGpu4state) {
 		toSerialize["AcsControlGpu4state"] = o.AcsControlGpu4state
 	}
-	if o.AcsControlGpu5state != nil {
+	if !IsNil(o.AcsControlGpu5state) {
 		toSerialize["AcsControlGpu5state"] = o.AcsControlGpu5state
 	}
-	if o.AcsControlGpu6state != nil {
+	if !IsNil(o.AcsControlGpu6state) {
 		toSerialize["AcsControlGpu6state"] = o.AcsControlGpu6state
 	}
-	if o.AcsControlGpu7state != nil {
+	if !IsNil(o.AcsControlGpu7state) {
 		toSerialize["AcsControlGpu7state"] = o.AcsControlGpu7state
 	}
-	if o.AcsControlGpu8state != nil {
+	if !IsNil(o.AcsControlGpu8state) {
 		toSerialize["AcsControlGpu8state"] = o.AcsControlGpu8state
 	}
-	if o.AcsControlSlot11state != nil {
+	if !IsNil(o.AcsControlSlot11state) {
 		toSerialize["AcsControlSlot11state"] = o.AcsControlSlot11state
 	}
-	if o.AcsControlSlot12state != nil {
+	if !IsNil(o.AcsControlSlot12state) {
 		toSerialize["AcsControlSlot12state"] = o.AcsControlSlot12state
 	}
-	if o.AcsControlSlot13state != nil {
+	if !IsNil(o.AcsControlSlot13state) {
 		toSerialize["AcsControlSlot13state"] = o.AcsControlSlot13state
 	}
-	if o.AcsControlSlot14state != nil {
+	if !IsNil(o.AcsControlSlot14state) {
 		toSerialize["AcsControlSlot14state"] = o.AcsControlSlot14state
 	}
-	if o.AdjacentCacheLinePrefetch != nil {
+	if !IsNil(o.AdaptiveRefreshMgmtLevel) {
+		toSerialize["AdaptiveRefreshMgmtLevel"] = o.AdaptiveRefreshMgmtLevel
+	}
+	if !IsNil(o.AdjacentCacheLinePrefetch) {
 		toSerialize["AdjacentCacheLinePrefetch"] = o.AdjacentCacheLinePrefetch
 	}
-	if o.AdvancedMemTest != nil {
+	if !IsNil(o.AdvancedMemTest) {
 		toSerialize["AdvancedMemTest"] = o.AdvancedMemTest
 	}
-	if o.AllUsbDevices != nil {
+	if !IsNil(o.AllUsbDevices) {
 		toSerialize["AllUsbDevices"] = o.AllUsbDevices
 	}
-	if o.Altitude != nil {
+	if !IsNil(o.Altitude) {
 		toSerialize["Altitude"] = o.Altitude
 	}
-	if o.AspmSupport != nil {
+	if !IsNil(o.AspmSupport) {
 		toSerialize["AspmSupport"] = o.AspmSupport
 	}
-	if o.AssertNmiOnPerr != nil {
+	if !IsNil(o.AssertNmiOnPerr) {
 		toSerialize["AssertNmiOnPerr"] = o.AssertNmiOnPerr
 	}
-	if o.AssertNmiOnSerr != nil {
+	if !IsNil(o.AssertNmiOnSerr) {
 		toSerialize["AssertNmiOnSerr"] = o.AssertNmiOnSerr
 	}
-	if o.AutoCcState != nil {
+	if !IsNil(o.AutoCcState) {
 		toSerialize["AutoCcState"] = o.AutoCcState
 	}
-	if o.AutonumousCstateEnable != nil {
+	if !IsNil(o.AutonumousCstateEnable) {
 		toSerialize["AutonumousCstateEnable"] = o.AutonumousCstateEnable
 	}
-	if o.BaudRate != nil {
+	if !IsNil(o.BaudRate) {
 		toSerialize["BaudRate"] = o.BaudRate
 	}
-	if o.BmeDmaMitigation != nil {
+	if !IsNil(o.BmeDmaMitigation) {
 		toSerialize["BmeDmaMitigation"] = o.BmeDmaMitigation
 	}
-	if o.BootOptionNumRetry != nil {
+	if !IsNil(o.BootOptionNumRetry) {
 		toSerialize["BootOptionNumRetry"] = o.BootOptionNumRetry
 	}
-	if o.BootOptionReCoolDown != nil {
+	if !IsNil(o.BootOptionReCoolDown) {
 		toSerialize["BootOptionReCoolDown"] = o.BootOptionReCoolDown
 	}
-	if o.BootOptionRetry != nil {
+	if !IsNil(o.BootOptionRetry) {
 		toSerialize["BootOptionRetry"] = o.BootOptionRetry
 	}
-	if o.BootPerformanceMode != nil {
+	if !IsNil(o.BootPerformanceMode) {
 		toSerialize["BootPerformanceMode"] = o.BootPerformanceMode
 	}
-	if o.BurstAndPostponedRefresh != nil {
+	if !IsNil(o.BurstAndPostponedRefresh) {
 		toSerialize["BurstAndPostponedRefresh"] = o.BurstAndPostponedRefresh
 	}
-	if o.C1autoDemotion != nil {
+	if !IsNil(o.C1autoDemotion) {
 		toSerialize["C1autoDemotion"] = o.C1autoDemotion
 	}
-	if o.C1autoUnDemotion != nil {
+	if !IsNil(o.C1autoUnDemotion) {
 		toSerialize["C1autoUnDemotion"] = o.C1autoUnDemotion
 	}
-	if o.CbsCmnApbdis != nil {
+	if !IsNil(o.CbsCmnApbdis) {
 		toSerialize["CbsCmnApbdis"] = o.CbsCmnApbdis
 	}
-	if o.CbsCmnCpuCpb != nil {
+	if !IsNil(o.CbsCmnApbdisDfPstateRs) {
+		toSerialize["CbsCmnApbdisDfPstateRs"] = o.CbsCmnApbdisDfPstateRs
+	}
+	if !IsNil(o.CbsCmnCpuAvx512) {
+		toSerialize["CbsCmnCpuAvx512"] = o.CbsCmnCpuAvx512
+	}
+	if !IsNil(o.CbsCmnCpuCpb) {
 		toSerialize["CbsCmnCpuCpb"] = o.CbsCmnCpuCpb
 	}
-	if o.CbsCmnCpuGenDowncoreCtrl != nil {
+	if !IsNil(o.CbsCmnCpuGenDowncoreCtrl) {
 		toSerialize["CbsCmnCpuGenDowncoreCtrl"] = o.CbsCmnCpuGenDowncoreCtrl
 	}
-	if o.CbsCmnCpuGlobalCstateCtrl != nil {
+	if !IsNil(o.CbsCmnCpuGlobalCstateCtrl) {
 		toSerialize["CbsCmnCpuGlobalCstateCtrl"] = o.CbsCmnCpuGlobalCstateCtrl
 	}
-	if o.CbsCmnCpuL1streamHwPrefetcher != nil {
+	if !IsNil(o.CbsCmnCpuL1streamHwPrefetcher) {
 		toSerialize["CbsCmnCpuL1streamHwPrefetcher"] = o.CbsCmnCpuL1streamHwPrefetcher
 	}
-	if o.CbsCmnCpuL2streamHwPrefetcher != nil {
+	if !IsNil(o.CbsCmnCpuL2streamHwPrefetcher) {
 		toSerialize["CbsCmnCpuL2streamHwPrefetcher"] = o.CbsCmnCpuL2streamHwPrefetcher
 	}
-	if o.CbsCmnCpuSmee != nil {
+	if !IsNil(o.CbsCmnCpuSevAsidSpaceLimit) {
+		toSerialize["CbsCmnCpuSevAsidSpaceLimit"] = o.CbsCmnCpuSevAsidSpaceLimit
+	}
+	if !IsNil(o.CbsCmnCpuSmee) {
 		toSerialize["CbsCmnCpuSmee"] = o.CbsCmnCpuSmee
 	}
-	if o.CbsCmnCpuStreamingStoresCtrl != nil {
+	if !IsNil(o.CbsCmnCpuStreamingStoresCtrl) {
 		toSerialize["CbsCmnCpuStreamingStoresCtrl"] = o.CbsCmnCpuStreamingStoresCtrl
 	}
-	if o.CbsCmnDeterminismSlider != nil {
+	if !IsNil(o.CbsCmnDeterminismSlider) {
 		toSerialize["CbsCmnDeterminismSlider"] = o.CbsCmnDeterminismSlider
 	}
-	if o.CbsCmnEfficiencyModeEn != nil {
+	if !IsNil(o.CbsCmnEdcControlThrottle) {
+		toSerialize["CbsCmnEdcControlThrottle"] = o.CbsCmnEdcControlThrottle
+	}
+	if !IsNil(o.CbsCmnEfficiencyModeEn) {
 		toSerialize["CbsCmnEfficiencyModeEn"] = o.CbsCmnEfficiencyModeEn
 	}
-	if o.CbsCmnFixedSocPstate != nil {
+	if !IsNil(o.CbsCmnEfficiencyModeEnRs) {
+		toSerialize["CbsCmnEfficiencyModeEnRs"] = o.CbsCmnEfficiencyModeEnRs
+	}
+	if !IsNil(o.CbsCmnFixedSocPstate) {
 		toSerialize["CbsCmnFixedSocPstate"] = o.CbsCmnFixedSocPstate
 	}
-	if o.CbsCmnGnbNbIommu != nil {
+	if !IsNil(o.CbsCmnGnbNbIommu) {
 		toSerialize["CbsCmnGnbNbIommu"] = o.CbsCmnGnbNbIommu
 	}
-	if o.CbsCmnGnbSmuDfCstates != nil {
+	if !IsNil(o.CbsCmnGnbSmuDfCstates) {
 		toSerialize["CbsCmnGnbSmuDfCstates"] = o.CbsCmnGnbSmuDfCstates
 	}
-	if o.CbsCmnGnbSmucppc != nil {
+	if !IsNil(o.CbsCmnGnbSmuDffoRs) {
+		toSerialize["CbsCmnGnbSmuDffoRs"] = o.CbsCmnGnbSmuDffoRs
+	}
+	if !IsNil(o.CbsCmnGnbSmuDlwmSupport) {
+		toSerialize["CbsCmnGnbSmuDlwmSupport"] = o.CbsCmnGnbSmuDlwmSupport
+	}
+	if !IsNil(o.CbsCmnGnbSmucppc) {
 		toSerialize["CbsCmnGnbSmucppc"] = o.CbsCmnGnbSmucppc
 	}
-	if o.CbsCmnMemCtrlBankGroupSwapDdr4 != nil {
+	if !IsNil(o.CbsCmnMemCtrlBankGroupSwapDdr4) {
 		toSerialize["CbsCmnMemCtrlBankGroupSwapDdr4"] = o.CbsCmnMemCtrlBankGroupSwapDdr4
 	}
-	if o.CbsCmnMemMapBankInterleaveDdr4 != nil {
+	if !IsNil(o.CbsCmnMemCtrllerPwrDnEnDdr) {
+		toSerialize["CbsCmnMemCtrllerPwrDnEnDdr"] = o.CbsCmnMemCtrllerPwrDnEnDdr
+	}
+	if !IsNil(o.CbsCmnMemMapBankInterleaveDdr4) {
 		toSerialize["CbsCmnMemMapBankInterleaveDdr4"] = o.CbsCmnMemMapBankInterleaveDdr4
 	}
-	if o.CbsCmncTdpCtl != nil {
+	if !IsNil(o.CbsCmnMemSpeedDdr47xx2) {
+		toSerialize["CbsCmnMemSpeedDdr47xx2"] = o.CbsCmnMemSpeedDdr47xx2
+	}
+	if !IsNil(o.CbsCmnMemSpeedDdr47xx3) {
+		toSerialize["CbsCmnMemSpeedDdr47xx3"] = o.CbsCmnMemSpeedDdr47xx3
+	}
+	if !IsNil(o.CbsCmnPreferredIo7xx2) {
+		toSerialize["CbsCmnPreferredIo7xx2"] = o.CbsCmnPreferredIo7xx2
+	}
+	if !IsNil(o.CbsCmnPreferredIo7xx3) {
+		toSerialize["CbsCmnPreferredIo7xx3"] = o.CbsCmnPreferredIo7xx3
+	}
+	if !IsNil(o.CbsCmncTdpCtl) {
 		toSerialize["CbsCmncTdpCtl"] = o.CbsCmncTdpCtl
 	}
-	if o.CbsCpuCcdCtrlSsp != nil {
+	if !IsNil(o.CbsCmnxGmiForceLinkWidthRs) {
+		toSerialize["CbsCmnxGmiForceLinkWidthRs"] = o.CbsCmnxGmiForceLinkWidthRs
+	}
+	if !IsNil(o.CbsCpuCcdCtrlSsp) {
 		toSerialize["CbsCpuCcdCtrlSsp"] = o.CbsCpuCcdCtrlSsp
 	}
-	if o.CbsCpuCoreCtrl != nil {
+	if !IsNil(o.CbsCpuCoreCtrl) {
 		toSerialize["CbsCpuCoreCtrl"] = o.CbsCpuCoreCtrl
 	}
-	if o.CbsCpuSmtCtrl != nil {
+	if !IsNil(o.CbsCpuDownCoreCtrlBergamo) {
+		toSerialize["CbsCpuDownCoreCtrlBergamo"] = o.CbsCpuDownCoreCtrlBergamo
+	}
+	if !IsNil(o.CbsCpuDownCoreCtrlGenoa) {
+		toSerialize["CbsCpuDownCoreCtrlGenoa"] = o.CbsCpuDownCoreCtrlGenoa
+	}
+	if !IsNil(o.CbsCpuSmtCtrl) {
 		toSerialize["CbsCpuSmtCtrl"] = o.CbsCpuSmtCtrl
 	}
-	if o.CbsDbgCpuSnpMemCover != nil {
+	if !IsNil(o.CbsDbgCpuGenCpuWdt) {
+		toSerialize["CbsDbgCpuGenCpuWdt"] = o.CbsDbgCpuGenCpuWdt
+	}
+	if !IsNil(o.CbsDbgCpuLapicMode) {
+		toSerialize["CbsDbgCpuLapicMode"] = o.CbsDbgCpuLapicMode
+	}
+	if !IsNil(o.CbsDbgCpuSnpMemCover) {
 		toSerialize["CbsDbgCpuSnpMemCover"] = o.CbsDbgCpuSnpMemCover
 	}
-	if o.CbsDbgCpuSnpMemSizeCover != nil {
+	if !IsNil(o.CbsDbgCpuSnpMemSizeCover) {
 		toSerialize["CbsDbgCpuSnpMemSizeCover"] = o.CbsDbgCpuSnpMemSizeCover
 	}
-	if o.CbsDfCmnAcpiSratL3numa != nil {
+	if !IsNil(o.CbsDfCmn4linkMaxXgmiSpeed) {
+		toSerialize["CbsDfCmn4linkMaxXgmiSpeed"] = o.CbsDfCmn4linkMaxXgmiSpeed
+	}
+	if !IsNil(o.CbsDfCmnAcpiSratL3numa) {
 		toSerialize["CbsDfCmnAcpiSratL3numa"] = o.CbsDfCmnAcpiSratL3numa
 	}
-	if o.CbsDfCmnDramNps != nil {
+	if !IsNil(o.CbsDfCmnDramNps) {
 		toSerialize["CbsDfCmnDramNps"] = o.CbsDfCmnDramNps
 	}
-	if o.CbsDfCmnMemIntlv != nil {
+	if !IsNil(o.CbsDfCmnDramScrubTime) {
+		toSerialize["CbsDfCmnDramScrubTime"] = o.CbsDfCmnDramScrubTime
+	}
+	if !IsNil(o.CbsDfCmnMemIntlv) {
 		toSerialize["CbsDfCmnMemIntlv"] = o.CbsDfCmnMemIntlv
 	}
-	if o.CbsDfCmnMemIntlvSize != nil {
+	if !IsNil(o.CbsDfCmnMemIntlvControl) {
+		toSerialize["CbsDfCmnMemIntlvControl"] = o.CbsDfCmnMemIntlvControl
+	}
+	if !IsNil(o.CbsDfCmnMemIntlvSize) {
 		toSerialize["CbsDfCmnMemIntlvSize"] = o.CbsDfCmnMemIntlvSize
 	}
-	if o.CbsSevSnpSupport != nil {
+	if !IsNil(o.CbsDfDbgXgmiLinkCfg) {
+		toSerialize["CbsDfDbgXgmiLinkCfg"] = o.CbsDfDbgXgmiLinkCfg
+	}
+	if !IsNil(o.CbsGnbDbgPcieTbtSupport) {
+		toSerialize["CbsGnbDbgPcieTbtSupport"] = o.CbsGnbDbgPcieTbtSupport
+	}
+	if !IsNil(o.CbsSevSnpSupport) {
 		toSerialize["CbsSevSnpSupport"] = o.CbsSevSnpSupport
 	}
-	if o.CdnEnable != nil {
+	if !IsNil(o.CdnEnable) {
 		toSerialize["CdnEnable"] = o.CdnEnable
 	}
-	if o.CdnSupport != nil {
+	if !IsNil(o.CdnSupport) {
 		toSerialize["CdnSupport"] = o.CdnSupport
 	}
-	if o.ChannelInterLeave != nil {
+	if !IsNil(o.ChannelInterLeave) {
 		toSerialize["ChannelInterLeave"] = o.ChannelInterLeave
 	}
-	if o.CiscoAdaptiveMemTraining != nil {
+	if !IsNil(o.CiscoAdaptiveMemTraining) {
 		toSerialize["CiscoAdaptiveMemTraining"] = o.CiscoAdaptiveMemTraining
 	}
-	if o.CiscoDebugLevel != nil {
+	if !IsNil(o.CiscoDebugLevel) {
 		toSerialize["CiscoDebugLevel"] = o.CiscoDebugLevel
 	}
-	if o.CiscoOpromLaunchOptimization != nil {
+	if !IsNil(o.CiscoOpromLaunchOptimization) {
 		toSerialize["CiscoOpromLaunchOptimization"] = o.CiscoOpromLaunchOptimization
 	}
-	if o.CiscoXgmiMaxSpeed != nil {
+	if !IsNil(o.CiscoXgmiMaxSpeed) {
 		toSerialize["CiscoXgmiMaxSpeed"] = o.CiscoXgmiMaxSpeed
 	}
-	if o.CkeLowPolicy != nil {
+	if !IsNil(o.CkeLowPolicy) {
 		toSerialize["CkeLowPolicy"] = o.CkeLowPolicy
 	}
-	if o.ClosedLoopThermThrotl != nil {
+	if !IsNil(o.ClosedLoopThermThrotl) {
 		toSerialize["ClosedLoopThermThrotl"] = o.ClosedLoopThermThrotl
 	}
-	if o.CmciEnable != nil {
+	if !IsNil(o.CmciEnable) {
 		toSerialize["CmciEnable"] = o.CmciEnable
 	}
-	if o.ConfigTdp != nil {
+	if !IsNil(o.ConfigTdp) {
 		toSerialize["ConfigTdp"] = o.ConfigTdp
 	}
-	if o.ConfigTdpLevel != nil {
+	if !IsNil(o.ConfigTdpLevel) {
 		toSerialize["ConfigTdpLevel"] = o.ConfigTdpLevel
 	}
-	if o.ConsoleRedirection != nil {
+	if !IsNil(o.ConsoleRedirection) {
 		toSerialize["ConsoleRedirection"] = o.ConsoleRedirection
 	}
-	if o.CoreMultiProcessing != nil {
+	if !IsNil(o.CoreMultiProcessing) {
 		toSerialize["CoreMultiProcessing"] = o.CoreMultiProcessing
 	}
-	if o.CpuEnergyPerformance != nil {
+	if !IsNil(o.CpuEnergyPerformance) {
 		toSerialize["CpuEnergyPerformance"] = o.CpuEnergyPerformance
 	}
-	if o.CpuFrequencyFloor != nil {
+	if !IsNil(o.CpuFrequencyFloor) {
 		toSerialize["CpuFrequencyFloor"] = o.CpuFrequencyFloor
 	}
-	if o.CpuPaLimit != nil {
+	if !IsNil(o.CpuPaLimit) {
 		toSerialize["CpuPaLimit"] = o.CpuPaLimit
 	}
-	if o.CpuPerfEnhancement != nil {
+	if !IsNil(o.CpuPerfEnhancement) {
 		toSerialize["CpuPerfEnhancement"] = o.CpuPerfEnhancement
 	}
-	if o.CpuPerformance != nil {
+	if !IsNil(o.CpuPerformance) {
 		toSerialize["CpuPerformance"] = o.CpuPerformance
 	}
-	if o.CpuPowerManagement != nil {
+	if !IsNil(o.CpuPowerManagement) {
 		toSerialize["CpuPowerManagement"] = o.CpuPowerManagement
 	}
-	if o.CrQos != nil {
+	if !IsNil(o.CrQos) {
 		toSerialize["CrQos"] = o.CrQos
 	}
-	if o.CrfastgoConfig != nil {
+	if !IsNil(o.CrfastgoConfig) {
 		toSerialize["CrfastgoConfig"] = o.CrfastgoConfig
 	}
-	if o.DcpmmFirmwareDowngrade != nil {
+	if !IsNil(o.DcpmmFirmwareDowngrade) {
 		toSerialize["DcpmmFirmwareDowngrade"] = o.DcpmmFirmwareDowngrade
 	}
-	if o.DemandScrub != nil {
+	if !IsNil(o.DemandScrub) {
 		toSerialize["DemandScrub"] = o.DemandScrub
 	}
-	if o.DirectCacheAccess != nil {
+	if !IsNil(o.DfxOsbEn) {
+		toSerialize["DfxOsbEn"] = o.DfxOsbEn
+	}
+	if !IsNil(o.DirectCacheAccess) {
 		toSerialize["DirectCacheAccess"] = o.DirectCacheAccess
 	}
-	if o.DramClockThrottling != nil {
+	if !IsNil(o.DmaCtrlOptIn) {
+		toSerialize["DmaCtrlOptIn"] = o.DmaCtrlOptIn
+	}
+	if !IsNil(o.DramClockThrottling) {
 		toSerialize["DramClockThrottling"] = o.DramClockThrottling
 	}
-	if o.DramRefreshRate != nil {
+	if !IsNil(o.DramRefreshRate) {
 		toSerialize["DramRefreshRate"] = o.DramRefreshRate
 	}
-	if o.DramSwThermalThrottling != nil {
+	if !IsNil(o.DramSwThermalThrottling) {
 		toSerialize["DramSwThermalThrottling"] = o.DramSwThermalThrottling
 	}
-	if o.EadrSupport != nil {
+	if !IsNil(o.EadrSupport) {
 		toSerialize["EadrSupport"] = o.EadrSupport
 	}
-	if o.EdpcEn != nil {
+	if !IsNil(o.EdpcEn) {
 		toSerialize["EdpcEn"] = o.EdpcEn
 	}
-	if o.EnableClockSpreadSpec != nil {
+	if !IsNil(o.EnableClockSpreadSpec) {
 		toSerialize["EnableClockSpreadSpec"] = o.EnableClockSpreadSpec
 	}
-	if o.EnableMktme != nil {
+	if !IsNil(o.EnableMktme) {
 		toSerialize["EnableMktme"] = o.EnableMktme
 	}
-	if o.EnableSgx != nil {
+	if !IsNil(o.EnableRmt) {
+		toSerialize["EnableRmt"] = o.EnableRmt
+	}
+	if !IsNil(o.EnableSgx) {
 		toSerialize["EnableSgx"] = o.EnableSgx
 	}
-	if o.EnableTme != nil {
+	if !IsNil(o.EnableTdx) {
+		toSerialize["EnableTdx"] = o.EnableTdx
+	}
+	if !IsNil(o.EnableTdxSeamldr) {
+		toSerialize["EnableTdxSeamldr"] = o.EnableTdxSeamldr
+	}
+	if !IsNil(o.EnableTme) {
 		toSerialize["EnableTme"] = o.EnableTme
 	}
-	if o.EnergyEfficientTurbo != nil {
+	if !IsNil(o.EnergyEfficientTurbo) {
 		toSerialize["EnergyEfficientTurbo"] = o.EnergyEfficientTurbo
 	}
-	if o.EngPerfTuning != nil {
+	if !IsNil(o.EngPerfTuning) {
 		toSerialize["EngPerfTuning"] = o.EngPerfTuning
 	}
-	if o.EnhancedIntelSpeedStepTech != nil {
+	if !IsNil(o.EnhancedIntelSpeedStepTech) {
 		toSerialize["EnhancedIntelSpeedStepTech"] = o.EnhancedIntelSpeedStepTech
 	}
-	if o.EpochUpdate != nil {
+	if !IsNil(o.EpochUpdate) {
 		toSerialize["EpochUpdate"] = o.EpochUpdate
 	}
-	if o.EppEnable != nil {
+	if !IsNil(o.EppEnable) {
 		toSerialize["EppEnable"] = o.EppEnable
 	}
-	if o.EppProfile != nil {
+	if !IsNil(o.EppProfile) {
 		toSerialize["EppProfile"] = o.EppProfile
 	}
-	if o.ExecuteDisableBit != nil {
+	if !IsNil(o.ErrorCheckScrub) {
+		toSerialize["ErrorCheckScrub"] = o.ErrorCheckScrub
+	}
+	if !IsNil(o.ExecuteDisableBit) {
 		toSerialize["ExecuteDisableBit"] = o.ExecuteDisableBit
 	}
-	if o.ExtendedApic != nil {
+	if !IsNil(o.ExtendedApic) {
 		toSerialize["ExtendedApic"] = o.ExtendedApic
 	}
-	if o.FlowControl != nil {
+	if !IsNil(o.FlowControl) {
 		toSerialize["FlowControl"] = o.FlowControl
 	}
-	if o.Frb2enable != nil {
+	if !IsNil(o.Frb2enable) {
 		toSerialize["Frb2enable"] = o.Frb2enable
 	}
-	if o.HardwarePrefetch != nil {
+	if !IsNil(o.HardwarePrefetch) {
 		toSerialize["HardwarePrefetch"] = o.HardwarePrefetch
 	}
-	if o.HwpmEnable != nil {
+	if !IsNil(o.HwpmEnable) {
 		toSerialize["HwpmEnable"] = o.HwpmEnable
 	}
-	if o.ImcInterleave != nil {
+	if !IsNil(o.ImcInterleave) {
 		toSerialize["ImcInterleave"] = o.ImcInterleave
 	}
-	if o.IntelDynamicSpeedSelect != nil {
+	if !IsNil(o.IntelDynamicSpeedSelect) {
 		toSerialize["IntelDynamicSpeedSelect"] = o.IntelDynamicSpeedSelect
 	}
-	if o.IntelHyperThreadingTech != nil {
+	if !IsNil(o.IntelHyperThreadingTech) {
 		toSerialize["IntelHyperThreadingTech"] = o.IntelHyperThreadingTech
 	}
-	if o.IntelSpeedSelect != nil {
+	if !IsNil(o.IntelSpeedSelect) {
 		toSerialize["IntelSpeedSelect"] = o.IntelSpeedSelect
 	}
-	if o.IntelTurboBoostTech != nil {
+	if !IsNil(o.IntelTurboBoostTech) {
 		toSerialize["IntelTurboBoostTech"] = o.IntelTurboBoostTech
 	}
-	if o.IntelVirtualizationTechnology != nil {
+	if !IsNil(o.IntelVirtualizationTechnology) {
 		toSerialize["IntelVirtualizationTechnology"] = o.IntelVirtualizationTechnology
 	}
-	if o.IntelVtForDirectedIo != nil {
+	if !IsNil(o.IntelVtForDirectedIo) {
 		toSerialize["IntelVtForDirectedIo"] = o.IntelVtForDirectedIo
 	}
-	if o.IntelVtdCoherencySupport != nil {
+	if !IsNil(o.IntelVtdCoherencySupport) {
 		toSerialize["IntelVtdCoherencySupport"] = o.IntelVtdCoherencySupport
 	}
-	if o.IntelVtdInterruptRemapping != nil {
+	if !IsNil(o.IntelVtdInterruptRemapping) {
 		toSerialize["IntelVtdInterruptRemapping"] = o.IntelVtdInterruptRemapping
 	}
-	if o.IntelVtdPassThroughDmaSupport != nil {
+	if !IsNil(o.IntelVtdPassThroughDmaSupport) {
 		toSerialize["IntelVtdPassThroughDmaSupport"] = o.IntelVtdPassThroughDmaSupport
 	}
-	if o.IntelVtdatsSupport != nil {
+	if !IsNil(o.IntelVtdatsSupport) {
 		toSerialize["IntelVtdatsSupport"] = o.IntelVtdatsSupport
 	}
-	if o.IohErrorEnable != nil {
+	if !IsNil(o.IoatConfigCpm) {
+		toSerialize["IoatConfigCpm"] = o.IoatConfigCpm
+	}
+	if !IsNil(o.IohErrorEnable) {
 		toSerialize["IohErrorEnable"] = o.IohErrorEnable
 	}
-	if o.IohResource != nil {
+	if !IsNil(o.IohResource) {
 		toSerialize["IohResource"] = o.IohResource
 	}
-	if o.IpPrefetch != nil {
+	if !IsNil(o.IpPrefetch) {
 		toSerialize["IpPrefetch"] = o.IpPrefetch
 	}
-	if o.Ipv4http != nil {
+	if !IsNil(o.Ipv4http) {
 		toSerialize["Ipv4http"] = o.Ipv4http
 	}
-	if o.Ipv4pxe != nil {
+	if !IsNil(o.Ipv4pxe) {
 		toSerialize["Ipv4pxe"] = o.Ipv4pxe
 	}
-	if o.Ipv6http != nil {
+	if !IsNil(o.Ipv6http) {
 		toSerialize["Ipv6http"] = o.Ipv6http
 	}
-	if o.Ipv6pxe != nil {
+	if !IsNil(o.Ipv6pxe) {
 		toSerialize["Ipv6pxe"] = o.Ipv6pxe
 	}
-	if o.KtiPrefetch != nil {
+	if !IsNil(o.KtiPrefetch) {
 		toSerialize["KtiPrefetch"] = o.KtiPrefetch
 	}
-	if o.LegacyOsRedirection != nil {
+	if !IsNil(o.LegacyOsRedirection) {
 		toSerialize["LegacyOsRedirection"] = o.LegacyOsRedirection
 	}
-	if o.LegacyUsbSupport != nil {
+	if !IsNil(o.LegacyUsbSupport) {
 		toSerialize["LegacyUsbSupport"] = o.LegacyUsbSupport
 	}
-	if o.LlcAlloc != nil {
+	if !IsNil(o.LlcAlloc) {
 		toSerialize["LlcAlloc"] = o.LlcAlloc
 	}
-	if o.LlcPrefetch != nil {
+	if !IsNil(o.LlcPrefetch) {
 		toSerialize["LlcPrefetch"] = o.LlcPrefetch
 	}
-	if o.LomPort0state != nil {
+	if !IsNil(o.LomPort0state) {
 		toSerialize["LomPort0state"] = o.LomPort0state
 	}
-	if o.LomPort1state != nil {
+	if !IsNil(o.LomPort1state) {
 		toSerialize["LomPort1state"] = o.LomPort1state
 	}
-	if o.LomPort2state != nil {
+	if !IsNil(o.LomPort2state) {
 		toSerialize["LomPort2state"] = o.LomPort2state
 	}
-	if o.LomPort3state != nil {
+	if !IsNil(o.LomPort3state) {
 		toSerialize["LomPort3state"] = o.LomPort3state
 	}
-	if o.LomPortsAllState != nil {
+	if !IsNil(o.LomPortsAllState) {
 		toSerialize["LomPortsAllState"] = o.LomPortsAllState
 	}
-	if o.LvDdrMode != nil {
+	if !IsNil(o.LvDdrMode) {
 		toSerialize["LvDdrMode"] = o.LvDdrMode
 	}
-	if o.MakeDeviceNonBootable != nil {
+	if !IsNil(o.MakeDeviceNonBootable) {
 		toSerialize["MakeDeviceNonBootable"] = o.MakeDeviceNonBootable
 	}
-	if o.MemoryBandwidthBoost != nil {
+	if !IsNil(o.MemoryBandwidthBoost) {
 		toSerialize["MemoryBandwidthBoost"] = o.MemoryBandwidthBoost
 	}
-	if o.MemoryInterLeave != nil {
+	if !IsNil(o.MemoryInterLeave) {
 		toSerialize["MemoryInterLeave"] = o.MemoryInterLeave
 	}
-	if o.MemoryMappedIoAbove4gb != nil {
+	if !IsNil(o.MemoryMappedIoAbove4gb) {
 		toSerialize["MemoryMappedIoAbove4gb"] = o.MemoryMappedIoAbove4gb
 	}
-	if o.MemoryRefreshRate != nil {
+	if !IsNil(o.MemoryRefreshRate) {
 		toSerialize["MemoryRefreshRate"] = o.MemoryRefreshRate
 	}
-	if o.MemorySizeLimit != nil {
+	if !IsNil(o.MemorySizeLimit) {
 		toSerialize["MemorySizeLimit"] = o.MemorySizeLimit
 	}
-	if o.MemoryThermalThrottling != nil {
+	if !IsNil(o.MemoryThermalThrottling) {
 		toSerialize["MemoryThermalThrottling"] = o.MemoryThermalThrottling
 	}
-	if o.MirroringMode != nil {
+	if !IsNil(o.MirroringMode) {
 		toSerialize["MirroringMode"] = o.MirroringMode
 	}
-	if o.MmcfgBase != nil {
+	if !IsNil(o.MmcfgBase) {
 		toSerialize["MmcfgBase"] = o.MmcfgBase
 	}
-	if o.NetworkStack != nil {
+	if !IsNil(o.MmiohBase) {
+		toSerialize["MmiohBase"] = o.MmiohBase
+	}
+	if !IsNil(o.MmiohSize) {
+		toSerialize["MmiohSize"] = o.MmiohSize
+	}
+	if !IsNil(o.NetworkStack) {
 		toSerialize["NetworkStack"] = o.NetworkStack
 	}
-	if o.NumaOptimized != nil {
+	if !IsNil(o.NumaOptimized) {
 		toSerialize["NumaOptimized"] = o.NumaOptimized
 	}
-	if o.NvmdimmPerformConfig != nil {
+	if !IsNil(o.NvmdimmPerformConfig) {
 		toSerialize["NvmdimmPerformConfig"] = o.NvmdimmPerformConfig
 	}
-	if o.Onboard10gbitLom != nil {
+	if !IsNil(o.Onboard10gbitLom) {
 		toSerialize["Onboard10gbitLom"] = o.Onboard10gbitLom
 	}
-	if o.OnboardGbitLom != nil {
+	if !IsNil(o.OnboardGbitLom) {
 		toSerialize["OnboardGbitLom"] = o.OnboardGbitLom
 	}
-	if o.OnboardScuStorageSupport != nil {
+	if !IsNil(o.OnboardScuStorageSupport) {
 		toSerialize["OnboardScuStorageSupport"] = o.OnboardScuStorageSupport
 	}
-	if o.OnboardScuStorageSwStack != nil {
+	if !IsNil(o.OnboardScuStorageSwStack) {
 		toSerialize["OnboardScuStorageSwStack"] = o.OnboardScuStorageSwStack
 	}
-	if o.OperationMode != nil {
+	if !IsNil(o.OperationMode) {
 		toSerialize["OperationMode"] = o.OperationMode
 	}
-	if o.OsBootWatchdogTimer != nil {
+	if !IsNil(o.OptimizedPowerMode) {
+		toSerialize["OptimizedPowerMode"] = o.OptimizedPowerMode
+	}
+	if !IsNil(o.OsBootWatchdogTimer) {
 		toSerialize["OsBootWatchdogTimer"] = o.OsBootWatchdogTimer
 	}
-	if o.OsBootWatchdogTimerPolicy != nil {
+	if !IsNil(o.OsBootWatchdogTimerPolicy) {
 		toSerialize["OsBootWatchdogTimerPolicy"] = o.OsBootWatchdogTimerPolicy
 	}
-	if o.OsBootWatchdogTimerTimeout != nil {
+	if !IsNil(o.OsBootWatchdogTimerTimeout) {
 		toSerialize["OsBootWatchdogTimerTimeout"] = o.OsBootWatchdogTimerTimeout
 	}
-	if o.OutOfBandMgmtPort != nil {
+	if !IsNil(o.OutOfBandMgmtPort) {
 		toSerialize["OutOfBandMgmtPort"] = o.OutOfBandMgmtPort
 	}
-	if o.PackageCstateLimit != nil {
+	if !IsNil(o.PackageCstateLimit) {
 		toSerialize["PackageCstateLimit"] = o.PackageCstateLimit
 	}
-	if o.PanicHighWatermark != nil {
+	if !IsNil(o.PanicHighWatermark) {
 		toSerialize["PanicHighWatermark"] = o.PanicHighWatermark
 	}
-	if o.PartialCacheLineSparing != nil {
+	if !IsNil(o.PartialCacheLineSparing) {
 		toSerialize["PartialCacheLineSparing"] = o.PartialCacheLineSparing
 	}
-	if o.PartialMirrorModeConfig != nil {
+	if !IsNil(o.PartialMirrorModeConfig) {
 		toSerialize["PartialMirrorModeConfig"] = o.PartialMirrorModeConfig
 	}
-	if o.PartialMirrorPercent != nil {
+	if !IsNil(o.PartialMirrorPercent) {
 		toSerialize["PartialMirrorPercent"] = o.PartialMirrorPercent
 	}
-	if o.PartialMirrorValue1 != nil {
+	if !IsNil(o.PartialMirrorValue1) {
 		toSerialize["PartialMirrorValue1"] = o.PartialMirrorValue1
 	}
-	if o.PartialMirrorValue2 != nil {
+	if !IsNil(o.PartialMirrorValue2) {
 		toSerialize["PartialMirrorValue2"] = o.PartialMirrorValue2
 	}
-	if o.PartialMirrorValue3 != nil {
+	if !IsNil(o.PartialMirrorValue3) {
 		toSerialize["PartialMirrorValue3"] = o.PartialMirrorValue3
 	}
-	if o.PartialMirrorValue4 != nil {
+	if !IsNil(o.PartialMirrorValue4) {
 		toSerialize["PartialMirrorValue4"] = o.PartialMirrorValue4
 	}
-	if o.PatrolScrub != nil {
+	if !IsNil(o.PatrolScrub) {
 		toSerialize["PatrolScrub"] = o.PatrolScrub
 	}
-	if o.PatrolScrubDuration != nil {
+	if !IsNil(o.PatrolScrubDuration) {
 		toSerialize["PatrolScrubDuration"] = o.PatrolScrubDuration
 	}
-	if o.PcIeRasSupport != nil {
+	if !IsNil(o.PcIeRasSupport) {
 		toSerialize["PcIeRasSupport"] = o.PcIeRasSupport
 	}
-	if o.PcIeSsdHotPlugSupport != nil {
+	if !IsNil(o.PcIeSsdHotPlugSupport) {
 		toSerialize["PcIeSsdHotPlugSupport"] = o.PcIeSsdHotPlugSupport
 	}
-	if o.PchUsb30mode != nil {
+	if !IsNil(o.PchPciePllSsc) {
+		toSerialize["PchPciePllSsc"] = o.PchPciePllSsc
+	}
+	if !IsNil(o.PchUsb30mode) {
 		toSerialize["PchUsb30mode"] = o.PchUsb30mode
 	}
-	if o.PciOptionRoMs != nil {
+	if !IsNil(o.PciOptionRoMs) {
 		toSerialize["PciOptionRoMs"] = o.PciOptionRoMs
 	}
-	if o.PciRomClp != nil {
+	if !IsNil(o.PciRomClp) {
 		toSerialize["PciRomClp"] = o.PciRomClp
 	}
-	if o.PcieAriSupport != nil {
+	if !IsNil(o.PcieAriSupport) {
 		toSerialize["PcieAriSupport"] = o.PcieAriSupport
 	}
-	if o.PciePllSsc != nil {
+	if !IsNil(o.PciePllSsc) {
 		toSerialize["PciePllSsc"] = o.PciePllSsc
 	}
-	if o.PcieSlotMraid1linkSpeed != nil {
+	if !IsNil(o.PcieSlotMraid1linkSpeed) {
 		toSerialize["PcieSlotMraid1linkSpeed"] = o.PcieSlotMraid1linkSpeed
 	}
-	if o.PcieSlotMraid1optionRom != nil {
+	if !IsNil(o.PcieSlotMraid1optionRom) {
 		toSerialize["PcieSlotMraid1optionRom"] = o.PcieSlotMraid1optionRom
 	}
-	if o.PcieSlotMraid2linkSpeed != nil {
+	if !IsNil(o.PcieSlotMraid2linkSpeed) {
 		toSerialize["PcieSlotMraid2linkSpeed"] = o.PcieSlotMraid2linkSpeed
 	}
-	if o.PcieSlotMraid2optionRom != nil {
+	if !IsNil(o.PcieSlotMraid2optionRom) {
 		toSerialize["PcieSlotMraid2optionRom"] = o.PcieSlotMraid2optionRom
 	}
-	if o.PcieSlotMstorraidLinkSpeed != nil {
+	if !IsNil(o.PcieSlotMstorraidLinkSpeed) {
 		toSerialize["PcieSlotMstorraidLinkSpeed"] = o.PcieSlotMstorraidLinkSpeed
 	}
-	if o.PcieSlotMstorraidOptionRom != nil {
+	if !IsNil(o.PcieSlotMstorraidOptionRom) {
 		toSerialize["PcieSlotMstorraidOptionRom"] = o.PcieSlotMstorraidOptionRom
 	}
-	if o.PcieSlotNvme1linkSpeed != nil {
+	if !IsNil(o.PcieSlotNvme1linkSpeed) {
 		toSerialize["PcieSlotNvme1linkSpeed"] = o.PcieSlotNvme1linkSpeed
 	}
-	if o.PcieSlotNvme1optionRom != nil {
+	if !IsNil(o.PcieSlotNvme1optionRom) {
 		toSerialize["PcieSlotNvme1optionRom"] = o.PcieSlotNvme1optionRom
 	}
-	if o.PcieSlotNvme2linkSpeed != nil {
+	if !IsNil(o.PcieSlotNvme2linkSpeed) {
 		toSerialize["PcieSlotNvme2linkSpeed"] = o.PcieSlotNvme2linkSpeed
 	}
-	if o.PcieSlotNvme2optionRom != nil {
+	if !IsNil(o.PcieSlotNvme2optionRom) {
 		toSerialize["PcieSlotNvme2optionRom"] = o.PcieSlotNvme2optionRom
 	}
-	if o.PcieSlotNvme3linkSpeed != nil {
+	if !IsNil(o.PcieSlotNvme3linkSpeed) {
 		toSerialize["PcieSlotNvme3linkSpeed"] = o.PcieSlotNvme3linkSpeed
 	}
-	if o.PcieSlotNvme3optionRom != nil {
+	if !IsNil(o.PcieSlotNvme3optionRom) {
 		toSerialize["PcieSlotNvme3optionRom"] = o.PcieSlotNvme3optionRom
 	}
-	if o.PcieSlotNvme4linkSpeed != nil {
+	if !IsNil(o.PcieSlotNvme4linkSpeed) {
 		toSerialize["PcieSlotNvme4linkSpeed"] = o.PcieSlotNvme4linkSpeed
 	}
-	if o.PcieSlotNvme4optionRom != nil {
+	if !IsNil(o.PcieSlotNvme4optionRom) {
 		toSerialize["PcieSlotNvme4optionRom"] = o.PcieSlotNvme4optionRom
 	}
-	if o.PcieSlotNvme5linkSpeed != nil {
+	if !IsNil(o.PcieSlotNvme5linkSpeed) {
 		toSerialize["PcieSlotNvme5linkSpeed"] = o.PcieSlotNvme5linkSpeed
 	}
-	if o.PcieSlotNvme5optionRom != nil {
+	if !IsNil(o.PcieSlotNvme5optionRom) {
 		toSerialize["PcieSlotNvme5optionRom"] = o.PcieSlotNvme5optionRom
 	}
-	if o.PcieSlotNvme6linkSpeed != nil {
+	if !IsNil(o.PcieSlotNvme6linkSpeed) {
 		toSerialize["PcieSlotNvme6linkSpeed"] = o.PcieSlotNvme6linkSpeed
 	}
-	if o.PcieSlotNvme6optionRom != nil {
+	if !IsNil(o.PcieSlotNvme6optionRom) {
 		toSerialize["PcieSlotNvme6optionRom"] = o.PcieSlotNvme6optionRom
 	}
-	if o.PcieSlotsCdnEnable != nil {
+	if !IsNil(o.PcieSlotsCdnEnable) {
 		toSerialize["PcieSlotsCdnEnable"] = o.PcieSlotsCdnEnable
 	}
-	if o.PopSupport != nil {
+	if !IsNil(o.PopSupport) {
 		toSerialize["PopSupport"] = o.PopSupport
 	}
-	if o.PostErrorPause != nil {
+	if !IsNil(o.PostErrorPause) {
 		toSerialize["PostErrorPause"] = o.PostErrorPause
 	}
-	if o.PostPackageRepair != nil {
+	if !IsNil(o.PostPackageRepair) {
 		toSerialize["PostPackageRepair"] = o.PostPackageRepair
 	}
-	if o.ProcessorC1e != nil {
+	if !IsNil(o.PrmrrSize) {
+		toSerialize["PrmrrSize"] = o.PrmrrSize
+	}
+	if !IsNil(o.ProcessorC1e) {
 		toSerialize["ProcessorC1e"] = o.ProcessorC1e
 	}
-	if o.ProcessorC3report != nil {
+	if !IsNil(o.ProcessorC3report) {
 		toSerialize["ProcessorC3report"] = o.ProcessorC3report
 	}
-	if o.ProcessorC6report != nil {
+	if !IsNil(o.ProcessorC6report) {
 		toSerialize["ProcessorC6report"] = o.ProcessorC6report
 	}
-	if o.ProcessorCstate != nil {
+	if !IsNil(o.ProcessorCstate) {
 		toSerialize["ProcessorCstate"] = o.ProcessorCstate
 	}
-	if o.Psata != nil {
+	if !IsNil(o.Psata) {
 		toSerialize["Psata"] = o.Psata
 	}
-	if o.PstateCoordType != nil {
+	if !IsNil(o.PstateCoordType) {
 		toSerialize["PstateCoordType"] = o.PstateCoordType
 	}
-	if o.PuttyKeyPad != nil {
+	if !IsNil(o.PuttyKeyPad) {
 		toSerialize["PuttyKeyPad"] = o.PuttyKeyPad
 	}
-	if o.PwrPerfTuning != nil {
+	if !IsNil(o.PwrPerfTuning) {
 		toSerialize["PwrPerfTuning"] = o.PwrPerfTuning
 	}
-	if o.QpiLinkFrequency != nil {
+	if !IsNil(o.QpiLinkFrequency) {
 		toSerialize["QpiLinkFrequency"] = o.QpiLinkFrequency
 	}
-	if o.QpiLinkSpeed != nil {
+	if !IsNil(o.QpiLinkSpeed) {
 		toSerialize["QpiLinkSpeed"] = o.QpiLinkSpeed
 	}
-	if o.QpiSnoopMode != nil {
+	if !IsNil(o.QpiSnoopMode) {
 		toSerialize["QpiSnoopMode"] = o.QpiSnoopMode
 	}
-	if o.RankInterLeave != nil {
+	if !IsNil(o.RankInterLeave) {
 		toSerialize["RankInterLeave"] = o.RankInterLeave
 	}
-	if o.RedirectionAfterPost != nil {
+	if !IsNil(o.RedirectionAfterPost) {
 		toSerialize["RedirectionAfterPost"] = o.RedirectionAfterPost
 	}
-	if o.SataModeSelect != nil {
+	if !IsNil(o.ResizeBarSupport) {
+		toSerialize["ResizeBarSupport"] = o.ResizeBarSupport
+	}
+	if !IsNil(o.RuntimePostPackageRepair) {
+		toSerialize["RuntimePostPackageRepair"] = o.RuntimePostPackageRepair
+	}
+	if !IsNil(o.SataModeSelect) {
 		toSerialize["SataModeSelect"] = o.SataModeSelect
 	}
-	if o.SelectMemoryRasConfiguration != nil {
+	if !IsNil(o.SelectMemoryRasConfiguration) {
 		toSerialize["SelectMemoryRasConfiguration"] = o.SelectMemoryRasConfiguration
 	}
-	if o.SelectPprType != nil {
+	if !IsNil(o.SelectPprType) {
 		toSerialize["SelectPprType"] = o.SelectPprType
 	}
-	if o.SerialPortAenable != nil {
+	if !IsNil(o.SerialMux) {
+		toSerialize["SerialMux"] = o.SerialMux
+	}
+	if !IsNil(o.SerialPortAenable) {
 		toSerialize["SerialPortAenable"] = o.SerialPortAenable
 	}
-	if o.Sev != nil {
+	if !IsNil(o.Sev) {
 		toSerialize["Sev"] = o.Sev
 	}
-	if o.SgxAutoRegistrationAgent != nil {
+	if !IsNil(o.SgxAutoRegistrationAgent) {
 		toSerialize["SgxAutoRegistrationAgent"] = o.SgxAutoRegistrationAgent
 	}
-	if o.SgxEpoch0 != nil {
+	if !IsNil(o.SgxEpoch0) {
 		toSerialize["SgxEpoch0"] = o.SgxEpoch0
 	}
-	if o.SgxEpoch1 != nil {
+	if !IsNil(o.SgxEpoch1) {
 		toSerialize["SgxEpoch1"] = o.SgxEpoch1
 	}
-	if o.SgxFactoryReset != nil {
+	if !IsNil(o.SgxFactoryReset) {
 		toSerialize["SgxFactoryReset"] = o.SgxFactoryReset
 	}
-	if o.SgxLePubKeyHash0 != nil {
+	if !IsNil(o.SgxLePubKeyHash0) {
 		toSerialize["SgxLePubKeyHash0"] = o.SgxLePubKeyHash0
 	}
-	if o.SgxLePubKeyHash1 != nil {
+	if !IsNil(o.SgxLePubKeyHash1) {
 		toSerialize["SgxLePubKeyHash1"] = o.SgxLePubKeyHash1
 	}
-	if o.SgxLePubKeyHash2 != nil {
+	if !IsNil(o.SgxLePubKeyHash2) {
 		toSerialize["SgxLePubKeyHash2"] = o.SgxLePubKeyHash2
 	}
-	if o.SgxLePubKeyHash3 != nil {
+	if !IsNil(o.SgxLePubKeyHash3) {
 		toSerialize["SgxLePubKeyHash3"] = o.SgxLePubKeyHash3
 	}
-	if o.SgxLeWr != nil {
+	if !IsNil(o.SgxLeWr) {
 		toSerialize["SgxLeWr"] = o.SgxLeWr
 	}
-	if o.SgxPackageInfoInBandAccess != nil {
+	if !IsNil(o.SgxPackageInfoInBandAccess) {
 		toSerialize["SgxPackageInfoInBandAccess"] = o.SgxPackageInfoInBandAccess
 	}
-	if o.SgxQos != nil {
+	if !IsNil(o.SgxQos) {
 		toSerialize["SgxQos"] = o.SgxQos
 	}
-	if o.Sha1pcrBank != nil {
+	if !IsNil(o.Sha1pcrBank) {
 		toSerialize["Sha1pcrBank"] = o.Sha1pcrBank
 	}
-	if o.Sha256pcrBank != nil {
+	if !IsNil(o.Sha256pcrBank) {
 		toSerialize["Sha256pcrBank"] = o.Sha256pcrBank
 	}
-	if o.SinglePctlEnable != nil {
+	if !IsNil(o.Sha384pcrBank) {
+		toSerialize["Sha384pcrBank"] = o.Sha384pcrBank
+	}
+	if !IsNil(o.SinglePctlEnable) {
 		toSerialize["SinglePctlEnable"] = o.SinglePctlEnable
 	}
-	if o.Slot10linkSpeed != nil {
+	if !IsNil(o.Slot10linkSpeed) {
 		toSerialize["Slot10linkSpeed"] = o.Slot10linkSpeed
 	}
-	if o.Slot10state != nil {
+	if !IsNil(o.Slot10state) {
 		toSerialize["Slot10state"] = o.Slot10state
 	}
-	if o.Slot11linkSpeed != nil {
+	if !IsNil(o.Slot11linkSpeed) {
 		toSerialize["Slot11linkSpeed"] = o.Slot11linkSpeed
 	}
-	if o.Slot11state != nil {
+	if !IsNil(o.Slot11state) {
 		toSerialize["Slot11state"] = o.Slot11state
 	}
-	if o.Slot12linkSpeed != nil {
+	if !IsNil(o.Slot12linkSpeed) {
 		toSerialize["Slot12linkSpeed"] = o.Slot12linkSpeed
 	}
-	if o.Slot12state != nil {
+	if !IsNil(o.Slot12state) {
 		toSerialize["Slot12state"] = o.Slot12state
 	}
-	if o.Slot13state != nil {
+	if !IsNil(o.Slot13state) {
 		toSerialize["Slot13state"] = o.Slot13state
 	}
-	if o.Slot14state != nil {
+	if !IsNil(o.Slot14state) {
 		toSerialize["Slot14state"] = o.Slot14state
 	}
-	if o.Slot1linkSpeed != nil {
+	if !IsNil(o.Slot1linkSpeed) {
 		toSerialize["Slot1linkSpeed"] = o.Slot1linkSpeed
 	}
-	if o.Slot1state != nil {
+	if !IsNil(o.Slot1state) {
 		toSerialize["Slot1state"] = o.Slot1state
 	}
-	if o.Slot2linkSpeed != nil {
+	if !IsNil(o.Slot2linkSpeed) {
 		toSerialize["Slot2linkSpeed"] = o.Slot2linkSpeed
 	}
-	if o.Slot2state != nil {
+	if !IsNil(o.Slot2state) {
 		toSerialize["Slot2state"] = o.Slot2state
 	}
-	if o.Slot3linkSpeed != nil {
+	if !IsNil(o.Slot3linkSpeed) {
 		toSerialize["Slot3linkSpeed"] = o.Slot3linkSpeed
 	}
-	if o.Slot3state != nil {
+	if !IsNil(o.Slot3state) {
 		toSerialize["Slot3state"] = o.Slot3state
 	}
-	if o.Slot4linkSpeed != nil {
+	if !IsNil(o.Slot4linkSpeed) {
 		toSerialize["Slot4linkSpeed"] = o.Slot4linkSpeed
 	}
-	if o.Slot4state != nil {
+	if !IsNil(o.Slot4state) {
 		toSerialize["Slot4state"] = o.Slot4state
 	}
-	if o.Slot5linkSpeed != nil {
+	if !IsNil(o.Slot5linkSpeed) {
 		toSerialize["Slot5linkSpeed"] = o.Slot5linkSpeed
 	}
-	if o.Slot5state != nil {
+	if !IsNil(o.Slot5state) {
 		toSerialize["Slot5state"] = o.Slot5state
 	}
-	if o.Slot6linkSpeed != nil {
+	if !IsNil(o.Slot6linkSpeed) {
 		toSerialize["Slot6linkSpeed"] = o.Slot6linkSpeed
 	}
-	if o.Slot6state != nil {
+	if !IsNil(o.Slot6state) {
 		toSerialize["Slot6state"] = o.Slot6state
 	}
-	if o.Slot7linkSpeed != nil {
+	if !IsNil(o.Slot7linkSpeed) {
 		toSerialize["Slot7linkSpeed"] = o.Slot7linkSpeed
 	}
-	if o.Slot7state != nil {
+	if !IsNil(o.Slot7state) {
 		toSerialize["Slot7state"] = o.Slot7state
 	}
-	if o.Slot8linkSpeed != nil {
+	if !IsNil(o.Slot8linkSpeed) {
 		toSerialize["Slot8linkSpeed"] = o.Slot8linkSpeed
 	}
-	if o.Slot8state != nil {
+	if !IsNil(o.Slot8state) {
 		toSerialize["Slot8state"] = o.Slot8state
 	}
-	if o.Slot9linkSpeed != nil {
+	if !IsNil(o.Slot9linkSpeed) {
 		toSerialize["Slot9linkSpeed"] = o.Slot9linkSpeed
 	}
-	if o.Slot9state != nil {
+	if !IsNil(o.Slot9state) {
 		toSerialize["Slot9state"] = o.Slot9state
 	}
-	if o.SlotFlomLinkSpeed != nil {
+	if !IsNil(o.SlotFlomLinkSpeed) {
 		toSerialize["SlotFlomLinkSpeed"] = o.SlotFlomLinkSpeed
 	}
-	if o.SlotFrontNvme10linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme10linkSpeed) {
 		toSerialize["SlotFrontNvme10linkSpeed"] = o.SlotFrontNvme10linkSpeed
 	}
-	if o.SlotFrontNvme10optionRom != nil {
+	if !IsNil(o.SlotFrontNvme10optionRom) {
 		toSerialize["SlotFrontNvme10optionRom"] = o.SlotFrontNvme10optionRom
 	}
-	if o.SlotFrontNvme11linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme11linkSpeed) {
 		toSerialize["SlotFrontNvme11linkSpeed"] = o.SlotFrontNvme11linkSpeed
 	}
-	if o.SlotFrontNvme11optionRom != nil {
+	if !IsNil(o.SlotFrontNvme11optionRom) {
 		toSerialize["SlotFrontNvme11optionRom"] = o.SlotFrontNvme11optionRom
 	}
-	if o.SlotFrontNvme12linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme12linkSpeed) {
 		toSerialize["SlotFrontNvme12linkSpeed"] = o.SlotFrontNvme12linkSpeed
 	}
-	if o.SlotFrontNvme12optionRom != nil {
+	if !IsNil(o.SlotFrontNvme12optionRom) {
 		toSerialize["SlotFrontNvme12optionRom"] = o.SlotFrontNvme12optionRom
 	}
-	if o.SlotFrontNvme13optionRom != nil {
+	if !IsNil(o.SlotFrontNvme13linkSpeed) {
+		toSerialize["SlotFrontNvme13linkSpeed"] = o.SlotFrontNvme13linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme13optionRom) {
 		toSerialize["SlotFrontNvme13optionRom"] = o.SlotFrontNvme13optionRom
 	}
-	if o.SlotFrontNvme14optionRom != nil {
+	if !IsNil(o.SlotFrontNvme14linkSpeed) {
+		toSerialize["SlotFrontNvme14linkSpeed"] = o.SlotFrontNvme14linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme14optionRom) {
 		toSerialize["SlotFrontNvme14optionRom"] = o.SlotFrontNvme14optionRom
 	}
-	if o.SlotFrontNvme15optionRom != nil {
+	if !IsNil(o.SlotFrontNvme15linkSpeed) {
+		toSerialize["SlotFrontNvme15linkSpeed"] = o.SlotFrontNvme15linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme15optionRom) {
 		toSerialize["SlotFrontNvme15optionRom"] = o.SlotFrontNvme15optionRom
 	}
-	if o.SlotFrontNvme16optionRom != nil {
+	if !IsNil(o.SlotFrontNvme16linkSpeed) {
+		toSerialize["SlotFrontNvme16linkSpeed"] = o.SlotFrontNvme16linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme16optionRom) {
 		toSerialize["SlotFrontNvme16optionRom"] = o.SlotFrontNvme16optionRom
 	}
-	if o.SlotFrontNvme17optionRom != nil {
+	if !IsNil(o.SlotFrontNvme17linkSpeed) {
+		toSerialize["SlotFrontNvme17linkSpeed"] = o.SlotFrontNvme17linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme17optionRom) {
 		toSerialize["SlotFrontNvme17optionRom"] = o.SlotFrontNvme17optionRom
 	}
-	if o.SlotFrontNvme18optionRom != nil {
+	if !IsNil(o.SlotFrontNvme18linkSpeed) {
+		toSerialize["SlotFrontNvme18linkSpeed"] = o.SlotFrontNvme18linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme18optionRom) {
 		toSerialize["SlotFrontNvme18optionRom"] = o.SlotFrontNvme18optionRom
 	}
-	if o.SlotFrontNvme19optionRom != nil {
+	if !IsNil(o.SlotFrontNvme19linkSpeed) {
+		toSerialize["SlotFrontNvme19linkSpeed"] = o.SlotFrontNvme19linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme19optionRom) {
 		toSerialize["SlotFrontNvme19optionRom"] = o.SlotFrontNvme19optionRom
 	}
-	if o.SlotFrontNvme1linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme1linkSpeed) {
 		toSerialize["SlotFrontNvme1linkSpeed"] = o.SlotFrontNvme1linkSpeed
 	}
-	if o.SlotFrontNvme1optionRom != nil {
+	if !IsNil(o.SlotFrontNvme1optionRom) {
 		toSerialize["SlotFrontNvme1optionRom"] = o.SlotFrontNvme1optionRom
 	}
-	if o.SlotFrontNvme20optionRom != nil {
+	if !IsNil(o.SlotFrontNvme20linkSpeed) {
+		toSerialize["SlotFrontNvme20linkSpeed"] = o.SlotFrontNvme20linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme20optionRom) {
 		toSerialize["SlotFrontNvme20optionRom"] = o.SlotFrontNvme20optionRom
 	}
-	if o.SlotFrontNvme21optionRom != nil {
+	if !IsNil(o.SlotFrontNvme21linkSpeed) {
+		toSerialize["SlotFrontNvme21linkSpeed"] = o.SlotFrontNvme21linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme21optionRom) {
 		toSerialize["SlotFrontNvme21optionRom"] = o.SlotFrontNvme21optionRom
 	}
-	if o.SlotFrontNvme22optionRom != nil {
+	if !IsNil(o.SlotFrontNvme22linkSpeed) {
+		toSerialize["SlotFrontNvme22linkSpeed"] = o.SlotFrontNvme22linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme22optionRom) {
 		toSerialize["SlotFrontNvme22optionRom"] = o.SlotFrontNvme22optionRom
 	}
-	if o.SlotFrontNvme23optionRom != nil {
+	if !IsNil(o.SlotFrontNvme23linkSpeed) {
+		toSerialize["SlotFrontNvme23linkSpeed"] = o.SlotFrontNvme23linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme23optionRom) {
 		toSerialize["SlotFrontNvme23optionRom"] = o.SlotFrontNvme23optionRom
 	}
-	if o.SlotFrontNvme24optionRom != nil {
+	if !IsNil(o.SlotFrontNvme24linkSpeed) {
+		toSerialize["SlotFrontNvme24linkSpeed"] = o.SlotFrontNvme24linkSpeed
+	}
+	if !IsNil(o.SlotFrontNvme24optionRom) {
 		toSerialize["SlotFrontNvme24optionRom"] = o.SlotFrontNvme24optionRom
 	}
-	if o.SlotFrontNvme2linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme2linkSpeed) {
 		toSerialize["SlotFrontNvme2linkSpeed"] = o.SlotFrontNvme2linkSpeed
 	}
-	if o.SlotFrontNvme2optionRom != nil {
+	if !IsNil(o.SlotFrontNvme2optionRom) {
 		toSerialize["SlotFrontNvme2optionRom"] = o.SlotFrontNvme2optionRom
 	}
-	if o.SlotFrontNvme3linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme3linkSpeed) {
 		toSerialize["SlotFrontNvme3linkSpeed"] = o.SlotFrontNvme3linkSpeed
 	}
-	if o.SlotFrontNvme3optionRom != nil {
+	if !IsNil(o.SlotFrontNvme3optionRom) {
 		toSerialize["SlotFrontNvme3optionRom"] = o.SlotFrontNvme3optionRom
 	}
-	if o.SlotFrontNvme4linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme4linkSpeed) {
 		toSerialize["SlotFrontNvme4linkSpeed"] = o.SlotFrontNvme4linkSpeed
 	}
-	if o.SlotFrontNvme4optionRom != nil {
+	if !IsNil(o.SlotFrontNvme4optionRom) {
 		toSerialize["SlotFrontNvme4optionRom"] = o.SlotFrontNvme4optionRom
 	}
-	if o.SlotFrontNvme5linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme5linkSpeed) {
 		toSerialize["SlotFrontNvme5linkSpeed"] = o.SlotFrontNvme5linkSpeed
 	}
-	if o.SlotFrontNvme5optionRom != nil {
+	if !IsNil(o.SlotFrontNvme5optionRom) {
 		toSerialize["SlotFrontNvme5optionRom"] = o.SlotFrontNvme5optionRom
 	}
-	if o.SlotFrontNvme6linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme6linkSpeed) {
 		toSerialize["SlotFrontNvme6linkSpeed"] = o.SlotFrontNvme6linkSpeed
 	}
-	if o.SlotFrontNvme6optionRom != nil {
+	if !IsNil(o.SlotFrontNvme6optionRom) {
 		toSerialize["SlotFrontNvme6optionRom"] = o.SlotFrontNvme6optionRom
 	}
-	if o.SlotFrontNvme7linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme7linkSpeed) {
 		toSerialize["SlotFrontNvme7linkSpeed"] = o.SlotFrontNvme7linkSpeed
 	}
-	if o.SlotFrontNvme7optionRom != nil {
+	if !IsNil(o.SlotFrontNvme7optionRom) {
 		toSerialize["SlotFrontNvme7optionRom"] = o.SlotFrontNvme7optionRom
 	}
-	if o.SlotFrontNvme8linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme8linkSpeed) {
 		toSerialize["SlotFrontNvme8linkSpeed"] = o.SlotFrontNvme8linkSpeed
 	}
-	if o.SlotFrontNvme8optionRom != nil {
+	if !IsNil(o.SlotFrontNvme8optionRom) {
 		toSerialize["SlotFrontNvme8optionRom"] = o.SlotFrontNvme8optionRom
 	}
-	if o.SlotFrontNvme9linkSpeed != nil {
+	if !IsNil(o.SlotFrontNvme9linkSpeed) {
 		toSerialize["SlotFrontNvme9linkSpeed"] = o.SlotFrontNvme9linkSpeed
 	}
-	if o.SlotFrontNvme9optionRom != nil {
+	if !IsNil(o.SlotFrontNvme9optionRom) {
 		toSerialize["SlotFrontNvme9optionRom"] = o.SlotFrontNvme9optionRom
 	}
-	if o.SlotFrontSlot5linkSpeed != nil {
+	if !IsNil(o.SlotFrontSlot5linkSpeed) {
 		toSerialize["SlotFrontSlot5linkSpeed"] = o.SlotFrontSlot5linkSpeed
 	}
-	if o.SlotFrontSlot6linkSpeed != nil {
+	if !IsNil(o.SlotFrontSlot6linkSpeed) {
 		toSerialize["SlotFrontSlot6linkSpeed"] = o.SlotFrontSlot6linkSpeed
 	}
-	if o.SlotGpu1state != nil {
+	if !IsNil(o.SlotGpu1state) {
 		toSerialize["SlotGpu1state"] = o.SlotGpu1state
 	}
-	if o.SlotGpu2state != nil {
+	if !IsNil(o.SlotGpu2state) {
 		toSerialize["SlotGpu2state"] = o.SlotGpu2state
 	}
-	if o.SlotGpu3state != nil {
+	if !IsNil(o.SlotGpu3state) {
 		toSerialize["SlotGpu3state"] = o.SlotGpu3state
 	}
-	if o.SlotGpu4state != nil {
+	if !IsNil(o.SlotGpu4state) {
 		toSerialize["SlotGpu4state"] = o.SlotGpu4state
 	}
-	if o.SlotGpu5state != nil {
+	if !IsNil(o.SlotGpu5state) {
 		toSerialize["SlotGpu5state"] = o.SlotGpu5state
 	}
-	if o.SlotGpu6state != nil {
+	if !IsNil(o.SlotGpu6state) {
 		toSerialize["SlotGpu6state"] = o.SlotGpu6state
 	}
-	if o.SlotGpu7state != nil {
+	if !IsNil(o.SlotGpu7state) {
 		toSerialize["SlotGpu7state"] = o.SlotGpu7state
 	}
-	if o.SlotGpu8state != nil {
+	if !IsNil(o.SlotGpu8state) {
 		toSerialize["SlotGpu8state"] = o.SlotGpu8state
 	}
-	if o.SlotHbaLinkSpeed != nil {
+	if !IsNil(o.SlotHbaLinkSpeed) {
 		toSerialize["SlotHbaLinkSpeed"] = o.SlotHbaLinkSpeed
 	}
-	if o.SlotHbaState != nil {
+	if !IsNil(o.SlotHbaState) {
 		toSerialize["SlotHbaState"] = o.SlotHbaState
 	}
-	if o.SlotLom1link != nil {
+	if !IsNil(o.SlotLom1link) {
 		toSerialize["SlotLom1link"] = o.SlotLom1link
 	}
-	if o.SlotLom2link != nil {
+	if !IsNil(o.SlotLom2link) {
 		toSerialize["SlotLom2link"] = o.SlotLom2link
 	}
-	if o.SlotMezzState != nil {
+	if !IsNil(o.SlotMezzState) {
 		toSerialize["SlotMezzState"] = o.SlotMezzState
 	}
-	if o.SlotMlomLinkSpeed != nil {
+	if !IsNil(o.SlotMlomLinkSpeed) {
 		toSerialize["SlotMlomLinkSpeed"] = o.SlotMlomLinkSpeed
 	}
-	if o.SlotMlomState != nil {
+	if !IsNil(o.SlotMlomState) {
 		toSerialize["SlotMlomState"] = o.SlotMlomState
 	}
-	if o.SlotMraidLinkSpeed != nil {
+	if !IsNil(o.SlotMraidLinkSpeed) {
 		toSerialize["SlotMraidLinkSpeed"] = o.SlotMraidLinkSpeed
 	}
-	if o.SlotMraidState != nil {
+	if !IsNil(o.SlotMraidState) {
 		toSerialize["SlotMraidState"] = o.SlotMraidState
 	}
-	if o.SlotN10state != nil {
+	if !IsNil(o.SlotN10state) {
 		toSerialize["SlotN10state"] = o.SlotN10state
 	}
-	if o.SlotN11state != nil {
+	if !IsNil(o.SlotN11state) {
 		toSerialize["SlotN11state"] = o.SlotN11state
 	}
-	if o.SlotN12state != nil {
+	if !IsNil(o.SlotN12state) {
 		toSerialize["SlotN12state"] = o.SlotN12state
 	}
-	if o.SlotN13state != nil {
+	if !IsNil(o.SlotN13state) {
 		toSerialize["SlotN13state"] = o.SlotN13state
 	}
-	if o.SlotN14state != nil {
+	if !IsNil(o.SlotN14state) {
 		toSerialize["SlotN14state"] = o.SlotN14state
 	}
-	if o.SlotN15state != nil {
+	if !IsNil(o.SlotN15state) {
 		toSerialize["SlotN15state"] = o.SlotN15state
 	}
-	if o.SlotN16state != nil {
+	if !IsNil(o.SlotN16state) {
 		toSerialize["SlotN16state"] = o.SlotN16state
 	}
-	if o.SlotN17state != nil {
+	if !IsNil(o.SlotN17state) {
 		toSerialize["SlotN17state"] = o.SlotN17state
 	}
-	if o.SlotN18state != nil {
+	if !IsNil(o.SlotN18state) {
 		toSerialize["SlotN18state"] = o.SlotN18state
 	}
-	if o.SlotN19state != nil {
+	if !IsNil(o.SlotN19state) {
 		toSerialize["SlotN19state"] = o.SlotN19state
 	}
-	if o.SlotN1state != nil {
+	if !IsNil(o.SlotN1state) {
 		toSerialize["SlotN1state"] = o.SlotN1state
 	}
-	if o.SlotN20state != nil {
+	if !IsNil(o.SlotN20state) {
 		toSerialize["SlotN20state"] = o.SlotN20state
 	}
-	if o.SlotN21state != nil {
+	if !IsNil(o.SlotN21state) {
 		toSerialize["SlotN21state"] = o.SlotN21state
 	}
-	if o.SlotN22state != nil {
+	if !IsNil(o.SlotN22state) {
 		toSerialize["SlotN22state"] = o.SlotN22state
 	}
-	if o.SlotN23state != nil {
+	if !IsNil(o.SlotN23state) {
 		toSerialize["SlotN23state"] = o.SlotN23state
 	}
-	if o.SlotN24state != nil {
+	if !IsNil(o.SlotN24state) {
 		toSerialize["SlotN24state"] = o.SlotN24state
 	}
-	if o.SlotN2state != nil {
+	if !IsNil(o.SlotN2state) {
 		toSerialize["SlotN2state"] = o.SlotN2state
 	}
-	if o.SlotN3state != nil {
+	if !IsNil(o.SlotN3state) {
 		toSerialize["SlotN3state"] = o.SlotN3state
 	}
-	if o.SlotN4state != nil {
+	if !IsNil(o.SlotN4state) {
 		toSerialize["SlotN4state"] = o.SlotN4state
 	}
-	if o.SlotN5state != nil {
+	if !IsNil(o.SlotN5state) {
 		toSerialize["SlotN5state"] = o.SlotN5state
 	}
-	if o.SlotN6state != nil {
+	if !IsNil(o.SlotN6state) {
 		toSerialize["SlotN6state"] = o.SlotN6state
 	}
-	if o.SlotN7state != nil {
+	if !IsNil(o.SlotN7state) {
 		toSerialize["SlotN7state"] = o.SlotN7state
 	}
-	if o.SlotN8state != nil {
+	if !IsNil(o.SlotN8state) {
 		toSerialize["SlotN8state"] = o.SlotN8state
 	}
-	if o.SlotN9state != nil {
+	if !IsNil(o.SlotN9state) {
 		toSerialize["SlotN9state"] = o.SlotN9state
 	}
-	if o.SlotRaidLinkSpeed != nil {
+	if !IsNil(o.SlotRaidLinkSpeed) {
 		toSerialize["SlotRaidLinkSpeed"] = o.SlotRaidLinkSpeed
 	}
-	if o.SlotRaidState != nil {
+	if !IsNil(o.SlotRaidState) {
 		toSerialize["SlotRaidState"] = o.SlotRaidState
 	}
-	if o.SlotRearNvme1linkSpeed != nil {
+	if !IsNil(o.SlotRearNvme1linkSpeed) {
 		toSerialize["SlotRearNvme1linkSpeed"] = o.SlotRearNvme1linkSpeed
 	}
-	if o.SlotRearNvme1state != nil {
+	if !IsNil(o.SlotRearNvme1state) {
 		toSerialize["SlotRearNvme1state"] = o.SlotRearNvme1state
 	}
-	if o.SlotRearNvme2linkSpeed != nil {
+	if !IsNil(o.SlotRearNvme2linkSpeed) {
 		toSerialize["SlotRearNvme2linkSpeed"] = o.SlotRearNvme2linkSpeed
 	}
-	if o.SlotRearNvme2state != nil {
+	if !IsNil(o.SlotRearNvme2state) {
 		toSerialize["SlotRearNvme2state"] = o.SlotRearNvme2state
 	}
-	if o.SlotRearNvme3linkSpeed != nil {
+	if !IsNil(o.SlotRearNvme3linkSpeed) {
 		toSerialize["SlotRearNvme3linkSpeed"] = o.SlotRearNvme3linkSpeed
 	}
-	if o.SlotRearNvme3state != nil {
+	if !IsNil(o.SlotRearNvme3state) {
 		toSerialize["SlotRearNvme3state"] = o.SlotRearNvme3state
 	}
-	if o.SlotRearNvme4linkSpeed != nil {
+	if !IsNil(o.SlotRearNvme4linkSpeed) {
 		toSerialize["SlotRearNvme4linkSpeed"] = o.SlotRearNvme4linkSpeed
 	}
-	if o.SlotRearNvme4state != nil {
+	if !IsNil(o.SlotRearNvme4state) {
 		toSerialize["SlotRearNvme4state"] = o.SlotRearNvme4state
 	}
-	if o.SlotRearNvme5state != nil {
+	if !IsNil(o.SlotRearNvme5state) {
 		toSerialize["SlotRearNvme5state"] = o.SlotRearNvme5state
 	}
-	if o.SlotRearNvme6state != nil {
+	if !IsNil(o.SlotRearNvme6state) {
 		toSerialize["SlotRearNvme6state"] = o.SlotRearNvme6state
 	}
-	if o.SlotRearNvme7state != nil {
+	if !IsNil(o.SlotRearNvme7state) {
 		toSerialize["SlotRearNvme7state"] = o.SlotRearNvme7state
 	}
-	if o.SlotRearNvme8state != nil {
+	if !IsNil(o.SlotRearNvme8state) {
 		toSerialize["SlotRearNvme8state"] = o.SlotRearNvme8state
 	}
-	if o.SlotRiser1linkSpeed != nil {
+	if !IsNil(o.SlotRiser1linkSpeed) {
 		toSerialize["SlotRiser1linkSpeed"] = o.SlotRiser1linkSpeed
 	}
-	if o.SlotRiser1slot1linkSpeed != nil {
+	if !IsNil(o.SlotRiser1slot1linkSpeed) {
 		toSerialize["SlotRiser1slot1linkSpeed"] = o.SlotRiser1slot1linkSpeed
 	}
-	if o.SlotRiser1slot2linkSpeed != nil {
+	if !IsNil(o.SlotRiser1slot2linkSpeed) {
 		toSerialize["SlotRiser1slot2linkSpeed"] = o.SlotRiser1slot2linkSpeed
 	}
-	if o.SlotRiser1slot3linkSpeed != nil {
+	if !IsNil(o.SlotRiser1slot3linkSpeed) {
 		toSerialize["SlotRiser1slot3linkSpeed"] = o.SlotRiser1slot3linkSpeed
 	}
-	if o.SlotRiser2linkSpeed != nil {
+	if !IsNil(o.SlotRiser2linkSpeed) {
 		toSerialize["SlotRiser2linkSpeed"] = o.SlotRiser2linkSpeed
 	}
-	if o.SlotRiser2slot4linkSpeed != nil {
+	if !IsNil(o.SlotRiser2slot4linkSpeed) {
 		toSerialize["SlotRiser2slot4linkSpeed"] = o.SlotRiser2slot4linkSpeed
 	}
-	if o.SlotRiser2slot5linkSpeed != nil {
+	if !IsNil(o.SlotRiser2slot5linkSpeed) {
 		toSerialize["SlotRiser2slot5linkSpeed"] = o.SlotRiser2slot5linkSpeed
 	}
-	if o.SlotRiser2slot6linkSpeed != nil {
+	if !IsNil(o.SlotRiser2slot6linkSpeed) {
 		toSerialize["SlotRiser2slot6linkSpeed"] = o.SlotRiser2slot6linkSpeed
 	}
-	if o.SlotSasState != nil {
+	if !IsNil(o.SlotSasState) {
 		toSerialize["SlotSasState"] = o.SlotSasState
 	}
-	if o.SlotSsdSlot1linkSpeed != nil {
+	if !IsNil(o.SlotSsdSlot1linkSpeed) {
 		toSerialize["SlotSsdSlot1linkSpeed"] = o.SlotSsdSlot1linkSpeed
 	}
-	if o.SlotSsdSlot2linkSpeed != nil {
+	if !IsNil(o.SlotSsdSlot2linkSpeed) {
 		toSerialize["SlotSsdSlot2linkSpeed"] = o.SlotSsdSlot2linkSpeed
 	}
-	if o.Smee != nil {
+	if !IsNil(o.Smee) {
 		toSerialize["Smee"] = o.Smee
 	}
-	if o.SmtMode != nil {
+	if !IsNil(o.SmtMode) {
 		toSerialize["SmtMode"] = o.SmtMode
 	}
-	if o.Snc != nil {
+	if !IsNil(o.Snc) {
 		toSerialize["Snc"] = o.Snc
 	}
-	if o.SnoopyModeFor2lm != nil {
+	if !IsNil(o.SnoopyModeFor2lm) {
 		toSerialize["SnoopyModeFor2lm"] = o.SnoopyModeFor2lm
 	}
-	if o.SnoopyModeForAd != nil {
+	if !IsNil(o.SnoopyModeForAd) {
 		toSerialize["SnoopyModeForAd"] = o.SnoopyModeForAd
 	}
-	if o.SparingMode != nil {
+	if !IsNil(o.SparingMode) {
 		toSerialize["SparingMode"] = o.SparingMode
 	}
-	if o.SrIov != nil {
+	if !IsNil(o.SrIov) {
 		toSerialize["SrIov"] = o.SrIov
 	}
-	if o.StreamerPrefetch != nil {
+	if !IsNil(o.StreamerPrefetch) {
 		toSerialize["StreamerPrefetch"] = o.StreamerPrefetch
 	}
-	if o.SvmMode != nil {
+	if !IsNil(o.SvmMode) {
 		toSerialize["SvmMode"] = o.SvmMode
 	}
-	if o.TerminalType != nil {
+	if !IsNil(o.TerminalType) {
 		toSerialize["TerminalType"] = o.TerminalType
 	}
-	if o.TpmControl != nil {
+	if !IsNil(o.TpmControl) {
 		toSerialize["TpmControl"] = o.TpmControl
 	}
-	if o.TpmPendingOperation != nil {
+	if !IsNil(o.TpmPendingOperation) {
 		toSerialize["TpmPendingOperation"] = o.TpmPendingOperation
 	}
-	if o.TpmPpiRequired != nil {
+	if !IsNil(o.TpmPpiRequired) {
 		toSerialize["TpmPpiRequired"] = o.TpmPpiRequired
 	}
-	if o.TpmSupport != nil {
+	if !IsNil(o.TpmSupport) {
 		toSerialize["TpmSupport"] = o.TpmSupport
 	}
-	if o.Tsme != nil {
+	if !IsNil(o.Tsme) {
 		toSerialize["Tsme"] = o.Tsme
 	}
-	if o.TxtSupport != nil {
+	if !IsNil(o.TxtSupport) {
 		toSerialize["TxtSupport"] = o.TxtSupport
 	}
-	if o.UcsmBootOrderRule != nil {
+	if !IsNil(o.UcsmBootOrderRule) {
 		toSerialize["UcsmBootOrderRule"] = o.UcsmBootOrderRule
 	}
-	if o.UfsDisable != nil {
+	if !IsNil(o.UfsDisable) {
 		toSerialize["UfsDisable"] = o.UfsDisable
 	}
-	if o.UmaBasedClustering != nil {
+	if !IsNil(o.UmaBasedClustering) {
 		toSerialize["UmaBasedClustering"] = o.UmaBasedClustering
 	}
-	if o.UpiLinkEnablement != nil {
+	if !IsNil(o.UpiLinkEnablement) {
 		toSerialize["UpiLinkEnablement"] = o.UpiLinkEnablement
 	}
-	if o.UpiPowerManagement != nil {
+	if !IsNil(o.UpiPowerManagement) {
 		toSerialize["UpiPowerManagement"] = o.UpiPowerManagement
 	}
-	if o.UsbEmul6064 != nil {
+	if !IsNil(o.UsbEmul6064) {
 		toSerialize["UsbEmul6064"] = o.UsbEmul6064
 	}
-	if o.UsbPortFront != nil {
+	if !IsNil(o.UsbPortFront) {
 		toSerialize["UsbPortFront"] = o.UsbPortFront
 	}
-	if o.UsbPortInternal != nil {
+	if !IsNil(o.UsbPortInternal) {
 		toSerialize["UsbPortInternal"] = o.UsbPortInternal
 	}
-	if o.UsbPortKvm != nil {
+	if !IsNil(o.UsbPortKvm) {
 		toSerialize["UsbPortKvm"] = o.UsbPortKvm
 	}
-	if o.UsbPortRear != nil {
+	if !IsNil(o.UsbPortRear) {
 		toSerialize["UsbPortRear"] = o.UsbPortRear
 	}
-	if o.UsbPortSdCard != nil {
+	if !IsNil(o.UsbPortSdCard) {
 		toSerialize["UsbPortSdCard"] = o.UsbPortSdCard
 	}
-	if o.UsbPortVmedia != nil {
+	if !IsNil(o.UsbPortVmedia) {
 		toSerialize["UsbPortVmedia"] = o.UsbPortVmedia
 	}
-	if o.UsbXhciSupport != nil {
+	if !IsNil(o.UsbXhciSupport) {
 		toSerialize["UsbXhciSupport"] = o.UsbXhciSupport
 	}
-	if o.VgaPriority != nil {
+	if !IsNil(o.VgaPriority) {
 		toSerialize["VgaPriority"] = o.VgaPriority
 	}
-	if o.VirtualNuma != nil {
+	if !IsNil(o.VirtualNuma) {
 		toSerialize["VirtualNuma"] = o.VirtualNuma
 	}
-	if o.VmdEnable != nil {
+	if !IsNil(o.VmdEnable) {
 		toSerialize["VmdEnable"] = o.VmdEnable
 	}
-	if o.VolMemoryMode != nil {
+	if !IsNil(o.VolMemoryMode) {
 		toSerialize["VolMemoryMode"] = o.VolMemoryMode
 	}
-	if o.WorkLoadConfig != nil {
+	if !IsNil(o.WorkLoadConfig) {
 		toSerialize["WorkLoadConfig"] = o.WorkLoadConfig
 	}
-	if o.XptPrefetch != nil {
+	if !IsNil(o.X2apicOptOut) {
+		toSerialize["X2apicOptOut"] = o.X2apicOptOut
+	}
+	if !IsNil(o.XptPrefetch) {
 		toSerialize["XptPrefetch"] = o.XptPrefetch
 	}
-	if o.XptRemotePrefetch != nil {
+	if !IsNil(o.XptRemotePrefetch) {
 		toSerialize["XptRemotePrefetch"] = o.XptRemotePrefetch
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 	if o.Profiles != nil {
 		toSerialize["Profiles"] = o.Profiles
@@ -16267,10 +18434,51 @@ func (o BiosPolicy) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
+func (o *BiosPolicy) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type BiosPolicyWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -16300,6 +18508,8 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		AcsControlSlot13state *string `json:"AcsControlSlot13state,omitempty"`
 		// BIOS Token for setting ACS Control Slot 14 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		AcsControlSlot14state *string `json:"AcsControlSlot14state,omitempty"`
+		// BIOS Token for setting Adaptive Refresh Management Level configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Default` - Value - Default for configuring AdaptiveRefreshMgmtLevel token. * `Level A` - Value - Level A for configuring AdaptiveRefreshMgmtLevel token. * `Level B` - Value - Level B for configuring AdaptiveRefreshMgmtLevel token. * `Level C` - Value - Level C for configuring AdaptiveRefreshMgmtLevel token.
+		AdaptiveRefreshMgmtLevel *string `json:"AdaptiveRefreshMgmtLevel,omitempty"`
 		// BIOS Token for setting Adjacent Cache Line Prefetcher configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		AdjacentCacheLinePrefetch *string `json:"AdjacentCacheLinePrefetch,omitempty"`
 		// BIOS Token for setting Enhanced Memory Test configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring AdvancedMemTest token. * `disabled` - Value - disabled for configuring AdvancedMemTest token. * `enabled` - Value - enabled for configuring AdvancedMemTest token.
@@ -16332,15 +18542,19 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		BootPerformanceMode *string `json:"BootPerformanceMode,omitempty"`
 		// BIOS Token for setting Burst and Postponed Refresh configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		BurstAndPostponedRefresh *string `json:"BurstAndPostponedRefresh,omitempty"`
-		// BIOS Token for setting C1 Auto Demotion configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		// BIOS Token for setting C1 Auto Demotion configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring C1autoDemotion token. * `disabled` - Value - disabled for configuring C1autoDemotion token. * `enabled` - Value - enabled for configuring C1autoDemotion token.
 		C1autoDemotion *string `json:"C1autoDemotion,omitempty"`
-		// BIOS Token for setting C1 Auto UnDemotion configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		// BIOS Token for setting C1 Auto UnDemotion configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring C1autoUnDemotion token. * `disabled` - Value - disabled for configuring C1autoUnDemotion token. * `enabled` - Value - enabled for configuring C1autoUnDemotion token.
 		C1autoUnDemotion *string `json:"C1autoUnDemotion,omitempty"`
 		// BIOS Token for setting APBDIS configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `0` - Value - 0 for configuring CbsCmnApbdis token. * `1` - Value - 1 for configuring CbsCmnApbdis token. * `Auto` - Value - Auto for configuring CbsCmnApbdis token.
 		CbsCmnApbdis *string `json:"CbsCmnApbdis,omitempty"`
+		// BIOS Token for setting Fixed SOC P-State SP5 F19h configuration (0 - 2 P State).
+		CbsCmnApbdisDfPstateRs *string `json:"CbsCmnApbdisDfPstateRs,omitempty" validate:"regexp=^([0-2])$|^(platform-default)$"`
+		// BIOS Token for setting AVX512 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuAvx512 token. * `disabled` - Value - disabled for configuring CbsCmnCpuAvx512 token. * `enabled` - Value - enabled for configuring CbsCmnCpuAvx512 token.
+		CbsCmnCpuAvx512 *string `json:"CbsCmnCpuAvx512,omitempty"`
 		// BIOS Token for setting Core Performance Boost configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuCpb token. * `disabled` - Value - disabled for configuring CbsCmnCpuCpb token.
 		CbsCmnCpuCpb *string `json:"CbsCmnCpuCpb,omitempty"`
-		// BIOS Token for setting Downcore Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuGenDowncoreCtrl token. * `FOUR (2 + 2)` - Value - FOUR (2 + 2) for configuring CbsCmnCpuGenDowncoreCtrl token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token. * `SIX (3 + 3)` - Value - SIX (3 + 3) for configuring CbsCmnCpuGenDowncoreCtrl token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token. * `TWO (1 + 1)` - Value - TWO (1 + 1) for configuring CbsCmnCpuGenDowncoreCtrl token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token.
+		// BIOS Token for setting Downcore Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuGenDowncoreCtrl token. * `TWO (1 + 1)` - Value - TWO (1 + 1) for configuring CbsCmnCpuGenDowncoreCtrl token. * `FOUR (2 + 2)` - Value - FOUR (2 + 2) for configuring CbsCmnCpuGenDowncoreCtrl token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token. * `SIX (3 + 3)` - Value - SIX (3 + 3) for configuring CbsCmnCpuGenDowncoreCtrl token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCmnCpuGenDowncoreCtrl token.
 		CbsCmnCpuGenDowncoreCtrl *string `json:"CbsCmnCpuGenDowncoreCtrl,omitempty"`
 		// BIOS Token for setting Global C State Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuGlobalCstateCtrl token. * `disabled` - Value - disabled for configuring CbsCmnCpuGlobalCstateCtrl token. * `enabled` - Value - enabled for configuring CbsCmnCpuGlobalCstateCtrl token.
 		CbsCmnCpuGlobalCstateCtrl *string `json:"CbsCmnCpuGlobalCstateCtrl,omitempty"`
@@ -16348,47 +18562,87 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		CbsCmnCpuL1streamHwPrefetcher *string `json:"CbsCmnCpuL1streamHwPrefetcher,omitempty"`
 		// BIOS Token for setting L2 Stream HW Prefetcher configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuL2streamHwPrefetcher token. * `disabled` - Value - disabled for configuring CbsCmnCpuL2streamHwPrefetcher token. * `enabled` - Value - enabled for configuring CbsCmnCpuL2streamHwPrefetcher token.
 		CbsCmnCpuL2streamHwPrefetcher *string `json:"CbsCmnCpuL2streamHwPrefetcher,omitempty"`
+		// BIOS Token for setting SEV-ES ASID Space Limit configuration (1 - 1007 ASIDs).
+		CbsCmnCpuSevAsidSpaceLimit *string `json:"CbsCmnCpuSevAsidSpaceLimit,omitempty" validate:"regexp=^([1-9]|[1-9]\\\\d|[1-9]\\\\d{2}|100[0-7])$|^(platform-default)$"`
 		// BIOS Token for setting CPU SMEE configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuSmee token. * `disabled` - Value - disabled for configuring CbsCmnCpuSmee token. * `enabled` - Value - enabled for configuring CbsCmnCpuSmee token.
 		CbsCmnCpuSmee *string `json:"CbsCmnCpuSmee,omitempty"`
 		// BIOS Token for setting Streaming Stores Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnCpuStreamingStoresCtrl token. * `disabled` - Value - disabled for configuring CbsCmnCpuStreamingStoresCtrl token. * `enabled` - Value - enabled for configuring CbsCmnCpuStreamingStoresCtrl token.
 		CbsCmnCpuStreamingStoresCtrl *string `json:"CbsCmnCpuStreamingStoresCtrl,omitempty"`
 		// BIOS Token for setting Determinism Slider configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnDeterminismSlider token. * `Performance` - Value - Performance for configuring CbsCmnDeterminismSlider token. * `Power` - Value - Power for configuring CbsCmnDeterminismSlider token.
 		CbsCmnDeterminismSlider *string `json:"CbsCmnDeterminismSlider,omitempty"`
+		// BIOS Token for setting EDC Control Throttle configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnEdcControlThrottle token. * `disabled` - Value - disabled for configuring CbsCmnEdcControlThrottle token. * `enabled` - Value - enabled for configuring CbsCmnEdcControlThrottle token.
+		CbsCmnEdcControlThrottle *string `json:"CbsCmnEdcControlThrottle,omitempty"`
 		// BIOS Token for setting Efficiency Mode Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnEfficiencyModeEn token. * `Enabled` - Value - Enabled for configuring CbsCmnEfficiencyModeEn token.
 		CbsCmnEfficiencyModeEn *string `json:"CbsCmnEfficiencyModeEn,omitempty"`
+		// BIOS Token for setting Power Profile Selection F19h configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Balanced Memory Performance Mode` - Value - Balanced Memory Performance Mode for configuring CbsCmnEfficiencyModeEnRs token. * `Efficiency Mode` - Value - Efficiency Mode for configuring CbsCmnEfficiencyModeEnRs token. * `High Performance Mode` - Value - High Performance Mode for configuring CbsCmnEfficiencyModeEnRs token. * `Maximum IO Performance Mode` - Value - Maximum IO Performance Mode for configuring CbsCmnEfficiencyModeEnRs token.
+		CbsCmnEfficiencyModeEnRs *string `json:"CbsCmnEfficiencyModeEnRs,omitempty"`
 		// BIOS Token for setting Fixed SOC P-State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnFixedSocPstate token. * `P0` - Value - P0 for configuring CbsCmnFixedSocPstate token. * `P1` - Value - P1 for configuring CbsCmnFixedSocPstate token. * `P2` - Value - P2 for configuring CbsCmnFixedSocPstate token. * `P3` - Value - P3 for configuring CbsCmnFixedSocPstate token.
 		CbsCmnFixedSocPstate *string `json:"CbsCmnFixedSocPstate,omitempty"`
 		// BIOS Token for setting IOMMU configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbNbIommu token. * `disabled` - Value - disabled for configuring CbsCmnGnbNbIommu token. * `enabled` - Value - enabled for configuring CbsCmnGnbNbIommu token.
 		CbsCmnGnbNbIommu *string `json:"CbsCmnGnbNbIommu,omitempty"`
 		// BIOS Token for setting DF C-States configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbSmuDfCstates token. * `disabled` - Value - disabled for configuring CbsCmnGnbSmuDfCstates token. * `enabled` - Value - enabled for configuring CbsCmnGnbSmuDfCstates token.
 		CbsCmnGnbSmuDfCstates *string `json:"CbsCmnGnbSmuDfCstates,omitempty"`
+		// BIOS Token for setting DF PState Frequency Optimizer configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbSmuDffoRs token. * `disabled` - Value - disabled for configuring CbsCmnGnbSmuDffoRs token. * `enabled` - Value - enabled for configuring CbsCmnGnbSmuDffoRs token.
+		CbsCmnGnbSmuDffoRs *string `json:"CbsCmnGnbSmuDffoRs,omitempty"`
+		// BIOS Token for setting DLWM Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbSmuDlwmSupport token. * `disabled` - Value - disabled for configuring CbsCmnGnbSmuDlwmSupport token. * `enabled` - Value - enabled for configuring CbsCmnGnbSmuDlwmSupport token.
+		CbsCmnGnbSmuDlwmSupport *string `json:"CbsCmnGnbSmuDlwmSupport,omitempty"`
 		// BIOS Token for setting CPPC configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnGnbSmucppc token. * `disabled` - Value - disabled for configuring CbsCmnGnbSmucppc token. * `enabled` - Value - enabled for configuring CbsCmnGnbSmucppc token.
 		CbsCmnGnbSmucppc *string `json:"CbsCmnGnbSmucppc,omitempty"`
 		// BIOS Token for setting Bank Group Swap configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnMemCtrlBankGroupSwapDdr4 token. * `disabled` - Value - disabled for configuring CbsCmnMemCtrlBankGroupSwapDdr4 token. * `enabled` - Value - enabled for configuring CbsCmnMemCtrlBankGroupSwapDdr4 token.
 		CbsCmnMemCtrlBankGroupSwapDdr4 *string `json:"CbsCmnMemCtrlBankGroupSwapDdr4,omitempty"`
-		// BIOS Token for setting Chipset Interleave configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnMemMapBankInterleaveDdr4 token. * `disabled` - Value - disabled for configuring CbsCmnMemMapBankInterleaveDdr4 token.
+		// BIOS Token for setting Power Down Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnMemCtrllerPwrDnEnDdr token. * `disabled` - Value - disabled for configuring CbsCmnMemCtrllerPwrDnEnDdr token. * `enabled` - Value - enabled for configuring CbsCmnMemCtrllerPwrDnEnDdr token.
+		CbsCmnMemCtrllerPwrDnEnDdr *string `json:"CbsCmnMemCtrllerPwrDnEnDdr,omitempty"`
+		// BIOS Token for setting Chipset Interleave configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnMemMapBankInterleaveDdr4 token. * `disabled` - Value - disabled for configuring CbsCmnMemMapBankInterleaveDdr4 token. * `Enabled` - Value - Enabled for configuring CbsCmnMemMapBankInterleaveDdr4 token.
 		CbsCmnMemMapBankInterleaveDdr4 *string `json:"CbsCmnMemMapBankInterleaveDdr4,omitempty"`
+		// BIOS Token for setting Memory Clock Speed 7xx2 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `667MHz` - Value - 667MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `800MHz` - Value - 800MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `933MHz` - Value - 933MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1067MHz` - Value - 1067MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1200MHz` - Value - 1200MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1333MHz` - Value - 1333MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1467MHz` - Value - 1467MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `1600MHz` - Value - 1600MHz for configuring CbsCmnMemSpeedDdr47xx2 token. * `Auto` - Value - Auto for configuring CbsCmnMemSpeedDdr47xx2 token.
+		CbsCmnMemSpeedDdr47xx2 *string `json:"CbsCmnMemSpeedDdr47xx2,omitempty"`
+		// BIOS Token for setting Memory Clock Speed 7xx3 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `400MHz` - Value - 400MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `800MHz` - Value - 800MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `933MHz` - Value - 933MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1067MHz` - Value - 1067MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1200MHz` - Value - 1200MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1333MHz` - Value - 1333MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1467MHz` - Value - 1467MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1600MHz` - Value - 1600MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1633MHz` - Value - 1633MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1667MHz` - Value - 1667MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1700MHz` - Value - 1700MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1733MHz` - Value - 1733MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1767MHz` - Value - 1767MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `1800MHz` - Value - 1800MHz for configuring CbsCmnMemSpeedDdr47xx3 token. * `Auto` - Value - Auto for configuring CbsCmnMemSpeedDdr47xx3 token.
+		CbsCmnMemSpeedDdr47xx3 *string `json:"CbsCmnMemSpeedDdr47xx3,omitempty"`
+		// BIOS Token for setting Preferred IO 7xx2 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnPreferredIo7xx2 token. * `Manual` - Value - Manual for configuring CbsCmnPreferredIo7xx2 token.
+		CbsCmnPreferredIo7xx2 *string `json:"CbsCmnPreferredIo7xx2,omitempty"`
+		// BIOS Token for setting Preferred IO 7xx3 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmnPreferredIo7xx3 token. * `Bus` - Value - Bus for configuring CbsCmnPreferredIo7xx3 token.
+		CbsCmnPreferredIo7xx3 *string `json:"CbsCmnPreferredIo7xx3,omitempty"`
 		// BIOS Token for setting cTDP Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCmncTdpCtl token. * `Manual` - Value - Manual for configuring CbsCmncTdpCtl token.
 		CbsCmncTdpCtl *string `json:"CbsCmncTdpCtl,omitempty"`
-		// BIOS Token for setting CCD Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `2 CCDs` - Value - 2 CCDs for configuring CbsCpuCcdCtrlSsp token. * `3 CCDs` - Value - 3 CCDs for configuring CbsCpuCcdCtrlSsp token. * `4 CCDs` - Value - 4 CCDs for configuring CbsCpuCcdCtrlSsp token. * `6 CCDs` - Value - 6 CCDs for configuring CbsCpuCcdCtrlSsp token. * `Auto` - Value - Auto for configuring CbsCpuCcdCtrlSsp token.
+		// BIOS Token for setting xGMI Force Link Width configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `0` - Value - 0 for configuring CbsCmnxGmiForceLinkWidthRs token. * `1` - Value - 1 for configuring CbsCmnxGmiForceLinkWidthRs token. * `2` - Value - 2 for configuring CbsCmnxGmiForceLinkWidthRs token. * `Auto` - Value - Auto for configuring CbsCmnxGmiForceLinkWidthRs token.
+		CbsCmnxGmiForceLinkWidthRs *string `json:"CbsCmnxGmiForceLinkWidthRs,omitempty"`
+		// BIOS Token for setting CCD Control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `2 CCDs` - Value - 2 CCDs for configuring CbsCpuCcdCtrlSsp token. * `3 CCDs` - Value - 3 CCDs for configuring CbsCpuCcdCtrlSsp token. * `4 CCDs` - Value - 4 CCDs for configuring CbsCpuCcdCtrlSsp token. * `6 CCDs` - Value - 6 CCDs for configuring CbsCpuCcdCtrlSsp token. * `8 CCDs` - Value - 8 CCDs for configuring CbsCpuCcdCtrlSsp token. * `10 CCDs` - Value - 10 CCDs for configuring CbsCpuCcdCtrlSsp token. * `Auto` - Value - Auto for configuring CbsCpuCcdCtrlSsp token.
 		CbsCpuCcdCtrlSsp *string `json:"CbsCpuCcdCtrlSsp,omitempty"`
-		// BIOS Token for setting CPU Downcore control configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuCoreCtrl token. * `FIVE (5 + 0)` - Value - FIVE (5 + 0) for configuring CbsCpuCoreCtrl token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCpuCoreCtrl token. * `ONE (1 + 0)` - Value - ONE (1 + 0) for configuring CbsCpuCoreCtrl token. * `SEVEN (7 + 0)` - Value - SEVEN (7 + 0) for configuring CbsCpuCoreCtrl token. * `SIX (6 + 0)` - Value - SIX (6 + 0) for configuring CbsCpuCoreCtrl token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCpuCoreCtrl token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCpuCoreCtrl token.
+		// BIOS Token for setting CPU Downcore control 7xx3 configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuCoreCtrl token. * `ONE (1 + 0)` - Value - ONE (1 + 0) for configuring CbsCpuCoreCtrl token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCpuCoreCtrl token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCpuCoreCtrl token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCpuCoreCtrl token. * `FIVE (5 + 0)` - Value - FIVE (5 + 0) for configuring CbsCpuCoreCtrl token. * `SIX (6 + 0)` - Value - SIX (6 + 0) for configuring CbsCpuCoreCtrl token. * `SEVEN (7 + 0)` - Value - SEVEN (7 + 0) for configuring CbsCpuCoreCtrl token.
 		CbsCpuCoreCtrl *string `json:"CbsCpuCoreCtrl,omitempty"`
+		// BIOS Token for setting Downcore control F19 MA0h-AFh configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuDownCoreCtrlBergamo token. * `TWO (1 + 1)` - Value - TWO (1 + 1) for configuring CbsCpuDownCoreCtrlBergamo token. * `FOUR (2 + 2)` - Value - FOUR (2 + 2) for configuring CbsCpuDownCoreCtrlBergamo token. * `SIX (3 + 3)` - Value - SIX (3 + 3) for configuring CbsCpuDownCoreCtrlBergamo token. * `EIGHT (4 + 4)` - Value - EIGHT (4 + 4) for configuring CbsCpuDownCoreCtrlBergamo token. * `TEN (5 + 5)` - Value - TEN (5 + 5) for configuring CbsCpuDownCoreCtrlBergamo token. * `TWELVE (6 + 6)` - Value - TWELVE (6 + 6) for configuring CbsCpuDownCoreCtrlBergamo token. * `FOURTEEN (7 + 7)` - Value - FOURTEEN (7 + 7) for configuring CbsCpuDownCoreCtrlBergamo token.
+		CbsCpuDownCoreCtrlBergamo *string `json:"CbsCpuDownCoreCtrlBergamo,omitempty"`
+		// BIOS Token for setting CPU Downcore control F19 M10h-1Fh configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuDownCoreCtrlGenoa token. * `ONE (1 + 0)` - Value - ONE (1 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `TWO (2 + 0)` - Value - TWO (2 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `THREE (3 + 0)` - Value - THREE (3 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `FOUR (4 + 0)` - Value - FOUR (4 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `FIVE (5 + 0)` - Value - FIVE (5 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `SIX (6 + 0)` - Value - SIX (6 + 0) for configuring CbsCpuDownCoreCtrlGenoa token. * `SEVEN (7 + 0)` - Value - SEVEN (7 + 0) for configuring CbsCpuDownCoreCtrlGenoa token.
+		CbsCpuDownCoreCtrlGenoa *string `json:"CbsCpuDownCoreCtrlGenoa,omitempty"`
 		// BIOS Token for setting CPU SMT Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsCpuSmtCtrl token. * `disabled` - Value - disabled for configuring CbsCpuSmtCtrl token. * `enabled` - Value - enabled for configuring CbsCpuSmtCtrl token.
 		CbsCpuSmtCtrl *string `json:"CbsCpuSmtCtrl,omitempty"`
+		// BIOS Token for setting Core Watchdog Timer Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDbgCpuGenCpuWdt token. * `disabled` - Value - disabled for configuring CbsDbgCpuGenCpuWdt token. * `enabled` - Value - enabled for configuring CbsDbgCpuGenCpuWdt token.
+		CbsDbgCpuGenCpuWdt *string `json:"CbsDbgCpuGenCpuWdt,omitempty"`
+		// BIOS Token for setting Local APIC Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDbgCpuLapicMode token. * `Compatibility` - Value - Compatibility for configuring CbsDbgCpuLapicMode token. * `X2APIC` - Value - X2APIC for configuring CbsDbgCpuLapicMode token. * `XAPIC` - Value - XAPIC for configuring CbsDbgCpuLapicMode token.
+		CbsDbgCpuLapicMode *string `json:"CbsDbgCpuLapicMode,omitempty"`
 		// BIOS Token for setting SNP Memory Coverage configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDbgCpuSnpMemCover token. * `Custom` - Value - Custom for configuring CbsDbgCpuSnpMemCover token. * `disabled` - Value - disabled for configuring CbsDbgCpuSnpMemCover token. * `enabled` - Value - enabled for configuring CbsDbgCpuSnpMemCover token.
 		CbsDbgCpuSnpMemCover *string `json:"CbsDbgCpuSnpMemCover,omitempty"`
 		// BIOS Token for setting SNP Memory Size to Cover in MiB configuration (0 - 1048576 MiB).
-		CbsDbgCpuSnpMemSizeCover *string `json:"CbsDbgCpuSnpMemSizeCover,omitempty"`
+		CbsDbgCpuSnpMemSizeCover *string `json:"CbsDbgCpuSnpMemSizeCover,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-9]\\\\d{4}|[1-9]\\\\d{5}|10[0-3]\\\\d{4}|104[0-7]\\\\d{3}|1048[0-4]\\\\d{2}|10485[0-6]\\\\d|104857[0-6])$|^(platform-default)$"`
+		// BIOS Token for setting 4-link xGMI max speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `20Gbps` - Value - 20Gbps for configuring CbsDfCmn4linkMaxXgmiSpeed token. * `25Gbps` - Value - 25Gbps for configuring CbsDfCmn4linkMaxXgmiSpeed token. * `32Gbps` - Value - 32Gbps for configuring CbsDfCmn4linkMaxXgmiSpeed token. * `Auto` - Value - Auto for configuring CbsDfCmn4linkMaxXgmiSpeed token.
+		CbsDfCmn4linkMaxXgmiSpeed *string `json:"CbsDfCmn4linkMaxXgmiSpeed,omitempty"`
 		// BIOS Token for setting ACPI SRAT L3 Cache As NUMA Domain configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDfCmnAcpiSratL3numa token. * `disabled` - Value - disabled for configuring CbsDfCmnAcpiSratL3numa token. * `enabled` - Value - enabled for configuring CbsDfCmnAcpiSratL3numa token.
 		CbsDfCmnAcpiSratL3numa *string `json:"CbsDfCmnAcpiSratL3numa,omitempty"`
 		// BIOS Token for setting NUMA Nodes per Socket configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDfCmnDramNps token. * `NPS0` - Value - NPS0 for configuring CbsDfCmnDramNps token. * `NPS1` - Value - NPS1 for configuring CbsDfCmnDramNps token. * `NPS2` - Value - NPS2 for configuring CbsDfCmnDramNps token. * `NPS4` - Value - NPS4 for configuring CbsDfCmnDramNps token.
 		CbsDfCmnDramNps *string `json:"CbsDfCmnDramNps,omitempty"`
+		// BIOS Token for setting DRAM Scrub Time configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1 hour` - Value - 1 hour for configuring CbsDfCmnDramScrubTime token. * `4 hours` - Value - 4 hours for configuring CbsDfCmnDramScrubTime token. * `6 hours` - Value - 6 hours for configuring CbsDfCmnDramScrubTime token. * `8 hours` - Value - 8 hours for configuring CbsDfCmnDramScrubTime token. * `12 hours` - Value - 12 hours for configuring CbsDfCmnDramScrubTime token. * `16 hours` - Value - 16 hours for configuring CbsDfCmnDramScrubTime token. * `24 hours` - Value - 24 hours for configuring CbsDfCmnDramScrubTime token. * `48 hours` - Value - 48 hours for configuring CbsDfCmnDramScrubTime token. * `Auto` - Value - Auto for configuring CbsDfCmnDramScrubTime token. * `Disabled` - Value - Disabled for configuring CbsDfCmnDramScrubTime token.
+		CbsDfCmnDramScrubTime *string `json:"CbsDfCmnDramScrubTime,omitempty"`
 		// BIOS Token for setting AMD Memory Interleaving configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDfCmnMemIntlv token. * `Channel` - Value - Channel for configuring CbsDfCmnMemIntlv token. * `Die` - Value - Die for configuring CbsDfCmnMemIntlv token. * `None` - Value - None for configuring CbsDfCmnMemIntlv token. * `Socket` - Value - Socket for configuring CbsDfCmnMemIntlv token.
 		CbsDfCmnMemIntlv *string `json:"CbsDfCmnMemIntlv,omitempty"`
+		// BIOS Token for setting Memory Interleaving configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsDfCmnMemIntlvControl token. * `disabled` - Value - disabled for configuring CbsDfCmnMemIntlvControl token. * `enabled` - Value - enabled for configuring CbsDfCmnMemIntlvControl token.
+		CbsDfCmnMemIntlvControl *string `json:"CbsDfCmnMemIntlvControl,omitempty"`
 		// BIOS Token for setting AMD Memory Interleaving Size configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `256 Bytes` - Value - 256 Bytes for configuring CbsDfCmnMemIntlvSize token. * `512 Bytes` - Value - 512 Bytes for configuring CbsDfCmnMemIntlvSize token. * `1 KB` - Value - 1 KiB for configuring CbsDfCmnMemIntlvSize token. * `2 KB` - Value - 2 KiB for configuring CbsDfCmnMemIntlvSize token. * `4 KB` - Value - 4 KiB for configuring CbsDfCmnMemIntlvSize token. * `Auto` - Value - Auto for configuring CbsDfCmnMemIntlvSize token.
 		CbsDfCmnMemIntlvSize *string `json:"CbsDfCmnMemIntlvSize,omitempty"`
-		// BIOS Token for setting SEV-SNP Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		// BIOS Token for setting xGMI Link Configuration configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `2 xGMI Links` - Value - 2 xGMI Links for configuring CbsDfDbgXgmiLinkCfg token. * `3 xGMI Links` - Value - 3 xGMI Links for configuring CbsDfDbgXgmiLinkCfg token. * `4 xGMI Links` - Value - 4 xGMI Links for configuring CbsDfDbgXgmiLinkCfg token. * `Auto` - Value - Auto for configuring CbsDfDbgXgmiLinkCfg token.
+		CbsDfDbgXgmiLinkCfg *string `json:"CbsDfDbgXgmiLinkCfg,omitempty"`
+		// BIOS Token for setting PCIe Ten Bit Tag Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsGnbDbgPcieTbtSupport token. * `disabled` - Value - disabled for configuring CbsGnbDbgPcieTbtSupport token. * `enabled` - Value - enabled for configuring CbsGnbDbgPcieTbtSupport token.
+		CbsGnbDbgPcieTbtSupport *string `json:"CbsGnbDbgPcieTbtSupport,omitempty"`
+		// BIOS Token for setting SEV-SNP Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CbsSevSnpSupport token. * `disabled` - Value - disabled for configuring CbsSevSnpSupport token. * `enabled` - Value - enabled for configuring CbsSevSnpSupport token.
 		CbsSevSnpSupport *string `json:"CbsSevSnpSupport,omitempty"`
 		// BIOS Token for setting Consistent Device Naming configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		CdnEnable *string `json:"CdnEnable,omitempty"`
@@ -16416,7 +18670,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		ConfigTdpLevel *string `json:"ConfigTdpLevel,omitempty"`
 		// BIOS Token for setting Console Redirection configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `com-0` - Value - com-0 for configuring ConsoleRedirection token. * `com-1` - Value - com-1 for configuring ConsoleRedirection token. * `disabled` - Value - disabled for configuring ConsoleRedirection token. * `enabled` - Value - enabled for configuring ConsoleRedirection token. * `serial-port-a` - Value - serial-port-a for configuring ConsoleRedirection token.
 		ConsoleRedirection *string `json:"ConsoleRedirection,omitempty"`
-		// BIOS Token for setting Core Multi Processing configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1` - Value - 1 for configuring CoreMultiProcessing token. * `2` - Value - 2 for configuring CoreMultiProcessing token. * `3` - Value - 3 for configuring CoreMultiProcessing token. * `4` - Value - 4 for configuring CoreMultiProcessing token. * `5` - Value - 5 for configuring CoreMultiProcessing token. * `6` - Value - 6 for configuring CoreMultiProcessing token. * `7` - Value - 7 for configuring CoreMultiProcessing token. * `8` - Value - 8 for configuring CoreMultiProcessing token. * `9` - Value - 9 for configuring CoreMultiProcessing token. * `10` - Value - 10 for configuring CoreMultiProcessing token. * `11` - Value - 11 for configuring CoreMultiProcessing token. * `12` - Value - 12 for configuring CoreMultiProcessing token. * `13` - Value - 13 for configuring CoreMultiProcessing token. * `14` - Value - 14 for configuring CoreMultiProcessing token. * `15` - Value - 15 for configuring CoreMultiProcessing token. * `16` - Value - 16 for configuring CoreMultiProcessing token. * `17` - Value - 17 for configuring CoreMultiProcessing token. * `18` - Value - 18 for configuring CoreMultiProcessing token. * `19` - Value - 19 for configuring CoreMultiProcessing token. * `20` - Value - 20 for configuring CoreMultiProcessing token. * `21` - Value - 21 for configuring CoreMultiProcessing token. * `22` - Value - 22 for configuring CoreMultiProcessing token. * `23` - Value - 23 for configuring CoreMultiProcessing token. * `24` - Value - 24 for configuring CoreMultiProcessing token. * `25` - Value - 25 for configuring CoreMultiProcessing token. * `26` - Value - 26 for configuring CoreMultiProcessing token. * `27` - Value - 27 for configuring CoreMultiProcessing token. * `28` - Value - 28 for configuring CoreMultiProcessing token. * `29` - Value - 29 for configuring CoreMultiProcessing token. * `30` - Value - 30 for configuring CoreMultiProcessing token. * `31` - Value - 31 for configuring CoreMultiProcessing token. * `32` - Value - 32 for configuring CoreMultiProcessing token. * `33` - Value - 33 for configuring CoreMultiProcessing token. * `34` - Value - 34 for configuring CoreMultiProcessing token. * `35` - Value - 35 for configuring CoreMultiProcessing token. * `36` - Value - 36 for configuring CoreMultiProcessing token. * `37` - Value - 37 for configuring CoreMultiProcessing token. * `38` - Value - 38 for configuring CoreMultiProcessing token. * `39` - Value - 39 for configuring CoreMultiProcessing token. * `40` - Value - 40 for configuring CoreMultiProcessing token. * `41` - Value - 41 for configuring CoreMultiProcessing token. * `42` - Value - 42 for configuring CoreMultiProcessing token. * `43` - Value - 43 for configuring CoreMultiProcessing token. * `44` - Value - 44 for configuring CoreMultiProcessing token. * `45` - Value - 45 for configuring CoreMultiProcessing token. * `46` - Value - 46 for configuring CoreMultiProcessing token. * `47` - Value - 47 for configuring CoreMultiProcessing token. * `48` - Value - 48 for configuring CoreMultiProcessing token. * `all` - Value - all for configuring CoreMultiProcessing token.
+		// BIOS Token for setting Core Multi Processing configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1` - Value - 1 for configuring CoreMultiProcessing token. * `2` - Value - 2 for configuring CoreMultiProcessing token. * `3` - Value - 3 for configuring CoreMultiProcessing token. * `4` - Value - 4 for configuring CoreMultiProcessing token. * `5` - Value - 5 for configuring CoreMultiProcessing token. * `6` - Value - 6 for configuring CoreMultiProcessing token. * `7` - Value - 7 for configuring CoreMultiProcessing token. * `8` - Value - 8 for configuring CoreMultiProcessing token. * `9` - Value - 9 for configuring CoreMultiProcessing token. * `10` - Value - 10 for configuring CoreMultiProcessing token. * `11` - Value - 11 for configuring CoreMultiProcessing token. * `12` - Value - 12 for configuring CoreMultiProcessing token. * `13` - Value - 13 for configuring CoreMultiProcessing token. * `14` - Value - 14 for configuring CoreMultiProcessing token. * `15` - Value - 15 for configuring CoreMultiProcessing token. * `16` - Value - 16 for configuring CoreMultiProcessing token. * `17` - Value - 17 for configuring CoreMultiProcessing token. * `18` - Value - 18 for configuring CoreMultiProcessing token. * `19` - Value - 19 for configuring CoreMultiProcessing token. * `20` - Value - 20 for configuring CoreMultiProcessing token. * `21` - Value - 21 for configuring CoreMultiProcessing token. * `22` - Value - 22 for configuring CoreMultiProcessing token. * `23` - Value - 23 for configuring CoreMultiProcessing token. * `24` - Value - 24 for configuring CoreMultiProcessing token. * `25` - Value - 25 for configuring CoreMultiProcessing token. * `26` - Value - 26 for configuring CoreMultiProcessing token. * `27` - Value - 27 for configuring CoreMultiProcessing token. * `28` - Value - 28 for configuring CoreMultiProcessing token. * `29` - Value - 29 for configuring CoreMultiProcessing token. * `30` - Value - 30 for configuring CoreMultiProcessing token. * `31` - Value - 31 for configuring CoreMultiProcessing token. * `32` - Value - 32 for configuring CoreMultiProcessing token. * `33` - Value - 33 for configuring CoreMultiProcessing token. * `34` - Value - 34 for configuring CoreMultiProcessing token. * `35` - Value - 35 for configuring CoreMultiProcessing token. * `36` - Value - 36 for configuring CoreMultiProcessing token. * `37` - Value - 37 for configuring CoreMultiProcessing token. * `38` - Value - 38 for configuring CoreMultiProcessing token. * `39` - Value - 39 for configuring CoreMultiProcessing token. * `40` - Value - 40 for configuring CoreMultiProcessing token. * `41` - Value - 41 for configuring CoreMultiProcessing token. * `42` - Value - 42 for configuring CoreMultiProcessing token. * `43` - Value - 43 for configuring CoreMultiProcessing token. * `44` - Value - 44 for configuring CoreMultiProcessing token. * `45` - Value - 45 for configuring CoreMultiProcessing token. * `46` - Value - 46 for configuring CoreMultiProcessing token. * `47` - Value - 47 for configuring CoreMultiProcessing token. * `48` - Value - 48 for configuring CoreMultiProcessing token. * `49` - Value - 49 for configuring CoreMultiProcessing token. * `50` - Value - 50 for configuring CoreMultiProcessing token. * `51` - Value - 51 for configuring CoreMultiProcessing token. * `52` - Value - 52 for configuring CoreMultiProcessing token. * `53` - Value - 53 for configuring CoreMultiProcessing token. * `54` - Value - 54 for configuring CoreMultiProcessing token. * `55` - Value - 55 for configuring CoreMultiProcessing token. * `56` - Value - 56 for configuring CoreMultiProcessing token. * `57` - Value - 57 for configuring CoreMultiProcessing token. * `58` - Value - 58 for configuring CoreMultiProcessing token. * `59` - Value - 59 for configuring CoreMultiProcessing token. * `60` - Value - 60 for configuring CoreMultiProcessing token. * `61` - Value - 61 for configuring CoreMultiProcessing token. * `62` - Value - 62 for configuring CoreMultiProcessing token. * `63` - Value - 63 for configuring CoreMultiProcessing token. * `64` - Value - 64 for configuring CoreMultiProcessing token. * `all` - Value - all for configuring CoreMultiProcessing token.
 		CoreMultiProcessing *string `json:"CoreMultiProcessing,omitempty"`
 		// BIOS Token for setting Energy Performance configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `balanced-energy` - Value - balanced-energy for configuring CpuEnergyPerformance token. * `balanced-performance` - Value - balanced-performance for configuring CpuEnergyPerformance token. * `balanced-power` - Value - balanced-power for configuring CpuEnergyPerformance token. * `energy-efficient` - Value - energy-efficient for configuring CpuEnergyPerformance token. * `performance` - Value - performance for configuring CpuEnergyPerformance token. * `power` - Value - power for configuring CpuEnergyPerformance token.
 		CpuEnergyPerformance *string `json:"CpuEnergyPerformance,omitempty"`
@@ -16430,7 +18684,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		CpuPerformance *string `json:"CpuPerformance,omitempty"`
 		// BIOS Token for setting Power Technology configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `custom` - Value - custom for configuring CpuPowerManagement token. * `disabled` - Value - disabled for configuring CpuPowerManagement token. * `energy-efficient` - Value - energy-efficient for configuring CpuPowerManagement token. * `performance` - Value - performance for configuring CpuPowerManagement token.
 		CpuPowerManagement *string `json:"CpuPowerManagement,omitempty"`
-		// BIOS Token for setting CR QoS configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring CrQos token. * `Mode 0 - Disable the PMem QoS Feature` - Value - Mode 0 - Disable the PMem QoS Feature for configuring CrQos token. * `Mode 1 - M2M QoS Enable and CHA QoS Disable` - Value - Mode 1 - M2M QoS Enable and CHA QoS Disable for configuring CrQos token. * `Mode 2 - M2M QoS Enable and CHA QoS Enable` - Value - Mode 2 - M2M QoS Enable and CHA QoS Enable for configuring CrQos token. * `Recipe 1` - Value - Recipe 1 for configuring CrQos token. * `Recipe 2` - Value - Recipe 2 for configuring CrQos token. * `Recipe 3` - Value - Recipe 3 for configuring CrQos token.
+		// BIOS Token for setting CR QoS configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring CrQos token. * `Mode 0 - Disable the PMem QoS Feature` - Value - Mode 0 - Disable the PMem QoS Feature for configuring CrQos token. * `Mode 1 - M2M QoS Enable and CHA QoS Disable` - Value - Mode 1 - M2M QoS Enable and CHA QoS Disable for configuring CrQos token. * `Mode 2 - M2M QoS Enable and CHA QoS Enable` - Value - Mode 2 - M2M QoS Enable and CHA QoS Enable for configuring CrQos token. * `Profile 1` - Value - Profile 1 for configuring CrQos token. * `Recipe 1` - Value - Recipe 1 for configuring CrQos token. * `Recipe 2` - Value - Recipe 2 for configuring CrQos token. * `Recipe 3` - Value - Recipe 3 for configuring CrQos token.
 		CrQos *string `json:"CrQos,omitempty"`
 		// BIOS Token for setting CR FastGo Config configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring CrfastgoConfig token. * `Default` - Value - Default for configuring CrfastgoConfig token. * `Disable optimization` - Value - Disable optimization for configuring CrfastgoConfig token. * `Enable optimization` - Value - Enable optimization for configuring CrfastgoConfig token. * `Option 1` - Value - Option 1 for configuring CrfastgoConfig token. * `Option 2` - Value - Option 2 for configuring CrfastgoConfig token. * `Option 3` - Value - Option 3 for configuring CrfastgoConfig token. * `Option 4` - Value - Option 4 for configuring CrfastgoConfig token. * `Option 5` - Value - Option 5 for configuring CrfastgoConfig token.
 		CrfastgoConfig *string `json:"CrfastgoConfig,omitempty"`
@@ -16438,8 +18692,12 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		DcpmmFirmwareDowngrade *string `json:"DcpmmFirmwareDowngrade,omitempty"`
 		// BIOS Token for setting Demand Scrub configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		DemandScrub *string `json:"DemandScrub,omitempty"`
+		// BIOS Token for setting DFX OSB configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring DfxOsbEn token. * `disabled` - Value - disabled for configuring DfxOsbEn token. * `enabled` - Value - enabled for configuring DfxOsbEn token.
+		DfxOsbEn *string `json:"DfxOsbEn,omitempty"`
 		// BIOS Token for setting Direct Cache Access Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `auto` - Value - auto for configuring DirectCacheAccess token. * `disabled` - Value - disabled for configuring DirectCacheAccess token. * `enabled` - Value - enabled for configuring DirectCacheAccess token.
 		DirectCacheAccess *string `json:"DirectCacheAccess,omitempty"`
+		// BIOS Token for setting DMA Control Opt-In Flag configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		DmaCtrlOptIn *string `json:"DmaCtrlOptIn,omitempty"`
 		// BIOS Token for setting DRAM Clock Throttling configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring DramClockThrottling token. * `Balanced` - Value - Balanced for configuring DramClockThrottling token. * `Energy Efficient` - Value - Energy Efficient for configuring DramClockThrottling token. * `Performance` - Value - Performance for configuring DramClockThrottling token.
 		DramClockThrottling *string `json:"DramClockThrottling,omitempty"`
 		// BIOS Token for setting DRAM Refresh Rate configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1x` - Value - 1x for configuring DramRefreshRate token. * `2x` - Value - 2x for configuring DramRefreshRate token. * `3x` - Value - 3x for configuring DramRefreshRate token. * `4x` - Value - 4x for configuring DramRefreshRate token. * `Auto` - Value - Auto for configuring DramRefreshRate token.
@@ -16450,12 +18708,18 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		EadrSupport *string `json:"EadrSupport,omitempty"`
 		// BIOS Token for setting IIO eDPC Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring EdpcEn token. * `On Fatal Error` - Value - On Fatal Error for configuring EdpcEn token. * `On Fatal and Non-Fatal Errors` - Value - On Fatal and Non-Fatal Errors for configuring EdpcEn token.
 		EdpcEn *string `json:"EdpcEn,omitempty"`
-		// BIOS Token for setting External SSC Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		// BIOS Token for setting External SSC Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `0P3_Percent` - Value - 0P3_Percent for configuring EnableClockSpreadSpec token. * `0P5_Percent` - Value - 0P5_Percent for configuring EnableClockSpreadSpec token. * `disabled` - Value - disabled for configuring EnableClockSpreadSpec token. * `enabled` - Value - enabled for configuring EnableClockSpreadSpec token. * `Hardware` - Value - Hardware for configuring EnableClockSpreadSpec token. * `Off` - Value - Off for configuring EnableClockSpreadSpec token.
 		EnableClockSpreadSpec *string `json:"EnableClockSpreadSpec,omitempty"`
 		// BIOS Token for setting Multikey Total Memory Encryption  (MK-TME) configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		EnableMktme *string `json:"EnableMktme,omitempty"`
+		// BIOS Token for setting Rank Margin Tool configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		EnableRmt *string `json:"EnableRmt,omitempty"`
 		// BIOS Token for setting Software Guard Extensions  (SGX) configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		EnableSgx *string `json:"EnableSgx,omitempty"`
+		// BIOS Token for setting Trust Domain Extension  (TDX) configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		EnableTdx *string `json:"EnableTdx,omitempty"`
+		// BIOS Token for setting TDX Secure Arbitration Mode  (SEAM) Loader configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		EnableTdxSeamldr *string `json:"EnableTdxSeamldr,omitempty"`
 		// BIOS Token for setting Total Memory Encryption  (TME) configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		EnableTme *string `json:"EnableTme,omitempty"`
 		// BIOS Token for setting Energy Efficient Turbo configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
@@ -16470,6 +18734,8 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		EppEnable *string `json:"EppEnable,omitempty"`
 		// BIOS Token for setting EPP Profile configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Balanced Performance` - Value - Balanced Performance for configuring EppProfile token. * `Balanced Power` - Value - Balanced Power for configuring EppProfile token. * `Performance` - Value - Performance for configuring EppProfile token. * `Power` - Value - Power for configuring EppProfile token.
 		EppProfile *string `json:"EppProfile,omitempty"`
+		// BIOS Token for setting Error Check Scrub configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring ErrorCheckScrub token. * `Enabled with Result Collection` - Value - Enabled with Result Collection for configuring ErrorCheckScrub token. * `Enabled without Result Collection` - Value - Enabled without Result Collection for configuring ErrorCheckScrub token.
+		ErrorCheckScrub *string `json:"ErrorCheckScrub,omitempty"`
 		// BIOS Token for setting Execute Disable Bit configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		ExecuteDisableBit *string `json:"ExecuteDisableBit,omitempty"`
 		// BIOS Token for setting Local X2 Apic configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring ExtendedApic token. * `enabled` - Value - enabled for configuring ExtendedApic token. * `X2APIC` - Value - X2APIC for configuring ExtendedApic token. * `XAPIC` - Value - XAPIC for configuring ExtendedApic token.
@@ -16488,7 +18754,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		IntelDynamicSpeedSelect *string `json:"IntelDynamicSpeedSelect,omitempty"`
 		// BIOS Token for setting Intel HyperThreading Tech configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		IntelHyperThreadingTech *string `json:"IntelHyperThreadingTech,omitempty"`
-		// BIOS Token for setting Intel Speed Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Base` - Value - Base for configuring IntelSpeedSelect token. * `Config 1` - Value - Config 1 for configuring IntelSpeedSelect token. * `Config 2` - Value - Config 2 for configuring IntelSpeedSelect token. * `Config 3` - Value - Config 3 for configuring IntelSpeedSelect token. * `Config 4` - Value - Config 4 for configuring IntelSpeedSelect token.
+		// BIOS Token for setting Intel Speed Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring IntelSpeedSelect token. * `Base` - Value - Base for configuring IntelSpeedSelect token. * `Config 1` - Value - Config 1 for configuring IntelSpeedSelect token. * `Config 2` - Value - Config 2 for configuring IntelSpeedSelect token. * `Config 3` - Value - Config 3 for configuring IntelSpeedSelect token. * `Config 4` - Value - Config 4 for configuring IntelSpeedSelect token.
 		IntelSpeedSelect *string `json:"IntelSpeedSelect,omitempty"`
 		// BIOS Token for setting Intel Turbo Boost Tech configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		IntelTurboBoostTech *string `json:"IntelTurboBoostTech,omitempty"`
@@ -16504,6 +18770,8 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		IntelVtdPassThroughDmaSupport *string `json:"IntelVtdPassThroughDmaSupport,omitempty"`
 		// BIOS Token for setting Intel VTD ATS Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		IntelVtdatsSupport *string `json:"IntelVtdatsSupport,omitempty"`
+		// BIOS Token for setting IOAT Configuration configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		IoatConfigCpm *string `json:"IoatConfigCpm,omitempty"`
 		// BIOS Token for setting IIO Error Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `No` - Value - No for configuring IohErrorEnable token. * `Yes` - Value - Yes for configuring IohErrorEnable token.
 		IohErrorEnable *string `json:"IohErrorEnable,omitempty"`
 		// BIOS Token for setting IOH Resource Allocation configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `IOH0 24k IOH1 40k` - Value - IOH0 24k IOH1 40k for configuring IohResource token. * `IOH0 32k IOH1 32k` - Value - IOH0 32k IOH1 32k for configuring IohResource token. * `IOH0 40k IOH1 24k` - Value - IOH0 40k IOH1 24k for configuring IohResource token. * `IOH0 48k IOH1 16k` - Value - IOH0 48k IOH1 16k for configuring IohResource token. * `IOH0 56k IOH1 8k` - Value - IOH0 56k IOH1 8k for configuring IohResource token.
@@ -16551,13 +18819,17 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		// BIOS Token for setting Memory Refresh Rate configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1x Refresh` - Value - 1x Refresh for configuring MemoryRefreshRate token. * `2x Refresh` - Value - 2x Refresh for configuring MemoryRefreshRate token.
 		MemoryRefreshRate *string `json:"MemoryRefreshRate,omitempty"`
 		// BIOS Token for setting Memory Size Limit in GiB configuration (0 - 65535 GiB).
-		MemorySizeLimit *string `json:"MemorySizeLimit,omitempty"`
+		MemorySizeLimit *string `json:"MemorySizeLimit,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 		// BIOS Token for setting Memory Thermal Throttling Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `CLTT with PECI` - Value - CLTT with PECI for configuring MemoryThermalThrottling token. * `Disabled` - Value - Disabled for configuring MemoryThermalThrottling token.
 		MemoryThermalThrottling *string `json:"MemoryThermalThrottling,omitempty"`
 		// BIOS Token for setting Mirroring Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `inter-socket` - Value - inter-socket for configuring MirroringMode token. * `intra-socket` - Value - intra-socket for configuring MirroringMode token.
 		MirroringMode *string `json:"MirroringMode,omitempty"`
 		// BIOS Token for setting MMCFG BASE configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1 GB` - Value - 1 GiB for configuring MmcfgBase token. * `2 GB` - Value - 2 GiB for configuring MmcfgBase token. * `2.5 GB` - Value - 2.5 GiB for configuring MmcfgBase token. * `3 GB` - Value - 3 GiB for configuring MmcfgBase token. * `Auto` - Value - Auto for configuring MmcfgBase token.
 		MmcfgBase *string `json:"MmcfgBase,omitempty"`
+		// BIOS Token for setting MMIO High Base configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `512G` - Value - 512G for configuring MmiohBase token. * `1T` - Value - 1T for configuring MmiohBase token. * `2T` - Value - 2T for configuring MmiohBase token. * `4T` - Value - 4T for configuring MmiohBase token. * `16T` - Value - 16T for configuring MmiohBase token. * `24T` - Value - 24T for configuring MmiohBase token. * `32T` - Value - 32T for configuring MmiohBase token. * `40T` - Value - 40T for configuring MmiohBase token. * `56T` - Value - 56T for configuring MmiohBase token.
+		MmiohBase *string `json:"MmiohBase,omitempty"`
+		// BIOS Token for setting MMIO High Granularity Size configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1G` - Value - 1G for configuring MmiohSize token. * `4G` - Value - 4G for configuring MmiohSize token. * `16G` - Value - 16G for configuring MmiohSize token. * `64G` - Value - 64G for configuring MmiohSize token. * `256G` - Value - 256G for configuring MmiohSize token. * `1024G` - Value - 1024G for configuring MmiohSize token.
+		MmiohSize *string `json:"MmiohSize,omitempty"`
 		// BIOS Token for setting Network Stack configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		NetworkStack *string `json:"NetworkStack,omitempty"`
 		// BIOS Token for setting NUMA Optimized configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
@@ -16574,6 +18846,8 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		OnboardScuStorageSwStack *string `json:"OnboardScuStorageSwStack,omitempty"`
 		// BIOS Token for setting Operation Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Test Only` - Value - Test Only for configuring OperationMode token. * `Test and Repair` - Value - Test and Repair for configuring OperationMode token.
 		OperationMode *string `json:"OperationMode,omitempty"`
+		// BIOS Token for setting Optimized Power Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		OptimizedPowerMode *string `json:"OptimizedPowerMode,omitempty"`
 		// BIOS Token for setting OS Boot Watchdog Timer configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		OsBootWatchdogTimer *string `json:"OsBootWatchdogTimer,omitempty"`
 		// BIOS Token for setting OS Boot Watchdog Timer Policy configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `do-nothing` - Value - do-nothing for configuring OsBootWatchdogTimerPolicy token. * `power-off` - Value - power-off for configuring OsBootWatchdogTimerPolicy token. * `reset` - Value - reset for configuring OsBootWatchdogTimerPolicy token.
@@ -16591,23 +18865,25 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		// BIOS Token for setting Partial Memory Mirror Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring PartialMirrorModeConfig token. * `Percentage` - Value - Percentage for configuring PartialMirrorModeConfig token. * `Value in GB` - Value - Value in GiB for configuring PartialMirrorModeConfig token.
 		PartialMirrorModeConfig *string `json:"PartialMirrorModeConfig,omitempty"`
 		// BIOS Token for setting Partial Mirror Percentage configuration (0.00 - 50.00 Percentage).
-		PartialMirrorPercent *string `json:"PartialMirrorPercent,omitempty"`
+		PartialMirrorPercent *string `json:"PartialMirrorPercent,omitempty" validate:"regexp=^(\\\\d\\\\.\\\\d{1,2}|[1-4]\\\\d\\\\.\\\\d{1,2}|50\\\\.[0]{1,2})$|^(platform-default)$"`
 		// BIOS Token for setting Partial Mirror1 Size in GiB configuration (0 - 65535 GiB).
-		PartialMirrorValue1 *string `json:"PartialMirrorValue1,omitempty"`
+		PartialMirrorValue1 *string `json:"PartialMirrorValue1,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 		// BIOS Token for setting Partial Mirror2 Size in GiB configuration (0 - 65535 GiB).
-		PartialMirrorValue2 *string `json:"PartialMirrorValue2,omitempty"`
+		PartialMirrorValue2 *string `json:"PartialMirrorValue2,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 		// BIOS Token for setting Partial Mirror3 Size in GiB configuration (0 - 65535 GiB).
-		PartialMirrorValue3 *string `json:"PartialMirrorValue3,omitempty"`
+		PartialMirrorValue3 *string `json:"PartialMirrorValue3,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 		// BIOS Token for setting Partial Mirror4 Size in GiB configuration (0 - 65535 GiB).
-		PartialMirrorValue4 *string `json:"PartialMirrorValue4,omitempty"`
+		PartialMirrorValue4 *string `json:"PartialMirrorValue4,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|[1-9]\\\\d{2}|[1-9]\\\\d{3}|[1-5]\\\\d{4}|6[0-4]\\\\d{3}|65[0-4]\\\\d{2}|655[0-2]\\\\d|6553[0-5])$|^(platform-default)$"`
 		// BIOS Token for setting Patrol Scrub configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring PatrolScrub token. * `Enable at End of POST` - Value - Enable at End of POST for configuring PatrolScrub token. * `enabled` - Value - enabled for configuring PatrolScrub token.
 		PatrolScrub *string `json:"PatrolScrub,omitempty"`
 		// BIOS Token for setting Patrol Scrub Interval configuration (5 - 23 Hour).
-		PatrolScrubDuration *string `json:"PatrolScrubDuration,omitempty"`
+		PatrolScrubDuration *string `json:"PatrolScrubDuration,omitempty" validate:"regexp=^([5-9]|1\\\\d|2[0-3])$|^(platform-default)$"`
 		// BIOS Token for setting PCIe RAS Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		PcIeRasSupport *string `json:"PcIeRasSupport,omitempty"`
 		// BIOS Token for setting NVMe SSD Hot-Plug Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		PcIeSsdHotPlugSupport *string `json:"PcIeSsdHotPlugSupport,omitempty"`
+		// BIOS Token for setting PCIe PLL SSC Percent configuration (0 - 255 (n/10)%).
+		PchPciePllSsc *string `json:"PchPciePllSsc,omitempty" validate:"regexp=^(\\\\d|[1-9]\\\\d|1\\\\d{2}|2[0-4]\\\\d|25[0-5])$|^(platform-default)$"`
 		// BIOS Token for setting xHCI Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		PchUsb30mode *string `json:"PchUsb30mode,omitempty"`
 		// BIOS Token for setting All PCIe Slots OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring PciOptionRoMs token. * `enabled` - Value - enabled for configuring PciOptionRoMs token. * `Legacy Only` - Value - Legacy Only for configuring PciOptionRoMs token. * `UEFI Only` - Value - UEFI Only for configuring PciOptionRoMs token.
@@ -16618,15 +18894,15 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		PcieAriSupport *string `json:"PcieAriSupport,omitempty"`
 		// BIOS Token for setting PCIe PLL SSC configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PciePllSsc token. * `Disabled` - Value - Disabled for configuring PciePllSsc token. * `ZeroPointFive` - Value - ZeroPointFive for configuring PciePllSsc token.
 		PciePllSsc *string `json:"PciePllSsc,omitempty"`
-		// BIOS Token for setting MRAID1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMraid1linkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMraid1linkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMraid1linkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMraid1linkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMraid1linkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMraid1linkSpeed token.
+		// BIOS Token for setting MRAID1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMraid1linkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMraid1linkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMraid1linkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMraid1linkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMraid1linkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMraid1linkSpeed token. * `GEN5` - Value - GEN5 for configuring PcieSlotMraid1linkSpeed token.
 		PcieSlotMraid1linkSpeed *string `json:"PcieSlotMraid1linkSpeed,omitempty"`
 		// BIOS Token for setting MRAID1 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		PcieSlotMraid1optionRom *string `json:"PcieSlotMraid1optionRom,omitempty"`
-		// BIOS Token for setting MRAID2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMraid2linkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMraid2linkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMraid2linkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMraid2linkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMraid2linkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMraid2linkSpeed token.
+		// BIOS Token for setting MRAID2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMraid2linkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMraid2linkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMraid2linkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMraid2linkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMraid2linkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMraid2linkSpeed token. * `GEN5` - Value - GEN5 for configuring PcieSlotMraid2linkSpeed token.
 		PcieSlotMraid2linkSpeed *string `json:"PcieSlotMraid2linkSpeed,omitempty"`
 		// BIOS Token for setting MRAID2 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		PcieSlotMraid2optionRom *string `json:"PcieSlotMraid2optionRom,omitempty"`
-		// BIOS Token for setting PCIe Slot MSTOR Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMstorraidLinkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMstorraidLinkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMstorraidLinkSpeed token.
+		// BIOS Token for setting PCIe Slot MSTOR Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring PcieSlotMstorraidLinkSpeed token. * `Disabled` - Value - Disabled for configuring PcieSlotMstorraidLinkSpeed token. * `GEN1` - Value - GEN1 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN2` - Value - GEN2 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN3` - Value - GEN3 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN4` - Value - GEN4 for configuring PcieSlotMstorraidLinkSpeed token. * `GEN5` - Value - GEN5 for configuring PcieSlotMstorraidLinkSpeed token.
 		PcieSlotMstorraidLinkSpeed *string `json:"PcieSlotMstorraidLinkSpeed,omitempty"`
 		// BIOS Token for setting PCIe Slot MSTOR RAID OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		PcieSlotMstorraidOptionRom *string `json:"PcieSlotMstorraidOptionRom,omitempty"`
@@ -16662,6 +18938,8 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		PostErrorPause *string `json:"PostErrorPause,omitempty"`
 		// BIOS Token for setting Post Package Repair configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disabled` - Value - Disabled for configuring PostPackageRepair token. * `Hard PPR` - Value - Hard PPR for configuring PostPackageRepair token.
 		PostPackageRepair *string `json:"PostPackageRepair,omitempty"`
+		// BIOS Token for setting PRMRR Size configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1G` - Value - 1G for configuring PrmrrSize token. * `2G` - Value - 2G for configuring PrmrrSize token. * `4G` - Value - 4G for configuring PrmrrSize token. * `8G` - Value - 8G for configuring PrmrrSize token. * `16G` - Value - 16G for configuring PrmrrSize token. * `32G` - Value - 32G for configuring PrmrrSize token. * `64G` - Value - 64G for configuring PrmrrSize token. * `128G` - Value - 128G for configuring PrmrrSize token. * `256G` - Value - 256G for configuring PrmrrSize token. * `512G` - Value - 512G for configuring PrmrrSize token. * `128M` - Value - 128M for configuring PrmrrSize token. * `256M` - Value - 256M for configuring PrmrrSize token. * `512M` - Value - 512M for configuring PrmrrSize token. * `Auto` - Value - Auto for configuring PrmrrSize token. * `Invalid Config.` - Value - Invalid Config for configuring PrmrrSize token.
+		PrmrrSize *string `json:"PrmrrSize,omitempty"`
 		// BIOS Token for setting Processor C1E configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		ProcessorC1e *string `json:"ProcessorC1e,omitempty"`
 		// BIOS Token for setting Processor C3 Report configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
@@ -16680,7 +18958,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		PwrPerfTuning *string `json:"PwrPerfTuning,omitempty"`
 		// BIOS Token for setting QPI Link Frequency Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `6.4-gt/s` - Value - 6.4-gt/s for configuring QpiLinkFrequency token. * `7.2-gt/s` - Value - 7.2-gt/s for configuring QpiLinkFrequency token. * `8.0-gt/s` - Value - 8.0-gt/s for configuring QpiLinkFrequency token. * `9.6-gt/s` - Value - 9.6-gt/s for configuring QpiLinkFrequency token. * `auto` - Value - auto for configuring QpiLinkFrequency token.
 		QpiLinkFrequency *string `json:"QpiLinkFrequency,omitempty"`
-		// BIOS Token for setting UPI Link Frequency Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `10.4GT/s` - Value - 10.4GT/s for configuring QpiLinkSpeed token. * `11.2GT/s` - Value - 11.2GT/s for configuring QpiLinkSpeed token. * `9.6GT/s` - Value - 9.6GT/s for configuring QpiLinkSpeed token. * `Auto` - Value - Auto for configuring QpiLinkSpeed token.
+		// BIOS Token for setting UPI Link Frequency Select configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `10.4GT/s` - Value - 10.4GT/s for configuring QpiLinkSpeed token. * `11.2GT/s` - Value - 11.2GT/s for configuring QpiLinkSpeed token. * `12.8GT/s` - Value - 12.8GT/s for configuring QpiLinkSpeed token. * `14.4GT/s` - Value - 14.4GT/s for configuring QpiLinkSpeed token. * `16.0GT/s` - Value - 16.0GT/s for configuring QpiLinkSpeed token. * `20.0GT/s` - Value - 20.0GT/s for configuring QpiLinkSpeed token. * `9.6GT/s` - Value - 9.6GT/s for configuring QpiLinkSpeed token. * `Auto` - Value - Auto for configuring QpiLinkSpeed token.
 		QpiLinkSpeed *string `json:"QpiLinkSpeed,omitempty"`
 		// BIOS Token for setting QPI Snoop Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `auto` - Value - auto for configuring QpiSnoopMode token. * `cluster-on-die` - Value - cluster-on-die for configuring QpiSnoopMode token. * `early-snoop` - Value - early-snoop for configuring QpiSnoopMode token. * `home-directory-snoop` - Value - home-directory-snoop for configuring QpiSnoopMode token. * `home-directory-snoop-with-osb` - Value - home-directory-snoop-with-osb for configuring QpiSnoopMode token. * `home-snoop` - Value - home-snoop for configuring QpiSnoopMode token.
 		QpiSnoopMode *string `json:"QpiSnoopMode,omitempty"`
@@ -16688,12 +18966,18 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		RankInterLeave *string `json:"RankInterLeave,omitempty"`
 		// BIOS Token for setting Redirection After BIOS POST configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Always Enable` - Value - Always Enable for configuring RedirectionAfterPost token. * `Bootloader` - Value - Bootloader for configuring RedirectionAfterPost token.
 		RedirectionAfterPost *string `json:"RedirectionAfterPost,omitempty"`
+		// BIOS Token for setting Re-Size BAR Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		ResizeBarSupport *string `json:"ResizeBarSupport,omitempty"`
+		// BIOS Token for setting Runtime Post Package Repair configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		RuntimePostPackageRepair *string `json:"RuntimePostPackageRepair,omitempty"`
 		// BIOS Token for setting SATA Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `AHCI` - Value - AHCI for configuring SataModeSelect token. * `Disabled` - Value - Disabled for configuring SataModeSelect token. * `LSI SW RAID` - Value - LSI SW RAID for configuring SataModeSelect token.
 		SataModeSelect *string `json:"SataModeSelect,omitempty"`
 		// BIOS Token for setting Memory RAS Configuration configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `adddc-sparing` - Value - adddc-sparing for configuring SelectMemoryRasConfiguration token. * `lockstep` - Value - lockstep for configuring SelectMemoryRasConfiguration token. * `maximum-performance` - Value - maximum-performance for configuring SelectMemoryRasConfiguration token. * `mirror-mode-1lm` - Value - mirror-mode-1lm for configuring SelectMemoryRasConfiguration token. * `mirroring` - Value - mirroring for configuring SelectMemoryRasConfiguration token. * `partial-mirror-mode-1lm` - Value - partial-mirror-mode-1lm for configuring SelectMemoryRasConfiguration token. * `sparing` - Value - sparing for configuring SelectMemoryRasConfiguration token.
 		SelectMemoryRasConfiguration *string `json:"SelectMemoryRasConfiguration,omitempty"`
 		// BIOS Token for setting PPR Type configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring SelectPprType token. * `Hard PPR` - Value - Hard PPR for configuring SelectPprType token. * `Soft PPR` - Value - Soft PPR for configuring SelectPprType token.
 		SelectPprType *string `json:"SelectPprType,omitempty"`
+		// BIOS Token for setting Serial Mux configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		SerialMux *string `json:"SerialMux,omitempty"`
 		// BIOS Token for setting Serial A Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SerialPortAenable *string `json:"SerialPortAenable,omitempty"`
 		// BIOS Token for setting Secured Encrypted Virtualization configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `253 ASIDs` - Value - 253 ASIDs for configuring Sev token. * `509 ASIDs` - Value - 509 ASIDs for configuring Sev token. * `Auto` - Value - Auto for configuring Sev token.
@@ -16701,19 +18985,19 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		// BIOS Token for setting SGX Auto MP Registration Agent configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SgxAutoRegistrationAgent *string `json:"SgxAutoRegistrationAgent,omitempty"`
 		// BIOS Token for setting SGX Epoch 0 configuration (0 - ffffffffffffffff Hash byte 7-0).
-		SgxEpoch0 *string `json:"SgxEpoch0,omitempty"`
+		SgxEpoch0 *string `json:"SgxEpoch0,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 		// BIOS Token for setting SGX Epoch 1 configuration (0 - ffffffffffffffff Hash byte 7-0).
-		SgxEpoch1 *string `json:"SgxEpoch1,omitempty"`
+		SgxEpoch1 *string `json:"SgxEpoch1,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 		// BIOS Token for setting SGX Factory Reset configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SgxFactoryReset *string `json:"SgxFactoryReset,omitempty"`
 		// BIOS Token for setting SGX PubKey Hash0 configuration (0 - ffffffffffffffff Hash byte 7-0).
-		SgxLePubKeyHash0 *string `json:"SgxLePubKeyHash0,omitempty"`
+		SgxLePubKeyHash0 *string `json:"SgxLePubKeyHash0,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 		// BIOS Token for setting SGX PubKey Hash1 configuration (0 - ffffffffffffffff Hash byte 15-8).
-		SgxLePubKeyHash1 *string `json:"SgxLePubKeyHash1,omitempty"`
+		SgxLePubKeyHash1 *string `json:"SgxLePubKeyHash1,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 		// BIOS Token for setting SGX PubKey Hash2 configuration (0 - ffffffffffffffff Hash byte 23-16).
-		SgxLePubKeyHash2 *string `json:"SgxLePubKeyHash2,omitempty"`
+		SgxLePubKeyHash2 *string `json:"SgxLePubKeyHash2,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 		// BIOS Token for setting SGX PubKey Hash3 configuration (0 - ffffffffffffffff Hash byte 31-24).
-		SgxLePubKeyHash3 *string `json:"SgxLePubKeyHash3,omitempty"`
+		SgxLePubKeyHash3 *string `json:"SgxLePubKeyHash3,omitempty" validate:"regexp=^([0-9a-fA-F]{1,16})$|^(platform-default)$"`
 		// BIOS Token for setting SGX Write Enable configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SgxLeWr *string `json:"SgxLeWr,omitempty"`
 		// BIOS Token for setting SGX Package Information In-Band Access configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
@@ -16724,6 +19008,8 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		Sha1pcrBank *string `json:"Sha1pcrBank,omitempty"`
 		// BIOS Token for setting SHA256 PCR Bank configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		Sha256pcrBank *string `json:"Sha256pcrBank,omitempty"`
+		// BIOS Token for setting SHA384 PCR Bank configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		Sha384pcrBank *string `json:"Sha384pcrBank,omitempty"`
 		// BIOS Token for setting Single PCTL configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `No` - Value - No for configuring SinglePctlEnable token. * `Yes` - Value - Yes for configuring SinglePctlEnable token.
 		SinglePctlEnable *string `json:"SinglePctlEnable,omitempty"`
 		// BIOS Token for setting PCIe Slot:10 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot10linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot10linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot10linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot10linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot10linkSpeed token.
@@ -16742,35 +19028,35 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		Slot13state *string `json:"Slot13state,omitempty"`
 		// BIOS Token for setting Slot 14 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		Slot14state *string `json:"Slot14state,omitempty"`
-		// BIOS Token for setting PCIe Slot: 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot1linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot1linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot1linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot1linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot1linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot1linkSpeed token.
+		// BIOS Token for setting PCIe Slot: 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot1linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot1linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot1linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot1linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot1linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot1linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot1linkSpeed token.
 		Slot1linkSpeed *string `json:"Slot1linkSpeed,omitempty"`
 		// BIOS Token for setting Slot 1 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot1state token. * `enabled` - Value - enabled for configuring Slot1state token. * `Legacy Only` - Value - Legacy Only for configuring Slot1state token. * `UEFI Only` - Value - UEFI Only for configuring Slot1state token.
 		Slot1state *string `json:"Slot1state,omitempty"`
-		// BIOS Token for setting PCIe Slot: 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot2linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot2linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot2linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot2linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot2linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot2linkSpeed token.
+		// BIOS Token for setting PCIe Slot: 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot2linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot2linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot2linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot2linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot2linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot2linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot2linkSpeed token.
 		Slot2linkSpeed *string `json:"Slot2linkSpeed,omitempty"`
 		// BIOS Token for setting Slot 2 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot2state token. * `enabled` - Value - enabled for configuring Slot2state token. * `Legacy Only` - Value - Legacy Only for configuring Slot2state token. * `UEFI Only` - Value - UEFI Only for configuring Slot2state token.
 		Slot2state *string `json:"Slot2state,omitempty"`
-		// BIOS Token for setting PCIe Slot: 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot3linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot3linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot3linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot3linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot3linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot3linkSpeed token.
+		// BIOS Token for setting PCIe Slot: 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot3linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot3linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot3linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot3linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot3linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot3linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot3linkSpeed token.
 		Slot3linkSpeed *string `json:"Slot3linkSpeed,omitempty"`
 		// BIOS Token for setting Slot 3 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot3state token. * `enabled` - Value - enabled for configuring Slot3state token. * `Legacy Only` - Value - Legacy Only for configuring Slot3state token. * `UEFI Only` - Value - UEFI Only for configuring Slot3state token.
 		Slot3state *string `json:"Slot3state,omitempty"`
-		// BIOS Token for setting PCIe Slot: 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot4linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot4linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot4linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot4linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot4linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot4linkSpeed token.
+		// BIOS Token for setting PCIe Slot: 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot4linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot4linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot4linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot4linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot4linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot4linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot4linkSpeed token.
 		Slot4linkSpeed *string `json:"Slot4linkSpeed,omitempty"`
 		// BIOS Token for setting Slot 4 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot4state token. * `enabled` - Value - enabled for configuring Slot4state token. * `Legacy Only` - Value - Legacy Only for configuring Slot4state token. * `UEFI Only` - Value - UEFI Only for configuring Slot4state token.
 		Slot4state *string `json:"Slot4state,omitempty"`
-		// BIOS Token for setting PCIe Slot: 5 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot5linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot5linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot5linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot5linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot5linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot5linkSpeed token.
+		// BIOS Token for setting PCIe Slot: 5 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot5linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot5linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot5linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot5linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot5linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot5linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot5linkSpeed token.
 		Slot5linkSpeed *string `json:"Slot5linkSpeed,omitempty"`
 		// BIOS Token for setting Slot 5 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot5state token. * `enabled` - Value - enabled for configuring Slot5state token. * `Legacy Only` - Value - Legacy Only for configuring Slot5state token. * `UEFI Only` - Value - UEFI Only for configuring Slot5state token.
 		Slot5state *string `json:"Slot5state,omitempty"`
-		// BIOS Token for setting PCIe Slot: 6 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot6linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot6linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot6linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot6linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot6linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot6linkSpeed token.
+		// BIOS Token for setting PCIe Slot: 6 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot6linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot6linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot6linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot6linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot6linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot6linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot6linkSpeed token.
 		Slot6linkSpeed *string `json:"Slot6linkSpeed,omitempty"`
 		// BIOS Token for setting Slot 6 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot6state token. * `enabled` - Value - enabled for configuring Slot6state token. * `Legacy Only` - Value - Legacy Only for configuring Slot6state token. * `UEFI Only` - Value - UEFI Only for configuring Slot6state token.
 		Slot6state *string `json:"Slot6state,omitempty"`
-		// BIOS Token for setting PCIe Slot: 7 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot7linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot7linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot7linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot7linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot7linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot7linkSpeed token.
+		// BIOS Token for setting PCIe Slot: 7 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot7linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot7linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot7linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot7linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot7linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot7linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot7linkSpeed token.
 		Slot7linkSpeed *string `json:"Slot7linkSpeed,omitempty"`
 		// BIOS Token for setting Slot 7 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot7state token. * `enabled` - Value - enabled for configuring Slot7state token. * `Legacy Only` - Value - Legacy Only for configuring Slot7state token. * `UEFI Only` - Value - UEFI Only for configuring Slot7state token.
 		Slot7state *string `json:"Slot7state,omitempty"`
-		// BIOS Token for setting PCIe Slot: 8 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot8linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot8linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot8linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot8linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot8linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot8linkSpeed token.
+		// BIOS Token for setting PCIe Slot: 8 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Slot8linkSpeed token. * `Disabled` - Value - Disabled for configuring Slot8linkSpeed token. * `GEN1` - Value - GEN1 for configuring Slot8linkSpeed token. * `GEN2` - Value - GEN2 for configuring Slot8linkSpeed token. * `GEN3` - Value - GEN3 for configuring Slot8linkSpeed token. * `GEN4` - Value - GEN4 for configuring Slot8linkSpeed token. * `GEN5` - Value - GEN5 for configuring Slot8linkSpeed token.
 		Slot8linkSpeed *string `json:"Slot8linkSpeed,omitempty"`
 		// BIOS Token for setting Slot 8 State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring Slot8state token. * `enabled` - Value - enabled for configuring Slot8state token. * `Legacy Only` - Value - Legacy Only for configuring Slot8state token. * `UEFI Only` - Value - UEFI Only for configuring Slot8state token.
 		Slot8state *string `json:"Slot8state,omitempty"`
@@ -16780,75 +19066,99 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		Slot9state *string `json:"Slot9state,omitempty"`
 		// BIOS Token for setting PCIe Slot:FLOM Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFlomLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFlomLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFlomLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFlomLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFlomLinkSpeed token.
 		SlotFlomLinkSpeed *string `json:"SlotFlomLinkSpeed,omitempty"`
-		// BIOS Token for setting Front NVME 10 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme10linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme10linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme10linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme10linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme10linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme10linkSpeed token.
+		// BIOS Token for setting Front NVME 10 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme10linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme10linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme10linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme10linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme10linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme10linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme10linkSpeed token.
 		SlotFrontNvme10linkSpeed *string `json:"SlotFrontNvme10linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 10 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme10optionRom *string `json:"SlotFrontNvme10optionRom,omitempty"`
-		// BIOS Token for setting Front NVME 11 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme11linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme11linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme11linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme11linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme11linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme11linkSpeed token.
+		// BIOS Token for setting Front NVME 11 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme11linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme11linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme11linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme11linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme11linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme11linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme11linkSpeed token.
 		SlotFrontNvme11linkSpeed *string `json:"SlotFrontNvme11linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 11 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme11optionRom *string `json:"SlotFrontNvme11optionRom,omitempty"`
-		// BIOS Token for setting Front NVME 12 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme12linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme12linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme12linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme12linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme12linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme12linkSpeed token.
+		// BIOS Token for setting Front NVME 12 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme12linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme12linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme12linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme12linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme12linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme12linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme12linkSpeed token.
 		SlotFrontNvme12linkSpeed *string `json:"SlotFrontNvme12linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 12 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme12optionRom *string `json:"SlotFrontNvme12optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 13 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme13linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme13linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme13linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme13linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme13linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme13linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme13linkSpeed token.
+		SlotFrontNvme13linkSpeed *string `json:"SlotFrontNvme13linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 13 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme13optionRom *string `json:"SlotFrontNvme13optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 14 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme14linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme14linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme14linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme14linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme14linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme14linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme14linkSpeed token.
+		SlotFrontNvme14linkSpeed *string `json:"SlotFrontNvme14linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 14 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme14optionRom *string `json:"SlotFrontNvme14optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 15 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme15linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme15linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme15linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme15linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme15linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme15linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme15linkSpeed token.
+		SlotFrontNvme15linkSpeed *string `json:"SlotFrontNvme15linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 15 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme15optionRom *string `json:"SlotFrontNvme15optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 16 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme16linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme16linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme16linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme16linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme16linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme16linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme16linkSpeed token.
+		SlotFrontNvme16linkSpeed *string `json:"SlotFrontNvme16linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 16 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme16optionRom *string `json:"SlotFrontNvme16optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 17 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme17linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme17linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme17linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme17linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme17linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme17linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme17linkSpeed token.
+		SlotFrontNvme17linkSpeed *string `json:"SlotFrontNvme17linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 17 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme17optionRom *string `json:"SlotFrontNvme17optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 18 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme18linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme18linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme18linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme18linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme18linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme18linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme18linkSpeed token.
+		SlotFrontNvme18linkSpeed *string `json:"SlotFrontNvme18linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 18 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme18optionRom *string `json:"SlotFrontNvme18optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 19 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme19linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme19linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme19linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme19linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme19linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme19linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme19linkSpeed token.
+		SlotFrontNvme19linkSpeed *string `json:"SlotFrontNvme19linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 19 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme19optionRom *string `json:"SlotFrontNvme19optionRom,omitempty"`
-		// BIOS Token for setting PCIe Slot:Front NVME 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme1linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme1linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme1linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme1linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme1linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme1linkSpeed token.
+		// BIOS Token for setting PCIe Slot:Front NVME 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme1linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme1linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme1linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme1linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme1linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme1linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme1linkSpeed token.
 		SlotFrontNvme1linkSpeed *string `json:"SlotFrontNvme1linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 1 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme1optionRom *string `json:"SlotFrontNvme1optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 20 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme20linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme20linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme20linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme20linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme20linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme20linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme20linkSpeed token.
+		SlotFrontNvme20linkSpeed *string `json:"SlotFrontNvme20linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 20 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme20optionRom *string `json:"SlotFrontNvme20optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 21 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme21linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme21linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme21linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme21linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme21linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme21linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme21linkSpeed token.
+		SlotFrontNvme21linkSpeed *string `json:"SlotFrontNvme21linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 21 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme21optionRom *string `json:"SlotFrontNvme21optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 22 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme22linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme22linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme22linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme22linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme22linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme22linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme22linkSpeed token.
+		SlotFrontNvme22linkSpeed *string `json:"SlotFrontNvme22linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 22 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme22optionRom *string `json:"SlotFrontNvme22optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 23 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme23linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme23linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme23linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme23linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme23linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme23linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme23linkSpeed token.
+		SlotFrontNvme23linkSpeed *string `json:"SlotFrontNvme23linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 23 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme23optionRom *string `json:"SlotFrontNvme23optionRom,omitempty"`
+		// BIOS Token for setting Front NVME 24 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme24linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme24linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme24linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme24linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme24linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme24linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme24linkSpeed token.
+		SlotFrontNvme24linkSpeed *string `json:"SlotFrontNvme24linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 24 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme24optionRom *string `json:"SlotFrontNvme24optionRom,omitempty"`
-		// BIOS Token for setting PCIe Slot:Front NVME 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme2linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme2linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme2linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme2linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme2linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme2linkSpeed token.
+		// BIOS Token for setting PCIe Slot:Front NVME 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme2linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme2linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme2linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme2linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme2linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme2linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme2linkSpeed token.
 		SlotFrontNvme2linkSpeed *string `json:"SlotFrontNvme2linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 2 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme2optionRom *string `json:"SlotFrontNvme2optionRom,omitempty"`
-		// BIOS Token for setting Front NVME 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme3linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme3linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme3linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme3linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme3linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme3linkSpeed token.
+		// BIOS Token for setting Front NVME 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme3linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme3linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme3linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme3linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme3linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme3linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme3linkSpeed token.
 		SlotFrontNvme3linkSpeed *string `json:"SlotFrontNvme3linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 3 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme3optionRom *string `json:"SlotFrontNvme3optionRom,omitempty"`
-		// BIOS Token for setting Front NVME 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme4linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme4linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme4linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme4linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme4linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme4linkSpeed token.
+		// BIOS Token for setting Front NVME 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme4linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme4linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme4linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme4linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme4linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme4linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme4linkSpeed token.
 		SlotFrontNvme4linkSpeed *string `json:"SlotFrontNvme4linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 4 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme4optionRom *string `json:"SlotFrontNvme4optionRom,omitempty"`
-		// BIOS Token for setting Front NVME 5 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme5linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme5linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme5linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme5linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme5linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme5linkSpeed token.
+		// BIOS Token for setting Front NVME 5 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme5linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme5linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme5linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme5linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme5linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme5linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme5linkSpeed token.
 		SlotFrontNvme5linkSpeed *string `json:"SlotFrontNvme5linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 5 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme5optionRom *string `json:"SlotFrontNvme5optionRom,omitempty"`
-		// BIOS Token for setting Front NVME 6 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme6linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme6linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme6linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme6linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme6linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme6linkSpeed token.
+		// BIOS Token for setting Front NVME 6 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme6linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme6linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme6linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme6linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme6linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme6linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme6linkSpeed token.
 		SlotFrontNvme6linkSpeed *string `json:"SlotFrontNvme6linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 6 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme6optionRom *string `json:"SlotFrontNvme6optionRom,omitempty"`
-		// BIOS Token for setting Front NVME 7 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme7linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme7linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme7linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme7linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme7linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme7linkSpeed token.
+		// BIOS Token for setting Front NVME 7 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme7linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme7linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme7linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme7linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme7linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme7linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme7linkSpeed token.
 		SlotFrontNvme7linkSpeed *string `json:"SlotFrontNvme7linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 7 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme7optionRom *string `json:"SlotFrontNvme7optionRom,omitempty"`
-		// BIOS Token for setting Front NVME 8 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme8linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme8linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme8linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme8linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme8linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme8linkSpeed token.
+		// BIOS Token for setting Front NVME 8 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme8linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme8linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme8linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme8linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme8linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme8linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme8linkSpeed token.
 		SlotFrontNvme8linkSpeed *string `json:"SlotFrontNvme8linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 8 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme8optionRom *string `json:"SlotFrontNvme8optionRom,omitempty"`
-		// BIOS Token for setting Front NVME 9 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme9linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme9linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme9linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme9linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme9linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme9linkSpeed token.
+		// BIOS Token for setting Front NVME 9 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotFrontNvme9linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotFrontNvme9linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotFrontNvme9linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotFrontNvme9linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotFrontNvme9linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotFrontNvme9linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotFrontNvme9linkSpeed token.
 		SlotFrontNvme9linkSpeed *string `json:"SlotFrontNvme9linkSpeed,omitempty"`
 		// BIOS Token for setting Front NVME 9 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotFrontNvme9optionRom *string `json:"SlotFrontNvme9optionRom,omitempty"`
@@ -16882,11 +19192,11 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		SlotLom2link *string `json:"SlotLom2link,omitempty"`
 		// BIOS Token for setting Slot Mezz State configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring SlotMezzState token. * `enabled` - Value - enabled for configuring SlotMezzState token. * `Legacy Only` - Value - Legacy Only for configuring SlotMezzState token. * `UEFI Only` - Value - UEFI Only for configuring SlotMezzState token.
 		SlotMezzState *string `json:"SlotMezzState,omitempty"`
-		// BIOS Token for setting PCIe Slot:MLOM Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotMlomLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotMlomLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotMlomLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotMlomLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotMlomLinkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotMlomLinkSpeed token.
+		// BIOS Token for setting PCIe Slot:MLOM Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotMlomLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotMlomLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotMlomLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotMlomLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotMlomLinkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotMlomLinkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotMlomLinkSpeed token.
 		SlotMlomLinkSpeed *string `json:"SlotMlomLinkSpeed,omitempty"`
 		// BIOS Token for setting PCIe Slot MLOM OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `disabled` - Value - disabled for configuring SlotMlomState token. * `enabled` - Value - enabled for configuring SlotMlomState token. * `Legacy Only` - Value - Legacy Only for configuring SlotMlomState token. * `UEFI Only` - Value - UEFI Only for configuring SlotMlomState token.
 		SlotMlomState *string `json:"SlotMlomState,omitempty"`
-		// BIOS Token for setting MRAID Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotMraidLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotMraidLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotMraidLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotMraidLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotMraidLinkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotMraidLinkSpeed token.
+		// BIOS Token for setting MRAID Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotMraidLinkSpeed token. * `Disabled` - Value - Disabled for configuring SlotMraidLinkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotMraidLinkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotMraidLinkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotMraidLinkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotMraidLinkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotMraidLinkSpeed token.
 		SlotMraidLinkSpeed *string `json:"SlotMraidLinkSpeed,omitempty"`
 		// BIOS Token for setting PCIe Slot MRAID OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotMraidState *string `json:"SlotMraidState,omitempty"`
@@ -16942,19 +19252,19 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		SlotRaidLinkSpeed *string `json:"SlotRaidLinkSpeed,omitempty"`
 		// BIOS Token for setting PCIe Slot RAID OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotRaidState *string `json:"SlotRaidState,omitempty"`
-		// BIOS Token for setting PCIe Slot:Rear NVME 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme1linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme1linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme1linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme1linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme1linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme1linkSpeed token.
+		// BIOS Token for setting PCIe Slot:Rear NVME 1 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme1linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme1linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme1linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme1linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme1linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme1linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotRearNvme1linkSpeed token.
 		SlotRearNvme1linkSpeed *string `json:"SlotRearNvme1linkSpeed,omitempty"`
 		// BIOS Token for setting PCIe Slot:Rear NVME 1 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotRearNvme1state *string `json:"SlotRearNvme1state,omitempty"`
-		// BIOS Token for setting PCIe Slot:Rear NVME 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme2linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme2linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme2linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme2linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme2linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme2linkSpeed token.
+		// BIOS Token for setting PCIe Slot:Rear NVME 2 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme2linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme2linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme2linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme2linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme2linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme2linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotRearNvme2linkSpeed token.
 		SlotRearNvme2linkSpeed *string `json:"SlotRearNvme2linkSpeed,omitempty"`
 		// BIOS Token for setting PCIe Slot:Rear NVME 2 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotRearNvme2state *string `json:"SlotRearNvme2state,omitempty"`
-		// BIOS Token for setting Rear NVME 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme3linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme3linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme3linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme3linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme3linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme3linkSpeed token.
+		// BIOS Token for setting Rear NVME 3 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme3linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme3linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme3linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme3linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme3linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme3linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotRearNvme3linkSpeed token.
 		SlotRearNvme3linkSpeed *string `json:"SlotRearNvme3linkSpeed,omitempty"`
 		// BIOS Token for setting PCIe Slot:Rear NVME 3 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotRearNvme3state *string `json:"SlotRearNvme3state,omitempty"`
-		// BIOS Token for setting Rear NVME 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme4linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme4linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme4linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme4linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme4linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme4linkSpeed token.
+		// BIOS Token for setting Rear NVME 4 Link Speed configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SlotRearNvme4linkSpeed token. * `Disabled` - Value - Disabled for configuring SlotRearNvme4linkSpeed token. * `GEN1` - Value - GEN1 for configuring SlotRearNvme4linkSpeed token. * `GEN2` - Value - GEN2 for configuring SlotRearNvme4linkSpeed token. * `GEN3` - Value - GEN3 for configuring SlotRearNvme4linkSpeed token. * `GEN4` - Value - GEN4 for configuring SlotRearNvme4linkSpeed token. * `GEN5` - Value - GEN5 for configuring SlotRearNvme4linkSpeed token.
 		SlotRearNvme4linkSpeed *string `json:"SlotRearNvme4linkSpeed,omitempty"`
 		// BIOS Token for setting PCIe Slot:Rear NVME 4 OptionROM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SlotRearNvme4state *string `json:"SlotRearNvme4state,omitempty"`
@@ -16992,7 +19302,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		Smee *string `json:"Smee,omitempty"`
 		// BIOS Token for setting SMT Mode configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring SmtMode token. * `Off` - Value - Off for configuring SmtMode token.
 		SmtMode *string `json:"SmtMode,omitempty"`
-		// BIOS Token for setting Sub Numa Clustering configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Snc token. * `disabled` - Value - disabled for configuring Snc token. * `enabled` - Value - enabled for configuring Snc token.
+		// BIOS Token for setting Sub Numa Clustering configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Snc token. * `disabled` - Value - disabled for configuring Snc token. * `enabled` - Value - enabled for configuring Snc token. * `SNC2` - Value - SNC2 for configuring Snc token. * `SNC4` - Value - SNC4 for configuring Snc token.
 		Snc *string `json:"Snc,omitempty"`
 		// BIOS Token for setting Snoopy Mode for 2LM configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		SnoopyModeFor2lm *string `json:"SnoopyModeFor2lm,omitempty"`
@@ -17014,7 +19324,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		TpmPendingOperation *string `json:"TpmPendingOperation,omitempty"`
 		// BIOS Token for setting TPM Minimal Physical Presence configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		TpmPpiRequired *string `json:"TpmPpiRequired,omitempty"`
-		// BIOS Token for setting TPM Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		// BIOS Token for setting Security Device Support configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		TpmSupport *string `json:"TpmSupport,omitempty"`
 		// BIOS Token for setting Transparent Secure Memory Encryption configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring Tsme token. * `disabled` - Value - disabled for configuring Tsme token. * `enabled` - Value - enabled for configuring Tsme token.
 		Tsme *string `json:"Tsme,omitempty"`
@@ -17024,9 +19334,9 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		UcsmBootOrderRule *string `json:"UcsmBootOrderRule,omitempty"`
 		// BIOS Token for setting Uncore Frequency Scaling configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		UfsDisable *string `json:"UfsDisable,omitempty"`
-		// BIOS Token for setting UMA Based Clustering configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disable (All2All)` - Value - Disable (All2All) for configuring UmaBasedClustering token. * `Hemisphere (2-clusters)` - Value - Hemisphere (2-clusters) for configuring UmaBasedClustering token.
+		// BIOS Token for setting UMA Based Clustering configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Disable (All2All)` - Value - Disable (All2All) for configuring UmaBasedClustering token. * `Hemisphere (2-clusters)` - Value - Hemisphere (2-clusters) for configuring UmaBasedClustering token. * `Quadrant (4-clusters)` - Value - Quadrant (4-clusters) for configuring UmaBasedClustering token.
 		UmaBasedClustering *string `json:"UmaBasedClustering,omitempty"`
-		// BIOS Token for setting UPI Link Enablement configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1` - Value - 1 for configuring UpiLinkEnablement token. * `2` - Value - 2 for configuring UpiLinkEnablement token. * `Auto` - Value - Auto for configuring UpiLinkEnablement token.
+		// BIOS Token for setting UPI Link Enablement configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `1` - Value - 1 for configuring UpiLinkEnablement token. * `2` - Value - 2 for configuring UpiLinkEnablement token. * `3` - Value - 3 for configuring UpiLinkEnablement token. * `Auto` - Value - Auto for configuring UpiLinkEnablement token.
 		UpiLinkEnablement *string `json:"UpiLinkEnablement,omitempty"`
 		// BIOS Token for setting UPI Power Manangement configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
 		UpiPowerManagement *string `json:"UpiPowerManagement,omitempty"`
@@ -17056,18 +19366,20 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		VolMemoryMode *string `json:"VolMemoryMode,omitempty"`
 		// BIOS Token for setting Workload Configuration configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Balanced` - Value - Balanced for configuring WorkLoadConfig token. * `I/O Sensitive` - Value - I/O Sensitive for configuring WorkLoadConfig token. * `NUMA` - Value - NUMA for configuring WorkLoadConfig token. * `UMA` - Value - UMA for configuring WorkLoadConfig token.
 		WorkLoadConfig *string `json:"WorkLoadConfig,omitempty"`
+		// BIOS Token for setting X2APIC Opt-Out Flag configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `enabled` - Enables the BIOS setting. * `disabled` - Disables the BIOS setting.
+		X2apicOptOut *string `json:"X2apicOptOut,omitempty"`
 		// BIOS Token for setting XPT Prefetch configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring XptPrefetch token. * `disabled` - Value - disabled for configuring XptPrefetch token. * `enabled` - Value - enabled for configuring XptPrefetch token.
 		XptPrefetch *string `json:"XptPrefetch,omitempty"`
 		// BIOS Token for setting XPT Remote Prefetch configuration. * `platform-default` - Default value used by the platform for the BIOS setting. * `Auto` - Value - Auto for configuring XptRemotePrefetch token. * `disabled` - Value - disabled for configuring XptRemotePrefetch token. * `enabled` - Value - enabled for configuring XptRemotePrefetch token.
-		XptRemotePrefetch *string                               `json:"XptRemotePrefetch,omitempty"`
-		Organization      *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		XptRemotePrefetch *string                                      `json:"XptRemotePrefetch,omitempty"`
+		Organization      NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 		// An array of relationships to policyAbstractConfigProfile resources.
 		Profiles []PolicyAbstractConfigProfileRelationship `json:"Profiles,omitempty"`
 	}
 
 	varBiosPolicyWithoutEmbeddedStruct := BiosPolicyWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varBiosPolicyWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varBiosPolicyWithoutEmbeddedStruct)
 	if err == nil {
 		varBiosPolicy := _BiosPolicy{}
 		varBiosPolicy.ClassId = varBiosPolicyWithoutEmbeddedStruct.ClassId
@@ -17084,6 +19396,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.AcsControlSlot12state = varBiosPolicyWithoutEmbeddedStruct.AcsControlSlot12state
 		varBiosPolicy.AcsControlSlot13state = varBiosPolicyWithoutEmbeddedStruct.AcsControlSlot13state
 		varBiosPolicy.AcsControlSlot14state = varBiosPolicyWithoutEmbeddedStruct.AcsControlSlot14state
+		varBiosPolicy.AdaptiveRefreshMgmtLevel = varBiosPolicyWithoutEmbeddedStruct.AdaptiveRefreshMgmtLevel
 		varBiosPolicy.AdjacentCacheLinePrefetch = varBiosPolicyWithoutEmbeddedStruct.AdjacentCacheLinePrefetch
 		varBiosPolicy.AdvancedMemTest = varBiosPolicyWithoutEmbeddedStruct.AdvancedMemTest
 		varBiosPolicy.AllUsbDevices = varBiosPolicyWithoutEmbeddedStruct.AllUsbDevices
@@ -17103,31 +19416,53 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.C1autoDemotion = varBiosPolicyWithoutEmbeddedStruct.C1autoDemotion
 		varBiosPolicy.C1autoUnDemotion = varBiosPolicyWithoutEmbeddedStruct.C1autoUnDemotion
 		varBiosPolicy.CbsCmnApbdis = varBiosPolicyWithoutEmbeddedStruct.CbsCmnApbdis
+		varBiosPolicy.CbsCmnApbdisDfPstateRs = varBiosPolicyWithoutEmbeddedStruct.CbsCmnApbdisDfPstateRs
+		varBiosPolicy.CbsCmnCpuAvx512 = varBiosPolicyWithoutEmbeddedStruct.CbsCmnCpuAvx512
 		varBiosPolicy.CbsCmnCpuCpb = varBiosPolicyWithoutEmbeddedStruct.CbsCmnCpuCpb
 		varBiosPolicy.CbsCmnCpuGenDowncoreCtrl = varBiosPolicyWithoutEmbeddedStruct.CbsCmnCpuGenDowncoreCtrl
 		varBiosPolicy.CbsCmnCpuGlobalCstateCtrl = varBiosPolicyWithoutEmbeddedStruct.CbsCmnCpuGlobalCstateCtrl
 		varBiosPolicy.CbsCmnCpuL1streamHwPrefetcher = varBiosPolicyWithoutEmbeddedStruct.CbsCmnCpuL1streamHwPrefetcher
 		varBiosPolicy.CbsCmnCpuL2streamHwPrefetcher = varBiosPolicyWithoutEmbeddedStruct.CbsCmnCpuL2streamHwPrefetcher
+		varBiosPolicy.CbsCmnCpuSevAsidSpaceLimit = varBiosPolicyWithoutEmbeddedStruct.CbsCmnCpuSevAsidSpaceLimit
 		varBiosPolicy.CbsCmnCpuSmee = varBiosPolicyWithoutEmbeddedStruct.CbsCmnCpuSmee
 		varBiosPolicy.CbsCmnCpuStreamingStoresCtrl = varBiosPolicyWithoutEmbeddedStruct.CbsCmnCpuStreamingStoresCtrl
 		varBiosPolicy.CbsCmnDeterminismSlider = varBiosPolicyWithoutEmbeddedStruct.CbsCmnDeterminismSlider
+		varBiosPolicy.CbsCmnEdcControlThrottle = varBiosPolicyWithoutEmbeddedStruct.CbsCmnEdcControlThrottle
 		varBiosPolicy.CbsCmnEfficiencyModeEn = varBiosPolicyWithoutEmbeddedStruct.CbsCmnEfficiencyModeEn
+		varBiosPolicy.CbsCmnEfficiencyModeEnRs = varBiosPolicyWithoutEmbeddedStruct.CbsCmnEfficiencyModeEnRs
 		varBiosPolicy.CbsCmnFixedSocPstate = varBiosPolicyWithoutEmbeddedStruct.CbsCmnFixedSocPstate
 		varBiosPolicy.CbsCmnGnbNbIommu = varBiosPolicyWithoutEmbeddedStruct.CbsCmnGnbNbIommu
 		varBiosPolicy.CbsCmnGnbSmuDfCstates = varBiosPolicyWithoutEmbeddedStruct.CbsCmnGnbSmuDfCstates
+		varBiosPolicy.CbsCmnGnbSmuDffoRs = varBiosPolicyWithoutEmbeddedStruct.CbsCmnGnbSmuDffoRs
+		varBiosPolicy.CbsCmnGnbSmuDlwmSupport = varBiosPolicyWithoutEmbeddedStruct.CbsCmnGnbSmuDlwmSupport
 		varBiosPolicy.CbsCmnGnbSmucppc = varBiosPolicyWithoutEmbeddedStruct.CbsCmnGnbSmucppc
 		varBiosPolicy.CbsCmnMemCtrlBankGroupSwapDdr4 = varBiosPolicyWithoutEmbeddedStruct.CbsCmnMemCtrlBankGroupSwapDdr4
+		varBiosPolicy.CbsCmnMemCtrllerPwrDnEnDdr = varBiosPolicyWithoutEmbeddedStruct.CbsCmnMemCtrllerPwrDnEnDdr
 		varBiosPolicy.CbsCmnMemMapBankInterleaveDdr4 = varBiosPolicyWithoutEmbeddedStruct.CbsCmnMemMapBankInterleaveDdr4
+		varBiosPolicy.CbsCmnMemSpeedDdr47xx2 = varBiosPolicyWithoutEmbeddedStruct.CbsCmnMemSpeedDdr47xx2
+		varBiosPolicy.CbsCmnMemSpeedDdr47xx3 = varBiosPolicyWithoutEmbeddedStruct.CbsCmnMemSpeedDdr47xx3
+		varBiosPolicy.CbsCmnPreferredIo7xx2 = varBiosPolicyWithoutEmbeddedStruct.CbsCmnPreferredIo7xx2
+		varBiosPolicy.CbsCmnPreferredIo7xx3 = varBiosPolicyWithoutEmbeddedStruct.CbsCmnPreferredIo7xx3
 		varBiosPolicy.CbsCmncTdpCtl = varBiosPolicyWithoutEmbeddedStruct.CbsCmncTdpCtl
+		varBiosPolicy.CbsCmnxGmiForceLinkWidthRs = varBiosPolicyWithoutEmbeddedStruct.CbsCmnxGmiForceLinkWidthRs
 		varBiosPolicy.CbsCpuCcdCtrlSsp = varBiosPolicyWithoutEmbeddedStruct.CbsCpuCcdCtrlSsp
 		varBiosPolicy.CbsCpuCoreCtrl = varBiosPolicyWithoutEmbeddedStruct.CbsCpuCoreCtrl
+		varBiosPolicy.CbsCpuDownCoreCtrlBergamo = varBiosPolicyWithoutEmbeddedStruct.CbsCpuDownCoreCtrlBergamo
+		varBiosPolicy.CbsCpuDownCoreCtrlGenoa = varBiosPolicyWithoutEmbeddedStruct.CbsCpuDownCoreCtrlGenoa
 		varBiosPolicy.CbsCpuSmtCtrl = varBiosPolicyWithoutEmbeddedStruct.CbsCpuSmtCtrl
+		varBiosPolicy.CbsDbgCpuGenCpuWdt = varBiosPolicyWithoutEmbeddedStruct.CbsDbgCpuGenCpuWdt
+		varBiosPolicy.CbsDbgCpuLapicMode = varBiosPolicyWithoutEmbeddedStruct.CbsDbgCpuLapicMode
 		varBiosPolicy.CbsDbgCpuSnpMemCover = varBiosPolicyWithoutEmbeddedStruct.CbsDbgCpuSnpMemCover
 		varBiosPolicy.CbsDbgCpuSnpMemSizeCover = varBiosPolicyWithoutEmbeddedStruct.CbsDbgCpuSnpMemSizeCover
+		varBiosPolicy.CbsDfCmn4linkMaxXgmiSpeed = varBiosPolicyWithoutEmbeddedStruct.CbsDfCmn4linkMaxXgmiSpeed
 		varBiosPolicy.CbsDfCmnAcpiSratL3numa = varBiosPolicyWithoutEmbeddedStruct.CbsDfCmnAcpiSratL3numa
 		varBiosPolicy.CbsDfCmnDramNps = varBiosPolicyWithoutEmbeddedStruct.CbsDfCmnDramNps
+		varBiosPolicy.CbsDfCmnDramScrubTime = varBiosPolicyWithoutEmbeddedStruct.CbsDfCmnDramScrubTime
 		varBiosPolicy.CbsDfCmnMemIntlv = varBiosPolicyWithoutEmbeddedStruct.CbsDfCmnMemIntlv
+		varBiosPolicy.CbsDfCmnMemIntlvControl = varBiosPolicyWithoutEmbeddedStruct.CbsDfCmnMemIntlvControl
 		varBiosPolicy.CbsDfCmnMemIntlvSize = varBiosPolicyWithoutEmbeddedStruct.CbsDfCmnMemIntlvSize
+		varBiosPolicy.CbsDfDbgXgmiLinkCfg = varBiosPolicyWithoutEmbeddedStruct.CbsDfDbgXgmiLinkCfg
+		varBiosPolicy.CbsGnbDbgPcieTbtSupport = varBiosPolicyWithoutEmbeddedStruct.CbsGnbDbgPcieTbtSupport
 		varBiosPolicy.CbsSevSnpSupport = varBiosPolicyWithoutEmbeddedStruct.CbsSevSnpSupport
 		varBiosPolicy.CdnEnable = varBiosPolicyWithoutEmbeddedStruct.CdnEnable
 		varBiosPolicy.CdnSupport = varBiosPolicyWithoutEmbeddedStruct.CdnSupport
@@ -17153,7 +19488,9 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.CrfastgoConfig = varBiosPolicyWithoutEmbeddedStruct.CrfastgoConfig
 		varBiosPolicy.DcpmmFirmwareDowngrade = varBiosPolicyWithoutEmbeddedStruct.DcpmmFirmwareDowngrade
 		varBiosPolicy.DemandScrub = varBiosPolicyWithoutEmbeddedStruct.DemandScrub
+		varBiosPolicy.DfxOsbEn = varBiosPolicyWithoutEmbeddedStruct.DfxOsbEn
 		varBiosPolicy.DirectCacheAccess = varBiosPolicyWithoutEmbeddedStruct.DirectCacheAccess
+		varBiosPolicy.DmaCtrlOptIn = varBiosPolicyWithoutEmbeddedStruct.DmaCtrlOptIn
 		varBiosPolicy.DramClockThrottling = varBiosPolicyWithoutEmbeddedStruct.DramClockThrottling
 		varBiosPolicy.DramRefreshRate = varBiosPolicyWithoutEmbeddedStruct.DramRefreshRate
 		varBiosPolicy.DramSwThermalThrottling = varBiosPolicyWithoutEmbeddedStruct.DramSwThermalThrottling
@@ -17161,7 +19498,10 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.EdpcEn = varBiosPolicyWithoutEmbeddedStruct.EdpcEn
 		varBiosPolicy.EnableClockSpreadSpec = varBiosPolicyWithoutEmbeddedStruct.EnableClockSpreadSpec
 		varBiosPolicy.EnableMktme = varBiosPolicyWithoutEmbeddedStruct.EnableMktme
+		varBiosPolicy.EnableRmt = varBiosPolicyWithoutEmbeddedStruct.EnableRmt
 		varBiosPolicy.EnableSgx = varBiosPolicyWithoutEmbeddedStruct.EnableSgx
+		varBiosPolicy.EnableTdx = varBiosPolicyWithoutEmbeddedStruct.EnableTdx
+		varBiosPolicy.EnableTdxSeamldr = varBiosPolicyWithoutEmbeddedStruct.EnableTdxSeamldr
 		varBiosPolicy.EnableTme = varBiosPolicyWithoutEmbeddedStruct.EnableTme
 		varBiosPolicy.EnergyEfficientTurbo = varBiosPolicyWithoutEmbeddedStruct.EnergyEfficientTurbo
 		varBiosPolicy.EngPerfTuning = varBiosPolicyWithoutEmbeddedStruct.EngPerfTuning
@@ -17169,6 +19509,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.EpochUpdate = varBiosPolicyWithoutEmbeddedStruct.EpochUpdate
 		varBiosPolicy.EppEnable = varBiosPolicyWithoutEmbeddedStruct.EppEnable
 		varBiosPolicy.EppProfile = varBiosPolicyWithoutEmbeddedStruct.EppProfile
+		varBiosPolicy.ErrorCheckScrub = varBiosPolicyWithoutEmbeddedStruct.ErrorCheckScrub
 		varBiosPolicy.ExecuteDisableBit = varBiosPolicyWithoutEmbeddedStruct.ExecuteDisableBit
 		varBiosPolicy.ExtendedApic = varBiosPolicyWithoutEmbeddedStruct.ExtendedApic
 		varBiosPolicy.FlowControl = varBiosPolicyWithoutEmbeddedStruct.FlowControl
@@ -17186,6 +19527,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.IntelVtdInterruptRemapping = varBiosPolicyWithoutEmbeddedStruct.IntelVtdInterruptRemapping
 		varBiosPolicy.IntelVtdPassThroughDmaSupport = varBiosPolicyWithoutEmbeddedStruct.IntelVtdPassThroughDmaSupport
 		varBiosPolicy.IntelVtdatsSupport = varBiosPolicyWithoutEmbeddedStruct.IntelVtdatsSupport
+		varBiosPolicy.IoatConfigCpm = varBiosPolicyWithoutEmbeddedStruct.IoatConfigCpm
 		varBiosPolicy.IohErrorEnable = varBiosPolicyWithoutEmbeddedStruct.IohErrorEnable
 		varBiosPolicy.IohResource = varBiosPolicyWithoutEmbeddedStruct.IohResource
 		varBiosPolicy.IpPrefetch = varBiosPolicyWithoutEmbeddedStruct.IpPrefetch
@@ -17213,6 +19555,8 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.MemoryThermalThrottling = varBiosPolicyWithoutEmbeddedStruct.MemoryThermalThrottling
 		varBiosPolicy.MirroringMode = varBiosPolicyWithoutEmbeddedStruct.MirroringMode
 		varBiosPolicy.MmcfgBase = varBiosPolicyWithoutEmbeddedStruct.MmcfgBase
+		varBiosPolicy.MmiohBase = varBiosPolicyWithoutEmbeddedStruct.MmiohBase
+		varBiosPolicy.MmiohSize = varBiosPolicyWithoutEmbeddedStruct.MmiohSize
 		varBiosPolicy.NetworkStack = varBiosPolicyWithoutEmbeddedStruct.NetworkStack
 		varBiosPolicy.NumaOptimized = varBiosPolicyWithoutEmbeddedStruct.NumaOptimized
 		varBiosPolicy.NvmdimmPerformConfig = varBiosPolicyWithoutEmbeddedStruct.NvmdimmPerformConfig
@@ -17221,6 +19565,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.OnboardScuStorageSupport = varBiosPolicyWithoutEmbeddedStruct.OnboardScuStorageSupport
 		varBiosPolicy.OnboardScuStorageSwStack = varBiosPolicyWithoutEmbeddedStruct.OnboardScuStorageSwStack
 		varBiosPolicy.OperationMode = varBiosPolicyWithoutEmbeddedStruct.OperationMode
+		varBiosPolicy.OptimizedPowerMode = varBiosPolicyWithoutEmbeddedStruct.OptimizedPowerMode
 		varBiosPolicy.OsBootWatchdogTimer = varBiosPolicyWithoutEmbeddedStruct.OsBootWatchdogTimer
 		varBiosPolicy.OsBootWatchdogTimerPolicy = varBiosPolicyWithoutEmbeddedStruct.OsBootWatchdogTimerPolicy
 		varBiosPolicy.OsBootWatchdogTimerTimeout = varBiosPolicyWithoutEmbeddedStruct.OsBootWatchdogTimerTimeout
@@ -17238,6 +19583,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.PatrolScrubDuration = varBiosPolicyWithoutEmbeddedStruct.PatrolScrubDuration
 		varBiosPolicy.PcIeRasSupport = varBiosPolicyWithoutEmbeddedStruct.PcIeRasSupport
 		varBiosPolicy.PcIeSsdHotPlugSupport = varBiosPolicyWithoutEmbeddedStruct.PcIeSsdHotPlugSupport
+		varBiosPolicy.PchPciePllSsc = varBiosPolicyWithoutEmbeddedStruct.PchPciePllSsc
 		varBiosPolicy.PchUsb30mode = varBiosPolicyWithoutEmbeddedStruct.PchUsb30mode
 		varBiosPolicy.PciOptionRoMs = varBiosPolicyWithoutEmbeddedStruct.PciOptionRoMs
 		varBiosPolicy.PciRomClp = varBiosPolicyWithoutEmbeddedStruct.PciRomClp
@@ -17265,6 +19611,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.PopSupport = varBiosPolicyWithoutEmbeddedStruct.PopSupport
 		varBiosPolicy.PostErrorPause = varBiosPolicyWithoutEmbeddedStruct.PostErrorPause
 		varBiosPolicy.PostPackageRepair = varBiosPolicyWithoutEmbeddedStruct.PostPackageRepair
+		varBiosPolicy.PrmrrSize = varBiosPolicyWithoutEmbeddedStruct.PrmrrSize
 		varBiosPolicy.ProcessorC1e = varBiosPolicyWithoutEmbeddedStruct.ProcessorC1e
 		varBiosPolicy.ProcessorC3report = varBiosPolicyWithoutEmbeddedStruct.ProcessorC3report
 		varBiosPolicy.ProcessorC6report = varBiosPolicyWithoutEmbeddedStruct.ProcessorC6report
@@ -17278,9 +19625,12 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.QpiSnoopMode = varBiosPolicyWithoutEmbeddedStruct.QpiSnoopMode
 		varBiosPolicy.RankInterLeave = varBiosPolicyWithoutEmbeddedStruct.RankInterLeave
 		varBiosPolicy.RedirectionAfterPost = varBiosPolicyWithoutEmbeddedStruct.RedirectionAfterPost
+		varBiosPolicy.ResizeBarSupport = varBiosPolicyWithoutEmbeddedStruct.ResizeBarSupport
+		varBiosPolicy.RuntimePostPackageRepair = varBiosPolicyWithoutEmbeddedStruct.RuntimePostPackageRepair
 		varBiosPolicy.SataModeSelect = varBiosPolicyWithoutEmbeddedStruct.SataModeSelect
 		varBiosPolicy.SelectMemoryRasConfiguration = varBiosPolicyWithoutEmbeddedStruct.SelectMemoryRasConfiguration
 		varBiosPolicy.SelectPprType = varBiosPolicyWithoutEmbeddedStruct.SelectPprType
+		varBiosPolicy.SerialMux = varBiosPolicyWithoutEmbeddedStruct.SerialMux
 		varBiosPolicy.SerialPortAenable = varBiosPolicyWithoutEmbeddedStruct.SerialPortAenable
 		varBiosPolicy.Sev = varBiosPolicyWithoutEmbeddedStruct.Sev
 		varBiosPolicy.SgxAutoRegistrationAgent = varBiosPolicyWithoutEmbeddedStruct.SgxAutoRegistrationAgent
@@ -17296,6 +19646,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.SgxQos = varBiosPolicyWithoutEmbeddedStruct.SgxQos
 		varBiosPolicy.Sha1pcrBank = varBiosPolicyWithoutEmbeddedStruct.Sha1pcrBank
 		varBiosPolicy.Sha256pcrBank = varBiosPolicyWithoutEmbeddedStruct.Sha256pcrBank
+		varBiosPolicy.Sha384pcrBank = varBiosPolicyWithoutEmbeddedStruct.Sha384pcrBank
 		varBiosPolicy.SinglePctlEnable = varBiosPolicyWithoutEmbeddedStruct.SinglePctlEnable
 		varBiosPolicy.Slot10linkSpeed = varBiosPolicyWithoutEmbeddedStruct.Slot10linkSpeed
 		varBiosPolicy.Slot10state = varBiosPolicyWithoutEmbeddedStruct.Slot10state
@@ -17330,19 +19681,31 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.SlotFrontNvme11optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme11optionRom
 		varBiosPolicy.SlotFrontNvme12linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme12linkSpeed
 		varBiosPolicy.SlotFrontNvme12optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme12optionRom
+		varBiosPolicy.SlotFrontNvme13linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme13linkSpeed
 		varBiosPolicy.SlotFrontNvme13optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme13optionRom
+		varBiosPolicy.SlotFrontNvme14linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme14linkSpeed
 		varBiosPolicy.SlotFrontNvme14optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme14optionRom
+		varBiosPolicy.SlotFrontNvme15linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme15linkSpeed
 		varBiosPolicy.SlotFrontNvme15optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme15optionRom
+		varBiosPolicy.SlotFrontNvme16linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme16linkSpeed
 		varBiosPolicy.SlotFrontNvme16optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme16optionRom
+		varBiosPolicy.SlotFrontNvme17linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme17linkSpeed
 		varBiosPolicy.SlotFrontNvme17optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme17optionRom
+		varBiosPolicy.SlotFrontNvme18linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme18linkSpeed
 		varBiosPolicy.SlotFrontNvme18optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme18optionRom
+		varBiosPolicy.SlotFrontNvme19linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme19linkSpeed
 		varBiosPolicy.SlotFrontNvme19optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme19optionRom
 		varBiosPolicy.SlotFrontNvme1linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme1linkSpeed
 		varBiosPolicy.SlotFrontNvme1optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme1optionRom
+		varBiosPolicy.SlotFrontNvme20linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme20linkSpeed
 		varBiosPolicy.SlotFrontNvme20optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme20optionRom
+		varBiosPolicy.SlotFrontNvme21linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme21linkSpeed
 		varBiosPolicy.SlotFrontNvme21optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme21optionRom
+		varBiosPolicy.SlotFrontNvme22linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme22linkSpeed
 		varBiosPolicy.SlotFrontNvme22optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme22optionRom
+		varBiosPolicy.SlotFrontNvme23linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme23linkSpeed
 		varBiosPolicy.SlotFrontNvme23optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme23optionRom
+		varBiosPolicy.SlotFrontNvme24linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme24linkSpeed
 		varBiosPolicy.SlotFrontNvme24optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme24optionRom
 		varBiosPolicy.SlotFrontNvme2linkSpeed = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme2linkSpeed
 		varBiosPolicy.SlotFrontNvme2optionRom = varBiosPolicyWithoutEmbeddedStruct.SlotFrontNvme2optionRom
@@ -17462,6 +19825,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varBiosPolicy.VmdEnable = varBiosPolicyWithoutEmbeddedStruct.VmdEnable
 		varBiosPolicy.VolMemoryMode = varBiosPolicyWithoutEmbeddedStruct.VolMemoryMode
 		varBiosPolicy.WorkLoadConfig = varBiosPolicyWithoutEmbeddedStruct.WorkLoadConfig
+		varBiosPolicy.X2apicOptOut = varBiosPolicyWithoutEmbeddedStruct.X2apicOptOut
 		varBiosPolicy.XptPrefetch = varBiosPolicyWithoutEmbeddedStruct.XptPrefetch
 		varBiosPolicy.XptRemotePrefetch = varBiosPolicyWithoutEmbeddedStruct.XptRemotePrefetch
 		varBiosPolicy.Organization = varBiosPolicyWithoutEmbeddedStruct.Organization
@@ -17473,7 +19837,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	varBiosPolicy := _BiosPolicy{}
 
-	err = json.Unmarshal(bytes, &varBiosPolicy)
+	err = json.Unmarshal(data, &varBiosPolicy)
 	if err == nil {
 		o.PolicyAbstractPolicy = varBiosPolicy.PolicyAbstractPolicy
 	} else {
@@ -17482,7 +19846,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AcsControlGpu1state")
@@ -17497,6 +19861,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "AcsControlSlot12state")
 		delete(additionalProperties, "AcsControlSlot13state")
 		delete(additionalProperties, "AcsControlSlot14state")
+		delete(additionalProperties, "AdaptiveRefreshMgmtLevel")
 		delete(additionalProperties, "AdjacentCacheLinePrefetch")
 		delete(additionalProperties, "AdvancedMemTest")
 		delete(additionalProperties, "AllUsbDevices")
@@ -17516,31 +19881,53 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "C1autoDemotion")
 		delete(additionalProperties, "C1autoUnDemotion")
 		delete(additionalProperties, "CbsCmnApbdis")
+		delete(additionalProperties, "CbsCmnApbdisDfPstateRs")
+		delete(additionalProperties, "CbsCmnCpuAvx512")
 		delete(additionalProperties, "CbsCmnCpuCpb")
 		delete(additionalProperties, "CbsCmnCpuGenDowncoreCtrl")
 		delete(additionalProperties, "CbsCmnCpuGlobalCstateCtrl")
 		delete(additionalProperties, "CbsCmnCpuL1streamHwPrefetcher")
 		delete(additionalProperties, "CbsCmnCpuL2streamHwPrefetcher")
+		delete(additionalProperties, "CbsCmnCpuSevAsidSpaceLimit")
 		delete(additionalProperties, "CbsCmnCpuSmee")
 		delete(additionalProperties, "CbsCmnCpuStreamingStoresCtrl")
 		delete(additionalProperties, "CbsCmnDeterminismSlider")
+		delete(additionalProperties, "CbsCmnEdcControlThrottle")
 		delete(additionalProperties, "CbsCmnEfficiencyModeEn")
+		delete(additionalProperties, "CbsCmnEfficiencyModeEnRs")
 		delete(additionalProperties, "CbsCmnFixedSocPstate")
 		delete(additionalProperties, "CbsCmnGnbNbIommu")
 		delete(additionalProperties, "CbsCmnGnbSmuDfCstates")
+		delete(additionalProperties, "CbsCmnGnbSmuDffoRs")
+		delete(additionalProperties, "CbsCmnGnbSmuDlwmSupport")
 		delete(additionalProperties, "CbsCmnGnbSmucppc")
 		delete(additionalProperties, "CbsCmnMemCtrlBankGroupSwapDdr4")
+		delete(additionalProperties, "CbsCmnMemCtrllerPwrDnEnDdr")
 		delete(additionalProperties, "CbsCmnMemMapBankInterleaveDdr4")
+		delete(additionalProperties, "CbsCmnMemSpeedDdr47xx2")
+		delete(additionalProperties, "CbsCmnMemSpeedDdr47xx3")
+		delete(additionalProperties, "CbsCmnPreferredIo7xx2")
+		delete(additionalProperties, "CbsCmnPreferredIo7xx3")
 		delete(additionalProperties, "CbsCmncTdpCtl")
+		delete(additionalProperties, "CbsCmnxGmiForceLinkWidthRs")
 		delete(additionalProperties, "CbsCpuCcdCtrlSsp")
 		delete(additionalProperties, "CbsCpuCoreCtrl")
+		delete(additionalProperties, "CbsCpuDownCoreCtrlBergamo")
+		delete(additionalProperties, "CbsCpuDownCoreCtrlGenoa")
 		delete(additionalProperties, "CbsCpuSmtCtrl")
+		delete(additionalProperties, "CbsDbgCpuGenCpuWdt")
+		delete(additionalProperties, "CbsDbgCpuLapicMode")
 		delete(additionalProperties, "CbsDbgCpuSnpMemCover")
 		delete(additionalProperties, "CbsDbgCpuSnpMemSizeCover")
+		delete(additionalProperties, "CbsDfCmn4linkMaxXgmiSpeed")
 		delete(additionalProperties, "CbsDfCmnAcpiSratL3numa")
 		delete(additionalProperties, "CbsDfCmnDramNps")
+		delete(additionalProperties, "CbsDfCmnDramScrubTime")
 		delete(additionalProperties, "CbsDfCmnMemIntlv")
+		delete(additionalProperties, "CbsDfCmnMemIntlvControl")
 		delete(additionalProperties, "CbsDfCmnMemIntlvSize")
+		delete(additionalProperties, "CbsDfDbgXgmiLinkCfg")
+		delete(additionalProperties, "CbsGnbDbgPcieTbtSupport")
 		delete(additionalProperties, "CbsSevSnpSupport")
 		delete(additionalProperties, "CdnEnable")
 		delete(additionalProperties, "CdnSupport")
@@ -17566,7 +19953,9 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "CrfastgoConfig")
 		delete(additionalProperties, "DcpmmFirmwareDowngrade")
 		delete(additionalProperties, "DemandScrub")
+		delete(additionalProperties, "DfxOsbEn")
 		delete(additionalProperties, "DirectCacheAccess")
+		delete(additionalProperties, "DmaCtrlOptIn")
 		delete(additionalProperties, "DramClockThrottling")
 		delete(additionalProperties, "DramRefreshRate")
 		delete(additionalProperties, "DramSwThermalThrottling")
@@ -17574,7 +19963,10 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "EdpcEn")
 		delete(additionalProperties, "EnableClockSpreadSpec")
 		delete(additionalProperties, "EnableMktme")
+		delete(additionalProperties, "EnableRmt")
 		delete(additionalProperties, "EnableSgx")
+		delete(additionalProperties, "EnableTdx")
+		delete(additionalProperties, "EnableTdxSeamldr")
 		delete(additionalProperties, "EnableTme")
 		delete(additionalProperties, "EnergyEfficientTurbo")
 		delete(additionalProperties, "EngPerfTuning")
@@ -17582,6 +19974,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "EpochUpdate")
 		delete(additionalProperties, "EppEnable")
 		delete(additionalProperties, "EppProfile")
+		delete(additionalProperties, "ErrorCheckScrub")
 		delete(additionalProperties, "ExecuteDisableBit")
 		delete(additionalProperties, "ExtendedApic")
 		delete(additionalProperties, "FlowControl")
@@ -17599,6 +19992,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "IntelVtdInterruptRemapping")
 		delete(additionalProperties, "IntelVtdPassThroughDmaSupport")
 		delete(additionalProperties, "IntelVtdatsSupport")
+		delete(additionalProperties, "IoatConfigCpm")
 		delete(additionalProperties, "IohErrorEnable")
 		delete(additionalProperties, "IohResource")
 		delete(additionalProperties, "IpPrefetch")
@@ -17626,6 +20020,8 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "MemoryThermalThrottling")
 		delete(additionalProperties, "MirroringMode")
 		delete(additionalProperties, "MmcfgBase")
+		delete(additionalProperties, "MmiohBase")
+		delete(additionalProperties, "MmiohSize")
 		delete(additionalProperties, "NetworkStack")
 		delete(additionalProperties, "NumaOptimized")
 		delete(additionalProperties, "NvmdimmPerformConfig")
@@ -17634,6 +20030,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "OnboardScuStorageSupport")
 		delete(additionalProperties, "OnboardScuStorageSwStack")
 		delete(additionalProperties, "OperationMode")
+		delete(additionalProperties, "OptimizedPowerMode")
 		delete(additionalProperties, "OsBootWatchdogTimer")
 		delete(additionalProperties, "OsBootWatchdogTimerPolicy")
 		delete(additionalProperties, "OsBootWatchdogTimerTimeout")
@@ -17651,6 +20048,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "PatrolScrubDuration")
 		delete(additionalProperties, "PcIeRasSupport")
 		delete(additionalProperties, "PcIeSsdHotPlugSupport")
+		delete(additionalProperties, "PchPciePllSsc")
 		delete(additionalProperties, "PchUsb30mode")
 		delete(additionalProperties, "PciOptionRoMs")
 		delete(additionalProperties, "PciRomClp")
@@ -17678,6 +20076,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "PopSupport")
 		delete(additionalProperties, "PostErrorPause")
 		delete(additionalProperties, "PostPackageRepair")
+		delete(additionalProperties, "PrmrrSize")
 		delete(additionalProperties, "ProcessorC1e")
 		delete(additionalProperties, "ProcessorC3report")
 		delete(additionalProperties, "ProcessorC6report")
@@ -17691,9 +20090,12 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "QpiSnoopMode")
 		delete(additionalProperties, "RankInterLeave")
 		delete(additionalProperties, "RedirectionAfterPost")
+		delete(additionalProperties, "ResizeBarSupport")
+		delete(additionalProperties, "RuntimePostPackageRepair")
 		delete(additionalProperties, "SataModeSelect")
 		delete(additionalProperties, "SelectMemoryRasConfiguration")
 		delete(additionalProperties, "SelectPprType")
+		delete(additionalProperties, "SerialMux")
 		delete(additionalProperties, "SerialPortAenable")
 		delete(additionalProperties, "Sev")
 		delete(additionalProperties, "SgxAutoRegistrationAgent")
@@ -17709,6 +20111,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "SgxQos")
 		delete(additionalProperties, "Sha1pcrBank")
 		delete(additionalProperties, "Sha256pcrBank")
+		delete(additionalProperties, "Sha384pcrBank")
 		delete(additionalProperties, "SinglePctlEnable")
 		delete(additionalProperties, "Slot10linkSpeed")
 		delete(additionalProperties, "Slot10state")
@@ -17743,19 +20146,31 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "SlotFrontNvme11optionRom")
 		delete(additionalProperties, "SlotFrontNvme12linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme12optionRom")
+		delete(additionalProperties, "SlotFrontNvme13linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme13optionRom")
+		delete(additionalProperties, "SlotFrontNvme14linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme14optionRom")
+		delete(additionalProperties, "SlotFrontNvme15linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme15optionRom")
+		delete(additionalProperties, "SlotFrontNvme16linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme16optionRom")
+		delete(additionalProperties, "SlotFrontNvme17linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme17optionRom")
+		delete(additionalProperties, "SlotFrontNvme18linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme18optionRom")
+		delete(additionalProperties, "SlotFrontNvme19linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme19optionRom")
 		delete(additionalProperties, "SlotFrontNvme1linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme1optionRom")
+		delete(additionalProperties, "SlotFrontNvme20linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme20optionRom")
+		delete(additionalProperties, "SlotFrontNvme21linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme21optionRom")
+		delete(additionalProperties, "SlotFrontNvme22linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme22optionRom")
+		delete(additionalProperties, "SlotFrontNvme23linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme23optionRom")
+		delete(additionalProperties, "SlotFrontNvme24linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme24optionRom")
 		delete(additionalProperties, "SlotFrontNvme2linkSpeed")
 		delete(additionalProperties, "SlotFrontNvme2optionRom")
@@ -17875,6 +20290,7 @@ func (o *BiosPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "VmdEnable")
 		delete(additionalProperties, "VolMemoryMode")
 		delete(additionalProperties, "WorkLoadConfig")
+		delete(additionalProperties, "X2apicOptOut")
 		delete(additionalProperties, "XptPrefetch")
 		delete(additionalProperties, "XptRemotePrefetch")
 		delete(additionalProperties, "Organization")

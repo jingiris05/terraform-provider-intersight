@@ -21,7 +21,7 @@ func resourceAssetDeviceClaim() *schema.Resource {
 		ReadContext:   resourceAssetDeviceClaimRead,
 		DeleteContext: resourceAssetDeviceClaimDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account": {
 				Description: "A reference to a iamAccount resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
@@ -151,10 +151,9 @@ func resourceAssetDeviceClaim() *schema.Resource {
 					return
 				}, ForceNew: true,
 			},
-			"device": {
-				Description: "A reference to a assetDeviceRegistration resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
+			"custom_permission_resources": {
+				Description: "An array of relationships to moBaseMo resources.",
 				Type:        schema.TypeList,
-				MaxItems:    1,
 				Optional:    true,
 				Computed:    true,
 				ConfigMode:  schema.SchemaConfigModeAttr,
@@ -197,19 +196,15 @@ func resourceAssetDeviceClaim() *schema.Resource {
 				},
 				ForceNew: true,
 			},
-			"device_updates": {
-				Type:       schema.TypeList,
-				Optional:   true,
-				ConfigMode: schema.SchemaConfigModeAttr,
-				Computed:   true,
+			"device": {
+				Description: "A reference to a assetDeviceRegistration resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"account": {
-							Description: "The account id to which the device belongs.",
-							Type:        schema.TypeString,
-							Optional:    true,
-							ForceNew:    true,
-						},
 						"additional_properties": {
 							Type:             schema.TypeString,
 							Optional:         true,
@@ -220,57 +215,26 @@ func resourceAssetDeviceClaim() *schema.Resource {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
 							Type:        schema.TypeString,
 							Optional:    true,
-							Default:     "asset.ConnectionControlMessage",
+							Default:     "mo.MoRef",
 							ForceNew:    true,
 						},
-						"connector_version": {
-							Description: "The version of the device connector currently running on the platform. Deprecated by newer connectors that will report this directly to the device connector gateway in a websocket header, but included to continue to support older versions which report any version change after connect.",
+						"moid": {
+							Description: "The Moid of the referenced REST resource.",
 							Type:        schema.TypeString,
 							Optional:    true,
-							ForceNew:    true,
-						},
-						"device_id": {
-							Description: "The Moid of the device under change. Used to route the message to a device's connection.",
-							Type:        schema.TypeString,
-							Optional:    true,
-							ForceNew:    true,
-						},
-						"domain_group": {
-							Description: "The domain group id to which the device belongs.",
-							Type:        schema.TypeString,
-							Optional:    true,
-							ForceNew:    true,
-						},
-						"evict": {
-							Description: "Flag to force any open connections to be evicted. Used in case device has been deleted or blacklisted.",
-							Type:        schema.TypeBool,
-							Optional:    true,
-							ForceNew:    true,
-						},
-						"leadership": {
-							Description:  "The current leadership of a device cluster member.\n* `Unknown` - The node is unable to complete election or determine the current state. If the device has been registered before and the node has access to the current credentials it will establish a connection to Intersight with limited capabilities that can be used to debug the HA failure from Intersight.\n* `Primary` - The node has been elected as the primary and will establish a connection to the Intersight service and accept all message types enabled for a primary node. There can only be one primary in a given cluster, while the underlying platform may be active-active only one connector will assume the primary role.\n* `Secondary` - The node has been elected as a secondary node in the cluster. The device connector will establish a connection to the Intersight service with limited capabilities. e.g. file upload will be enabled, but requests to the underlying platform management will be disabled.",
-							Type:         schema.TypeString,
-							ValidateFunc: validation.StringInSlice([]string{"Unknown", "Primary", "Secondary"}, false),
-							Optional:     true,
-							Default:      "Unknown",
-							ForceNew:     true,
-						},
-						"new_identity": {
-							Description: "The new identity assigned to a device on ownership change (claim/unclaim).",
-							Type:        schema.TypeString,
-							Optional:    true,
+							Computed:    true,
 							ForceNew:    true,
 						},
 						"object_type": {
-							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Description: "The fully-qualified name of the remote type referred by this relationship.",
 							Type:        schema.TypeString,
 							Optional:    true,
-							Default:     "asset.ConnectionControlMessage",
+							Computed:    true,
 							ForceNew:    true,
 						},
-						"partition": {
-							Description: "The partition the device was last connected to, used to address the control message to the device connector gateway instance holding the devices connection.",
-							Type:        schema.TypeInt,
+						"selector": {
+							Description: "An OData $filter expression which describes the REST resource to be referenced. This field may\nbe set instead of 'moid' by clients.\n1. If 'moid' is set this field is ignored.\n1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of the\nresource matching the filter expression and populates it in the MoRef that is part of the object\ninstance being inserted/updated to fulfill the REST request.\nAn error is returned if the filter matches zero or more than one REST resource.\nAn example filter string is: Serial eq '3AA8B7T11'.",
+							Type:        schema.TypeString,
 							Optional:    true,
 							ForceNew:    true,
 						},
@@ -583,6 +547,18 @@ func resourceAssetDeviceClaim() *schema.Resource {
 							},
 							ForceNew: true,
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}, ForceNew: true,
+						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -696,84 +672,6 @@ func resourceAssetDeviceClaimCreate(c context.Context, d *schema.ResourceData, m
 	}
 
 	o.SetClassId("asset.DeviceClaim")
-
-	if v, ok := d.GetOk("device_updates"); ok {
-		x := make([]models.AssetConnectionControlMessage, 0)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			o := models.NewAssetConnectionControlMessageWithDefaults()
-			l := s[i].(map[string]interface{})
-			if v, ok := l["account"]; ok {
-				{
-					x := (v.(string))
-					o.SetAccount(x)
-				}
-			}
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("asset.ConnectionControlMessage")
-			if v, ok := l["connector_version"]; ok {
-				{
-					x := (v.(string))
-					o.SetConnectorVersion(x)
-				}
-			}
-			if v, ok := l["device_id"]; ok {
-				{
-					x := (v.(string))
-					o.SetDeviceId(x)
-				}
-			}
-			if v, ok := l["domain_group"]; ok {
-				{
-					x := (v.(string))
-					o.SetDomainGroup(x)
-				}
-			}
-			if v, ok := l["evict"]; ok {
-				{
-					x := (v.(bool))
-					o.SetEvict(x)
-				}
-			}
-			if v, ok := l["leadership"]; ok {
-				{
-					x := (v.(string))
-					o.SetLeadership(x)
-				}
-			}
-			if v, ok := l["new_identity"]; ok {
-				{
-					x := (v.(string))
-					o.SetNewIdentity(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			if v, ok := l["partition"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetPartition(x)
-				}
-			}
-			x = append(x, *o)
-		}
-		if len(x) > 0 {
-			o.SetDeviceUpdates(x)
-		}
-	}
 
 	if v, ok := d.GetOk("moid"); ok {
 		x := (v.(string))

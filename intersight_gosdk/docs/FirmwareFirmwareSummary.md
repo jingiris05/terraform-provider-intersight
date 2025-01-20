@@ -8,7 +8,8 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "firmware.FirmwareSummary"]
 **BundleVersion** | Pointer to **string** | Version details at the bundle level for the each of server. | [optional] 
 **ComponentsFwInventory** | Pointer to [**[]FirmwareFirmwareInventory**](FirmwareFirmwareInventory.md) |  | [optional] 
-**Server** | Pointer to [**ComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
+**Server** | Pointer to [**NullableComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
+**TargetMo** | Pointer to [**NullableMoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -154,6 +155,51 @@ SetServer sets Server field to given value.
 
 HasServer returns a boolean if a field has been set.
 
+### SetServerNil
+
+`func (o *FirmwareFirmwareSummary) SetServerNil(b bool)`
+
+ SetServerNil sets the value for Server to be an explicit nil
+
+### UnsetServer
+`func (o *FirmwareFirmwareSummary) UnsetServer()`
+
+UnsetServer ensures that no value is present for Server, not even an explicit nil
+### GetTargetMo
+
+`func (o *FirmwareFirmwareSummary) GetTargetMo() MoBaseMoRelationship`
+
+GetTargetMo returns the TargetMo field if non-nil, zero value otherwise.
+
+### GetTargetMoOk
+
+`func (o *FirmwareFirmwareSummary) GetTargetMoOk() (*MoBaseMoRelationship, bool)`
+
+GetTargetMoOk returns a tuple with the TargetMo field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTargetMo
+
+`func (o *FirmwareFirmwareSummary) SetTargetMo(v MoBaseMoRelationship)`
+
+SetTargetMo sets TargetMo field to given value.
+
+### HasTargetMo
+
+`func (o *FirmwareFirmwareSummary) HasTargetMo() bool`
+
+HasTargetMo returns a boolean if a field has been set.
+
+### SetTargetMoNil
+
+`func (o *FirmwareFirmwareSummary) SetTargetMoNil(b bool)`
+
+ SetTargetMoNil sets the value for TargetMo to be an explicit nil
+
+### UnsetTargetMo
+`func (o *FirmwareFirmwareSummary) UnsetTargetMo()`
+
+UnsetTargetMo ensures that no value is present for TargetMo, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

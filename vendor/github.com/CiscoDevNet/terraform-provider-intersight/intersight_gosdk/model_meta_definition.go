@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the MetaDefinition type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &MetaDefinition{}
 
 // MetaDefinition The meta-data of managed objects and complex types.
 type MetaDefinition struct {
@@ -36,6 +40,8 @@ type MetaDefinition struct {
 	Name *string `json:"Name,omitempty"`
 	// The namespace of the meta.
 	Namespace *string `json:"Namespace,omitempty"`
+	// A value describing the owner for a given Managed Object, such as Account or Organization. * `System` - Any Managed Object with OwnerType as System is root for objects common to all accounts. Any object which inherits permissions from this object has owners as system and is common to all accounts. Objects with owner as system can only be read by user and modification is not allowed by user. * `Yes` - Any Managed Object with OwnerType as Yes is root for objects which need security filtering. Currently objects with owner yes are account and device registration. Any object with owner ''yes'' has self moid in owners and any objects which inherits permissions from this object has root object moid as owners. In user context, account filtering is enforced by providing access to objects with owner as account moid. In device context, device filtering is enforced by providing access to objects with owner as device moid. * `No` - Any Managed Object with OwnerType as No inherits base mo properties like owners, domain group moid, account moid, permission resources from inherit permission relation. Inherit permission relation could be with an object whose owner is system/organization/yes/no. * `Internal` - Any Managed Object with OwnerType as Internal is internal to system. Such Managed Objects cannot be accessed using REST APIs and can be created, updated or deleted in any security context. * `Organization` - Any Managed Object with OwnerType as Organization is contained under an organization like profiles, policies, user defined workflows. Implicitly an organization on-peer-delete relation is added in this object.
+	Owner *string `json:"Owner,omitempty"`
 	// The fully-qualified name of the parent metaclass in the class inheritance hierarchy.
 	ParentClass *string `json:"ParentClass,omitempty"`
 	// Boolean flag to specify whether instances of this class type can be specified in permissions for instance based access control. Permissions can be created for entire Intersight account or to a subset of resources (instance based access control). In the first release, permissions are supported for entire account or for a subset of organizations.
@@ -101,6 +107,11 @@ func (o *MetaDefinition) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "meta.Definition" of the ClassId field.
+func (o *MetaDefinition) GetDefaultClassId() interface{} {
+	return "meta.Definition"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *MetaDefinition) GetObjectType() string {
 	if o == nil {
@@ -125,6 +136,11 @@ func (o *MetaDefinition) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "meta.Definition" of the ObjectType field.
+func (o *MetaDefinition) GetDefaultObjectType() interface{} {
+	return "meta.Definition"
+}
+
 // GetAccessPrivileges returns the AccessPrivileges field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *MetaDefinition) GetAccessPrivileges() []MetaAccessPrivilege {
 	if o == nil {
@@ -138,7 +154,7 @@ func (o *MetaDefinition) GetAccessPrivileges() []MetaAccessPrivilege {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *MetaDefinition) GetAccessPrivilegesOk() ([]MetaAccessPrivilege, bool) {
-	if o == nil || o.AccessPrivileges == nil {
+	if o == nil || IsNil(o.AccessPrivileges) {
 		return nil, false
 	}
 	return o.AccessPrivileges, true
@@ -146,7 +162,7 @@ func (o *MetaDefinition) GetAccessPrivilegesOk() ([]MetaAccessPrivilege, bool) {
 
 // HasAccessPrivileges returns a boolean if a field has been set.
 func (o *MetaDefinition) HasAccessPrivileges() bool {
-	if o != nil && o.AccessPrivileges != nil {
+	if o != nil && !IsNil(o.AccessPrivileges) {
 		return true
 	}
 
@@ -171,7 +187,7 @@ func (o *MetaDefinition) GetAncestorClasses() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *MetaDefinition) GetAncestorClassesOk() ([]string, bool) {
-	if o == nil || o.AncestorClasses == nil {
+	if o == nil || IsNil(o.AncestorClasses) {
 		return nil, false
 	}
 	return o.AncestorClasses, true
@@ -179,7 +195,7 @@ func (o *MetaDefinition) GetAncestorClassesOk() ([]string, bool) {
 
 // HasAncestorClasses returns a boolean if a field has been set.
 func (o *MetaDefinition) HasAncestorClasses() bool {
-	if o != nil && o.AncestorClasses != nil {
+	if o != nil && !IsNil(o.AncestorClasses) {
 		return true
 	}
 
@@ -204,7 +220,7 @@ func (o *MetaDefinition) GetDisplayNameMetas() []MetaDisplayNameDefinition {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *MetaDefinition) GetDisplayNameMetasOk() ([]MetaDisplayNameDefinition, bool) {
-	if o == nil || o.DisplayNameMetas == nil {
+	if o == nil || IsNil(o.DisplayNameMetas) {
 		return nil, false
 	}
 	return o.DisplayNameMetas, true
@@ -212,7 +228,7 @@ func (o *MetaDefinition) GetDisplayNameMetasOk() ([]MetaDisplayNameDefinition, b
 
 // HasDisplayNameMetas returns a boolean if a field has been set.
 func (o *MetaDefinition) HasDisplayNameMetas() bool {
-	if o != nil && o.DisplayNameMetas != nil {
+	if o != nil && !IsNil(o.DisplayNameMetas) {
 		return true
 	}
 
@@ -237,7 +253,7 @@ func (o *MetaDefinition) GetIdentityConstraints() []MetaIdentityDefinition {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *MetaDefinition) GetIdentityConstraintsOk() ([]MetaIdentityDefinition, bool) {
-	if o == nil || o.IdentityConstraints == nil {
+	if o == nil || IsNil(o.IdentityConstraints) {
 		return nil, false
 	}
 	return o.IdentityConstraints, true
@@ -245,7 +261,7 @@ func (o *MetaDefinition) GetIdentityConstraintsOk() ([]MetaIdentityDefinition, b
 
 // HasIdentityConstraints returns a boolean if a field has been set.
 func (o *MetaDefinition) HasIdentityConstraints() bool {
-	if o != nil && o.IdentityConstraints != nil {
+	if o != nil && !IsNil(o.IdentityConstraints) {
 		return true
 	}
 
@@ -259,7 +275,7 @@ func (o *MetaDefinition) SetIdentityConstraints(v []MetaIdentityDefinition) {
 
 // GetIsConcrete returns the IsConcrete field value if set, zero value otherwise.
 func (o *MetaDefinition) GetIsConcrete() bool {
-	if o == nil || o.IsConcrete == nil {
+	if o == nil || IsNil(o.IsConcrete) {
 		var ret bool
 		return ret
 	}
@@ -269,7 +285,7 @@ func (o *MetaDefinition) GetIsConcrete() bool {
 // GetIsConcreteOk returns a tuple with the IsConcrete field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MetaDefinition) GetIsConcreteOk() (*bool, bool) {
-	if o == nil || o.IsConcrete == nil {
+	if o == nil || IsNil(o.IsConcrete) {
 		return nil, false
 	}
 	return o.IsConcrete, true
@@ -277,7 +293,7 @@ func (o *MetaDefinition) GetIsConcreteOk() (*bool, bool) {
 
 // HasIsConcrete returns a boolean if a field has been set.
 func (o *MetaDefinition) HasIsConcrete() bool {
-	if o != nil && o.IsConcrete != nil {
+	if o != nil && !IsNil(o.IsConcrete) {
 		return true
 	}
 
@@ -291,7 +307,7 @@ func (o *MetaDefinition) SetIsConcrete(v bool) {
 
 // GetMetaType returns the MetaType field value if set, zero value otherwise.
 func (o *MetaDefinition) GetMetaType() string {
-	if o == nil || o.MetaType == nil {
+	if o == nil || IsNil(o.MetaType) {
 		var ret string
 		return ret
 	}
@@ -301,7 +317,7 @@ func (o *MetaDefinition) GetMetaType() string {
 // GetMetaTypeOk returns a tuple with the MetaType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MetaDefinition) GetMetaTypeOk() (*string, bool) {
-	if o == nil || o.MetaType == nil {
+	if o == nil || IsNil(o.MetaType) {
 		return nil, false
 	}
 	return o.MetaType, true
@@ -309,7 +325,7 @@ func (o *MetaDefinition) GetMetaTypeOk() (*string, bool) {
 
 // HasMetaType returns a boolean if a field has been set.
 func (o *MetaDefinition) HasMetaType() bool {
-	if o != nil && o.MetaType != nil {
+	if o != nil && !IsNil(o.MetaType) {
 		return true
 	}
 
@@ -323,7 +339,7 @@ func (o *MetaDefinition) SetMetaType(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *MetaDefinition) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -333,7 +349,7 @@ func (o *MetaDefinition) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MetaDefinition) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -341,7 +357,7 @@ func (o *MetaDefinition) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *MetaDefinition) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -355,7 +371,7 @@ func (o *MetaDefinition) SetName(v string) {
 
 // GetNamespace returns the Namespace field value if set, zero value otherwise.
 func (o *MetaDefinition) GetNamespace() string {
-	if o == nil || o.Namespace == nil {
+	if o == nil || IsNil(o.Namespace) {
 		var ret string
 		return ret
 	}
@@ -365,7 +381,7 @@ func (o *MetaDefinition) GetNamespace() string {
 // GetNamespaceOk returns a tuple with the Namespace field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MetaDefinition) GetNamespaceOk() (*string, bool) {
-	if o == nil || o.Namespace == nil {
+	if o == nil || IsNil(o.Namespace) {
 		return nil, false
 	}
 	return o.Namespace, true
@@ -373,7 +389,7 @@ func (o *MetaDefinition) GetNamespaceOk() (*string, bool) {
 
 // HasNamespace returns a boolean if a field has been set.
 func (o *MetaDefinition) HasNamespace() bool {
-	if o != nil && o.Namespace != nil {
+	if o != nil && !IsNil(o.Namespace) {
 		return true
 	}
 
@@ -385,9 +401,41 @@ func (o *MetaDefinition) SetNamespace(v string) {
 	o.Namespace = &v
 }
 
+// GetOwner returns the Owner field value if set, zero value otherwise.
+func (o *MetaDefinition) GetOwner() string {
+	if o == nil || IsNil(o.Owner) {
+		var ret string
+		return ret
+	}
+	return *o.Owner
+}
+
+// GetOwnerOk returns a tuple with the Owner field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *MetaDefinition) GetOwnerOk() (*string, bool) {
+	if o == nil || IsNil(o.Owner) {
+		return nil, false
+	}
+	return o.Owner, true
+}
+
+// HasOwner returns a boolean if a field has been set.
+func (o *MetaDefinition) HasOwner() bool {
+	if o != nil && !IsNil(o.Owner) {
+		return true
+	}
+
+	return false
+}
+
+// SetOwner gets a reference to the given string and assigns it to the Owner field.
+func (o *MetaDefinition) SetOwner(v string) {
+	o.Owner = &v
+}
+
 // GetParentClass returns the ParentClass field value if set, zero value otherwise.
 func (o *MetaDefinition) GetParentClass() string {
-	if o == nil || o.ParentClass == nil {
+	if o == nil || IsNil(o.ParentClass) {
 		var ret string
 		return ret
 	}
@@ -397,7 +445,7 @@ func (o *MetaDefinition) GetParentClass() string {
 // GetParentClassOk returns a tuple with the ParentClass field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MetaDefinition) GetParentClassOk() (*string, bool) {
-	if o == nil || o.ParentClass == nil {
+	if o == nil || IsNil(o.ParentClass) {
 		return nil, false
 	}
 	return o.ParentClass, true
@@ -405,7 +453,7 @@ func (o *MetaDefinition) GetParentClassOk() (*string, bool) {
 
 // HasParentClass returns a boolean if a field has been set.
 func (o *MetaDefinition) HasParentClass() bool {
-	if o != nil && o.ParentClass != nil {
+	if o != nil && !IsNil(o.ParentClass) {
 		return true
 	}
 
@@ -419,7 +467,7 @@ func (o *MetaDefinition) SetParentClass(v string) {
 
 // GetPermissionSupported returns the PermissionSupported field value if set, zero value otherwise.
 func (o *MetaDefinition) GetPermissionSupported() bool {
-	if o == nil || o.PermissionSupported == nil {
+	if o == nil || IsNil(o.PermissionSupported) {
 		var ret bool
 		return ret
 	}
@@ -429,7 +477,7 @@ func (o *MetaDefinition) GetPermissionSupported() bool {
 // GetPermissionSupportedOk returns a tuple with the PermissionSupported field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MetaDefinition) GetPermissionSupportedOk() (*bool, bool) {
-	if o == nil || o.PermissionSupported == nil {
+	if o == nil || IsNil(o.PermissionSupported) {
 		return nil, false
 	}
 	return o.PermissionSupported, true
@@ -437,7 +485,7 @@ func (o *MetaDefinition) GetPermissionSupportedOk() (*bool, bool) {
 
 // HasPermissionSupported returns a boolean if a field has been set.
 func (o *MetaDefinition) HasPermissionSupported() bool {
-	if o != nil && o.PermissionSupported != nil {
+	if o != nil && !IsNil(o.PermissionSupported) {
 		return true
 	}
 
@@ -462,7 +510,7 @@ func (o *MetaDefinition) GetProperties() []MetaPropDefinition {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *MetaDefinition) GetPropertiesOk() ([]MetaPropDefinition, bool) {
-	if o == nil || o.Properties == nil {
+	if o == nil || IsNil(o.Properties) {
 		return nil, false
 	}
 	return o.Properties, true
@@ -470,7 +518,7 @@ func (o *MetaDefinition) GetPropertiesOk() ([]MetaPropDefinition, bool) {
 
 // HasProperties returns a boolean if a field has been set.
 func (o *MetaDefinition) HasProperties() bool {
-	if o != nil && o.Properties != nil {
+	if o != nil && !IsNil(o.Properties) {
 		return true
 	}
 
@@ -484,7 +532,7 @@ func (o *MetaDefinition) SetProperties(v []MetaPropDefinition) {
 
 // GetRbacResource returns the RbacResource field value if set, zero value otherwise.
 func (o *MetaDefinition) GetRbacResource() bool {
-	if o == nil || o.RbacResource == nil {
+	if o == nil || IsNil(o.RbacResource) {
 		var ret bool
 		return ret
 	}
@@ -494,7 +542,7 @@ func (o *MetaDefinition) GetRbacResource() bool {
 // GetRbacResourceOk returns a tuple with the RbacResource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MetaDefinition) GetRbacResourceOk() (*bool, bool) {
-	if o == nil || o.RbacResource == nil {
+	if o == nil || IsNil(o.RbacResource) {
 		return nil, false
 	}
 	return o.RbacResource, true
@@ -502,7 +550,7 @@ func (o *MetaDefinition) GetRbacResourceOk() (*bool, bool) {
 
 // HasRbacResource returns a boolean if a field has been set.
 func (o *MetaDefinition) HasRbacResource() bool {
-	if o != nil && o.RbacResource != nil {
+	if o != nil && !IsNil(o.RbacResource) {
 		return true
 	}
 
@@ -527,7 +575,7 @@ func (o *MetaDefinition) GetRelationships() []MetaRelationshipDefinition {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *MetaDefinition) GetRelationshipsOk() ([]MetaRelationshipDefinition, bool) {
-	if o == nil || o.Relationships == nil {
+	if o == nil || IsNil(o.Relationships) {
 		return nil, false
 	}
 	return o.Relationships, true
@@ -535,7 +583,7 @@ func (o *MetaDefinition) GetRelationshipsOk() ([]MetaRelationshipDefinition, boo
 
 // HasRelationships returns a boolean if a field has been set.
 func (o *MetaDefinition) HasRelationships() bool {
-	if o != nil && o.Relationships != nil {
+	if o != nil && !IsNil(o.Relationships) {
 		return true
 	}
 
@@ -560,7 +608,7 @@ func (o *MetaDefinition) GetResourcePoolTypes() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *MetaDefinition) GetResourcePoolTypesOk() ([]string, bool) {
-	if o == nil || o.ResourcePoolTypes == nil {
+	if o == nil || IsNil(o.ResourcePoolTypes) {
 		return nil, false
 	}
 	return o.ResourcePoolTypes, true
@@ -568,7 +616,7 @@ func (o *MetaDefinition) GetResourcePoolTypesOk() ([]string, bool) {
 
 // HasResourcePoolTypes returns a boolean if a field has been set.
 func (o *MetaDefinition) HasResourcePoolTypes() bool {
-	if o != nil && o.ResourcePoolTypes != nil {
+	if o != nil && !IsNil(o.ResourcePoolTypes) {
 		return true
 	}
 
@@ -582,7 +630,7 @@ func (o *MetaDefinition) SetResourcePoolTypes(v []string) {
 
 // GetRestPath returns the RestPath field value if set, zero value otherwise.
 func (o *MetaDefinition) GetRestPath() string {
-	if o == nil || o.RestPath == nil {
+	if o == nil || IsNil(o.RestPath) {
 		var ret string
 		return ret
 	}
@@ -592,7 +640,7 @@ func (o *MetaDefinition) GetRestPath() string {
 // GetRestPathOk returns a tuple with the RestPath field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MetaDefinition) GetRestPathOk() (*string, bool) {
-	if o == nil || o.RestPath == nil {
+	if o == nil || IsNil(o.RestPath) {
 		return nil, false
 	}
 	return o.RestPath, true
@@ -600,7 +648,7 @@ func (o *MetaDefinition) GetRestPathOk() (*string, bool) {
 
 // HasRestPath returns a boolean if a field has been set.
 func (o *MetaDefinition) HasRestPath() bool {
-	if o != nil && o.RestPath != nil {
+	if o != nil && !IsNil(o.RestPath) {
 		return true
 	}
 
@@ -614,7 +662,7 @@ func (o *MetaDefinition) SetRestPath(v string) {
 
 // GetVersion returns the Version field value if set, zero value otherwise.
 func (o *MetaDefinition) GetVersion() string {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		var ret string
 		return ret
 	}
@@ -624,7 +672,7 @@ func (o *MetaDefinition) GetVersion() string {
 // GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MetaDefinition) GetVersionOk() (*string, bool) {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		return nil, false
 	}
 	return o.Version, true
@@ -632,7 +680,7 @@ func (o *MetaDefinition) GetVersionOk() (*string, bool) {
 
 // HasVersion returns a boolean if a field has been set.
 func (o *MetaDefinition) HasVersion() bool {
-	if o != nil && o.Version != nil {
+	if o != nil && !IsNil(o.Version) {
 		return true
 	}
 
@@ -645,21 +693,31 @@ func (o *MetaDefinition) SetVersion(v string) {
 }
 
 func (o MetaDefinition) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o MetaDefinition) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.AccessPrivileges != nil {
 		toSerialize["AccessPrivileges"] = o.AccessPrivileges
 	}
@@ -672,28 +730,31 @@ func (o MetaDefinition) MarshalJSON() ([]byte, error) {
 	if o.IdentityConstraints != nil {
 		toSerialize["IdentityConstraints"] = o.IdentityConstraints
 	}
-	if o.IsConcrete != nil {
+	if !IsNil(o.IsConcrete) {
 		toSerialize["IsConcrete"] = o.IsConcrete
 	}
-	if o.MetaType != nil {
+	if !IsNil(o.MetaType) {
 		toSerialize["MetaType"] = o.MetaType
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.Namespace != nil {
+	if !IsNil(o.Namespace) {
 		toSerialize["Namespace"] = o.Namespace
 	}
-	if o.ParentClass != nil {
+	if !IsNil(o.Owner) {
+		toSerialize["Owner"] = o.Owner
+	}
+	if !IsNil(o.ParentClass) {
 		toSerialize["ParentClass"] = o.ParentClass
 	}
-	if o.PermissionSupported != nil {
+	if !IsNil(o.PermissionSupported) {
 		toSerialize["PermissionSupported"] = o.PermissionSupported
 	}
 	if o.Properties != nil {
 		toSerialize["Properties"] = o.Properties
 	}
-	if o.RbacResource != nil {
+	if !IsNil(o.RbacResource) {
 		toSerialize["RbacResource"] = o.RbacResource
 	}
 	if o.Relationships != nil {
@@ -702,10 +763,10 @@ func (o MetaDefinition) MarshalJSON() ([]byte, error) {
 	if o.ResourcePoolTypes != nil {
 		toSerialize["ResourcePoolTypes"] = o.ResourcePoolTypes
 	}
-	if o.RestPath != nil {
+	if !IsNil(o.RestPath) {
 		toSerialize["RestPath"] = o.RestPath
 	}
-	if o.Version != nil {
+	if !IsNil(o.Version) {
 		toSerialize["Version"] = o.Version
 	}
 
@@ -713,10 +774,51 @@ func (o MetaDefinition) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *MetaDefinition) UnmarshalJSON(bytes []byte) (err error) {
+func (o *MetaDefinition) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type MetaDefinitionWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -734,6 +836,8 @@ func (o *MetaDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		Name *string `json:"Name,omitempty"`
 		// The namespace of the meta.
 		Namespace *string `json:"Namespace,omitempty"`
+		// A value describing the owner for a given Managed Object, such as Account or Organization. * `System` - Any Managed Object with OwnerType as System is root for objects common to all accounts. Any object which inherits permissions from this object has owners as system and is common to all accounts. Objects with owner as system can only be read by user and modification is not allowed by user. * `Yes` - Any Managed Object with OwnerType as Yes is root for objects which need security filtering. Currently objects with owner yes are account and device registration. Any object with owner ''yes'' has self moid in owners and any objects which inherits permissions from this object has root object moid as owners. In user context, account filtering is enforced by providing access to objects with owner as account moid. In device context, device filtering is enforced by providing access to objects with owner as device moid. * `No` - Any Managed Object with OwnerType as No inherits base mo properties like owners, domain group moid, account moid, permission resources from inherit permission relation. Inherit permission relation could be with an object whose owner is system/organization/yes/no. * `Internal` - Any Managed Object with OwnerType as Internal is internal to system. Such Managed Objects cannot be accessed using REST APIs and can be created, updated or deleted in any security context. * `Organization` - Any Managed Object with OwnerType as Organization is contained under an organization like profiles, policies, user defined workflows. Implicitly an organization on-peer-delete relation is added in this object.
+		Owner *string `json:"Owner,omitempty"`
 		// The fully-qualified name of the parent metaclass in the class inheritance hierarchy.
 		ParentClass *string `json:"ParentClass,omitempty"`
 		// Boolean flag to specify whether instances of this class type can be specified in permissions for instance based access control. Permissions can be created for entire Intersight account or to a subset of resources (instance based access control). In the first release, permissions are supported for entire account or for a subset of organizations.
@@ -751,7 +855,7 @@ func (o *MetaDefinition) UnmarshalJSON(bytes []byte) (err error) {
 
 	varMetaDefinitionWithoutEmbeddedStruct := MetaDefinitionWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varMetaDefinitionWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varMetaDefinitionWithoutEmbeddedStruct)
 	if err == nil {
 		varMetaDefinition := _MetaDefinition{}
 		varMetaDefinition.ClassId = varMetaDefinitionWithoutEmbeddedStruct.ClassId
@@ -764,6 +868,7 @@ func (o *MetaDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		varMetaDefinition.MetaType = varMetaDefinitionWithoutEmbeddedStruct.MetaType
 		varMetaDefinition.Name = varMetaDefinitionWithoutEmbeddedStruct.Name
 		varMetaDefinition.Namespace = varMetaDefinitionWithoutEmbeddedStruct.Namespace
+		varMetaDefinition.Owner = varMetaDefinitionWithoutEmbeddedStruct.Owner
 		varMetaDefinition.ParentClass = varMetaDefinitionWithoutEmbeddedStruct.ParentClass
 		varMetaDefinition.PermissionSupported = varMetaDefinitionWithoutEmbeddedStruct.PermissionSupported
 		varMetaDefinition.Properties = varMetaDefinitionWithoutEmbeddedStruct.Properties
@@ -779,7 +884,7 @@ func (o *MetaDefinition) UnmarshalJSON(bytes []byte) (err error) {
 
 	varMetaDefinition := _MetaDefinition{}
 
-	err = json.Unmarshal(bytes, &varMetaDefinition)
+	err = json.Unmarshal(data, &varMetaDefinition)
 	if err == nil {
 		o.MoBaseMo = varMetaDefinition.MoBaseMo
 	} else {
@@ -788,7 +893,7 @@ func (o *MetaDefinition) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AccessPrivileges")
@@ -799,6 +904,7 @@ func (o *MetaDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "MetaType")
 		delete(additionalProperties, "Name")
 		delete(additionalProperties, "Namespace")
+		delete(additionalProperties, "Owner")
 		delete(additionalProperties, "ParentClass")
 		delete(additionalProperties, "PermissionSupported")
 		delete(additionalProperties, "Properties")

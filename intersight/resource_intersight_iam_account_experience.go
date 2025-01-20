@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceIamAccountExperience() *schema.Resource {
 		UpdateContext: resourceIamAccountExperienceUpdate,
 		DeleteContext: resourceIamAccountExperienceDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account": {
 				Description: "A reference to a iamAccount resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
@@ -164,9 +166,9 @@ func resourceIamAccountExperience() *schema.Resource {
 							Default:     "iam.FeatureDefinition",
 						},
 						"feature": {
-							Description:  "The beta feature that will be enabled for specific account.\n* `IWO` - Intersight Workflow Optimizer.\n* `Hitachi` - Support to claim Hitachi Storage arrays using the Intersight Orchestrator framework.\n* `KubernetesExtension` - Extension to the IKS and Adopted Clusters.\n* `NetAppIO` - Support to claim NetApp Storage arrays as IO targets.\n* `IvsPublicCloud` - Enables virtualization service for public clouds.\n* `TerraformCloud` - Enables an ability to create Terraform Cloud.\n* `IWE` - Enables an ability to use Intersight Workload Engine.\n* `WashingtonEFT` - Support for EFT customers to use Washington firmware images for upgrades.\n* `Solutions` - Support for managing solutions.\n* `IksBm` - Enables Intersight Kubernetes Service on Baremetal server.\n* `NexusCloud` - Enables Nexus Cloud services functionality.\n* `PlatformUIRefresh` - Enables platform refreshed UI with new service launcher.\n* `IksGpu` - Enables GPU support for Intersight Kubernetes Service.",
+							Description:  "The beta feature that will be enabled for specific account.\n* `IWO` - Intersight Workflow Optimizer.\n* `Hitachi` - Support to claim Hitachi Storage arrays using the Intersight Orchestrator framework.\n* `KubernetesExtension` - Extension to the IKS and Adopted Clusters.\n* `NetAppIO` - Support to claim NetApp Storage arrays as IO targets.\n* `IvsPublicCloud` - Enables virtualization service for public clouds.\n* `TerraformCloud` - Enables an ability to create Terraform Cloud.\n* `WashingtonEFT` - Support for EFT customers to use Washington firmware images for upgrades.\n* `Solutions` - Support for managing solutions.\n* `IksBm` - Enables Intersight Kubernetes Service on Baremetal server.\n* `NexusCloud` - Enables Nexus Cloud services functionality.\n* `NexusCloudTrial` - Enables Nexus Cloud trial period.\n* `NexusCloudUpgradeAssist` - Enables Nexus Cloud upgrade assist.\n* `NexusCloudSustainability` - Enables Nexus Cloud sustainability.\n* `PlatformUIRefresh` - Enables platform refreshed UI with new service launcher.\n* `IksGpu` - Enables GPU support for Intersight Kubernetes Service.\n* `IwoAppServiceVerticalScaling` - Enables vertical Scaling of App Service Plans.\n* `IwoDataExporter` - Enables IWO Data Exporter component.\n* `IwoMigrate` - Enables IWO data Migration.\n* `NexusCloudTechPreviewGold` - Enable Nexus Cloud Preview of stable features, available for public consumption.\n* `NexusCloudTechPreviewSilver` - Enable Nexus Cloud Preview of beta features. This feature set is intended for consumption by internal audiences.\n* `NexusCloudTechPreviewBronze` - Enable Nexus Cloud Preview of features still in development. This feature set is intended for consumption by internal audiences.\n* `DisconnectedTargetAlarm` - Raise an alarm when a Target is disconnected from Intersight. Intersight is unable to manage disconnected Targets.\n* `AsAService` - Enable AsAService Preview of beta features. This feature set is intended for consumption by selective audiences.\n* `EMEA` - Enable all avaialble features on Intersight EMEA region.\n* `CrossPlatformNavigation` - Enable Cross-Platform Navigation on UI.\n* `WorkflowsPreview` - Enable Workflows preview for this account.\n* `WorkflowsIntersightAssets` - Enable workflow Intersight assets for this account.\n* `ManualKEKSupport` - Enable support for Manual key to enhance storage controller security for this account.\n* `FirmwareConsolidationEFT` - Enable usage of firmware images transitioned from CCO to Intersight. This feature set is intended for consumption by internal audiences.\n* `FunctionAsAService` - Enable the usage of the function as a service (faas) for Workflows. This feature set is intended for consumption by selective audiences.",
 							Type:         schema.TypeString,
-							ValidateFunc: validation.StringInSlice([]string{"IWO", "Hitachi", "KubernetesExtension", "NetAppIO", "IvsPublicCloud", "TerraformCloud", "IWE", "WashingtonEFT", "Solutions", "IksBm", "NexusCloud", "PlatformUIRefresh", "IksGpu"}, false),
+							ValidateFunc: validation.StringInSlice([]string{"IWO", "Hitachi", "KubernetesExtension", "NetAppIO", "IvsPublicCloud", "TerraformCloud", "WashingtonEFT", "Solutions", "IksBm", "NexusCloud", "NexusCloudTrial", "NexusCloudUpgradeAssist", "NexusCloudSustainability", "PlatformUIRefresh", "IksGpu", "IwoAppServiceVerticalScaling", "IwoDataExporter", "IwoMigrate", "NexusCloudTechPreviewGold", "NexusCloudTechPreviewSilver", "NexusCloudTechPreviewBronze", "DisconnectedTargetAlarm", "AsAService", "EMEA", "CrossPlatformNavigation", "WorkflowsPreview", "WorkflowsIntersightAssets", "ManualKEKSupport", "FirmwareConsolidationEFT", "FunctionAsAService"}, false),
 							Optional:     true,
 							Default:      "IWO",
 						},
@@ -386,6 +388,17 @@ func resourceIamAccountExperience() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -619,14 +632,25 @@ func resourceIamAccountExperienceCreate(c context.Context, d *schema.ResourceDat
 		}
 		return diag.Errorf("error occurred while creating IamAccountExperience: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceIamAccountExperienceRead(c, d, meta)...)
 }
 
 func resourceIamAccountExperienceRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.IamApi.GetIamAccountExperienceByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the FabricServerRole type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &FabricServerRole{}
 
 // FabricServerRole Configuration object sent by user to create a server port.
 type FabricServerRole struct {
@@ -27,7 +31,11 @@ type FabricServerRole struct {
 	// Auto negotiation configuration for server port. This configuration is required only for FEX Model N9K-C93180YC-FX3 connected with 100G speed port on UCS-FI-6536 and should be set as True.
 	AutoNegotiationDisabled *bool `json:"AutoNegotiationDisabled,omitempty"`
 	// Forward error correction configuration for server port. This configuration is required only for FEX Model N9K-C93180YC-FX3 connected with 25G speed ports on UCS-FI-6454/UCS-FI-64108 and should be set as Cl74. * `Auto` - Forward error correction option 'Auto'. * `Cl91` - Forward error correction option 'cl91'. * `Cl74` - Forward error correction option 'cl74'.
-	Fec                  *string `json:"Fec,omitempty"`
+	Fec *string `json:"Fec,omitempty"`
+	// Preferred device ID to be configured by user for the connected device. This ID must be specified together with the 'PreferredDeviceType' property. This ID will only takes effect if the actual connected device matches the 'PreferredDeviceType'. If the preferred ID is not available, the ID is automatically allocated and assigned by the system. If different preferred IDs are specified for the ports connected to the same device, only the preferred ID (if specified) of the port that is discovered first will be considered.
+	PreferredDeviceId *int64 `json:"PreferredDeviceId,omitempty"`
+	// Device type for which preferred ID to be configured. If the actual connected device does not match the specified device type, the system ignores the 'PreferredDeviceId' property. * `Auto` - Preferred Id will be ignored if specified with this type. * `RackServer` - Connected device type is Rack Unit Server. * `Chassis` - Connected device type is Chassis.
+	PreferredDeviceType  *string `json:"PreferredDeviceType,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -45,6 +53,8 @@ func NewFabricServerRole(classId string, objectType string) *FabricServerRole {
 	this.AutoNegotiationDisabled = &autoNegotiationDisabled
 	var fec string = "Auto"
 	this.Fec = &fec
+	var preferredDeviceType string = "Auto"
+	this.PreferredDeviceType = &preferredDeviceType
 	return &this
 }
 
@@ -61,6 +71,8 @@ func NewFabricServerRoleWithDefaults() *FabricServerRole {
 	this.AutoNegotiationDisabled = &autoNegotiationDisabled
 	var fec string = "Auto"
 	this.Fec = &fec
+	var preferredDeviceType string = "Auto"
+	this.PreferredDeviceType = &preferredDeviceType
 	return &this
 }
 
@@ -88,6 +100,11 @@ func (o *FabricServerRole) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "fabric.ServerRole" of the ClassId field.
+func (o *FabricServerRole) GetDefaultClassId() interface{} {
+	return "fabric.ServerRole"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *FabricServerRole) GetObjectType() string {
 	if o == nil {
@@ -112,9 +129,14 @@ func (o *FabricServerRole) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "fabric.ServerRole" of the ObjectType field.
+func (o *FabricServerRole) GetDefaultObjectType() interface{} {
+	return "fabric.ServerRole"
+}
+
 // GetAutoNegotiationDisabled returns the AutoNegotiationDisabled field value if set, zero value otherwise.
 func (o *FabricServerRole) GetAutoNegotiationDisabled() bool {
-	if o == nil || o.AutoNegotiationDisabled == nil {
+	if o == nil || IsNil(o.AutoNegotiationDisabled) {
 		var ret bool
 		return ret
 	}
@@ -124,7 +146,7 @@ func (o *FabricServerRole) GetAutoNegotiationDisabled() bool {
 // GetAutoNegotiationDisabledOk returns a tuple with the AutoNegotiationDisabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricServerRole) GetAutoNegotiationDisabledOk() (*bool, bool) {
-	if o == nil || o.AutoNegotiationDisabled == nil {
+	if o == nil || IsNil(o.AutoNegotiationDisabled) {
 		return nil, false
 	}
 	return o.AutoNegotiationDisabled, true
@@ -132,7 +154,7 @@ func (o *FabricServerRole) GetAutoNegotiationDisabledOk() (*bool, bool) {
 
 // HasAutoNegotiationDisabled returns a boolean if a field has been set.
 func (o *FabricServerRole) HasAutoNegotiationDisabled() bool {
-	if o != nil && o.AutoNegotiationDisabled != nil {
+	if o != nil && !IsNil(o.AutoNegotiationDisabled) {
 		return true
 	}
 
@@ -146,7 +168,7 @@ func (o *FabricServerRole) SetAutoNegotiationDisabled(v bool) {
 
 // GetFec returns the Fec field value if set, zero value otherwise.
 func (o *FabricServerRole) GetFec() string {
-	if o == nil || o.Fec == nil {
+	if o == nil || IsNil(o.Fec) {
 		var ret string
 		return ret
 	}
@@ -156,7 +178,7 @@ func (o *FabricServerRole) GetFec() string {
 // GetFecOk returns a tuple with the Fec field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricServerRole) GetFecOk() (*string, bool) {
-	if o == nil || o.Fec == nil {
+	if o == nil || IsNil(o.Fec) {
 		return nil, false
 	}
 	return o.Fec, true
@@ -164,7 +186,7 @@ func (o *FabricServerRole) GetFecOk() (*string, bool) {
 
 // HasFec returns a boolean if a field has been set.
 func (o *FabricServerRole) HasFec() bool {
-	if o != nil && o.Fec != nil {
+	if o != nil && !IsNil(o.Fec) {
 		return true
 	}
 
@@ -176,37 +198,158 @@ func (o *FabricServerRole) SetFec(v string) {
 	o.Fec = &v
 }
 
+// GetPreferredDeviceId returns the PreferredDeviceId field value if set, zero value otherwise.
+func (o *FabricServerRole) GetPreferredDeviceId() int64 {
+	if o == nil || IsNil(o.PreferredDeviceId) {
+		var ret int64
+		return ret
+	}
+	return *o.PreferredDeviceId
+}
+
+// GetPreferredDeviceIdOk returns a tuple with the PreferredDeviceId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricServerRole) GetPreferredDeviceIdOk() (*int64, bool) {
+	if o == nil || IsNil(o.PreferredDeviceId) {
+		return nil, false
+	}
+	return o.PreferredDeviceId, true
+}
+
+// HasPreferredDeviceId returns a boolean if a field has been set.
+func (o *FabricServerRole) HasPreferredDeviceId() bool {
+	if o != nil && !IsNil(o.PreferredDeviceId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreferredDeviceId gets a reference to the given int64 and assigns it to the PreferredDeviceId field.
+func (o *FabricServerRole) SetPreferredDeviceId(v int64) {
+	o.PreferredDeviceId = &v
+}
+
+// GetPreferredDeviceType returns the PreferredDeviceType field value if set, zero value otherwise.
+func (o *FabricServerRole) GetPreferredDeviceType() string {
+	if o == nil || IsNil(o.PreferredDeviceType) {
+		var ret string
+		return ret
+	}
+	return *o.PreferredDeviceType
+}
+
+// GetPreferredDeviceTypeOk returns a tuple with the PreferredDeviceType field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricServerRole) GetPreferredDeviceTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.PreferredDeviceType) {
+		return nil, false
+	}
+	return o.PreferredDeviceType, true
+}
+
+// HasPreferredDeviceType returns a boolean if a field has been set.
+func (o *FabricServerRole) HasPreferredDeviceType() bool {
+	if o != nil && !IsNil(o.PreferredDeviceType) {
+		return true
+	}
+
+	return false
+}
+
+// SetPreferredDeviceType gets a reference to the given string and assigns it to the PreferredDeviceType field.
+func (o *FabricServerRole) SetPreferredDeviceType(v string) {
+	o.PreferredDeviceType = &v
+}
+
 func (o FabricServerRole) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o FabricServerRole) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedFabricPortRole, errFabricPortRole := json.Marshal(o.FabricPortRole)
 	if errFabricPortRole != nil {
-		return []byte{}, errFabricPortRole
+		return map[string]interface{}{}, errFabricPortRole
 	}
 	errFabricPortRole = json.Unmarshal([]byte(serializedFabricPortRole), &toSerialize)
 	if errFabricPortRole != nil {
-		return []byte{}, errFabricPortRole
+		return map[string]interface{}{}, errFabricPortRole
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AutoNegotiationDisabled != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AutoNegotiationDisabled) {
 		toSerialize["AutoNegotiationDisabled"] = o.AutoNegotiationDisabled
 	}
-	if o.Fec != nil {
+	if !IsNil(o.Fec) {
 		toSerialize["Fec"] = o.Fec
+	}
+	if !IsNil(o.PreferredDeviceId) {
+		toSerialize["PreferredDeviceId"] = o.PreferredDeviceId
+	}
+	if !IsNil(o.PreferredDeviceType) {
+		toSerialize["PreferredDeviceType"] = o.PreferredDeviceType
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *FabricServerRole) UnmarshalJSON(bytes []byte) (err error) {
+func (o *FabricServerRole) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type FabricServerRoleWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -216,17 +359,23 @@ func (o *FabricServerRole) UnmarshalJSON(bytes []byte) (err error) {
 		AutoNegotiationDisabled *bool `json:"AutoNegotiationDisabled,omitempty"`
 		// Forward error correction configuration for server port. This configuration is required only for FEX Model N9K-C93180YC-FX3 connected with 25G speed ports on UCS-FI-6454/UCS-FI-64108 and should be set as Cl74. * `Auto` - Forward error correction option 'Auto'. * `Cl91` - Forward error correction option 'cl91'. * `Cl74` - Forward error correction option 'cl74'.
 		Fec *string `json:"Fec,omitempty"`
+		// Preferred device ID to be configured by user for the connected device. This ID must be specified together with the 'PreferredDeviceType' property. This ID will only takes effect if the actual connected device matches the 'PreferredDeviceType'. If the preferred ID is not available, the ID is automatically allocated and assigned by the system. If different preferred IDs are specified for the ports connected to the same device, only the preferred ID (if specified) of the port that is discovered first will be considered.
+		PreferredDeviceId *int64 `json:"PreferredDeviceId,omitempty"`
+		// Device type for which preferred ID to be configured. If the actual connected device does not match the specified device type, the system ignores the 'PreferredDeviceId' property. * `Auto` - Preferred Id will be ignored if specified with this type. * `RackServer` - Connected device type is Rack Unit Server. * `Chassis` - Connected device type is Chassis.
+		PreferredDeviceType *string `json:"PreferredDeviceType,omitempty"`
 	}
 
 	varFabricServerRoleWithoutEmbeddedStruct := FabricServerRoleWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varFabricServerRoleWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varFabricServerRoleWithoutEmbeddedStruct)
 	if err == nil {
 		varFabricServerRole := _FabricServerRole{}
 		varFabricServerRole.ClassId = varFabricServerRoleWithoutEmbeddedStruct.ClassId
 		varFabricServerRole.ObjectType = varFabricServerRoleWithoutEmbeddedStruct.ObjectType
 		varFabricServerRole.AutoNegotiationDisabled = varFabricServerRoleWithoutEmbeddedStruct.AutoNegotiationDisabled
 		varFabricServerRole.Fec = varFabricServerRoleWithoutEmbeddedStruct.Fec
+		varFabricServerRole.PreferredDeviceId = varFabricServerRoleWithoutEmbeddedStruct.PreferredDeviceId
+		varFabricServerRole.PreferredDeviceType = varFabricServerRoleWithoutEmbeddedStruct.PreferredDeviceType
 		*o = FabricServerRole(varFabricServerRole)
 	} else {
 		return err
@@ -234,7 +383,7 @@ func (o *FabricServerRole) UnmarshalJSON(bytes []byte) (err error) {
 
 	varFabricServerRole := _FabricServerRole{}
 
-	err = json.Unmarshal(bytes, &varFabricServerRole)
+	err = json.Unmarshal(data, &varFabricServerRole)
 	if err == nil {
 		o.FabricPortRole = varFabricServerRole.FabricPortRole
 	} else {
@@ -243,11 +392,13 @@ func (o *FabricServerRole) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AutoNegotiationDisabled")
 		delete(additionalProperties, "Fec")
+		delete(additionalProperties, "PreferredDeviceId")
+		delete(additionalProperties, "PreferredDeviceType")
 
 		// remove fields from embedded structs
 		reflectFabricPortRole := reflect.ValueOf(o.FabricPortRole)

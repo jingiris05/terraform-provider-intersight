@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the FabricSwitchControlPolicy type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &FabricSwitchControlPolicy{}
 
 // FabricSwitchControlPolicy A policy to configure the Switching Mode, Port VLAN Optimization, MAC Aging Time, Reserved VLAN Range of the FI.
 type FabricSwitchControlPolicy struct {
@@ -26,15 +30,19 @@ type FabricSwitchControlPolicy struct {
 	ObjectType string `json:"ObjectType"`
 	// Enable or Disable Ethernet End Host Switching Mode. * `end-host` - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * `switch` - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode.
 	EthernetSwitchingMode *string `json:"EthernetSwitchingMode,omitempty"`
+	// When enabled, a Registered State Change Notification (RSCN) is sent to the VIC adapter when any member port within the fabric port-channel goes down and vHBA would reset to restore the connection immediately. When disabled (default), vHBA reset is done only when all the members of a fabric port-channel are down. * `Disabled` - Admin configured Disabled State. * `Enabled` - Admin configured Enabled State.
+	FabricPcVhbaReset *string `json:"FabricPcVhbaReset,omitempty"`
 	// Enable or Disable FC End Host Switching Mode. * `end-host` - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * `switch` - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode.
-	FcSwitchingMode  *string                          `json:"FcSwitchingMode,omitempty"`
-	MacAgingSettings NullableFabricMacAgingSettings   `json:"MacAgingSettings,omitempty"`
-	UdldSettings     NullableFabricUdldGlobalSettings `json:"UdldSettings,omitempty"`
-	// To enable or disable the VLAN port count optimization.
-	VlanPortOptimizationEnabled *bool                                 `json:"VlanPortOptimizationEnabled,omitempty"`
-	Organization                *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
-	// An array of relationships to fabricSwitchProfile resources.
-	Profiles             []FabricSwitchProfileRelationship `json:"Profiles,omitempty"`
+	FcSwitchingMode  *string                        `json:"FcSwitchingMode,omitempty"`
+	MacAgingSettings NullableFabricMacAgingSettings `json:"MacAgingSettings,omitempty"`
+	// The starting ID for VLANs reserved for internal use within the Fabric Interconnect. This VLAN ID is the starting ID of a contiguous block of 128 VLANs that cannot be configured for user data.  This range of VLANs cannot be configured in VLAN policy. If this property is not configured, VLAN range 3915 - 4042 is reserved for internal use by default.
+	ReservedVlanStartId *int64                           `json:"ReservedVlanStartId,omitempty"`
+	UdldSettings        NullableFabricUdldGlobalSettings `json:"UdldSettings,omitempty"`
+	// To enable or disable the VLAN port count optimization. This feature will always be enabled for Cisco UCS Fabric Interconnect 9108 100G.
+	VlanPortOptimizationEnabled *bool                                        `json:"VlanPortOptimizationEnabled,omitempty"`
+	Organization                NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	// An array of relationships to fabricBaseSwitchProfile resources.
+	Profiles             []FabricBaseSwitchProfileRelationship `json:"Profiles,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -50,8 +58,12 @@ func NewFabricSwitchControlPolicy(classId string, objectType string) *FabricSwit
 	this.ObjectType = objectType
 	var ethernetSwitchingMode string = "end-host"
 	this.EthernetSwitchingMode = &ethernetSwitchingMode
+	var fabricPcVhbaReset string = "Disabled"
+	this.FabricPcVhbaReset = &fabricPcVhbaReset
 	var fcSwitchingMode string = "end-host"
 	this.FcSwitchingMode = &fcSwitchingMode
+	var reservedVlanStartId int64 = 3915
+	this.ReservedVlanStartId = &reservedVlanStartId
 	var vlanPortOptimizationEnabled bool = false
 	this.VlanPortOptimizationEnabled = &vlanPortOptimizationEnabled
 	return &this
@@ -68,8 +80,12 @@ func NewFabricSwitchControlPolicyWithDefaults() *FabricSwitchControlPolicy {
 	this.ObjectType = objectType
 	var ethernetSwitchingMode string = "end-host"
 	this.EthernetSwitchingMode = &ethernetSwitchingMode
+	var fabricPcVhbaReset string = "Disabled"
+	this.FabricPcVhbaReset = &fabricPcVhbaReset
 	var fcSwitchingMode string = "end-host"
 	this.FcSwitchingMode = &fcSwitchingMode
+	var reservedVlanStartId int64 = 3915
+	this.ReservedVlanStartId = &reservedVlanStartId
 	var vlanPortOptimizationEnabled bool = false
 	this.VlanPortOptimizationEnabled = &vlanPortOptimizationEnabled
 	return &this
@@ -99,6 +115,11 @@ func (o *FabricSwitchControlPolicy) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "fabric.SwitchControlPolicy" of the ClassId field.
+func (o *FabricSwitchControlPolicy) GetDefaultClassId() interface{} {
+	return "fabric.SwitchControlPolicy"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *FabricSwitchControlPolicy) GetObjectType() string {
 	if o == nil {
@@ -123,9 +144,14 @@ func (o *FabricSwitchControlPolicy) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "fabric.SwitchControlPolicy" of the ObjectType field.
+func (o *FabricSwitchControlPolicy) GetDefaultObjectType() interface{} {
+	return "fabric.SwitchControlPolicy"
+}
+
 // GetEthernetSwitchingMode returns the EthernetSwitchingMode field value if set, zero value otherwise.
 func (o *FabricSwitchControlPolicy) GetEthernetSwitchingMode() string {
-	if o == nil || o.EthernetSwitchingMode == nil {
+	if o == nil || IsNil(o.EthernetSwitchingMode) {
 		var ret string
 		return ret
 	}
@@ -135,7 +161,7 @@ func (o *FabricSwitchControlPolicy) GetEthernetSwitchingMode() string {
 // GetEthernetSwitchingModeOk returns a tuple with the EthernetSwitchingMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricSwitchControlPolicy) GetEthernetSwitchingModeOk() (*string, bool) {
-	if o == nil || o.EthernetSwitchingMode == nil {
+	if o == nil || IsNil(o.EthernetSwitchingMode) {
 		return nil, false
 	}
 	return o.EthernetSwitchingMode, true
@@ -143,7 +169,7 @@ func (o *FabricSwitchControlPolicy) GetEthernetSwitchingModeOk() (*string, bool)
 
 // HasEthernetSwitchingMode returns a boolean if a field has been set.
 func (o *FabricSwitchControlPolicy) HasEthernetSwitchingMode() bool {
-	if o != nil && o.EthernetSwitchingMode != nil {
+	if o != nil && !IsNil(o.EthernetSwitchingMode) {
 		return true
 	}
 
@@ -155,9 +181,41 @@ func (o *FabricSwitchControlPolicy) SetEthernetSwitchingMode(v string) {
 	o.EthernetSwitchingMode = &v
 }
 
+// GetFabricPcVhbaReset returns the FabricPcVhbaReset field value if set, zero value otherwise.
+func (o *FabricSwitchControlPolicy) GetFabricPcVhbaReset() string {
+	if o == nil || IsNil(o.FabricPcVhbaReset) {
+		var ret string
+		return ret
+	}
+	return *o.FabricPcVhbaReset
+}
+
+// GetFabricPcVhbaResetOk returns a tuple with the FabricPcVhbaReset field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricSwitchControlPolicy) GetFabricPcVhbaResetOk() (*string, bool) {
+	if o == nil || IsNil(o.FabricPcVhbaReset) {
+		return nil, false
+	}
+	return o.FabricPcVhbaReset, true
+}
+
+// HasFabricPcVhbaReset returns a boolean if a field has been set.
+func (o *FabricSwitchControlPolicy) HasFabricPcVhbaReset() bool {
+	if o != nil && !IsNil(o.FabricPcVhbaReset) {
+		return true
+	}
+
+	return false
+}
+
+// SetFabricPcVhbaReset gets a reference to the given string and assigns it to the FabricPcVhbaReset field.
+func (o *FabricSwitchControlPolicy) SetFabricPcVhbaReset(v string) {
+	o.FabricPcVhbaReset = &v
+}
+
 // GetFcSwitchingMode returns the FcSwitchingMode field value if set, zero value otherwise.
 func (o *FabricSwitchControlPolicy) GetFcSwitchingMode() string {
-	if o == nil || o.FcSwitchingMode == nil {
+	if o == nil || IsNil(o.FcSwitchingMode) {
 		var ret string
 		return ret
 	}
@@ -167,7 +225,7 @@ func (o *FabricSwitchControlPolicy) GetFcSwitchingMode() string {
 // GetFcSwitchingModeOk returns a tuple with the FcSwitchingMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricSwitchControlPolicy) GetFcSwitchingModeOk() (*string, bool) {
-	if o == nil || o.FcSwitchingMode == nil {
+	if o == nil || IsNil(o.FcSwitchingMode) {
 		return nil, false
 	}
 	return o.FcSwitchingMode, true
@@ -175,7 +233,7 @@ func (o *FabricSwitchControlPolicy) GetFcSwitchingModeOk() (*string, bool) {
 
 // HasFcSwitchingMode returns a boolean if a field has been set.
 func (o *FabricSwitchControlPolicy) HasFcSwitchingMode() bool {
-	if o != nil && o.FcSwitchingMode != nil {
+	if o != nil && !IsNil(o.FcSwitchingMode) {
 		return true
 	}
 
@@ -189,7 +247,7 @@ func (o *FabricSwitchControlPolicy) SetFcSwitchingMode(v string) {
 
 // GetMacAgingSettings returns the MacAgingSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricSwitchControlPolicy) GetMacAgingSettings() FabricMacAgingSettings {
-	if o == nil || o.MacAgingSettings.Get() == nil {
+	if o == nil || IsNil(o.MacAgingSettings.Get()) {
 		var ret FabricMacAgingSettings
 		return ret
 	}
@@ -230,9 +288,41 @@ func (o *FabricSwitchControlPolicy) UnsetMacAgingSettings() {
 	o.MacAgingSettings.Unset()
 }
 
+// GetReservedVlanStartId returns the ReservedVlanStartId field value if set, zero value otherwise.
+func (o *FabricSwitchControlPolicy) GetReservedVlanStartId() int64 {
+	if o == nil || IsNil(o.ReservedVlanStartId) {
+		var ret int64
+		return ret
+	}
+	return *o.ReservedVlanStartId
+}
+
+// GetReservedVlanStartIdOk returns a tuple with the ReservedVlanStartId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricSwitchControlPolicy) GetReservedVlanStartIdOk() (*int64, bool) {
+	if o == nil || IsNil(o.ReservedVlanStartId) {
+		return nil, false
+	}
+	return o.ReservedVlanStartId, true
+}
+
+// HasReservedVlanStartId returns a boolean if a field has been set.
+func (o *FabricSwitchControlPolicy) HasReservedVlanStartId() bool {
+	if o != nil && !IsNil(o.ReservedVlanStartId) {
+		return true
+	}
+
+	return false
+}
+
+// SetReservedVlanStartId gets a reference to the given int64 and assigns it to the ReservedVlanStartId field.
+func (o *FabricSwitchControlPolicy) SetReservedVlanStartId(v int64) {
+	o.ReservedVlanStartId = &v
+}
+
 // GetUdldSettings returns the UdldSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricSwitchControlPolicy) GetUdldSettings() FabricUdldGlobalSettings {
-	if o == nil || o.UdldSettings.Get() == nil {
+	if o == nil || IsNil(o.UdldSettings.Get()) {
 		var ret FabricUdldGlobalSettings
 		return ret
 	}
@@ -275,7 +365,7 @@ func (o *FabricSwitchControlPolicy) UnsetUdldSettings() {
 
 // GetVlanPortOptimizationEnabled returns the VlanPortOptimizationEnabled field value if set, zero value otherwise.
 func (o *FabricSwitchControlPolicy) GetVlanPortOptimizationEnabled() bool {
-	if o == nil || o.VlanPortOptimizationEnabled == nil {
+	if o == nil || IsNil(o.VlanPortOptimizationEnabled) {
 		var ret bool
 		return ret
 	}
@@ -285,7 +375,7 @@ func (o *FabricSwitchControlPolicy) GetVlanPortOptimizationEnabled() bool {
 // GetVlanPortOptimizationEnabledOk returns a tuple with the VlanPortOptimizationEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricSwitchControlPolicy) GetVlanPortOptimizationEnabledOk() (*bool, bool) {
-	if o == nil || o.VlanPortOptimizationEnabled == nil {
+	if o == nil || IsNil(o.VlanPortOptimizationEnabled) {
 		return nil, false
 	}
 	return o.VlanPortOptimizationEnabled, true
@@ -293,7 +383,7 @@ func (o *FabricSwitchControlPolicy) GetVlanPortOptimizationEnabledOk() (*bool, b
 
 // HasVlanPortOptimizationEnabled returns a boolean if a field has been set.
 func (o *FabricSwitchControlPolicy) HasVlanPortOptimizationEnabled() bool {
-	if o != nil && o.VlanPortOptimizationEnabled != nil {
+	if o != nil && !IsNil(o.VlanPortOptimizationEnabled) {
 		return true
 	}
 
@@ -305,42 +395,53 @@ func (o *FabricSwitchControlPolicy) SetVlanPortOptimizationEnabled(v bool) {
 	o.VlanPortOptimizationEnabled = &v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricSwitchControlPolicy) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricSwitchControlPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *FabricSwitchControlPolicy) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *FabricSwitchControlPolicy) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *FabricSwitchControlPolicy) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *FabricSwitchControlPolicy) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 // GetProfiles returns the Profiles field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *FabricSwitchControlPolicy) GetProfiles() []FabricSwitchProfileRelationship {
+func (o *FabricSwitchControlPolicy) GetProfiles() []FabricBaseSwitchProfileRelationship {
 	if o == nil {
-		var ret []FabricSwitchProfileRelationship
+		var ret []FabricBaseSwitchProfileRelationship
 		return ret
 	}
 	return o.Profiles
@@ -349,8 +450,8 @@ func (o *FabricSwitchControlPolicy) GetProfiles() []FabricSwitchProfileRelations
 // GetProfilesOk returns a tuple with the Profiles field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *FabricSwitchControlPolicy) GetProfilesOk() ([]FabricSwitchProfileRelationship, bool) {
-	if o == nil || o.Profiles == nil {
+func (o *FabricSwitchControlPolicy) GetProfilesOk() ([]FabricBaseSwitchProfileRelationship, bool) {
+	if o == nil || IsNil(o.Profiles) {
 		return nil, false
 	}
 	return o.Profiles, true
@@ -358,51 +459,67 @@ func (o *FabricSwitchControlPolicy) GetProfilesOk() ([]FabricSwitchProfileRelati
 
 // HasProfiles returns a boolean if a field has been set.
 func (o *FabricSwitchControlPolicy) HasProfiles() bool {
-	if o != nil && o.Profiles != nil {
+	if o != nil && !IsNil(o.Profiles) {
 		return true
 	}
 
 	return false
 }
 
-// SetProfiles gets a reference to the given []FabricSwitchProfileRelationship and assigns it to the Profiles field.
-func (o *FabricSwitchControlPolicy) SetProfiles(v []FabricSwitchProfileRelationship) {
+// SetProfiles gets a reference to the given []FabricBaseSwitchProfileRelationship and assigns it to the Profiles field.
+func (o *FabricSwitchControlPolicy) SetProfiles(v []FabricBaseSwitchProfileRelationship) {
 	o.Profiles = v
 }
 
 func (o FabricSwitchControlPolicy) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o FabricSwitchControlPolicy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicy, errPolicyAbstractPolicy := json.Marshal(o.PolicyAbstractPolicy)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
 	errPolicyAbstractPolicy = json.Unmarshal([]byte(serializedPolicyAbstractPolicy), &toSerialize)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.EthernetSwitchingMode != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.EthernetSwitchingMode) {
 		toSerialize["EthernetSwitchingMode"] = o.EthernetSwitchingMode
 	}
-	if o.FcSwitchingMode != nil {
+	if !IsNil(o.FabricPcVhbaReset) {
+		toSerialize["FabricPcVhbaReset"] = o.FabricPcVhbaReset
+	}
+	if !IsNil(o.FcSwitchingMode) {
 		toSerialize["FcSwitchingMode"] = o.FcSwitchingMode
 	}
 	if o.MacAgingSettings.IsSet() {
 		toSerialize["MacAgingSettings"] = o.MacAgingSettings.Get()
 	}
+	if !IsNil(o.ReservedVlanStartId) {
+		toSerialize["ReservedVlanStartId"] = o.ReservedVlanStartId
+	}
 	if o.UdldSettings.IsSet() {
 		toSerialize["UdldSettings"] = o.UdldSettings.Get()
 	}
-	if o.VlanPortOptimizationEnabled != nil {
+	if !IsNil(o.VlanPortOptimizationEnabled) {
 		toSerialize["VlanPortOptimizationEnabled"] = o.VlanPortOptimizationEnabled
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 	if o.Profiles != nil {
 		toSerialize["Profiles"] = o.Profiles
@@ -412,10 +529,51 @@ func (o FabricSwitchControlPolicy) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *FabricSwitchControlPolicy) UnmarshalJSON(bytes []byte) (err error) {
+func (o *FabricSwitchControlPolicy) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type FabricSwitchControlPolicyWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -423,27 +581,33 @@ func (o *FabricSwitchControlPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// Enable or Disable Ethernet End Host Switching Mode. * `end-host` - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * `switch` - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode.
 		EthernetSwitchingMode *string `json:"EthernetSwitchingMode,omitempty"`
+		// When enabled, a Registered State Change Notification (RSCN) is sent to the VIC adapter when any member port within the fabric port-channel goes down and vHBA would reset to restore the connection immediately. When disabled (default), vHBA reset is done only when all the members of a fabric port-channel are down. * `Disabled` - Admin configured Disabled State. * `Enabled` - Admin configured Enabled State.
+		FabricPcVhbaReset *string `json:"FabricPcVhbaReset,omitempty"`
 		// Enable or Disable FC End Host Switching Mode. * `end-host` - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * `switch` - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode.
-		FcSwitchingMode  *string                          `json:"FcSwitchingMode,omitempty"`
-		MacAgingSettings NullableFabricMacAgingSettings   `json:"MacAgingSettings,omitempty"`
-		UdldSettings     NullableFabricUdldGlobalSettings `json:"UdldSettings,omitempty"`
-		// To enable or disable the VLAN port count optimization.
-		VlanPortOptimizationEnabled *bool                                 `json:"VlanPortOptimizationEnabled,omitempty"`
-		Organization                *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
-		// An array of relationships to fabricSwitchProfile resources.
-		Profiles []FabricSwitchProfileRelationship `json:"Profiles,omitempty"`
+		FcSwitchingMode  *string                        `json:"FcSwitchingMode,omitempty"`
+		MacAgingSettings NullableFabricMacAgingSettings `json:"MacAgingSettings,omitempty"`
+		// The starting ID for VLANs reserved for internal use within the Fabric Interconnect. This VLAN ID is the starting ID of a contiguous block of 128 VLANs that cannot be configured for user data.  This range of VLANs cannot be configured in VLAN policy. If this property is not configured, VLAN range 3915 - 4042 is reserved for internal use by default.
+		ReservedVlanStartId *int64                           `json:"ReservedVlanStartId,omitempty"`
+		UdldSettings        NullableFabricUdldGlobalSettings `json:"UdldSettings,omitempty"`
+		// To enable or disable the VLAN port count optimization. This feature will always be enabled for Cisco UCS Fabric Interconnect 9108 100G.
+		VlanPortOptimizationEnabled *bool                                        `json:"VlanPortOptimizationEnabled,omitempty"`
+		Organization                NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		// An array of relationships to fabricBaseSwitchProfile resources.
+		Profiles []FabricBaseSwitchProfileRelationship `json:"Profiles,omitempty"`
 	}
 
 	varFabricSwitchControlPolicyWithoutEmbeddedStruct := FabricSwitchControlPolicyWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varFabricSwitchControlPolicyWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varFabricSwitchControlPolicyWithoutEmbeddedStruct)
 	if err == nil {
 		varFabricSwitchControlPolicy := _FabricSwitchControlPolicy{}
 		varFabricSwitchControlPolicy.ClassId = varFabricSwitchControlPolicyWithoutEmbeddedStruct.ClassId
 		varFabricSwitchControlPolicy.ObjectType = varFabricSwitchControlPolicyWithoutEmbeddedStruct.ObjectType
 		varFabricSwitchControlPolicy.EthernetSwitchingMode = varFabricSwitchControlPolicyWithoutEmbeddedStruct.EthernetSwitchingMode
+		varFabricSwitchControlPolicy.FabricPcVhbaReset = varFabricSwitchControlPolicyWithoutEmbeddedStruct.FabricPcVhbaReset
 		varFabricSwitchControlPolicy.FcSwitchingMode = varFabricSwitchControlPolicyWithoutEmbeddedStruct.FcSwitchingMode
 		varFabricSwitchControlPolicy.MacAgingSettings = varFabricSwitchControlPolicyWithoutEmbeddedStruct.MacAgingSettings
+		varFabricSwitchControlPolicy.ReservedVlanStartId = varFabricSwitchControlPolicyWithoutEmbeddedStruct.ReservedVlanStartId
 		varFabricSwitchControlPolicy.UdldSettings = varFabricSwitchControlPolicyWithoutEmbeddedStruct.UdldSettings
 		varFabricSwitchControlPolicy.VlanPortOptimizationEnabled = varFabricSwitchControlPolicyWithoutEmbeddedStruct.VlanPortOptimizationEnabled
 		varFabricSwitchControlPolicy.Organization = varFabricSwitchControlPolicyWithoutEmbeddedStruct.Organization
@@ -455,7 +619,7 @@ func (o *FabricSwitchControlPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	varFabricSwitchControlPolicy := _FabricSwitchControlPolicy{}
 
-	err = json.Unmarshal(bytes, &varFabricSwitchControlPolicy)
+	err = json.Unmarshal(data, &varFabricSwitchControlPolicy)
 	if err == nil {
 		o.PolicyAbstractPolicy = varFabricSwitchControlPolicy.PolicyAbstractPolicy
 	} else {
@@ -464,12 +628,14 @@ func (o *FabricSwitchControlPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "EthernetSwitchingMode")
+		delete(additionalProperties, "FabricPcVhbaReset")
 		delete(additionalProperties, "FcSwitchingMode")
 		delete(additionalProperties, "MacAgingSettings")
+		delete(additionalProperties, "ReservedVlanStartId")
 		delete(additionalProperties, "UdldSettings")
 		delete(additionalProperties, "VlanPortOptimizationEnabled")
 		delete(additionalProperties, "Organization")

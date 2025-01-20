@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VirtualizationEsxiVmConfiguration type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VirtualizationEsxiVmConfiguration{}
 
 // VirtualizationEsxiVmConfiguration Specify ESXi virtual machine configuration data.
 type VirtualizationEsxiVmConfiguration struct {
@@ -27,7 +31,8 @@ type VirtualizationEsxiVmConfiguration struct {
 	// Specify annotation (optional) for the virtual machine.
 	Annotation *string                                          `json:"Annotation,omitempty"`
 	Compute    NullableVirtualizationEsxiVmComputeConfiguration `json:"Compute,omitempty"`
-	Customspec NullableVirtualizationBaseCustomSpec             `json:"Customspec,omitempty"`
+	// ESXi virtual machine custom specification.
+	Customspec NullableMoBaseComplexType `json:"Customspec,omitempty"`
 	// Datacenter where virtual machine is deployed.
 	Datacenter *string `json:"Datacenter,omitempty"`
 	// Folder where virtual machine is deployed.
@@ -92,6 +97,11 @@ func (o *VirtualizationEsxiVmConfiguration) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "virtualization.EsxiVmConfiguration" of the ClassId field.
+func (o *VirtualizationEsxiVmConfiguration) GetDefaultClassId() interface{} {
+	return "virtualization.EsxiVmConfiguration"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VirtualizationEsxiVmConfiguration) GetObjectType() string {
 	if o == nil {
@@ -116,9 +126,14 @@ func (o *VirtualizationEsxiVmConfiguration) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "virtualization.EsxiVmConfiguration" of the ObjectType field.
+func (o *VirtualizationEsxiVmConfiguration) GetDefaultObjectType() interface{} {
+	return "virtualization.EsxiVmConfiguration"
+}
+
 // GetAnnotation returns the Annotation field value if set, zero value otherwise.
 func (o *VirtualizationEsxiVmConfiguration) GetAnnotation() string {
-	if o == nil || o.Annotation == nil {
+	if o == nil || IsNil(o.Annotation) {
 		var ret string
 		return ret
 	}
@@ -128,7 +143,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetAnnotation() string {
 // GetAnnotationOk returns a tuple with the Annotation field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationEsxiVmConfiguration) GetAnnotationOk() (*string, bool) {
-	if o == nil || o.Annotation == nil {
+	if o == nil || IsNil(o.Annotation) {
 		return nil, false
 	}
 	return o.Annotation, true
@@ -136,7 +151,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetAnnotationOk() (*string, bool) {
 
 // HasAnnotation returns a boolean if a field has been set.
 func (o *VirtualizationEsxiVmConfiguration) HasAnnotation() bool {
-	if o != nil && o.Annotation != nil {
+	if o != nil && !IsNil(o.Annotation) {
 		return true
 	}
 
@@ -150,7 +165,7 @@ func (o *VirtualizationEsxiVmConfiguration) SetAnnotation(v string) {
 
 // GetCompute returns the Compute field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VirtualizationEsxiVmConfiguration) GetCompute() VirtualizationEsxiVmComputeConfiguration {
-	if o == nil || o.Compute.Get() == nil {
+	if o == nil || IsNil(o.Compute.Get()) {
 		var ret VirtualizationEsxiVmComputeConfiguration
 		return ret
 	}
@@ -192,9 +207,9 @@ func (o *VirtualizationEsxiVmConfiguration) UnsetCompute() {
 }
 
 // GetCustomspec returns the Customspec field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VirtualizationEsxiVmConfiguration) GetCustomspec() VirtualizationBaseCustomSpec {
-	if o == nil || o.Customspec.Get() == nil {
-		var ret VirtualizationBaseCustomSpec
+func (o *VirtualizationEsxiVmConfiguration) GetCustomspec() MoBaseComplexType {
+	if o == nil || IsNil(o.Customspec.Get()) {
+		var ret MoBaseComplexType
 		return ret
 	}
 	return *o.Customspec.Get()
@@ -203,7 +218,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetCustomspec() VirtualizationBaseCu
 // GetCustomspecOk returns a tuple with the Customspec field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VirtualizationEsxiVmConfiguration) GetCustomspecOk() (*VirtualizationBaseCustomSpec, bool) {
+func (o *VirtualizationEsxiVmConfiguration) GetCustomspecOk() (*MoBaseComplexType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -219,8 +234,8 @@ func (o *VirtualizationEsxiVmConfiguration) HasCustomspec() bool {
 	return false
 }
 
-// SetCustomspec gets a reference to the given NullableVirtualizationBaseCustomSpec and assigns it to the Customspec field.
-func (o *VirtualizationEsxiVmConfiguration) SetCustomspec(v VirtualizationBaseCustomSpec) {
+// SetCustomspec gets a reference to the given NullableMoBaseComplexType and assigns it to the Customspec field.
+func (o *VirtualizationEsxiVmConfiguration) SetCustomspec(v MoBaseComplexType) {
 	o.Customspec.Set(&v)
 }
 
@@ -236,7 +251,7 @@ func (o *VirtualizationEsxiVmConfiguration) UnsetCustomspec() {
 
 // GetDatacenter returns the Datacenter field value if set, zero value otherwise.
 func (o *VirtualizationEsxiVmConfiguration) GetDatacenter() string {
-	if o == nil || o.Datacenter == nil {
+	if o == nil || IsNil(o.Datacenter) {
 		var ret string
 		return ret
 	}
@@ -246,7 +261,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetDatacenter() string {
 // GetDatacenterOk returns a tuple with the Datacenter field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationEsxiVmConfiguration) GetDatacenterOk() (*string, bool) {
-	if o == nil || o.Datacenter == nil {
+	if o == nil || IsNil(o.Datacenter) {
 		return nil, false
 	}
 	return o.Datacenter, true
@@ -254,7 +269,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetDatacenterOk() (*string, bool) {
 
 // HasDatacenter returns a boolean if a field has been set.
 func (o *VirtualizationEsxiVmConfiguration) HasDatacenter() bool {
-	if o != nil && o.Datacenter != nil {
+	if o != nil && !IsNil(o.Datacenter) {
 		return true
 	}
 
@@ -268,7 +283,7 @@ func (o *VirtualizationEsxiVmConfiguration) SetDatacenter(v string) {
 
 // GetFolder returns the Folder field value if set, zero value otherwise.
 func (o *VirtualizationEsxiVmConfiguration) GetFolder() string {
-	if o == nil || o.Folder == nil {
+	if o == nil || IsNil(o.Folder) {
 		var ret string
 		return ret
 	}
@@ -278,7 +293,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetFolder() string {
 // GetFolderOk returns a tuple with the Folder field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationEsxiVmConfiguration) GetFolderOk() (*string, bool) {
-	if o == nil || o.Folder == nil {
+	if o == nil || IsNil(o.Folder) {
 		return nil, false
 	}
 	return o.Folder, true
@@ -286,7 +301,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetFolderOk() (*string, bool) {
 
 // HasFolder returns a boolean if a field has been set.
 func (o *VirtualizationEsxiVmConfiguration) HasFolder() bool {
-	if o != nil && o.Folder != nil {
+	if o != nil && !IsNil(o.Folder) {
 		return true
 	}
 
@@ -300,7 +315,7 @@ func (o *VirtualizationEsxiVmConfiguration) SetFolder(v string) {
 
 // GetImage returns the Image field value if set, zero value otherwise.
 func (o *VirtualizationEsxiVmConfiguration) GetImage() string {
-	if o == nil || o.Image == nil {
+	if o == nil || IsNil(o.Image) {
 		var ret string
 		return ret
 	}
@@ -310,7 +325,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetImage() string {
 // GetImageOk returns a tuple with the Image field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationEsxiVmConfiguration) GetImageOk() (*string, bool) {
-	if o == nil || o.Image == nil {
+	if o == nil || IsNil(o.Image) {
 		return nil, false
 	}
 	return o.Image, true
@@ -318,7 +333,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetImageOk() (*string, bool) {
 
 // HasImage returns a boolean if a field has been set.
 func (o *VirtualizationEsxiVmConfiguration) HasImage() bool {
-	if o != nil && o.Image != nil {
+	if o != nil && !IsNil(o.Image) {
 		return true
 	}
 
@@ -332,7 +347,7 @@ func (o *VirtualizationEsxiVmConfiguration) SetImage(v string) {
 
 // GetInventoryPath returns the InventoryPath field value if set, zero value otherwise.
 func (o *VirtualizationEsxiVmConfiguration) GetInventoryPath() string {
-	if o == nil || o.InventoryPath == nil {
+	if o == nil || IsNil(o.InventoryPath) {
 		var ret string
 		return ret
 	}
@@ -342,7 +357,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetInventoryPath() string {
 // GetInventoryPathOk returns a tuple with the InventoryPath field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationEsxiVmConfiguration) GetInventoryPathOk() (*string, bool) {
-	if o == nil || o.InventoryPath == nil {
+	if o == nil || IsNil(o.InventoryPath) {
 		return nil, false
 	}
 	return o.InventoryPath, true
@@ -350,7 +365,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetInventoryPathOk() (*string, bool)
 
 // HasInventoryPath returns a boolean if a field has been set.
 func (o *VirtualizationEsxiVmConfiguration) HasInventoryPath() bool {
-	if o != nil && o.InventoryPath != nil {
+	if o != nil && !IsNil(o.InventoryPath) {
 		return true
 	}
 
@@ -364,7 +379,7 @@ func (o *VirtualizationEsxiVmConfiguration) SetInventoryPath(v string) {
 
 // GetNetwork returns the Network field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VirtualizationEsxiVmConfiguration) GetNetwork() VirtualizationEsxiVmNetworkConfiguration {
-	if o == nil || o.Network.Get() == nil {
+	if o == nil || IsNil(o.Network.Get()) {
 		var ret VirtualizationEsxiVmNetworkConfiguration
 		return ret
 	}
@@ -407,7 +422,7 @@ func (o *VirtualizationEsxiVmConfiguration) UnsetNetwork() {
 
 // GetStorage returns the Storage field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VirtualizationEsxiVmConfiguration) GetStorage() VirtualizationEsxiVmStorageConfiguration {
-	if o == nil || o.Storage.Get() == nil {
+	if o == nil || IsNil(o.Storage.Get()) {
 		var ret VirtualizationEsxiVmStorageConfiguration
 		return ret
 	}
@@ -450,7 +465,7 @@ func (o *VirtualizationEsxiVmConfiguration) UnsetStorage() {
 
 // GetTemplate returns the Template field value if set, zero value otherwise.
 func (o *VirtualizationEsxiVmConfiguration) GetTemplate() string {
-	if o == nil || o.Template == nil {
+	if o == nil || IsNil(o.Template) {
 		var ret string
 		return ret
 	}
@@ -460,7 +475,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetTemplate() string {
 // GetTemplateOk returns a tuple with the Template field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationEsxiVmConfiguration) GetTemplateOk() (*string, bool) {
-	if o == nil || o.Template == nil {
+	if o == nil || IsNil(o.Template) {
 		return nil, false
 	}
 	return o.Template, true
@@ -468,7 +483,7 @@ func (o *VirtualizationEsxiVmConfiguration) GetTemplateOk() (*string, bool) {
 
 // HasTemplate returns a boolean if a field has been set.
 func (o *VirtualizationEsxiVmConfiguration) HasTemplate() bool {
-	if o != nil && o.Template != nil {
+	if o != nil && !IsNil(o.Template) {
 		return true
 	}
 
@@ -481,22 +496,32 @@ func (o *VirtualizationEsxiVmConfiguration) SetTemplate(v string) {
 }
 
 func (o VirtualizationEsxiVmConfiguration) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VirtualizationEsxiVmConfiguration) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedVirtualizationBaseVmConfiguration, errVirtualizationBaseVmConfiguration := json.Marshal(o.VirtualizationBaseVmConfiguration)
 	if errVirtualizationBaseVmConfiguration != nil {
-		return []byte{}, errVirtualizationBaseVmConfiguration
+		return map[string]interface{}{}, errVirtualizationBaseVmConfiguration
 	}
 	errVirtualizationBaseVmConfiguration = json.Unmarshal([]byte(serializedVirtualizationBaseVmConfiguration), &toSerialize)
 	if errVirtualizationBaseVmConfiguration != nil {
-		return []byte{}, errVirtualizationBaseVmConfiguration
+		return map[string]interface{}{}, errVirtualizationBaseVmConfiguration
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Annotation != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Annotation) {
 		toSerialize["Annotation"] = o.Annotation
 	}
 	if o.Compute.IsSet() {
@@ -505,16 +530,16 @@ func (o VirtualizationEsxiVmConfiguration) MarshalJSON() ([]byte, error) {
 	if o.Customspec.IsSet() {
 		toSerialize["Customspec"] = o.Customspec.Get()
 	}
-	if o.Datacenter != nil {
+	if !IsNil(o.Datacenter) {
 		toSerialize["Datacenter"] = o.Datacenter
 	}
-	if o.Folder != nil {
+	if !IsNil(o.Folder) {
 		toSerialize["Folder"] = o.Folder
 	}
-	if o.Image != nil {
+	if !IsNil(o.Image) {
 		toSerialize["Image"] = o.Image
 	}
-	if o.InventoryPath != nil {
+	if !IsNil(o.InventoryPath) {
 		toSerialize["InventoryPath"] = o.InventoryPath
 	}
 	if o.Network.IsSet() {
@@ -523,7 +548,7 @@ func (o VirtualizationEsxiVmConfiguration) MarshalJSON() ([]byte, error) {
 	if o.Storage.IsSet() {
 		toSerialize["Storage"] = o.Storage.Get()
 	}
-	if o.Template != nil {
+	if !IsNil(o.Template) {
 		toSerialize["Template"] = o.Template
 	}
 
@@ -531,10 +556,51 @@ func (o VirtualizationEsxiVmConfiguration) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VirtualizationEsxiVmConfiguration) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VirtualizationEsxiVmConfiguration) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VirtualizationEsxiVmConfigurationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -543,7 +609,8 @@ func (o *VirtualizationEsxiVmConfiguration) UnmarshalJSON(bytes []byte) (err err
 		// Specify annotation (optional) for the virtual machine.
 		Annotation *string                                          `json:"Annotation,omitempty"`
 		Compute    NullableVirtualizationEsxiVmComputeConfiguration `json:"Compute,omitempty"`
-		Customspec NullableVirtualizationBaseCustomSpec             `json:"Customspec,omitempty"`
+		// ESXi virtual machine custom specification.
+		Customspec NullableMoBaseComplexType `json:"Customspec,omitempty"`
 		// Datacenter where virtual machine is deployed.
 		Datacenter *string `json:"Datacenter,omitempty"`
 		// Folder where virtual machine is deployed.
@@ -560,7 +627,7 @@ func (o *VirtualizationEsxiVmConfiguration) UnmarshalJSON(bytes []byte) (err err
 
 	varVirtualizationEsxiVmConfigurationWithoutEmbeddedStruct := VirtualizationEsxiVmConfigurationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationEsxiVmConfigurationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVirtualizationEsxiVmConfigurationWithoutEmbeddedStruct)
 	if err == nil {
 		varVirtualizationEsxiVmConfiguration := _VirtualizationEsxiVmConfiguration{}
 		varVirtualizationEsxiVmConfiguration.ClassId = varVirtualizationEsxiVmConfigurationWithoutEmbeddedStruct.ClassId
@@ -582,7 +649,7 @@ func (o *VirtualizationEsxiVmConfiguration) UnmarshalJSON(bytes []byte) (err err
 
 	varVirtualizationEsxiVmConfiguration := _VirtualizationEsxiVmConfiguration{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationEsxiVmConfiguration)
+	err = json.Unmarshal(data, &varVirtualizationEsxiVmConfiguration)
 	if err == nil {
 		o.VirtualizationBaseVmConfiguration = varVirtualizationEsxiVmConfiguration.VirtualizationBaseVmConfiguration
 	} else {
@@ -591,7 +658,7 @@ func (o *VirtualizationEsxiVmConfiguration) UnmarshalJSON(bytes []byte) (err err
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Annotation")

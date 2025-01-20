@@ -7,15 +7,15 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. The enum values provides the list of concrete types that can be instantiated from this abstract type. | 
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. The enum values provides the list of concrete types that can be instantiated from this abstract type. | 
 **DirectDownload** | Pointer to [**NullableFirmwareDirectDownload**](FirmwareDirectDownload.md) |  | [optional] 
-**FileServer** | Pointer to [**NullableSoftwarerepositoryFileServer**](SoftwarerepositoryFileServer.md) |  | [optional] 
+**FileServer** | Pointer to [**NullableMoBaseComplexType**](MoBaseComplexType.md) | An external software repository which serves as the source of the file to be imported into the image catalog. If the source is available in the user&#39;s local machine, needs to be corrected to source image or just image If not, only a pointer to the file in the external repository is created in the image catalog. For more information, please refer to the softwarerepositoryUploader and softwarerepositoryFile object descriptions where this type is used. | [optional] 
 **NetworkShare** | Pointer to [**NullableFirmwareNetworkShare**](FirmwareNetworkShare.md) |  | [optional] 
 **SkipEstimateImpact** | Pointer to **bool** | User has the option to skip the estimate impact calculation. | [optional] 
 **Status** | Pointer to **string** | Status of the upgrade operation. * &#x60;NONE&#x60; - Upgrade status is not populated. * &#x60;IN_PROGRESS&#x60; - The upgrade is in progress. * &#x60;SUCCESSFUL&#x60; - The upgrade successfully completed. * &#x60;FAILED&#x60; - The upgrade shows failed status. * &#x60;TERMINATED&#x60; - The upgrade has been terminated. | [optional] [default to "NONE"]
 **UpgradeType** | Pointer to **string** | Desired upgrade mode to choose either direct download based upgrade or network share upgrade. * &#x60;direct_upgrade&#x60; - Upgrade mode is direct download. * &#x60;network_upgrade&#x60; - Upgrade mode is network upgrade. | [optional] [default to "direct_upgrade"]
-**Distributable** | Pointer to [**FirmwareDistributableRelationship**](FirmwareDistributableRelationship.md) |  | [optional] 
-**Release** | Pointer to [**SoftwarerepositoryReleaseRelationship**](SoftwarerepositoryReleaseRelationship.md) |  | [optional] 
-**UpgradeImpact** | Pointer to [**FirmwareUpgradeImpactStatusRelationship**](FirmwareUpgradeImpactStatusRelationship.md) |  | [optional] 
-**UpgradeStatus** | Pointer to [**FirmwareUpgradeStatusRelationship**](FirmwareUpgradeStatusRelationship.md) |  | [optional] 
+**Distributable** | Pointer to [**NullableFirmwareDistributableRelationship**](FirmwareDistributableRelationship.md) |  | [optional] 
+**Release** | Pointer to [**NullableSoftwarerepositoryReleaseRelationship**](SoftwarerepositoryReleaseRelationship.md) |  | [optional] 
+**UpgradeImpact** | Pointer to [**NullableFirmwareUpgradeImpactStatusRelationship**](FirmwareUpgradeImpactStatusRelationship.md) |  | [optional] 
+**UpgradeStatus** | Pointer to [**NullableFirmwareUpgradeStatusRelationship**](FirmwareUpgradeStatusRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -113,20 +113,20 @@ HasDirectDownload returns a boolean if a field has been set.
 UnsetDirectDownload ensures that no value is present for DirectDownload, not even an explicit nil
 ### GetFileServer
 
-`func (o *FirmwareUpgradeBase) GetFileServer() SoftwarerepositoryFileServer`
+`func (o *FirmwareUpgradeBase) GetFileServer() MoBaseComplexType`
 
 GetFileServer returns the FileServer field if non-nil, zero value otherwise.
 
 ### GetFileServerOk
 
-`func (o *FirmwareUpgradeBase) GetFileServerOk() (*SoftwarerepositoryFileServer, bool)`
+`func (o *FirmwareUpgradeBase) GetFileServerOk() (*MoBaseComplexType, bool)`
 
 GetFileServerOk returns a tuple with the FileServer field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetFileServer
 
-`func (o *FirmwareUpgradeBase) SetFileServer(v SoftwarerepositoryFileServer)`
+`func (o *FirmwareUpgradeBase) SetFileServer(v MoBaseComplexType)`
 
 SetFileServer sets FileServer field to given value.
 
@@ -281,6 +281,16 @@ SetDistributable sets Distributable field to given value.
 
 HasDistributable returns a boolean if a field has been set.
 
+### SetDistributableNil
+
+`func (o *FirmwareUpgradeBase) SetDistributableNil(b bool)`
+
+ SetDistributableNil sets the value for Distributable to be an explicit nil
+
+### UnsetDistributable
+`func (o *FirmwareUpgradeBase) UnsetDistributable()`
+
+UnsetDistributable ensures that no value is present for Distributable, not even an explicit nil
 ### GetRelease
 
 `func (o *FirmwareUpgradeBase) GetRelease() SoftwarerepositoryReleaseRelationship`
@@ -306,6 +316,16 @@ SetRelease sets Release field to given value.
 
 HasRelease returns a boolean if a field has been set.
 
+### SetReleaseNil
+
+`func (o *FirmwareUpgradeBase) SetReleaseNil(b bool)`
+
+ SetReleaseNil sets the value for Release to be an explicit nil
+
+### UnsetRelease
+`func (o *FirmwareUpgradeBase) UnsetRelease()`
+
+UnsetRelease ensures that no value is present for Release, not even an explicit nil
 ### GetUpgradeImpact
 
 `func (o *FirmwareUpgradeBase) GetUpgradeImpact() FirmwareUpgradeImpactStatusRelationship`
@@ -331,6 +351,16 @@ SetUpgradeImpact sets UpgradeImpact field to given value.
 
 HasUpgradeImpact returns a boolean if a field has been set.
 
+### SetUpgradeImpactNil
+
+`func (o *FirmwareUpgradeBase) SetUpgradeImpactNil(b bool)`
+
+ SetUpgradeImpactNil sets the value for UpgradeImpact to be an explicit nil
+
+### UnsetUpgradeImpact
+`func (o *FirmwareUpgradeBase) UnsetUpgradeImpact()`
+
+UnsetUpgradeImpact ensures that no value is present for UpgradeImpact, not even an explicit nil
 ### GetUpgradeStatus
 
 `func (o *FirmwareUpgradeBase) GetUpgradeStatus() FirmwareUpgradeStatusRelationship`
@@ -356,6 +386,16 @@ SetUpgradeStatus sets UpgradeStatus field to given value.
 
 HasUpgradeStatus returns a boolean if a field has been set.
 
+### SetUpgradeStatusNil
+
+`func (o *FirmwareUpgradeBase) SetUpgradeStatusNil(b bool)`
+
+ SetUpgradeStatusNil sets the value for UpgradeStatus to be an explicit nil
+
+### UnsetUpgradeStatus
+`func (o *FirmwareUpgradeBase) UnsetUpgradeStatus()`
+
+UnsetUpgradeStatus ensures that no value is present for UpgradeStatus, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

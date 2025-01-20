@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceHclHyperflexSoftwareCompatibilityInfo() *schema.Resource {
 		UpdateContext: resourceHclHyperflexSoftwareCompatibilityInfoUpdate,
 		DeleteContext: resourceHclHyperflexSoftwareCompatibilityInfoDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -188,9 +190,9 @@ func resourceHclHyperflexSoftwareCompatibilityInfo() *schema.Resource {
 				Optional:    true,
 			},
 			"hypervisor_type": {
-				Description:  "Type fo Hypervisor the HyperFlex components versions are compatible with. For example ESX, Hyperv or KVM.\n* `ESXi` - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version.\n* `HyperFlexAp` - The hypervisor of the virtualization platform is Cisco HyperFlex Application Platform.\n* `IWE` - The hypervisor of the virtualization platform is Cisco Intersight Workload Engine.\n* `Hyper-V` - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V.\n* `Unknown` - The hypervisor running on the HyperFlex cluster is not known.",
+				Description:  "Type fo Hypervisor the HyperFlex components versions are compatible with. For example ESX, Hyperv or KVM.\n* `ESXi` - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version.\n* `Hyper-V` - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V.\n* `Unknown` - The hypervisor running on the HyperFlex cluster is not known.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringInSlice([]string{"ESXi", "HyperFlexAp", "IWE", "Hyper-V", "Unknown"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"ESXi", "Hyper-V", "Unknown"}, false),
 				Optional:     true,
 				Default:      "ESXi",
 			},
@@ -201,6 +203,16 @@ func resourceHclHyperflexSoftwareCompatibilityInfo() *schema.Resource {
 			},
 			"is_mgmt_build": {
 				Description: "Type of the HXDP bundle mgmt or full.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"max_mgmt_version": {
+				Description: "Maximum supported HyperFlex Data Platform build version.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
+			"min_mgmt_version": {
+				Description: "Minimum supported HyperFlex Data Platform build version.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -416,6 +428,17 @@ func resourceHclHyperflexSoftwareCompatibilityInfo() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -624,6 +647,16 @@ func resourceHclHyperflexSoftwareCompatibilityInfoCreate(c context.Context, d *s
 		o.SetIsMgmtBuild(x)
 	}
 
+	if v, ok := d.GetOk("max_mgmt_version"); ok {
+		x := (v.(string))
+		o.SetMaxMgmtVersion(x)
+	}
+
+	if v, ok := d.GetOk("min_mgmt_version"); ok {
+		x := (v.(string))
+		o.SetMinMgmtVersion(x)
+	}
+
 	if v, ok := d.GetOk("moid"); ok {
 		x := (v.(string))
 		o.SetMoid(x)
@@ -681,14 +714,25 @@ func resourceHclHyperflexSoftwareCompatibilityInfoCreate(c context.Context, d *s
 		}
 		return diag.Errorf("error occurred while creating HclHyperflexSoftwareCompatibilityInfo: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceHclHyperflexSoftwareCompatibilityInfoRead(c, d, meta)...)
 }
 
 func resourceHclHyperflexSoftwareCompatibilityInfoRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.HclApi.GetHclHyperflexSoftwareCompatibilityInfoByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -752,6 +796,14 @@ func resourceHclHyperflexSoftwareCompatibilityInfoRead(c context.Context, d *sch
 
 	if err := d.Set("is_mgmt_build", (s.GetIsMgmtBuild())); err != nil {
 		return diag.Errorf("error occurred while setting property IsMgmtBuild in HclHyperflexSoftwareCompatibilityInfo object: %s", err.Error())
+	}
+
+	if err := d.Set("max_mgmt_version", (s.GetMaxMgmtVersion())); err != nil {
+		return diag.Errorf("error occurred while setting property MaxMgmtVersion in HclHyperflexSoftwareCompatibilityInfo object: %s", err.Error())
+	}
+
+	if err := d.Set("min_mgmt_version", (s.GetMinMgmtVersion())); err != nil {
+		return diag.Errorf("error occurred while setting property MinMgmtVersion in HclHyperflexSoftwareCompatibilityInfo object: %s", err.Error())
 	}
 
 	if err := d.Set("mod_time", (s.GetModTime()).String()); err != nil {
@@ -924,6 +976,18 @@ func resourceHclHyperflexSoftwareCompatibilityInfoUpdate(c context.Context, d *s
 		v := d.Get("is_mgmt_build")
 		x := (v.(string))
 		o.SetIsMgmtBuild(x)
+	}
+
+	if d.HasChange("max_mgmt_version") {
+		v := d.Get("max_mgmt_version")
+		x := (v.(string))
+		o.SetMaxMgmtVersion(x)
+	}
+
+	if d.HasChange("min_mgmt_version") {
+		v := d.Get("min_mgmt_version")
+		x := (v.(string))
+		o.SetMinMgmtVersion(x)
 	}
 
 	if d.HasChange("moid") {

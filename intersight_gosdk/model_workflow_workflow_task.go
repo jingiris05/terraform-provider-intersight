@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the WorkflowWorkflowTask type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &WorkflowWorkflowTask{}
 
 // WorkflowWorkflowTask Task instance within the workflow to be executed.
 type WorkflowWorkflowTask struct {
@@ -29,7 +33,7 @@ type WorkflowWorkflowTask struct {
 	// A user defined label identifier of the workflow task used for UI display.
 	Label *string `json:"Label,omitempty"`
 	// The name of the task within the workflow and it must be unique among all WorkflowTasks within a workflow definition. This name serves as the internal unique identifier for the task and is used to pick input and output parameters to feed into other tasks.
-	Name                 *string `json:"Name,omitempty"`
+	Name                 *string `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9_:-]{1,64}$"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -104,7 +108,7 @@ func (o *WorkflowWorkflowTask) SetObjectType(v string) {
 
 // GetDescription returns the Description field value if set, zero value otherwise.
 func (o *WorkflowWorkflowTask) GetDescription() string {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		var ret string
 		return ret
 	}
@@ -114,7 +118,7 @@ func (o *WorkflowWorkflowTask) GetDescription() string {
 // GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowTask) GetDescriptionOk() (*string, bool) {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		return nil, false
 	}
 	return o.Description, true
@@ -122,7 +126,7 @@ func (o *WorkflowWorkflowTask) GetDescriptionOk() (*string, bool) {
 
 // HasDescription returns a boolean if a field has been set.
 func (o *WorkflowWorkflowTask) HasDescription() bool {
-	if o != nil && o.Description != nil {
+	if o != nil && !IsNil(o.Description) {
 		return true
 	}
 
@@ -136,7 +140,7 @@ func (o *WorkflowWorkflowTask) SetDescription(v string) {
 
 // GetLabel returns the Label field value if set, zero value otherwise.
 func (o *WorkflowWorkflowTask) GetLabel() string {
-	if o == nil || o.Label == nil {
+	if o == nil || IsNil(o.Label) {
 		var ret string
 		return ret
 	}
@@ -146,7 +150,7 @@ func (o *WorkflowWorkflowTask) GetLabel() string {
 // GetLabelOk returns a tuple with the Label field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowTask) GetLabelOk() (*string, bool) {
-	if o == nil || o.Label == nil {
+	if o == nil || IsNil(o.Label) {
 		return nil, false
 	}
 	return o.Label, true
@@ -154,7 +158,7 @@ func (o *WorkflowWorkflowTask) GetLabelOk() (*string, bool) {
 
 // HasLabel returns a boolean if a field has been set.
 func (o *WorkflowWorkflowTask) HasLabel() bool {
-	if o != nil && o.Label != nil {
+	if o != nil && !IsNil(o.Label) {
 		return true
 	}
 
@@ -168,7 +172,7 @@ func (o *WorkflowWorkflowTask) SetLabel(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *WorkflowWorkflowTask) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -178,7 +182,7 @@ func (o *WorkflowWorkflowTask) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowTask) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -186,7 +190,7 @@ func (o *WorkflowWorkflowTask) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *WorkflowWorkflowTask) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -199,28 +203,32 @@ func (o *WorkflowWorkflowTask) SetName(v string) {
 }
 
 func (o WorkflowWorkflowTask) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o WorkflowWorkflowTask) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
-	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
-	}
-	if o.Description != nil {
+	toSerialize["ClassId"] = o.ClassId
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Description) {
 		toSerialize["Description"] = o.Description
 	}
-	if o.Label != nil {
+	if !IsNil(o.Label) {
 		toSerialize["Label"] = o.Label
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
 
@@ -228,10 +236,48 @@ func (o WorkflowWorkflowTask) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *WorkflowWorkflowTask) UnmarshalJSON(bytes []byte) (err error) {
+func (o *WorkflowWorkflowTask) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type WorkflowWorkflowTaskWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. The enum values provides the list of concrete types that can be instantiated from this abstract type.
 		ClassId string `json:"ClassId"`
@@ -242,12 +288,12 @@ func (o *WorkflowWorkflowTask) UnmarshalJSON(bytes []byte) (err error) {
 		// A user defined label identifier of the workflow task used for UI display.
 		Label *string `json:"Label,omitempty"`
 		// The name of the task within the workflow and it must be unique among all WorkflowTasks within a workflow definition. This name serves as the internal unique identifier for the task and is used to pick input and output parameters to feed into other tasks.
-		Name *string `json:"Name,omitempty"`
+		Name *string `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9_:-]{1,64}$"`
 	}
 
 	varWorkflowWorkflowTaskWithoutEmbeddedStruct := WorkflowWorkflowTaskWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varWorkflowWorkflowTaskWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varWorkflowWorkflowTaskWithoutEmbeddedStruct)
 	if err == nil {
 		varWorkflowWorkflowTask := _WorkflowWorkflowTask{}
 		varWorkflowWorkflowTask.ClassId = varWorkflowWorkflowTaskWithoutEmbeddedStruct.ClassId
@@ -262,7 +308,7 @@ func (o *WorkflowWorkflowTask) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowWorkflowTask := _WorkflowWorkflowTask{}
 
-	err = json.Unmarshal(bytes, &varWorkflowWorkflowTask)
+	err = json.Unmarshal(data, &varWorkflowWorkflowTask)
 	if err == nil {
 		o.MoBaseComplexType = varWorkflowWorkflowTask.MoBaseComplexType
 	} else {
@@ -271,7 +317,7 @@ func (o *WorkflowWorkflowTask) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Description")

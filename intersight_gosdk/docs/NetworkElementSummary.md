@@ -6,30 +6,36 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "network.ElementSummary"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "network.ElementSummary"]
-**AdminEvacState** | Pointer to **string** | Administratively configured state of Fabric Evacuation feature, for this switch. | [optional] [readonly] 
+**AdminEvacState** | Pointer to **string** | Administratively configured state of Fabric Evacuation feature, for this switch. * &#x60;&#x60; - Evacuation state of the switch is unknown. * &#x60;enabled&#x60; - Evacuation state of the switch is enabled. * &#x60;disabled&#x60; - Evacuation state of the switch is disabled. * &#x60;applying&#x60; - Evacuation state of the switch when evacuation is in progress. * &#x60;on&#x60; - Evacuation state of the switch is enabled. * &#x60;off&#x60; - Evacuation state of the switch is disabled. * &#x60;N/A&#x60; - Evacuation state of the switch is not applicable. | [optional] [readonly] [default to ""]
 **AdminInbandInterfaceState** | Pointer to **string** | The administrative state of the network Element inband management interface. | [optional] [readonly] 
 **AlarmSummary** | Pointer to [**NullableComputeAlarmSummary**](ComputeAlarmSummary.md) |  | [optional] 
 **AvailableMemory** | Pointer to **string** | Available memory (un-used) on this switch platform. | [optional] [readonly] 
+**BundleVersion** | Pointer to **string** | Running firmware bundle information. | [optional] [readonly] 
 **Chassis** | Pointer to **string** | Chassis IP of the switch. | [optional] [readonly] 
 **ConfModTs** | Pointer to **string** | Configuration modified timestamp of the switch. | [optional] [readonly] 
 **ConfModTsBackup** | Pointer to **string** | Configuration modified backup timestamp of the switch. | [optional] [readonly] 
-**DefaultDomain** | Pointer to **string** | The default domain name configured on the switch. | [optional] [readonly] 
-**DeviceMoId** | Pointer to **string** | The database identifier of the registered device of an object. | [optional] [readonly] 
+**ConnectionStatus** | Pointer to **string** | Connection status of the switch. | [optional] 
+**DefaultDomain** | Pointer to **string** | The default domain name configured on the switch. | [optional] 
+**DeviceMoId** | Pointer to **string** | The MoId of the registered device that coresponds to the server. | [optional] [readonly] 
 **Dn** | Pointer to **string** | The Distinguished Name unambiguously identifies an object in the system. | [optional] [readonly] 
 **EthernetMode** | Pointer to **string** | The user configured Ethernet operational mode for this switch (End-Host or Switching). | [optional] [readonly] 
 **EthernetSwitchingMode** | Pointer to **string** | The user configured Ethernet operational mode for this switch (End-Host or Switching). * &#x60;end-host&#x60; - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * &#x60;switch&#x60; - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode. | [optional] [readonly] [default to "end-host"]
-**FaultSummary** | Pointer to **int64** | The fault summary of the network Element out-of-band management interface. | [optional] [readonly] 
+**FaultSummary** | Pointer to **int64** | The fault summary for the server. | [optional] [readonly] 
 **FcMode** | Pointer to **string** | The user configured FC operational mode for this switch (End-Host or Switching). | [optional] [readonly] 
 **FcSwitchingMode** | Pointer to **string** | The user configured FC operational mode for this switch (End-Host or Switching). * &#x60;end-host&#x60; - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * &#x60;switch&#x60; - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode. | [optional] [readonly] [default to "end-host"]
 **Firmware** | Pointer to **string** | Running firmware information. | [optional] [readonly] 
+**FirmwareVersion** | Pointer to **string** | Running firmware information. | [optional] [readonly] 
+**FpgaUpgradeNeeded** | Pointer to **bool** | The flag to check vulnerability with secure boot technology. | [optional] [readonly] 
 **InbandIpAddress** | Pointer to **string** | The IP address of the network Element inband management interface. | [optional] [readonly] 
 **InbandIpGateway** | Pointer to **string** | The default gateway of the network Element inband management interface. | [optional] [readonly] 
 **InbandIpMask** | Pointer to **string** | The network mask of the network Element inband management interface. | [optional] [readonly] 
 **InbandVlan** | Pointer to **int64** | The VLAN ID of the network Element inband management interface. | [optional] [readonly] 
+**InterClusterLinkState** | Pointer to **string** | The intercluster link state of the switch. * &#x60;Unknown&#x60; - The operational state of the link is not known. * &#x60;Up&#x60; - The operational state of the link is up. * &#x60;Down&#x60; - The operational state of the link is down. * &#x60;Degraded&#x60; - The link is operational but degraded. This state is applicable to port channels when any one of the member links is down. | [optional] [readonly] [default to "Unknown"]
 **Ipv4Address** | Pointer to **string** | IP version 4 address is saved in this property. | [optional] [readonly] 
+**IsUpgraded** | Pointer to **bool** | This field indicates the compute status of the catalog values for the associated component or hardware. | [optional] [readonly] 
 **ManagementMode** | Pointer to **string** | The management mode of the fabric interconnect. * &#x60;IntersightStandalone&#x60; - Intersight Standalone mode of operation. * &#x60;UCSM&#x60; - Unified Computing System Manager mode of operation. * &#x60;Intersight&#x60; - Intersight managed mode of operation. | [optional] [readonly] [default to "IntersightStandalone"]
 **Model** | Pointer to **string** | This field identifies the model of the given component. | [optional] [readonly] 
-**Name** | Pointer to **string** | Name of the ElementSummary object is saved in this property. | [optional] [readonly] 
+**Name** | Pointer to **string** | The admin configured name of the system. | [optional] [readonly] 
 **NumEtherPorts** | Pointer to **int64** | Total number of Ethernet ports. | [optional] [readonly] 
 **NumEtherPortsConfigured** | Pointer to **int64** | Total number of configured Ethernet ports. | [optional] [readonly] 
 **NumEtherPortsLinkUp** | Pointer to **int64** | Total number of Ethernet ports which are UP. | [optional] [readonly] 
@@ -37,7 +43,7 @@ Name | Type | Description | Notes
 **NumFcPorts** | Pointer to **int64** | Total number of FC ports. | [optional] [readonly] 
 **NumFcPortsConfigured** | Pointer to **int64** | Total number of configured FC ports. | [optional] [readonly] 
 **NumFcPortsLinkUp** | Pointer to **int64** | Total number of FC ports which are UP. | [optional] [readonly] 
-**OperEvacState** | Pointer to **string** | Operational state of the Fabric Evacuation feature, for this switch. | [optional] [readonly] 
+**OperEvacState** | Pointer to **string** | Operational state of the Fabric Evacuation feature, for this switch. * &#x60;&#x60; - Evacuation state of the switch is unknown. * &#x60;enabled&#x60; - Evacuation state of the switch is enabled. * &#x60;disabled&#x60; - Evacuation state of the switch is disabled. * &#x60;applying&#x60; - Evacuation state of the switch when evacuation is in progress. * &#x60;on&#x60; - Evacuation state of the switch is enabled. * &#x60;off&#x60; - Evacuation state of the switch is disabled. * &#x60;N/A&#x60; - Evacuation state of the switch is not applicable. | [optional] [readonly] [default to ""]
 **Operability** | Pointer to **string** | The switch&#39;s current overall operational/health state. | [optional] [readonly] 
 **OutOfBandIpAddress** | Pointer to **string** | The IP address of the network Element out-of-band management interface. | [optional] [readonly] 
 **OutOfBandIpGateway** | Pointer to **string** | The default gateway of the network Element out-of-band management interface. | [optional] [readonly] 
@@ -49,21 +55,25 @@ Name | Type | Description | Notes
 **OutOfBandIpv6Gateway** | Pointer to **string** | The default IPv6 gateway of the network Element out-of-band management interface. | [optional] [readonly] 
 **OutOfBandIpv6Prefix** | Pointer to **string** | The network mask of the network Element out-of-band management interface. | [optional] [readonly] 
 **OutOfBandMac** | Pointer to **string** | The MAC address of the network Element out-of-band management interface. | [optional] [readonly] 
-**PartNumber** | Pointer to **string** | Part number of the switch. | [optional] [readonly] 
+**PartNumber** | Pointer to **string** | Part number of the switch. | [optional] 
 **Presence** | Pointer to **string** | This field identifies the presence (equipped) or absence of the given component. | [optional] [readonly] 
-**Revision** | Pointer to **string** | This field identifies the revision of the given component. | [optional] [readonly] 
+**ReservedVlanStartId** | Pointer to **int64** | The reserved VLAN start ID of the Network Element. A block of 128 VLANs are reserved for internal use and cannot be used for carrying network traffic. | [optional] [readonly] 
+**Revision** | Pointer to **string** | The product revision of the switch. | [optional] [readonly] 
 **Rn** | Pointer to **string** | The Relative Name uniquely identifies an object within a given context. | [optional] [readonly] 
 **Serial** | Pointer to **string** | This field identifies the serial of the given component. | [optional] [readonly] 
-**SourceObjectType** | Pointer to **string** | The source object type of this view MO. | [optional] [readonly] 
-**Status** | Pointer to **string** | The status of the switch. | [optional] [readonly] 
+**SourceObjectType** | Pointer to **string** | Stores the source object type used to fill the properties of this object. | [optional] [readonly] 
+**Status** | Pointer to **string** | The status of the switch. | [optional] 
 **SwitchId** | Pointer to **string** | The Switch Id of the network Element. | [optional] [readonly] 
+**SwitchProfileName** | Pointer to **string** | The name of switch profile associated with the switch. | [optional] [readonly] 
 **SwitchType** | Pointer to **string** | The Switch type that the network element is a part of. * &#x60;FabricInterconnect&#x60; - The default Switch type of UCSM and IMM mode devices. * &#x60;NexusDevice&#x60; - Switch type of Nexus devices. * &#x60;MDSDevice&#x60; - Switch type of Nexus MDS devices. | [optional] [readonly] [default to "FabricInterconnect"]
-**SystemUpTime** | Pointer to **string** | System up time of the switch. | [optional] [readonly] 
-**Thermal** | Pointer to **string** | The Thermal status of the fabric interconnect. * &#x60;unknown&#x60; - The default state of the sensor (in case no data is received). * &#x60;ok&#x60; - State of the sensor indicating the sensor&#39;s temperature range is okay. * &#x60;upper-non-recoverable&#x60; - State of the sensor indicating that the temperature is extremely high above normal range. * &#x60;upper-critical&#x60; - State of the sensor indicating that the temperature is above normal range. * &#x60;upper-non-critical&#x60; - State of the sensor indicating that the temperature is a little above the normal range. * &#x60;lower-non-critical&#x60; - State of the sensor indicating that the temperature is a little below the normal range. * &#x60;lower-critical&#x60; - State of the sensor indicating that the temperature is below normal range. * &#x60;lower-non-recoverable&#x60; - State of the sensor indicating that the temperature is extremely below normal range. | [optional] [readonly] [default to "unknown"]
+**SystemUpTime** | Pointer to **string** | System up time of the switch. | [optional] 
+**Thermal** | Pointer to **string** | The Thermal status of the fabric interconnect. * &#x60;unknown&#x60; - The default state of the sensor (in case no data is received). * &#x60;ok&#x60; - State of the sensor indicating the sensor&#39;s temperature range is okay. * &#x60;upper-non-recoverable&#x60; - State of the sensor indicating that the temperature is extremely high above normal range. * &#x60;upper-critical&#x60; - State of the sensor indicating that the temperature is above normal range. * &#x60;upper-non-critical&#x60; - State of the sensor indicating that the temperature is a little above the normal range. * &#x60;lower-non-critical&#x60; - State of the sensor indicating that the temperature is a little below the normal range. * &#x60;lower-critical&#x60; - State of the sensor indicating that the temperature is below normal range. * &#x60;lower-non-recoverable&#x60; - State of the sensor indicating that the temperature is extremely below normal range. | [optional] [default to "unknown"]
 **TotalMemory** | Pointer to **int64** | Total available memory on this switch platform. | [optional] [readonly] 
+**UserLabel** | Pointer to **string** | The user defined label assigned to the server. | [optional] [readonly] 
 **Vendor** | Pointer to **string** | This field identifies the vendor of the given component. | [optional] [readonly] 
-**Version** | Pointer to **string** | Version holds the firmware version related information. | [optional] [readonly] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**Version** | Pointer to **string** | Firmware version of the switch. | [optional] [readonly] 
+**InventoryParent** | Pointer to [**NullableMoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -234,6 +244,31 @@ SetAvailableMemory sets AvailableMemory field to given value.
 
 HasAvailableMemory returns a boolean if a field has been set.
 
+### GetBundleVersion
+
+`func (o *NetworkElementSummary) GetBundleVersion() string`
+
+GetBundleVersion returns the BundleVersion field if non-nil, zero value otherwise.
+
+### GetBundleVersionOk
+
+`func (o *NetworkElementSummary) GetBundleVersionOk() (*string, bool)`
+
+GetBundleVersionOk returns a tuple with the BundleVersion field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetBundleVersion
+
+`func (o *NetworkElementSummary) SetBundleVersion(v string)`
+
+SetBundleVersion sets BundleVersion field to given value.
+
+### HasBundleVersion
+
+`func (o *NetworkElementSummary) HasBundleVersion() bool`
+
+HasBundleVersion returns a boolean if a field has been set.
+
 ### GetChassis
 
 `func (o *NetworkElementSummary) GetChassis() string`
@@ -308,6 +343,31 @@ SetConfModTsBackup sets ConfModTsBackup field to given value.
 `func (o *NetworkElementSummary) HasConfModTsBackup() bool`
 
 HasConfModTsBackup returns a boolean if a field has been set.
+
+### GetConnectionStatus
+
+`func (o *NetworkElementSummary) GetConnectionStatus() string`
+
+GetConnectionStatus returns the ConnectionStatus field if non-nil, zero value otherwise.
+
+### GetConnectionStatusOk
+
+`func (o *NetworkElementSummary) GetConnectionStatusOk() (*string, bool)`
+
+GetConnectionStatusOk returns a tuple with the ConnectionStatus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetConnectionStatus
+
+`func (o *NetworkElementSummary) SetConnectionStatus(v string)`
+
+SetConnectionStatus sets ConnectionStatus field to given value.
+
+### HasConnectionStatus
+
+`func (o *NetworkElementSummary) HasConnectionStatus() bool`
+
+HasConnectionStatus returns a boolean if a field has been set.
 
 ### GetDefaultDomain
 
@@ -534,6 +594,56 @@ SetFirmware sets Firmware field to given value.
 
 HasFirmware returns a boolean if a field has been set.
 
+### GetFirmwareVersion
+
+`func (o *NetworkElementSummary) GetFirmwareVersion() string`
+
+GetFirmwareVersion returns the FirmwareVersion field if non-nil, zero value otherwise.
+
+### GetFirmwareVersionOk
+
+`func (o *NetworkElementSummary) GetFirmwareVersionOk() (*string, bool)`
+
+GetFirmwareVersionOk returns a tuple with the FirmwareVersion field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFirmwareVersion
+
+`func (o *NetworkElementSummary) SetFirmwareVersion(v string)`
+
+SetFirmwareVersion sets FirmwareVersion field to given value.
+
+### HasFirmwareVersion
+
+`func (o *NetworkElementSummary) HasFirmwareVersion() bool`
+
+HasFirmwareVersion returns a boolean if a field has been set.
+
+### GetFpgaUpgradeNeeded
+
+`func (o *NetworkElementSummary) GetFpgaUpgradeNeeded() bool`
+
+GetFpgaUpgradeNeeded returns the FpgaUpgradeNeeded field if non-nil, zero value otherwise.
+
+### GetFpgaUpgradeNeededOk
+
+`func (o *NetworkElementSummary) GetFpgaUpgradeNeededOk() (*bool, bool)`
+
+GetFpgaUpgradeNeededOk returns a tuple with the FpgaUpgradeNeeded field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFpgaUpgradeNeeded
+
+`func (o *NetworkElementSummary) SetFpgaUpgradeNeeded(v bool)`
+
+SetFpgaUpgradeNeeded sets FpgaUpgradeNeeded field to given value.
+
+### HasFpgaUpgradeNeeded
+
+`func (o *NetworkElementSummary) HasFpgaUpgradeNeeded() bool`
+
+HasFpgaUpgradeNeeded returns a boolean if a field has been set.
+
 ### GetInbandIpAddress
 
 `func (o *NetworkElementSummary) GetInbandIpAddress() string`
@@ -634,6 +744,31 @@ SetInbandVlan sets InbandVlan field to given value.
 
 HasInbandVlan returns a boolean if a field has been set.
 
+### GetInterClusterLinkState
+
+`func (o *NetworkElementSummary) GetInterClusterLinkState() string`
+
+GetInterClusterLinkState returns the InterClusterLinkState field if non-nil, zero value otherwise.
+
+### GetInterClusterLinkStateOk
+
+`func (o *NetworkElementSummary) GetInterClusterLinkStateOk() (*string, bool)`
+
+GetInterClusterLinkStateOk returns a tuple with the InterClusterLinkState field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetInterClusterLinkState
+
+`func (o *NetworkElementSummary) SetInterClusterLinkState(v string)`
+
+SetInterClusterLinkState sets InterClusterLinkState field to given value.
+
+### HasInterClusterLinkState
+
+`func (o *NetworkElementSummary) HasInterClusterLinkState() bool`
+
+HasInterClusterLinkState returns a boolean if a field has been set.
+
 ### GetIpv4Address
 
 `func (o *NetworkElementSummary) GetIpv4Address() string`
@@ -658,6 +793,31 @@ SetIpv4Address sets Ipv4Address field to given value.
 `func (o *NetworkElementSummary) HasIpv4Address() bool`
 
 HasIpv4Address returns a boolean if a field has been set.
+
+### GetIsUpgraded
+
+`func (o *NetworkElementSummary) GetIsUpgraded() bool`
+
+GetIsUpgraded returns the IsUpgraded field if non-nil, zero value otherwise.
+
+### GetIsUpgradedOk
+
+`func (o *NetworkElementSummary) GetIsUpgradedOk() (*bool, bool)`
+
+GetIsUpgradedOk returns a tuple with the IsUpgraded field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsUpgraded
+
+`func (o *NetworkElementSummary) SetIsUpgraded(v bool)`
+
+SetIsUpgraded sets IsUpgraded field to given value.
+
+### HasIsUpgraded
+
+`func (o *NetworkElementSummary) HasIsUpgraded() bool`
+
+HasIsUpgraded returns a boolean if a field has been set.
 
 ### GetManagementMode
 
@@ -1259,6 +1419,31 @@ SetPresence sets Presence field to given value.
 
 HasPresence returns a boolean if a field has been set.
 
+### GetReservedVlanStartId
+
+`func (o *NetworkElementSummary) GetReservedVlanStartId() int64`
+
+GetReservedVlanStartId returns the ReservedVlanStartId field if non-nil, zero value otherwise.
+
+### GetReservedVlanStartIdOk
+
+`func (o *NetworkElementSummary) GetReservedVlanStartIdOk() (*int64, bool)`
+
+GetReservedVlanStartIdOk returns a tuple with the ReservedVlanStartId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReservedVlanStartId
+
+`func (o *NetworkElementSummary) SetReservedVlanStartId(v int64)`
+
+SetReservedVlanStartId sets ReservedVlanStartId field to given value.
+
+### HasReservedVlanStartId
+
+`func (o *NetworkElementSummary) HasReservedVlanStartId() bool`
+
+HasReservedVlanStartId returns a boolean if a field has been set.
+
 ### GetRevision
 
 `func (o *NetworkElementSummary) GetRevision() string`
@@ -1409,6 +1594,31 @@ SetSwitchId sets SwitchId field to given value.
 
 HasSwitchId returns a boolean if a field has been set.
 
+### GetSwitchProfileName
+
+`func (o *NetworkElementSummary) GetSwitchProfileName() string`
+
+GetSwitchProfileName returns the SwitchProfileName field if non-nil, zero value otherwise.
+
+### GetSwitchProfileNameOk
+
+`func (o *NetworkElementSummary) GetSwitchProfileNameOk() (*string, bool)`
+
+GetSwitchProfileNameOk returns a tuple with the SwitchProfileName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchProfileName
+
+`func (o *NetworkElementSummary) SetSwitchProfileName(v string)`
+
+SetSwitchProfileName sets SwitchProfileName field to given value.
+
+### HasSwitchProfileName
+
+`func (o *NetworkElementSummary) HasSwitchProfileName() bool`
+
+HasSwitchProfileName returns a boolean if a field has been set.
+
 ### GetSwitchType
 
 `func (o *NetworkElementSummary) GetSwitchType() string`
@@ -1509,6 +1719,31 @@ SetTotalMemory sets TotalMemory field to given value.
 
 HasTotalMemory returns a boolean if a field has been set.
 
+### GetUserLabel
+
+`func (o *NetworkElementSummary) GetUserLabel() string`
+
+GetUserLabel returns the UserLabel field if non-nil, zero value otherwise.
+
+### GetUserLabelOk
+
+`func (o *NetworkElementSummary) GetUserLabelOk() (*string, bool)`
+
+GetUserLabelOk returns a tuple with the UserLabel field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUserLabel
+
+`func (o *NetworkElementSummary) SetUserLabel(v string)`
+
+SetUserLabel sets UserLabel field to given value.
+
+### HasUserLabel
+
+`func (o *NetworkElementSummary) HasUserLabel() bool`
+
+HasUserLabel returns a boolean if a field has been set.
+
 ### GetVendor
 
 `func (o *NetworkElementSummary) GetVendor() string`
@@ -1559,6 +1794,41 @@ SetVersion sets Version field to given value.
 
 HasVersion returns a boolean if a field has been set.
 
+### GetInventoryParent
+
+`func (o *NetworkElementSummary) GetInventoryParent() MoBaseMoRelationship`
+
+GetInventoryParent returns the InventoryParent field if non-nil, zero value otherwise.
+
+### GetInventoryParentOk
+
+`func (o *NetworkElementSummary) GetInventoryParentOk() (*MoBaseMoRelationship, bool)`
+
+GetInventoryParentOk returns a tuple with the InventoryParent field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetInventoryParent
+
+`func (o *NetworkElementSummary) SetInventoryParent(v MoBaseMoRelationship)`
+
+SetInventoryParent sets InventoryParent field to given value.
+
+### HasInventoryParent
+
+`func (o *NetworkElementSummary) HasInventoryParent() bool`
+
+HasInventoryParent returns a boolean if a field has been set.
+
+### SetInventoryParentNil
+
+`func (o *NetworkElementSummary) SetInventoryParentNil(b bool)`
+
+ SetInventoryParentNil sets the value for InventoryParent to be an explicit nil
+
+### UnsetInventoryParent
+`func (o *NetworkElementSummary) UnsetInventoryParent()`
+
+UnsetInventoryParent ensures that no value is present for InventoryParent, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *NetworkElementSummary) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -1584,6 +1854,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *NetworkElementSummary) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *NetworkElementSummary) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

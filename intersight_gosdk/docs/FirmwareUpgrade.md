@@ -8,8 +8,9 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "firmware.Upgrade"]
 **ExcludeComponentList** | Pointer to **[]string** |  | [optional] 
 **ExcludeComponentPidList** | Pointer to [**NullableFirmwareExcludeComponentPidListType**](FirmwareExcludeComponentPidListType.md) |  | [optional] 
-**Device** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
-**Server** | Pointer to [**ComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
+**UpgradeTriggerMethod** | Pointer to **string** | The source that triggered the upgrade. Either via profile or traditional way. * &#x60;none&#x60; - Upgrade is invoked within the service. * &#x60;profileTrigger&#x60; - Upgrade is invoked from a profile deployment. | [optional] [default to "none"]
+**Device** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**Server** | Pointer to [**NullableComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -140,6 +141,31 @@ HasExcludeComponentPidList returns a boolean if a field has been set.
 `func (o *FirmwareUpgrade) UnsetExcludeComponentPidList()`
 
 UnsetExcludeComponentPidList ensures that no value is present for ExcludeComponentPidList, not even an explicit nil
+### GetUpgradeTriggerMethod
+
+`func (o *FirmwareUpgrade) GetUpgradeTriggerMethod() string`
+
+GetUpgradeTriggerMethod returns the UpgradeTriggerMethod field if non-nil, zero value otherwise.
+
+### GetUpgradeTriggerMethodOk
+
+`func (o *FirmwareUpgrade) GetUpgradeTriggerMethodOk() (*string, bool)`
+
+GetUpgradeTriggerMethodOk returns a tuple with the UpgradeTriggerMethod field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUpgradeTriggerMethod
+
+`func (o *FirmwareUpgrade) SetUpgradeTriggerMethod(v string)`
+
+SetUpgradeTriggerMethod sets UpgradeTriggerMethod field to given value.
+
+### HasUpgradeTriggerMethod
+
+`func (o *FirmwareUpgrade) HasUpgradeTriggerMethod() bool`
+
+HasUpgradeTriggerMethod returns a boolean if a field has been set.
+
 ### GetDevice
 
 `func (o *FirmwareUpgrade) GetDevice() AssetDeviceRegistrationRelationship`
@@ -165,6 +191,16 @@ SetDevice sets Device field to given value.
 
 HasDevice returns a boolean if a field has been set.
 
+### SetDeviceNil
+
+`func (o *FirmwareUpgrade) SetDeviceNil(b bool)`
+
+ SetDeviceNil sets the value for Device to be an explicit nil
+
+### UnsetDevice
+`func (o *FirmwareUpgrade) UnsetDevice()`
+
+UnsetDevice ensures that no value is present for Device, not even an explicit nil
 ### GetServer
 
 `func (o *FirmwareUpgrade) GetServer() ComputePhysicalRelationship`
@@ -190,6 +226,16 @@ SetServer sets Server field to given value.
 
 HasServer returns a boolean if a field has been set.
 
+### SetServerNil
+
+`func (o *FirmwareUpgrade) SetServerNil(b bool)`
+
+ SetServerNil sets the value for Server to be an explicit nil
+
+### UnsetServer
+`func (o *FirmwareUpgrade) UnsetServer()`
+
+UnsetServer ensures that no value is present for Server, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

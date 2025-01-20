@@ -8,21 +8,28 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "server.Profile"]
 **ConfigChangeContext** | Pointer to [**NullablePolicyConfigChangeContext**](PolicyConfigChangeContext.md) |  | [optional] 
 **ConfigChanges** | Pointer to [**NullablePolicyConfigChange**](PolicyConfigChange.md) |  | [optional] 
+**DeployStatus** | Pointer to **string** | The status of the server profile indicating if deployment has been initiated on both fabric interconnects or not. * &#x60;None&#x60; - Switch profiles not deployed on either of the switches. * &#x60;Complete&#x60; - Both switch profiles of the cluster profile are deployed. * &#x60;Partial&#x60; - Only one of the switch profiles of the cluster profile is deployed. | [optional] [readonly] [default to "None"]
+**DeployedSwitches** | Pointer to **string** | The property which determines if the deployment should be skipped on any of the Fabric Interconnects. It is set based on the state of a fabric interconnect to Intersight before the deployment of the server proile begins. * &#x60;None&#x60; - Server profile configuration not deployed on either of the fabric interconnects. * &#x60;AB&#x60; - Server profile configuration deployed on both fabric interconnects. * &#x60;A&#x60; - Server profile configuration deployed on fabric interconnect A only. * &#x60;B&#x60; - Server profile configuration deployed on fabric interconnect B only. | [optional] [readonly] [default to "None"]
+**InternalReservationReferences** | Pointer to [**[]PoolReservationReference**](PoolReservationReference.md) |  | [optional] 
 **IsPmcDeployedSecurePassphraseSet** | Pointer to **bool** | Indicates whether the value of the &#39;pmcDeployedSecurePassphrase&#39; property has been set. | [optional] [readonly] [default to false]
 **PmcDeployedSecurePassphrase** | Pointer to **string** | Secure passphrase that is already deployed on all the Persistent Memory Modules on the server. This deployed passphrase is required during deploy of server profile if secure passphrase is changed or security is disabled in the attached persistent memory policy. | [optional] 
-**ServerAssignmentMode** | Pointer to **string** | Source of the server assigned to the server profile. Values can be Static, Pool or None. Static is used if a server is attached directly to server profile. Pool is used if a resource pool is attached to server profile. None is used if no server or resource pool is attached to server profile. * &#x60;None&#x60; - No server is assigned to the server profile. * &#x60;Static&#x60; - Server is directly assigned to server profile using assign server. * &#x60;Pool&#x60; - Server is assigned from a resource pool. | [optional] [default to "None"]
+**ReservationReferences** | Pointer to [**[]PoolReservationReference**](PoolReservationReference.md) |  | [optional] 
+**ServerAssignmentMode** | Pointer to **string** | Source of the server assigned to the Server Profile. Values can be Static, Pool or None. Static is used if a server is attached directly to a Server Profile. Pool is used if a resource pool is attached to a Server Profile. None is used if no server or resource pool is attached to a Server Profile. Slot or Serial pre-assignment is also considered to be None as it is different form of Assign Later. * &#x60;None&#x60; - No server is assigned to the server profile. * &#x60;Static&#x60; - Server is directly assigned to server profile using assign server. * &#x60;Pool&#x60; - Server is assigned from a resource pool. | [optional] [default to "None"]
+**ServerPreAssignBySerial** | Pointer to **string** | Serial number of the server that would be assigned to this pre-assigned Server Profile. It can be any string that adheres to the following constraints: It should start and end with an alphanumeric character. It cannot be more than 20 characters. | [optional] 
+**ServerPreAssignBySlot** | Pointer to [**NullableServerServerAssignTypeSlot**](ServerServerAssignTypeSlot.md) |  | [optional] 
 **StaticUuidAddress** | Pointer to **string** | The UUID address for the server must include UUID prefix xxxxxxxx-xxxx-xxxx along with the UUID suffix of format xxxx-xxxxxxxxxxxx. | [optional] 
+**UserLabel** | Pointer to **string** | User label assigned to the server profile. | [optional] 
 **Uuid** | Pointer to **string** | The UUID address that is assigned to the server based on the UUID pool. | [optional] [readonly] 
-**AssignedServer** | Pointer to [**ComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
-**AssociatedServer** | Pointer to [**ComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
-**AssociatedServerPool** | Pointer to [**ResourcepoolPoolRelationship**](ResourcepoolPoolRelationship.md) |  | [optional] 
+**AssignedServer** | Pointer to [**NullableComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
+**AssociatedServer** | Pointer to [**NullableComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
+**AssociatedServerPool** | Pointer to [**NullableResourcepoolPoolRelationship**](ResourcepoolPoolRelationship.md) |  | [optional] 
 **ConfigChangeDetails** | Pointer to [**[]ServerConfigChangeDetailRelationship**](ServerConfigChangeDetailRelationship.md) | An array of relationships to serverConfigChangeDetail resources. | [optional] [readonly] 
-**LeasedServer** | Pointer to [**ComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
-**Organization** | Pointer to [**OrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
-**ResourceLease** | Pointer to [**ResourcepoolLeaseRelationship**](ResourcepoolLeaseRelationship.md) |  | [optional] 
+**LeasedServer** | Pointer to [**NullableComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
+**Organization** | Pointer to [**NullableOrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**ResourceLease** | Pointer to [**NullableResourcepoolLeaseRelationship**](ResourcepoolLeaseRelationship.md) |  | [optional] 
 **RunningWorkflows** | Pointer to [**[]WorkflowWorkflowInfoRelationship**](WorkflowWorkflowInfoRelationship.md) | An array of relationships to workflowWorkflowInfo resources. | [optional] [readonly] 
-**ServerPool** | Pointer to [**ResourcepoolPoolRelationship**](ResourcepoolPoolRelationship.md) |  | [optional] 
-**UuidLease** | Pointer to [**UuidpoolUuidLeaseRelationship**](UuidpoolUuidLeaseRelationship.md) |  | [optional] 
+**ServerPool** | Pointer to [**NullableResourcepoolPoolRelationship**](ResourcepoolPoolRelationship.md) |  | [optional] 
+**UuidLease** | Pointer to [**NullableUuidpoolUuidLeaseRelationship**](UuidpoolUuidLeaseRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -153,6 +160,91 @@ HasConfigChanges returns a boolean if a field has been set.
 `func (o *ServerProfile) UnsetConfigChanges()`
 
 UnsetConfigChanges ensures that no value is present for ConfigChanges, not even an explicit nil
+### GetDeployStatus
+
+`func (o *ServerProfile) GetDeployStatus() string`
+
+GetDeployStatus returns the DeployStatus field if non-nil, zero value otherwise.
+
+### GetDeployStatusOk
+
+`func (o *ServerProfile) GetDeployStatusOk() (*string, bool)`
+
+GetDeployStatusOk returns a tuple with the DeployStatus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDeployStatus
+
+`func (o *ServerProfile) SetDeployStatus(v string)`
+
+SetDeployStatus sets DeployStatus field to given value.
+
+### HasDeployStatus
+
+`func (o *ServerProfile) HasDeployStatus() bool`
+
+HasDeployStatus returns a boolean if a field has been set.
+
+### GetDeployedSwitches
+
+`func (o *ServerProfile) GetDeployedSwitches() string`
+
+GetDeployedSwitches returns the DeployedSwitches field if non-nil, zero value otherwise.
+
+### GetDeployedSwitchesOk
+
+`func (o *ServerProfile) GetDeployedSwitchesOk() (*string, bool)`
+
+GetDeployedSwitchesOk returns a tuple with the DeployedSwitches field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDeployedSwitches
+
+`func (o *ServerProfile) SetDeployedSwitches(v string)`
+
+SetDeployedSwitches sets DeployedSwitches field to given value.
+
+### HasDeployedSwitches
+
+`func (o *ServerProfile) HasDeployedSwitches() bool`
+
+HasDeployedSwitches returns a boolean if a field has been set.
+
+### GetInternalReservationReferences
+
+`func (o *ServerProfile) GetInternalReservationReferences() []PoolReservationReference`
+
+GetInternalReservationReferences returns the InternalReservationReferences field if non-nil, zero value otherwise.
+
+### GetInternalReservationReferencesOk
+
+`func (o *ServerProfile) GetInternalReservationReferencesOk() (*[]PoolReservationReference, bool)`
+
+GetInternalReservationReferencesOk returns a tuple with the InternalReservationReferences field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetInternalReservationReferences
+
+`func (o *ServerProfile) SetInternalReservationReferences(v []PoolReservationReference)`
+
+SetInternalReservationReferences sets InternalReservationReferences field to given value.
+
+### HasInternalReservationReferences
+
+`func (o *ServerProfile) HasInternalReservationReferences() bool`
+
+HasInternalReservationReferences returns a boolean if a field has been set.
+
+### SetInternalReservationReferencesNil
+
+`func (o *ServerProfile) SetInternalReservationReferencesNil(b bool)`
+
+ SetInternalReservationReferencesNil sets the value for InternalReservationReferences to be an explicit nil
+
+### UnsetInternalReservationReferences
+`func (o *ServerProfile) UnsetInternalReservationReferences()`
+
+UnsetInternalReservationReferences ensures that no value is present for InternalReservationReferences, not even an explicit nil
 ### GetIsPmcDeployedSecurePassphraseSet
 
 `func (o *ServerProfile) GetIsPmcDeployedSecurePassphraseSet() bool`
@@ -203,6 +295,41 @@ SetPmcDeployedSecurePassphrase sets PmcDeployedSecurePassphrase field to given v
 
 HasPmcDeployedSecurePassphrase returns a boolean if a field has been set.
 
+### GetReservationReferences
+
+`func (o *ServerProfile) GetReservationReferences() []PoolReservationReference`
+
+GetReservationReferences returns the ReservationReferences field if non-nil, zero value otherwise.
+
+### GetReservationReferencesOk
+
+`func (o *ServerProfile) GetReservationReferencesOk() (*[]PoolReservationReference, bool)`
+
+GetReservationReferencesOk returns a tuple with the ReservationReferences field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReservationReferences
+
+`func (o *ServerProfile) SetReservationReferences(v []PoolReservationReference)`
+
+SetReservationReferences sets ReservationReferences field to given value.
+
+### HasReservationReferences
+
+`func (o *ServerProfile) HasReservationReferences() bool`
+
+HasReservationReferences returns a boolean if a field has been set.
+
+### SetReservationReferencesNil
+
+`func (o *ServerProfile) SetReservationReferencesNil(b bool)`
+
+ SetReservationReferencesNil sets the value for ReservationReferences to be an explicit nil
+
+### UnsetReservationReferences
+`func (o *ServerProfile) UnsetReservationReferences()`
+
+UnsetReservationReferences ensures that no value is present for ReservationReferences, not even an explicit nil
 ### GetServerAssignmentMode
 
 `func (o *ServerProfile) GetServerAssignmentMode() string`
@@ -228,6 +355,66 @@ SetServerAssignmentMode sets ServerAssignmentMode field to given value.
 
 HasServerAssignmentMode returns a boolean if a field has been set.
 
+### GetServerPreAssignBySerial
+
+`func (o *ServerProfile) GetServerPreAssignBySerial() string`
+
+GetServerPreAssignBySerial returns the ServerPreAssignBySerial field if non-nil, zero value otherwise.
+
+### GetServerPreAssignBySerialOk
+
+`func (o *ServerProfile) GetServerPreAssignBySerialOk() (*string, bool)`
+
+GetServerPreAssignBySerialOk returns a tuple with the ServerPreAssignBySerial field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetServerPreAssignBySerial
+
+`func (o *ServerProfile) SetServerPreAssignBySerial(v string)`
+
+SetServerPreAssignBySerial sets ServerPreAssignBySerial field to given value.
+
+### HasServerPreAssignBySerial
+
+`func (o *ServerProfile) HasServerPreAssignBySerial() bool`
+
+HasServerPreAssignBySerial returns a boolean if a field has been set.
+
+### GetServerPreAssignBySlot
+
+`func (o *ServerProfile) GetServerPreAssignBySlot() ServerServerAssignTypeSlot`
+
+GetServerPreAssignBySlot returns the ServerPreAssignBySlot field if non-nil, zero value otherwise.
+
+### GetServerPreAssignBySlotOk
+
+`func (o *ServerProfile) GetServerPreAssignBySlotOk() (*ServerServerAssignTypeSlot, bool)`
+
+GetServerPreAssignBySlotOk returns a tuple with the ServerPreAssignBySlot field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetServerPreAssignBySlot
+
+`func (o *ServerProfile) SetServerPreAssignBySlot(v ServerServerAssignTypeSlot)`
+
+SetServerPreAssignBySlot sets ServerPreAssignBySlot field to given value.
+
+### HasServerPreAssignBySlot
+
+`func (o *ServerProfile) HasServerPreAssignBySlot() bool`
+
+HasServerPreAssignBySlot returns a boolean if a field has been set.
+
+### SetServerPreAssignBySlotNil
+
+`func (o *ServerProfile) SetServerPreAssignBySlotNil(b bool)`
+
+ SetServerPreAssignBySlotNil sets the value for ServerPreAssignBySlot to be an explicit nil
+
+### UnsetServerPreAssignBySlot
+`func (o *ServerProfile) UnsetServerPreAssignBySlot()`
+
+UnsetServerPreAssignBySlot ensures that no value is present for ServerPreAssignBySlot, not even an explicit nil
 ### GetStaticUuidAddress
 
 `func (o *ServerProfile) GetStaticUuidAddress() string`
@@ -252,6 +439,31 @@ SetStaticUuidAddress sets StaticUuidAddress field to given value.
 `func (o *ServerProfile) HasStaticUuidAddress() bool`
 
 HasStaticUuidAddress returns a boolean if a field has been set.
+
+### GetUserLabel
+
+`func (o *ServerProfile) GetUserLabel() string`
+
+GetUserLabel returns the UserLabel field if non-nil, zero value otherwise.
+
+### GetUserLabelOk
+
+`func (o *ServerProfile) GetUserLabelOk() (*string, bool)`
+
+GetUserLabelOk returns a tuple with the UserLabel field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUserLabel
+
+`func (o *ServerProfile) SetUserLabel(v string)`
+
+SetUserLabel sets UserLabel field to given value.
+
+### HasUserLabel
+
+`func (o *ServerProfile) HasUserLabel() bool`
+
+HasUserLabel returns a boolean if a field has been set.
 
 ### GetUuid
 
@@ -303,6 +515,16 @@ SetAssignedServer sets AssignedServer field to given value.
 
 HasAssignedServer returns a boolean if a field has been set.
 
+### SetAssignedServerNil
+
+`func (o *ServerProfile) SetAssignedServerNil(b bool)`
+
+ SetAssignedServerNil sets the value for AssignedServer to be an explicit nil
+
+### UnsetAssignedServer
+`func (o *ServerProfile) UnsetAssignedServer()`
+
+UnsetAssignedServer ensures that no value is present for AssignedServer, not even an explicit nil
 ### GetAssociatedServer
 
 `func (o *ServerProfile) GetAssociatedServer() ComputePhysicalRelationship`
@@ -328,6 +550,16 @@ SetAssociatedServer sets AssociatedServer field to given value.
 
 HasAssociatedServer returns a boolean if a field has been set.
 
+### SetAssociatedServerNil
+
+`func (o *ServerProfile) SetAssociatedServerNil(b bool)`
+
+ SetAssociatedServerNil sets the value for AssociatedServer to be an explicit nil
+
+### UnsetAssociatedServer
+`func (o *ServerProfile) UnsetAssociatedServer()`
+
+UnsetAssociatedServer ensures that no value is present for AssociatedServer, not even an explicit nil
 ### GetAssociatedServerPool
 
 `func (o *ServerProfile) GetAssociatedServerPool() ResourcepoolPoolRelationship`
@@ -353,6 +585,16 @@ SetAssociatedServerPool sets AssociatedServerPool field to given value.
 
 HasAssociatedServerPool returns a boolean if a field has been set.
 
+### SetAssociatedServerPoolNil
+
+`func (o *ServerProfile) SetAssociatedServerPoolNil(b bool)`
+
+ SetAssociatedServerPoolNil sets the value for AssociatedServerPool to be an explicit nil
+
+### UnsetAssociatedServerPool
+`func (o *ServerProfile) UnsetAssociatedServerPool()`
+
+UnsetAssociatedServerPool ensures that no value is present for AssociatedServerPool, not even an explicit nil
 ### GetConfigChangeDetails
 
 `func (o *ServerProfile) GetConfigChangeDetails() []ServerConfigChangeDetailRelationship`
@@ -413,6 +655,16 @@ SetLeasedServer sets LeasedServer field to given value.
 
 HasLeasedServer returns a boolean if a field has been set.
 
+### SetLeasedServerNil
+
+`func (o *ServerProfile) SetLeasedServerNil(b bool)`
+
+ SetLeasedServerNil sets the value for LeasedServer to be an explicit nil
+
+### UnsetLeasedServer
+`func (o *ServerProfile) UnsetLeasedServer()`
+
+UnsetLeasedServer ensures that no value is present for LeasedServer, not even an explicit nil
 ### GetOrganization
 
 `func (o *ServerProfile) GetOrganization() OrganizationOrganizationRelationship`
@@ -438,6 +690,16 @@ SetOrganization sets Organization field to given value.
 
 HasOrganization returns a boolean if a field has been set.
 
+### SetOrganizationNil
+
+`func (o *ServerProfile) SetOrganizationNil(b bool)`
+
+ SetOrganizationNil sets the value for Organization to be an explicit nil
+
+### UnsetOrganization
+`func (o *ServerProfile) UnsetOrganization()`
+
+UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
 ### GetResourceLease
 
 `func (o *ServerProfile) GetResourceLease() ResourcepoolLeaseRelationship`
@@ -463,6 +725,16 @@ SetResourceLease sets ResourceLease field to given value.
 
 HasResourceLease returns a boolean if a field has been set.
 
+### SetResourceLeaseNil
+
+`func (o *ServerProfile) SetResourceLeaseNil(b bool)`
+
+ SetResourceLeaseNil sets the value for ResourceLease to be an explicit nil
+
+### UnsetResourceLease
+`func (o *ServerProfile) UnsetResourceLease()`
+
+UnsetResourceLease ensures that no value is present for ResourceLease, not even an explicit nil
 ### GetRunningWorkflows
 
 `func (o *ServerProfile) GetRunningWorkflows() []WorkflowWorkflowInfoRelationship`
@@ -523,6 +795,16 @@ SetServerPool sets ServerPool field to given value.
 
 HasServerPool returns a boolean if a field has been set.
 
+### SetServerPoolNil
+
+`func (o *ServerProfile) SetServerPoolNil(b bool)`
+
+ SetServerPoolNil sets the value for ServerPool to be an explicit nil
+
+### UnsetServerPool
+`func (o *ServerProfile) UnsetServerPool()`
+
+UnsetServerPool ensures that no value is present for ServerPool, not even an explicit nil
 ### GetUuidLease
 
 `func (o *ServerProfile) GetUuidLease() UuidpoolUuidLeaseRelationship`
@@ -548,6 +830,16 @@ SetUuidLease sets UuidLease field to given value.
 
 HasUuidLease returns a boolean if a field has been set.
 
+### SetUuidLeaseNil
+
+`func (o *ServerProfile) SetUuidLeaseNil(b bool)`
+
+ SetUuidLeaseNil sets the value for UuidLease to be an explicit nil
+
+### UnsetUuidLease
+`func (o *ServerProfile) UnsetUuidLease()`
+
+UnsetUuidLease ensures that no value is present for UuidLease, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

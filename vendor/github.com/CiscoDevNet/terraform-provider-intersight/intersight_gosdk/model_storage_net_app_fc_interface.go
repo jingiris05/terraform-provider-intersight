@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the StorageNetAppFcInterface type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &StorageNetAppFcInterface{}
 
 // StorageNetAppFcInterface NetApp FC Interface is a logical interface.
 type StorageNetAppFcInterface struct {
@@ -26,15 +30,22 @@ type StorageNetAppFcInterface struct {
 	ObjectType string `json:"ObjectType"`
 	// FC interface is enabled or not.
 	Enabled *string `json:"Enabled,omitempty"`
+	// The state of the FC interface. * `Down` - The state is set to down if the interface is not enabled. * `Up` - The state is set to up if the interface is enabled.
+	InterfaceState *string `json:"InterfaceState,omitempty"`
 	// The state of the FC interface. * `down` - An inactive port is listed as Down. * `up` - An active port is listed as Up. * `present` - An active port is listed as present.
+	// Deprecated
 	State *string `json:"State,omitempty"`
-	// Uuid of  NetApp FC Interface.
-	Uuid            *string                        `json:"Uuid,omitempty"`
-	ArrayController *StorageNetAppNodeRelationship `json:"ArrayController,omitempty"`
+	// The storage virtual machine name for the interface.
+	SvmName *string `json:"SvmName,omitempty"`
+	// Uuid of NetApp FC Interface.
+	Uuid *string `json:"Uuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+	// The parent volume name for the interface.
+	VolumeName      *string                               `json:"VolumeName,omitempty"`
+	ArrayController NullableStorageNetAppNodeRelationship `json:"ArrayController,omitempty"`
 	// An array of relationships to storageNetAppFcInterfaceEvent resources.
 	Events               []StorageNetAppFcInterfaceEventRelationship `json:"Events,omitempty"`
-	PhysicalPort         *StorageNetAppFcPortRelationship            `json:"PhysicalPort,omitempty"`
-	Tenant               *StorageNetAppStorageVmRelationship         `json:"Tenant,omitempty"`
+	PhysicalPort         NullableStorageNetAppFcPortRelationship     `json:"PhysicalPort,omitempty"`
+	Tenant               NullableStorageNetAppStorageVmRelationship  `json:"Tenant,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -87,6 +98,11 @@ func (o *StorageNetAppFcInterface) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "storage.NetAppFcInterface" of the ClassId field.
+func (o *StorageNetAppFcInterface) GetDefaultClassId() interface{} {
+	return "storage.NetAppFcInterface"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *StorageNetAppFcInterface) GetObjectType() string {
 	if o == nil {
@@ -111,9 +127,14 @@ func (o *StorageNetAppFcInterface) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "storage.NetAppFcInterface" of the ObjectType field.
+func (o *StorageNetAppFcInterface) GetDefaultObjectType() interface{} {
+	return "storage.NetAppFcInterface"
+}
+
 // GetEnabled returns the Enabled field value if set, zero value otherwise.
 func (o *StorageNetAppFcInterface) GetEnabled() string {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		var ret string
 		return ret
 	}
@@ -123,7 +144,7 @@ func (o *StorageNetAppFcInterface) GetEnabled() string {
 // GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppFcInterface) GetEnabledOk() (*string, bool) {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		return nil, false
 	}
 	return o.Enabled, true
@@ -131,7 +152,7 @@ func (o *StorageNetAppFcInterface) GetEnabledOk() (*string, bool) {
 
 // HasEnabled returns a boolean if a field has been set.
 func (o *StorageNetAppFcInterface) HasEnabled() bool {
-	if o != nil && o.Enabled != nil {
+	if o != nil && !IsNil(o.Enabled) {
 		return true
 	}
 
@@ -143,9 +164,42 @@ func (o *StorageNetAppFcInterface) SetEnabled(v string) {
 	o.Enabled = &v
 }
 
+// GetInterfaceState returns the InterfaceState field value if set, zero value otherwise.
+func (o *StorageNetAppFcInterface) GetInterfaceState() string {
+	if o == nil || IsNil(o.InterfaceState) {
+		var ret string
+		return ret
+	}
+	return *o.InterfaceState
+}
+
+// GetInterfaceStateOk returns a tuple with the InterfaceState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppFcInterface) GetInterfaceStateOk() (*string, bool) {
+	if o == nil || IsNil(o.InterfaceState) {
+		return nil, false
+	}
+	return o.InterfaceState, true
+}
+
+// HasInterfaceState returns a boolean if a field has been set.
+func (o *StorageNetAppFcInterface) HasInterfaceState() bool {
+	if o != nil && !IsNil(o.InterfaceState) {
+		return true
+	}
+
+	return false
+}
+
+// SetInterfaceState gets a reference to the given string and assigns it to the InterfaceState field.
+func (o *StorageNetAppFcInterface) SetInterfaceState(v string) {
+	o.InterfaceState = &v
+}
+
 // GetState returns the State field value if set, zero value otherwise.
+// Deprecated
 func (o *StorageNetAppFcInterface) GetState() string {
-	if o == nil || o.State == nil {
+	if o == nil || IsNil(o.State) {
 		var ret string
 		return ret
 	}
@@ -154,8 +208,9 @@ func (o *StorageNetAppFcInterface) GetState() string {
 
 // GetStateOk returns a tuple with the State field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *StorageNetAppFcInterface) GetStateOk() (*string, bool) {
-	if o == nil || o.State == nil {
+	if o == nil || IsNil(o.State) {
 		return nil, false
 	}
 	return o.State, true
@@ -163,7 +218,7 @@ func (o *StorageNetAppFcInterface) GetStateOk() (*string, bool) {
 
 // HasState returns a boolean if a field has been set.
 func (o *StorageNetAppFcInterface) HasState() bool {
-	if o != nil && o.State != nil {
+	if o != nil && !IsNil(o.State) {
 		return true
 	}
 
@@ -171,13 +226,46 @@ func (o *StorageNetAppFcInterface) HasState() bool {
 }
 
 // SetState gets a reference to the given string and assigns it to the State field.
+// Deprecated
 func (o *StorageNetAppFcInterface) SetState(v string) {
 	o.State = &v
 }
 
+// GetSvmName returns the SvmName field value if set, zero value otherwise.
+func (o *StorageNetAppFcInterface) GetSvmName() string {
+	if o == nil || IsNil(o.SvmName) {
+		var ret string
+		return ret
+	}
+	return *o.SvmName
+}
+
+// GetSvmNameOk returns a tuple with the SvmName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppFcInterface) GetSvmNameOk() (*string, bool) {
+	if o == nil || IsNil(o.SvmName) {
+		return nil, false
+	}
+	return o.SvmName, true
+}
+
+// HasSvmName returns a boolean if a field has been set.
+func (o *StorageNetAppFcInterface) HasSvmName() bool {
+	if o != nil && !IsNil(o.SvmName) {
+		return true
+	}
+
+	return false
+}
+
+// SetSvmName gets a reference to the given string and assigns it to the SvmName field.
+func (o *StorageNetAppFcInterface) SetSvmName(v string) {
+	o.SvmName = &v
+}
+
 // GetUuid returns the Uuid field value if set, zero value otherwise.
 func (o *StorageNetAppFcInterface) GetUuid() string {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		var ret string
 		return ret
 	}
@@ -187,7 +275,7 @@ func (o *StorageNetAppFcInterface) GetUuid() string {
 // GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppFcInterface) GetUuidOk() (*string, bool) {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		return nil, false
 	}
 	return o.Uuid, true
@@ -195,7 +283,7 @@ func (o *StorageNetAppFcInterface) GetUuidOk() (*string, bool) {
 
 // HasUuid returns a boolean if a field has been set.
 func (o *StorageNetAppFcInterface) HasUuid() bool {
-	if o != nil && o.Uuid != nil {
+	if o != nil && !IsNil(o.Uuid) {
 		return true
 	}
 
@@ -207,36 +295,79 @@ func (o *StorageNetAppFcInterface) SetUuid(v string) {
 	o.Uuid = &v
 }
 
-// GetArrayController returns the ArrayController field value if set, zero value otherwise.
-func (o *StorageNetAppFcInterface) GetArrayController() StorageNetAppNodeRelationship {
-	if o == nil || o.ArrayController == nil {
-		var ret StorageNetAppNodeRelationship
+// GetVolumeName returns the VolumeName field value if set, zero value otherwise.
+func (o *StorageNetAppFcInterface) GetVolumeName() string {
+	if o == nil || IsNil(o.VolumeName) {
+		var ret string
 		return ret
 	}
-	return *o.ArrayController
+	return *o.VolumeName
 }
 
-// GetArrayControllerOk returns a tuple with the ArrayController field value if set, nil otherwise
+// GetVolumeNameOk returns a tuple with the VolumeName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *StorageNetAppFcInterface) GetArrayControllerOk() (*StorageNetAppNodeRelationship, bool) {
-	if o == nil || o.ArrayController == nil {
+func (o *StorageNetAppFcInterface) GetVolumeNameOk() (*string, bool) {
+	if o == nil || IsNil(o.VolumeName) {
 		return nil, false
 	}
-	return o.ArrayController, true
+	return o.VolumeName, true
 }
 
-// HasArrayController returns a boolean if a field has been set.
-func (o *StorageNetAppFcInterface) HasArrayController() bool {
-	if o != nil && o.ArrayController != nil {
+// HasVolumeName returns a boolean if a field has been set.
+func (o *StorageNetAppFcInterface) HasVolumeName() bool {
+	if o != nil && !IsNil(o.VolumeName) {
 		return true
 	}
 
 	return false
 }
 
-// SetArrayController gets a reference to the given StorageNetAppNodeRelationship and assigns it to the ArrayController field.
+// SetVolumeName gets a reference to the given string and assigns it to the VolumeName field.
+func (o *StorageNetAppFcInterface) SetVolumeName(v string) {
+	o.VolumeName = &v
+}
+
+// GetArrayController returns the ArrayController field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *StorageNetAppFcInterface) GetArrayController() StorageNetAppNodeRelationship {
+	if o == nil || IsNil(o.ArrayController.Get()) {
+		var ret StorageNetAppNodeRelationship
+		return ret
+	}
+	return *o.ArrayController.Get()
+}
+
+// GetArrayControllerOk returns a tuple with the ArrayController field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *StorageNetAppFcInterface) GetArrayControllerOk() (*StorageNetAppNodeRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ArrayController.Get(), o.ArrayController.IsSet()
+}
+
+// HasArrayController returns a boolean if a field has been set.
+func (o *StorageNetAppFcInterface) HasArrayController() bool {
+	if o != nil && o.ArrayController.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetArrayController gets a reference to the given NullableStorageNetAppNodeRelationship and assigns it to the ArrayController field.
 func (o *StorageNetAppFcInterface) SetArrayController(v StorageNetAppNodeRelationship) {
-	o.ArrayController = &v
+	o.ArrayController.Set(&v)
+}
+
+// SetArrayControllerNil sets the value for ArrayController to be an explicit nil
+func (o *StorageNetAppFcInterface) SetArrayControllerNil() {
+	o.ArrayController.Set(nil)
+}
+
+// UnsetArrayController ensures that no value is present for ArrayController, not even an explicit nil
+func (o *StorageNetAppFcInterface) UnsetArrayController() {
+	o.ArrayController.Unset()
 }
 
 // GetEvents returns the Events field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -252,7 +383,7 @@ func (o *StorageNetAppFcInterface) GetEvents() []StorageNetAppFcInterfaceEventRe
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppFcInterface) GetEventsOk() ([]StorageNetAppFcInterfaceEventRelationship, bool) {
-	if o == nil || o.Events == nil {
+	if o == nil || IsNil(o.Events) {
 		return nil, false
 	}
 	return o.Events, true
@@ -260,7 +391,7 @@ func (o *StorageNetAppFcInterface) GetEventsOk() ([]StorageNetAppFcInterfaceEven
 
 // HasEvents returns a boolean if a field has been set.
 func (o *StorageNetAppFcInterface) HasEvents() bool {
-	if o != nil && o.Events != nil {
+	if o != nil && !IsNil(o.Events) {
 		return true
 	}
 
@@ -272,116 +403,198 @@ func (o *StorageNetAppFcInterface) SetEvents(v []StorageNetAppFcInterfaceEventRe
 	o.Events = v
 }
 
-// GetPhysicalPort returns the PhysicalPort field value if set, zero value otherwise.
+// GetPhysicalPort returns the PhysicalPort field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorageNetAppFcInterface) GetPhysicalPort() StorageNetAppFcPortRelationship {
-	if o == nil || o.PhysicalPort == nil {
+	if o == nil || IsNil(o.PhysicalPort.Get()) {
 		var ret StorageNetAppFcPortRelationship
 		return ret
 	}
-	return *o.PhysicalPort
+	return *o.PhysicalPort.Get()
 }
 
 // GetPhysicalPortOk returns a tuple with the PhysicalPort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppFcInterface) GetPhysicalPortOk() (*StorageNetAppFcPortRelationship, bool) {
-	if o == nil || o.PhysicalPort == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.PhysicalPort, true
+	return o.PhysicalPort.Get(), o.PhysicalPort.IsSet()
 }
 
 // HasPhysicalPort returns a boolean if a field has been set.
 func (o *StorageNetAppFcInterface) HasPhysicalPort() bool {
-	if o != nil && o.PhysicalPort != nil {
+	if o != nil && o.PhysicalPort.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPhysicalPort gets a reference to the given StorageNetAppFcPortRelationship and assigns it to the PhysicalPort field.
+// SetPhysicalPort gets a reference to the given NullableStorageNetAppFcPortRelationship and assigns it to the PhysicalPort field.
 func (o *StorageNetAppFcInterface) SetPhysicalPort(v StorageNetAppFcPortRelationship) {
-	o.PhysicalPort = &v
+	o.PhysicalPort.Set(&v)
 }
 
-// GetTenant returns the Tenant field value if set, zero value otherwise.
+// SetPhysicalPortNil sets the value for PhysicalPort to be an explicit nil
+func (o *StorageNetAppFcInterface) SetPhysicalPortNil() {
+	o.PhysicalPort.Set(nil)
+}
+
+// UnsetPhysicalPort ensures that no value is present for PhysicalPort, not even an explicit nil
+func (o *StorageNetAppFcInterface) UnsetPhysicalPort() {
+	o.PhysicalPort.Unset()
+}
+
+// GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorageNetAppFcInterface) GetTenant() StorageNetAppStorageVmRelationship {
-	if o == nil || o.Tenant == nil {
+	if o == nil || IsNil(o.Tenant.Get()) {
 		var ret StorageNetAppStorageVmRelationship
 		return ret
 	}
-	return *o.Tenant
+	return *o.Tenant.Get()
 }
 
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppFcInterface) GetTenantOk() (*StorageNetAppStorageVmRelationship, bool) {
-	if o == nil || o.Tenant == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Tenant, true
+	return o.Tenant.Get(), o.Tenant.IsSet()
 }
 
 // HasTenant returns a boolean if a field has been set.
 func (o *StorageNetAppFcInterface) HasTenant() bool {
-	if o != nil && o.Tenant != nil {
+	if o != nil && o.Tenant.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetTenant gets a reference to the given StorageNetAppStorageVmRelationship and assigns it to the Tenant field.
+// SetTenant gets a reference to the given NullableStorageNetAppStorageVmRelationship and assigns it to the Tenant field.
 func (o *StorageNetAppFcInterface) SetTenant(v StorageNetAppStorageVmRelationship) {
-	o.Tenant = &v
+	o.Tenant.Set(&v)
+}
+
+// SetTenantNil sets the value for Tenant to be an explicit nil
+func (o *StorageNetAppFcInterface) SetTenantNil() {
+	o.Tenant.Set(nil)
+}
+
+// UnsetTenant ensures that no value is present for Tenant, not even an explicit nil
+func (o *StorageNetAppFcInterface) UnsetTenant() {
+	o.Tenant.Unset()
 }
 
 func (o StorageNetAppFcInterface) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o StorageNetAppFcInterface) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedStorageBasePhysicalPort, errStorageBasePhysicalPort := json.Marshal(o.StorageBasePhysicalPort)
 	if errStorageBasePhysicalPort != nil {
-		return []byte{}, errStorageBasePhysicalPort
+		return map[string]interface{}{}, errStorageBasePhysicalPort
 	}
 	errStorageBasePhysicalPort = json.Unmarshal([]byte(serializedStorageBasePhysicalPort), &toSerialize)
 	if errStorageBasePhysicalPort != nil {
-		return []byte{}, errStorageBasePhysicalPort
+		return map[string]interface{}{}, errStorageBasePhysicalPort
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Enabled != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Enabled) {
 		toSerialize["Enabled"] = o.Enabled
 	}
-	if o.State != nil {
+	if !IsNil(o.InterfaceState) {
+		toSerialize["InterfaceState"] = o.InterfaceState
+	}
+	if !IsNil(o.State) {
 		toSerialize["State"] = o.State
 	}
-	if o.Uuid != nil {
+	if !IsNil(o.SvmName) {
+		toSerialize["SvmName"] = o.SvmName
+	}
+	if !IsNil(o.Uuid) {
 		toSerialize["Uuid"] = o.Uuid
 	}
-	if o.ArrayController != nil {
-		toSerialize["ArrayController"] = o.ArrayController
+	if !IsNil(o.VolumeName) {
+		toSerialize["VolumeName"] = o.VolumeName
+	}
+	if o.ArrayController.IsSet() {
+		toSerialize["ArrayController"] = o.ArrayController.Get()
 	}
 	if o.Events != nil {
 		toSerialize["Events"] = o.Events
 	}
-	if o.PhysicalPort != nil {
-		toSerialize["PhysicalPort"] = o.PhysicalPort
+	if o.PhysicalPort.IsSet() {
+		toSerialize["PhysicalPort"] = o.PhysicalPort.Get()
 	}
-	if o.Tenant != nil {
-		toSerialize["Tenant"] = o.Tenant
+	if o.Tenant.IsSet() {
+		toSerialize["Tenant"] = o.Tenant.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *StorageNetAppFcInterface) UnmarshalJSON(bytes []byte) (err error) {
+func (o *StorageNetAppFcInterface) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type StorageNetAppFcInterfaceWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -389,27 +602,37 @@ func (o *StorageNetAppFcInterface) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// FC interface is enabled or not.
 		Enabled *string `json:"Enabled,omitempty"`
+		// The state of the FC interface. * `Down` - The state is set to down if the interface is not enabled. * `Up` - The state is set to up if the interface is enabled.
+		InterfaceState *string `json:"InterfaceState,omitempty"`
 		// The state of the FC interface. * `down` - An inactive port is listed as Down. * `up` - An active port is listed as Up. * `present` - An active port is listed as present.
+		// Deprecated
 		State *string `json:"State,omitempty"`
-		// Uuid of  NetApp FC Interface.
-		Uuid            *string                        `json:"Uuid,omitempty"`
-		ArrayController *StorageNetAppNodeRelationship `json:"ArrayController,omitempty"`
+		// The storage virtual machine name for the interface.
+		SvmName *string `json:"SvmName,omitempty"`
+		// Uuid of NetApp FC Interface.
+		Uuid *string `json:"Uuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+		// The parent volume name for the interface.
+		VolumeName      *string                               `json:"VolumeName,omitempty"`
+		ArrayController NullableStorageNetAppNodeRelationship `json:"ArrayController,omitempty"`
 		// An array of relationships to storageNetAppFcInterfaceEvent resources.
 		Events       []StorageNetAppFcInterfaceEventRelationship `json:"Events,omitempty"`
-		PhysicalPort *StorageNetAppFcPortRelationship            `json:"PhysicalPort,omitempty"`
-		Tenant       *StorageNetAppStorageVmRelationship         `json:"Tenant,omitempty"`
+		PhysicalPort NullableStorageNetAppFcPortRelationship     `json:"PhysicalPort,omitempty"`
+		Tenant       NullableStorageNetAppStorageVmRelationship  `json:"Tenant,omitempty"`
 	}
 
 	varStorageNetAppFcInterfaceWithoutEmbeddedStruct := StorageNetAppFcInterfaceWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppFcInterfaceWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varStorageNetAppFcInterfaceWithoutEmbeddedStruct)
 	if err == nil {
 		varStorageNetAppFcInterface := _StorageNetAppFcInterface{}
 		varStorageNetAppFcInterface.ClassId = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.ClassId
 		varStorageNetAppFcInterface.ObjectType = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.ObjectType
 		varStorageNetAppFcInterface.Enabled = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.Enabled
+		varStorageNetAppFcInterface.InterfaceState = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.InterfaceState
 		varStorageNetAppFcInterface.State = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.State
+		varStorageNetAppFcInterface.SvmName = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.SvmName
 		varStorageNetAppFcInterface.Uuid = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.Uuid
+		varStorageNetAppFcInterface.VolumeName = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.VolumeName
 		varStorageNetAppFcInterface.ArrayController = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.ArrayController
 		varStorageNetAppFcInterface.Events = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.Events
 		varStorageNetAppFcInterface.PhysicalPort = varStorageNetAppFcInterfaceWithoutEmbeddedStruct.PhysicalPort
@@ -421,7 +644,7 @@ func (o *StorageNetAppFcInterface) UnmarshalJSON(bytes []byte) (err error) {
 
 	varStorageNetAppFcInterface := _StorageNetAppFcInterface{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppFcInterface)
+	err = json.Unmarshal(data, &varStorageNetAppFcInterface)
 	if err == nil {
 		o.StorageBasePhysicalPort = varStorageNetAppFcInterface.StorageBasePhysicalPort
 	} else {
@@ -430,12 +653,15 @@ func (o *StorageNetAppFcInterface) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Enabled")
+		delete(additionalProperties, "InterfaceState")
 		delete(additionalProperties, "State")
+		delete(additionalProperties, "SvmName")
 		delete(additionalProperties, "Uuid")
+		delete(additionalProperties, "VolumeName")
 		delete(additionalProperties, "ArrayController")
 		delete(additionalProperties, "Events")
 		delete(additionalProperties, "PhysicalPort")

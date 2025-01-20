@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the AssetWorkloadOptimizerNewRelicOptions type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AssetWorkloadOptimizerNewRelicOptions{}
 
 // AssetWorkloadOptimizerNewRelicOptions Captures configuration specific to the NewRelic target for the Workload Optimizer service.
 type AssetWorkloadOptimizerNewRelicOptions struct {
@@ -26,6 +30,10 @@ type AssetWorkloadOptimizerNewRelicOptions struct {
 	ObjectType string `json:"ObjectType"`
 	// Your NewRelic account id.
 	AccountId *string `json:"AccountId,omitempty"`
+	// Collect tag information from NewRelic.
+	CollectTagInfo *bool `json:"CollectTagInfo,omitempty"`
+	// Overwrite Hypervisor or Cloud Provider Virtual Machine metrics with data from the target.
+	CollectVmMetrics *bool `json:"CollectVmMetrics,omitempty"`
 	// The region associated with the NewRelic account. * `US` - The United States (US) region. * `EU` - The European Union (EU) region.
 	Region               *string `json:"Region,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -41,6 +49,8 @@ func NewAssetWorkloadOptimizerNewRelicOptions(classId string, objectType string)
 	this := AssetWorkloadOptimizerNewRelicOptions{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var collectTagInfo bool = false
+	this.CollectTagInfo = &collectTagInfo
 	var region string = "US"
 	this.Region = &region
 	return &this
@@ -55,6 +65,8 @@ func NewAssetWorkloadOptimizerNewRelicOptionsWithDefaults() *AssetWorkloadOptimi
 	this.ClassId = classId
 	var objectType string = "asset.WorkloadOptimizerNewRelicOptions"
 	this.ObjectType = objectType
+	var collectTagInfo bool = false
+	this.CollectTagInfo = &collectTagInfo
 	var region string = "US"
 	this.Region = &region
 	return &this
@@ -84,6 +96,11 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "asset.WorkloadOptimizerNewRelicOptions" of the ClassId field.
+func (o *AssetWorkloadOptimizerNewRelicOptions) GetDefaultClassId() interface{} {
+	return "asset.WorkloadOptimizerNewRelicOptions"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *AssetWorkloadOptimizerNewRelicOptions) GetObjectType() string {
 	if o == nil {
@@ -108,9 +125,14 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "asset.WorkloadOptimizerNewRelicOptions" of the ObjectType field.
+func (o *AssetWorkloadOptimizerNewRelicOptions) GetDefaultObjectType() interface{} {
+	return "asset.WorkloadOptimizerNewRelicOptions"
+}
+
 // GetAccountId returns the AccountId field value if set, zero value otherwise.
 func (o *AssetWorkloadOptimizerNewRelicOptions) GetAccountId() string {
-	if o == nil || o.AccountId == nil {
+	if o == nil || IsNil(o.AccountId) {
 		var ret string
 		return ret
 	}
@@ -120,7 +142,7 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) GetAccountId() string {
 // GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetWorkloadOptimizerNewRelicOptions) GetAccountIdOk() (*string, bool) {
-	if o == nil || o.AccountId == nil {
+	if o == nil || IsNil(o.AccountId) {
 		return nil, false
 	}
 	return o.AccountId, true
@@ -128,7 +150,7 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) GetAccountIdOk() (*string, bool)
 
 // HasAccountId returns a boolean if a field has been set.
 func (o *AssetWorkloadOptimizerNewRelicOptions) HasAccountId() bool {
-	if o != nil && o.AccountId != nil {
+	if o != nil && !IsNil(o.AccountId) {
 		return true
 	}
 
@@ -140,9 +162,73 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) SetAccountId(v string) {
 	o.AccountId = &v
 }
 
+// GetCollectTagInfo returns the CollectTagInfo field value if set, zero value otherwise.
+func (o *AssetWorkloadOptimizerNewRelicOptions) GetCollectTagInfo() bool {
+	if o == nil || IsNil(o.CollectTagInfo) {
+		var ret bool
+		return ret
+	}
+	return *o.CollectTagInfo
+}
+
+// GetCollectTagInfoOk returns a tuple with the CollectTagInfo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AssetWorkloadOptimizerNewRelicOptions) GetCollectTagInfoOk() (*bool, bool) {
+	if o == nil || IsNil(o.CollectTagInfo) {
+		return nil, false
+	}
+	return o.CollectTagInfo, true
+}
+
+// HasCollectTagInfo returns a boolean if a field has been set.
+func (o *AssetWorkloadOptimizerNewRelicOptions) HasCollectTagInfo() bool {
+	if o != nil && !IsNil(o.CollectTagInfo) {
+		return true
+	}
+
+	return false
+}
+
+// SetCollectTagInfo gets a reference to the given bool and assigns it to the CollectTagInfo field.
+func (o *AssetWorkloadOptimizerNewRelicOptions) SetCollectTagInfo(v bool) {
+	o.CollectTagInfo = &v
+}
+
+// GetCollectVmMetrics returns the CollectVmMetrics field value if set, zero value otherwise.
+func (o *AssetWorkloadOptimizerNewRelicOptions) GetCollectVmMetrics() bool {
+	if o == nil || IsNil(o.CollectVmMetrics) {
+		var ret bool
+		return ret
+	}
+	return *o.CollectVmMetrics
+}
+
+// GetCollectVmMetricsOk returns a tuple with the CollectVmMetrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AssetWorkloadOptimizerNewRelicOptions) GetCollectVmMetricsOk() (*bool, bool) {
+	if o == nil || IsNil(o.CollectVmMetrics) {
+		return nil, false
+	}
+	return o.CollectVmMetrics, true
+}
+
+// HasCollectVmMetrics returns a boolean if a field has been set.
+func (o *AssetWorkloadOptimizerNewRelicOptions) HasCollectVmMetrics() bool {
+	if o != nil && !IsNil(o.CollectVmMetrics) {
+		return true
+	}
+
+	return false
+}
+
+// SetCollectVmMetrics gets a reference to the given bool and assigns it to the CollectVmMetrics field.
+func (o *AssetWorkloadOptimizerNewRelicOptions) SetCollectVmMetrics(v bool) {
+	o.CollectVmMetrics = &v
+}
+
 // GetRegion returns the Region field value if set, zero value otherwise.
 func (o *AssetWorkloadOptimizerNewRelicOptions) GetRegion() string {
-	if o == nil || o.Region == nil {
+	if o == nil || IsNil(o.Region) {
 		var ret string
 		return ret
 	}
@@ -152,7 +238,7 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) GetRegion() string {
 // GetRegionOk returns a tuple with the Region field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetWorkloadOptimizerNewRelicOptions) GetRegionOk() (*string, bool) {
-	if o == nil || o.Region == nil {
+	if o == nil || IsNil(o.Region) {
 		return nil, false
 	}
 	return o.Region, true
@@ -160,7 +246,7 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) GetRegionOk() (*string, bool) {
 
 // HasRegion returns a boolean if a field has been set.
 func (o *AssetWorkloadOptimizerNewRelicOptions) HasRegion() bool {
-	if o != nil && o.Region != nil {
+	if o != nil && !IsNil(o.Region) {
 		return true
 	}
 
@@ -173,25 +259,41 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) SetRegion(v string) {
 }
 
 func (o AssetWorkloadOptimizerNewRelicOptions) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o AssetWorkloadOptimizerNewRelicOptions) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedAssetServiceOptions, errAssetServiceOptions := json.Marshal(o.AssetServiceOptions)
 	if errAssetServiceOptions != nil {
-		return []byte{}, errAssetServiceOptions
+		return map[string]interface{}{}, errAssetServiceOptions
 	}
 	errAssetServiceOptions = json.Unmarshal([]byte(serializedAssetServiceOptions), &toSerialize)
 	if errAssetServiceOptions != nil {
-		return []byte{}, errAssetServiceOptions
+		return map[string]interface{}{}, errAssetServiceOptions
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AccountId != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AccountId) {
 		toSerialize["AccountId"] = o.AccountId
 	}
-	if o.Region != nil {
+	if !IsNil(o.CollectTagInfo) {
+		toSerialize["CollectTagInfo"] = o.CollectTagInfo
+	}
+	if !IsNil(o.CollectVmMetrics) {
+		toSerialize["CollectVmMetrics"] = o.CollectVmMetrics
+	}
+	if !IsNil(o.Region) {
 		toSerialize["Region"] = o.Region
 	}
 
@@ -199,10 +301,51 @@ func (o AssetWorkloadOptimizerNewRelicOptions) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *AssetWorkloadOptimizerNewRelicOptions) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AssetWorkloadOptimizerNewRelicOptions) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type AssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -210,18 +353,24 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) UnmarshalJSON(bytes []byte) (err
 		ObjectType string `json:"ObjectType"`
 		// Your NewRelic account id.
 		AccountId *string `json:"AccountId,omitempty"`
+		// Collect tag information from NewRelic.
+		CollectTagInfo *bool `json:"CollectTagInfo,omitempty"`
+		// Overwrite Hypervisor or Cloud Provider Virtual Machine metrics with data from the target.
+		CollectVmMetrics *bool `json:"CollectVmMetrics,omitempty"`
 		// The region associated with the NewRelic account. * `US` - The United States (US) region. * `EU` - The European Union (EU) region.
 		Region *string `json:"Region,omitempty"`
 	}
 
 	varAssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct := AssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varAssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varAssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct)
 	if err == nil {
 		varAssetWorkloadOptimizerNewRelicOptions := _AssetWorkloadOptimizerNewRelicOptions{}
 		varAssetWorkloadOptimizerNewRelicOptions.ClassId = varAssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct.ClassId
 		varAssetWorkloadOptimizerNewRelicOptions.ObjectType = varAssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct.ObjectType
 		varAssetWorkloadOptimizerNewRelicOptions.AccountId = varAssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct.AccountId
+		varAssetWorkloadOptimizerNewRelicOptions.CollectTagInfo = varAssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct.CollectTagInfo
+		varAssetWorkloadOptimizerNewRelicOptions.CollectVmMetrics = varAssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct.CollectVmMetrics
 		varAssetWorkloadOptimizerNewRelicOptions.Region = varAssetWorkloadOptimizerNewRelicOptionsWithoutEmbeddedStruct.Region
 		*o = AssetWorkloadOptimizerNewRelicOptions(varAssetWorkloadOptimizerNewRelicOptions)
 	} else {
@@ -230,7 +379,7 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) UnmarshalJSON(bytes []byte) (err
 
 	varAssetWorkloadOptimizerNewRelicOptions := _AssetWorkloadOptimizerNewRelicOptions{}
 
-	err = json.Unmarshal(bytes, &varAssetWorkloadOptimizerNewRelicOptions)
+	err = json.Unmarshal(data, &varAssetWorkloadOptimizerNewRelicOptions)
 	if err == nil {
 		o.AssetServiceOptions = varAssetWorkloadOptimizerNewRelicOptions.AssetServiceOptions
 	} else {
@@ -239,10 +388,12 @@ func (o *AssetWorkloadOptimizerNewRelicOptions) UnmarshalJSON(bytes []byte) (err
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AccountId")
+		delete(additionalProperties, "CollectTagInfo")
+		delete(additionalProperties, "CollectVmMetrics")
 		delete(additionalProperties, "Region")
 
 		// remove fields from embedded structs

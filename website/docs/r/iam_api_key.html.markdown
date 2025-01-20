@@ -19,50 +19,10 @@ The client owns the private key and is responsible for maintaining the confident
 The client must have a cryptographic provider compatible with the cryptographic parameters specified in the API key. For example, if you use the powershell SDK to write the client, make sure the appropriate cryptographic providers are installed on the local system. If you create an RSA key pair with modulus set to 2048, the client must support 2048-bit private keys. A maximum of 3 API keys per user is allowed.
 API keys are used to sign HTTP requests as follows: 1. A cryptographic digest of the body of the HTTP request is calculated using one of the supported cryptographic hash algorithms. 2. The value of the digest is base-64 encoded in the `Digest` HTTP header. 3. A signature is calculated as specified in the HTTP signature scheme, and the signature is added to the `Authorization` HTTP request header.
 All published Intersight SDKs support API keys.
-## Usage Example
-### Resource Creation
-
-```hcl
-resource "intersight_iam_api_key" "iam_api_key1" {
-  hash_algorithm = "SHA256"
-  key_spec {
-    class_id    = "pkix.RsaAlgorithm"
-    object_type = "pkix.RsaAlgorithm"
-  }
-  parent {
-    moid        = var.iam_user
-    object_type = "iam.User"
-  }
-  permission {
-    moid        = var.iam_permission
-    object_type = "iam.Permission"
-  }
-  purpose           = "admin api"
-  signing_algorithm = "RSASSA-PKCS1-v1_5"
-  user {
-    moid        = var.iam_user
-    object_type = "iam.User"
-  }
-}
-
-variable "iam_permission" {
-  type        = string
-  description = "value for iam_permission"
-}
-
-variable "iam_user" {
-  type        = string
-  description = "value for iam_user"
-}
-
-variable "iam_role" {
-  type        = string
-  description = "value for iam_role"
-}
-```
 ## Argument Reference
 The following arguments are supported:
 * `account_moid`:(string)(ReadOnly) The Account ID for this managed object. 
+* `admin_status`:(string) Used to trigger the enable or disable action on the API key. These actions change the status of an API key.* `enable` - Used to enable a disabled API key/App Registration. If the API key/App Registration is already expired, this action has no effect.* `disable` - Used to disable an active API key/App Registration. If the API key/App Registration is already expired, this action has no effect. 
 * `ancestors`:(Array)(ReadOnly) An array of relationships to moBaseMo resources. 
 This complex property has following sub-properties:
   + `moid`:(string) The Moid of the referenced REST resource. 
@@ -70,7 +30,9 @@ This complex property has following sub-properties:
   + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
 * `create_time`:(string)(ReadOnly) The time when this managed object was created. 
 * `domain_group_moid`:(string)(ReadOnly) The DomainGroup ID for this managed object. 
+* `expiry_date_time`:(string) The expiration date of the API key which is set at the time of creation of the key. Its value can only be assigned a date that falls within the range determined by the maximum expiration time configured at the account level. The expiry date can be edited to be earlier or later, provided it stays within the designated expiry period. This period is determined by adding the 'startTime' property of the API key to the maximum expiry time configured at the account level. 
 * `hash_algorithm`:(string) The cryptographic hash algorithm to calculate the message digest.* `SHA256` - The SHA-256 cryptographic hash, as defined by NIST in FIPS 180-4.* `SHA384` - The SHA-384 cryptographic hash, as defined by NIST in FIPS 180-4.* `SHA512` - The SHA-512 cryptographic hash, as defined by NIST in FIPS 180-4.* `SHA512_224` - The SHA-512/224 cryptographic hash, as defined by NIST in FIPS 180-4.* `SHA512_256` - The SHA-512/256 cryptographic hash, as defined by NIST in FIPS 180-4. 
+* `is_never_expiring`:(bool) Used to mark the API key as a never-expiring API key. 
 * `key_spec`:(HashMap) - The key generation specification provides the algorithm and the parameters required for this algorithm to generate a private key, public key pair. Supported key generation schemes include RSA, ECDSA and Edwards-Curve Digital Signature Algorithm (EdDSA). 
 This complex property has following sub-properties:
   + `additional_properties`:(JSON as string) - Additional Properties as per object type, can be added as JSON using `jsonencode()`. Allowed Types are: [pkix.EcdsaKeySpec](#pkixEcdsaKeySpec)
@@ -78,8 +40,11 @@ This complex property has following sub-properties:
 [pkix.RsaAlgorithm](#pkixRsaAlgorithm)
   + `name`:(string)(ReadOnly) Name of the key generation algorithm.* `RSA` - Key pairs should be generated by the RSA algorithm. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property.The enum values provides the list of concrete types that can be instantiated from this abstract type. 
+* `last_used_ip`:(string)(ReadOnly) The IP address from which the API key was last used. 
+* `last_used_time`:(string)(ReadOnly) The time at which the API key was last used. It is updated every 24 hours. 
 * `mod_time`:(string)(ReadOnly) The time when this managed object was last modified. 
 * `moid`:(string) The unique identifier of this Managed Object instance. 
+* `oper_status`:(string)(ReadOnly) The current status of the API key that dictates the validity of the key.* `enabled` - An API key/App Registration having enabled status can be used for API invocation.* `disabled` - An API key/App Registration having disabled status cannot be used for API invocation.* `expired` - An API key/App Registration having expired status cannot be used for API invocation as the expiration date has passed. 
 * `owners`:
                 (Array of schema.TypeString) -(ReadOnly)
 * `parent`:(HashMap) -(ReadOnly) A reference to a moBaseMo resource.When the $expand query parameter is specified, the referenced resource is returned inline. 
@@ -99,8 +64,24 @@ This complex property has following sub-properties:
   + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
 * `private_key`:(string) Holds the private key for the API key. 
 * `purpose`:(string) The purpose of the API Key. 
+* `scope`:(HashMap) -(ReadOnly) Scope holds a collection of account Id, permission Id to which the current session is scoped to. 
+This complex property has following sub-properties:
+  + `account_access_control_id`:(string)(ReadOnly) Moid of the AccountAccessControl through which the access is given to switch scope. 
+  + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+  + `request_identifier`:(string)(ReadOnly) Stores the identifier of the issue for which user is trying to switch scope to another account. 
+  + `switched_from_account`:(HashMap) -(ReadOnly) Permission for the Account from which user switched the scope. 
+This complex property has following sub-properties:
+    + `account_id`:(string)(ReadOnly) Moid of the Account to/from which user switched the scope. 
+    + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+    + `permission_id`:(string)(ReadOnly) Moid of the Permission for the Account to/from which user switched the scope. 
+  + `switched_to_accounts`:(Array)
+This complex property has following sub-properties:
+    + `account_id`:(string)(ReadOnly) Moid of the Account to/from which user switched the scope. 
+    + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+    + `permission_id`:(string)(ReadOnly) Moid of the Permission for the Account to/from which user switched the scope. 
 * `shared_scope`:(string)(ReadOnly) Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.Objects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs. 
 * `signing_algorithm`:(string) The signing algorithm used by the client to authenticate API requests to Intersight.The signing algorithm must be compatible with the key generation specification.* `RSASSA-PKCS1-v1_5` - RSASSA-PKCS1-v1_5 is a RSA signature scheme specified in [RFC 8017](https://tools.ietf.org/html/rfc8017).RSASSA-PKCS1-v1_5 is included only for compatibility with existing applications.* `RSASSA-PSS` - RSASSA-PSS is a RSA signature scheme specified in [RFC 8017](https://tools.ietf.org/html/rfc8017).It combines the RSASP1 and RSAVP1 primitives with the EMSA-PSS encoding method.In the interest of increased robustness, RSASSA-PSS is required in new applications.* `Ed25519` - The Ed25519 signature algorithm, as specified in [RFC 8032](https://tools.ietf.org/html/rfc8032).Ed25519 is a public-key signature system with several attractive features, includingfast single-signature verification, very fast signing, fast key generation and high security level.* `Ecdsa` - The Elliptic Curve Digital Signature Standard (ECDSA), as defined by NIST in FIPS 186-4 and ANSI X9.62.The signature is encoded as a ASN.1 DER SEQUENCE with two INTEGERs (r and s), as defined in RFC3279.When using ECDSA signatures, configure the client to use the same signature encoding as specified on the server side.* `EcdsaP1363Format` - The Elliptic Curve Digital Signature Standard (ECDSA), as defined by NIST in FIPS 186-4 and ANSI X9.62.The signature is the raw concatenation of r and s, as defined in the ISO/IEC 7816-8 IEEE P.1363 standard.In that format, r and s are represented as unsigned, big endian numbers.Extra padding bytes (of value 0x00) is applied so that both r and s encodings have the same size.When using ECDSA signatures, configure the client to use the same signature encoding as specified on the server side. 
+* `start_time`:(string)(ReadOnly) The timestamp at which an expiry date was first set on this API key. For expiring API keys, this field is same as the create time of the API key. For never-expiring API keys, this field is set initially to zero time value. If a never-expiry API key is later changed to have an expiration, the timestamp marking the start of this transition is recorded in this field. 
 * `tags`:(Array)
 This complex property has following sub-properties:
   + `key`:(string) The string representation of a tag key. 
@@ -117,6 +98,7 @@ This complex property has following sub-properties:
     + `moid`:(string) The Moid of the referenced REST resource. 
     + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
     + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+  + `marked_for_deletion`:(bool)(ReadOnly) The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `ref_mo`:(HashMap) -(ReadOnly) A reference to the original Managed Object. 
 This complex property has following sub-properties:

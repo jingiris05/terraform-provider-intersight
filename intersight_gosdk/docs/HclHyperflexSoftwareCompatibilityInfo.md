@@ -8,11 +8,13 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "hcl.HyperflexSoftwareCompatibilityInfo"]
 **Constraints** | Pointer to [**[]HclConstraint**](HclConstraint.md) |  | [optional] 
 **HxdpVersion** | Pointer to **string** | HXDP component software version. | [optional] 
-**HypervisorType** | Pointer to **string** | Type fo Hypervisor the HyperFlex components versions are compatible with. For example ESX, Hyperv or KVM. * &#x60;ESXi&#x60; - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version. * &#x60;HyperFlexAp&#x60; - The hypervisor of the virtualization platform is Cisco HyperFlex Application Platform. * &#x60;IWE&#x60; - The hypervisor of the virtualization platform is Cisco Intersight Workload Engine. * &#x60;Hyper-V&#x60; - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V. * &#x60;Unknown&#x60; - The hypervisor running on the HyperFlex cluster is not known. | [optional] [default to "ESXi"]
+**HypervisorType** | Pointer to **string** | Type fo Hypervisor the HyperFlex components versions are compatible with. For example ESX, Hyperv or KVM. * &#x60;ESXi&#x60; - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version. * &#x60;Hyper-V&#x60; - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V. * &#x60;Unknown&#x60; - The hypervisor running on the HyperFlex cluster is not known. | [optional] [default to "ESXi"]
 **HypervisorVersion** | Pointer to **string** | Hypervisor component software version. | [optional] 
 **IsMgmtBuild** | Pointer to **string** | Type of the HXDP bundle mgmt or full. | [optional] 
+**MaxMgmtVersion** | Pointer to **string** | Maximum supported HyperFlex Data Platform build version. | [optional] 
+**MinMgmtVersion** | Pointer to **string** | Minimum supported HyperFlex Data Platform build version. | [optional] 
 **ServerFwVersion** | Pointer to **string** | UCS Server Firmware component software version. | [optional] 
-**AppCatalog** | Pointer to [**HyperflexAppCatalogRelationship**](HyperflexAppCatalogRelationship.md) |  | [optional] 
+**AppCatalog** | Pointer to [**NullableHyperflexAppCatalogRelationship**](HyperflexAppCatalogRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -208,6 +210,56 @@ SetIsMgmtBuild sets IsMgmtBuild field to given value.
 
 HasIsMgmtBuild returns a boolean if a field has been set.
 
+### GetMaxMgmtVersion
+
+`func (o *HclHyperflexSoftwareCompatibilityInfo) GetMaxMgmtVersion() string`
+
+GetMaxMgmtVersion returns the MaxMgmtVersion field if non-nil, zero value otherwise.
+
+### GetMaxMgmtVersionOk
+
+`func (o *HclHyperflexSoftwareCompatibilityInfo) GetMaxMgmtVersionOk() (*string, bool)`
+
+GetMaxMgmtVersionOk returns a tuple with the MaxMgmtVersion field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMaxMgmtVersion
+
+`func (o *HclHyperflexSoftwareCompatibilityInfo) SetMaxMgmtVersion(v string)`
+
+SetMaxMgmtVersion sets MaxMgmtVersion field to given value.
+
+### HasMaxMgmtVersion
+
+`func (o *HclHyperflexSoftwareCompatibilityInfo) HasMaxMgmtVersion() bool`
+
+HasMaxMgmtVersion returns a boolean if a field has been set.
+
+### GetMinMgmtVersion
+
+`func (o *HclHyperflexSoftwareCompatibilityInfo) GetMinMgmtVersion() string`
+
+GetMinMgmtVersion returns the MinMgmtVersion field if non-nil, zero value otherwise.
+
+### GetMinMgmtVersionOk
+
+`func (o *HclHyperflexSoftwareCompatibilityInfo) GetMinMgmtVersionOk() (*string, bool)`
+
+GetMinMgmtVersionOk returns a tuple with the MinMgmtVersion field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMinMgmtVersion
+
+`func (o *HclHyperflexSoftwareCompatibilityInfo) SetMinMgmtVersion(v string)`
+
+SetMinMgmtVersion sets MinMgmtVersion field to given value.
+
+### HasMinMgmtVersion
+
+`func (o *HclHyperflexSoftwareCompatibilityInfo) HasMinMgmtVersion() bool`
+
+HasMinMgmtVersion returns a boolean if a field has been set.
+
 ### GetServerFwVersion
 
 `func (o *HclHyperflexSoftwareCompatibilityInfo) GetServerFwVersion() string`
@@ -258,6 +310,16 @@ SetAppCatalog sets AppCatalog field to given value.
 
 HasAppCatalog returns a boolean if a field has been set.
 
+### SetAppCatalogNil
+
+`func (o *HclHyperflexSoftwareCompatibilityInfo) SetAppCatalogNil(b bool)`
+
+ SetAppCatalogNil sets the value for AppCatalog to be an explicit nil
+
+### UnsetAppCatalog
+`func (o *HclHyperflexSoftwareCompatibilityInfo) UnsetAppCatalog()`
+
+UnsetAppCatalog ensures that no value is present for AppCatalog, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

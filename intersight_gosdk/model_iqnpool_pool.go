@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the IqnpoolPool type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IqnpoolPool{}
 
 // IqnpoolPool Pool represents a collection of iSCSI Qualified Names (IQNs) for use as initiator identifiers by iSCSI vNICs.
 type IqnpoolPool struct {
@@ -28,8 +32,10 @@ type IqnpoolPool struct {
 	// The prefix for any IQN blocks created for this pool. IQN Prefix must have the following format \"iqn.yyyy-mm.naming-authority\", where naming-authority is usually the reverse syntax of the Internet domain name of the naming authority.
 	Prefix *string `json:"Prefix,omitempty"`
 	// An array of relationships to iqnpoolBlock resources.
-	BlockHeads           []IqnpoolBlockRelationship            `json:"BlockHeads,omitempty"`
-	Organization         *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	BlockHeads   []IqnpoolBlockRelationship                   `json:"BlockHeads,omitempty"`
+	Organization NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	// An array of relationships to iqnpoolReservation resources.
+	Reservations         []IqnpoolReservationRelationship `json:"Reservations,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -84,6 +90,11 @@ func (o *IqnpoolPool) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "iqnpool.Pool" of the ClassId field.
+func (o *IqnpoolPool) GetDefaultClassId() interface{} {
+	return "iqnpool.Pool"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IqnpoolPool) GetObjectType() string {
 	if o == nil {
@@ -108,6 +119,11 @@ func (o *IqnpoolPool) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "iqnpool.Pool" of the ObjectType field.
+func (o *IqnpoolPool) GetDefaultObjectType() interface{} {
+	return "iqnpool.Pool"
+}
+
 // GetIqnSuffixBlocks returns the IqnSuffixBlocks field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IqnpoolPool) GetIqnSuffixBlocks() []IqnpoolIqnSuffixBlock {
 	if o == nil {
@@ -121,7 +137,7 @@ func (o *IqnpoolPool) GetIqnSuffixBlocks() []IqnpoolIqnSuffixBlock {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IqnpoolPool) GetIqnSuffixBlocksOk() ([]IqnpoolIqnSuffixBlock, bool) {
-	if o == nil || o.IqnSuffixBlocks == nil {
+	if o == nil || IsNil(o.IqnSuffixBlocks) {
 		return nil, false
 	}
 	return o.IqnSuffixBlocks, true
@@ -129,7 +145,7 @@ func (o *IqnpoolPool) GetIqnSuffixBlocksOk() ([]IqnpoolIqnSuffixBlock, bool) {
 
 // HasIqnSuffixBlocks returns a boolean if a field has been set.
 func (o *IqnpoolPool) HasIqnSuffixBlocks() bool {
-	if o != nil && o.IqnSuffixBlocks != nil {
+	if o != nil && !IsNil(o.IqnSuffixBlocks) {
 		return true
 	}
 
@@ -143,7 +159,7 @@ func (o *IqnpoolPool) SetIqnSuffixBlocks(v []IqnpoolIqnSuffixBlock) {
 
 // GetPrefix returns the Prefix field value if set, zero value otherwise.
 func (o *IqnpoolPool) GetPrefix() string {
-	if o == nil || o.Prefix == nil {
+	if o == nil || IsNil(o.Prefix) {
 		var ret string
 		return ret
 	}
@@ -153,7 +169,7 @@ func (o *IqnpoolPool) GetPrefix() string {
 // GetPrefixOk returns a tuple with the Prefix field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IqnpoolPool) GetPrefixOk() (*string, bool) {
-	if o == nil || o.Prefix == nil {
+	if o == nil || IsNil(o.Prefix) {
 		return nil, false
 	}
 	return o.Prefix, true
@@ -161,7 +177,7 @@ func (o *IqnpoolPool) GetPrefixOk() (*string, bool) {
 
 // HasPrefix returns a boolean if a field has been set.
 func (o *IqnpoolPool) HasPrefix() bool {
-	if o != nil && o.Prefix != nil {
+	if o != nil && !IsNil(o.Prefix) {
 		return true
 	}
 
@@ -186,7 +202,7 @@ func (o *IqnpoolPool) GetBlockHeads() []IqnpoolBlockRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IqnpoolPool) GetBlockHeadsOk() ([]IqnpoolBlockRelationship, bool) {
-	if o == nil || o.BlockHeads == nil {
+	if o == nil || IsNil(o.BlockHeads) {
 		return nil, false
 	}
 	return o.BlockHeads, true
@@ -194,7 +210,7 @@ func (o *IqnpoolPool) GetBlockHeadsOk() ([]IqnpoolBlockRelationship, bool) {
 
 // HasBlockHeads returns a boolean if a field has been set.
 func (o *IqnpoolPool) HasBlockHeads() bool {
-	if o != nil && o.BlockHeads != nil {
+	if o != nil && !IsNil(o.BlockHeads) {
 		return true
 	}
 
@@ -206,75 +222,173 @@ func (o *IqnpoolPool) SetBlockHeads(v []IqnpoolBlockRelationship) {
 	o.BlockHeads = v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IqnpoolPool) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IqnpoolPool) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *IqnpoolPool) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *IqnpoolPool) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *IqnpoolPool) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *IqnpoolPool) UnsetOrganization() {
+	o.Organization.Unset()
+}
+
+// GetReservations returns the Reservations field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *IqnpoolPool) GetReservations() []IqnpoolReservationRelationship {
+	if o == nil {
+		var ret []IqnpoolReservationRelationship
+		return ret
+	}
+	return o.Reservations
+}
+
+// GetReservationsOk returns a tuple with the Reservations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *IqnpoolPool) GetReservationsOk() ([]IqnpoolReservationRelationship, bool) {
+	if o == nil || IsNil(o.Reservations) {
+		return nil, false
+	}
+	return o.Reservations, true
+}
+
+// HasReservations returns a boolean if a field has been set.
+func (o *IqnpoolPool) HasReservations() bool {
+	if o != nil && !IsNil(o.Reservations) {
+		return true
+	}
+
+	return false
+}
+
+// SetReservations gets a reference to the given []IqnpoolReservationRelationship and assigns it to the Reservations field.
+func (o *IqnpoolPool) SetReservations(v []IqnpoolReservationRelationship) {
+	o.Reservations = v
 }
 
 func (o IqnpoolPool) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IqnpoolPool) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPoolAbstractPool, errPoolAbstractPool := json.Marshal(o.PoolAbstractPool)
 	if errPoolAbstractPool != nil {
-		return []byte{}, errPoolAbstractPool
+		return map[string]interface{}{}, errPoolAbstractPool
 	}
 	errPoolAbstractPool = json.Unmarshal([]byte(serializedPoolAbstractPool), &toSerialize)
 	if errPoolAbstractPool != nil {
-		return []byte{}, errPoolAbstractPool
+		return map[string]interface{}{}, errPoolAbstractPool
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.IqnSuffixBlocks != nil {
 		toSerialize["IqnSuffixBlocks"] = o.IqnSuffixBlocks
 	}
-	if o.Prefix != nil {
+	if !IsNil(o.Prefix) {
 		toSerialize["Prefix"] = o.Prefix
 	}
 	if o.BlockHeads != nil {
 		toSerialize["BlockHeads"] = o.BlockHeads
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
+	}
+	if o.Reservations != nil {
+		toSerialize["Reservations"] = o.Reservations
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IqnpoolPool) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IqnpoolPool) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IqnpoolPoolWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -284,13 +398,15 @@ func (o *IqnpoolPool) UnmarshalJSON(bytes []byte) (err error) {
 		// The prefix for any IQN blocks created for this pool. IQN Prefix must have the following format \"iqn.yyyy-mm.naming-authority\", where naming-authority is usually the reverse syntax of the Internet domain name of the naming authority.
 		Prefix *string `json:"Prefix,omitempty"`
 		// An array of relationships to iqnpoolBlock resources.
-		BlockHeads   []IqnpoolBlockRelationship            `json:"BlockHeads,omitempty"`
-		Organization *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		BlockHeads   []IqnpoolBlockRelationship                   `json:"BlockHeads,omitempty"`
+		Organization NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		// An array of relationships to iqnpoolReservation resources.
+		Reservations []IqnpoolReservationRelationship `json:"Reservations,omitempty"`
 	}
 
 	varIqnpoolPoolWithoutEmbeddedStruct := IqnpoolPoolWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIqnpoolPoolWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIqnpoolPoolWithoutEmbeddedStruct)
 	if err == nil {
 		varIqnpoolPool := _IqnpoolPool{}
 		varIqnpoolPool.ClassId = varIqnpoolPoolWithoutEmbeddedStruct.ClassId
@@ -299,6 +415,7 @@ func (o *IqnpoolPool) UnmarshalJSON(bytes []byte) (err error) {
 		varIqnpoolPool.Prefix = varIqnpoolPoolWithoutEmbeddedStruct.Prefix
 		varIqnpoolPool.BlockHeads = varIqnpoolPoolWithoutEmbeddedStruct.BlockHeads
 		varIqnpoolPool.Organization = varIqnpoolPoolWithoutEmbeddedStruct.Organization
+		varIqnpoolPool.Reservations = varIqnpoolPoolWithoutEmbeddedStruct.Reservations
 		*o = IqnpoolPool(varIqnpoolPool)
 	} else {
 		return err
@@ -306,7 +423,7 @@ func (o *IqnpoolPool) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIqnpoolPool := _IqnpoolPool{}
 
-	err = json.Unmarshal(bytes, &varIqnpoolPool)
+	err = json.Unmarshal(data, &varIqnpoolPool)
 	if err == nil {
 		o.PoolAbstractPool = varIqnpoolPool.PoolAbstractPool
 	} else {
@@ -315,13 +432,14 @@ func (o *IqnpoolPool) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "IqnSuffixBlocks")
 		delete(additionalProperties, "Prefix")
 		delete(additionalProperties, "BlockHeads")
 		delete(additionalProperties, "Organization")
+		delete(additionalProperties, "Reservations")
 
 		// remove fields from embedded structs
 		reflectPoolAbstractPool := reflect.ValueOf(o.PoolAbstractPool)

@@ -14,18 +14,21 @@ Name | Type | Description | Notes
 **ExecutionMode** | Pointer to **string** | Indicates if the platform is an actual device or an emulated device for testing, demos, etc. Permitted values are [Normal, Emulator, ContainerEmulator]. * &#x60;&#x60; - The device reported an empty or unrecognized executionMode. * &#x60;Normal&#x60; - The device connector is running in normal mode, i.e. it is not a simulation. * &#x60;Emulator&#x60; - The device connector is running in simulation mode inside an emulated device. * &#x60;ContainerEmulator&#x60; - The device connector is running in simulation mode inside a containerized emulated device. | [optional] [default to ""]
 **ParentSignature** | Pointer to [**NullableAssetClaimSignature**](AssetClaimSignature.md) |  | [optional] 
 **Pid** | Pointer to **[]string** |  | [optional] 
-**PlatformType** | Pointer to **string** | The platform type on which device connector is executing. * &#x60;&#x60; - The device reported an empty or unrecognized platform type. * &#x60;APIC&#x60; - An Application Policy Infrastructure Controller cluster. * &#x60;CAPIC&#x60; - A Cloud Application Policy Infrastructure Controller instance. * &#x60;DCNM&#x60; - A Data Center Network Manager instance. Data Center Network Manager (DCNM) is the network management platform for all NX-OS-enabled deployments, spanning new fabric architectures, IP Fabric for Media, and storage networking deployments for the Cisco Nexus-powered data center. * &#x60;UCSFI&#x60; - A UCS Fabric Interconnect in HA or standalone mode, which is being managed by UCS Manager (UCSM). * &#x60;UCSFIISM&#x60; - A UCS Fabric Interconnect in HA or standalone mode, managed directly by Intersight. * &#x60;IMC&#x60; - A standalone UCS Server Integrated Management Controller. * &#x60;IMCM4&#x60; - A standalone UCS M4 Server. * &#x60;IMCM5&#x60; - A standalone UCS M5 server. * &#x60;IMCRack&#x60; - A standalone UCS M6 and above server. * &#x60;UCSIOM&#x60; - An UCS Chassis IO module. * &#x60;HX&#x60; - A HyperFlex storage controller. * &#x60;HyperFlexAP&#x60; - A HyperFlex Application Platform. * &#x60;IWE&#x60; - An Intersight Workload Engine. * &#x60;UCSD&#x60; - A UCS Director virtual appliance. Cisco UCS Director automates, orchestrates, and manages Cisco and third-party hardware. * &#x60;IntersightAppliance&#x60; - A Cisco Intersight Connected Virtual Appliance. * &#x60;IntersightAssist&#x60; - A Cisco Intersight Assist. * &#x60;PureStorageFlashArray&#x60; - A Pure Storage FlashArray device. * &#x60;NexusDevice&#x60; - A generic platform type to support Nexus Network Device. This can also be extended to support all network devices later on. * &#x60;ACISwitch&#x60; - A platform type to support ACI Switches. * &#x60;NexusSwitch&#x60; - A platform type to support Cisco Nexus Switches. * &#x60;MDSSwitch&#x60; - A platform type to support Cisco MDS Switches. * &#x60;MDSDevice&#x60; - A platform type to support MDS devices. * &#x60;UCSC890&#x60; - A standalone Cisco UCSC890 server. * &#x60;RedfishServer&#x60; - A generic target type for servers that support Redfish. Current support is limited to managing HPE and Dell servers on Intersight. * &#x60;NetAppOntap&#x60; - A NetApp ONTAP storage system. * &#x60;NetAppActiveIqUnifiedManager&#x60; - A NetApp Active IQ Unified Manager. * &#x60;EmcScaleIo&#x60; - An EMC ScaleIO storage system. * &#x60;EmcVmax&#x60; - An EMC VMAX storage system. * &#x60;EmcVplex&#x60; - An EMC VPLEX storage system. * &#x60;EmcXtremIo&#x60; - An EMC XtremIO storage system. * &#x60;VmwareVcenter&#x60; - A VMware vCenter device that manages Virtual Machines. * &#x60;MicrosoftHyperV&#x60; - A Microsoft Hyper-V system that manages Virtual Machines. * &#x60;AppDynamics&#x60; - An AppDynamics controller that monitors applications. * &#x60;Dynatrace&#x60; - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * &#x60;NewRelic&#x60; - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * &#x60;ServiceNow&#x60; - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * &#x60;ReadHatOpenStack&#x60; - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * &#x60;CloudFoundry&#x60; - An open source cloud platform on which developers can build, deploy, run and scale applications. * &#x60;MicrosoftAzureApplicationInsights&#x60; - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * &#x60;OpenStack&#x60; - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * &#x60;MicrosoftSqlServer&#x60; - A Microsoft SQL database server. * &#x60;MySqlServer&#x60; - An instance of either Oracle MySQL Database or the open source MariaDB. * &#x60;Kubernetes&#x60; - A Kubernetes cluster that runs containerized applications. * &#x60;AmazonWebService&#x60; - An Amazon web service target that discovers and monitors different services like EC2. It discovers entities like VMs, Volumes, regions etc. and monitors attributes like Mem, CPU, cost. * &#x60;AmazonWebServiceBilling&#x60; - An Amazon web service billing target to retrieve billing information stored in S3 bucket. * &#x60;MicrosoftAzureServicePrincipal&#x60; - A Microsoft Azure Service Principal target that discovers all the associated Azure subscriptions. * &#x60;MicrosoftAzureEnterpriseAgreement&#x60; - A Microsoft Azure Enterprise Agreement target that discovers cost, billing and RIs. * &#x60;DellCompellent&#x60; - A Dell Compellent storage system. * &#x60;HPE3Par&#x60; - A HPE 3PAR storage system. * &#x60;RedHatEnterpriseVirtualization&#x60; - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * &#x60;NutanixAcropolis&#x60; - A Nutanix Acropolis system that combines servers and storage into a distributed infrastructure platform. * &#x60;HPEOneView&#x60; - A HPE Oneview management system that manages compute, storage, and networking. * &#x60;ServiceEngine&#x60; - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * &#x60;HitachiVirtualStoragePlatform&#x60; - A Hitachi Virtual Storage Platform also referred to as Hitachi VSP. It includes various storage systems designed for data centers. * &#x60;IMCBlade&#x60; - An Intersight managed UCS Blade Server. * &#x60;TerraformCloud&#x60; - A Terraform Cloud account. * &#x60;TerraformAgent&#x60; - A Terraform Cloud Agent that Intersight will deploy in datacenter. The agent will execute Terraform plan for Terraform Cloud workspace configured to use the agent. * &#x60;CustomTarget&#x60; - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic. * &#x60;AnsibleEndpoint&#x60; - An external endpoint added as Target that can be accessed through Ansible in Intersight Cloud Orchestrator automation workflow. * &#x60;HTTPEndpoint&#x60; - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic, Bearer Token. * &#x60;SSHEndpoint&#x60; - An external endpoint added as Target that can be accessed through SSH in Intersight Cloud Orchestrator automation workflow. * &#x60;CiscoCatalyst&#x60; - A Cisco Catalyst networking switch device. * &#x60;PowerShellEndpoint&#x60; - A Windows machine on which PowerShell scripts can be executed remotely. | [optional] [default to ""]
-**PublicAccessKey** | Pointer to **string** | The device connector&#39;s public key used by Intersight to authenticate a connection from the device connector. The public key is used to verify that the signature a device connector sends on connect has been signed by the connector&#39;s private key stored on the device&#39;s filesystem. Must be a PEM encoded RSA public key string. | [optional] [readonly] 
+**PlatformType** | Pointer to **string** | The platform type on which device connector is executing. * &#x60;&#x60; - An unrecognized platform type. * &#x60;APIC&#x60; - A Cisco Application Policy Infrastructure Controller (APIC) cluster. * &#x60;CAPIC&#x60; - A Cisco Cloud Application Policy Infrastructure Controller (Cloud APIC) instance. * &#x60;DCNM&#x60; - A Cisco Data Center Network Manager (DCNM) instance. * &#x60;UCSFI&#x60; - A Cisco UCS Fabric Interconnect that is managed by Cisco UCS Manager (UCSM). * &#x60;UCSFIISM&#x60; - A Cisco UCS Fabric Interconnect that is managed by Cisco Intersight. * &#x60;IMC&#x60; - A standalone Cisco UCS rack server (Deprecated). * &#x60;IMCM4&#x60; - A standalone Cisco UCS C-Series or S-Series M4 server. * &#x60;IMCM5&#x60; - A standalone Cisco UCS C-Series or S-Series M5 server. * &#x60;IMCRack&#x60; - A standalone Cisco UCS C-Series or S-Series M6 or newer server. * &#x60;UCSIOM&#x60; - A Cisco UCS Blade Chassis I/O Module (IOM). * &#x60;HX&#x60; - A Cisco HyperFlex (HX) cluster. * &#x60;UCSD&#x60; - A Cisco UCS Director (UCSD) instance. * &#x60;IntersightAppliance&#x60; - A Cisco Intersight Connected Virtual Appliance instance. * &#x60;IntersightAssist&#x60; - A Cisco Intersight Assist instance. * &#x60;PureStorageFlashArray&#x60; - A Pure Storage FlashArray that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and storage management features are supported on this device. * &#x60;NexusDevice&#x60; - A Cisco Nexus Network Switch that is managed using Cisco Intersight Assist. * &#x60;ACISwitch&#x60; - A Cisco Nexus Network Switch with the embedded Device Connector and is a part of the Cisco ACI fabric. * &#x60;NexusSwitch&#x60; - A standalone Cisco Nexus Network Switch with the embedded Device Connector. * &#x60;MDSSwitch&#x60; - A Cisco MDS Switch that is managed using the embedded Device Connector. * &#x60;MDSDevice&#x60; - A Cisco MDS Switch that is managed using Cisco Intersight Assist. * &#x60;UCSC890&#x60; - A standalone Cisco UCS C890 server managed using Cisco Intersight Assist. * &#x60;RedfishServer&#x60; - A generic target type for servers that support Redfish APIs and is managed using Cisco Intersight Assist. Support is limited to HPE and Dell Servers. * &#x60;NetAppOntap&#x60; - A Netapp ONTAP Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * &#x60;NetAppActiveIqUnifiedManager&#x60; - A NetApp Active IQ Unified Manager (AIQUM) that is managed using Cisco Intersight Assist. * &#x60;EmcScaleIo&#x60; - An EMC ScaleIO Software Defined Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * &#x60;EmcVmax&#x60; - An EMC VMAX 2 or 3 series enterprise storage array that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * &#x60;EmcVplex&#x60; - An EMC VPLEX virtual storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * &#x60;EmcXtremIo&#x60; - An EMC XtremIO SSD storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * &#x60;VmwareVcenter&#x60; - A VMware vCenter instance that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and Virtualization features are supported on this hypervisor. * &#x60;MicrosoftHyperV&#x60; - A Microsoft Hyper-V host that is managed using Cisco Intersight Assist. Optionally, other hosts in the cluster can be discovered through this host. Cisco Intersight Workload Optimizer features are supported on this hypervisor. * &#x60;AppDynamics&#x60; - An AppDynamics controller running in a SaaS or on-prem datacenter. On-prem AppDynamics instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this controller. * &#x60;Dynatrace&#x60; - A Dynatrace Server instance running in a SaaS or on-prem datacenter. On-prem Dynatrace instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * &#x60;NewRelic&#x60; - A NewRelic user account. The NewRelic instance monitors the application infrastructure. Cisco Intersight Workload Optimizer features are supported on this server. * &#x60;ServiceNow&#x60; - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * &#x60;Umbrella&#x60; - Umbrella cloud target that discovers and monitors an organization. It discovers entities like Datacenters, Devices, Tunnels, Networks, etc. * &#x60;CloudFoundry&#x60; - An open source cloud platform on which developers can build, deploy, run and scale applications. * &#x60;MicrosoftAzureApplicationInsights&#x60; - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * &#x60;OpenStack&#x60; - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * &#x60;MicrosoftSqlServer&#x60; - A Microsoft SQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * &#x60;MySqlServer&#x60; - A MySQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * &#x60;OracleDatabaseServer&#x60; - An Oracle database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * &#x60;IBMWebSphereApplicationServer&#x60; - An IBM WebSphere Application server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application server. * &#x60;OracleWebLogicServer&#x60; - Oracle WebLogic Server is a unified and extensible platform for developing, deploying and running enterprise applications, such as Java, for on-premises and in the cloud. WebLogic Server offers a robust, mature, and scalable implementation of Java Enterprise Edition (EE) and Jakarta EE. * &#x60;ApacheTomcatServer&#x60; - An Apache Tomcat server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * &#x60;JavaVirtualMachine&#x60; - A JVM Application with JMX configured that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application. * &#x60;RedHatJBossApplicationServer&#x60; - JBoss Application Server is an open-source, cross-platform Java application server developed by JBoss, a division of Red Hat Inc. It is an open-source implementation of Java 2 Enterprise Edition (J2EE) that is used for implementing Java applications and other Web-based applications and software. * &#x60;Kubernetes&#x60; - A Kubernetes cluster that runs containerized applications, with Kubernetes Collector installed. Cisco Intersight Workload Optimizer features are supported on Kubernetes cluster. * &#x60;AmazonWebService&#x60; - An Amazon Web Service cloud account. Cisco Intersight Workload Optimizer and Virtualization features are supported on this cloud. * &#x60;AmazonWebServiceBilling&#x60; - An Amazon Web Service cloud billing account used to retrieve billing information stored in S3 bucket. Cisco Intersight Workload Optimizer features are supported on this cloud. * &#x60;GoogleCloudPlatform&#x60; - A Google Cloud Platform service account with access to one or more projects. Cisco Intersight Workload Optimizer features are supported on this cloud. * &#x60;GoogleCloudPlatformBilling&#x60; - A Google Cloud Platform service account used to retrieve billing information from BigQuery. Cisco Intersight Workload Optimizer features are supported on this cloud. * &#x60;MicrosoftAzureServicePrincipal&#x60; - A Microsoft Azure Service Principal account with access to Azure subscriptions. Cisco Intersight Workload Optimizer features are supported on this cloud. * &#x60;MicrosoftAzureEnterpriseAgreement&#x60; - A Microsoft Azure Enterprise Agreement enrolment used to retrieve pricing and billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * &#x60;MicrosoftAzureBilling&#x60; - A Microsoft Azure Service Principal account with access to billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * &#x60;DellCompellent&#x60; - A Dell EMC SC Series (Compellent) storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * &#x60;HPE3Par&#x60; - A HPE 3PAR StoreServ system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * &#x60;RedHatEnterpriseVirtualization&#x60; - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * &#x60;NutanixAcropolis&#x60; - A Nutanix Acropolis cluster that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this cluster. * &#x60;NutanixPrismCentral&#x60; - A Nutanix Prism Central cluster. Prism central is a virtual appliance for managing Nutanix clusters and services. * &#x60;HPEOneView&#x60; - A HPE OneView system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this system. * &#x60;ServiceEngine&#x60; - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * &#x60;HitachiVirtualStoragePlatform&#x60; - A Hitachi Virtual Storage Platform (Hitachi VSP) that is managed using Cisco Intersight Assist. * &#x60;GenericTarget&#x60; - A generic third-party target supported only in Partner Integration Appliance. This target type is used for development purposes and will not be supported in production environment. * &#x60;IMCBlade&#x60; - A Cisco UCS blade server managed by Cisco Intersight. * &#x60;TerraformCloud&#x60; - A Terraform Cloud Business Tier account. * &#x60;TerraformAgent&#x60; - A Terraform Cloud Agent that will be deployed on Cisco Intersight Assist. The agent can be used to plan and apply Terraform runs from a Terraform Cloud workspace. * &#x60;CustomTarget&#x60; - CustomTarget is deprecated. Use HTTPEndpoint type to claim HTTP endpoints. * &#x60;AnsibleEndpoint&#x60; - An external endpoint that is added as a target which can be accessed through Ansible in Intersight Cloud Orchestrator automation workflows. * &#x60;HTTPEndpoint&#x60; - An HTTP endpoint that can be accessed in Intersight Orchestrator workflows directly or using Cisco Intersight Assist. Authentication Schemes supported are Basic and Bearer Token. * &#x60;SSHEndpoint&#x60; - An SSH endpoint that can be accessed in Intersight Orchestrator workflows using Cisco Intersight Assist. * &#x60;CiscoCatalyst&#x60; - A Cisco Catalyst networking switch device. * &#x60;PowerShellEndpoint&#x60; - A Windows operating system server on which PowerShell scripts can be executed using Cisco Intersight Assist. * &#x60;CiscoDNAC&#x60; - A Cisco Digital Network Architecture (DNA) Center appliance. * &#x60;CiscoFMC&#x60; - A Cisco Secure Firewall Management Center. * &#x60;ViptelaCloud&#x60; - A Cisco Viptela SD-WAN Cloud. * &#x60;MerakiCloud&#x60; - A Cisco Meraki Organization. * &#x60;CiscoISE&#x60; - A Cisco Identity Services Engine (ISE) target. | [optional] [default to ""]
+**PublicAccessKey** | Pointer to **string** | The device connector&#39;s public key used by Intersight to authenticate a connection from the device connector. The public key is used to verify that the signature a device connector sends on connect has been signed by the connector&#39;s private key stored on the device&#39;s filesystem. Must be a PEM encoded RSA or Ed22519 public key string. | [optional] [readonly] 
+**PublicEncryptionKey** | Pointer to **string** | The device connector public key used by Intersight for encryption. The public key is used to encrypt ephemeral aes keys to be used for decrypting sensitive data from Intersight. Must be a PEM encoded RSA public key string. | [optional] [readonly] 
 **ReadOnly** | Pointer to **bool** | Flag reported by devices to indicate an administrator of the device has disabled management operations of the device connector and only monitoring is permitted. | [optional] [readonly] 
 **Serial** | Pointer to **[]string** |  | [optional] 
 **Vendor** | Pointer to **string** | The vendor of the managed device. | [optional] [readonly] 
-**Account** | Pointer to [**IamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
-**ClaimedByUser** | Pointer to [**IamUserRelationship**](IamUserRelationship.md) |  | [optional] 
+**Account** | Pointer to [**NullableIamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
+**ClaimedByUser** | Pointer to [**NullableIamUserRelationship**](IamUserRelationship.md) |  | [optional] 
 **ClusterMembers** | Pointer to [**[]AssetClusterMemberRelationship**](AssetClusterMemberRelationship.md) | An array of relationships to assetClusterMember resources. | [optional] [readonly] 
-**DeviceClaim** | Pointer to [**AssetDeviceClaimRelationship**](AssetDeviceClaimRelationship.md) |  | [optional] 
-**DeviceConfiguration** | Pointer to [**AssetDeviceConfigurationRelationship**](AssetDeviceConfigurationRelationship.md) |  | [optional] 
-**DomainGroup** | Pointer to [**IamDomainGroupRelationship**](IamDomainGroupRelationship.md) |  | [optional] 
-**ParentConnection** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**CustomPermissionResources** | Pointer to [**[]MoBaseMoRelationship**](MoBaseMoRelationship.md) | An array of relationships to moBaseMo resources. | [optional] [readonly] 
+**DeviceClaim** | Pointer to [**NullableAssetDeviceClaimRelationship**](AssetDeviceClaimRelationship.md) |  | [optional] 
+**DeviceConfiguration** | Pointer to [**NullableAssetDeviceConfigurationRelationship**](AssetDeviceConfigurationRelationship.md) |  | [optional] 
+**DomainGroup** | Pointer to [**NullableIamDomainGroupRelationship**](IamDomainGroupRelationship.md) |  | [optional] 
+**ParentConnection** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**Target** | Pointer to [**NullableAssetTargetRelationship**](AssetTargetRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -376,6 +379,31 @@ SetPublicAccessKey sets PublicAccessKey field to given value.
 
 HasPublicAccessKey returns a boolean if a field has been set.
 
+### GetPublicEncryptionKey
+
+`func (o *AssetDeviceRegistration) GetPublicEncryptionKey() string`
+
+GetPublicEncryptionKey returns the PublicEncryptionKey field if non-nil, zero value otherwise.
+
+### GetPublicEncryptionKeyOk
+
+`func (o *AssetDeviceRegistration) GetPublicEncryptionKeyOk() (*string, bool)`
+
+GetPublicEncryptionKeyOk returns a tuple with the PublicEncryptionKey field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPublicEncryptionKey
+
+`func (o *AssetDeviceRegistration) SetPublicEncryptionKey(v string)`
+
+SetPublicEncryptionKey sets PublicEncryptionKey field to given value.
+
+### HasPublicEncryptionKey
+
+`func (o *AssetDeviceRegistration) HasPublicEncryptionKey() bool`
+
+HasPublicEncryptionKey returns a boolean if a field has been set.
+
 ### GetReadOnly
 
 `func (o *AssetDeviceRegistration) GetReadOnly() bool`
@@ -486,6 +514,16 @@ SetAccount sets Account field to given value.
 
 HasAccount returns a boolean if a field has been set.
 
+### SetAccountNil
+
+`func (o *AssetDeviceRegistration) SetAccountNil(b bool)`
+
+ SetAccountNil sets the value for Account to be an explicit nil
+
+### UnsetAccount
+`func (o *AssetDeviceRegistration) UnsetAccount()`
+
+UnsetAccount ensures that no value is present for Account, not even an explicit nil
 ### GetClaimedByUser
 
 `func (o *AssetDeviceRegistration) GetClaimedByUser() IamUserRelationship`
@@ -511,6 +549,16 @@ SetClaimedByUser sets ClaimedByUser field to given value.
 
 HasClaimedByUser returns a boolean if a field has been set.
 
+### SetClaimedByUserNil
+
+`func (o *AssetDeviceRegistration) SetClaimedByUserNil(b bool)`
+
+ SetClaimedByUserNil sets the value for ClaimedByUser to be an explicit nil
+
+### UnsetClaimedByUser
+`func (o *AssetDeviceRegistration) UnsetClaimedByUser()`
+
+UnsetClaimedByUser ensures that no value is present for ClaimedByUser, not even an explicit nil
 ### GetClusterMembers
 
 `func (o *AssetDeviceRegistration) GetClusterMembers() []AssetClusterMemberRelationship`
@@ -546,6 +594,41 @@ HasClusterMembers returns a boolean if a field has been set.
 `func (o *AssetDeviceRegistration) UnsetClusterMembers()`
 
 UnsetClusterMembers ensures that no value is present for ClusterMembers, not even an explicit nil
+### GetCustomPermissionResources
+
+`func (o *AssetDeviceRegistration) GetCustomPermissionResources() []MoBaseMoRelationship`
+
+GetCustomPermissionResources returns the CustomPermissionResources field if non-nil, zero value otherwise.
+
+### GetCustomPermissionResourcesOk
+
+`func (o *AssetDeviceRegistration) GetCustomPermissionResourcesOk() (*[]MoBaseMoRelationship, bool)`
+
+GetCustomPermissionResourcesOk returns a tuple with the CustomPermissionResources field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCustomPermissionResources
+
+`func (o *AssetDeviceRegistration) SetCustomPermissionResources(v []MoBaseMoRelationship)`
+
+SetCustomPermissionResources sets CustomPermissionResources field to given value.
+
+### HasCustomPermissionResources
+
+`func (o *AssetDeviceRegistration) HasCustomPermissionResources() bool`
+
+HasCustomPermissionResources returns a boolean if a field has been set.
+
+### SetCustomPermissionResourcesNil
+
+`func (o *AssetDeviceRegistration) SetCustomPermissionResourcesNil(b bool)`
+
+ SetCustomPermissionResourcesNil sets the value for CustomPermissionResources to be an explicit nil
+
+### UnsetCustomPermissionResources
+`func (o *AssetDeviceRegistration) UnsetCustomPermissionResources()`
+
+UnsetCustomPermissionResources ensures that no value is present for CustomPermissionResources, not even an explicit nil
 ### GetDeviceClaim
 
 `func (o *AssetDeviceRegistration) GetDeviceClaim() AssetDeviceClaimRelationship`
@@ -571,6 +654,16 @@ SetDeviceClaim sets DeviceClaim field to given value.
 
 HasDeviceClaim returns a boolean if a field has been set.
 
+### SetDeviceClaimNil
+
+`func (o *AssetDeviceRegistration) SetDeviceClaimNil(b bool)`
+
+ SetDeviceClaimNil sets the value for DeviceClaim to be an explicit nil
+
+### UnsetDeviceClaim
+`func (o *AssetDeviceRegistration) UnsetDeviceClaim()`
+
+UnsetDeviceClaim ensures that no value is present for DeviceClaim, not even an explicit nil
 ### GetDeviceConfiguration
 
 `func (o *AssetDeviceRegistration) GetDeviceConfiguration() AssetDeviceConfigurationRelationship`
@@ -596,6 +689,16 @@ SetDeviceConfiguration sets DeviceConfiguration field to given value.
 
 HasDeviceConfiguration returns a boolean if a field has been set.
 
+### SetDeviceConfigurationNil
+
+`func (o *AssetDeviceRegistration) SetDeviceConfigurationNil(b bool)`
+
+ SetDeviceConfigurationNil sets the value for DeviceConfiguration to be an explicit nil
+
+### UnsetDeviceConfiguration
+`func (o *AssetDeviceRegistration) UnsetDeviceConfiguration()`
+
+UnsetDeviceConfiguration ensures that no value is present for DeviceConfiguration, not even an explicit nil
 ### GetDomainGroup
 
 `func (o *AssetDeviceRegistration) GetDomainGroup() IamDomainGroupRelationship`
@@ -621,6 +724,16 @@ SetDomainGroup sets DomainGroup field to given value.
 
 HasDomainGroup returns a boolean if a field has been set.
 
+### SetDomainGroupNil
+
+`func (o *AssetDeviceRegistration) SetDomainGroupNil(b bool)`
+
+ SetDomainGroupNil sets the value for DomainGroup to be an explicit nil
+
+### UnsetDomainGroup
+`func (o *AssetDeviceRegistration) UnsetDomainGroup()`
+
+UnsetDomainGroup ensures that no value is present for DomainGroup, not even an explicit nil
 ### GetParentConnection
 
 `func (o *AssetDeviceRegistration) GetParentConnection() AssetDeviceRegistrationRelationship`
@@ -646,6 +759,51 @@ SetParentConnection sets ParentConnection field to given value.
 
 HasParentConnection returns a boolean if a field has been set.
 
+### SetParentConnectionNil
+
+`func (o *AssetDeviceRegistration) SetParentConnectionNil(b bool)`
+
+ SetParentConnectionNil sets the value for ParentConnection to be an explicit nil
+
+### UnsetParentConnection
+`func (o *AssetDeviceRegistration) UnsetParentConnection()`
+
+UnsetParentConnection ensures that no value is present for ParentConnection, not even an explicit nil
+### GetTarget
+
+`func (o *AssetDeviceRegistration) GetTarget() AssetTargetRelationship`
+
+GetTarget returns the Target field if non-nil, zero value otherwise.
+
+### GetTargetOk
+
+`func (o *AssetDeviceRegistration) GetTargetOk() (*AssetTargetRelationship, bool)`
+
+GetTargetOk returns a tuple with the Target field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTarget
+
+`func (o *AssetDeviceRegistration) SetTarget(v AssetTargetRelationship)`
+
+SetTarget sets Target field to given value.
+
+### HasTarget
+
+`func (o *AssetDeviceRegistration) HasTarget() bool`
+
+HasTarget returns a boolean if a field has been set.
+
+### SetTargetNil
+
+`func (o *AssetDeviceRegistration) SetTargetNil(b bool)`
+
+ SetTargetNil sets the value for Target to be an explicit nil
+
+### UnsetTarget
+`func (o *AssetDeviceRegistration) UnsetTarget()`
+
+UnsetTarget ensures that no value is present for Target, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

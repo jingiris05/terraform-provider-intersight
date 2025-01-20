@@ -6,14 +6,15 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "storage.NetAppNode"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.NetAppNode"]
-**AvgPerformanceMetrics** | Pointer to [**StorageNetAppPerformanceMetricsAverage**](StorageNetAppPerformanceMetricsAverage.md) |  | [optional] 
+**AvgPerformanceMetrics** | Pointer to [**NullableStorageBasePerformanceMetricsAverage**](StorageBasePerformanceMetricsAverage.md) | Average performance metrics data for a NetApp storage resource over a given period of time. | [optional] 
 **CdpdEnabled** | Pointer to **string** | Storage node option for cdpd state. * &#x60;unknown&#x60; - The cdpd option is unknown on the node. * &#x60;on&#x60; - The cdpd option is enabled on the node. * &#x60;off&#x60; - The cdpd option is disabled on the node. | [optional] [readonly] [default to "unknown"]
 **Health** | Pointer to **bool** | The health of the NetApp Node. | [optional] [readonly] 
 **HighAvailability** | Pointer to [**NullableStorageNetAppHighAvailability**](StorageNetAppHighAvailability.md) |  | [optional] 
 **Key** | Pointer to **string** | Unique identifier of NetApp Node across data center. | [optional] [readonly] 
+**State** | Pointer to **string** | The state of the NetApp Node. | [optional] [readonly] 
 **Systemid** | Pointer to **string** | The system id of the NetApp Node. | [optional] [readonly] 
 **Uuid** | Pointer to **string** | Universally unique identifier of NetApp Node. | [optional] [readonly] 
-**Array** | Pointer to [**StorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
+**Array** | Pointer to [**NullableStorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
 **Events** | Pointer to [**[]StorageNetAppNodeEventRelationship**](StorageNetAppNodeEventRelationship.md) | An array of relationships to storageNetAppNodeEvent resources. | [optional] [readonly] 
 
 ## Methods
@@ -77,20 +78,20 @@ SetObjectType sets ObjectType field to given value.
 
 ### GetAvgPerformanceMetrics
 
-`func (o *StorageNetAppNode) GetAvgPerformanceMetrics() StorageNetAppPerformanceMetricsAverage`
+`func (o *StorageNetAppNode) GetAvgPerformanceMetrics() StorageBasePerformanceMetricsAverage`
 
 GetAvgPerformanceMetrics returns the AvgPerformanceMetrics field if non-nil, zero value otherwise.
 
 ### GetAvgPerformanceMetricsOk
 
-`func (o *StorageNetAppNode) GetAvgPerformanceMetricsOk() (*StorageNetAppPerformanceMetricsAverage, bool)`
+`func (o *StorageNetAppNode) GetAvgPerformanceMetricsOk() (*StorageBasePerformanceMetricsAverage, bool)`
 
 GetAvgPerformanceMetricsOk returns a tuple with the AvgPerformanceMetrics field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAvgPerformanceMetrics
 
-`func (o *StorageNetAppNode) SetAvgPerformanceMetrics(v StorageNetAppPerformanceMetricsAverage)`
+`func (o *StorageNetAppNode) SetAvgPerformanceMetrics(v StorageBasePerformanceMetricsAverage)`
 
 SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
@@ -100,6 +101,16 @@ SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
 HasAvgPerformanceMetrics returns a boolean if a field has been set.
 
+### SetAvgPerformanceMetricsNil
+
+`func (o *StorageNetAppNode) SetAvgPerformanceMetricsNil(b bool)`
+
+ SetAvgPerformanceMetricsNil sets the value for AvgPerformanceMetrics to be an explicit nil
+
+### UnsetAvgPerformanceMetrics
+`func (o *StorageNetAppNode) UnsetAvgPerformanceMetrics()`
+
+UnsetAvgPerformanceMetrics ensures that no value is present for AvgPerformanceMetrics, not even an explicit nil
 ### GetCdpdEnabled
 
 `func (o *StorageNetAppNode) GetCdpdEnabled() string`
@@ -210,6 +221,31 @@ SetKey sets Key field to given value.
 
 HasKey returns a boolean if a field has been set.
 
+### GetState
+
+`func (o *StorageNetAppNode) GetState() string`
+
+GetState returns the State field if non-nil, zero value otherwise.
+
+### GetStateOk
+
+`func (o *StorageNetAppNode) GetStateOk() (*string, bool)`
+
+GetStateOk returns a tuple with the State field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetState
+
+`func (o *StorageNetAppNode) SetState(v string)`
+
+SetState sets State field to given value.
+
+### HasState
+
+`func (o *StorageNetAppNode) HasState() bool`
+
+HasState returns a boolean if a field has been set.
+
 ### GetSystemid
 
 `func (o *StorageNetAppNode) GetSystemid() string`
@@ -285,6 +321,16 @@ SetArray sets Array field to given value.
 
 HasArray returns a boolean if a field has been set.
 
+### SetArrayNil
+
+`func (o *StorageNetAppNode) SetArrayNil(b bool)`
+
+ SetArrayNil sets the value for Array to be an explicit nil
+
+### UnsetArray
+`func (o *StorageNetAppNode) UnsetArray()`
+
+UnsetArray ensures that no value is present for Array, not even an explicit nil
 ### GetEvents
 
 `func (o *StorageNetAppNode) GetEvents() []StorageNetAppNodeEventRelationship`

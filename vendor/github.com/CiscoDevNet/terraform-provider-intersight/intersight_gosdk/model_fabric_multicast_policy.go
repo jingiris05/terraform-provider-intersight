@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the FabricMulticastPolicy type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &FabricMulticastPolicy{}
 
 // FabricMulticastPolicy A policy to configure Multicast settings for all the Virtual LAN networks.
 type FabricMulticastPolicy struct {
@@ -25,14 +29,16 @@ type FabricMulticastPolicy struct {
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
 	// Used to define the IGMP Querier IP address.
-	QuerierIpAddress *string `json:"QuerierIpAddress,omitempty"`
+	QuerierIpAddress *string `json:"QuerierIpAddress,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	// Used to define the IGMP Querier IP address of the peer switch.
-	QuerierIpAddressPeer *string `json:"QuerierIpAddressPeer,omitempty"`
+	QuerierIpAddressPeer *string `json:"QuerierIpAddressPeer,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	// Administrative state of the IGMP Querier for this VLAN. * `Disabled` - Admin configured Disabled State. * `Enabled` - Admin configured Enabled State.
 	QuerierState *string `json:"QuerierState,omitempty"`
 	// Administrative state of the IGMP Snooping for this VLAN. * `Enabled` - Admin configured Enabled State. * `Disabled` - Admin configured Disabled State.
-	SnoopingState        *string                               `json:"SnoopingState,omitempty"`
-	Organization         *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	SnoopingState *string `json:"SnoopingState,omitempty"`
+	// Administrative state of the IGMP source IP proxy for this VLAN. * `Enabled` - Admin configured Enabled State. * `Disabled` - Admin configured Disabled State.
+	SrcIpProxy           *string                                      `json:"SrcIpProxy,omitempty"`
+	Organization         NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -50,6 +56,8 @@ func NewFabricMulticastPolicy(classId string, objectType string) *FabricMulticas
 	this.QuerierState = &querierState
 	var snoopingState string = "Enabled"
 	this.SnoopingState = &snoopingState
+	var srcIpProxy string = "Enabled"
+	this.SrcIpProxy = &srcIpProxy
 	return &this
 }
 
@@ -66,6 +74,8 @@ func NewFabricMulticastPolicyWithDefaults() *FabricMulticastPolicy {
 	this.QuerierState = &querierState
 	var snoopingState string = "Enabled"
 	this.SnoopingState = &snoopingState
+	var srcIpProxy string = "Enabled"
+	this.SrcIpProxy = &srcIpProxy
 	return &this
 }
 
@@ -93,6 +103,11 @@ func (o *FabricMulticastPolicy) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "fabric.MulticastPolicy" of the ClassId field.
+func (o *FabricMulticastPolicy) GetDefaultClassId() interface{} {
+	return "fabric.MulticastPolicy"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *FabricMulticastPolicy) GetObjectType() string {
 	if o == nil {
@@ -117,9 +132,14 @@ func (o *FabricMulticastPolicy) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "fabric.MulticastPolicy" of the ObjectType field.
+func (o *FabricMulticastPolicy) GetDefaultObjectType() interface{} {
+	return "fabric.MulticastPolicy"
+}
+
 // GetQuerierIpAddress returns the QuerierIpAddress field value if set, zero value otherwise.
 func (o *FabricMulticastPolicy) GetQuerierIpAddress() string {
-	if o == nil || o.QuerierIpAddress == nil {
+	if o == nil || IsNil(o.QuerierIpAddress) {
 		var ret string
 		return ret
 	}
@@ -129,7 +149,7 @@ func (o *FabricMulticastPolicy) GetQuerierIpAddress() string {
 // GetQuerierIpAddressOk returns a tuple with the QuerierIpAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricMulticastPolicy) GetQuerierIpAddressOk() (*string, bool) {
-	if o == nil || o.QuerierIpAddress == nil {
+	if o == nil || IsNil(o.QuerierIpAddress) {
 		return nil, false
 	}
 	return o.QuerierIpAddress, true
@@ -137,7 +157,7 @@ func (o *FabricMulticastPolicy) GetQuerierIpAddressOk() (*string, bool) {
 
 // HasQuerierIpAddress returns a boolean if a field has been set.
 func (o *FabricMulticastPolicy) HasQuerierIpAddress() bool {
-	if o != nil && o.QuerierIpAddress != nil {
+	if o != nil && !IsNil(o.QuerierIpAddress) {
 		return true
 	}
 
@@ -151,7 +171,7 @@ func (o *FabricMulticastPolicy) SetQuerierIpAddress(v string) {
 
 // GetQuerierIpAddressPeer returns the QuerierIpAddressPeer field value if set, zero value otherwise.
 func (o *FabricMulticastPolicy) GetQuerierIpAddressPeer() string {
-	if o == nil || o.QuerierIpAddressPeer == nil {
+	if o == nil || IsNil(o.QuerierIpAddressPeer) {
 		var ret string
 		return ret
 	}
@@ -161,7 +181,7 @@ func (o *FabricMulticastPolicy) GetQuerierIpAddressPeer() string {
 // GetQuerierIpAddressPeerOk returns a tuple with the QuerierIpAddressPeer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricMulticastPolicy) GetQuerierIpAddressPeerOk() (*string, bool) {
-	if o == nil || o.QuerierIpAddressPeer == nil {
+	if o == nil || IsNil(o.QuerierIpAddressPeer) {
 		return nil, false
 	}
 	return o.QuerierIpAddressPeer, true
@@ -169,7 +189,7 @@ func (o *FabricMulticastPolicy) GetQuerierIpAddressPeerOk() (*string, bool) {
 
 // HasQuerierIpAddressPeer returns a boolean if a field has been set.
 func (o *FabricMulticastPolicy) HasQuerierIpAddressPeer() bool {
-	if o != nil && o.QuerierIpAddressPeer != nil {
+	if o != nil && !IsNil(o.QuerierIpAddressPeer) {
 		return true
 	}
 
@@ -183,7 +203,7 @@ func (o *FabricMulticastPolicy) SetQuerierIpAddressPeer(v string) {
 
 // GetQuerierState returns the QuerierState field value if set, zero value otherwise.
 func (o *FabricMulticastPolicy) GetQuerierState() string {
-	if o == nil || o.QuerierState == nil {
+	if o == nil || IsNil(o.QuerierState) {
 		var ret string
 		return ret
 	}
@@ -193,7 +213,7 @@ func (o *FabricMulticastPolicy) GetQuerierState() string {
 // GetQuerierStateOk returns a tuple with the QuerierState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricMulticastPolicy) GetQuerierStateOk() (*string, bool) {
-	if o == nil || o.QuerierState == nil {
+	if o == nil || IsNil(o.QuerierState) {
 		return nil, false
 	}
 	return o.QuerierState, true
@@ -201,7 +221,7 @@ func (o *FabricMulticastPolicy) GetQuerierStateOk() (*string, bool) {
 
 // HasQuerierState returns a boolean if a field has been set.
 func (o *FabricMulticastPolicy) HasQuerierState() bool {
-	if o != nil && o.QuerierState != nil {
+	if o != nil && !IsNil(o.QuerierState) {
 		return true
 	}
 
@@ -215,7 +235,7 @@ func (o *FabricMulticastPolicy) SetQuerierState(v string) {
 
 // GetSnoopingState returns the SnoopingState field value if set, zero value otherwise.
 func (o *FabricMulticastPolicy) GetSnoopingState() string {
-	if o == nil || o.SnoopingState == nil {
+	if o == nil || IsNil(o.SnoopingState) {
 		var ret string
 		return ret
 	}
@@ -225,7 +245,7 @@ func (o *FabricMulticastPolicy) GetSnoopingState() string {
 // GetSnoopingStateOk returns a tuple with the SnoopingState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricMulticastPolicy) GetSnoopingStateOk() (*string, bool) {
-	if o == nil || o.SnoopingState == nil {
+	if o == nil || IsNil(o.SnoopingState) {
 		return nil, false
 	}
 	return o.SnoopingState, true
@@ -233,7 +253,7 @@ func (o *FabricMulticastPolicy) GetSnoopingStateOk() (*string, bool) {
 
 // HasSnoopingState returns a boolean if a field has been set.
 func (o *FabricMulticastPolicy) HasSnoopingState() bool {
-	if o != nil && o.SnoopingState != nil {
+	if o != nil && !IsNil(o.SnoopingState) {
 		return true
 	}
 
@@ -245,97 +265,196 @@ func (o *FabricMulticastPolicy) SetSnoopingState(v string) {
 	o.SnoopingState = &v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
-func (o *FabricMulticastPolicy) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
-		var ret OrganizationOrganizationRelationship
+// GetSrcIpProxy returns the SrcIpProxy field value if set, zero value otherwise.
+func (o *FabricMulticastPolicy) GetSrcIpProxy() string {
+	if o == nil || IsNil(o.SrcIpProxy) {
+		var ret string
 		return ret
 	}
-	return *o.Organization
+	return *o.SrcIpProxy
 }
 
-// GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
+// GetSrcIpProxyOk returns a tuple with the SrcIpProxy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FabricMulticastPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+func (o *FabricMulticastPolicy) GetSrcIpProxyOk() (*string, bool) {
+	if o == nil || IsNil(o.SrcIpProxy) {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.SrcIpProxy, true
 }
 
-// HasOrganization returns a boolean if a field has been set.
-func (o *FabricMulticastPolicy) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+// HasSrcIpProxy returns a boolean if a field has been set.
+func (o *FabricMulticastPolicy) HasSrcIpProxy() bool {
+	if o != nil && !IsNil(o.SrcIpProxy) {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetSrcIpProxy gets a reference to the given string and assigns it to the SrcIpProxy field.
+func (o *FabricMulticastPolicy) SetSrcIpProxy(v string) {
+	o.SrcIpProxy = &v
+}
+
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricMulticastPolicy) GetOrganization() OrganizationOrganizationRelationship {
+	if o == nil || IsNil(o.Organization.Get()) {
+		var ret OrganizationOrganizationRelationship
+		return ret
+	}
+	return *o.Organization.Get()
+}
+
+// GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricMulticastPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Organization.Get(), o.Organization.IsSet()
+}
+
+// HasOrganization returns a boolean if a field has been set.
+func (o *FabricMulticastPolicy) HasOrganization() bool {
+	if o != nil && o.Organization.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *FabricMulticastPolicy) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *FabricMulticastPolicy) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *FabricMulticastPolicy) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 func (o FabricMulticastPolicy) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o FabricMulticastPolicy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicy, errPolicyAbstractPolicy := json.Marshal(o.PolicyAbstractPolicy)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
 	errPolicyAbstractPolicy = json.Unmarshal([]byte(serializedPolicyAbstractPolicy), &toSerialize)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.QuerierIpAddress != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.QuerierIpAddress) {
 		toSerialize["QuerierIpAddress"] = o.QuerierIpAddress
 	}
-	if o.QuerierIpAddressPeer != nil {
+	if !IsNil(o.QuerierIpAddressPeer) {
 		toSerialize["QuerierIpAddressPeer"] = o.QuerierIpAddressPeer
 	}
-	if o.QuerierState != nil {
+	if !IsNil(o.QuerierState) {
 		toSerialize["QuerierState"] = o.QuerierState
 	}
-	if o.SnoopingState != nil {
+	if !IsNil(o.SnoopingState) {
 		toSerialize["SnoopingState"] = o.SnoopingState
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if !IsNil(o.SrcIpProxy) {
+		toSerialize["SrcIpProxy"] = o.SrcIpProxy
+	}
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *FabricMulticastPolicy) UnmarshalJSON(bytes []byte) (err error) {
+func (o *FabricMulticastPolicy) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type FabricMulticastPolicyWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
 		// Used to define the IGMP Querier IP address.
-		QuerierIpAddress *string `json:"QuerierIpAddress,omitempty"`
+		QuerierIpAddress *string `json:"QuerierIpAddress,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 		// Used to define the IGMP Querier IP address of the peer switch.
-		QuerierIpAddressPeer *string `json:"QuerierIpAddressPeer,omitempty"`
+		QuerierIpAddressPeer *string `json:"QuerierIpAddressPeer,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 		// Administrative state of the IGMP Querier for this VLAN. * `Disabled` - Admin configured Disabled State. * `Enabled` - Admin configured Enabled State.
 		QuerierState *string `json:"QuerierState,omitempty"`
 		// Administrative state of the IGMP Snooping for this VLAN. * `Enabled` - Admin configured Enabled State. * `Disabled` - Admin configured Disabled State.
-		SnoopingState *string                               `json:"SnoopingState,omitempty"`
-		Organization  *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		SnoopingState *string `json:"SnoopingState,omitempty"`
+		// Administrative state of the IGMP source IP proxy for this VLAN. * `Enabled` - Admin configured Enabled State. * `Disabled` - Admin configured Disabled State.
+		SrcIpProxy   *string                                      `json:"SrcIpProxy,omitempty"`
+		Organization NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	}
 
 	varFabricMulticastPolicyWithoutEmbeddedStruct := FabricMulticastPolicyWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varFabricMulticastPolicyWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varFabricMulticastPolicyWithoutEmbeddedStruct)
 	if err == nil {
 		varFabricMulticastPolicy := _FabricMulticastPolicy{}
 		varFabricMulticastPolicy.ClassId = varFabricMulticastPolicyWithoutEmbeddedStruct.ClassId
@@ -344,6 +463,7 @@ func (o *FabricMulticastPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varFabricMulticastPolicy.QuerierIpAddressPeer = varFabricMulticastPolicyWithoutEmbeddedStruct.QuerierIpAddressPeer
 		varFabricMulticastPolicy.QuerierState = varFabricMulticastPolicyWithoutEmbeddedStruct.QuerierState
 		varFabricMulticastPolicy.SnoopingState = varFabricMulticastPolicyWithoutEmbeddedStruct.SnoopingState
+		varFabricMulticastPolicy.SrcIpProxy = varFabricMulticastPolicyWithoutEmbeddedStruct.SrcIpProxy
 		varFabricMulticastPolicy.Organization = varFabricMulticastPolicyWithoutEmbeddedStruct.Organization
 		*o = FabricMulticastPolicy(varFabricMulticastPolicy)
 	} else {
@@ -352,7 +472,7 @@ func (o *FabricMulticastPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	varFabricMulticastPolicy := _FabricMulticastPolicy{}
 
-	err = json.Unmarshal(bytes, &varFabricMulticastPolicy)
+	err = json.Unmarshal(data, &varFabricMulticastPolicy)
 	if err == nil {
 		o.PolicyAbstractPolicy = varFabricMulticastPolicy.PolicyAbstractPolicy
 	} else {
@@ -361,13 +481,14 @@ func (o *FabricMulticastPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "QuerierIpAddress")
 		delete(additionalProperties, "QuerierIpAddressPeer")
 		delete(additionalProperties, "QuerierState")
 		delete(additionalProperties, "SnoopingState")
+		delete(additionalProperties, "SrcIpProxy")
 		delete(additionalProperties, "Organization")
 
 		// remove fields from embedded structs

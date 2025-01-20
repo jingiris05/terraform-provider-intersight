@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HyperflexHxRegistrationDetailsDt type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexHxRegistrationDetailsDt{}
 
 // HyperflexHxRegistrationDetailsDt License Registration Details of the cluster
 type HyperflexHxRegistrationDetailsDt struct {
@@ -94,6 +98,11 @@ func (o *HyperflexHxRegistrationDetailsDt) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.HxRegistrationDetailsDt" of the ClassId field.
+func (o *HyperflexHxRegistrationDetailsDt) GetDefaultClassId() interface{} {
+	return "hyperflex.HxRegistrationDetailsDt"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexHxRegistrationDetailsDt) GetObjectType() string {
 	if o == nil {
@@ -118,9 +127,14 @@ func (o *HyperflexHxRegistrationDetailsDt) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.HxRegistrationDetailsDt" of the ObjectType field.
+func (o *HyperflexHxRegistrationDetailsDt) GetDefaultObjectType() interface{} {
+	return "hyperflex.HxRegistrationDetailsDt"
+}
+
 // GetInitialRegistrationDate returns the InitialRegistrationDate field value if set, zero value otherwise.
 func (o *HyperflexHxRegistrationDetailsDt) GetInitialRegistrationDate() string {
-	if o == nil || o.InitialRegistrationDate == nil {
+	if o == nil || IsNil(o.InitialRegistrationDate) {
 		var ret string
 		return ret
 	}
@@ -130,7 +144,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetInitialRegistrationDate() string {
 // GetInitialRegistrationDateOk returns a tuple with the InitialRegistrationDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHxRegistrationDetailsDt) GetInitialRegistrationDateOk() (*string, bool) {
-	if o == nil || o.InitialRegistrationDate == nil {
+	if o == nil || IsNil(o.InitialRegistrationDate) {
 		return nil, false
 	}
 	return o.InitialRegistrationDate, true
@@ -138,7 +152,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetInitialRegistrationDateOk() (*stri
 
 // HasInitialRegistrationDate returns a boolean if a field has been set.
 func (o *HyperflexHxRegistrationDetailsDt) HasInitialRegistrationDate() bool {
-	if o != nil && o.InitialRegistrationDate != nil {
+	if o != nil && !IsNil(o.InitialRegistrationDate) {
 		return true
 	}
 
@@ -152,7 +166,7 @@ func (o *HyperflexHxRegistrationDetailsDt) SetInitialRegistrationDate(v string) 
 
 // GetLastRenewalAttemptDate returns the LastRenewalAttemptDate field value if set, zero value otherwise.
 func (o *HyperflexHxRegistrationDetailsDt) GetLastRenewalAttemptDate() string {
-	if o == nil || o.LastRenewalAttemptDate == nil {
+	if o == nil || IsNil(o.LastRenewalAttemptDate) {
 		var ret string
 		return ret
 	}
@@ -162,7 +176,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetLastRenewalAttemptDate() string {
 // GetLastRenewalAttemptDateOk returns a tuple with the LastRenewalAttemptDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHxRegistrationDetailsDt) GetLastRenewalAttemptDateOk() (*string, bool) {
-	if o == nil || o.LastRenewalAttemptDate == nil {
+	if o == nil || IsNil(o.LastRenewalAttemptDate) {
 		return nil, false
 	}
 	return o.LastRenewalAttemptDate, true
@@ -170,7 +184,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetLastRenewalAttemptDateOk() (*strin
 
 // HasLastRenewalAttemptDate returns a boolean if a field has been set.
 func (o *HyperflexHxRegistrationDetailsDt) HasLastRenewalAttemptDate() bool {
-	if o != nil && o.LastRenewalAttemptDate != nil {
+	if o != nil && !IsNil(o.LastRenewalAttemptDate) {
 		return true
 	}
 
@@ -184,7 +198,7 @@ func (o *HyperflexHxRegistrationDetailsDt) SetLastRenewalAttemptDate(v string) {
 
 // GetNextRenewalAttemptDate returns the NextRenewalAttemptDate field value if set, zero value otherwise.
 func (o *HyperflexHxRegistrationDetailsDt) GetNextRenewalAttemptDate() string {
-	if o == nil || o.NextRenewalAttemptDate == nil {
+	if o == nil || IsNil(o.NextRenewalAttemptDate) {
 		var ret string
 		return ret
 	}
@@ -194,7 +208,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetNextRenewalAttemptDate() string {
 // GetNextRenewalAttemptDateOk returns a tuple with the NextRenewalAttemptDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHxRegistrationDetailsDt) GetNextRenewalAttemptDateOk() (*string, bool) {
-	if o == nil || o.NextRenewalAttemptDate == nil {
+	if o == nil || IsNil(o.NextRenewalAttemptDate) {
 		return nil, false
 	}
 	return o.NextRenewalAttemptDate, true
@@ -202,7 +216,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetNextRenewalAttemptDateOk() (*strin
 
 // HasNextRenewalAttemptDate returns a boolean if a field has been set.
 func (o *HyperflexHxRegistrationDetailsDt) HasNextRenewalAttemptDate() bool {
-	if o != nil && o.NextRenewalAttemptDate != nil {
+	if o != nil && !IsNil(o.NextRenewalAttemptDate) {
 		return true
 	}
 
@@ -216,7 +230,7 @@ func (o *HyperflexHxRegistrationDetailsDt) SetNextRenewalAttemptDate(v string) {
 
 // GetOutOfComplianceStartDate returns the OutOfComplianceStartDate field value if set, zero value otherwise.
 func (o *HyperflexHxRegistrationDetailsDt) GetOutOfComplianceStartDate() string {
-	if o == nil || o.OutOfComplianceStartDate == nil {
+	if o == nil || IsNil(o.OutOfComplianceStartDate) {
 		var ret string
 		return ret
 	}
@@ -226,7 +240,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetOutOfComplianceStartDate() string 
 // GetOutOfComplianceStartDateOk returns a tuple with the OutOfComplianceStartDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHxRegistrationDetailsDt) GetOutOfComplianceStartDateOk() (*string, bool) {
-	if o == nil || o.OutOfComplianceStartDate == nil {
+	if o == nil || IsNil(o.OutOfComplianceStartDate) {
 		return nil, false
 	}
 	return o.OutOfComplianceStartDate, true
@@ -234,7 +248,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetOutOfComplianceStartDateOk() (*str
 
 // HasOutOfComplianceStartDate returns a boolean if a field has been set.
 func (o *HyperflexHxRegistrationDetailsDt) HasOutOfComplianceStartDate() bool {
-	if o != nil && o.OutOfComplianceStartDate != nil {
+	if o != nil && !IsNil(o.OutOfComplianceStartDate) {
 		return true
 	}
 
@@ -248,7 +262,7 @@ func (o *HyperflexHxRegistrationDetailsDt) SetOutOfComplianceStartDate(v string)
 
 // GetRegistrationExpireDate returns the RegistrationExpireDate field value if set, zero value otherwise.
 func (o *HyperflexHxRegistrationDetailsDt) GetRegistrationExpireDate() string {
-	if o == nil || o.RegistrationExpireDate == nil {
+	if o == nil || IsNil(o.RegistrationExpireDate) {
 		var ret string
 		return ret
 	}
@@ -258,7 +272,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetRegistrationExpireDate() string {
 // GetRegistrationExpireDateOk returns a tuple with the RegistrationExpireDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHxRegistrationDetailsDt) GetRegistrationExpireDateOk() (*string, bool) {
-	if o == nil || o.RegistrationExpireDate == nil {
+	if o == nil || IsNil(o.RegistrationExpireDate) {
 		return nil, false
 	}
 	return o.RegistrationExpireDate, true
@@ -266,7 +280,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetRegistrationExpireDateOk() (*strin
 
 // HasRegistrationExpireDate returns a boolean if a field has been set.
 func (o *HyperflexHxRegistrationDetailsDt) HasRegistrationExpireDate() bool {
-	if o != nil && o.RegistrationExpireDate != nil {
+	if o != nil && !IsNil(o.RegistrationExpireDate) {
 		return true
 	}
 
@@ -280,7 +294,7 @@ func (o *HyperflexHxRegistrationDetailsDt) SetRegistrationExpireDate(v string) {
 
 // GetRegistrationFailedReason returns the RegistrationFailedReason field value if set, zero value otherwise.
 func (o *HyperflexHxRegistrationDetailsDt) GetRegistrationFailedReason() string {
-	if o == nil || o.RegistrationFailedReason == nil {
+	if o == nil || IsNil(o.RegistrationFailedReason) {
 		var ret string
 		return ret
 	}
@@ -290,7 +304,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetRegistrationFailedReason() string 
 // GetRegistrationFailedReasonOk returns a tuple with the RegistrationFailedReason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHxRegistrationDetailsDt) GetRegistrationFailedReasonOk() (*string, bool) {
-	if o == nil || o.RegistrationFailedReason == nil {
+	if o == nil || IsNil(o.RegistrationFailedReason) {
 		return nil, false
 	}
 	return o.RegistrationFailedReason, true
@@ -298,7 +312,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetRegistrationFailedReasonOk() (*str
 
 // HasRegistrationFailedReason returns a boolean if a field has been set.
 func (o *HyperflexHxRegistrationDetailsDt) HasRegistrationFailedReason() bool {
-	if o != nil && o.RegistrationFailedReason != nil {
+	if o != nil && !IsNil(o.RegistrationFailedReason) {
 		return true
 	}
 
@@ -312,7 +326,7 @@ func (o *HyperflexHxRegistrationDetailsDt) SetRegistrationFailedReason(v string)
 
 // GetSmartAccount returns the SmartAccount field value if set, zero value otherwise.
 func (o *HyperflexHxRegistrationDetailsDt) GetSmartAccount() string {
-	if o == nil || o.SmartAccount == nil {
+	if o == nil || IsNil(o.SmartAccount) {
 		var ret string
 		return ret
 	}
@@ -322,7 +336,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetSmartAccount() string {
 // GetSmartAccountOk returns a tuple with the SmartAccount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHxRegistrationDetailsDt) GetSmartAccountOk() (*string, bool) {
-	if o == nil || o.SmartAccount == nil {
+	if o == nil || IsNil(o.SmartAccount) {
 		return nil, false
 	}
 	return o.SmartAccount, true
@@ -330,7 +344,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetSmartAccountOk() (*string, bool) {
 
 // HasSmartAccount returns a boolean if a field has been set.
 func (o *HyperflexHxRegistrationDetailsDt) HasSmartAccount() bool {
-	if o != nil && o.SmartAccount != nil {
+	if o != nil && !IsNil(o.SmartAccount) {
 		return true
 	}
 
@@ -344,7 +358,7 @@ func (o *HyperflexHxRegistrationDetailsDt) SetSmartAccount(v string) {
 
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *HyperflexHxRegistrationDetailsDt) GetStatus() string {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
@@ -354,7 +368,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetStatus() string {
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHxRegistrationDetailsDt) GetStatusOk() (*string, bool) {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
 	return o.Status, true
@@ -362,7 +376,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetStatusOk() (*string, bool) {
 
 // HasStatus returns a boolean if a field has been set.
 func (o *HyperflexHxRegistrationDetailsDt) HasStatus() bool {
-	if o != nil && o.Status != nil {
+	if o != nil && !IsNil(o.Status) {
 		return true
 	}
 
@@ -376,7 +390,7 @@ func (o *HyperflexHxRegistrationDetailsDt) SetStatus(v string) {
 
 // GetVirtualAccount returns the VirtualAccount field value if set, zero value otherwise.
 func (o *HyperflexHxRegistrationDetailsDt) GetVirtualAccount() string {
-	if o == nil || o.VirtualAccount == nil {
+	if o == nil || IsNil(o.VirtualAccount) {
 		var ret string
 		return ret
 	}
@@ -386,7 +400,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetVirtualAccount() string {
 // GetVirtualAccountOk returns a tuple with the VirtualAccount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHxRegistrationDetailsDt) GetVirtualAccountOk() (*string, bool) {
-	if o == nil || o.VirtualAccount == nil {
+	if o == nil || IsNil(o.VirtualAccount) {
 		return nil, false
 	}
 	return o.VirtualAccount, true
@@ -394,7 +408,7 @@ func (o *HyperflexHxRegistrationDetailsDt) GetVirtualAccountOk() (*string, bool)
 
 // HasVirtualAccount returns a boolean if a field has been set.
 func (o *HyperflexHxRegistrationDetailsDt) HasVirtualAccount() bool {
-	if o != nil && o.VirtualAccount != nil {
+	if o != nil && !IsNil(o.VirtualAccount) {
 		return true
 	}
 
@@ -407,46 +421,56 @@ func (o *HyperflexHxRegistrationDetailsDt) SetVirtualAccount(v string) {
 }
 
 func (o HyperflexHxRegistrationDetailsDt) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexHxRegistrationDetailsDt) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.InitialRegistrationDate != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.InitialRegistrationDate) {
 		toSerialize["InitialRegistrationDate"] = o.InitialRegistrationDate
 	}
-	if o.LastRenewalAttemptDate != nil {
+	if !IsNil(o.LastRenewalAttemptDate) {
 		toSerialize["LastRenewalAttemptDate"] = o.LastRenewalAttemptDate
 	}
-	if o.NextRenewalAttemptDate != nil {
+	if !IsNil(o.NextRenewalAttemptDate) {
 		toSerialize["NextRenewalAttemptDate"] = o.NextRenewalAttemptDate
 	}
-	if o.OutOfComplianceStartDate != nil {
+	if !IsNil(o.OutOfComplianceStartDate) {
 		toSerialize["OutOfComplianceStartDate"] = o.OutOfComplianceStartDate
 	}
-	if o.RegistrationExpireDate != nil {
+	if !IsNil(o.RegistrationExpireDate) {
 		toSerialize["RegistrationExpireDate"] = o.RegistrationExpireDate
 	}
-	if o.RegistrationFailedReason != nil {
+	if !IsNil(o.RegistrationFailedReason) {
 		toSerialize["RegistrationFailedReason"] = o.RegistrationFailedReason
 	}
-	if o.SmartAccount != nil {
+	if !IsNil(o.SmartAccount) {
 		toSerialize["SmartAccount"] = o.SmartAccount
 	}
-	if o.Status != nil {
+	if !IsNil(o.Status) {
 		toSerialize["Status"] = o.Status
 	}
-	if o.VirtualAccount != nil {
+	if !IsNil(o.VirtualAccount) {
 		toSerialize["VirtualAccount"] = o.VirtualAccount
 	}
 
@@ -454,10 +478,51 @@ func (o HyperflexHxRegistrationDetailsDt) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexHxRegistrationDetailsDt) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexHxRegistrationDetailsDt) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexHxRegistrationDetailsDtWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -485,7 +550,7 @@ func (o *HyperflexHxRegistrationDetailsDt) UnmarshalJSON(bytes []byte) (err erro
 
 	varHyperflexHxRegistrationDetailsDtWithoutEmbeddedStruct := HyperflexHxRegistrationDetailsDtWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexHxRegistrationDetailsDtWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexHxRegistrationDetailsDtWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexHxRegistrationDetailsDt := _HyperflexHxRegistrationDetailsDt{}
 		varHyperflexHxRegistrationDetailsDt.ClassId = varHyperflexHxRegistrationDetailsDtWithoutEmbeddedStruct.ClassId
@@ -506,7 +571,7 @@ func (o *HyperflexHxRegistrationDetailsDt) UnmarshalJSON(bytes []byte) (err erro
 
 	varHyperflexHxRegistrationDetailsDt := _HyperflexHxRegistrationDetailsDt{}
 
-	err = json.Unmarshal(bytes, &varHyperflexHxRegistrationDetailsDt)
+	err = json.Unmarshal(data, &varHyperflexHxRegistrationDetailsDt)
 	if err == nil {
 		o.MoBaseComplexType = varHyperflexHxRegistrationDetailsDt.MoBaseComplexType
 	} else {
@@ -515,7 +580,7 @@ func (o *HyperflexHxRegistrationDetailsDt) UnmarshalJSON(bytes []byte) (err erro
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "InitialRegistrationDate")

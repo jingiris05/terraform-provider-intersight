@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourcePowerPolicy() *schema.Resource {
 		UpdateContext: resourcePowerPolicyUpdate,
 		DeleteContext: resourcePowerPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -40,7 +42,7 @@ func resourcePowerPolicy() *schema.Resource {
 				DiffSuppressFunc: SuppressDiffAdditionProps,
 			},
 			"allocated_budget": {
-				Description:  "Sets the Allocated Power Budget of the Chassis (in Watts). This field is only supported for Cisco UCS X series Chassis.",
+				Description:  "Sets the allocated power budget of the chassis (in Watts).",
 				Type:         schema.TypeInt,
 				ValidateFunc: validation.IntBetween(0, 65535),
 				Optional:     true,
@@ -120,7 +122,7 @@ func resourcePowerPolicy() *schema.Resource {
 					return
 				}},
 			"dynamic_rebalancing": {
-				Description:  "Sets the Dynamic Power Rebalancing mode of the Chassis. If enabled, this mode allows the chassis to dynamically reallocate the power between servers depending on their power usage. This option is only supported for Cisco UCS X series Chassis.\n* `Enabled` - Set the value to Enabled.\n* `Disabled` - Set the value to Disabled.",
+				Description:  "Sets the dynamic power rebalancing mode of the chassis. If enabled, this mode allows the chassis to dynamically reallocate the power between servers depending on their power usage.\n* `Enabled` - Set the value to Enabled.\n* `Disabled` - Set the value to Disabled.",
 				Type:         schema.TypeString,
 				ValidateFunc: validation.StringInSlice([]string{"Enabled", "Disabled"}, false),
 				Optional:     true,
@@ -292,7 +294,7 @@ func resourcePowerPolicy() *schema.Resource {
 				},
 			},
 			"power_priority": {
-				Description:  "Sets the Power Priority of the Server. This priority is used to determine the initial power allocation for servers. This field is only supported for Cisco UCS X series servers.\n* `Low` - Set the Power Priority to Low.\n* `Medium` - Set the Power Priority to Medium.\n* `High` - Set the Power Priority to High.",
+				Description:  "Sets the Power Priority of the Server. This priority is used to determine the initial power allocation for servers. This field is only supported for Cisco UCS B series and X series servers.\n* `Low` - Set the Power Priority to Low.\n* `Medium` - Set the Power Priority to Medium.\n* `High` - Set the Power Priority to High.",
 				Type:         schema.TypeString,
 				ValidateFunc: validation.StringInSlice([]string{"Low", "Medium", "High"}, false),
 				Optional:     true,
@@ -306,18 +308,25 @@ func resourcePowerPolicy() *schema.Resource {
 				Default:      "Enabled",
 			},
 			"power_restore_state": {
-				Description:  "Sets the Power Restore State of the Server. In the absence of Intersight connectivity, the chassis will use this policy  to recover the host power after a power loss event.  This field is only supported for Cisco UCS X series servers.\n* `AlwaysOff` - Set the Power Restore Mode to Off.\n* `AlwaysOn` - Set the Power Restore Mode to On.\n* `LastState` - Set the Power Restore Mode to LastState.",
+				Description:  "Sets the Power Restore State of the Server. In the absence of Intersight connectivity, the chassis/server will use this policy  to recover the host power after a power loss event.\n* `AlwaysOff` - Set the Power Restore Mode to Off.\n* `AlwaysOn` - Set the Power Restore Mode to On.\n* `LastState` - Set the Power Restore Mode to LastState.",
 				Type:         schema.TypeString,
 				ValidateFunc: validation.StringInSlice([]string{"AlwaysOff", "AlwaysOn", "LastState"}, false),
 				Optional:     true,
 				Default:      "AlwaysOff",
 			},
 			"power_save_mode": {
-				Description:  "Sets the Power Save mode of the Chassis. If the requested power budget is less than available power\u00a0capacity,  the additional PSUs not required to comply with redundancy policy are placed in Power Save mode. This option is only supported for Cisco UCS X series Chassis.\n* `Enabled` - Set the value to Enabled.\n* `Disabled` - Set the value to Disabled.",
+				Description:  "Sets the power save mode of the chassis. If the requested power budget is less than available power capacity,  the additional PSUs not required to comply with redundancy policy are placed in power save mode.\n* `Enabled` - Set the value to Enabled.\n* `Disabled` - Set the value to Disabled.",
 				Type:         schema.TypeString,
 				ValidateFunc: validation.StringInSlice([]string{"Enabled", "Disabled"}, false),
 				Optional:     true,
 				Default:      "Enabled",
+			},
+			"processor_package_power_limit": {
+				Description:  "Sets the Processor Package Power Limit (PPL) of a server. PPL refers to the amount of power that a CPU can draw from the power supply. The Processor Package Power Limit (PPL) feature is currently available exclusively on Cisco UCS C225/C245 M8 servers.\n* `Default` - Set the Package Power Limit to the platform defined default value.\n* `Maximum` - Set the Package Power Limit to the platform defined maximum value.\n* `Minimum` - Set the Package Power Limit to the platform defined minimum value.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringInSlice([]string{"Default", "Maximum", "Minimum"}, false),
+				Optional:     true,
+				Default:      "Default",
 			},
 			"profiles": {
 				Description: "An array of relationships to policyAbstractConfigProfile resources.",
@@ -461,6 +470,17 @@ func resourcePowerPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -659,6 +679,11 @@ func resourcePowerPolicyCreate(c context.Context, d *schema.ResourceData, meta i
 		o.SetPowerSaveMode(x)
 	}
 
+	if v, ok := d.GetOk("processor_package_power_limit"); ok {
+		x := (v.(string))
+		o.SetProcessorPackagePowerLimit(x)
+	}
+
 	if v, ok := d.GetOk("profiles"); ok {
 		x := make([]models.PolicyAbstractConfigProfileRelationship, 0)
 		s := v.([]interface{})
@@ -751,8 +776,16 @@ func resourcePowerPolicyCreate(c context.Context, d *schema.ResourceData, meta i
 		}
 		return diag.Errorf("error occurred while creating PowerPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourcePowerPolicyRead(c, d, meta)...)
 }
 func detachPowerPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -780,6 +813,9 @@ func detachPowerPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Di
 func resourcePowerPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.PowerApi.GetPowerPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -883,6 +919,10 @@ func resourcePowerPolicyRead(c context.Context, d *schema.ResourceData, meta int
 
 	if err := d.Set("power_save_mode", (s.GetPowerSaveMode())); err != nil {
 		return diag.Errorf("error occurred while setting property PowerSaveMode in PowerPolicy object: %s", err.Error())
+	}
+
+	if err := d.Set("processor_package_power_limit", (s.GetProcessorPackagePowerLimit())); err != nil {
+		return diag.Errorf("error occurred while setting property ProcessorPackagePowerLimit in PowerPolicy object: %s", err.Error())
 	}
 
 	if err := d.Set("profiles", flattenListPolicyAbstractConfigProfileRelationship(s.GetProfiles(), d)); err != nil {
@@ -1032,6 +1072,12 @@ func resourcePowerPolicyUpdate(c context.Context, d *schema.ResourceData, meta i
 		v := d.Get("power_save_mode")
 		x := (v.(string))
 		o.SetPowerSaveMode(x)
+	}
+
+	if d.HasChange("processor_package_power_limit") {
+		v := d.Get("processor_package_power_limit")
+		x := (v.(string))
+		o.SetProcessorPackagePowerLimit(x)
 	}
 
 	if d.HasChange("profiles") {

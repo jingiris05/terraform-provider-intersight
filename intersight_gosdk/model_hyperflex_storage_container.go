@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the HyperflexStorageContainer type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexStorageContainer{}
 
 // HyperflexStorageContainer A storage container (datastore) entity.
 type HyperflexStorageContainer struct {
@@ -55,8 +59,8 @@ type HyperflexStorageContainer struct {
 	// UUID of the datastore/storage container.
 	Uuid *string `json:"Uuid,omitempty"`
 	// Number of volumes associated with the storage container.
-	VolumeCount *int64                        `json:"VolumeCount,omitempty"`
-	Cluster     *HyperflexClusterRelationship `json:"Cluster,omitempty"`
+	VolumeCount *int64                               `json:"VolumeCount,omitempty"`
+	Cluster     NullableHyperflexClusterRelationship `json:"Cluster,omitempty"`
 	// An array of relationships to hyperflexVolume resources.
 	Volumes              []HyperflexVolumeRelationship `json:"Volumes,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -111,6 +115,11 @@ func (o *HyperflexStorageContainer) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.StorageContainer" of the ClassId field.
+func (o *HyperflexStorageContainer) GetDefaultClassId() interface{} {
+	return "hyperflex.StorageContainer"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexStorageContainer) GetObjectType() string {
 	if o == nil {
@@ -135,9 +144,14 @@ func (o *HyperflexStorageContainer) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.StorageContainer" of the ObjectType field.
+func (o *HyperflexStorageContainer) GetDefaultObjectType() interface{} {
+	return "hyperflex.StorageContainer"
+}
+
 // GetAccessibilitySummary returns the AccessibilitySummary field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetAccessibilitySummary() string {
-	if o == nil || o.AccessibilitySummary == nil {
+	if o == nil || IsNil(o.AccessibilitySummary) {
 		var ret string
 		return ret
 	}
@@ -147,7 +161,7 @@ func (o *HyperflexStorageContainer) GetAccessibilitySummary() string {
 // GetAccessibilitySummaryOk returns a tuple with the AccessibilitySummary field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetAccessibilitySummaryOk() (*string, bool) {
-	if o == nil || o.AccessibilitySummary == nil {
+	if o == nil || IsNil(o.AccessibilitySummary) {
 		return nil, false
 	}
 	return o.AccessibilitySummary, true
@@ -155,7 +169,7 @@ func (o *HyperflexStorageContainer) GetAccessibilitySummaryOk() (*string, bool) 
 
 // HasAccessibilitySummary returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasAccessibilitySummary() bool {
-	if o != nil && o.AccessibilitySummary != nil {
+	if o != nil && !IsNil(o.AccessibilitySummary) {
 		return true
 	}
 
@@ -169,7 +183,7 @@ func (o *HyperflexStorageContainer) SetAccessibilitySummary(v string) {
 
 // GetDataBlockSize returns the DataBlockSize field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetDataBlockSize() int64 {
-	if o == nil || o.DataBlockSize == nil {
+	if o == nil || IsNil(o.DataBlockSize) {
 		var ret int64
 		return ret
 	}
@@ -179,7 +193,7 @@ func (o *HyperflexStorageContainer) GetDataBlockSize() int64 {
 // GetDataBlockSizeOk returns a tuple with the DataBlockSize field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetDataBlockSizeOk() (*int64, bool) {
-	if o == nil || o.DataBlockSize == nil {
+	if o == nil || IsNil(o.DataBlockSize) {
 		return nil, false
 	}
 	return o.DataBlockSize, true
@@ -187,7 +201,7 @@ func (o *HyperflexStorageContainer) GetDataBlockSizeOk() (*int64, bool) {
 
 // HasDataBlockSize returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasDataBlockSize() bool {
-	if o != nil && o.DataBlockSize != nil {
+	if o != nil && !IsNil(o.DataBlockSize) {
 		return true
 	}
 
@@ -201,7 +215,7 @@ func (o *HyperflexStorageContainer) SetDataBlockSize(v int64) {
 
 // GetEncryptionEnabled returns the EncryptionEnabled field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetEncryptionEnabled() bool {
-	if o == nil || o.EncryptionEnabled == nil {
+	if o == nil || IsNil(o.EncryptionEnabled) {
 		var ret bool
 		return ret
 	}
@@ -211,7 +225,7 @@ func (o *HyperflexStorageContainer) GetEncryptionEnabled() bool {
 // GetEncryptionEnabledOk returns a tuple with the EncryptionEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetEncryptionEnabledOk() (*bool, bool) {
-	if o == nil || o.EncryptionEnabled == nil {
+	if o == nil || IsNil(o.EncryptionEnabled) {
 		return nil, false
 	}
 	return o.EncryptionEnabled, true
@@ -219,7 +233,7 @@ func (o *HyperflexStorageContainer) GetEncryptionEnabledOk() (*bool, bool) {
 
 // HasEncryptionEnabled returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasEncryptionEnabled() bool {
-	if o != nil && o.EncryptionEnabled != nil {
+	if o != nil && !IsNil(o.EncryptionEnabled) {
 		return true
 	}
 
@@ -244,7 +258,7 @@ func (o *HyperflexStorageContainer) GetHostMountStatus() []StorageStorageContain
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexStorageContainer) GetHostMountStatusOk() ([]StorageStorageContainerHostMountStatus, bool) {
-	if o == nil || o.HostMountStatus == nil {
+	if o == nil || IsNil(o.HostMountStatus) {
 		return nil, false
 	}
 	return o.HostMountStatus, true
@@ -252,7 +266,7 @@ func (o *HyperflexStorageContainer) GetHostMountStatusOk() ([]StorageStorageCont
 
 // HasHostMountStatus returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasHostMountStatus() bool {
-	if o != nil && o.HostMountStatus != nil {
+	if o != nil && !IsNil(o.HostMountStatus) {
 		return true
 	}
 
@@ -266,7 +280,7 @@ func (o *HyperflexStorageContainer) SetHostMountStatus(v []StorageStorageContain
 
 // GetInUse returns the InUse field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetInUse() bool {
-	if o == nil || o.InUse == nil {
+	if o == nil || IsNil(o.InUse) {
 		var ret bool
 		return ret
 	}
@@ -276,7 +290,7 @@ func (o *HyperflexStorageContainer) GetInUse() bool {
 // GetInUseOk returns a tuple with the InUse field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetInUseOk() (*bool, bool) {
-	if o == nil || o.InUse == nil {
+	if o == nil || IsNil(o.InUse) {
 		return nil, false
 	}
 	return o.InUse, true
@@ -284,7 +298,7 @@ func (o *HyperflexStorageContainer) GetInUseOk() (*bool, bool) {
 
 // HasInUse returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasInUse() bool {
-	if o != nil && o.InUse != nil {
+	if o != nil && !IsNil(o.InUse) {
 		return true
 	}
 
@@ -298,7 +312,7 @@ func (o *HyperflexStorageContainer) SetInUse(v bool) {
 
 // GetKind returns the Kind field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetKind() string {
-	if o == nil || o.Kind == nil {
+	if o == nil || IsNil(o.Kind) {
 		var ret string
 		return ret
 	}
@@ -308,7 +322,7 @@ func (o *HyperflexStorageContainer) GetKind() string {
 // GetKindOk returns a tuple with the Kind field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetKindOk() (*string, bool) {
-	if o == nil || o.Kind == nil {
+	if o == nil || IsNil(o.Kind) {
 		return nil, false
 	}
 	return o.Kind, true
@@ -316,7 +330,7 @@ func (o *HyperflexStorageContainer) GetKindOk() (*string, bool) {
 
 // HasKind returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasKind() bool {
-	if o != nil && o.Kind != nil {
+	if o != nil && !IsNil(o.Kind) {
 		return true
 	}
 
@@ -330,7 +344,7 @@ func (o *HyperflexStorageContainer) SetKind(v string) {
 
 // GetLastAccessTime returns the LastAccessTime field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetLastAccessTime() time.Time {
-	if o == nil || o.LastAccessTime == nil {
+	if o == nil || IsNil(o.LastAccessTime) {
 		var ret time.Time
 		return ret
 	}
@@ -340,7 +354,7 @@ func (o *HyperflexStorageContainer) GetLastAccessTime() time.Time {
 // GetLastAccessTimeOk returns a tuple with the LastAccessTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetLastAccessTimeOk() (*time.Time, bool) {
-	if o == nil || o.LastAccessTime == nil {
+	if o == nil || IsNil(o.LastAccessTime) {
 		return nil, false
 	}
 	return o.LastAccessTime, true
@@ -348,7 +362,7 @@ func (o *HyperflexStorageContainer) GetLastAccessTimeOk() (*time.Time, bool) {
 
 // HasLastAccessTime returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasLastAccessTime() bool {
-	if o != nil && o.LastAccessTime != nil {
+	if o != nil && !IsNil(o.LastAccessTime) {
 		return true
 	}
 
@@ -362,7 +376,7 @@ func (o *HyperflexStorageContainer) SetLastAccessTime(v time.Time) {
 
 // GetLastModifiedTime returns the LastModifiedTime field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetLastModifiedTime() time.Time {
-	if o == nil || o.LastModifiedTime == nil {
+	if o == nil || IsNil(o.LastModifiedTime) {
 		var ret time.Time
 		return ret
 	}
@@ -372,7 +386,7 @@ func (o *HyperflexStorageContainer) GetLastModifiedTime() time.Time {
 // GetLastModifiedTimeOk returns a tuple with the LastModifiedTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetLastModifiedTimeOk() (*time.Time, bool) {
-	if o == nil || o.LastModifiedTime == nil {
+	if o == nil || IsNil(o.LastModifiedTime) {
 		return nil, false
 	}
 	return o.LastModifiedTime, true
@@ -380,7 +394,7 @@ func (o *HyperflexStorageContainer) GetLastModifiedTimeOk() (*time.Time, bool) {
 
 // HasLastModifiedTime returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasLastModifiedTime() bool {
-	if o != nil && o.LastModifiedTime != nil {
+	if o != nil && !IsNil(o.LastModifiedTime) {
 		return true
 	}
 
@@ -394,7 +408,7 @@ func (o *HyperflexStorageContainer) SetLastModifiedTime(v time.Time) {
 
 // GetMountStatus returns the MountStatus field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetMountStatus() string {
-	if o == nil || o.MountStatus == nil {
+	if o == nil || IsNil(o.MountStatus) {
 		var ret string
 		return ret
 	}
@@ -404,7 +418,7 @@ func (o *HyperflexStorageContainer) GetMountStatus() string {
 // GetMountStatusOk returns a tuple with the MountStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetMountStatusOk() (*string, bool) {
-	if o == nil || o.MountStatus == nil {
+	if o == nil || IsNil(o.MountStatus) {
 		return nil, false
 	}
 	return o.MountStatus, true
@@ -412,7 +426,7 @@ func (o *HyperflexStorageContainer) GetMountStatusOk() (*string, bool) {
 
 // HasMountStatus returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasMountStatus() bool {
-	if o != nil && o.MountStatus != nil {
+	if o != nil && !IsNil(o.MountStatus) {
 		return true
 	}
 
@@ -426,7 +440,7 @@ func (o *HyperflexStorageContainer) SetMountStatus(v string) {
 
 // GetMountSummary returns the MountSummary field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetMountSummary() string {
-	if o == nil || o.MountSummary == nil {
+	if o == nil || IsNil(o.MountSummary) {
 		var ret string
 		return ret
 	}
@@ -436,7 +450,7 @@ func (o *HyperflexStorageContainer) GetMountSummary() string {
 // GetMountSummaryOk returns a tuple with the MountSummary field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetMountSummaryOk() (*string, bool) {
-	if o == nil || o.MountSummary == nil {
+	if o == nil || IsNil(o.MountSummary) {
 		return nil, false
 	}
 	return o.MountSummary, true
@@ -444,7 +458,7 @@ func (o *HyperflexStorageContainer) GetMountSummaryOk() (*string, bool) {
 
 // HasMountSummary returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasMountSummary() bool {
-	if o != nil && o.MountSummary != nil {
+	if o != nil && !IsNil(o.MountSummary) {
 		return true
 	}
 
@@ -458,7 +472,7 @@ func (o *HyperflexStorageContainer) SetMountSummary(v string) {
 
 // GetProvisionedCapacity returns the ProvisionedCapacity field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetProvisionedCapacity() int64 {
-	if o == nil || o.ProvisionedCapacity == nil {
+	if o == nil || IsNil(o.ProvisionedCapacity) {
 		var ret int64
 		return ret
 	}
@@ -468,7 +482,7 @@ func (o *HyperflexStorageContainer) GetProvisionedCapacity() int64 {
 // GetProvisionedCapacityOk returns a tuple with the ProvisionedCapacity field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetProvisionedCapacityOk() (*int64, bool) {
-	if o == nil || o.ProvisionedCapacity == nil {
+	if o == nil || IsNil(o.ProvisionedCapacity) {
 		return nil, false
 	}
 	return o.ProvisionedCapacity, true
@@ -476,7 +490,7 @@ func (o *HyperflexStorageContainer) GetProvisionedCapacityOk() (*int64, bool) {
 
 // HasProvisionedCapacity returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasProvisionedCapacity() bool {
-	if o != nil && o.ProvisionedCapacity != nil {
+	if o != nil && !IsNil(o.ProvisionedCapacity) {
 		return true
 	}
 
@@ -490,7 +504,7 @@ func (o *HyperflexStorageContainer) SetProvisionedCapacity(v int64) {
 
 // GetProvisionedVolumeCapacityUtilization returns the ProvisionedVolumeCapacityUtilization field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetProvisionedVolumeCapacityUtilization() float32 {
-	if o == nil || o.ProvisionedVolumeCapacityUtilization == nil {
+	if o == nil || IsNil(o.ProvisionedVolumeCapacityUtilization) {
 		var ret float32
 		return ret
 	}
@@ -500,7 +514,7 @@ func (o *HyperflexStorageContainer) GetProvisionedVolumeCapacityUtilization() fl
 // GetProvisionedVolumeCapacityUtilizationOk returns a tuple with the ProvisionedVolumeCapacityUtilization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetProvisionedVolumeCapacityUtilizationOk() (*float32, bool) {
-	if o == nil || o.ProvisionedVolumeCapacityUtilization == nil {
+	if o == nil || IsNil(o.ProvisionedVolumeCapacityUtilization) {
 		return nil, false
 	}
 	return o.ProvisionedVolumeCapacityUtilization, true
@@ -508,7 +522,7 @@ func (o *HyperflexStorageContainer) GetProvisionedVolumeCapacityUtilizationOk() 
 
 // HasProvisionedVolumeCapacityUtilization returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasProvisionedVolumeCapacityUtilization() bool {
-	if o != nil && o.ProvisionedVolumeCapacityUtilization != nil {
+	if o != nil && !IsNil(o.ProvisionedVolumeCapacityUtilization) {
 		return true
 	}
 
@@ -522,7 +536,7 @@ func (o *HyperflexStorageContainer) SetProvisionedVolumeCapacityUtilization(v fl
 
 // GetType returns the Type field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetType() string {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		var ret string
 		return ret
 	}
@@ -532,7 +546,7 @@ func (o *HyperflexStorageContainer) GetType() string {
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetTypeOk() (*string, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		return nil, false
 	}
 	return o.Type, true
@@ -540,7 +554,7 @@ func (o *HyperflexStorageContainer) GetTypeOk() (*string, bool) {
 
 // HasType returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasType() bool {
-	if o != nil && o.Type != nil {
+	if o != nil && !IsNil(o.Type) {
 		return true
 	}
 
@@ -554,7 +568,7 @@ func (o *HyperflexStorageContainer) SetType(v string) {
 
 // GetUnCompressedUsedBytes returns the UnCompressedUsedBytes field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetUnCompressedUsedBytes() int64 {
-	if o == nil || o.UnCompressedUsedBytes == nil {
+	if o == nil || IsNil(o.UnCompressedUsedBytes) {
 		var ret int64
 		return ret
 	}
@@ -564,7 +578,7 @@ func (o *HyperflexStorageContainer) GetUnCompressedUsedBytes() int64 {
 // GetUnCompressedUsedBytesOk returns a tuple with the UnCompressedUsedBytes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetUnCompressedUsedBytesOk() (*int64, bool) {
-	if o == nil || o.UnCompressedUsedBytes == nil {
+	if o == nil || IsNil(o.UnCompressedUsedBytes) {
 		return nil, false
 	}
 	return o.UnCompressedUsedBytes, true
@@ -572,7 +586,7 @@ func (o *HyperflexStorageContainer) GetUnCompressedUsedBytesOk() (*int64, bool) 
 
 // HasUnCompressedUsedBytes returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasUnCompressedUsedBytes() bool {
-	if o != nil && o.UnCompressedUsedBytes != nil {
+	if o != nil && !IsNil(o.UnCompressedUsedBytes) {
 		return true
 	}
 
@@ -586,7 +600,7 @@ func (o *HyperflexStorageContainer) SetUnCompressedUsedBytes(v int64) {
 
 // GetUuid returns the Uuid field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetUuid() string {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		var ret string
 		return ret
 	}
@@ -596,7 +610,7 @@ func (o *HyperflexStorageContainer) GetUuid() string {
 // GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetUuidOk() (*string, bool) {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		return nil, false
 	}
 	return o.Uuid, true
@@ -604,7 +618,7 @@ func (o *HyperflexStorageContainer) GetUuidOk() (*string, bool) {
 
 // HasUuid returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasUuid() bool {
-	if o != nil && o.Uuid != nil {
+	if o != nil && !IsNil(o.Uuid) {
 		return true
 	}
 
@@ -618,7 +632,7 @@ func (o *HyperflexStorageContainer) SetUuid(v string) {
 
 // GetVolumeCount returns the VolumeCount field value if set, zero value otherwise.
 func (o *HyperflexStorageContainer) GetVolumeCount() int64 {
-	if o == nil || o.VolumeCount == nil {
+	if o == nil || IsNil(o.VolumeCount) {
 		var ret int64
 		return ret
 	}
@@ -628,7 +642,7 @@ func (o *HyperflexStorageContainer) GetVolumeCount() int64 {
 // GetVolumeCountOk returns a tuple with the VolumeCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexStorageContainer) GetVolumeCountOk() (*int64, bool) {
-	if o == nil || o.VolumeCount == nil {
+	if o == nil || IsNil(o.VolumeCount) {
 		return nil, false
 	}
 	return o.VolumeCount, true
@@ -636,7 +650,7 @@ func (o *HyperflexStorageContainer) GetVolumeCountOk() (*int64, bool) {
 
 // HasVolumeCount returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasVolumeCount() bool {
-	if o != nil && o.VolumeCount != nil {
+	if o != nil && !IsNil(o.VolumeCount) {
 		return true
 	}
 
@@ -648,36 +662,47 @@ func (o *HyperflexStorageContainer) SetVolumeCount(v int64) {
 	o.VolumeCount = &v
 }
 
-// GetCluster returns the Cluster field value if set, zero value otherwise.
+// GetCluster returns the Cluster field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexStorageContainer) GetCluster() HyperflexClusterRelationship {
-	if o == nil || o.Cluster == nil {
+	if o == nil || IsNil(o.Cluster.Get()) {
 		var ret HyperflexClusterRelationship
 		return ret
 	}
-	return *o.Cluster
+	return *o.Cluster.Get()
 }
 
 // GetClusterOk returns a tuple with the Cluster field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexStorageContainer) GetClusterOk() (*HyperflexClusterRelationship, bool) {
-	if o == nil || o.Cluster == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Cluster, true
+	return o.Cluster.Get(), o.Cluster.IsSet()
 }
 
 // HasCluster returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasCluster() bool {
-	if o != nil && o.Cluster != nil {
+	if o != nil && o.Cluster.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCluster gets a reference to the given HyperflexClusterRelationship and assigns it to the Cluster field.
+// SetCluster gets a reference to the given NullableHyperflexClusterRelationship and assigns it to the Cluster field.
 func (o *HyperflexStorageContainer) SetCluster(v HyperflexClusterRelationship) {
-	o.Cluster = &v
+	o.Cluster.Set(&v)
+}
+
+// SetClusterNil sets the value for Cluster to be an explicit nil
+func (o *HyperflexStorageContainer) SetClusterNil() {
+	o.Cluster.Set(nil)
+}
+
+// UnsetCluster ensures that no value is present for Cluster, not even an explicit nil
+func (o *HyperflexStorageContainer) UnsetCluster() {
+	o.Cluster.Unset()
 }
 
 // GetVolumes returns the Volumes field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -693,7 +718,7 @@ func (o *HyperflexStorageContainer) GetVolumes() []HyperflexVolumeRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexStorageContainer) GetVolumesOk() ([]HyperflexVolumeRelationship, bool) {
-	if o == nil || o.Volumes == nil {
+	if o == nil || IsNil(o.Volumes) {
 		return nil, false
 	}
 	return o.Volumes, true
@@ -701,7 +726,7 @@ func (o *HyperflexStorageContainer) GetVolumesOk() ([]HyperflexVolumeRelationshi
 
 // HasVolumes returns a boolean if a field has been set.
 func (o *HyperflexStorageContainer) HasVolumes() bool {
-	if o != nil && o.Volumes != nil {
+	if o != nil && !IsNil(o.Volumes) {
 		return true
 	}
 
@@ -714,71 +739,81 @@ func (o *HyperflexStorageContainer) SetVolumes(v []HyperflexVolumeRelationship) 
 }
 
 func (o HyperflexStorageContainer) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexStorageContainer) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedStorageBaseStorageContainer, errStorageBaseStorageContainer := json.Marshal(o.StorageBaseStorageContainer)
 	if errStorageBaseStorageContainer != nil {
-		return []byte{}, errStorageBaseStorageContainer
+		return map[string]interface{}{}, errStorageBaseStorageContainer
 	}
 	errStorageBaseStorageContainer = json.Unmarshal([]byte(serializedStorageBaseStorageContainer), &toSerialize)
 	if errStorageBaseStorageContainer != nil {
-		return []byte{}, errStorageBaseStorageContainer
+		return map[string]interface{}{}, errStorageBaseStorageContainer
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AccessibilitySummary != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AccessibilitySummary) {
 		toSerialize["AccessibilitySummary"] = o.AccessibilitySummary
 	}
-	if o.DataBlockSize != nil {
+	if !IsNil(o.DataBlockSize) {
 		toSerialize["DataBlockSize"] = o.DataBlockSize
 	}
-	if o.EncryptionEnabled != nil {
+	if !IsNil(o.EncryptionEnabled) {
 		toSerialize["EncryptionEnabled"] = o.EncryptionEnabled
 	}
 	if o.HostMountStatus != nil {
 		toSerialize["HostMountStatus"] = o.HostMountStatus
 	}
-	if o.InUse != nil {
+	if !IsNil(o.InUse) {
 		toSerialize["InUse"] = o.InUse
 	}
-	if o.Kind != nil {
+	if !IsNil(o.Kind) {
 		toSerialize["Kind"] = o.Kind
 	}
-	if o.LastAccessTime != nil {
+	if !IsNil(o.LastAccessTime) {
 		toSerialize["LastAccessTime"] = o.LastAccessTime
 	}
-	if o.LastModifiedTime != nil {
+	if !IsNil(o.LastModifiedTime) {
 		toSerialize["LastModifiedTime"] = o.LastModifiedTime
 	}
-	if o.MountStatus != nil {
+	if !IsNil(o.MountStatus) {
 		toSerialize["MountStatus"] = o.MountStatus
 	}
-	if o.MountSummary != nil {
+	if !IsNil(o.MountSummary) {
 		toSerialize["MountSummary"] = o.MountSummary
 	}
-	if o.ProvisionedCapacity != nil {
+	if !IsNil(o.ProvisionedCapacity) {
 		toSerialize["ProvisionedCapacity"] = o.ProvisionedCapacity
 	}
-	if o.ProvisionedVolumeCapacityUtilization != nil {
+	if !IsNil(o.ProvisionedVolumeCapacityUtilization) {
 		toSerialize["ProvisionedVolumeCapacityUtilization"] = o.ProvisionedVolumeCapacityUtilization
 	}
-	if o.Type != nil {
+	if !IsNil(o.Type) {
 		toSerialize["Type"] = o.Type
 	}
-	if o.UnCompressedUsedBytes != nil {
+	if !IsNil(o.UnCompressedUsedBytes) {
 		toSerialize["UnCompressedUsedBytes"] = o.UnCompressedUsedBytes
 	}
-	if o.Uuid != nil {
+	if !IsNil(o.Uuid) {
 		toSerialize["Uuid"] = o.Uuid
 	}
-	if o.VolumeCount != nil {
+	if !IsNil(o.VolumeCount) {
 		toSerialize["VolumeCount"] = o.VolumeCount
 	}
-	if o.Cluster != nil {
-		toSerialize["Cluster"] = o.Cluster
+	if o.Cluster.IsSet() {
+		toSerialize["Cluster"] = o.Cluster.Get()
 	}
 	if o.Volumes != nil {
 		toSerialize["Volumes"] = o.Volumes
@@ -788,10 +823,51 @@ func (o HyperflexStorageContainer) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexStorageContainer) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexStorageContainer) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexStorageContainerWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -827,15 +903,15 @@ func (o *HyperflexStorageContainer) UnmarshalJSON(bytes []byte) (err error) {
 		// UUID of the datastore/storage container.
 		Uuid *string `json:"Uuid,omitempty"`
 		// Number of volumes associated with the storage container.
-		VolumeCount *int64                        `json:"VolumeCount,omitempty"`
-		Cluster     *HyperflexClusterRelationship `json:"Cluster,omitempty"`
+		VolumeCount *int64                               `json:"VolumeCount,omitempty"`
+		Cluster     NullableHyperflexClusterRelationship `json:"Cluster,omitempty"`
 		// An array of relationships to hyperflexVolume resources.
 		Volumes []HyperflexVolumeRelationship `json:"Volumes,omitempty"`
 	}
 
 	varHyperflexStorageContainerWithoutEmbeddedStruct := HyperflexStorageContainerWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexStorageContainerWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexStorageContainerWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexStorageContainer := _HyperflexStorageContainer{}
 		varHyperflexStorageContainer.ClassId = varHyperflexStorageContainerWithoutEmbeddedStruct.ClassId
@@ -865,7 +941,7 @@ func (o *HyperflexStorageContainer) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHyperflexStorageContainer := _HyperflexStorageContainer{}
 
-	err = json.Unmarshal(bytes, &varHyperflexStorageContainer)
+	err = json.Unmarshal(data, &varHyperflexStorageContainer)
 	if err == nil {
 		o.StorageBaseStorageContainer = varHyperflexStorageContainer.StorageBaseStorageContainer
 	} else {
@@ -874,7 +950,7 @@ func (o *HyperflexStorageContainer) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AccessibilitySummary")

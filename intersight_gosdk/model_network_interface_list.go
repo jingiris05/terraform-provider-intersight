@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the NetworkInterfaceList type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &NetworkInterfaceList{}
 
 // NetworkInterfaceList List of interfaces available on the switch to describe the available port inventory information.
 type NetworkInterfaceList struct {
@@ -30,6 +34,8 @@ type NetworkInterfaceList struct {
 	AllowedVlans *string `json:"AllowedVlans,omitempty"`
 	// Description of the interface list.
 	Description *string `json:"Description,omitempty"`
+	// Display name of the interface list.
+	DisplayName *string `json:"DisplayName,omitempty"`
 	// IP address of the interface list.
 	IpAddress *string `json:"IpAddress,omitempty"`
 	// IP subnet of the interface list.
@@ -42,6 +48,8 @@ type NetworkInterfaceList struct {
 	Name *string `json:"Name,omitempty"`
 	// Operational state of the interface list.
 	OperState *string `json:"OperState,omitempty"`
+	// Port channel id for port channel created on FI switch.
+	PortChannelId *int64 `json:"PortChannelId,omitempty"`
 	// Interface types supported in Network device like Subinterfaces, Breakout Interfaces.
 	PortSubType *string `json:"PortSubType,omitempty"`
 	// Port type of interface list.
@@ -53,9 +61,9 @@ type NetworkInterfaceList struct {
 	// Speed Group of the interface list.
 	SpeedGroup *string `json:"SpeedGroup,omitempty"`
 	// VLAN of the interface list.
-	Vlan                 *string                              `json:"Vlan,omitempty"`
-	NetworkElement       *NetworkElementRelationship          `json:"NetworkElement,omitempty"`
-	RegisteredDevice     *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	Vlan                 *string                                     `json:"Vlan,omitempty"`
+	NetworkElement       NullableNetworkElementRelationship          `json:"NetworkElement,omitempty"`
+	RegisteredDevice     NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -108,6 +116,11 @@ func (o *NetworkInterfaceList) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "network.InterfaceList" of the ClassId field.
+func (o *NetworkInterfaceList) GetDefaultClassId() interface{} {
+	return "network.InterfaceList"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *NetworkInterfaceList) GetObjectType() string {
 	if o == nil {
@@ -132,9 +145,14 @@ func (o *NetworkInterfaceList) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "network.InterfaceList" of the ObjectType field.
+func (o *NetworkInterfaceList) GetDefaultObjectType() interface{} {
+	return "network.InterfaceList"
+}
+
 // GetAdminState returns the AdminState field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetAdminState() string {
-	if o == nil || o.AdminState == nil {
+	if o == nil || IsNil(o.AdminState) {
 		var ret string
 		return ret
 	}
@@ -144,7 +162,7 @@ func (o *NetworkInterfaceList) GetAdminState() string {
 // GetAdminStateOk returns a tuple with the AdminState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetAdminStateOk() (*string, bool) {
-	if o == nil || o.AdminState == nil {
+	if o == nil || IsNil(o.AdminState) {
 		return nil, false
 	}
 	return o.AdminState, true
@@ -152,7 +170,7 @@ func (o *NetworkInterfaceList) GetAdminStateOk() (*string, bool) {
 
 // HasAdminState returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasAdminState() bool {
-	if o != nil && o.AdminState != nil {
+	if o != nil && !IsNil(o.AdminState) {
 		return true
 	}
 
@@ -166,7 +184,7 @@ func (o *NetworkInterfaceList) SetAdminState(v string) {
 
 // GetAllowedVlans returns the AllowedVlans field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetAllowedVlans() string {
-	if o == nil || o.AllowedVlans == nil {
+	if o == nil || IsNil(o.AllowedVlans) {
 		var ret string
 		return ret
 	}
@@ -176,7 +194,7 @@ func (o *NetworkInterfaceList) GetAllowedVlans() string {
 // GetAllowedVlansOk returns a tuple with the AllowedVlans field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetAllowedVlansOk() (*string, bool) {
-	if o == nil || o.AllowedVlans == nil {
+	if o == nil || IsNil(o.AllowedVlans) {
 		return nil, false
 	}
 	return o.AllowedVlans, true
@@ -184,7 +202,7 @@ func (o *NetworkInterfaceList) GetAllowedVlansOk() (*string, bool) {
 
 // HasAllowedVlans returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasAllowedVlans() bool {
-	if o != nil && o.AllowedVlans != nil {
+	if o != nil && !IsNil(o.AllowedVlans) {
 		return true
 	}
 
@@ -198,7 +216,7 @@ func (o *NetworkInterfaceList) SetAllowedVlans(v string) {
 
 // GetDescription returns the Description field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetDescription() string {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		var ret string
 		return ret
 	}
@@ -208,7 +226,7 @@ func (o *NetworkInterfaceList) GetDescription() string {
 // GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetDescriptionOk() (*string, bool) {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		return nil, false
 	}
 	return o.Description, true
@@ -216,7 +234,7 @@ func (o *NetworkInterfaceList) GetDescriptionOk() (*string, bool) {
 
 // HasDescription returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasDescription() bool {
-	if o != nil && o.Description != nil {
+	if o != nil && !IsNil(o.Description) {
 		return true
 	}
 
@@ -228,9 +246,41 @@ func (o *NetworkInterfaceList) SetDescription(v string) {
 	o.Description = &v
 }
 
+// GetDisplayName returns the DisplayName field value if set, zero value otherwise.
+func (o *NetworkInterfaceList) GetDisplayName() string {
+	if o == nil || IsNil(o.DisplayName) {
+		var ret string
+		return ret
+	}
+	return *o.DisplayName
+}
+
+// GetDisplayNameOk returns a tuple with the DisplayName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkInterfaceList) GetDisplayNameOk() (*string, bool) {
+	if o == nil || IsNil(o.DisplayName) {
+		return nil, false
+	}
+	return o.DisplayName, true
+}
+
+// HasDisplayName returns a boolean if a field has been set.
+func (o *NetworkInterfaceList) HasDisplayName() bool {
+	if o != nil && !IsNil(o.DisplayName) {
+		return true
+	}
+
+	return false
+}
+
+// SetDisplayName gets a reference to the given string and assigns it to the DisplayName field.
+func (o *NetworkInterfaceList) SetDisplayName(v string) {
+	o.DisplayName = &v
+}
+
 // GetIpAddress returns the IpAddress field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetIpAddress() string {
-	if o == nil || o.IpAddress == nil {
+	if o == nil || IsNil(o.IpAddress) {
 		var ret string
 		return ret
 	}
@@ -240,7 +290,7 @@ func (o *NetworkInterfaceList) GetIpAddress() string {
 // GetIpAddressOk returns a tuple with the IpAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetIpAddressOk() (*string, bool) {
-	if o == nil || o.IpAddress == nil {
+	if o == nil || IsNil(o.IpAddress) {
 		return nil, false
 	}
 	return o.IpAddress, true
@@ -248,7 +298,7 @@ func (o *NetworkInterfaceList) GetIpAddressOk() (*string, bool) {
 
 // HasIpAddress returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasIpAddress() bool {
-	if o != nil && o.IpAddress != nil {
+	if o != nil && !IsNil(o.IpAddress) {
 		return true
 	}
 
@@ -262,7 +312,7 @@ func (o *NetworkInterfaceList) SetIpAddress(v string) {
 
 // GetIpSubnet returns the IpSubnet field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetIpSubnet() int64 {
-	if o == nil || o.IpSubnet == nil {
+	if o == nil || IsNil(o.IpSubnet) {
 		var ret int64
 		return ret
 	}
@@ -272,7 +322,7 @@ func (o *NetworkInterfaceList) GetIpSubnet() int64 {
 // GetIpSubnetOk returns a tuple with the IpSubnet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetIpSubnetOk() (*int64, bool) {
-	if o == nil || o.IpSubnet == nil {
+	if o == nil || IsNil(o.IpSubnet) {
 		return nil, false
 	}
 	return o.IpSubnet, true
@@ -280,7 +330,7 @@ func (o *NetworkInterfaceList) GetIpSubnetOk() (*int64, bool) {
 
 // HasIpSubnet returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasIpSubnet() bool {
-	if o != nil && o.IpSubnet != nil {
+	if o != nil && !IsNil(o.IpSubnet) {
 		return true
 	}
 
@@ -294,7 +344,7 @@ func (o *NetworkInterfaceList) SetIpSubnet(v int64) {
 
 // GetMac returns the Mac field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetMac() string {
-	if o == nil || o.Mac == nil {
+	if o == nil || IsNil(o.Mac) {
 		var ret string
 		return ret
 	}
@@ -304,7 +354,7 @@ func (o *NetworkInterfaceList) GetMac() string {
 // GetMacOk returns a tuple with the Mac field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetMacOk() (*string, bool) {
-	if o == nil || o.Mac == nil {
+	if o == nil || IsNil(o.Mac) {
 		return nil, false
 	}
 	return o.Mac, true
@@ -312,7 +362,7 @@ func (o *NetworkInterfaceList) GetMacOk() (*string, bool) {
 
 // HasMac returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasMac() bool {
-	if o != nil && o.Mac != nil {
+	if o != nil && !IsNil(o.Mac) {
 		return true
 	}
 
@@ -326,7 +376,7 @@ func (o *NetworkInterfaceList) SetMac(v string) {
 
 // GetMtu returns the Mtu field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetMtu() int64 {
-	if o == nil || o.Mtu == nil {
+	if o == nil || IsNil(o.Mtu) {
 		var ret int64
 		return ret
 	}
@@ -336,7 +386,7 @@ func (o *NetworkInterfaceList) GetMtu() int64 {
 // GetMtuOk returns a tuple with the Mtu field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetMtuOk() (*int64, bool) {
-	if o == nil || o.Mtu == nil {
+	if o == nil || IsNil(o.Mtu) {
 		return nil, false
 	}
 	return o.Mtu, true
@@ -344,7 +394,7 @@ func (o *NetworkInterfaceList) GetMtuOk() (*int64, bool) {
 
 // HasMtu returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasMtu() bool {
-	if o != nil && o.Mtu != nil {
+	if o != nil && !IsNil(o.Mtu) {
 		return true
 	}
 
@@ -358,7 +408,7 @@ func (o *NetworkInterfaceList) SetMtu(v int64) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -368,7 +418,7 @@ func (o *NetworkInterfaceList) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -376,7 +426,7 @@ func (o *NetworkInterfaceList) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -390,7 +440,7 @@ func (o *NetworkInterfaceList) SetName(v string) {
 
 // GetOperState returns the OperState field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetOperState() string {
-	if o == nil || o.OperState == nil {
+	if o == nil || IsNil(o.OperState) {
 		var ret string
 		return ret
 	}
@@ -400,7 +450,7 @@ func (o *NetworkInterfaceList) GetOperState() string {
 // GetOperStateOk returns a tuple with the OperState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetOperStateOk() (*string, bool) {
-	if o == nil || o.OperState == nil {
+	if o == nil || IsNil(o.OperState) {
 		return nil, false
 	}
 	return o.OperState, true
@@ -408,7 +458,7 @@ func (o *NetworkInterfaceList) GetOperStateOk() (*string, bool) {
 
 // HasOperState returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasOperState() bool {
-	if o != nil && o.OperState != nil {
+	if o != nil && !IsNil(o.OperState) {
 		return true
 	}
 
@@ -420,9 +470,41 @@ func (o *NetworkInterfaceList) SetOperState(v string) {
 	o.OperState = &v
 }
 
+// GetPortChannelId returns the PortChannelId field value if set, zero value otherwise.
+func (o *NetworkInterfaceList) GetPortChannelId() int64 {
+	if o == nil || IsNil(o.PortChannelId) {
+		var ret int64
+		return ret
+	}
+	return *o.PortChannelId
+}
+
+// GetPortChannelIdOk returns a tuple with the PortChannelId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkInterfaceList) GetPortChannelIdOk() (*int64, bool) {
+	if o == nil || IsNil(o.PortChannelId) {
+		return nil, false
+	}
+	return o.PortChannelId, true
+}
+
+// HasPortChannelId returns a boolean if a field has been set.
+func (o *NetworkInterfaceList) HasPortChannelId() bool {
+	if o != nil && !IsNil(o.PortChannelId) {
+		return true
+	}
+
+	return false
+}
+
+// SetPortChannelId gets a reference to the given int64 and assigns it to the PortChannelId field.
+func (o *NetworkInterfaceList) SetPortChannelId(v int64) {
+	o.PortChannelId = &v
+}
+
 // GetPortSubType returns the PortSubType field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetPortSubType() string {
-	if o == nil || o.PortSubType == nil {
+	if o == nil || IsNil(o.PortSubType) {
 		var ret string
 		return ret
 	}
@@ -432,7 +514,7 @@ func (o *NetworkInterfaceList) GetPortSubType() string {
 // GetPortSubTypeOk returns a tuple with the PortSubType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetPortSubTypeOk() (*string, bool) {
-	if o == nil || o.PortSubType == nil {
+	if o == nil || IsNil(o.PortSubType) {
 		return nil, false
 	}
 	return o.PortSubType, true
@@ -440,7 +522,7 @@ func (o *NetworkInterfaceList) GetPortSubTypeOk() (*string, bool) {
 
 // HasPortSubType returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasPortSubType() bool {
-	if o != nil && o.PortSubType != nil {
+	if o != nil && !IsNil(o.PortSubType) {
 		return true
 	}
 
@@ -454,7 +536,7 @@ func (o *NetworkInterfaceList) SetPortSubType(v string) {
 
 // GetPortType returns the PortType field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetPortType() string {
-	if o == nil || o.PortType == nil {
+	if o == nil || IsNil(o.PortType) {
 		var ret string
 		return ret
 	}
@@ -464,7 +546,7 @@ func (o *NetworkInterfaceList) GetPortType() string {
 // GetPortTypeOk returns a tuple with the PortType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetPortTypeOk() (*string, bool) {
-	if o == nil || o.PortType == nil {
+	if o == nil || IsNil(o.PortType) {
 		return nil, false
 	}
 	return o.PortType, true
@@ -472,7 +554,7 @@ func (o *NetworkInterfaceList) GetPortTypeOk() (*string, bool) {
 
 // HasPortType returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasPortType() bool {
-	if o != nil && o.PortType != nil {
+	if o != nil && !IsNil(o.PortType) {
 		return true
 	}
 
@@ -486,7 +568,7 @@ func (o *NetworkInterfaceList) SetPortType(v string) {
 
 // GetSlotId returns the SlotId field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetSlotId() string {
-	if o == nil || o.SlotId == nil {
+	if o == nil || IsNil(o.SlotId) {
 		var ret string
 		return ret
 	}
@@ -496,7 +578,7 @@ func (o *NetworkInterfaceList) GetSlotId() string {
 // GetSlotIdOk returns a tuple with the SlotId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetSlotIdOk() (*string, bool) {
-	if o == nil || o.SlotId == nil {
+	if o == nil || IsNil(o.SlotId) {
 		return nil, false
 	}
 	return o.SlotId, true
@@ -504,7 +586,7 @@ func (o *NetworkInterfaceList) GetSlotIdOk() (*string, bool) {
 
 // HasSlotId returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasSlotId() bool {
-	if o != nil && o.SlotId != nil {
+	if o != nil && !IsNil(o.SlotId) {
 		return true
 	}
 
@@ -518,7 +600,7 @@ func (o *NetworkInterfaceList) SetSlotId(v string) {
 
 // GetSpeed returns the Speed field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetSpeed() string {
-	if o == nil || o.Speed == nil {
+	if o == nil || IsNil(o.Speed) {
 		var ret string
 		return ret
 	}
@@ -528,7 +610,7 @@ func (o *NetworkInterfaceList) GetSpeed() string {
 // GetSpeedOk returns a tuple with the Speed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetSpeedOk() (*string, bool) {
-	if o == nil || o.Speed == nil {
+	if o == nil || IsNil(o.Speed) {
 		return nil, false
 	}
 	return o.Speed, true
@@ -536,7 +618,7 @@ func (o *NetworkInterfaceList) GetSpeedOk() (*string, bool) {
 
 // HasSpeed returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasSpeed() bool {
-	if o != nil && o.Speed != nil {
+	if o != nil && !IsNil(o.Speed) {
 		return true
 	}
 
@@ -550,7 +632,7 @@ func (o *NetworkInterfaceList) SetSpeed(v string) {
 
 // GetSpeedGroup returns the SpeedGroup field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetSpeedGroup() string {
-	if o == nil || o.SpeedGroup == nil {
+	if o == nil || IsNil(o.SpeedGroup) {
 		var ret string
 		return ret
 	}
@@ -560,7 +642,7 @@ func (o *NetworkInterfaceList) GetSpeedGroup() string {
 // GetSpeedGroupOk returns a tuple with the SpeedGroup field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetSpeedGroupOk() (*string, bool) {
-	if o == nil || o.SpeedGroup == nil {
+	if o == nil || IsNil(o.SpeedGroup) {
 		return nil, false
 	}
 	return o.SpeedGroup, true
@@ -568,7 +650,7 @@ func (o *NetworkInterfaceList) GetSpeedGroupOk() (*string, bool) {
 
 // HasSpeedGroup returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasSpeedGroup() bool {
-	if o != nil && o.SpeedGroup != nil {
+	if o != nil && !IsNil(o.SpeedGroup) {
 		return true
 	}
 
@@ -582,7 +664,7 @@ func (o *NetworkInterfaceList) SetSpeedGroup(v string) {
 
 // GetVlan returns the Vlan field value if set, zero value otherwise.
 func (o *NetworkInterfaceList) GetVlan() string {
-	if o == nil || o.Vlan == nil {
+	if o == nil || IsNil(o.Vlan) {
 		var ret string
 		return ret
 	}
@@ -592,7 +674,7 @@ func (o *NetworkInterfaceList) GetVlan() string {
 // GetVlanOk returns a tuple with the Vlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkInterfaceList) GetVlanOk() (*string, bool) {
-	if o == nil || o.Vlan == nil {
+	if o == nil || IsNil(o.Vlan) {
 		return nil, false
 	}
 	return o.Vlan, true
@@ -600,7 +682,7 @@ func (o *NetworkInterfaceList) GetVlanOk() (*string, bool) {
 
 // HasVlan returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasVlan() bool {
-	if o != nil && o.Vlan != nil {
+	if o != nil && !IsNil(o.Vlan) {
 		return true
 	}
 
@@ -612,146 +694,225 @@ func (o *NetworkInterfaceList) SetVlan(v string) {
 	o.Vlan = &v
 }
 
-// GetNetworkElement returns the NetworkElement field value if set, zero value otherwise.
+// GetNetworkElement returns the NetworkElement field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *NetworkInterfaceList) GetNetworkElement() NetworkElementRelationship {
-	if o == nil || o.NetworkElement == nil {
+	if o == nil || IsNil(o.NetworkElement.Get()) {
 		var ret NetworkElementRelationship
 		return ret
 	}
-	return *o.NetworkElement
+	return *o.NetworkElement.Get()
 }
 
 // GetNetworkElementOk returns a tuple with the NetworkElement field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *NetworkInterfaceList) GetNetworkElementOk() (*NetworkElementRelationship, bool) {
-	if o == nil || o.NetworkElement == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.NetworkElement, true
+	return o.NetworkElement.Get(), o.NetworkElement.IsSet()
 }
 
 // HasNetworkElement returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasNetworkElement() bool {
-	if o != nil && o.NetworkElement != nil {
+	if o != nil && o.NetworkElement.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetNetworkElement gets a reference to the given NetworkElementRelationship and assigns it to the NetworkElement field.
+// SetNetworkElement gets a reference to the given NullableNetworkElementRelationship and assigns it to the NetworkElement field.
 func (o *NetworkInterfaceList) SetNetworkElement(v NetworkElementRelationship) {
-	o.NetworkElement = &v
+	o.NetworkElement.Set(&v)
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// SetNetworkElementNil sets the value for NetworkElement to be an explicit nil
+func (o *NetworkInterfaceList) SetNetworkElementNil() {
+	o.NetworkElement.Set(nil)
+}
+
+// UnsetNetworkElement ensures that no value is present for NetworkElement, not even an explicit nil
+func (o *NetworkInterfaceList) UnsetNetworkElement() {
+	o.NetworkElement.Unset()
+}
+
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *NetworkInterfaceList) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *NetworkInterfaceList) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *NetworkInterfaceList) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *NetworkInterfaceList) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
+}
+
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *NetworkInterfaceList) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *NetworkInterfaceList) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
 }
 
 func (o NetworkInterfaceList) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o NetworkInterfaceList) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedInventoryBase, errInventoryBase := json.Marshal(o.InventoryBase)
 	if errInventoryBase != nil {
-		return []byte{}, errInventoryBase
+		return map[string]interface{}{}, errInventoryBase
 	}
 	errInventoryBase = json.Unmarshal([]byte(serializedInventoryBase), &toSerialize)
 	if errInventoryBase != nil {
-		return []byte{}, errInventoryBase
+		return map[string]interface{}{}, errInventoryBase
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AdminState != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AdminState) {
 		toSerialize["AdminState"] = o.AdminState
 	}
-	if o.AllowedVlans != nil {
+	if !IsNil(o.AllowedVlans) {
 		toSerialize["AllowedVlans"] = o.AllowedVlans
 	}
-	if o.Description != nil {
+	if !IsNil(o.Description) {
 		toSerialize["Description"] = o.Description
 	}
-	if o.IpAddress != nil {
+	if !IsNil(o.DisplayName) {
+		toSerialize["DisplayName"] = o.DisplayName
+	}
+	if !IsNil(o.IpAddress) {
 		toSerialize["IpAddress"] = o.IpAddress
 	}
-	if o.IpSubnet != nil {
+	if !IsNil(o.IpSubnet) {
 		toSerialize["IpSubnet"] = o.IpSubnet
 	}
-	if o.Mac != nil {
+	if !IsNil(o.Mac) {
 		toSerialize["Mac"] = o.Mac
 	}
-	if o.Mtu != nil {
+	if !IsNil(o.Mtu) {
 		toSerialize["Mtu"] = o.Mtu
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.OperState != nil {
+	if !IsNil(o.OperState) {
 		toSerialize["OperState"] = o.OperState
 	}
-	if o.PortSubType != nil {
+	if !IsNil(o.PortChannelId) {
+		toSerialize["PortChannelId"] = o.PortChannelId
+	}
+	if !IsNil(o.PortSubType) {
 		toSerialize["PortSubType"] = o.PortSubType
 	}
-	if o.PortType != nil {
+	if !IsNil(o.PortType) {
 		toSerialize["PortType"] = o.PortType
 	}
-	if o.SlotId != nil {
+	if !IsNil(o.SlotId) {
 		toSerialize["SlotId"] = o.SlotId
 	}
-	if o.Speed != nil {
+	if !IsNil(o.Speed) {
 		toSerialize["Speed"] = o.Speed
 	}
-	if o.SpeedGroup != nil {
+	if !IsNil(o.SpeedGroup) {
 		toSerialize["SpeedGroup"] = o.SpeedGroup
 	}
-	if o.Vlan != nil {
+	if !IsNil(o.Vlan) {
 		toSerialize["Vlan"] = o.Vlan
 	}
-	if o.NetworkElement != nil {
-		toSerialize["NetworkElement"] = o.NetworkElement
+	if o.NetworkElement.IsSet() {
+		toSerialize["NetworkElement"] = o.NetworkElement.Get()
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *NetworkInterfaceList) UnmarshalJSON(bytes []byte) (err error) {
+func (o *NetworkInterfaceList) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type NetworkInterfaceListWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -763,6 +924,8 @@ func (o *NetworkInterfaceList) UnmarshalJSON(bytes []byte) (err error) {
 		AllowedVlans *string `json:"AllowedVlans,omitempty"`
 		// Description of the interface list.
 		Description *string `json:"Description,omitempty"`
+		// Display name of the interface list.
+		DisplayName *string `json:"DisplayName,omitempty"`
 		// IP address of the interface list.
 		IpAddress *string `json:"IpAddress,omitempty"`
 		// IP subnet of the interface list.
@@ -775,6 +938,8 @@ func (o *NetworkInterfaceList) UnmarshalJSON(bytes []byte) (err error) {
 		Name *string `json:"Name,omitempty"`
 		// Operational state of the interface list.
 		OperState *string `json:"OperState,omitempty"`
+		// Port channel id for port channel created on FI switch.
+		PortChannelId *int64 `json:"PortChannelId,omitempty"`
 		// Interface types supported in Network device like Subinterfaces, Breakout Interfaces.
 		PortSubType *string `json:"PortSubType,omitempty"`
 		// Port type of interface list.
@@ -786,14 +951,14 @@ func (o *NetworkInterfaceList) UnmarshalJSON(bytes []byte) (err error) {
 		// Speed Group of the interface list.
 		SpeedGroup *string `json:"SpeedGroup,omitempty"`
 		// VLAN of the interface list.
-		Vlan             *string                              `json:"Vlan,omitempty"`
-		NetworkElement   *NetworkElementRelationship          `json:"NetworkElement,omitempty"`
-		RegisteredDevice *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		Vlan             *string                                     `json:"Vlan,omitempty"`
+		NetworkElement   NullableNetworkElementRelationship          `json:"NetworkElement,omitempty"`
+		RegisteredDevice NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	}
 
 	varNetworkInterfaceListWithoutEmbeddedStruct := NetworkInterfaceListWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varNetworkInterfaceListWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varNetworkInterfaceListWithoutEmbeddedStruct)
 	if err == nil {
 		varNetworkInterfaceList := _NetworkInterfaceList{}
 		varNetworkInterfaceList.ClassId = varNetworkInterfaceListWithoutEmbeddedStruct.ClassId
@@ -801,12 +966,14 @@ func (o *NetworkInterfaceList) UnmarshalJSON(bytes []byte) (err error) {
 		varNetworkInterfaceList.AdminState = varNetworkInterfaceListWithoutEmbeddedStruct.AdminState
 		varNetworkInterfaceList.AllowedVlans = varNetworkInterfaceListWithoutEmbeddedStruct.AllowedVlans
 		varNetworkInterfaceList.Description = varNetworkInterfaceListWithoutEmbeddedStruct.Description
+		varNetworkInterfaceList.DisplayName = varNetworkInterfaceListWithoutEmbeddedStruct.DisplayName
 		varNetworkInterfaceList.IpAddress = varNetworkInterfaceListWithoutEmbeddedStruct.IpAddress
 		varNetworkInterfaceList.IpSubnet = varNetworkInterfaceListWithoutEmbeddedStruct.IpSubnet
 		varNetworkInterfaceList.Mac = varNetworkInterfaceListWithoutEmbeddedStruct.Mac
 		varNetworkInterfaceList.Mtu = varNetworkInterfaceListWithoutEmbeddedStruct.Mtu
 		varNetworkInterfaceList.Name = varNetworkInterfaceListWithoutEmbeddedStruct.Name
 		varNetworkInterfaceList.OperState = varNetworkInterfaceListWithoutEmbeddedStruct.OperState
+		varNetworkInterfaceList.PortChannelId = varNetworkInterfaceListWithoutEmbeddedStruct.PortChannelId
 		varNetworkInterfaceList.PortSubType = varNetworkInterfaceListWithoutEmbeddedStruct.PortSubType
 		varNetworkInterfaceList.PortType = varNetworkInterfaceListWithoutEmbeddedStruct.PortType
 		varNetworkInterfaceList.SlotId = varNetworkInterfaceListWithoutEmbeddedStruct.SlotId
@@ -822,7 +989,7 @@ func (o *NetworkInterfaceList) UnmarshalJSON(bytes []byte) (err error) {
 
 	varNetworkInterfaceList := _NetworkInterfaceList{}
 
-	err = json.Unmarshal(bytes, &varNetworkInterfaceList)
+	err = json.Unmarshal(data, &varNetworkInterfaceList)
 	if err == nil {
 		o.InventoryBase = varNetworkInterfaceList.InventoryBase
 	} else {
@@ -831,18 +998,20 @@ func (o *NetworkInterfaceList) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AdminState")
 		delete(additionalProperties, "AllowedVlans")
 		delete(additionalProperties, "Description")
+		delete(additionalProperties, "DisplayName")
 		delete(additionalProperties, "IpAddress")
 		delete(additionalProperties, "IpSubnet")
 		delete(additionalProperties, "Mac")
 		delete(additionalProperties, "Mtu")
 		delete(additionalProperties, "Name")
 		delete(additionalProperties, "OperState")
+		delete(additionalProperties, "PortChannelId")
 		delete(additionalProperties, "PortSubType")
 		delete(additionalProperties, "PortType")
 		delete(additionalProperties, "SlotId")

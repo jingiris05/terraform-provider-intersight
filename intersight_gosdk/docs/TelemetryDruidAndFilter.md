@@ -4,15 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Type** | **string** | The filter type. | 
-**ExtractionFn** | Pointer to **map[string]interface{}** | All filters except the \&quot;spatial\&quot; filter support extraction functions. An extraction function is defined by setting the \&quot;extractionFn\&quot; field on a filter. See Extraction function for more details on extraction functions. If specified, the extraction function will be used to transform input values before the filter is applied. The example below shows a selector filter combined with an extraction function. This filter will transform input values according to the values defined in the lookup map; transformed values will then be matched with the string \&quot;bar_1\&quot;. | [optional] 
+**Type** | **NullableString** | The filter type. | 
 **Fields** | [**[]TelemetryDruidFilter**](TelemetryDruidFilter.md) |  | 
 
 ## Methods
 
 ### NewTelemetryDruidAndFilter
 
-`func NewTelemetryDruidAndFilter(type_ string, fields []TelemetryDruidFilter, ) *TelemetryDruidAndFilter`
+`func NewTelemetryDruidAndFilter(type_ NullableString, fields []TelemetryDruidFilter, ) *TelemetryDruidAndFilter`
 
 NewTelemetryDruidAndFilter instantiates a new TelemetryDruidAndFilter object
 This constructor will assign default values to properties that have it defined,
@@ -47,31 +46,16 @@ and a boolean to check if the value has been set.
 SetType sets Type field to given value.
 
 
-### GetExtractionFn
+### SetTypeNil
 
-`func (o *TelemetryDruidAndFilter) GetExtractionFn() map[string]interface{}`
+`func (o *TelemetryDruidAndFilter) SetTypeNil(b bool)`
 
-GetExtractionFn returns the ExtractionFn field if non-nil, zero value otherwise.
+ SetTypeNil sets the value for Type to be an explicit nil
 
-### GetExtractionFnOk
+### UnsetType
+`func (o *TelemetryDruidAndFilter) UnsetType()`
 
-`func (o *TelemetryDruidAndFilter) GetExtractionFnOk() (*map[string]interface{}, bool)`
-
-GetExtractionFnOk returns a tuple with the ExtractionFn field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetExtractionFn
-
-`func (o *TelemetryDruidAndFilter) SetExtractionFn(v map[string]interface{})`
-
-SetExtractionFn sets ExtractionFn field to given value.
-
-### HasExtractionFn
-
-`func (o *TelemetryDruidAndFilter) HasExtractionFn() bool`
-
-HasExtractionFn returns a boolean if a field has been set.
-
+UnsetType ensures that no value is present for Type, not even an explicit nil
 ### GetFields
 
 `func (o *TelemetryDruidAndFilter) GetFields() []TelemetryDruidFilter`

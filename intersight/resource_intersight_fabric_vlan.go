@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceFabricVlan() *schema.Resource {
 		UpdateContext: resourceFabricVlanUpdate,
 		DeleteContext: resourceFabricVlanDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -312,6 +314,13 @@ func resourceFabricVlan() *schema.Resource {
 					},
 				},
 			},
+			"primary_vlan_id": {
+				Description:  "The Primary VLAN ID of the VLAN, if the sharing type of the VLAN is Isolated or Community.",
+				Type:         schema.TypeInt,
+				ValidateFunc: validation.IntBetween(0, 4093),
+				Optional:     true,
+				Default:      0,
+			},
 			"shared_scope": {
 				Description: "Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.\nObjects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs.",
 				Type:        schema.TypeString,
@@ -323,6 +332,13 @@ func resourceFabricVlan() *schema.Resource {
 					}
 					return
 				}},
+			"sharing_type": {
+				Description:  "The sharing type of this VLAN.\n* `None` - This represents a regular VLAN.\n* `Primary` - This represents a primary VLAN.\n* `Isolated` - This represents an isolated VLAN.\n* `Community` - This represents a community VLAN.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringInSlice([]string{"None", "Primary", "Isolated", "Community"}, false),
+				Optional:     true,
+				Default:      "None",
+			},
 			"tags": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -408,6 +424,17 @@ func resourceFabricVlan() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -495,6 +522,46 @@ func resourceFabricVlan() *schema.Resource {
 				Type:         schema.TypeInt,
 				ValidateFunc: validation.IntBetween(1, 4093),
 				Optional:     true,
+			},
+			"vlan_set": {
+				Description: "A reference to a fabricVlanSet resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
+				Computed:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "mo.MoRef",
+						},
+						"moid": {
+							Description: "The Moid of the referenced REST resource.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the remote type referred by this relationship.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+						},
+						"selector": {
+							Description: "An OData $filter expression which describes the REST resource to be referenced. This field may\nbe set instead of 'moid' by clients.\n1. If 'moid' is set this field is ignored.\n1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of the\nresource matching the filter expression and populates it in the MoRef that is part of the object\ninstance being inserted/updated to fulfill the REST request.\nAn error is returned if the filter matches zero or more than one REST resource.\nAn example filter string is: Serial eq '3AA8B7T11'.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+					},
+				},
 			},
 		},
 	}
@@ -625,6 +692,16 @@ func resourceFabricVlanCreate(c context.Context, d *schema.ResourceData, meta in
 
 	o.SetObjectType("fabric.Vlan")
 
+	if v, ok := d.GetOkExists("primary_vlan_id"); ok {
+		x := int64(v.(int))
+		o.SetPrimaryVlanId(x)
+	}
+
+	if v, ok := d.GetOk("sharing_type"); ok {
+		x := (v.(string))
+		o.SetSharingType(x)
+	}
+
 	if v, ok := d.GetOk("tags"); ok {
 		x := make([]models.MoTag, 0)
 		s := v.([]interface{})
@@ -665,6 +742,49 @@ func resourceFabricVlanCreate(c context.Context, d *schema.ResourceData, meta in
 		o.SetVlanId(x)
 	}
 
+	if v, ok := d.GetOk("vlan_set"); ok {
+		p := make([]models.FabricVlanSetRelationship, 0, 1)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			l := s[i].(map[string]interface{})
+			o := models.NewMoMoRefWithDefaults()
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("mo.MoRef")
+			if v, ok := l["moid"]; ok {
+				{
+					x := (v.(string))
+					o.SetMoid(x)
+				}
+			}
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["selector"]; ok {
+				{
+					x := (v.(string))
+					o.SetSelector(x)
+				}
+			}
+			p = append(p, models.MoMoRefAsFabricVlanSetRelationship(o))
+		}
+		if len(p) > 0 {
+			x := p[0]
+			o.SetVlanSet(x)
+		}
+	}
+
 	r := conn.ApiClient.FabricApi.CreateFabricVlan(conn.ctx).FabricVlan(*o)
 	resultMo, _, responseErr := r.Execute()
 	if responseErr != nil {
@@ -675,14 +795,25 @@ func resourceFabricVlanCreate(c context.Context, d *schema.ResourceData, meta in
 		}
 		return diag.Errorf("error occurred while creating FabricVlan: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceFabricVlanRead(c, d, meta)...)
 }
 
 func resourceFabricVlanRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.FabricApi.GetFabricVlanByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -768,8 +899,16 @@ func resourceFabricVlanRead(c context.Context, d *schema.ResourceData, meta inte
 		return diag.Errorf("error occurred while setting property PermissionResources in FabricVlan object: %s", err.Error())
 	}
 
+	if err := d.Set("primary_vlan_id", (s.GetPrimaryVlanId())); err != nil {
+		return diag.Errorf("error occurred while setting property PrimaryVlanId in FabricVlan object: %s", err.Error())
+	}
+
 	if err := d.Set("shared_scope", (s.GetSharedScope())); err != nil {
 		return diag.Errorf("error occurred while setting property SharedScope in FabricVlan object: %s", err.Error())
+	}
+
+	if err := d.Set("sharing_type", (s.GetSharingType())); err != nil {
+		return diag.Errorf("error occurred while setting property SharingType in FabricVlan object: %s", err.Error())
 	}
 
 	if err := d.Set("tags", flattenListMoTag(s.GetTags(), d)); err != nil {
@@ -782,6 +921,10 @@ func resourceFabricVlanRead(c context.Context, d *schema.ResourceData, meta inte
 
 	if err := d.Set("vlan_id", (s.GetVlanId())); err != nil {
 		return diag.Errorf("error occurred while setting property VlanId in FabricVlan object: %s", err.Error())
+	}
+
+	if err := d.Set("vlan_set", flattenMapFabricVlanSetRelationship(s.GetVlanSet(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property VlanSet in FabricVlan object: %s", err.Error())
 	}
 
 	log.Printf("s: %v", s)
@@ -921,6 +1064,18 @@ func resourceFabricVlanUpdate(c context.Context, d *schema.ResourceData, meta in
 
 	o.SetObjectType("fabric.Vlan")
 
+	if d.HasChange("primary_vlan_id") {
+		v := d.Get("primary_vlan_id")
+		x := int64(v.(int))
+		o.SetPrimaryVlanId(x)
+	}
+
+	if d.HasChange("sharing_type") {
+		v := d.Get("sharing_type")
+		x := (v.(string))
+		o.SetSharingType(x)
+	}
+
 	if d.HasChange("tags") {
 		v := d.Get("tags")
 		x := make([]models.MoTag, 0)
@@ -959,6 +1114,50 @@ func resourceFabricVlanUpdate(c context.Context, d *schema.ResourceData, meta in
 		v := d.Get("vlan_id")
 		x := int64(v.(int))
 		o.SetVlanId(x)
+	}
+
+	if d.HasChange("vlan_set") {
+		v := d.Get("vlan_set")
+		p := make([]models.FabricVlanSetRelationship, 0, 1)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			l := s[i].(map[string]interface{})
+			o := &models.MoMoRef{}
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("mo.MoRef")
+			if v, ok := l["moid"]; ok {
+				{
+					x := (v.(string))
+					o.SetMoid(x)
+				}
+			}
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["selector"]; ok {
+				{
+					x := (v.(string))
+					o.SetSelector(x)
+				}
+			}
+			p = append(p, models.MoMoRefAsFabricVlanSetRelationship(o))
+		}
+		if len(p) > 0 {
+			x := p[0]
+			o.SetVlanSet(x)
+		}
 	}
 
 	r := conn.ApiClient.FabricApi.UpdateFabricVlan(conn.ctx, d.Id()).FabricVlan(*o)

@@ -7,6 +7,8 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "processor.Unit"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "processor.Unit"]
 **Architecture** | Pointer to **string** | The architecture of the installed processor. | [optional] [readonly] 
+**Description** | Pointer to **string** | This field displays the description of the processor. | [optional] [readonly] 
+**IsPlatformSupported** | Pointer to **bool** | This field indicates whether the processor is supported on the server or not. | [optional] [readonly] [default to true]
 **NumCores** | Pointer to **int64** | The number of cores present in a given processor. | [optional] [readonly] 
 **NumCoresEnabled** | Pointer to **string** | The number of enabled cores in the installed processor. | [optional] [readonly] 
 **NumThreads** | Pointer to **string** | The maximum number of threads available in the installed processor. | [optional] [readonly] 
@@ -14,17 +16,19 @@ Name | Type | Description | Notes
 **OperReason** | Pointer to **[]string** |  | [optional] 
 **OperState** | Pointer to **string** | The health indicator of the processor, &#39;OK&#39; indicates the processor is operatinal. | [optional] [readonly] 
 **Operability** | Pointer to **string** | Operability state of the central processing unit. | [optional] [readonly] 
+**PartNumber** | Pointer to **string** | This field displays the part number of the of the processor. | [optional] [readonly] 
+**Pid** | Pointer to **string** | This field displays the product ID of the processor. | [optional] [readonly] 
 **ProcessorId** | Pointer to **int64** | The ID number of a given processor. | [optional] [readonly] 
 **SocketDesignation** | Pointer to **string** | The socket ID of the installed processor. | [optional] [readonly] 
 **Speed** | Pointer to **float32** | The maximum speed of the installed processor in GHz. | [optional] [readonly] 
 **Stepping** | Pointer to **string** | The CPU stepping of the installed processor. | [optional] [readonly] 
 **Thermal** | Pointer to **string** | The temperature of the processor in centigrade. | [optional] [readonly] 
-**ComputeBlade** | Pointer to [**ComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
-**ComputeBoard** | Pointer to [**ComputeBoardRelationship**](ComputeBoardRelationship.md) |  | [optional] 
-**ComputeRackUnit** | Pointer to [**ComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
-**InventoryDeviceInfo** | Pointer to [**InventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
-**NetworkElement** | Pointer to [**NetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**ComputeBlade** | Pointer to [**NullableComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
+**ComputeBoard** | Pointer to [**NullableComputeBoardRelationship**](ComputeBoardRelationship.md) |  | [optional] 
+**ComputeRackUnit** | Pointer to [**NullableComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
+**InventoryDeviceInfo** | Pointer to [**NullableInventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
+**NetworkElement** | Pointer to [**NullableNetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -109,6 +113,56 @@ SetArchitecture sets Architecture field to given value.
 `func (o *ProcessorUnit) HasArchitecture() bool`
 
 HasArchitecture returns a boolean if a field has been set.
+
+### GetDescription
+
+`func (o *ProcessorUnit) GetDescription() string`
+
+GetDescription returns the Description field if non-nil, zero value otherwise.
+
+### GetDescriptionOk
+
+`func (o *ProcessorUnit) GetDescriptionOk() (*string, bool)`
+
+GetDescriptionOk returns a tuple with the Description field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDescription
+
+`func (o *ProcessorUnit) SetDescription(v string)`
+
+SetDescription sets Description field to given value.
+
+### HasDescription
+
+`func (o *ProcessorUnit) HasDescription() bool`
+
+HasDescription returns a boolean if a field has been set.
+
+### GetIsPlatformSupported
+
+`func (o *ProcessorUnit) GetIsPlatformSupported() bool`
+
+GetIsPlatformSupported returns the IsPlatformSupported field if non-nil, zero value otherwise.
+
+### GetIsPlatformSupportedOk
+
+`func (o *ProcessorUnit) GetIsPlatformSupportedOk() (*bool, bool)`
+
+GetIsPlatformSupportedOk returns a tuple with the IsPlatformSupported field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsPlatformSupported
+
+`func (o *ProcessorUnit) SetIsPlatformSupported(v bool)`
+
+SetIsPlatformSupported sets IsPlatformSupported field to given value.
+
+### HasIsPlatformSupported
+
+`func (o *ProcessorUnit) HasIsPlatformSupported() bool`
+
+HasIsPlatformSupported returns a boolean if a field has been set.
 
 ### GetNumCores
 
@@ -295,6 +349,56 @@ SetOperability sets Operability field to given value.
 
 HasOperability returns a boolean if a field has been set.
 
+### GetPartNumber
+
+`func (o *ProcessorUnit) GetPartNumber() string`
+
+GetPartNumber returns the PartNumber field if non-nil, zero value otherwise.
+
+### GetPartNumberOk
+
+`func (o *ProcessorUnit) GetPartNumberOk() (*string, bool)`
+
+GetPartNumberOk returns a tuple with the PartNumber field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPartNumber
+
+`func (o *ProcessorUnit) SetPartNumber(v string)`
+
+SetPartNumber sets PartNumber field to given value.
+
+### HasPartNumber
+
+`func (o *ProcessorUnit) HasPartNumber() bool`
+
+HasPartNumber returns a boolean if a field has been set.
+
+### GetPid
+
+`func (o *ProcessorUnit) GetPid() string`
+
+GetPid returns the Pid field if non-nil, zero value otherwise.
+
+### GetPidOk
+
+`func (o *ProcessorUnit) GetPidOk() (*string, bool)`
+
+GetPidOk returns a tuple with the Pid field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPid
+
+`func (o *ProcessorUnit) SetPid(v string)`
+
+SetPid sets Pid field to given value.
+
+### HasPid
+
+`func (o *ProcessorUnit) HasPid() bool`
+
+HasPid returns a boolean if a field has been set.
+
 ### GetProcessorId
 
 `func (o *ProcessorUnit) GetProcessorId() int64`
@@ -445,6 +549,16 @@ SetComputeBlade sets ComputeBlade field to given value.
 
 HasComputeBlade returns a boolean if a field has been set.
 
+### SetComputeBladeNil
+
+`func (o *ProcessorUnit) SetComputeBladeNil(b bool)`
+
+ SetComputeBladeNil sets the value for ComputeBlade to be an explicit nil
+
+### UnsetComputeBlade
+`func (o *ProcessorUnit) UnsetComputeBlade()`
+
+UnsetComputeBlade ensures that no value is present for ComputeBlade, not even an explicit nil
 ### GetComputeBoard
 
 `func (o *ProcessorUnit) GetComputeBoard() ComputeBoardRelationship`
@@ -470,6 +584,16 @@ SetComputeBoard sets ComputeBoard field to given value.
 
 HasComputeBoard returns a boolean if a field has been set.
 
+### SetComputeBoardNil
+
+`func (o *ProcessorUnit) SetComputeBoardNil(b bool)`
+
+ SetComputeBoardNil sets the value for ComputeBoard to be an explicit nil
+
+### UnsetComputeBoard
+`func (o *ProcessorUnit) UnsetComputeBoard()`
+
+UnsetComputeBoard ensures that no value is present for ComputeBoard, not even an explicit nil
 ### GetComputeRackUnit
 
 `func (o *ProcessorUnit) GetComputeRackUnit() ComputeRackUnitRelationship`
@@ -495,6 +619,16 @@ SetComputeRackUnit sets ComputeRackUnit field to given value.
 
 HasComputeRackUnit returns a boolean if a field has been set.
 
+### SetComputeRackUnitNil
+
+`func (o *ProcessorUnit) SetComputeRackUnitNil(b bool)`
+
+ SetComputeRackUnitNil sets the value for ComputeRackUnit to be an explicit nil
+
+### UnsetComputeRackUnit
+`func (o *ProcessorUnit) UnsetComputeRackUnit()`
+
+UnsetComputeRackUnit ensures that no value is present for ComputeRackUnit, not even an explicit nil
 ### GetInventoryDeviceInfo
 
 `func (o *ProcessorUnit) GetInventoryDeviceInfo() InventoryDeviceInfoRelationship`
@@ -520,6 +654,16 @@ SetInventoryDeviceInfo sets InventoryDeviceInfo field to given value.
 
 HasInventoryDeviceInfo returns a boolean if a field has been set.
 
+### SetInventoryDeviceInfoNil
+
+`func (o *ProcessorUnit) SetInventoryDeviceInfoNil(b bool)`
+
+ SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+
+### UnsetInventoryDeviceInfo
+`func (o *ProcessorUnit) UnsetInventoryDeviceInfo()`
+
+UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
 ### GetNetworkElement
 
 `func (o *ProcessorUnit) GetNetworkElement() NetworkElementRelationship`
@@ -545,6 +689,16 @@ SetNetworkElement sets NetworkElement field to given value.
 
 HasNetworkElement returns a boolean if a field has been set.
 
+### SetNetworkElementNil
+
+`func (o *ProcessorUnit) SetNetworkElementNil(b bool)`
+
+ SetNetworkElementNil sets the value for NetworkElement to be an explicit nil
+
+### UnsetNetworkElement
+`func (o *ProcessorUnit) UnsetNetworkElement()`
+
+UnsetNetworkElement ensures that no value is present for NetworkElement, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *ProcessorUnit) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -570,6 +724,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *ProcessorUnit) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *ProcessorUnit) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

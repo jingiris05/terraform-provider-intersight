@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceBootPrecisionPolicy() *schema.Resource {
 		UpdateContext: resourceBootPrecisionPolicyUpdate,
 		DeleteContext: resourceBootPrecisionPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -81,7 +83,7 @@ func resourceBootPrecisionPolicy() *schema.Resource {
 			"boot_devices": {
 				Type:       schema.TypeList,
 				MaxItems:   255,
-				MinItems:   1,
+				MinItems:   0,
 				Optional:   true,
 				ConfigMode: schema.SchemaConfigModeAttr,
 				Computed:   true,
@@ -126,11 +128,11 @@ func resourceBootPrecisionPolicy() *schema.Resource {
 				Default:     "boot.PrecisionPolicy",
 			},
 			"configured_boot_mode": {
-				Description:  "Sets the BIOS boot mode. UEFI uses the GUID Partition Table (GPT) whereas Legacy mode uses the Master Boot Record (MBR) partitioning scheme. To apply this setting, Please reboot the server.\n* `Legacy` - Legacy mode refers to the traditional process of booting from BIOS. Legacy mode uses the Master Boot Record (MBR) to locate the bootloader.\n* `Uefi` - UEFI mode uses the GUID Partition Table (GPT) to locate EFI Service Partitions to boot from.",
+				Description:  "Sets the BIOS boot mode. UEFI uses the GUID Partition Table (GPT) whereas Legacy mode uses the MBR partitioning scheme. To apply this setting, Please reboot the server.\n* `Uefi` - UEFI mode uses the GUID Partition Table (GPT) to locate EFI Service Partitions to boot from.\n* `Legacy` - Legacy mode refers to the traditional process of booting from BIOS. Legacy mode uses the MBR to locate the bootloader.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringInSlice([]string{"Legacy", "Uefi"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"Uefi", "Legacy"}, false),
 				Optional:     true,
-				Default:      "Legacy",
+				Default:      "Uefi",
 			},
 			"create_time": {
 				Description: "The time when this managed object was created.",
@@ -459,6 +461,17 @@ func resourceBootPrecisionPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -761,8 +774,16 @@ func resourceBootPrecisionPolicyCreate(c context.Context, d *schema.ResourceData
 		}
 		return diag.Errorf("error occurred while creating BootPrecisionPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceBootPrecisionPolicyRead(c, d, meta)...)
 }
 func detachBootPrecisionPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -790,6 +811,9 @@ func detachBootPrecisionPolicyProfiles(d *schema.ResourceData, meta interface{})
 func resourceBootPrecisionPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.BootApi.GetBootPrecisionPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

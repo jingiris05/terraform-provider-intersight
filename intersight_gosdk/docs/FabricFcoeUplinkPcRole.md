@@ -6,9 +6,10 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "fabric.FcoeUplinkPcRole"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "fabric.FcoeUplinkPcRole"]
-**AdminSpeed** | Pointer to **string** | Admin configured speed for the port. * &#x60;Auto&#x60; - Admin configurable speed AUTO ( default ). * &#x60;1Gbps&#x60; - Admin configurable speed 1Gbps. * &#x60;10Gbps&#x60; - Admin configurable speed 10Gbps. * &#x60;25Gbps&#x60; - Admin configurable speed 25Gbps. * &#x60;40Gbps&#x60; - Admin configurable speed 40Gbps. * &#x60;100Gbps&#x60; - Admin configurable speed 100Gbps. | [optional] [default to "Auto"]
-**LinkAggregationPolicy** | Pointer to [**FabricLinkAggregationPolicyRelationship**](FabricLinkAggregationPolicyRelationship.md) |  | [optional] 
-**LinkControlPolicy** | Pointer to [**FabricLinkControlPolicyRelationship**](FabricLinkControlPolicyRelationship.md) |  | [optional] 
+**AdminSpeed** | Pointer to **string** | Admin configured speed for the port. * &#x60;Auto&#x60; - Admin configurable speed AUTO ( default ). * &#x60;1Gbps&#x60; - Admin configurable speed 1Gbps. * &#x60;10Gbps&#x60; - Admin configurable speed 10Gbps. * &#x60;25Gbps&#x60; - Admin configurable speed 25Gbps. * &#x60;40Gbps&#x60; - Admin configurable speed 40Gbps. * &#x60;100Gbps&#x60; - Admin configurable speed 100Gbps. * &#x60;NegAuto25Gbps&#x60; - Admin configurable 25Gbps auto negotiation for ports and port-channels.Speed is applicable on Ethernet Uplink, Ethernet Appliance and FCoE Uplink port and port-channel roles.This speed config is only applicable to non-breakout ports on UCS-FI-6454 and UCS-FI-64108. | [optional] [default to "Auto"]
+**Fec** | Pointer to **string** | Forward error correction configuration for Fcoe Uplink Port Channel member ports. * &#x60;Auto&#x60; - Forward error correction option &#39;Auto&#39;. * &#x60;Cl91&#x60; - Forward error correction option &#39;cl91&#39;. * &#x60;Cl74&#x60; - Forward error correction option &#39;cl74&#39;. | [optional] [default to "Auto"]
+**LinkAggregationPolicy** | Pointer to [**NullableFabricLinkAggregationPolicyRelationship**](FabricLinkAggregationPolicyRelationship.md) |  | [optional] 
+**LinkControlPolicy** | Pointer to [**NullableFabricLinkControlPolicyRelationship**](FabricLinkControlPolicyRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -94,6 +95,31 @@ SetAdminSpeed sets AdminSpeed field to given value.
 
 HasAdminSpeed returns a boolean if a field has been set.
 
+### GetFec
+
+`func (o *FabricFcoeUplinkPcRole) GetFec() string`
+
+GetFec returns the Fec field if non-nil, zero value otherwise.
+
+### GetFecOk
+
+`func (o *FabricFcoeUplinkPcRole) GetFecOk() (*string, bool)`
+
+GetFecOk returns a tuple with the Fec field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFec
+
+`func (o *FabricFcoeUplinkPcRole) SetFec(v string)`
+
+SetFec sets Fec field to given value.
+
+### HasFec
+
+`func (o *FabricFcoeUplinkPcRole) HasFec() bool`
+
+HasFec returns a boolean if a field has been set.
+
 ### GetLinkAggregationPolicy
 
 `func (o *FabricFcoeUplinkPcRole) GetLinkAggregationPolicy() FabricLinkAggregationPolicyRelationship`
@@ -119,6 +145,16 @@ SetLinkAggregationPolicy sets LinkAggregationPolicy field to given value.
 
 HasLinkAggregationPolicy returns a boolean if a field has been set.
 
+### SetLinkAggregationPolicyNil
+
+`func (o *FabricFcoeUplinkPcRole) SetLinkAggregationPolicyNil(b bool)`
+
+ SetLinkAggregationPolicyNil sets the value for LinkAggregationPolicy to be an explicit nil
+
+### UnsetLinkAggregationPolicy
+`func (o *FabricFcoeUplinkPcRole) UnsetLinkAggregationPolicy()`
+
+UnsetLinkAggregationPolicy ensures that no value is present for LinkAggregationPolicy, not even an explicit nil
 ### GetLinkControlPolicy
 
 `func (o *FabricFcoeUplinkPcRole) GetLinkControlPolicy() FabricLinkControlPolicyRelationship`
@@ -144,6 +180,16 @@ SetLinkControlPolicy sets LinkControlPolicy field to given value.
 
 HasLinkControlPolicy returns a boolean if a field has been set.
 
+### SetLinkControlPolicyNil
+
+`func (o *FabricFcoeUplinkPcRole) SetLinkControlPolicyNil(b bool)`
+
+ SetLinkControlPolicyNil sets the value for LinkControlPolicy to be an explicit nil
+
+### UnsetLinkControlPolicy
+`func (o *FabricFcoeUplinkPcRole) UnsetLinkControlPolicy()`
+
+UnsetLinkControlPolicy ensures that no value is present for LinkControlPolicy, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

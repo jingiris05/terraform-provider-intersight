@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceCapabilitySwitchDescriptor() *schema.Resource {
 		UpdateContext: resourceCapabilitySwitchDescriptorUpdate,
 		DeleteContext: resourceCapabilitySwitchDescriptorDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -153,6 +155,12 @@ func resourceCapabilitySwitchDescriptor() *schema.Resource {
 				Description: "The total expected memory for this hardware.",
 				Type:        schema.TypeInt,
 				Optional:    true,
+			},
+			"is_ucsx_direct_switch": {
+				Description: "Identifies whether Switch is part of UCSX Direct chassis.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
 			},
 			"mod_time": {
 				Description: "The time when this managed object was last modified.",
@@ -381,6 +389,17 @@ func resourceCapabilitySwitchDescriptor() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -536,6 +555,11 @@ func resourceCapabilitySwitchDescriptorCreate(c context.Context, d *schema.Resou
 		o.SetExpectedMemory(x)
 	}
 
+	if v, ok := d.GetOkExists("is_ucsx_direct_switch"); ok {
+		x := (v.(bool))
+		o.SetIsUcsxDirectSwitch(x)
+	}
+
 	if v, ok := d.GetOk("model"); ok {
 		x := (v.(string))
 		o.SetModel(x)
@@ -608,14 +632,25 @@ func resourceCapabilitySwitchDescriptorCreate(c context.Context, d *schema.Resou
 		}
 		return diag.Errorf("error occurred while creating CapabilitySwitchDescriptor: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceCapabilitySwitchDescriptorRead(c, d, meta)...)
 }
 
 func resourceCapabilitySwitchDescriptorRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.CapabilityApi.GetCapabilitySwitchDescriptorByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -667,6 +702,10 @@ func resourceCapabilitySwitchDescriptorRead(c context.Context, d *schema.Resourc
 
 	if err := d.Set("expected_memory", (s.GetExpectedMemory())); err != nil {
 		return diag.Errorf("error occurred while setting property ExpectedMemory in CapabilitySwitchDescriptor object: %s", err.Error())
+	}
+
+	if err := d.Set("is_ucsx_direct_switch", (s.GetIsUcsxDirectSwitch())); err != nil {
+		return diag.Errorf("error occurred while setting property IsUcsxDirectSwitch in CapabilitySwitchDescriptor object: %s", err.Error())
 	}
 
 	if err := d.Set("mod_time", (s.GetModTime()).String()); err != nil {
@@ -795,6 +834,12 @@ func resourceCapabilitySwitchDescriptorUpdate(c context.Context, d *schema.Resou
 		v := d.Get("expected_memory")
 		x := int64(v.(int))
 		o.SetExpectedMemory(x)
+	}
+
+	if d.HasChange("is_ucsx_direct_switch") {
+		v := d.Get("is_ucsx_direct_switch")
+		x := (v.(bool))
+		o.SetIsUcsxDirectSwitch(x)
 	}
 
 	if d.HasChange("model") {

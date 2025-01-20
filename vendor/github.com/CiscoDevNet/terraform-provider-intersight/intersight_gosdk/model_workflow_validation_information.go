@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the WorkflowValidationInformation type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &WorkflowValidationInformation{}
 
 // WorkflowValidationInformation Type used to capture all the validation information for the workflow definition.
 type WorkflowValidationInformation struct {
@@ -24,6 +28,8 @@ type WorkflowValidationInformation struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
+	// The state of workflow definition metadata in the workflow engine. The workflow definition must be successfully updated in the engine before workflows can be executed. * `NotUpdated` - The workflow and task definition metadata is not yet updated in the workflow engine. * `Updating` - The workflow and task definition metadata is in the processing of being updated in the workflow engine. * `UpdateFailed` - The workflow and task definition metadata failed to be updated in the workflow engine. * `Updated` - The workflow and task definition metadata was updated successfully in the workflow engine.
+	EngineState *string `json:"EngineState,omitempty"`
 	// The current validation state of this workflow. The possible states are Valid, Invalid, NotValidated (default). * `NotValidated` - The state when workflow definition has not been validated. * `Valid` - The state when workflow definition is valid. * `Invalid` - The state when workflow definition is invalid.
 	State                *string                   `json:"State,omitempty"`
 	ValidationError      []WorkflowValidationError `json:"ValidationError,omitempty"`
@@ -79,6 +85,11 @@ func (o *WorkflowValidationInformation) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "workflow.ValidationInformation" of the ClassId field.
+func (o *WorkflowValidationInformation) GetDefaultClassId() interface{} {
+	return "workflow.ValidationInformation"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *WorkflowValidationInformation) GetObjectType() string {
 	if o == nil {
@@ -103,9 +114,46 @@ func (o *WorkflowValidationInformation) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "workflow.ValidationInformation" of the ObjectType field.
+func (o *WorkflowValidationInformation) GetDefaultObjectType() interface{} {
+	return "workflow.ValidationInformation"
+}
+
+// GetEngineState returns the EngineState field value if set, zero value otherwise.
+func (o *WorkflowValidationInformation) GetEngineState() string {
+	if o == nil || IsNil(o.EngineState) {
+		var ret string
+		return ret
+	}
+	return *o.EngineState
+}
+
+// GetEngineStateOk returns a tuple with the EngineState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WorkflowValidationInformation) GetEngineStateOk() (*string, bool) {
+	if o == nil || IsNil(o.EngineState) {
+		return nil, false
+	}
+	return o.EngineState, true
+}
+
+// HasEngineState returns a boolean if a field has been set.
+func (o *WorkflowValidationInformation) HasEngineState() bool {
+	if o != nil && !IsNil(o.EngineState) {
+		return true
+	}
+
+	return false
+}
+
+// SetEngineState gets a reference to the given string and assigns it to the EngineState field.
+func (o *WorkflowValidationInformation) SetEngineState(v string) {
+	o.EngineState = &v
+}
+
 // GetState returns the State field value if set, zero value otherwise.
 func (o *WorkflowValidationInformation) GetState() string {
-	if o == nil || o.State == nil {
+	if o == nil || IsNil(o.State) {
 		var ret string
 		return ret
 	}
@@ -115,7 +163,7 @@ func (o *WorkflowValidationInformation) GetState() string {
 // GetStateOk returns a tuple with the State field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowValidationInformation) GetStateOk() (*string, bool) {
-	if o == nil || o.State == nil {
+	if o == nil || IsNil(o.State) {
 		return nil, false
 	}
 	return o.State, true
@@ -123,7 +171,7 @@ func (o *WorkflowValidationInformation) GetStateOk() (*string, bool) {
 
 // HasState returns a boolean if a field has been set.
 func (o *WorkflowValidationInformation) HasState() bool {
-	if o != nil && o.State != nil {
+	if o != nil && !IsNil(o.State) {
 		return true
 	}
 
@@ -148,7 +196,7 @@ func (o *WorkflowValidationInformation) GetValidationError() []WorkflowValidatio
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowValidationInformation) GetValidationErrorOk() ([]WorkflowValidationError, bool) {
-	if o == nil || o.ValidationError == nil {
+	if o == nil || IsNil(o.ValidationError) {
 		return nil, false
 	}
 	return o.ValidationError, true
@@ -156,7 +204,7 @@ func (o *WorkflowValidationInformation) GetValidationErrorOk() ([]WorkflowValida
 
 // HasValidationError returns a boolean if a field has been set.
 func (o *WorkflowValidationInformation) HasValidationError() bool {
-	if o != nil && o.ValidationError != nil {
+	if o != nil && !IsNil(o.ValidationError) {
 		return true
 	}
 
@@ -169,22 +217,35 @@ func (o *WorkflowValidationInformation) SetValidationError(v []WorkflowValidatio
 }
 
 func (o WorkflowValidationInformation) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o WorkflowValidationInformation) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.State != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.EngineState) {
+		toSerialize["EngineState"] = o.EngineState
+	}
+	if !IsNil(o.State) {
 		toSerialize["State"] = o.State
 	}
 	if o.ValidationError != nil {
@@ -195,15 +256,58 @@ func (o WorkflowValidationInformation) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *WorkflowValidationInformation) UnmarshalJSON(bytes []byte) (err error) {
+func (o *WorkflowValidationInformation) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type WorkflowValidationInformationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
+		// The state of workflow definition metadata in the workflow engine. The workflow definition must be successfully updated in the engine before workflows can be executed. * `NotUpdated` - The workflow and task definition metadata is not yet updated in the workflow engine. * `Updating` - The workflow and task definition metadata is in the processing of being updated in the workflow engine. * `UpdateFailed` - The workflow and task definition metadata failed to be updated in the workflow engine. * `Updated` - The workflow and task definition metadata was updated successfully in the workflow engine.
+		EngineState *string `json:"EngineState,omitempty"`
 		// The current validation state of this workflow. The possible states are Valid, Invalid, NotValidated (default). * `NotValidated` - The state when workflow definition has not been validated. * `Valid` - The state when workflow definition is valid. * `Invalid` - The state when workflow definition is invalid.
 		State           *string                   `json:"State,omitempty"`
 		ValidationError []WorkflowValidationError `json:"ValidationError,omitempty"`
@@ -211,11 +315,12 @@ func (o *WorkflowValidationInformation) UnmarshalJSON(bytes []byte) (err error) 
 
 	varWorkflowValidationInformationWithoutEmbeddedStruct := WorkflowValidationInformationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varWorkflowValidationInformationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varWorkflowValidationInformationWithoutEmbeddedStruct)
 	if err == nil {
 		varWorkflowValidationInformation := _WorkflowValidationInformation{}
 		varWorkflowValidationInformation.ClassId = varWorkflowValidationInformationWithoutEmbeddedStruct.ClassId
 		varWorkflowValidationInformation.ObjectType = varWorkflowValidationInformationWithoutEmbeddedStruct.ObjectType
+		varWorkflowValidationInformation.EngineState = varWorkflowValidationInformationWithoutEmbeddedStruct.EngineState
 		varWorkflowValidationInformation.State = varWorkflowValidationInformationWithoutEmbeddedStruct.State
 		varWorkflowValidationInformation.ValidationError = varWorkflowValidationInformationWithoutEmbeddedStruct.ValidationError
 		*o = WorkflowValidationInformation(varWorkflowValidationInformation)
@@ -225,7 +330,7 @@ func (o *WorkflowValidationInformation) UnmarshalJSON(bytes []byte) (err error) 
 
 	varWorkflowValidationInformation := _WorkflowValidationInformation{}
 
-	err = json.Unmarshal(bytes, &varWorkflowValidationInformation)
+	err = json.Unmarshal(data, &varWorkflowValidationInformation)
 	if err == nil {
 		o.MoBaseComplexType = varWorkflowValidationInformation.MoBaseComplexType
 	} else {
@@ -234,9 +339,10 @@ func (o *WorkflowValidationInformation) UnmarshalJSON(bytes []byte) (err error) 
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "EngineState")
 		delete(additionalProperties, "State")
 		delete(additionalProperties, "ValidationError")
 

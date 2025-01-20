@@ -7,14 +7,17 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "recommendation.PhysicalItem"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "recommendation.PhysicalItem"]
 **Capacity** | Pointer to **int64** | Capacity of the physical entity added. | [optional] [readonly] 
+**ConfigurationPath** | Pointer to **string** | Configuration path for the physical entity to be used when ordering it through the Cisco Commerce Workspace. | [optional] [readonly] 
 **Count** | Pointer to **int64** | Count of number of items/devices to be added.For example, number of disks to add on a node PhysicalItem in case of HyperFlex Cluster recommendation. | [optional] [readonly] 
 **IsNew** | Pointer to **bool** | If the PhysicalItem is new, this is set to true, else false. | [optional] [readonly] 
 **MaxCount** | Pointer to **int64** | Maximum number of items/devices which can be added on this PhysicalItem.For example, maximum number of disks allowed on a node PhysicalItem in case of HyperFlex Cluster recommendation. | [optional] [readonly] 
 **Model** | Pointer to **string** | Model of the recommended physical device which is externally identifiable. | [optional] [readonly] 
+**ParentMoid** | Pointer to **string** | Moid of the managed object which represents the parent physical entity. | [optional] [readonly] 
 **SourceMoid** | Pointer to **string** | Moid of the managed object which represents the existing physical entity. | [optional] [readonly] 
-**Unit** | Pointer to **string** | Unit of the new capacity. * &#x60;TB&#x60; - The Enum value TB represents that the measurement unit is in terabytes. * &#x60;MB&#x60; - The Enum value MB represents that the measurement unit is in megabytes. | [optional] [readonly] [default to "TB"]
+**Unit** | Pointer to **string** | Unit of the new capacity. * &#x60;TB&#x60; - The Enum value TB represents that the measurement unit is in terabytes. * &#x60;MB&#x60; - The Enum value MB represents that the measurement unit is in megabytes. * &#x60;GB&#x60; - The Enum value GB represents that the measurement unit is in gigabytes. * &#x60;MHz&#x60; - The Enum value MHz represents that the measurement unit is in megahertz. * &#x60;GHz&#x60; - The Enum value GHz represents that the measurement unit is in gigahertz. * &#x60;Percentage&#x60; - The Enum value Percentage represents that the expansion request is in the percentage of resource increase. For example, a 20% increase in CPU capacity. | [optional] [readonly] [default to "TB"]
 **Uuid** | Pointer to **string** | Uuid of the recommended physical device. | [optional] [readonly] 
-**CapacityRunway** | Pointer to [**RecommendationCapacityRunwayRelationship**](RecommendationCapacityRunwayRelationship.md) |  | [optional] 
+**CapacityRunway** | Pointer to [**NullableRecommendationCapacityRunwayRelationship**](RecommendationCapacityRunwayRelationship.md) |  | [optional] 
+**ClusterExpansion** | Pointer to [**NullableRecommendationClusterExpansionRelationship**](RecommendationClusterExpansionRelationship.md) |  | [optional] 
 **PhysicalItem** | Pointer to [**[]RecommendationPhysicalItemRelationship**](RecommendationPhysicalItemRelationship.md) | An array of relationships to recommendationPhysicalItem resources. | [optional] [readonly] 
 
 ## Methods
@@ -100,6 +103,31 @@ SetCapacity sets Capacity field to given value.
 `func (o *RecommendationPhysicalItem) HasCapacity() bool`
 
 HasCapacity returns a boolean if a field has been set.
+
+### GetConfigurationPath
+
+`func (o *RecommendationPhysicalItem) GetConfigurationPath() string`
+
+GetConfigurationPath returns the ConfigurationPath field if non-nil, zero value otherwise.
+
+### GetConfigurationPathOk
+
+`func (o *RecommendationPhysicalItem) GetConfigurationPathOk() (*string, bool)`
+
+GetConfigurationPathOk returns a tuple with the ConfigurationPath field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetConfigurationPath
+
+`func (o *RecommendationPhysicalItem) SetConfigurationPath(v string)`
+
+SetConfigurationPath sets ConfigurationPath field to given value.
+
+### HasConfigurationPath
+
+`func (o *RecommendationPhysicalItem) HasConfigurationPath() bool`
+
+HasConfigurationPath returns a boolean if a field has been set.
 
 ### GetCount
 
@@ -201,6 +229,31 @@ SetModel sets Model field to given value.
 
 HasModel returns a boolean if a field has been set.
 
+### GetParentMoid
+
+`func (o *RecommendationPhysicalItem) GetParentMoid() string`
+
+GetParentMoid returns the ParentMoid field if non-nil, zero value otherwise.
+
+### GetParentMoidOk
+
+`func (o *RecommendationPhysicalItem) GetParentMoidOk() (*string, bool)`
+
+GetParentMoidOk returns a tuple with the ParentMoid field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetParentMoid
+
+`func (o *RecommendationPhysicalItem) SetParentMoid(v string)`
+
+SetParentMoid sets ParentMoid field to given value.
+
+### HasParentMoid
+
+`func (o *RecommendationPhysicalItem) HasParentMoid() bool`
+
+HasParentMoid returns a boolean if a field has been set.
+
 ### GetSourceMoid
 
 `func (o *RecommendationPhysicalItem) GetSourceMoid() string`
@@ -301,6 +354,51 @@ SetCapacityRunway sets CapacityRunway field to given value.
 
 HasCapacityRunway returns a boolean if a field has been set.
 
+### SetCapacityRunwayNil
+
+`func (o *RecommendationPhysicalItem) SetCapacityRunwayNil(b bool)`
+
+ SetCapacityRunwayNil sets the value for CapacityRunway to be an explicit nil
+
+### UnsetCapacityRunway
+`func (o *RecommendationPhysicalItem) UnsetCapacityRunway()`
+
+UnsetCapacityRunway ensures that no value is present for CapacityRunway, not even an explicit nil
+### GetClusterExpansion
+
+`func (o *RecommendationPhysicalItem) GetClusterExpansion() RecommendationClusterExpansionRelationship`
+
+GetClusterExpansion returns the ClusterExpansion field if non-nil, zero value otherwise.
+
+### GetClusterExpansionOk
+
+`func (o *RecommendationPhysicalItem) GetClusterExpansionOk() (*RecommendationClusterExpansionRelationship, bool)`
+
+GetClusterExpansionOk returns a tuple with the ClusterExpansion field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetClusterExpansion
+
+`func (o *RecommendationPhysicalItem) SetClusterExpansion(v RecommendationClusterExpansionRelationship)`
+
+SetClusterExpansion sets ClusterExpansion field to given value.
+
+### HasClusterExpansion
+
+`func (o *RecommendationPhysicalItem) HasClusterExpansion() bool`
+
+HasClusterExpansion returns a boolean if a field has been set.
+
+### SetClusterExpansionNil
+
+`func (o *RecommendationPhysicalItem) SetClusterExpansionNil(b bool)`
+
+ SetClusterExpansionNil sets the value for ClusterExpansion to be an explicit nil
+
+### UnsetClusterExpansion
+`func (o *RecommendationPhysicalItem) UnsetClusterExpansion()`
+
+UnsetClusterExpansion ensures that no value is present for ClusterExpansion, not even an explicit nil
 ### GetPhysicalItem
 
 `func (o *RecommendationPhysicalItem) GetPhysicalItem() []RecommendationPhysicalItemRelationship`

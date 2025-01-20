@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -36,9 +36,9 @@ func (r ApiGetPciCoprocessorCardByMoidRequest) Execute() (*PciCoprocessorCard, *
 /*
 GetPciCoprocessorCardByMoid Read a 'pci.CoprocessorCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetPciCoprocessorCardByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetPciCoprocessorCardByMoidRequest
 */
 func (a *PciApiService) GetPciCoprocessorCardByMoid(ctx context.Context, moid string) ApiGetPciCoprocessorCardByMoidRequest {
 	return ApiGetPciCoprocessorCardByMoidRequest{
@@ -49,7 +49,8 @@ func (a *PciApiService) GetPciCoprocessorCardByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return PciCoprocessorCard
+//
+//	@return PciCoprocessorCard
 func (a *PciApiService) GetPciCoprocessorCardByMoidExecute(r ApiGetPciCoprocessorCardByMoidRequest) (*PciCoprocessorCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -64,7 +65,7 @@ func (a *PciApiService) GetPciCoprocessorCardByMoidExecute(r ApiGetPciCoprocesso
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/CoprocessorCards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -97,9 +98,9 @@ func (a *PciApiService) GetPciCoprocessorCardByMoidExecute(r ApiGetPciCoprocesso
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -116,6 +117,7 @@ func (a *PciApiService) GetPciCoprocessorCardByMoidExecute(r ApiGetPciCoprocesso
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -126,6 +128,7 @@ func (a *PciApiService) GetPciCoprocessorCardByMoidExecute(r ApiGetPciCoprocesso
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -136,6 +139,7 @@ func (a *PciApiService) GetPciCoprocessorCardByMoidExecute(r ApiGetPciCoprocesso
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -146,6 +150,7 @@ func (a *PciApiService) GetPciCoprocessorCardByMoidExecute(r ApiGetPciCoprocesso
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -155,6 +160,7 @@ func (a *PciApiService) GetPciCoprocessorCardByMoidExecute(r ApiGetPciCoprocesso
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -223,7 +229,7 @@ func (r ApiGetPciCoprocessorCardListRequest) Expand(expand string) ApiGetPciCopr
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetPciCoprocessorCardListRequest) Apply(apply string) ApiGetPciCoprocessorCardListRequest {
 	r.apply = &apply
 	return r
@@ -260,8 +266,8 @@ func (r ApiGetPciCoprocessorCardListRequest) Execute() (*PciCoprocessorCardRespo
 /*
 GetPciCoprocessorCardList Read a 'pci.CoprocessorCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetPciCoprocessorCardListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetPciCoprocessorCardListRequest
 */
 func (a *PciApiService) GetPciCoprocessorCardList(ctx context.Context) ApiGetPciCoprocessorCardListRequest {
 	return ApiGetPciCoprocessorCardListRequest{
@@ -271,7 +277,8 @@ func (a *PciApiService) GetPciCoprocessorCardList(ctx context.Context) ApiGetPci
 }
 
 // Execute executes the request
-//  @return PciCoprocessorCardResponse
+//
+//	@return PciCoprocessorCardResponse
 func (a *PciApiService) GetPciCoprocessorCardListExecute(r ApiGetPciCoprocessorCardListRequest) (*PciCoprocessorCardResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -292,37 +299,52 @@ func (a *PciApiService) GetPciCoprocessorCardListExecute(r ApiGetPciCoprocessorC
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -351,9 +373,9 @@ func (a *PciApiService) GetPciCoprocessorCardListExecute(r ApiGetPciCoprocessorC
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -370,6 +392,7 @@ func (a *PciApiService) GetPciCoprocessorCardListExecute(r ApiGetPciCoprocessorC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -380,6 +403,7 @@ func (a *PciApiService) GetPciCoprocessorCardListExecute(r ApiGetPciCoprocessorC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -390,6 +414,7 @@ func (a *PciApiService) GetPciCoprocessorCardListExecute(r ApiGetPciCoprocessorC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -400,6 +425,7 @@ func (a *PciApiService) GetPciCoprocessorCardListExecute(r ApiGetPciCoprocessorC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -409,6 +435,7 @@ func (a *PciApiService) GetPciCoprocessorCardListExecute(r ApiGetPciCoprocessorC
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -438,9 +465,9 @@ func (r ApiGetPciDeviceByMoidRequest) Execute() (*PciDevice, *http.Response, err
 /*
 GetPciDeviceByMoid Read a 'pci.Device' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetPciDeviceByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetPciDeviceByMoidRequest
 */
 func (a *PciApiService) GetPciDeviceByMoid(ctx context.Context, moid string) ApiGetPciDeviceByMoidRequest {
 	return ApiGetPciDeviceByMoidRequest{
@@ -451,7 +478,8 @@ func (a *PciApiService) GetPciDeviceByMoid(ctx context.Context, moid string) Api
 }
 
 // Execute executes the request
-//  @return PciDevice
+//
+//	@return PciDevice
 func (a *PciApiService) GetPciDeviceByMoidExecute(r ApiGetPciDeviceByMoidRequest) (*PciDevice, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -466,7 +494,7 @@ func (a *PciApiService) GetPciDeviceByMoidExecute(r ApiGetPciDeviceByMoidRequest
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Devices/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -499,9 +527,9 @@ func (a *PciApiService) GetPciDeviceByMoidExecute(r ApiGetPciDeviceByMoidRequest
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -518,6 +546,7 @@ func (a *PciApiService) GetPciDeviceByMoidExecute(r ApiGetPciDeviceByMoidRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -528,6 +557,7 @@ func (a *PciApiService) GetPciDeviceByMoidExecute(r ApiGetPciDeviceByMoidRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -538,6 +568,7 @@ func (a *PciApiService) GetPciDeviceByMoidExecute(r ApiGetPciDeviceByMoidRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -548,6 +579,7 @@ func (a *PciApiService) GetPciDeviceByMoidExecute(r ApiGetPciDeviceByMoidRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -557,6 +589,7 @@ func (a *PciApiService) GetPciDeviceByMoidExecute(r ApiGetPciDeviceByMoidRequest
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -625,7 +658,7 @@ func (r ApiGetPciDeviceListRequest) Expand(expand string) ApiGetPciDeviceListReq
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetPciDeviceListRequest) Apply(apply string) ApiGetPciDeviceListRequest {
 	r.apply = &apply
 	return r
@@ -662,8 +695,8 @@ func (r ApiGetPciDeviceListRequest) Execute() (*PciDeviceResponse, *http.Respons
 /*
 GetPciDeviceList Read a 'pci.Device' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetPciDeviceListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetPciDeviceListRequest
 */
 func (a *PciApiService) GetPciDeviceList(ctx context.Context) ApiGetPciDeviceListRequest {
 	return ApiGetPciDeviceListRequest{
@@ -673,7 +706,8 @@ func (a *PciApiService) GetPciDeviceList(ctx context.Context) ApiGetPciDeviceLis
 }
 
 // Execute executes the request
-//  @return PciDeviceResponse
+//
+//	@return PciDeviceResponse
 func (a *PciApiService) GetPciDeviceListExecute(r ApiGetPciDeviceListRequest) (*PciDeviceResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -694,37 +728,52 @@ func (a *PciApiService) GetPciDeviceListExecute(r ApiGetPciDeviceListRequest) (*
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -753,9 +802,9 @@ func (a *PciApiService) GetPciDeviceListExecute(r ApiGetPciDeviceListRequest) (*
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -772,6 +821,7 @@ func (a *PciApiService) GetPciDeviceListExecute(r ApiGetPciDeviceListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -782,6 +832,7 @@ func (a *PciApiService) GetPciDeviceListExecute(r ApiGetPciDeviceListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -792,6 +843,7 @@ func (a *PciApiService) GetPciDeviceListExecute(r ApiGetPciDeviceListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -802,6 +854,7 @@ func (a *PciApiService) GetPciDeviceListExecute(r ApiGetPciDeviceListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -811,6 +864,7 @@ func (a *PciApiService) GetPciDeviceListExecute(r ApiGetPciDeviceListRequest) (*
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -840,9 +894,9 @@ func (r ApiGetPciLinkByMoidRequest) Execute() (*PciLink, *http.Response, error) 
 /*
 GetPciLinkByMoid Read a 'pci.Link' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetPciLinkByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetPciLinkByMoidRequest
 */
 func (a *PciApiService) GetPciLinkByMoid(ctx context.Context, moid string) ApiGetPciLinkByMoidRequest {
 	return ApiGetPciLinkByMoidRequest{
@@ -853,7 +907,8 @@ func (a *PciApiService) GetPciLinkByMoid(ctx context.Context, moid string) ApiGe
 }
 
 // Execute executes the request
-//  @return PciLink
+//
+//	@return PciLink
 func (a *PciApiService) GetPciLinkByMoidExecute(r ApiGetPciLinkByMoidRequest) (*PciLink, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -868,7 +923,7 @@ func (a *PciApiService) GetPciLinkByMoidExecute(r ApiGetPciLinkByMoidRequest) (*
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Links/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -901,9 +956,9 @@ func (a *PciApiService) GetPciLinkByMoidExecute(r ApiGetPciLinkByMoidRequest) (*
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -920,6 +975,7 @@ func (a *PciApiService) GetPciLinkByMoidExecute(r ApiGetPciLinkByMoidRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -930,6 +986,7 @@ func (a *PciApiService) GetPciLinkByMoidExecute(r ApiGetPciLinkByMoidRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -940,6 +997,7 @@ func (a *PciApiService) GetPciLinkByMoidExecute(r ApiGetPciLinkByMoidRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -950,6 +1008,7 @@ func (a *PciApiService) GetPciLinkByMoidExecute(r ApiGetPciLinkByMoidRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -959,6 +1018,7 @@ func (a *PciApiService) GetPciLinkByMoidExecute(r ApiGetPciLinkByMoidRequest) (*
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1027,7 +1087,7 @@ func (r ApiGetPciLinkListRequest) Expand(expand string) ApiGetPciLinkListRequest
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetPciLinkListRequest) Apply(apply string) ApiGetPciLinkListRequest {
 	r.apply = &apply
 	return r
@@ -1064,8 +1124,8 @@ func (r ApiGetPciLinkListRequest) Execute() (*PciLinkResponse, *http.Response, e
 /*
 GetPciLinkList Read a 'pci.Link' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetPciLinkListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetPciLinkListRequest
 */
 func (a *PciApiService) GetPciLinkList(ctx context.Context) ApiGetPciLinkListRequest {
 	return ApiGetPciLinkListRequest{
@@ -1075,7 +1135,8 @@ func (a *PciApiService) GetPciLinkList(ctx context.Context) ApiGetPciLinkListReq
 }
 
 // Execute executes the request
-//  @return PciLinkResponse
+//
+//	@return PciLinkResponse
 func (a *PciApiService) GetPciLinkListExecute(r ApiGetPciLinkListRequest) (*PciLinkResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1096,37 +1157,52 @@ func (a *PciApiService) GetPciLinkListExecute(r ApiGetPciLinkListRequest) (*PciL
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1155,9 +1231,9 @@ func (a *PciApiService) GetPciLinkListExecute(r ApiGetPciLinkListRequest) (*PciL
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1174,6 +1250,7 @@ func (a *PciApiService) GetPciLinkListExecute(r ApiGetPciLinkListRequest) (*PciL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1184,6 +1261,7 @@ func (a *PciApiService) GetPciLinkListExecute(r ApiGetPciLinkListRequest) (*PciL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1194,6 +1272,7 @@ func (a *PciApiService) GetPciLinkListExecute(r ApiGetPciLinkListRequest) (*PciL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1204,6 +1283,7 @@ func (a *PciApiService) GetPciLinkListExecute(r ApiGetPciLinkListRequest) (*PciL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1213,6 +1293,7 @@ func (a *PciApiService) GetPciLinkListExecute(r ApiGetPciLinkListRequest) (*PciL
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1242,9 +1323,9 @@ func (r ApiGetPciNodeByMoidRequest) Execute() (*PciNode, *http.Response, error) 
 /*
 GetPciNodeByMoid Read a 'pci.Node' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetPciNodeByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetPciNodeByMoidRequest
 */
 func (a *PciApiService) GetPciNodeByMoid(ctx context.Context, moid string) ApiGetPciNodeByMoidRequest {
 	return ApiGetPciNodeByMoidRequest{
@@ -1255,7 +1336,8 @@ func (a *PciApiService) GetPciNodeByMoid(ctx context.Context, moid string) ApiGe
 }
 
 // Execute executes the request
-//  @return PciNode
+//
+//	@return PciNode
 func (a *PciApiService) GetPciNodeByMoidExecute(r ApiGetPciNodeByMoidRequest) (*PciNode, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1270,7 +1352,7 @@ func (a *PciApiService) GetPciNodeByMoidExecute(r ApiGetPciNodeByMoidRequest) (*
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Nodes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1303,9 +1385,9 @@ func (a *PciApiService) GetPciNodeByMoidExecute(r ApiGetPciNodeByMoidRequest) (*
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1322,6 +1404,7 @@ func (a *PciApiService) GetPciNodeByMoidExecute(r ApiGetPciNodeByMoidRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1332,6 +1415,7 @@ func (a *PciApiService) GetPciNodeByMoidExecute(r ApiGetPciNodeByMoidRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1342,6 +1426,7 @@ func (a *PciApiService) GetPciNodeByMoidExecute(r ApiGetPciNodeByMoidRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1352,6 +1437,7 @@ func (a *PciApiService) GetPciNodeByMoidExecute(r ApiGetPciNodeByMoidRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1361,6 +1447,7 @@ func (a *PciApiService) GetPciNodeByMoidExecute(r ApiGetPciNodeByMoidRequest) (*
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1429,7 +1516,7 @@ func (r ApiGetPciNodeListRequest) Expand(expand string) ApiGetPciNodeListRequest
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetPciNodeListRequest) Apply(apply string) ApiGetPciNodeListRequest {
 	r.apply = &apply
 	return r
@@ -1466,8 +1553,8 @@ func (r ApiGetPciNodeListRequest) Execute() (*PciNodeResponse, *http.Response, e
 /*
 GetPciNodeList Read a 'pci.Node' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetPciNodeListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetPciNodeListRequest
 */
 func (a *PciApiService) GetPciNodeList(ctx context.Context) ApiGetPciNodeListRequest {
 	return ApiGetPciNodeListRequest{
@@ -1477,7 +1564,8 @@ func (a *PciApiService) GetPciNodeList(ctx context.Context) ApiGetPciNodeListReq
 }
 
 // Execute executes the request
-//  @return PciNodeResponse
+//
+//	@return PciNodeResponse
 func (a *PciApiService) GetPciNodeListExecute(r ApiGetPciNodeListRequest) (*PciNodeResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1498,37 +1586,52 @@ func (a *PciApiService) GetPciNodeListExecute(r ApiGetPciNodeListRequest) (*PciN
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1557,9 +1660,9 @@ func (a *PciApiService) GetPciNodeListExecute(r ApiGetPciNodeListRequest) (*PciN
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1576,6 +1679,7 @@ func (a *PciApiService) GetPciNodeListExecute(r ApiGetPciNodeListRequest) (*PciN
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1586,6 +1690,7 @@ func (a *PciApiService) GetPciNodeListExecute(r ApiGetPciNodeListRequest) (*PciN
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1596,6 +1701,7 @@ func (a *PciApiService) GetPciNodeListExecute(r ApiGetPciNodeListRequest) (*PciN
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1606,6 +1712,7 @@ func (a *PciApiService) GetPciNodeListExecute(r ApiGetPciNodeListRequest) (*PciN
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1615,6 +1722,7 @@ func (a *PciApiService) GetPciNodeListExecute(r ApiGetPciNodeListRequest) (*PciN
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1644,9 +1752,9 @@ func (r ApiGetPciSwitchByMoidRequest) Execute() (*PciSwitch, *http.Response, err
 /*
 GetPciSwitchByMoid Read a 'pci.Switch' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetPciSwitchByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetPciSwitchByMoidRequest
 */
 func (a *PciApiService) GetPciSwitchByMoid(ctx context.Context, moid string) ApiGetPciSwitchByMoidRequest {
 	return ApiGetPciSwitchByMoidRequest{
@@ -1657,7 +1765,8 @@ func (a *PciApiService) GetPciSwitchByMoid(ctx context.Context, moid string) Api
 }
 
 // Execute executes the request
-//  @return PciSwitch
+//
+//	@return PciSwitch
 func (a *PciApiService) GetPciSwitchByMoidExecute(r ApiGetPciSwitchByMoidRequest) (*PciSwitch, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1672,7 +1781,7 @@ func (a *PciApiService) GetPciSwitchByMoidExecute(r ApiGetPciSwitchByMoidRequest
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Switches/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1705,9 +1814,9 @@ func (a *PciApiService) GetPciSwitchByMoidExecute(r ApiGetPciSwitchByMoidRequest
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1724,6 +1833,7 @@ func (a *PciApiService) GetPciSwitchByMoidExecute(r ApiGetPciSwitchByMoidRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1734,6 +1844,7 @@ func (a *PciApiService) GetPciSwitchByMoidExecute(r ApiGetPciSwitchByMoidRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1744,6 +1855,7 @@ func (a *PciApiService) GetPciSwitchByMoidExecute(r ApiGetPciSwitchByMoidRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1754,6 +1866,7 @@ func (a *PciApiService) GetPciSwitchByMoidExecute(r ApiGetPciSwitchByMoidRequest
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1763,6 +1876,7 @@ func (a *PciApiService) GetPciSwitchByMoidExecute(r ApiGetPciSwitchByMoidRequest
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1831,7 +1945,7 @@ func (r ApiGetPciSwitchListRequest) Expand(expand string) ApiGetPciSwitchListReq
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetPciSwitchListRequest) Apply(apply string) ApiGetPciSwitchListRequest {
 	r.apply = &apply
 	return r
@@ -1868,8 +1982,8 @@ func (r ApiGetPciSwitchListRequest) Execute() (*PciSwitchResponse, *http.Respons
 /*
 GetPciSwitchList Read a 'pci.Switch' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetPciSwitchListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetPciSwitchListRequest
 */
 func (a *PciApiService) GetPciSwitchList(ctx context.Context) ApiGetPciSwitchListRequest {
 	return ApiGetPciSwitchListRequest{
@@ -1879,7 +1993,8 @@ func (a *PciApiService) GetPciSwitchList(ctx context.Context) ApiGetPciSwitchLis
 }
 
 // Execute executes the request
-//  @return PciSwitchResponse
+//
+//	@return PciSwitchResponse
 func (a *PciApiService) GetPciSwitchListExecute(r ApiGetPciSwitchListRequest) (*PciSwitchResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1900,37 +2015,52 @@ func (a *PciApiService) GetPciSwitchListExecute(r ApiGetPciSwitchListRequest) (*
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1959,9 +2089,9 @@ func (a *PciApiService) GetPciSwitchListExecute(r ApiGetPciSwitchListRequest) (*
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1978,6 +2108,7 @@ func (a *PciApiService) GetPciSwitchListExecute(r ApiGetPciSwitchListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1988,6 +2119,7 @@ func (a *PciApiService) GetPciSwitchListExecute(r ApiGetPciSwitchListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1998,6 +2130,7 @@ func (a *PciApiService) GetPciSwitchListExecute(r ApiGetPciSwitchListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2008,6 +2141,7 @@ func (a *PciApiService) GetPciSwitchListExecute(r ApiGetPciSwitchListRequest) (*
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2017,6 +2151,7 @@ func (a *PciApiService) GetPciSwitchListExecute(r ApiGetPciSwitchListRequest) (*
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2060,9 +2195,9 @@ func (r ApiPatchPciDeviceRequest) Execute() (*PciDevice, *http.Response, error) 
 /*
 PatchPciDevice Update a 'pci.Device' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchPciDeviceRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchPciDeviceRequest
 */
 func (a *PciApiService) PatchPciDevice(ctx context.Context, moid string) ApiPatchPciDeviceRequest {
 	return ApiPatchPciDeviceRequest{
@@ -2073,7 +2208,8 @@ func (a *PciApiService) PatchPciDevice(ctx context.Context, moid string) ApiPatc
 }
 
 // Execute executes the request
-//  @return PciDevice
+//
+//	@return PciDevice
 func (a *PciApiService) PatchPciDeviceExecute(r ApiPatchPciDeviceRequest) (*PciDevice, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -2088,7 +2224,7 @@ func (a *PciApiService) PatchPciDeviceExecute(r ApiPatchPciDeviceRequest) (*PciD
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Devices/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2115,7 +2251,7 @@ func (a *PciApiService) PatchPciDeviceExecute(r ApiPatchPciDeviceRequest) (*PciD
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.pciDevice
@@ -2129,9 +2265,9 @@ func (a *PciApiService) PatchPciDeviceExecute(r ApiPatchPciDeviceRequest) (*PciD
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2148,6 +2284,7 @@ func (a *PciApiService) PatchPciDeviceExecute(r ApiPatchPciDeviceRequest) (*PciD
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2158,6 +2295,7 @@ func (a *PciApiService) PatchPciDeviceExecute(r ApiPatchPciDeviceRequest) (*PciD
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2168,6 +2306,7 @@ func (a *PciApiService) PatchPciDeviceExecute(r ApiPatchPciDeviceRequest) (*PciD
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2178,6 +2317,7 @@ func (a *PciApiService) PatchPciDeviceExecute(r ApiPatchPciDeviceRequest) (*PciD
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2187,6 +2327,7 @@ func (a *PciApiService) PatchPciDeviceExecute(r ApiPatchPciDeviceRequest) (*PciD
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2230,9 +2371,9 @@ func (r ApiPatchPciLinkRequest) Execute() (*PciLink, *http.Response, error) {
 /*
 PatchPciLink Update a 'pci.Link' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchPciLinkRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchPciLinkRequest
 */
 func (a *PciApiService) PatchPciLink(ctx context.Context, moid string) ApiPatchPciLinkRequest {
 	return ApiPatchPciLinkRequest{
@@ -2243,7 +2384,8 @@ func (a *PciApiService) PatchPciLink(ctx context.Context, moid string) ApiPatchP
 }
 
 // Execute executes the request
-//  @return PciLink
+//
+//	@return PciLink
 func (a *PciApiService) PatchPciLinkExecute(r ApiPatchPciLinkRequest) (*PciLink, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -2258,7 +2400,7 @@ func (a *PciApiService) PatchPciLinkExecute(r ApiPatchPciLinkRequest) (*PciLink,
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Links/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2285,7 +2427,7 @@ func (a *PciApiService) PatchPciLinkExecute(r ApiPatchPciLinkRequest) (*PciLink,
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.pciLink
@@ -2299,9 +2441,9 @@ func (a *PciApiService) PatchPciLinkExecute(r ApiPatchPciLinkRequest) (*PciLink,
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2318,6 +2460,7 @@ func (a *PciApiService) PatchPciLinkExecute(r ApiPatchPciLinkRequest) (*PciLink,
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2328,6 +2471,7 @@ func (a *PciApiService) PatchPciLinkExecute(r ApiPatchPciLinkRequest) (*PciLink,
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2338,6 +2482,7 @@ func (a *PciApiService) PatchPciLinkExecute(r ApiPatchPciLinkRequest) (*PciLink,
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2348,6 +2493,7 @@ func (a *PciApiService) PatchPciLinkExecute(r ApiPatchPciLinkRequest) (*PciLink,
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2357,6 +2503,7 @@ func (a *PciApiService) PatchPciLinkExecute(r ApiPatchPciLinkRequest) (*PciLink,
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2400,9 +2547,9 @@ func (r ApiPatchPciNodeRequest) Execute() (*PciNode, *http.Response, error) {
 /*
 PatchPciNode Update a 'pci.Node' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchPciNodeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchPciNodeRequest
 */
 func (a *PciApiService) PatchPciNode(ctx context.Context, moid string) ApiPatchPciNodeRequest {
 	return ApiPatchPciNodeRequest{
@@ -2413,7 +2560,8 @@ func (a *PciApiService) PatchPciNode(ctx context.Context, moid string) ApiPatchP
 }
 
 // Execute executes the request
-//  @return PciNode
+//
+//	@return PciNode
 func (a *PciApiService) PatchPciNodeExecute(r ApiPatchPciNodeRequest) (*PciNode, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -2428,7 +2576,7 @@ func (a *PciApiService) PatchPciNodeExecute(r ApiPatchPciNodeRequest) (*PciNode,
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Nodes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2455,7 +2603,7 @@ func (a *PciApiService) PatchPciNodeExecute(r ApiPatchPciNodeRequest) (*PciNode,
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.pciNode
@@ -2469,9 +2617,9 @@ func (a *PciApiService) PatchPciNodeExecute(r ApiPatchPciNodeRequest) (*PciNode,
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2488,6 +2636,7 @@ func (a *PciApiService) PatchPciNodeExecute(r ApiPatchPciNodeRequest) (*PciNode,
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2498,6 +2647,7 @@ func (a *PciApiService) PatchPciNodeExecute(r ApiPatchPciNodeRequest) (*PciNode,
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2508,6 +2658,7 @@ func (a *PciApiService) PatchPciNodeExecute(r ApiPatchPciNodeRequest) (*PciNode,
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2518,6 +2669,7 @@ func (a *PciApiService) PatchPciNodeExecute(r ApiPatchPciNodeRequest) (*PciNode,
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2527,6 +2679,7 @@ func (a *PciApiService) PatchPciNodeExecute(r ApiPatchPciNodeRequest) (*PciNode,
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2570,9 +2723,9 @@ func (r ApiPatchPciSwitchRequest) Execute() (*PciSwitch, *http.Response, error) 
 /*
 PatchPciSwitch Update a 'pci.Switch' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchPciSwitchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchPciSwitchRequest
 */
 func (a *PciApiService) PatchPciSwitch(ctx context.Context, moid string) ApiPatchPciSwitchRequest {
 	return ApiPatchPciSwitchRequest{
@@ -2583,7 +2736,8 @@ func (a *PciApiService) PatchPciSwitch(ctx context.Context, moid string) ApiPatc
 }
 
 // Execute executes the request
-//  @return PciSwitch
+//
+//	@return PciSwitch
 func (a *PciApiService) PatchPciSwitchExecute(r ApiPatchPciSwitchRequest) (*PciSwitch, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -2598,7 +2752,7 @@ func (a *PciApiService) PatchPciSwitchExecute(r ApiPatchPciSwitchRequest) (*PciS
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Switches/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2625,7 +2779,7 @@ func (a *PciApiService) PatchPciSwitchExecute(r ApiPatchPciSwitchRequest) (*PciS
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.pciSwitch
@@ -2639,9 +2793,9 @@ func (a *PciApiService) PatchPciSwitchExecute(r ApiPatchPciSwitchRequest) (*PciS
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2658,6 +2812,7 @@ func (a *PciApiService) PatchPciSwitchExecute(r ApiPatchPciSwitchRequest) (*PciS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2668,6 +2823,7 @@ func (a *PciApiService) PatchPciSwitchExecute(r ApiPatchPciSwitchRequest) (*PciS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2678,6 +2834,7 @@ func (a *PciApiService) PatchPciSwitchExecute(r ApiPatchPciSwitchRequest) (*PciS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2688,6 +2845,7 @@ func (a *PciApiService) PatchPciSwitchExecute(r ApiPatchPciSwitchRequest) (*PciS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2697,6 +2855,7 @@ func (a *PciApiService) PatchPciSwitchExecute(r ApiPatchPciSwitchRequest) (*PciS
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2740,9 +2899,9 @@ func (r ApiUpdatePciDeviceRequest) Execute() (*PciDevice, *http.Response, error)
 /*
 UpdatePciDevice Update a 'pci.Device' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdatePciDeviceRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdatePciDeviceRequest
 */
 func (a *PciApiService) UpdatePciDevice(ctx context.Context, moid string) ApiUpdatePciDeviceRequest {
 	return ApiUpdatePciDeviceRequest{
@@ -2753,7 +2912,8 @@ func (a *PciApiService) UpdatePciDevice(ctx context.Context, moid string) ApiUpd
 }
 
 // Execute executes the request
-//  @return PciDevice
+//
+//	@return PciDevice
 func (a *PciApiService) UpdatePciDeviceExecute(r ApiUpdatePciDeviceRequest) (*PciDevice, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2768,7 +2928,7 @@ func (a *PciApiService) UpdatePciDeviceExecute(r ApiUpdatePciDeviceRequest) (*Pc
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Devices/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2795,7 +2955,7 @@ func (a *PciApiService) UpdatePciDeviceExecute(r ApiUpdatePciDeviceRequest) (*Pc
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.pciDevice
@@ -2809,9 +2969,9 @@ func (a *PciApiService) UpdatePciDeviceExecute(r ApiUpdatePciDeviceRequest) (*Pc
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2828,6 +2988,7 @@ func (a *PciApiService) UpdatePciDeviceExecute(r ApiUpdatePciDeviceRequest) (*Pc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2838,6 +2999,7 @@ func (a *PciApiService) UpdatePciDeviceExecute(r ApiUpdatePciDeviceRequest) (*Pc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2848,6 +3010,7 @@ func (a *PciApiService) UpdatePciDeviceExecute(r ApiUpdatePciDeviceRequest) (*Pc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2858,6 +3021,7 @@ func (a *PciApiService) UpdatePciDeviceExecute(r ApiUpdatePciDeviceRequest) (*Pc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2867,6 +3031,7 @@ func (a *PciApiService) UpdatePciDeviceExecute(r ApiUpdatePciDeviceRequest) (*Pc
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2910,9 +3075,9 @@ func (r ApiUpdatePciLinkRequest) Execute() (*PciLink, *http.Response, error) {
 /*
 UpdatePciLink Update a 'pci.Link' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdatePciLinkRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdatePciLinkRequest
 */
 func (a *PciApiService) UpdatePciLink(ctx context.Context, moid string) ApiUpdatePciLinkRequest {
 	return ApiUpdatePciLinkRequest{
@@ -2923,7 +3088,8 @@ func (a *PciApiService) UpdatePciLink(ctx context.Context, moid string) ApiUpdat
 }
 
 // Execute executes the request
-//  @return PciLink
+//
+//	@return PciLink
 func (a *PciApiService) UpdatePciLinkExecute(r ApiUpdatePciLinkRequest) (*PciLink, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2938,7 +3104,7 @@ func (a *PciApiService) UpdatePciLinkExecute(r ApiUpdatePciLinkRequest) (*PciLin
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Links/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2965,7 +3131,7 @@ func (a *PciApiService) UpdatePciLinkExecute(r ApiUpdatePciLinkRequest) (*PciLin
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.pciLink
@@ -2979,9 +3145,9 @@ func (a *PciApiService) UpdatePciLinkExecute(r ApiUpdatePciLinkRequest) (*PciLin
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2998,6 +3164,7 @@ func (a *PciApiService) UpdatePciLinkExecute(r ApiUpdatePciLinkRequest) (*PciLin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3008,6 +3175,7 @@ func (a *PciApiService) UpdatePciLinkExecute(r ApiUpdatePciLinkRequest) (*PciLin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3018,6 +3186,7 @@ func (a *PciApiService) UpdatePciLinkExecute(r ApiUpdatePciLinkRequest) (*PciLin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3028,6 +3197,7 @@ func (a *PciApiService) UpdatePciLinkExecute(r ApiUpdatePciLinkRequest) (*PciLin
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3037,6 +3207,7 @@ func (a *PciApiService) UpdatePciLinkExecute(r ApiUpdatePciLinkRequest) (*PciLin
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3080,9 +3251,9 @@ func (r ApiUpdatePciNodeRequest) Execute() (*PciNode, *http.Response, error) {
 /*
 UpdatePciNode Update a 'pci.Node' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdatePciNodeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdatePciNodeRequest
 */
 func (a *PciApiService) UpdatePciNode(ctx context.Context, moid string) ApiUpdatePciNodeRequest {
 	return ApiUpdatePciNodeRequest{
@@ -3093,7 +3264,8 @@ func (a *PciApiService) UpdatePciNode(ctx context.Context, moid string) ApiUpdat
 }
 
 // Execute executes the request
-//  @return PciNode
+//
+//	@return PciNode
 func (a *PciApiService) UpdatePciNodeExecute(r ApiUpdatePciNodeRequest) (*PciNode, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3108,7 +3280,7 @@ func (a *PciApiService) UpdatePciNodeExecute(r ApiUpdatePciNodeRequest) (*PciNod
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Nodes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3135,7 +3307,7 @@ func (a *PciApiService) UpdatePciNodeExecute(r ApiUpdatePciNodeRequest) (*PciNod
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.pciNode
@@ -3149,9 +3321,9 @@ func (a *PciApiService) UpdatePciNodeExecute(r ApiUpdatePciNodeRequest) (*PciNod
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3168,6 +3340,7 @@ func (a *PciApiService) UpdatePciNodeExecute(r ApiUpdatePciNodeRequest) (*PciNod
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3178,6 +3351,7 @@ func (a *PciApiService) UpdatePciNodeExecute(r ApiUpdatePciNodeRequest) (*PciNod
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3188,6 +3362,7 @@ func (a *PciApiService) UpdatePciNodeExecute(r ApiUpdatePciNodeRequest) (*PciNod
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3198,6 +3373,7 @@ func (a *PciApiService) UpdatePciNodeExecute(r ApiUpdatePciNodeRequest) (*PciNod
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3207,6 +3383,7 @@ func (a *PciApiService) UpdatePciNodeExecute(r ApiUpdatePciNodeRequest) (*PciNod
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3250,9 +3427,9 @@ func (r ApiUpdatePciSwitchRequest) Execute() (*PciSwitch, *http.Response, error)
 /*
 UpdatePciSwitch Update a 'pci.Switch' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdatePciSwitchRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdatePciSwitchRequest
 */
 func (a *PciApiService) UpdatePciSwitch(ctx context.Context, moid string) ApiUpdatePciSwitchRequest {
 	return ApiUpdatePciSwitchRequest{
@@ -3263,7 +3440,8 @@ func (a *PciApiService) UpdatePciSwitch(ctx context.Context, moid string) ApiUpd
 }
 
 // Execute executes the request
-//  @return PciSwitch
+//
+//	@return PciSwitch
 func (a *PciApiService) UpdatePciSwitchExecute(r ApiUpdatePciSwitchRequest) (*PciSwitch, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3278,7 +3456,7 @@ func (a *PciApiService) UpdatePciSwitchExecute(r ApiUpdatePciSwitchRequest) (*Pc
 	}
 
 	localVarPath := localBasePath + "/api/v1/pci/Switches/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3305,7 +3483,7 @@ func (a *PciApiService) UpdatePciSwitchExecute(r ApiUpdatePciSwitchRequest) (*Pc
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.pciSwitch
@@ -3319,9 +3497,9 @@ func (a *PciApiService) UpdatePciSwitchExecute(r ApiUpdatePciSwitchRequest) (*Pc
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3338,6 +3516,7 @@ func (a *PciApiService) UpdatePciSwitchExecute(r ApiUpdatePciSwitchRequest) (*Pc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3348,6 +3527,7 @@ func (a *PciApiService) UpdatePciSwitchExecute(r ApiUpdatePciSwitchRequest) (*Pc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3358,6 +3538,7 @@ func (a *PciApiService) UpdatePciSwitchExecute(r ApiUpdatePciSwitchRequest) (*Pc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3368,6 +3549,7 @@ func (a *PciApiService) UpdatePciSwitchExecute(r ApiUpdatePciSwitchRequest) (*Pc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3377,6 +3559,7 @@ func (a *PciApiService) UpdatePciSwitchExecute(r ApiUpdatePciSwitchRequest) (*Pc
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

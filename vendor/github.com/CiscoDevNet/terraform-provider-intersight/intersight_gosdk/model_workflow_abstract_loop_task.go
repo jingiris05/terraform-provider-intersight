@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the WorkflowAbstractLoopTask type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &WorkflowAbstractLoopTask{}
 
 // WorkflowAbstractLoopTask An abstract loop task which is used to model different types of loops like serial and parallel.
 type WorkflowAbstractLoopTask struct {
@@ -28,6 +32,8 @@ type WorkflowAbstractLoopTask struct {
 	Count *string `json:"Count,omitempty"`
 	// Start task where the list of tasks will be executed multiple times based on the count or condition value.
 	LoopStartTask *string `json:"LoopStartTask,omitempty"`
+	// This specifies the name of the next task to run if all iterations of the loop task do not succeed. The unique name given to the task instance within the workflow must be provided here. In a graph model, denotes an edge to another Task Node.
+	OnFailure *string `json:"OnFailure,omitempty"`
 	// This specifies the name of the next task to run if all iterations of the loop task succeeds. The unique name given to the task instance within the workflow must be provided here. In a graph model, denotes an edge to another Task Node.
 	OnSuccess            *string `json:"OnSuccess,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -104,7 +110,7 @@ func (o *WorkflowAbstractLoopTask) SetObjectType(v string) {
 
 // GetCount returns the Count field value if set, zero value otherwise.
 func (o *WorkflowAbstractLoopTask) GetCount() string {
-	if o == nil || o.Count == nil {
+	if o == nil || IsNil(o.Count) {
 		var ret string
 		return ret
 	}
@@ -114,7 +120,7 @@ func (o *WorkflowAbstractLoopTask) GetCount() string {
 // GetCountOk returns a tuple with the Count field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowAbstractLoopTask) GetCountOk() (*string, bool) {
-	if o == nil || o.Count == nil {
+	if o == nil || IsNil(o.Count) {
 		return nil, false
 	}
 	return o.Count, true
@@ -122,7 +128,7 @@ func (o *WorkflowAbstractLoopTask) GetCountOk() (*string, bool) {
 
 // HasCount returns a boolean if a field has been set.
 func (o *WorkflowAbstractLoopTask) HasCount() bool {
-	if o != nil && o.Count != nil {
+	if o != nil && !IsNil(o.Count) {
 		return true
 	}
 
@@ -136,7 +142,7 @@ func (o *WorkflowAbstractLoopTask) SetCount(v string) {
 
 // GetLoopStartTask returns the LoopStartTask field value if set, zero value otherwise.
 func (o *WorkflowAbstractLoopTask) GetLoopStartTask() string {
-	if o == nil || o.LoopStartTask == nil {
+	if o == nil || IsNil(o.LoopStartTask) {
 		var ret string
 		return ret
 	}
@@ -146,7 +152,7 @@ func (o *WorkflowAbstractLoopTask) GetLoopStartTask() string {
 // GetLoopStartTaskOk returns a tuple with the LoopStartTask field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowAbstractLoopTask) GetLoopStartTaskOk() (*string, bool) {
-	if o == nil || o.LoopStartTask == nil {
+	if o == nil || IsNil(o.LoopStartTask) {
 		return nil, false
 	}
 	return o.LoopStartTask, true
@@ -154,7 +160,7 @@ func (o *WorkflowAbstractLoopTask) GetLoopStartTaskOk() (*string, bool) {
 
 // HasLoopStartTask returns a boolean if a field has been set.
 func (o *WorkflowAbstractLoopTask) HasLoopStartTask() bool {
-	if o != nil && o.LoopStartTask != nil {
+	if o != nil && !IsNil(o.LoopStartTask) {
 		return true
 	}
 
@@ -166,9 +172,41 @@ func (o *WorkflowAbstractLoopTask) SetLoopStartTask(v string) {
 	o.LoopStartTask = &v
 }
 
+// GetOnFailure returns the OnFailure field value if set, zero value otherwise.
+func (o *WorkflowAbstractLoopTask) GetOnFailure() string {
+	if o == nil || IsNil(o.OnFailure) {
+		var ret string
+		return ret
+	}
+	return *o.OnFailure
+}
+
+// GetOnFailureOk returns a tuple with the OnFailure field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WorkflowAbstractLoopTask) GetOnFailureOk() (*string, bool) {
+	if o == nil || IsNil(o.OnFailure) {
+		return nil, false
+	}
+	return o.OnFailure, true
+}
+
+// HasOnFailure returns a boolean if a field has been set.
+func (o *WorkflowAbstractLoopTask) HasOnFailure() bool {
+	if o != nil && !IsNil(o.OnFailure) {
+		return true
+	}
+
+	return false
+}
+
+// SetOnFailure gets a reference to the given string and assigns it to the OnFailure field.
+func (o *WorkflowAbstractLoopTask) SetOnFailure(v string) {
+	o.OnFailure = &v
+}
+
 // GetOnSuccess returns the OnSuccess field value if set, zero value otherwise.
 func (o *WorkflowAbstractLoopTask) GetOnSuccess() string {
-	if o == nil || o.OnSuccess == nil {
+	if o == nil || IsNil(o.OnSuccess) {
 		var ret string
 		return ret
 	}
@@ -178,7 +216,7 @@ func (o *WorkflowAbstractLoopTask) GetOnSuccess() string {
 // GetOnSuccessOk returns a tuple with the OnSuccess field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowAbstractLoopTask) GetOnSuccessOk() (*string, bool) {
-	if o == nil || o.OnSuccess == nil {
+	if o == nil || IsNil(o.OnSuccess) {
 		return nil, false
 	}
 	return o.OnSuccess, true
@@ -186,7 +224,7 @@ func (o *WorkflowAbstractLoopTask) GetOnSuccessOk() (*string, bool) {
 
 // HasOnSuccess returns a boolean if a field has been set.
 func (o *WorkflowAbstractLoopTask) HasOnSuccess() bool {
-	if o != nil && o.OnSuccess != nil {
+	if o != nil && !IsNil(o.OnSuccess) {
 		return true
 	}
 
@@ -199,28 +237,35 @@ func (o *WorkflowAbstractLoopTask) SetOnSuccess(v string) {
 }
 
 func (o WorkflowAbstractLoopTask) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o WorkflowAbstractLoopTask) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedWorkflowControlTask, errWorkflowControlTask := json.Marshal(o.WorkflowControlTask)
 	if errWorkflowControlTask != nil {
-		return []byte{}, errWorkflowControlTask
+		return map[string]interface{}{}, errWorkflowControlTask
 	}
 	errWorkflowControlTask = json.Unmarshal([]byte(serializedWorkflowControlTask), &toSerialize)
 	if errWorkflowControlTask != nil {
-		return []byte{}, errWorkflowControlTask
+		return map[string]interface{}{}, errWorkflowControlTask
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
-	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
-	}
-	if o.Count != nil {
+	toSerialize["ClassId"] = o.ClassId
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Count) {
 		toSerialize["Count"] = o.Count
 	}
-	if o.LoopStartTask != nil {
+	if !IsNil(o.LoopStartTask) {
 		toSerialize["LoopStartTask"] = o.LoopStartTask
 	}
-	if o.OnSuccess != nil {
+	if !IsNil(o.OnFailure) {
+		toSerialize["OnFailure"] = o.OnFailure
+	}
+	if !IsNil(o.OnSuccess) {
 		toSerialize["OnSuccess"] = o.OnSuccess
 	}
 
@@ -228,10 +273,48 @@ func (o WorkflowAbstractLoopTask) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *WorkflowAbstractLoopTask) UnmarshalJSON(bytes []byte) (err error) {
+func (o *WorkflowAbstractLoopTask) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type WorkflowAbstractLoopTaskWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. The enum values provides the list of concrete types that can be instantiated from this abstract type.
 		ClassId string `json:"ClassId"`
@@ -241,19 +324,22 @@ func (o *WorkflowAbstractLoopTask) UnmarshalJSON(bytes []byte) (err error) {
 		Count *string `json:"Count,omitempty"`
 		// Start task where the list of tasks will be executed multiple times based on the count or condition value.
 		LoopStartTask *string `json:"LoopStartTask,omitempty"`
+		// This specifies the name of the next task to run if all iterations of the loop task do not succeed. The unique name given to the task instance within the workflow must be provided here. In a graph model, denotes an edge to another Task Node.
+		OnFailure *string `json:"OnFailure,omitempty"`
 		// This specifies the name of the next task to run if all iterations of the loop task succeeds. The unique name given to the task instance within the workflow must be provided here. In a graph model, denotes an edge to another Task Node.
 		OnSuccess *string `json:"OnSuccess,omitempty"`
 	}
 
 	varWorkflowAbstractLoopTaskWithoutEmbeddedStruct := WorkflowAbstractLoopTaskWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varWorkflowAbstractLoopTaskWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varWorkflowAbstractLoopTaskWithoutEmbeddedStruct)
 	if err == nil {
 		varWorkflowAbstractLoopTask := _WorkflowAbstractLoopTask{}
 		varWorkflowAbstractLoopTask.ClassId = varWorkflowAbstractLoopTaskWithoutEmbeddedStruct.ClassId
 		varWorkflowAbstractLoopTask.ObjectType = varWorkflowAbstractLoopTaskWithoutEmbeddedStruct.ObjectType
 		varWorkflowAbstractLoopTask.Count = varWorkflowAbstractLoopTaskWithoutEmbeddedStruct.Count
 		varWorkflowAbstractLoopTask.LoopStartTask = varWorkflowAbstractLoopTaskWithoutEmbeddedStruct.LoopStartTask
+		varWorkflowAbstractLoopTask.OnFailure = varWorkflowAbstractLoopTaskWithoutEmbeddedStruct.OnFailure
 		varWorkflowAbstractLoopTask.OnSuccess = varWorkflowAbstractLoopTaskWithoutEmbeddedStruct.OnSuccess
 		*o = WorkflowAbstractLoopTask(varWorkflowAbstractLoopTask)
 	} else {
@@ -262,7 +348,7 @@ func (o *WorkflowAbstractLoopTask) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowAbstractLoopTask := _WorkflowAbstractLoopTask{}
 
-	err = json.Unmarshal(bytes, &varWorkflowAbstractLoopTask)
+	err = json.Unmarshal(data, &varWorkflowAbstractLoopTask)
 	if err == nil {
 		o.WorkflowControlTask = varWorkflowAbstractLoopTask.WorkflowControlTask
 	} else {
@@ -271,11 +357,12 @@ func (o *WorkflowAbstractLoopTask) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Count")
 		delete(additionalProperties, "LoopStartTask")
+		delete(additionalProperties, "OnFailure")
 		delete(additionalProperties, "OnSuccess")
 
 		// remove fields from embedded structs

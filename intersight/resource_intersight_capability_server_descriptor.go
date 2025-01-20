@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceCapabilityServerDescriptor() *schema.Resource {
 		UpdateContext: resourceCapabilityServerDescriptorUpdate,
 		DeleteContext: resourceCapabilityServerDescriptorDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -152,6 +154,11 @@ func resourceCapabilityServerDescriptor() *schema.Resource {
 			"is_ncsi_enabled": {
 				Description: "Indicates whether the CIMC to VIC side-band interface is enabled on the server.",
 				Type:        schema.TypeBool,
+				Optional:    true,
+			},
+			"mlom_adapter_pcie_slot_number": {
+				Description: "Indicates PCIe Slot numerical value for each Server model MLOM slot.",
+				Type:        schema.TypeInt,
 				Optional:    true,
 			},
 			"mod_time": {
@@ -387,6 +394,17 @@ func resourceCapabilityServerDescriptor() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -542,6 +560,11 @@ func resourceCapabilityServerDescriptorCreate(c context.Context, d *schema.Resou
 		o.SetIsNcsiEnabled(x)
 	}
 
+	if v, ok := d.GetOkExists("mlom_adapter_pcie_slot_number"); ok {
+		x := int64(v.(int))
+		o.SetMlomAdapterPcieSlotNumber(x)
+	}
+
 	if v, ok := d.GetOk("model"); ok {
 		x := (v.(string))
 		o.SetModel(x)
@@ -609,14 +632,25 @@ func resourceCapabilityServerDescriptorCreate(c context.Context, d *schema.Resou
 		}
 		return diag.Errorf("error occurred while creating CapabilityServerDescriptor: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceCapabilityServerDescriptorRead(c, d, meta)...)
 }
 
 func resourceCapabilityServerDescriptorRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.CapabilityApi.GetCapabilityServerDescriptorByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -668,6 +702,10 @@ func resourceCapabilityServerDescriptorRead(c context.Context, d *schema.Resourc
 
 	if err := d.Set("is_ncsi_enabled", (s.GetIsNcsiEnabled())); err != nil {
 		return diag.Errorf("error occurred while setting property IsNcsiEnabled in CapabilityServerDescriptor object: %s", err.Error())
+	}
+
+	if err := d.Set("mlom_adapter_pcie_slot_number", (s.GetMlomAdapterPcieSlotNumber())); err != nil {
+		return diag.Errorf("error occurred while setting property MlomAdapterPcieSlotNumber in CapabilityServerDescriptor object: %s", err.Error())
 	}
 
 	if err := d.Set("mod_time", (s.GetModTime()).String()); err != nil {
@@ -796,6 +834,12 @@ func resourceCapabilityServerDescriptorUpdate(c context.Context, d *schema.Resou
 		v := d.Get("is_ncsi_enabled")
 		x := (v.(bool))
 		o.SetIsNcsiEnabled(x)
+	}
+
+	if d.HasChange("mlom_adapter_pcie_slot_number") {
+		v := d.Get("mlom_adapter_pcie_slot_number")
+		x := int64(v.(int))
+		o.SetMlomAdapterPcieSlotNumber(x)
 	}
 
 	if d.HasChange("model") {

@@ -12,9 +12,10 @@ Name | Type | Description | Notes
 **IdleTimeExpiration** | Pointer to **time.Time** | Idle time expiration for the session. | [optional] [readonly] 
 **LastLoginClient** | Pointer to **string** | The client address from which last login is initiated. | [optional] [readonly] 
 **LastLoginTime** | Pointer to **time.Time** | The last login time for user. | [optional] [readonly] 
+**Scope** | Pointer to [**NullableIamSwitchScopePermissions**](IamSwitchScopePermissions.md) |  | [optional] 
 **SessionId** | Pointer to **string** | Session token shared with the user agent which is used to identify the user session when API requests are received to perform authorization. | [optional] 
-**Permission** | Pointer to [**IamPermissionRelationship**](IamPermissionRelationship.md) |  | [optional] 
-**User** | Pointer to [**IamUserRelationship**](IamUserRelationship.md) |  | [optional] 
+**Permission** | Pointer to [**NullableIamPermissionRelationship**](IamPermissionRelationship.md) |  | [optional] 
+**User** | Pointer to [**NullableIamUserRelationship**](IamUserRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -235,6 +236,41 @@ SetLastLoginTime sets LastLoginTime field to given value.
 
 HasLastLoginTime returns a boolean if a field has been set.
 
+### GetScope
+
+`func (o *IamSession) GetScope() IamSwitchScopePermissions`
+
+GetScope returns the Scope field if non-nil, zero value otherwise.
+
+### GetScopeOk
+
+`func (o *IamSession) GetScopeOk() (*IamSwitchScopePermissions, bool)`
+
+GetScopeOk returns a tuple with the Scope field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetScope
+
+`func (o *IamSession) SetScope(v IamSwitchScopePermissions)`
+
+SetScope sets Scope field to given value.
+
+### HasScope
+
+`func (o *IamSession) HasScope() bool`
+
+HasScope returns a boolean if a field has been set.
+
+### SetScopeNil
+
+`func (o *IamSession) SetScopeNil(b bool)`
+
+ SetScopeNil sets the value for Scope to be an explicit nil
+
+### UnsetScope
+`func (o *IamSession) UnsetScope()`
+
+UnsetScope ensures that no value is present for Scope, not even an explicit nil
 ### GetSessionId
 
 `func (o *IamSession) GetSessionId() string`
@@ -285,6 +321,16 @@ SetPermission sets Permission field to given value.
 
 HasPermission returns a boolean if a field has been set.
 
+### SetPermissionNil
+
+`func (o *IamSession) SetPermissionNil(b bool)`
+
+ SetPermissionNil sets the value for Permission to be an explicit nil
+
+### UnsetPermission
+`func (o *IamSession) UnsetPermission()`
+
+UnsetPermission ensures that no value is present for Permission, not even an explicit nil
 ### GetUser
 
 `func (o *IamSession) GetUser() IamUserRelationship`
@@ -310,6 +356,16 @@ SetUser sets User field to given value.
 
 HasUser returns a boolean if a field has been set.
 
+### SetUserNil
+
+`func (o *IamSession) SetUserNil(b bool)`
+
+ SetUserNil sets the value for User to be an explicit nil
+
+### UnsetUser
+`func (o *IamSession) UnsetUser()`
+
+UnsetUser ensures that no value is present for User, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

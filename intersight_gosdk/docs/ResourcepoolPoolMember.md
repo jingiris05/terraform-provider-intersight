@@ -7,10 +7,11 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "resourcepool.PoolMember"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "resourcepool.PoolMember"]
 **Features** | Pointer to **[]string** |  | [optional] 
-**AssignedToEntity** | Pointer to [**[]MoBaseMoRelationship**](MoBaseMoRelationship.md) | An array of relationships to moBaseMo resources. | [optional] 
-**Peer** | Pointer to [**ResourcepoolLeaseRelationship**](ResourcepoolLeaseRelationship.md) |  | [optional] 
-**Pool** | Pointer to [**ResourcepoolPoolRelationship**](ResourcepoolPoolRelationship.md) |  | [optional] 
-**Resource** | Pointer to [**MoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
+**QualificationType** | Pointer to [**NullableResourcepoolQualificationType**](ResourcepoolQualificationType.md) |  | [optional] 
+**AssignedToEntity** | Pointer to [**[]MoBaseMoRelationship**](MoBaseMoRelationship.md) | An array of relationships to moBaseMo resources. | [optional] [readonly] 
+**Peer** | Pointer to [**NullableResourcepoolLeaseRelationship**](ResourcepoolLeaseRelationship.md) |  | [optional] 
+**Pool** | Pointer to [**NullableResourcepoolPoolRelationship**](ResourcepoolPoolRelationship.md) |  | [optional] 
+**Resource** | Pointer to [**NullableMoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -106,6 +107,41 @@ HasFeatures returns a boolean if a field has been set.
 `func (o *ResourcepoolPoolMember) UnsetFeatures()`
 
 UnsetFeatures ensures that no value is present for Features, not even an explicit nil
+### GetQualificationType
+
+`func (o *ResourcepoolPoolMember) GetQualificationType() ResourcepoolQualificationType`
+
+GetQualificationType returns the QualificationType field if non-nil, zero value otherwise.
+
+### GetQualificationTypeOk
+
+`func (o *ResourcepoolPoolMember) GetQualificationTypeOk() (*ResourcepoolQualificationType, bool)`
+
+GetQualificationTypeOk returns a tuple with the QualificationType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetQualificationType
+
+`func (o *ResourcepoolPoolMember) SetQualificationType(v ResourcepoolQualificationType)`
+
+SetQualificationType sets QualificationType field to given value.
+
+### HasQualificationType
+
+`func (o *ResourcepoolPoolMember) HasQualificationType() bool`
+
+HasQualificationType returns a boolean if a field has been set.
+
+### SetQualificationTypeNil
+
+`func (o *ResourcepoolPoolMember) SetQualificationTypeNil(b bool)`
+
+ SetQualificationTypeNil sets the value for QualificationType to be an explicit nil
+
+### UnsetQualificationType
+`func (o *ResourcepoolPoolMember) UnsetQualificationType()`
+
+UnsetQualificationType ensures that no value is present for QualificationType, not even an explicit nil
 ### GetAssignedToEntity
 
 `func (o *ResourcepoolPoolMember) GetAssignedToEntity() []MoBaseMoRelationship`
@@ -166,6 +202,16 @@ SetPeer sets Peer field to given value.
 
 HasPeer returns a boolean if a field has been set.
 
+### SetPeerNil
+
+`func (o *ResourcepoolPoolMember) SetPeerNil(b bool)`
+
+ SetPeerNil sets the value for Peer to be an explicit nil
+
+### UnsetPeer
+`func (o *ResourcepoolPoolMember) UnsetPeer()`
+
+UnsetPeer ensures that no value is present for Peer, not even an explicit nil
 ### GetPool
 
 `func (o *ResourcepoolPoolMember) GetPool() ResourcepoolPoolRelationship`
@@ -191,6 +237,16 @@ SetPool sets Pool field to given value.
 
 HasPool returns a boolean if a field has been set.
 
+### SetPoolNil
+
+`func (o *ResourcepoolPoolMember) SetPoolNil(b bool)`
+
+ SetPoolNil sets the value for Pool to be an explicit nil
+
+### UnsetPool
+`func (o *ResourcepoolPoolMember) UnsetPool()`
+
+UnsetPool ensures that no value is present for Pool, not even an explicit nil
 ### GetResource
 
 `func (o *ResourcepoolPoolMember) GetResource() MoBaseMoRelationship`
@@ -216,6 +272,16 @@ SetResource sets Resource field to given value.
 
 HasResource returns a boolean if a field has been set.
 
+### SetResourceNil
+
+`func (o *ResourcepoolPoolMember) SetResourceNil(b bool)`
+
+ SetResourceNil sets the value for Resource to be an explicit nil
+
+### UnsetResource
+`func (o *ResourcepoolPoolMember) UnsetResource()`
+
+UnsetResource ensures that no value is present for Resource, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

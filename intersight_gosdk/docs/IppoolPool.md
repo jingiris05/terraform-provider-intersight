@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "ippool.Pool"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "ippool.Pool"]
+**EnableBlockLevelSubnetConfig** | Pointer to **bool** | Enables subnet configuration at the block level. | [optional] 
 **IpV4Blocks** | Pointer to [**[]IppoolIpV4Block**](IppoolIpV4Block.md) |  | [optional] 
 **IpV4Config** | Pointer to [**NullableIppoolIpV4Config**](IppoolIpV4Config.md) |  | [optional] 
 **IpV6Blocks** | Pointer to [**[]IppoolIpV6Block**](IppoolIpV6Block.md) |  | [optional] 
@@ -14,7 +15,8 @@ Name | Type | Description | Notes
 **V4Size** | Pointer to **int64** | Number of IPv4 addresses in this pool. | [optional] [readonly] 
 **V6Assigned** | Pointer to **int64** | Number of IPv6 addresses currently in use. | [optional] [readonly] 
 **V6Size** | Pointer to **int64** | Number of IPv6 addresses in this pool. | [optional] [readonly] 
-**Organization** | Pointer to [**OrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**Organization** | Pointer to [**NullableOrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**Reservations** | Pointer to [**[]IppoolReservationRelationship**](IppoolReservationRelationship.md) | An array of relationships to ippoolReservation resources. | [optional] 
 **ShadowPools** | Pointer to [**[]IppoolShadowPoolRelationship**](IppoolShadowPoolRelationship.md) | An array of relationships to ippoolShadowPool resources. | [optional] [readonly] 
 
 ## Methods
@@ -75,6 +77,31 @@ and a boolean to check if the value has been set.
 
 SetObjectType sets ObjectType field to given value.
 
+
+### GetEnableBlockLevelSubnetConfig
+
+`func (o *IppoolPool) GetEnableBlockLevelSubnetConfig() bool`
+
+GetEnableBlockLevelSubnetConfig returns the EnableBlockLevelSubnetConfig field if non-nil, zero value otherwise.
+
+### GetEnableBlockLevelSubnetConfigOk
+
+`func (o *IppoolPool) GetEnableBlockLevelSubnetConfigOk() (*bool, bool)`
+
+GetEnableBlockLevelSubnetConfigOk returns a tuple with the EnableBlockLevelSubnetConfig field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEnableBlockLevelSubnetConfig
+
+`func (o *IppoolPool) SetEnableBlockLevelSubnetConfig(v bool)`
+
+SetEnableBlockLevelSubnetConfig sets EnableBlockLevelSubnetConfig field to given value.
+
+### HasEnableBlockLevelSubnetConfig
+
+`func (o *IppoolPool) HasEnableBlockLevelSubnetConfig() bool`
+
+HasEnableBlockLevelSubnetConfig returns a boolean if a field has been set.
 
 ### GetIpV4Blocks
 
@@ -341,6 +368,51 @@ SetOrganization sets Organization field to given value.
 
 HasOrganization returns a boolean if a field has been set.
 
+### SetOrganizationNil
+
+`func (o *IppoolPool) SetOrganizationNil(b bool)`
+
+ SetOrganizationNil sets the value for Organization to be an explicit nil
+
+### UnsetOrganization
+`func (o *IppoolPool) UnsetOrganization()`
+
+UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+### GetReservations
+
+`func (o *IppoolPool) GetReservations() []IppoolReservationRelationship`
+
+GetReservations returns the Reservations field if non-nil, zero value otherwise.
+
+### GetReservationsOk
+
+`func (o *IppoolPool) GetReservationsOk() (*[]IppoolReservationRelationship, bool)`
+
+GetReservationsOk returns a tuple with the Reservations field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReservations
+
+`func (o *IppoolPool) SetReservations(v []IppoolReservationRelationship)`
+
+SetReservations sets Reservations field to given value.
+
+### HasReservations
+
+`func (o *IppoolPool) HasReservations() bool`
+
+HasReservations returns a boolean if a field has been set.
+
+### SetReservationsNil
+
+`func (o *IppoolPool) SetReservationsNil(b bool)`
+
+ SetReservationsNil sets the value for Reservations to be an explicit nil
+
+### UnsetReservations
+`func (o *IppoolPool) UnsetReservations()`
+
+UnsetReservations ensures that no value is present for Reservations, not even an explicit nil
 ### GetShadowPools
 
 `func (o *IppoolPool) GetShadowPools() []IppoolShadowPoolRelationship`

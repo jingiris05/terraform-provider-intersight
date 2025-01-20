@@ -4,15 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Type** | **string** | The filter type. | 
-**ExtractionFn** | Pointer to **map[string]interface{}** | All filters except the \&quot;spatial\&quot; filter support extraction functions. An extraction function is defined by setting the \&quot;extractionFn\&quot; field on a filter. See Extraction function for more details on extraction functions. If specified, the extraction function will be used to transform input values before the filter is applied. The example below shows a selector filter combined with an extraction function. This filter will transform input values according to the values defined in the lookup map; transformed values will then be matched with the string \&quot;bar_1\&quot;. | [optional] 
+**Type** | **NullableString** | The filter type. | 
 **Dimensions** | [**[]TelemetryDruidDimensionSpec**](TelemetryDruidDimensionSpec.md) | A list of DimensionSpecs, making it possible to apply an extraction function if needed. | 
 
 ## Methods
 
 ### NewTelemetryDruidColumnComparisonFilter
 
-`func NewTelemetryDruidColumnComparisonFilter(type_ string, dimensions []TelemetryDruidDimensionSpec, ) *TelemetryDruidColumnComparisonFilter`
+`func NewTelemetryDruidColumnComparisonFilter(type_ NullableString, dimensions []TelemetryDruidDimensionSpec, ) *TelemetryDruidColumnComparisonFilter`
 
 NewTelemetryDruidColumnComparisonFilter instantiates a new TelemetryDruidColumnComparisonFilter object
 This constructor will assign default values to properties that have it defined,
@@ -47,31 +46,16 @@ and a boolean to check if the value has been set.
 SetType sets Type field to given value.
 
 
-### GetExtractionFn
+### SetTypeNil
 
-`func (o *TelemetryDruidColumnComparisonFilter) GetExtractionFn() map[string]interface{}`
+`func (o *TelemetryDruidColumnComparisonFilter) SetTypeNil(b bool)`
 
-GetExtractionFn returns the ExtractionFn field if non-nil, zero value otherwise.
+ SetTypeNil sets the value for Type to be an explicit nil
 
-### GetExtractionFnOk
+### UnsetType
+`func (o *TelemetryDruidColumnComparisonFilter) UnsetType()`
 
-`func (o *TelemetryDruidColumnComparisonFilter) GetExtractionFnOk() (*map[string]interface{}, bool)`
-
-GetExtractionFnOk returns a tuple with the ExtractionFn field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetExtractionFn
-
-`func (o *TelemetryDruidColumnComparisonFilter) SetExtractionFn(v map[string]interface{})`
-
-SetExtractionFn sets ExtractionFn field to given value.
-
-### HasExtractionFn
-
-`func (o *TelemetryDruidColumnComparisonFilter) HasExtractionFn() bool`
-
-HasExtractionFn returns a boolean if a field has been set.
-
+UnsetType ensures that no value is present for Type, not even an explicit nil
 ### GetDimensions
 
 `func (o *TelemetryDruidColumnComparisonFilter) GetDimensions() []TelemetryDruidDimensionSpec`

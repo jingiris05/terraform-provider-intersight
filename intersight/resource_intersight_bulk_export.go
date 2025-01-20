@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +24,7 @@ func resourceBulkExport() *schema.Resource {
 		UpdateContext: resourceBulkExportUpdate,
 		DeleteContext: resourceBulkExportDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -113,6 +116,19 @@ func resourceBulkExport() *schema.Resource {
 					}
 					return
 				}},
+			"exclude_peers": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				}},
+			"exclude_relations": {
+				Description: "Used to specify that none of the relationships should be exported.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 			"export_tags": {
 				Description: "Specifies whether tags must be exported and will be considered for all the items MOs.",
 				Type:        schema.TypeBool,
@@ -209,6 +225,11 @@ func resourceBulkExport() *schema.Resource {
 					}
 					return
 				}},
+			"include_org_identity": {
+				Description: "Indicates that exported references for objects which are organization owned should include the organization reference along with the other identity properties.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 			"items": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -367,6 +388,17 @@ func resourceBulkExport() *schema.Resource {
 					},
 				},
 			},
+			"permission_id": {
+				Description: "The permission identifier which indicates the permission that current user has that will allow to start this export operation.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"permission_resources": {
 				Description: "An array of relationships to moBaseMo resources.",
 				Type:        schema.TypeList,
@@ -466,6 +498,17 @@ func resourceBulkExport() *schema.Resource {
 					},
 				},
 			},
+			"user_id": {
+				Description: "The user identifier which indicates the user that started this export operation.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"version_context": {
 				Description: "The versioning info for this managed object.",
 				Type:        schema.TypeList,
@@ -524,6 +567,17 @@ func resourceBulkExport() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -632,6 +686,24 @@ func resourceBulkExportCreate(c context.Context, d *schema.ResourceData, meta in
 
 	o.SetClassId("bulk.Export")
 
+	if v, ok := d.GetOk("exclude_peers"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetExcludePeers(x)
+		}
+	}
+
+	if v, ok := d.GetOkExists("exclude_relations"); ok {
+		x := (v.(bool))
+		o.SetExcludeRelations(x)
+	}
+
 	if v, ok := d.GetOkExists("export_tags"); ok {
 		x := (v.(bool))
 		o.SetExportTags(x)
@@ -677,6 +749,11 @@ func resourceBulkExportCreate(c context.Context, d *schema.ResourceData, meta in
 		if len(x) > 0 {
 			o.SetExportedObjects(x)
 		}
+	}
+
+	if v, ok := d.GetOkExists("include_org_identity"); ok {
+		x := (v.(bool))
+		o.SetIncludeOrgIdentity(x)
 	}
 
 	if v, ok := d.GetOk("items"); ok {
@@ -821,14 +898,25 @@ func resourceBulkExportCreate(c context.Context, d *schema.ResourceData, meta in
 		}
 		return diag.Errorf("error occurred while creating BulkExport: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceBulkExportRead(c, d, meta)...)
 }
 
 func resourceBulkExportRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.BulkApi.GetBulkExportByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -874,6 +962,14 @@ func resourceBulkExportRead(c context.Context, d *schema.ResourceData, meta inte
 		return diag.Errorf("error occurred while setting property DomainGroupMoid in BulkExport object: %s", err.Error())
 	}
 
+	if err := d.Set("exclude_peers", (s.GetExcludePeers())); err != nil {
+		return diag.Errorf("error occurred while setting property ExcludePeers in BulkExport object: %s", err.Error())
+	}
+
+	if err := d.Set("exclude_relations", (s.GetExcludeRelations())); err != nil {
+		return diag.Errorf("error occurred while setting property ExcludeRelations in BulkExport object: %s", err.Error())
+	}
+
 	if err := d.Set("export_tags", (s.GetExportTags())); err != nil {
 		return diag.Errorf("error occurred while setting property ExportTags in BulkExport object: %s", err.Error())
 	}
@@ -888,6 +984,10 @@ func resourceBulkExportRead(c context.Context, d *schema.ResourceData, meta inte
 
 	if err := d.Set("import_order", flattenAdditionalProperties(s.GetImportOrder())); err != nil {
 		return diag.Errorf("error occurred while setting property ImportOrder in BulkExport object: %s", err.Error())
+	}
+
+	if err := d.Set("include_org_identity", (s.GetIncludeOrgIdentity())); err != nil {
+		return diag.Errorf("error occurred while setting property IncludeOrgIdentity in BulkExport object: %s", err.Error())
 	}
 
 	if err := d.Set("items", flattenListMoMoRef(s.GetItems(), d)); err != nil {
@@ -922,6 +1022,10 @@ func resourceBulkExportRead(c context.Context, d *schema.ResourceData, meta inte
 		return diag.Errorf("error occurred while setting property Parent in BulkExport object: %s", err.Error())
 	}
 
+	if err := d.Set("permission_id", (s.GetPermissionId())); err != nil {
+		return diag.Errorf("error occurred while setting property PermissionId in BulkExport object: %s", err.Error())
+	}
+
 	if err := d.Set("permission_resources", flattenListMoBaseMoRelationship(s.GetPermissionResources(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property PermissionResources in BulkExport object: %s", err.Error())
 	}
@@ -940,6 +1044,10 @@ func resourceBulkExportRead(c context.Context, d *schema.ResourceData, meta inte
 
 	if err := d.Set("tags", flattenListMoTag(s.GetTags(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Tags in BulkExport object: %s", err.Error())
+	}
+
+	if err := d.Set("user_id", (s.GetUserId())); err != nil {
+		return diag.Errorf("error occurred while setting property UserId in BulkExport object: %s", err.Error())
 	}
 
 	if err := d.Set("version_context", flattenMapMoVersionContext(s.GetVersionContext(), d)); err != nil {
@@ -974,6 +1082,24 @@ func resourceBulkExportUpdate(c context.Context, d *schema.ResourceData, meta in
 	}
 
 	o.SetClassId("bulk.Export")
+
+	if d.HasChange("exclude_peers") {
+		v := d.Get("exclude_peers")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetExcludePeers(x)
+	}
+
+	if d.HasChange("exclude_relations") {
+		v := d.Get("exclude_relations")
+		x := (v.(bool))
+		o.SetExcludeRelations(x)
+	}
 
 	if d.HasChange("export_tags") {
 		v := d.Get("export_tags")
@@ -1020,6 +1146,12 @@ func resourceBulkExportUpdate(c context.Context, d *schema.ResourceData, meta in
 			x = append(x, *o)
 		}
 		o.SetExportedObjects(x)
+	}
+
+	if d.HasChange("include_org_identity") {
+		v := d.Get("include_org_identity")
+		x := (v.(bool))
+		o.SetIncludeOrgIdentity(x)
 	}
 
 	if d.HasChange("items") {

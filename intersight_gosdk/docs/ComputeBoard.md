@@ -10,18 +10,20 @@ Name | Type | Description | Notes
 **CpuTypeController** | Pointer to **string** | The type of central processing unit on the mother board. | [optional] [readonly] 
 **OperPowerState** | Pointer to **string** | Current power state of the mother board of the server. | [optional] [readonly] 
 **OperReason** | Pointer to **[]string** |  | [optional] 
-**ComputeBlade** | Pointer to [**ComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
-**ComputeRackUnit** | Pointer to [**ComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
+**ComputeBlade** | Pointer to [**NullableComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
+**ComputeRackUnit** | Pointer to [**NullableComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
 **EquipmentTpms** | Pointer to [**[]EquipmentTpmRelationship**](EquipmentTpmRelationship.md) | An array of relationships to equipmentTpm resources. | [optional] [readonly] 
 **GraphicsCards** | Pointer to [**[]GraphicsCardRelationship**](GraphicsCardRelationship.md) | An array of relationships to graphicsCard resources. | [optional] [readonly] 
-**InventoryDeviceInfo** | Pointer to [**InventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
+**HybridDriveSlots** | Pointer to [**[]EquipmentHybridDriveSlotRelationship**](EquipmentHybridDriveSlotRelationship.md) | An array of relationships to equipmentHybridDriveSlot resources. | [optional] [readonly] 
+**InventoryDeviceInfo** | Pointer to [**NullableInventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
 **MemoryArrays** | Pointer to [**[]MemoryArrayRelationship**](MemoryArrayRelationship.md) | An array of relationships to memoryArray resources. | [optional] [readonly] 
 **PciCoprocessorCards** | Pointer to [**[]PciCoprocessorCardRelationship**](PciCoprocessorCardRelationship.md) | An array of relationships to pciCoprocessorCard resources. | [optional] [readonly] 
 **PciSwitch** | Pointer to [**[]PciSwitchRelationship**](PciSwitchRelationship.md) | An array of relationships to pciSwitch resources. | [optional] [readonly] 
-**PersistentMemoryConfiguration** | Pointer to [**MemoryPersistentMemoryConfigurationRelationship**](MemoryPersistentMemoryConfigurationRelationship.md) |  | [optional] 
+**PersistentMemoryConfiguration** | Pointer to [**NullableMemoryPersistentMemoryConfigurationRelationship**](MemoryPersistentMemoryConfigurationRelationship.md) |  | [optional] 
 **Processors** | Pointer to [**[]ProcessorUnitRelationship**](ProcessorUnitRelationship.md) | An array of relationships to processorUnit resources. | [optional] [readonly] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 **SecurityUnits** | Pointer to [**[]SecurityUnitRelationship**](SecurityUnitRelationship.md) | An array of relationships to securityUnit resources. | [optional] [readonly] 
+**StorageControllerDrives** | Pointer to [**[]StorageControllerDriveRelationship**](StorageControllerDriveRelationship.md) | An array of relationships to storageControllerDrive resources. | [optional] [readonly] 
 **StorageControllers** | Pointer to [**[]StorageControllerRelationship**](StorageControllerRelationship.md) | An array of relationships to storageController resources. | [optional] [readonly] 
 **StorageFlexFlashControllers** | Pointer to [**[]StorageFlexFlashControllerRelationship**](StorageFlexFlashControllerRelationship.md) | An array of relationships to storageFlexFlashController resources. | [optional] [readonly] 
 **StorageFlexUtilControllers** | Pointer to [**[]StorageFlexUtilControllerRelationship**](StorageFlexUtilControllerRelationship.md) | An array of relationships to storageFlexUtilController resources. | [optional] [readonly] 
@@ -220,6 +222,16 @@ SetComputeBlade sets ComputeBlade field to given value.
 
 HasComputeBlade returns a boolean if a field has been set.
 
+### SetComputeBladeNil
+
+`func (o *ComputeBoard) SetComputeBladeNil(b bool)`
+
+ SetComputeBladeNil sets the value for ComputeBlade to be an explicit nil
+
+### UnsetComputeBlade
+`func (o *ComputeBoard) UnsetComputeBlade()`
+
+UnsetComputeBlade ensures that no value is present for ComputeBlade, not even an explicit nil
 ### GetComputeRackUnit
 
 `func (o *ComputeBoard) GetComputeRackUnit() ComputeRackUnitRelationship`
@@ -245,6 +257,16 @@ SetComputeRackUnit sets ComputeRackUnit field to given value.
 
 HasComputeRackUnit returns a boolean if a field has been set.
 
+### SetComputeRackUnitNil
+
+`func (o *ComputeBoard) SetComputeRackUnitNil(b bool)`
+
+ SetComputeRackUnitNil sets the value for ComputeRackUnit to be an explicit nil
+
+### UnsetComputeRackUnit
+`func (o *ComputeBoard) UnsetComputeRackUnit()`
+
+UnsetComputeRackUnit ensures that no value is present for ComputeRackUnit, not even an explicit nil
 ### GetEquipmentTpms
 
 `func (o *ComputeBoard) GetEquipmentTpms() []EquipmentTpmRelationship`
@@ -315,6 +337,41 @@ HasGraphicsCards returns a boolean if a field has been set.
 `func (o *ComputeBoard) UnsetGraphicsCards()`
 
 UnsetGraphicsCards ensures that no value is present for GraphicsCards, not even an explicit nil
+### GetHybridDriveSlots
+
+`func (o *ComputeBoard) GetHybridDriveSlots() []EquipmentHybridDriveSlotRelationship`
+
+GetHybridDriveSlots returns the HybridDriveSlots field if non-nil, zero value otherwise.
+
+### GetHybridDriveSlotsOk
+
+`func (o *ComputeBoard) GetHybridDriveSlotsOk() (*[]EquipmentHybridDriveSlotRelationship, bool)`
+
+GetHybridDriveSlotsOk returns a tuple with the HybridDriveSlots field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHybridDriveSlots
+
+`func (o *ComputeBoard) SetHybridDriveSlots(v []EquipmentHybridDriveSlotRelationship)`
+
+SetHybridDriveSlots sets HybridDriveSlots field to given value.
+
+### HasHybridDriveSlots
+
+`func (o *ComputeBoard) HasHybridDriveSlots() bool`
+
+HasHybridDriveSlots returns a boolean if a field has been set.
+
+### SetHybridDriveSlotsNil
+
+`func (o *ComputeBoard) SetHybridDriveSlotsNil(b bool)`
+
+ SetHybridDriveSlotsNil sets the value for HybridDriveSlots to be an explicit nil
+
+### UnsetHybridDriveSlots
+`func (o *ComputeBoard) UnsetHybridDriveSlots()`
+
+UnsetHybridDriveSlots ensures that no value is present for HybridDriveSlots, not even an explicit nil
 ### GetInventoryDeviceInfo
 
 `func (o *ComputeBoard) GetInventoryDeviceInfo() InventoryDeviceInfoRelationship`
@@ -340,6 +397,16 @@ SetInventoryDeviceInfo sets InventoryDeviceInfo field to given value.
 
 HasInventoryDeviceInfo returns a boolean if a field has been set.
 
+### SetInventoryDeviceInfoNil
+
+`func (o *ComputeBoard) SetInventoryDeviceInfoNil(b bool)`
+
+ SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+
+### UnsetInventoryDeviceInfo
+`func (o *ComputeBoard) UnsetInventoryDeviceInfo()`
+
+UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
 ### GetMemoryArrays
 
 `func (o *ComputeBoard) GetMemoryArrays() []MemoryArrayRelationship`
@@ -470,6 +537,16 @@ SetPersistentMemoryConfiguration sets PersistentMemoryConfiguration field to giv
 
 HasPersistentMemoryConfiguration returns a boolean if a field has been set.
 
+### SetPersistentMemoryConfigurationNil
+
+`func (o *ComputeBoard) SetPersistentMemoryConfigurationNil(b bool)`
+
+ SetPersistentMemoryConfigurationNil sets the value for PersistentMemoryConfiguration to be an explicit nil
+
+### UnsetPersistentMemoryConfiguration
+`func (o *ComputeBoard) UnsetPersistentMemoryConfiguration()`
+
+UnsetPersistentMemoryConfiguration ensures that no value is present for PersistentMemoryConfiguration, not even an explicit nil
 ### GetProcessors
 
 `func (o *ComputeBoard) GetProcessors() []ProcessorUnitRelationship`
@@ -530,6 +607,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *ComputeBoard) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *ComputeBoard) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 ### GetSecurityUnits
 
 `func (o *ComputeBoard) GetSecurityUnits() []SecurityUnitRelationship`
@@ -565,6 +652,41 @@ HasSecurityUnits returns a boolean if a field has been set.
 `func (o *ComputeBoard) UnsetSecurityUnits()`
 
 UnsetSecurityUnits ensures that no value is present for SecurityUnits, not even an explicit nil
+### GetStorageControllerDrives
+
+`func (o *ComputeBoard) GetStorageControllerDrives() []StorageControllerDriveRelationship`
+
+GetStorageControllerDrives returns the StorageControllerDrives field if non-nil, zero value otherwise.
+
+### GetStorageControllerDrivesOk
+
+`func (o *ComputeBoard) GetStorageControllerDrivesOk() (*[]StorageControllerDriveRelationship, bool)`
+
+GetStorageControllerDrivesOk returns a tuple with the StorageControllerDrives field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetStorageControllerDrives
+
+`func (o *ComputeBoard) SetStorageControllerDrives(v []StorageControllerDriveRelationship)`
+
+SetStorageControllerDrives sets StorageControllerDrives field to given value.
+
+### HasStorageControllerDrives
+
+`func (o *ComputeBoard) HasStorageControllerDrives() bool`
+
+HasStorageControllerDrives returns a boolean if a field has been set.
+
+### SetStorageControllerDrivesNil
+
+`func (o *ComputeBoard) SetStorageControllerDrivesNil(b bool)`
+
+ SetStorageControllerDrivesNil sets the value for StorageControllerDrives to be an explicit nil
+
+### UnsetStorageControllerDrives
+`func (o *ComputeBoard) UnsetStorageControllerDrives()`
+
+UnsetStorageControllerDrives ensures that no value is present for StorageControllerDrives, not even an explicit nil
 ### GetStorageControllers
 
 `func (o *ComputeBoard) GetStorageControllers() []StorageControllerRelationship`

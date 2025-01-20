@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the AssetWorkloadOptimizerDynatraceOptions type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AssetWorkloadOptimizerDynatraceOptions{}
 
 // AssetWorkloadOptimizerDynatraceOptions Captures configuration specific to the Dynatrace target for the Workload Optimizer service.
 type AssetWorkloadOptimizerDynatraceOptions struct {
@@ -24,6 +28,10 @@ type AssetWorkloadOptimizerDynatraceOptions struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
+	// Collect tag information from Dynatrace.
+	CollectTagInfo *bool `json:"CollectTagInfo,omitempty"`
+	// Overwrite Hypervisor or Cloud Provider Virtual Machine metrics with data from the target.
+	CollectVmMetrics *bool `json:"CollectVmMetrics,omitempty"`
 	// Each environment monitored with Dynatrace is identified with a unique character string—the environment ID. The Dynatrace API relies heavily on environment IDs to ensure that it pulls monitoring data from and pushes relevant external events to the correct Dynatrace environments.
 	EnvironmentId        *string `json:"EnvironmentId,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -39,6 +47,8 @@ func NewAssetWorkloadOptimizerDynatraceOptions(classId string, objectType string
 	this := AssetWorkloadOptimizerDynatraceOptions{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var collectTagInfo bool = false
+	this.CollectTagInfo = &collectTagInfo
 	return &this
 }
 
@@ -51,6 +61,8 @@ func NewAssetWorkloadOptimizerDynatraceOptionsWithDefaults() *AssetWorkloadOptim
 	this.ClassId = classId
 	var objectType string = "asset.WorkloadOptimizerDynatraceOptions"
 	this.ObjectType = objectType
+	var collectTagInfo bool = false
+	this.CollectTagInfo = &collectTagInfo
 	return &this
 }
 
@@ -78,6 +90,11 @@ func (o *AssetWorkloadOptimizerDynatraceOptions) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "asset.WorkloadOptimizerDynatraceOptions" of the ClassId field.
+func (o *AssetWorkloadOptimizerDynatraceOptions) GetDefaultClassId() interface{} {
+	return "asset.WorkloadOptimizerDynatraceOptions"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *AssetWorkloadOptimizerDynatraceOptions) GetObjectType() string {
 	if o == nil {
@@ -102,9 +119,78 @@ func (o *AssetWorkloadOptimizerDynatraceOptions) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "asset.WorkloadOptimizerDynatraceOptions" of the ObjectType field.
+func (o *AssetWorkloadOptimizerDynatraceOptions) GetDefaultObjectType() interface{} {
+	return "asset.WorkloadOptimizerDynatraceOptions"
+}
+
+// GetCollectTagInfo returns the CollectTagInfo field value if set, zero value otherwise.
+func (o *AssetWorkloadOptimizerDynatraceOptions) GetCollectTagInfo() bool {
+	if o == nil || IsNil(o.CollectTagInfo) {
+		var ret bool
+		return ret
+	}
+	return *o.CollectTagInfo
+}
+
+// GetCollectTagInfoOk returns a tuple with the CollectTagInfo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AssetWorkloadOptimizerDynatraceOptions) GetCollectTagInfoOk() (*bool, bool) {
+	if o == nil || IsNil(o.CollectTagInfo) {
+		return nil, false
+	}
+	return o.CollectTagInfo, true
+}
+
+// HasCollectTagInfo returns a boolean if a field has been set.
+func (o *AssetWorkloadOptimizerDynatraceOptions) HasCollectTagInfo() bool {
+	if o != nil && !IsNil(o.CollectTagInfo) {
+		return true
+	}
+
+	return false
+}
+
+// SetCollectTagInfo gets a reference to the given bool and assigns it to the CollectTagInfo field.
+func (o *AssetWorkloadOptimizerDynatraceOptions) SetCollectTagInfo(v bool) {
+	o.CollectTagInfo = &v
+}
+
+// GetCollectVmMetrics returns the CollectVmMetrics field value if set, zero value otherwise.
+func (o *AssetWorkloadOptimizerDynatraceOptions) GetCollectVmMetrics() bool {
+	if o == nil || IsNil(o.CollectVmMetrics) {
+		var ret bool
+		return ret
+	}
+	return *o.CollectVmMetrics
+}
+
+// GetCollectVmMetricsOk returns a tuple with the CollectVmMetrics field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AssetWorkloadOptimizerDynatraceOptions) GetCollectVmMetricsOk() (*bool, bool) {
+	if o == nil || IsNil(o.CollectVmMetrics) {
+		return nil, false
+	}
+	return o.CollectVmMetrics, true
+}
+
+// HasCollectVmMetrics returns a boolean if a field has been set.
+func (o *AssetWorkloadOptimizerDynatraceOptions) HasCollectVmMetrics() bool {
+	if o != nil && !IsNil(o.CollectVmMetrics) {
+		return true
+	}
+
+	return false
+}
+
+// SetCollectVmMetrics gets a reference to the given bool and assigns it to the CollectVmMetrics field.
+func (o *AssetWorkloadOptimizerDynatraceOptions) SetCollectVmMetrics(v bool) {
+	o.CollectVmMetrics = &v
+}
+
 // GetEnvironmentId returns the EnvironmentId field value if set, zero value otherwise.
 func (o *AssetWorkloadOptimizerDynatraceOptions) GetEnvironmentId() string {
-	if o == nil || o.EnvironmentId == nil {
+	if o == nil || IsNil(o.EnvironmentId) {
 		var ret string
 		return ret
 	}
@@ -114,7 +200,7 @@ func (o *AssetWorkloadOptimizerDynatraceOptions) GetEnvironmentId() string {
 // GetEnvironmentIdOk returns a tuple with the EnvironmentId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetWorkloadOptimizerDynatraceOptions) GetEnvironmentIdOk() (*string, bool) {
-	if o == nil || o.EnvironmentId == nil {
+	if o == nil || IsNil(o.EnvironmentId) {
 		return nil, false
 	}
 	return o.EnvironmentId, true
@@ -122,7 +208,7 @@ func (o *AssetWorkloadOptimizerDynatraceOptions) GetEnvironmentIdOk() (*string, 
 
 // HasEnvironmentId returns a boolean if a field has been set.
 func (o *AssetWorkloadOptimizerDynatraceOptions) HasEnvironmentId() bool {
-	if o != nil && o.EnvironmentId != nil {
+	if o != nil && !IsNil(o.EnvironmentId) {
 		return true
 	}
 
@@ -135,22 +221,38 @@ func (o *AssetWorkloadOptimizerDynatraceOptions) SetEnvironmentId(v string) {
 }
 
 func (o AssetWorkloadOptimizerDynatraceOptions) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o AssetWorkloadOptimizerDynatraceOptions) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedAssetServiceOptions, errAssetServiceOptions := json.Marshal(o.AssetServiceOptions)
 	if errAssetServiceOptions != nil {
-		return []byte{}, errAssetServiceOptions
+		return map[string]interface{}{}, errAssetServiceOptions
 	}
 	errAssetServiceOptions = json.Unmarshal([]byte(serializedAssetServiceOptions), &toSerialize)
 	if errAssetServiceOptions != nil {
-		return []byte{}, errAssetServiceOptions
+		return map[string]interface{}{}, errAssetServiceOptions
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.EnvironmentId != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.CollectTagInfo) {
+		toSerialize["CollectTagInfo"] = o.CollectTagInfo
+	}
+	if !IsNil(o.CollectVmMetrics) {
+		toSerialize["CollectVmMetrics"] = o.CollectVmMetrics
+	}
+	if !IsNil(o.EnvironmentId) {
 		toSerialize["EnvironmentId"] = o.EnvironmentId
 	}
 
@@ -158,26 +260,73 @@ func (o AssetWorkloadOptimizerDynatraceOptions) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *AssetWorkloadOptimizerDynatraceOptions) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AssetWorkloadOptimizerDynatraceOptions) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type AssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
+		// Collect tag information from Dynatrace.
+		CollectTagInfo *bool `json:"CollectTagInfo,omitempty"`
+		// Overwrite Hypervisor or Cloud Provider Virtual Machine metrics with data from the target.
+		CollectVmMetrics *bool `json:"CollectVmMetrics,omitempty"`
 		// Each environment monitored with Dynatrace is identified with a unique character string—the environment ID. The Dynatrace API relies heavily on environment IDs to ensure that it pulls monitoring data from and pushes relevant external events to the correct Dynatrace environments.
 		EnvironmentId *string `json:"EnvironmentId,omitempty"`
 	}
 
 	varAssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct := AssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varAssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varAssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct)
 	if err == nil {
 		varAssetWorkloadOptimizerDynatraceOptions := _AssetWorkloadOptimizerDynatraceOptions{}
 		varAssetWorkloadOptimizerDynatraceOptions.ClassId = varAssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct.ClassId
 		varAssetWorkloadOptimizerDynatraceOptions.ObjectType = varAssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct.ObjectType
+		varAssetWorkloadOptimizerDynatraceOptions.CollectTagInfo = varAssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct.CollectTagInfo
+		varAssetWorkloadOptimizerDynatraceOptions.CollectVmMetrics = varAssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct.CollectVmMetrics
 		varAssetWorkloadOptimizerDynatraceOptions.EnvironmentId = varAssetWorkloadOptimizerDynatraceOptionsWithoutEmbeddedStruct.EnvironmentId
 		*o = AssetWorkloadOptimizerDynatraceOptions(varAssetWorkloadOptimizerDynatraceOptions)
 	} else {
@@ -186,7 +335,7 @@ func (o *AssetWorkloadOptimizerDynatraceOptions) UnmarshalJSON(bytes []byte) (er
 
 	varAssetWorkloadOptimizerDynatraceOptions := _AssetWorkloadOptimizerDynatraceOptions{}
 
-	err = json.Unmarshal(bytes, &varAssetWorkloadOptimizerDynatraceOptions)
+	err = json.Unmarshal(data, &varAssetWorkloadOptimizerDynatraceOptions)
 	if err == nil {
 		o.AssetServiceOptions = varAssetWorkloadOptimizerDynatraceOptions.AssetServiceOptions
 	} else {
@@ -195,9 +344,11 @@ func (o *AssetWorkloadOptimizerDynatraceOptions) UnmarshalJSON(bytes []byte) (er
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "CollectTagInfo")
+		delete(additionalProperties, "CollectVmMetrics")
 		delete(additionalProperties, "EnvironmentId")
 
 		// remove fields from embedded structs

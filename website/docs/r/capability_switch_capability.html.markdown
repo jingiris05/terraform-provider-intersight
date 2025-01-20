@@ -32,10 +32,10 @@ This complex property has following sub-properties:
   + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
   + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
 * `create_time`:(string)(ReadOnly) The time when this managed object was created. 
-* `default_fcoe_vlan`:(int) Default Fcoe VLAN associated with this switch. 
+* `default_fcoe_vlan`:(int)(ReadOnly) Default Fcoe VLAN associated with this switch. 
 * `domain_group_moid`:(string)(ReadOnly) The DomainGroup ID for this managed object. 
-* `dynamic_vifs_supported`:(bool) Dynamic VIFs support on this switch. 
-* `fan_modules_supported`:(bool) Fan Modules support on this switch. 
+* `dynamic_vifs_supported`:(bool)(ReadOnly) Dynamic VIFs support on this switch. 
+* `fan_modules_supported`:(bool)(ReadOnly) Fan Modules support on this switch. 
 * `fc_end_host_mode_reserved_vsans`:(Array)
 This complex property has following sub-properties:
   + `end_port_id`:(int) Ending Port ID in this range of ports. 
@@ -43,14 +43,30 @@ This complex property has following sub-properties:
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `start_port_id`:(int) Starting Port ID in this range of ports. 
   + `start_slot_id`:(int) Starting Slot ID in this range of ports. 
-* `fc_uplink_ports_auto_negotiation_supported`:(bool) Fc Uplink ports auto negotiation speed support on this switch. 
-* `locator_beacon_supported`:(bool) Locator Beacon LED support on this switch. 
-* `max_ports`:(int) Maximum allowed physical ports on this switch. 
-* `max_slots`:(int) Maximum allowed physical slots on this switch. 
+* `fc_uplink_ports_auto_negotiation_supported`:(bool)(ReadOnly) Fc Uplink ports auto negotiation speed support on this switch. 
+* `imm_controls_vpcompression`:(bool)(ReadOnly) VlanPort Compression is controlled by IMM. 
+* `locator_beacon_supported`:(bool)(ReadOnly) Locator Beacon LED support on this switch. 
+* `max_ports`:(int)(ReadOnly) Maximum allowed physical ports on this switch. 
+* `max_slots`:(int)(ReadOnly) Maximum allowed physical slots on this switch. 
+* `min_version_map_with_breakout_support`:(HashMap) -(ReadOnly) Minimum firmware version supported for breakout ports on this switch. 
+This complex property has following sub-properties:
+  + `bundle_version`:(string)(ReadOnly) Bundle version. Usually the first released bundle containing the specific device firmware version. 
+  + `device_firmware_version`:(string)(ReadOnly) Bundled device firmware version. 
+  + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+* `min_version_map_with_locator_led_support`:(HashMap) -(ReadOnly) Minimum firmware version supported for locator leds on this switch. 
+This complex property has following sub-properties:
+  + `bundle_version`:(string)(ReadOnly) Bundle version. Usually the first released bundle containing the specific device firmware version. 
+  + `device_firmware_version`:(string)(ReadOnly) Bundled device firmware version. 
+  + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+* `min_version_map_with_neg_auto25g_support`:(HashMap) -(ReadOnly) Minimum firmware version supported for 'negotiate auto 25000' port admin speed on this switch. 
+This complex property has following sub-properties:
+  + `bundle_version`:(string)(ReadOnly) Bundle version. Usually the first released bundle containing the specific device firmware version. 
+  + `device_firmware_version`:(string)(ReadOnly) Bundled device firmware version. 
+  + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
 * `mod_time`:(string)(ReadOnly) The time when this managed object was last modified. 
 * `moid`:(string) The unique identifier of this Managed Object instance. 
 * `name`:(string) An unique identifer for a capability descriptor. 
-* `network_limits`:(HashMap) - List of network limitations for this switch. 
+* `network_limits`:(HashMap) -(ReadOnly) List of network limitations for this switch. 
 This complex property has following sub-properties:
   + `max_compressed_port_vlan_count`:(int) Maximum Compressed configurable VLANs on Switch/Fabric-Interconnect. 
   + `max_uncompressed_port_vlan_count`:(int) Maximum configurable VLANs on Switch/Fabric-Interconnect. 
@@ -80,7 +96,7 @@ This complex property has following sub-properties:
   + `moid`:(string) The Moid of the referenced REST resource. 
   + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
   + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
-* `pid`:(string) Product Identifier for a Switch/Fabric-Interconnect.* `UCS-FI-6454` - The standard 4th generation UCS Fabric Interconnect with 54 ports.* `UCS-FI-64108` - The expanded 4th generation UCS Fabric Interconnect with 108 ports.* `UCS-FI-6536` - The standard 5th generation UCS Fabric Interconnect with 36 ports.* `unknown` - Unknown device type, usage is TBD. 
+* `pid`:(string) Product Identifier for a Switch/Fabric-Interconnect.* `UCS-FI-6454` - The standard 4th generation UCS Fabric Interconnect with 54 ports.* `UCS-FI-64108` - The expanded 4th generation UCS Fabric Interconnect with 108 ports.* `UCS-FI-6536` - The standard 5th generation UCS Fabric Interconnect with 36 ports.* `UCSX-S9108-100G` - Cisco UCS Fabric Interconnect 9108 100G with 8 ports.* `UCS-FI-6664` - The standard 6th generation UCS Fabric Interconnect with 64 ports.* `unknown` - Unknown device type, usage is TBD. 
 * `ports_supporting100g_speed`:(Array)
 This complex property has following sub-properties:
   + `end_port_id`:(int) Ending Port ID in this range of ports. 
@@ -144,10 +160,12 @@ This complex property has following sub-properties:
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `start_port_id`:(int) Starting Port ID in this range of ports. 
   + `start_slot_id`:(int) Starting Slot ID in this range of ports. 
-* `sereno_netflow_supported`:(bool) Sereno Adaptor with Netflow support on this switch. 
+* `sereno_netflow_supported`:(bool)(ReadOnly) Sereno Adaptor with Netflow support on this switch. 
+* `server_role_supported_on_breakout`:
+                (Array of schema.TypeString) -
 * `shared_scope`:(string)(ReadOnly) Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.Objects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs. 
 * `sku`:(string) SKU information for Switch/Fabric-Interconnect. 
-* `storage_limits`:(HashMap) - List of storage limitations for this switch. 
+* `storage_limits`:(HashMap) -(ReadOnly) List of storage limitations for this switch. 
 This complex property has following sub-properties:
   + `maximum_user_zone_count`:(int) Maximum user zones per Switch/Fabric-Interconnect. 
   + `maximum_virtual_fc_interfaces`:(int) Maximum configurable Virtual Fibre Channel interfaces on Switch/Fabric-Interconnect. 
@@ -160,7 +178,7 @@ This complex property has following sub-properties:
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `switching_mode`:(string) Switching mode type (endhost, switch) of the switch.* `end-host` - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer.* `switch` - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode. 
   + `vp_compression_supported`:(bool) VP Compression support on this switch. 
-* `system_limits`:(HashMap) - List of system limitations for this switch. 
+* `system_limits`:(HashMap) -(ReadOnly) List of system limitations for this switch. 
 This complex property has following sub-properties:
   + `maximum_chassis_count`:(int) Maximum UCS chassis that can be connected to this Switch/Fabric-Interconnect. 
   + `maximum_fex_per_domain`:(int) Maximum UCS Fabric-extenders (FEX) per Switch/Fabric-Interconnect. 
@@ -177,7 +195,8 @@ This complex property has following sub-properties:
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `start_port_id`:(int) Starting Port ID in this range of ports. 
   + `start_slot_id`:(int) Starting Slot ID in this range of ports. 
-* `unified_rule`:(string) The Slider rule for Unified ports on this switch. 
+* `unified_rule`:(string)(ReadOnly) The Slider rule for Unified ports on this switch. 
+* `uplink_admin_port_speed_neg_auto25_gbps_supported`:(bool)(ReadOnly) 'Negotiate Auto 25000' admin speed support on this switch for port or port-channelwith Ethernet Uplink/Appliance/FCoE Uplink roles. 
 * `version_context`:(HashMap) -(ReadOnly) The versioning info for this managed object. 
 This complex property has following sub-properties:
   + `interested_mos`:(Array)
@@ -185,6 +204,7 @@ This complex property has following sub-properties:
     + `moid`:(string) The Moid of the referenced REST resource. 
     + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
     + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+  + `marked_for_deletion`:(bool)(ReadOnly) The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `ref_mo`:(HashMap) -(ReadOnly) A reference to the original Managed Object. 
 This complex property has following sub-properties:

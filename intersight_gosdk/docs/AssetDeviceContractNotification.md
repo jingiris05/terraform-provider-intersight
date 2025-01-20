@@ -16,6 +16,7 @@ Name | Type | Description | Notes
 **EndUserGlobalUltimate** | Pointer to [**NullableAssetGlobalUltimate**](AssetGlobalUltimate.md) |  | [optional] 
 **IsValid** | Pointer to **bool** | Validates if the device is a genuine Cisco device. Validated is done using the Cisco SN2INFO APIs. | [optional] 
 **ItemType** | Pointer to **string** | Item type of this specific Cisco device. example \&quot;Chassis\&quot;. | [optional] 
+**LastDateOfSupport** | Pointer to **time.Time** | The last date of hardware support for this device. | [optional] 
 **MaintenancePurchaseOrderNumber** | Pointer to **string** | Maintenance purchase order number for the Cisco device. | [optional] 
 **MaintenanceSalesOrderNumber** | Pointer to **string** | Maintenance sales order number for the Cisco device. | [optional] 
 **Product** | Pointer to [**NullableAssetProductInformation**](AssetProductInformation.md) |  | [optional] 
@@ -31,7 +32,7 @@ Name | Type | Description | Notes
 **StateSn2Info** | Pointer to **string** | Internal property used for triggering and tracking actions for sn2info information. * &#x60;Update&#x60; - Sn2Info/Contract information needs to be updated. * &#x60;OK&#x60; - Sn2Info/Contract information was fetched succcessfuly and updated. * &#x60;Failed&#x60; - Sn2Info/Contract information was not available  or failed while fetching. * &#x60;Retry&#x60; - Sn2Info/Contract information update failed and will be retried later. | [optional] [default to "Update"]
 **WarrantyEndDate** | Pointer to **string** | End date for the warranty that covers the Cisco device. | [optional] 
 **WarrantyType** | Pointer to **string** | Type of warranty that covers the Cisco device. | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -371,6 +372,31 @@ SetItemType sets ItemType field to given value.
 `func (o *AssetDeviceContractNotification) HasItemType() bool`
 
 HasItemType returns a boolean if a field has been set.
+
+### GetLastDateOfSupport
+
+`func (o *AssetDeviceContractNotification) GetLastDateOfSupport() time.Time`
+
+GetLastDateOfSupport returns the LastDateOfSupport field if non-nil, zero value otherwise.
+
+### GetLastDateOfSupportOk
+
+`func (o *AssetDeviceContractNotification) GetLastDateOfSupportOk() (*time.Time, bool)`
+
+GetLastDateOfSupportOk returns a tuple with the LastDateOfSupport field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLastDateOfSupport
+
+`func (o *AssetDeviceContractNotification) SetLastDateOfSupport(v time.Time)`
+
+SetLastDateOfSupport sets LastDateOfSupport field to given value.
+
+### HasLastDateOfSupport
+
+`func (o *AssetDeviceContractNotification) HasLastDateOfSupport() bool`
+
+HasLastDateOfSupport returns a boolean if a field has been set.
 
 ### GetMaintenancePurchaseOrderNumber
 
@@ -792,6 +818,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *AssetDeviceContractNotification) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *AssetDeviceContractNotification) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

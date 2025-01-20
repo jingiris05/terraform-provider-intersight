@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the SoftwarerepositoryFile type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &SoftwarerepositoryFile{}
 
 // SoftwarerepositoryFile A file that resides either in an external repository or has been imported to the local repository. If the file is available in the local repository, it is marked as cached. If not, it represents a pointer to a file in an external repository. Instances of this MO will be implicitly created as part of the file import operation.
 type SoftwarerepositoryFile struct {
@@ -29,6 +33,8 @@ type SoftwarerepositoryFile struct {
 	Description *string `json:"Description,omitempty"`
 	// The number of times this file has been downloaded from the local repository. It is used by the repository monitoring process to determine the files that are to be evicted from the cache.
 	DownloadCount *int64 `json:"DownloadCount,omitempty"`
+	// The name of the feature to which the uploaded file belongs. * `System` - This indicates system initiated file uploads. * `OpenAPIImport` - This indicates an OpenAPI file upload. * `PartnerIntegrationImport` - This indicates a Partner-Integration Appliance user file uploads.
+	FeatureSource *string `json:"FeatureSource,omitempty"`
 	// The action to be performed on the imported file. If 'PreCache' is set, the image will be cached in Appliance. Applicable in Intersight appliance deployment. If 'Evict' is set, the cached file will be removed. Applicable in Intersight appliance deployment. If 'GeneratePreSignedUploadUrl' is set, generates pre signed URL (s) for the file to be imported into the repository. Applicable for local machine source. The URL (s) will be populated under LocalMachine file server. If 'CompleteImportProcess' is set, the ImportState is marked as 'Imported'. Applicable for local machine source. If 'Cancel' is set, the ImportState is marked as 'Failed'. Applicable for local machine source. * `None` - No action should be taken on the imported file. * `GeneratePreSignedUploadUrl` - Generate pre signed URL of file for importing into the repository. * `GeneratePreSignedDownloadUrl` - Generate pre signed URL of file in the repository to download. * `CompleteImportProcess` - Mark that the import process of the file into the repository is complete. * `MarkImportFailed` - Mark to indicate that the import process of the file into the repository failed. * `PreCache` - Cache the file into the Intersight Appliance. * `Cancel` - The cancel import process for the file into the repository. * `Extract` - The action to extract the file in the external repository. * `Evict` - Evict the cached file from the Intersight Appliance.
 	ImportAction *string `json:"ImportAction,omitempty"`
 	// The state  of this file in the repository or Appliance. The importState is updated during the import operation and as part of the repository monitoring process. * `ReadyForImport` - The image is ready to be imported into the repository. * `Importing` - The image is being imported into the repository. * `Imported` - The image has been extracted and imported into the repository. * `PendingExtraction` - Indicates that the image has been imported but not extracted in the repository. * `Extracting` - Indicates that the image is being extracted into the repository. * `Extracted` - Indicates that the image has been extracted into the repository. * `Failed` - The image import from an external source to the repository has failed. * `MetaOnly` - The image is present in an external repository. * `ReadyForCache` - The image is ready to be cached into the Intersight Appliance. * `Caching` - Indicates that the image is being cached into the Intersight Appliance or endpoint cache. * `Cached` - Indicates that the image has been cached into the Intersight Appliance or endpoint cache. * `CachingFailed` - Indicates that the image caching into the Intersight Appliance failed or endpoint cache. * `Corrupted` - Indicates that the image in the local repository (or endpoint cache) has been corrupted after it was cached. * `Evicted` - Indicates that the image has been evicted from the Intersight Appliance (or endpoint cache) to reclaim storage space. * `Invalid` - Indicates that the corresponding distributable MO has been removed from the backend. This can be due to unpublishing of an image.
@@ -50,8 +56,9 @@ type SoftwarerepositoryFile struct {
 	// The size (in bytes) of the file. This information is available for all Cisco distributed images and files imported to the local repository.
 	Size *int64 `json:"Size,omitempty"`
 	// The software advisory, if any, provided by the vendor for this file.
-	SoftwareAdvisoryUrl *string                              `json:"SoftwareAdvisoryUrl,omitempty"`
-	Source              NullableSoftwarerepositoryFileServer `json:"Source,omitempty"`
+	SoftwareAdvisoryUrl *string `json:"SoftwareAdvisoryUrl,omitempty"`
+	// An external software repository which serves as the source of the file to be imported into the image catalog. If the source is available in the user's local machine, needs to be corrected to source image or just image If not, only a pointer to the file in the external repository is created in the image catalog. For more information, please refer to the softwarerepositoryUploader and softwarerepositoryFile object descriptions where this type is used.
+	Source NullableMoBaseComplexType `json:"Source,omitempty"`
 	// Vendor provided version for the file.
 	Version              *string `json:"Version,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -132,7 +139,7 @@ func (o *SoftwarerepositoryFile) SetObjectType(v string) {
 
 // GetDescription returns the Description field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetDescription() string {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		var ret string
 		return ret
 	}
@@ -142,7 +149,7 @@ func (o *SoftwarerepositoryFile) GetDescription() string {
 // GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetDescriptionOk() (*string, bool) {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		return nil, false
 	}
 	return o.Description, true
@@ -150,7 +157,7 @@ func (o *SoftwarerepositoryFile) GetDescriptionOk() (*string, bool) {
 
 // HasDescription returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasDescription() bool {
-	if o != nil && o.Description != nil {
+	if o != nil && !IsNil(o.Description) {
 		return true
 	}
 
@@ -164,7 +171,7 @@ func (o *SoftwarerepositoryFile) SetDescription(v string) {
 
 // GetDownloadCount returns the DownloadCount field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetDownloadCount() int64 {
-	if o == nil || o.DownloadCount == nil {
+	if o == nil || IsNil(o.DownloadCount) {
 		var ret int64
 		return ret
 	}
@@ -174,7 +181,7 @@ func (o *SoftwarerepositoryFile) GetDownloadCount() int64 {
 // GetDownloadCountOk returns a tuple with the DownloadCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetDownloadCountOk() (*int64, bool) {
-	if o == nil || o.DownloadCount == nil {
+	if o == nil || IsNil(o.DownloadCount) {
 		return nil, false
 	}
 	return o.DownloadCount, true
@@ -182,7 +189,7 @@ func (o *SoftwarerepositoryFile) GetDownloadCountOk() (*int64, bool) {
 
 // HasDownloadCount returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasDownloadCount() bool {
-	if o != nil && o.DownloadCount != nil {
+	if o != nil && !IsNil(o.DownloadCount) {
 		return true
 	}
 
@@ -194,9 +201,41 @@ func (o *SoftwarerepositoryFile) SetDownloadCount(v int64) {
 	o.DownloadCount = &v
 }
 
+// GetFeatureSource returns the FeatureSource field value if set, zero value otherwise.
+func (o *SoftwarerepositoryFile) GetFeatureSource() string {
+	if o == nil || IsNil(o.FeatureSource) {
+		var ret string
+		return ret
+	}
+	return *o.FeatureSource
+}
+
+// GetFeatureSourceOk returns a tuple with the FeatureSource field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *SoftwarerepositoryFile) GetFeatureSourceOk() (*string, bool) {
+	if o == nil || IsNil(o.FeatureSource) {
+		return nil, false
+	}
+	return o.FeatureSource, true
+}
+
+// HasFeatureSource returns a boolean if a field has been set.
+func (o *SoftwarerepositoryFile) HasFeatureSource() bool {
+	if o != nil && !IsNil(o.FeatureSource) {
+		return true
+	}
+
+	return false
+}
+
+// SetFeatureSource gets a reference to the given string and assigns it to the FeatureSource field.
+func (o *SoftwarerepositoryFile) SetFeatureSource(v string) {
+	o.FeatureSource = &v
+}
+
 // GetImportAction returns the ImportAction field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetImportAction() string {
-	if o == nil || o.ImportAction == nil {
+	if o == nil || IsNil(o.ImportAction) {
 		var ret string
 		return ret
 	}
@@ -206,7 +245,7 @@ func (o *SoftwarerepositoryFile) GetImportAction() string {
 // GetImportActionOk returns a tuple with the ImportAction field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetImportActionOk() (*string, bool) {
-	if o == nil || o.ImportAction == nil {
+	if o == nil || IsNil(o.ImportAction) {
 		return nil, false
 	}
 	return o.ImportAction, true
@@ -214,7 +253,7 @@ func (o *SoftwarerepositoryFile) GetImportActionOk() (*string, bool) {
 
 // HasImportAction returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasImportAction() bool {
-	if o != nil && o.ImportAction != nil {
+	if o != nil && !IsNil(o.ImportAction) {
 		return true
 	}
 
@@ -228,7 +267,7 @@ func (o *SoftwarerepositoryFile) SetImportAction(v string) {
 
 // GetImportState returns the ImportState field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetImportState() string {
-	if o == nil || o.ImportState == nil {
+	if o == nil || IsNil(o.ImportState) {
 		var ret string
 		return ret
 	}
@@ -238,7 +277,7 @@ func (o *SoftwarerepositoryFile) GetImportState() string {
 // GetImportStateOk returns a tuple with the ImportState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetImportStateOk() (*string, bool) {
-	if o == nil || o.ImportState == nil {
+	if o == nil || IsNil(o.ImportState) {
 		return nil, false
 	}
 	return o.ImportState, true
@@ -246,7 +285,7 @@ func (o *SoftwarerepositoryFile) GetImportStateOk() (*string, bool) {
 
 // HasImportState returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasImportState() bool {
-	if o != nil && o.ImportState != nil {
+	if o != nil && !IsNil(o.ImportState) {
 		return true
 	}
 
@@ -260,7 +299,7 @@ func (o *SoftwarerepositoryFile) SetImportState(v string) {
 
 // GetImportedTime returns the ImportedTime field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetImportedTime() time.Time {
-	if o == nil || o.ImportedTime == nil {
+	if o == nil || IsNil(o.ImportedTime) {
 		var ret time.Time
 		return ret
 	}
@@ -270,7 +309,7 @@ func (o *SoftwarerepositoryFile) GetImportedTime() time.Time {
 // GetImportedTimeOk returns a tuple with the ImportedTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetImportedTimeOk() (*time.Time, bool) {
-	if o == nil || o.ImportedTime == nil {
+	if o == nil || IsNil(o.ImportedTime) {
 		return nil, false
 	}
 	return o.ImportedTime, true
@@ -278,7 +317,7 @@ func (o *SoftwarerepositoryFile) GetImportedTimeOk() (*time.Time, bool) {
 
 // HasImportedTime returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasImportedTime() bool {
-	if o != nil && o.ImportedTime != nil {
+	if o != nil && !IsNil(o.ImportedTime) {
 		return true
 	}
 
@@ -292,7 +331,7 @@ func (o *SoftwarerepositoryFile) SetImportedTime(v time.Time) {
 
 // GetLastAccessTime returns the LastAccessTime field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetLastAccessTime() time.Time {
-	if o == nil || o.LastAccessTime == nil {
+	if o == nil || IsNil(o.LastAccessTime) {
 		var ret time.Time
 		return ret
 	}
@@ -302,7 +341,7 @@ func (o *SoftwarerepositoryFile) GetLastAccessTime() time.Time {
 // GetLastAccessTimeOk returns a tuple with the LastAccessTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetLastAccessTimeOk() (*time.Time, bool) {
-	if o == nil || o.LastAccessTime == nil {
+	if o == nil || IsNil(o.LastAccessTime) {
 		return nil, false
 	}
 	return o.LastAccessTime, true
@@ -310,7 +349,7 @@ func (o *SoftwarerepositoryFile) GetLastAccessTimeOk() (*time.Time, bool) {
 
 // HasLastAccessTime returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasLastAccessTime() bool {
-	if o != nil && o.LastAccessTime != nil {
+	if o != nil && !IsNil(o.LastAccessTime) {
 		return true
 	}
 
@@ -324,7 +363,7 @@ func (o *SoftwarerepositoryFile) SetLastAccessTime(v time.Time) {
 
 // GetMd5eTag returns the Md5eTag field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetMd5eTag() string {
-	if o == nil || o.Md5eTag == nil {
+	if o == nil || IsNil(o.Md5eTag) {
 		var ret string
 		return ret
 	}
@@ -334,7 +373,7 @@ func (o *SoftwarerepositoryFile) GetMd5eTag() string {
 // GetMd5eTagOk returns a tuple with the Md5eTag field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetMd5eTagOk() (*string, bool) {
-	if o == nil || o.Md5eTag == nil {
+	if o == nil || IsNil(o.Md5eTag) {
 		return nil, false
 	}
 	return o.Md5eTag, true
@@ -342,7 +381,7 @@ func (o *SoftwarerepositoryFile) GetMd5eTagOk() (*string, bool) {
 
 // HasMd5eTag returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasMd5eTag() bool {
-	if o != nil && o.Md5eTag != nil {
+	if o != nil && !IsNil(o.Md5eTag) {
 		return true
 	}
 
@@ -356,7 +395,7 @@ func (o *SoftwarerepositoryFile) SetMd5eTag(v string) {
 
 // GetMd5sum returns the Md5sum field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetMd5sum() string {
-	if o == nil || o.Md5sum == nil {
+	if o == nil || IsNil(o.Md5sum) {
 		var ret string
 		return ret
 	}
@@ -366,7 +405,7 @@ func (o *SoftwarerepositoryFile) GetMd5sum() string {
 // GetMd5sumOk returns a tuple with the Md5sum field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetMd5sumOk() (*string, bool) {
-	if o == nil || o.Md5sum == nil {
+	if o == nil || IsNil(o.Md5sum) {
 		return nil, false
 	}
 	return o.Md5sum, true
@@ -374,7 +413,7 @@ func (o *SoftwarerepositoryFile) GetMd5sumOk() (*string, bool) {
 
 // HasMd5sum returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasMd5sum() bool {
-	if o != nil && o.Md5sum != nil {
+	if o != nil && !IsNil(o.Md5sum) {
 		return true
 	}
 
@@ -388,7 +427,7 @@ func (o *SoftwarerepositoryFile) SetMd5sum(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -398,7 +437,7 @@ func (o *SoftwarerepositoryFile) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -406,7 +445,7 @@ func (o *SoftwarerepositoryFile) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -420,7 +459,7 @@ func (o *SoftwarerepositoryFile) SetName(v string) {
 
 // GetReleaseDate returns the ReleaseDate field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetReleaseDate() time.Time {
-	if o == nil || o.ReleaseDate == nil {
+	if o == nil || IsNil(o.ReleaseDate) {
 		var ret time.Time
 		return ret
 	}
@@ -430,7 +469,7 @@ func (o *SoftwarerepositoryFile) GetReleaseDate() time.Time {
 // GetReleaseDateOk returns a tuple with the ReleaseDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetReleaseDateOk() (*time.Time, bool) {
-	if o == nil || o.ReleaseDate == nil {
+	if o == nil || IsNil(o.ReleaseDate) {
 		return nil, false
 	}
 	return o.ReleaseDate, true
@@ -438,7 +477,7 @@ func (o *SoftwarerepositoryFile) GetReleaseDateOk() (*time.Time, bool) {
 
 // HasReleaseDate returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasReleaseDate() bool {
-	if o != nil && o.ReleaseDate != nil {
+	if o != nil && !IsNil(o.ReleaseDate) {
 		return true
 	}
 
@@ -452,7 +491,7 @@ func (o *SoftwarerepositoryFile) SetReleaseDate(v time.Time) {
 
 // GetSha512sum returns the Sha512sum field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetSha512sum() string {
-	if o == nil || o.Sha512sum == nil {
+	if o == nil || IsNil(o.Sha512sum) {
 		var ret string
 		return ret
 	}
@@ -462,7 +501,7 @@ func (o *SoftwarerepositoryFile) GetSha512sum() string {
 // GetSha512sumOk returns a tuple with the Sha512sum field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetSha512sumOk() (*string, bool) {
-	if o == nil || o.Sha512sum == nil {
+	if o == nil || IsNil(o.Sha512sum) {
 		return nil, false
 	}
 	return o.Sha512sum, true
@@ -470,7 +509,7 @@ func (o *SoftwarerepositoryFile) GetSha512sumOk() (*string, bool) {
 
 // HasSha512sum returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasSha512sum() bool {
-	if o != nil && o.Sha512sum != nil {
+	if o != nil && !IsNil(o.Sha512sum) {
 		return true
 	}
 
@@ -484,7 +523,7 @@ func (o *SoftwarerepositoryFile) SetSha512sum(v string) {
 
 // GetSize returns the Size field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetSize() int64 {
-	if o == nil || o.Size == nil {
+	if o == nil || IsNil(o.Size) {
 		var ret int64
 		return ret
 	}
@@ -494,7 +533,7 @@ func (o *SoftwarerepositoryFile) GetSize() int64 {
 // GetSizeOk returns a tuple with the Size field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetSizeOk() (*int64, bool) {
-	if o == nil || o.Size == nil {
+	if o == nil || IsNil(o.Size) {
 		return nil, false
 	}
 	return o.Size, true
@@ -502,7 +541,7 @@ func (o *SoftwarerepositoryFile) GetSizeOk() (*int64, bool) {
 
 // HasSize returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasSize() bool {
-	if o != nil && o.Size != nil {
+	if o != nil && !IsNil(o.Size) {
 		return true
 	}
 
@@ -516,7 +555,7 @@ func (o *SoftwarerepositoryFile) SetSize(v int64) {
 
 // GetSoftwareAdvisoryUrl returns the SoftwareAdvisoryUrl field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetSoftwareAdvisoryUrl() string {
-	if o == nil || o.SoftwareAdvisoryUrl == nil {
+	if o == nil || IsNil(o.SoftwareAdvisoryUrl) {
 		var ret string
 		return ret
 	}
@@ -526,7 +565,7 @@ func (o *SoftwarerepositoryFile) GetSoftwareAdvisoryUrl() string {
 // GetSoftwareAdvisoryUrlOk returns a tuple with the SoftwareAdvisoryUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetSoftwareAdvisoryUrlOk() (*string, bool) {
-	if o == nil || o.SoftwareAdvisoryUrl == nil {
+	if o == nil || IsNil(o.SoftwareAdvisoryUrl) {
 		return nil, false
 	}
 	return o.SoftwareAdvisoryUrl, true
@@ -534,7 +573,7 @@ func (o *SoftwarerepositoryFile) GetSoftwareAdvisoryUrlOk() (*string, bool) {
 
 // HasSoftwareAdvisoryUrl returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasSoftwareAdvisoryUrl() bool {
-	if o != nil && o.SoftwareAdvisoryUrl != nil {
+	if o != nil && !IsNil(o.SoftwareAdvisoryUrl) {
 		return true
 	}
 
@@ -547,9 +586,9 @@ func (o *SoftwarerepositoryFile) SetSoftwareAdvisoryUrl(v string) {
 }
 
 // GetSource returns the Source field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *SoftwarerepositoryFile) GetSource() SoftwarerepositoryFileServer {
-	if o == nil || o.Source.Get() == nil {
-		var ret SoftwarerepositoryFileServer
+func (o *SoftwarerepositoryFile) GetSource() MoBaseComplexType {
+	if o == nil || IsNil(o.Source.Get()) {
+		var ret MoBaseComplexType
 		return ret
 	}
 	return *o.Source.Get()
@@ -558,7 +597,7 @@ func (o *SoftwarerepositoryFile) GetSource() SoftwarerepositoryFileServer {
 // GetSourceOk returns a tuple with the Source field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *SoftwarerepositoryFile) GetSourceOk() (*SoftwarerepositoryFileServer, bool) {
+func (o *SoftwarerepositoryFile) GetSourceOk() (*MoBaseComplexType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -574,8 +613,8 @@ func (o *SoftwarerepositoryFile) HasSource() bool {
 	return false
 }
 
-// SetSource gets a reference to the given NullableSoftwarerepositoryFileServer and assigns it to the Source field.
-func (o *SoftwarerepositoryFile) SetSource(v SoftwarerepositoryFileServer) {
+// SetSource gets a reference to the given NullableMoBaseComplexType and assigns it to the Source field.
+func (o *SoftwarerepositoryFile) SetSource(v MoBaseComplexType) {
 	o.Source.Set(&v)
 }
 
@@ -591,7 +630,7 @@ func (o *SoftwarerepositoryFile) UnsetSource() {
 
 // GetVersion returns the Version field value if set, zero value otherwise.
 func (o *SoftwarerepositoryFile) GetVersion() string {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		var ret string
 		return ret
 	}
@@ -601,7 +640,7 @@ func (o *SoftwarerepositoryFile) GetVersion() string {
 // GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *SoftwarerepositoryFile) GetVersionOk() (*string, bool) {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		return nil, false
 	}
 	return o.Version, true
@@ -609,7 +648,7 @@ func (o *SoftwarerepositoryFile) GetVersionOk() (*string, bool) {
 
 // HasVersion returns a boolean if a field has been set.
 func (o *SoftwarerepositoryFile) HasVersion() bool {
-	if o != nil && o.Version != nil {
+	if o != nil && !IsNil(o.Version) {
 		return true
 	}
 
@@ -622,64 +661,71 @@ func (o *SoftwarerepositoryFile) SetVersion(v string) {
 }
 
 func (o SoftwarerepositoryFile) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o SoftwarerepositoryFile) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
-	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
-	}
-	if o.Description != nil {
+	toSerialize["ClassId"] = o.ClassId
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Description) {
 		toSerialize["Description"] = o.Description
 	}
-	if o.DownloadCount != nil {
+	if !IsNil(o.DownloadCount) {
 		toSerialize["DownloadCount"] = o.DownloadCount
 	}
-	if o.ImportAction != nil {
+	if !IsNil(o.FeatureSource) {
+		toSerialize["FeatureSource"] = o.FeatureSource
+	}
+	if !IsNil(o.ImportAction) {
 		toSerialize["ImportAction"] = o.ImportAction
 	}
-	if o.ImportState != nil {
+	if !IsNil(o.ImportState) {
 		toSerialize["ImportState"] = o.ImportState
 	}
-	if o.ImportedTime != nil {
+	if !IsNil(o.ImportedTime) {
 		toSerialize["ImportedTime"] = o.ImportedTime
 	}
-	if o.LastAccessTime != nil {
+	if !IsNil(o.LastAccessTime) {
 		toSerialize["LastAccessTime"] = o.LastAccessTime
 	}
-	if o.Md5eTag != nil {
+	if !IsNil(o.Md5eTag) {
 		toSerialize["Md5eTag"] = o.Md5eTag
 	}
-	if o.Md5sum != nil {
+	if !IsNil(o.Md5sum) {
 		toSerialize["Md5sum"] = o.Md5sum
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.ReleaseDate != nil {
+	if !IsNil(o.ReleaseDate) {
 		toSerialize["ReleaseDate"] = o.ReleaseDate
 	}
-	if o.Sha512sum != nil {
+	if !IsNil(o.Sha512sum) {
 		toSerialize["Sha512sum"] = o.Sha512sum
 	}
-	if o.Size != nil {
+	if !IsNil(o.Size) {
 		toSerialize["Size"] = o.Size
 	}
-	if o.SoftwareAdvisoryUrl != nil {
+	if !IsNil(o.SoftwareAdvisoryUrl) {
 		toSerialize["SoftwareAdvisoryUrl"] = o.SoftwareAdvisoryUrl
 	}
 	if o.Source.IsSet() {
 		toSerialize["Source"] = o.Source.Get()
 	}
-	if o.Version != nil {
+	if !IsNil(o.Version) {
 		toSerialize["Version"] = o.Version
 	}
 
@@ -687,10 +733,48 @@ func (o SoftwarerepositoryFile) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *SoftwarerepositoryFile) UnmarshalJSON(bytes []byte) (err error) {
+func (o *SoftwarerepositoryFile) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type SoftwarerepositoryFileWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. The enum values provides the list of concrete types that can be instantiated from this abstract type.
 		ClassId string `json:"ClassId"`
@@ -700,6 +784,8 @@ func (o *SoftwarerepositoryFile) UnmarshalJSON(bytes []byte) (err error) {
 		Description *string `json:"Description,omitempty"`
 		// The number of times this file has been downloaded from the local repository. It is used by the repository monitoring process to determine the files that are to be evicted from the cache.
 		DownloadCount *int64 `json:"DownloadCount,omitempty"`
+		// The name of the feature to which the uploaded file belongs. * `System` - This indicates system initiated file uploads. * `OpenAPIImport` - This indicates an OpenAPI file upload. * `PartnerIntegrationImport` - This indicates a Partner-Integration Appliance user file uploads.
+		FeatureSource *string `json:"FeatureSource,omitempty"`
 		// The action to be performed on the imported file. If 'PreCache' is set, the image will be cached in Appliance. Applicable in Intersight appliance deployment. If 'Evict' is set, the cached file will be removed. Applicable in Intersight appliance deployment. If 'GeneratePreSignedUploadUrl' is set, generates pre signed URL (s) for the file to be imported into the repository. Applicable for local machine source. The URL (s) will be populated under LocalMachine file server. If 'CompleteImportProcess' is set, the ImportState is marked as 'Imported'. Applicable for local machine source. If 'Cancel' is set, the ImportState is marked as 'Failed'. Applicable for local machine source. * `None` - No action should be taken on the imported file. * `GeneratePreSignedUploadUrl` - Generate pre signed URL of file for importing into the repository. * `GeneratePreSignedDownloadUrl` - Generate pre signed URL of file in the repository to download. * `CompleteImportProcess` - Mark that the import process of the file into the repository is complete. * `MarkImportFailed` - Mark to indicate that the import process of the file into the repository failed. * `PreCache` - Cache the file into the Intersight Appliance. * `Cancel` - The cancel import process for the file into the repository. * `Extract` - The action to extract the file in the external repository. * `Evict` - Evict the cached file from the Intersight Appliance.
 		ImportAction *string `json:"ImportAction,omitempty"`
 		// The state  of this file in the repository or Appliance. The importState is updated during the import operation and as part of the repository monitoring process. * `ReadyForImport` - The image is ready to be imported into the repository. * `Importing` - The image is being imported into the repository. * `Imported` - The image has been extracted and imported into the repository. * `PendingExtraction` - Indicates that the image has been imported but not extracted in the repository. * `Extracting` - Indicates that the image is being extracted into the repository. * `Extracted` - Indicates that the image has been extracted into the repository. * `Failed` - The image import from an external source to the repository has failed. * `MetaOnly` - The image is present in an external repository. * `ReadyForCache` - The image is ready to be cached into the Intersight Appliance. * `Caching` - Indicates that the image is being cached into the Intersight Appliance or endpoint cache. * `Cached` - Indicates that the image has been cached into the Intersight Appliance or endpoint cache. * `CachingFailed` - Indicates that the image caching into the Intersight Appliance failed or endpoint cache. * `Corrupted` - Indicates that the image in the local repository (or endpoint cache) has been corrupted after it was cached. * `Evicted` - Indicates that the image has been evicted from the Intersight Appliance (or endpoint cache) to reclaim storage space. * `Invalid` - Indicates that the corresponding distributable MO has been removed from the backend. This can be due to unpublishing of an image.
@@ -721,21 +807,23 @@ func (o *SoftwarerepositoryFile) UnmarshalJSON(bytes []byte) (err error) {
 		// The size (in bytes) of the file. This information is available for all Cisco distributed images and files imported to the local repository.
 		Size *int64 `json:"Size,omitempty"`
 		// The software advisory, if any, provided by the vendor for this file.
-		SoftwareAdvisoryUrl *string                              `json:"SoftwareAdvisoryUrl,omitempty"`
-		Source              NullableSoftwarerepositoryFileServer `json:"Source,omitempty"`
+		SoftwareAdvisoryUrl *string `json:"SoftwareAdvisoryUrl,omitempty"`
+		// An external software repository which serves as the source of the file to be imported into the image catalog. If the source is available in the user's local machine, needs to be corrected to source image or just image If not, only a pointer to the file in the external repository is created in the image catalog. For more information, please refer to the softwarerepositoryUploader and softwarerepositoryFile object descriptions where this type is used.
+		Source NullableMoBaseComplexType `json:"Source,omitempty"`
 		// Vendor provided version for the file.
 		Version *string `json:"Version,omitempty"`
 	}
 
 	varSoftwarerepositoryFileWithoutEmbeddedStruct := SoftwarerepositoryFileWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varSoftwarerepositoryFileWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varSoftwarerepositoryFileWithoutEmbeddedStruct)
 	if err == nil {
 		varSoftwarerepositoryFile := _SoftwarerepositoryFile{}
 		varSoftwarerepositoryFile.ClassId = varSoftwarerepositoryFileWithoutEmbeddedStruct.ClassId
 		varSoftwarerepositoryFile.ObjectType = varSoftwarerepositoryFileWithoutEmbeddedStruct.ObjectType
 		varSoftwarerepositoryFile.Description = varSoftwarerepositoryFileWithoutEmbeddedStruct.Description
 		varSoftwarerepositoryFile.DownloadCount = varSoftwarerepositoryFileWithoutEmbeddedStruct.DownloadCount
+		varSoftwarerepositoryFile.FeatureSource = varSoftwarerepositoryFileWithoutEmbeddedStruct.FeatureSource
 		varSoftwarerepositoryFile.ImportAction = varSoftwarerepositoryFileWithoutEmbeddedStruct.ImportAction
 		varSoftwarerepositoryFile.ImportState = varSoftwarerepositoryFileWithoutEmbeddedStruct.ImportState
 		varSoftwarerepositoryFile.ImportedTime = varSoftwarerepositoryFileWithoutEmbeddedStruct.ImportedTime
@@ -756,7 +844,7 @@ func (o *SoftwarerepositoryFile) UnmarshalJSON(bytes []byte) (err error) {
 
 	varSoftwarerepositoryFile := _SoftwarerepositoryFile{}
 
-	err = json.Unmarshal(bytes, &varSoftwarerepositoryFile)
+	err = json.Unmarshal(data, &varSoftwarerepositoryFile)
 	if err == nil {
 		o.MoBaseMo = varSoftwarerepositoryFile.MoBaseMo
 	} else {
@@ -765,11 +853,12 @@ func (o *SoftwarerepositoryFile) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Description")
 		delete(additionalProperties, "DownloadCount")
+		delete(additionalProperties, "FeatureSource")
 		delete(additionalProperties, "ImportAction")
 		delete(additionalProperties, "ImportState")
 		delete(additionalProperties, "ImportedTime")

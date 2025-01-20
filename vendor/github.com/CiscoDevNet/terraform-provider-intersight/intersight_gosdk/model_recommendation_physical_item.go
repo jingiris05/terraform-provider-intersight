@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the RecommendationPhysicalItem type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &RecommendationPhysicalItem{}
 
 // RecommendationPhysicalItem Entity representing the recommended physical device.
 type RecommendationPhysicalItem struct {
@@ -26,6 +30,8 @@ type RecommendationPhysicalItem struct {
 	ObjectType string `json:"ObjectType"`
 	// Capacity of the physical entity added.
 	Capacity *int64 `json:"Capacity,omitempty"`
+	// Configuration path for the physical entity to be used when ordering it through the Cisco Commerce Workspace.
+	ConfigurationPath *string `json:"ConfigurationPath,omitempty"`
 	// Count of number of items/devices to be added.For example, number of disks to add on a node PhysicalItem in case of HyperFlex Cluster recommendation.
 	Count *int64 `json:"Count,omitempty"`
 	// If the PhysicalItem is new, this is set to true, else false.
@@ -34,13 +40,16 @@ type RecommendationPhysicalItem struct {
 	MaxCount *int64 `json:"MaxCount,omitempty"`
 	// Model of the recommended physical device which is externally identifiable.
 	Model *string `json:"Model,omitempty"`
+	// Moid of the managed object which represents the parent physical entity.
+	ParentMoid *string `json:"ParentMoid,omitempty"`
 	// Moid of the managed object which represents the existing physical entity.
 	SourceMoid *string `json:"SourceMoid,omitempty"`
-	// Unit of the new capacity. * `TB` - The Enum value TB represents that the measurement unit is in terabytes. * `MB` - The Enum value MB represents that the measurement unit is in megabytes.
+	// Unit of the new capacity. * `TB` - The Enum value TB represents that the measurement unit is in terabytes. * `MB` - The Enum value MB represents that the measurement unit is in megabytes. * `GB` - The Enum value GB represents that the measurement unit is in gigabytes. * `MHz` - The Enum value MHz represents that the measurement unit is in megahertz. * `GHz` - The Enum value GHz represents that the measurement unit is in gigahertz. * `Percentage` - The Enum value Percentage represents that the expansion request is in the percentage of resource increase. For example, a 20% increase in CPU capacity.
 	Unit *string `json:"Unit,omitempty"`
 	// Uuid of the recommended physical device.
-	Uuid           *string                                   `json:"Uuid,omitempty"`
-	CapacityRunway *RecommendationCapacityRunwayRelationship `json:"CapacityRunway,omitempty"`
+	Uuid             *string                                            `json:"Uuid,omitempty"`
+	CapacityRunway   NullableRecommendationCapacityRunwayRelationship   `json:"CapacityRunway,omitempty"`
+	ClusterExpansion NullableRecommendationClusterExpansionRelationship `json:"ClusterExpansion,omitempty"`
 	// An array of relationships to recommendationPhysicalItem resources.
 	PhysicalItem         []RecommendationPhysicalItemRelationship `json:"PhysicalItem,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -95,6 +104,11 @@ func (o *RecommendationPhysicalItem) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "recommendation.PhysicalItem" of the ClassId field.
+func (o *RecommendationPhysicalItem) GetDefaultClassId() interface{} {
+	return "recommendation.PhysicalItem"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *RecommendationPhysicalItem) GetObjectType() string {
 	if o == nil {
@@ -119,9 +133,14 @@ func (o *RecommendationPhysicalItem) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "recommendation.PhysicalItem" of the ObjectType field.
+func (o *RecommendationPhysicalItem) GetDefaultObjectType() interface{} {
+	return "recommendation.PhysicalItem"
+}
+
 // GetCapacity returns the Capacity field value if set, zero value otherwise.
 func (o *RecommendationPhysicalItem) GetCapacity() int64 {
-	if o == nil || o.Capacity == nil {
+	if o == nil || IsNil(o.Capacity) {
 		var ret int64
 		return ret
 	}
@@ -131,7 +150,7 @@ func (o *RecommendationPhysicalItem) GetCapacity() int64 {
 // GetCapacityOk returns a tuple with the Capacity field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *RecommendationPhysicalItem) GetCapacityOk() (*int64, bool) {
-	if o == nil || o.Capacity == nil {
+	if o == nil || IsNil(o.Capacity) {
 		return nil, false
 	}
 	return o.Capacity, true
@@ -139,7 +158,7 @@ func (o *RecommendationPhysicalItem) GetCapacityOk() (*int64, bool) {
 
 // HasCapacity returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasCapacity() bool {
-	if o != nil && o.Capacity != nil {
+	if o != nil && !IsNil(o.Capacity) {
 		return true
 	}
 
@@ -151,9 +170,41 @@ func (o *RecommendationPhysicalItem) SetCapacity(v int64) {
 	o.Capacity = &v
 }
 
+// GetConfigurationPath returns the ConfigurationPath field value if set, zero value otherwise.
+func (o *RecommendationPhysicalItem) GetConfigurationPath() string {
+	if o == nil || IsNil(o.ConfigurationPath) {
+		var ret string
+		return ret
+	}
+	return *o.ConfigurationPath
+}
+
+// GetConfigurationPathOk returns a tuple with the ConfigurationPath field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RecommendationPhysicalItem) GetConfigurationPathOk() (*string, bool) {
+	if o == nil || IsNil(o.ConfigurationPath) {
+		return nil, false
+	}
+	return o.ConfigurationPath, true
+}
+
+// HasConfigurationPath returns a boolean if a field has been set.
+func (o *RecommendationPhysicalItem) HasConfigurationPath() bool {
+	if o != nil && !IsNil(o.ConfigurationPath) {
+		return true
+	}
+
+	return false
+}
+
+// SetConfigurationPath gets a reference to the given string and assigns it to the ConfigurationPath field.
+func (o *RecommendationPhysicalItem) SetConfigurationPath(v string) {
+	o.ConfigurationPath = &v
+}
+
 // GetCount returns the Count field value if set, zero value otherwise.
 func (o *RecommendationPhysicalItem) GetCount() int64 {
-	if o == nil || o.Count == nil {
+	if o == nil || IsNil(o.Count) {
 		var ret int64
 		return ret
 	}
@@ -163,7 +214,7 @@ func (o *RecommendationPhysicalItem) GetCount() int64 {
 // GetCountOk returns a tuple with the Count field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *RecommendationPhysicalItem) GetCountOk() (*int64, bool) {
-	if o == nil || o.Count == nil {
+	if o == nil || IsNil(o.Count) {
 		return nil, false
 	}
 	return o.Count, true
@@ -171,7 +222,7 @@ func (o *RecommendationPhysicalItem) GetCountOk() (*int64, bool) {
 
 // HasCount returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasCount() bool {
-	if o != nil && o.Count != nil {
+	if o != nil && !IsNil(o.Count) {
 		return true
 	}
 
@@ -185,7 +236,7 @@ func (o *RecommendationPhysicalItem) SetCount(v int64) {
 
 // GetIsNew returns the IsNew field value if set, zero value otherwise.
 func (o *RecommendationPhysicalItem) GetIsNew() bool {
-	if o == nil || o.IsNew == nil {
+	if o == nil || IsNil(o.IsNew) {
 		var ret bool
 		return ret
 	}
@@ -195,7 +246,7 @@ func (o *RecommendationPhysicalItem) GetIsNew() bool {
 // GetIsNewOk returns a tuple with the IsNew field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *RecommendationPhysicalItem) GetIsNewOk() (*bool, bool) {
-	if o == nil || o.IsNew == nil {
+	if o == nil || IsNil(o.IsNew) {
 		return nil, false
 	}
 	return o.IsNew, true
@@ -203,7 +254,7 @@ func (o *RecommendationPhysicalItem) GetIsNewOk() (*bool, bool) {
 
 // HasIsNew returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasIsNew() bool {
-	if o != nil && o.IsNew != nil {
+	if o != nil && !IsNil(o.IsNew) {
 		return true
 	}
 
@@ -217,7 +268,7 @@ func (o *RecommendationPhysicalItem) SetIsNew(v bool) {
 
 // GetMaxCount returns the MaxCount field value if set, zero value otherwise.
 func (o *RecommendationPhysicalItem) GetMaxCount() int64 {
-	if o == nil || o.MaxCount == nil {
+	if o == nil || IsNil(o.MaxCount) {
 		var ret int64
 		return ret
 	}
@@ -227,7 +278,7 @@ func (o *RecommendationPhysicalItem) GetMaxCount() int64 {
 // GetMaxCountOk returns a tuple with the MaxCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *RecommendationPhysicalItem) GetMaxCountOk() (*int64, bool) {
-	if o == nil || o.MaxCount == nil {
+	if o == nil || IsNil(o.MaxCount) {
 		return nil, false
 	}
 	return o.MaxCount, true
@@ -235,7 +286,7 @@ func (o *RecommendationPhysicalItem) GetMaxCountOk() (*int64, bool) {
 
 // HasMaxCount returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasMaxCount() bool {
-	if o != nil && o.MaxCount != nil {
+	if o != nil && !IsNil(o.MaxCount) {
 		return true
 	}
 
@@ -249,7 +300,7 @@ func (o *RecommendationPhysicalItem) SetMaxCount(v int64) {
 
 // GetModel returns the Model field value if set, zero value otherwise.
 func (o *RecommendationPhysicalItem) GetModel() string {
-	if o == nil || o.Model == nil {
+	if o == nil || IsNil(o.Model) {
 		var ret string
 		return ret
 	}
@@ -259,7 +310,7 @@ func (o *RecommendationPhysicalItem) GetModel() string {
 // GetModelOk returns a tuple with the Model field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *RecommendationPhysicalItem) GetModelOk() (*string, bool) {
-	if o == nil || o.Model == nil {
+	if o == nil || IsNil(o.Model) {
 		return nil, false
 	}
 	return o.Model, true
@@ -267,7 +318,7 @@ func (o *RecommendationPhysicalItem) GetModelOk() (*string, bool) {
 
 // HasModel returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasModel() bool {
-	if o != nil && o.Model != nil {
+	if o != nil && !IsNil(o.Model) {
 		return true
 	}
 
@@ -279,9 +330,41 @@ func (o *RecommendationPhysicalItem) SetModel(v string) {
 	o.Model = &v
 }
 
+// GetParentMoid returns the ParentMoid field value if set, zero value otherwise.
+func (o *RecommendationPhysicalItem) GetParentMoid() string {
+	if o == nil || IsNil(o.ParentMoid) {
+		var ret string
+		return ret
+	}
+	return *o.ParentMoid
+}
+
+// GetParentMoidOk returns a tuple with the ParentMoid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *RecommendationPhysicalItem) GetParentMoidOk() (*string, bool) {
+	if o == nil || IsNil(o.ParentMoid) {
+		return nil, false
+	}
+	return o.ParentMoid, true
+}
+
+// HasParentMoid returns a boolean if a field has been set.
+func (o *RecommendationPhysicalItem) HasParentMoid() bool {
+	if o != nil && !IsNil(o.ParentMoid) {
+		return true
+	}
+
+	return false
+}
+
+// SetParentMoid gets a reference to the given string and assigns it to the ParentMoid field.
+func (o *RecommendationPhysicalItem) SetParentMoid(v string) {
+	o.ParentMoid = &v
+}
+
 // GetSourceMoid returns the SourceMoid field value if set, zero value otherwise.
 func (o *RecommendationPhysicalItem) GetSourceMoid() string {
-	if o == nil || o.SourceMoid == nil {
+	if o == nil || IsNil(o.SourceMoid) {
 		var ret string
 		return ret
 	}
@@ -291,7 +374,7 @@ func (o *RecommendationPhysicalItem) GetSourceMoid() string {
 // GetSourceMoidOk returns a tuple with the SourceMoid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *RecommendationPhysicalItem) GetSourceMoidOk() (*string, bool) {
-	if o == nil || o.SourceMoid == nil {
+	if o == nil || IsNil(o.SourceMoid) {
 		return nil, false
 	}
 	return o.SourceMoid, true
@@ -299,7 +382,7 @@ func (o *RecommendationPhysicalItem) GetSourceMoidOk() (*string, bool) {
 
 // HasSourceMoid returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasSourceMoid() bool {
-	if o != nil && o.SourceMoid != nil {
+	if o != nil && !IsNil(o.SourceMoid) {
 		return true
 	}
 
@@ -313,7 +396,7 @@ func (o *RecommendationPhysicalItem) SetSourceMoid(v string) {
 
 // GetUnit returns the Unit field value if set, zero value otherwise.
 func (o *RecommendationPhysicalItem) GetUnit() string {
-	if o == nil || o.Unit == nil {
+	if o == nil || IsNil(o.Unit) {
 		var ret string
 		return ret
 	}
@@ -323,7 +406,7 @@ func (o *RecommendationPhysicalItem) GetUnit() string {
 // GetUnitOk returns a tuple with the Unit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *RecommendationPhysicalItem) GetUnitOk() (*string, bool) {
-	if o == nil || o.Unit == nil {
+	if o == nil || IsNil(o.Unit) {
 		return nil, false
 	}
 	return o.Unit, true
@@ -331,7 +414,7 @@ func (o *RecommendationPhysicalItem) GetUnitOk() (*string, bool) {
 
 // HasUnit returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasUnit() bool {
-	if o != nil && o.Unit != nil {
+	if o != nil && !IsNil(o.Unit) {
 		return true
 	}
 
@@ -345,7 +428,7 @@ func (o *RecommendationPhysicalItem) SetUnit(v string) {
 
 // GetUuid returns the Uuid field value if set, zero value otherwise.
 func (o *RecommendationPhysicalItem) GetUuid() string {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		var ret string
 		return ret
 	}
@@ -355,7 +438,7 @@ func (o *RecommendationPhysicalItem) GetUuid() string {
 // GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *RecommendationPhysicalItem) GetUuidOk() (*string, bool) {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		return nil, false
 	}
 	return o.Uuid, true
@@ -363,7 +446,7 @@ func (o *RecommendationPhysicalItem) GetUuidOk() (*string, bool) {
 
 // HasUuid returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasUuid() bool {
-	if o != nil && o.Uuid != nil {
+	if o != nil && !IsNil(o.Uuid) {
 		return true
 	}
 
@@ -375,36 +458,90 @@ func (o *RecommendationPhysicalItem) SetUuid(v string) {
 	o.Uuid = &v
 }
 
-// GetCapacityRunway returns the CapacityRunway field value if set, zero value otherwise.
+// GetCapacityRunway returns the CapacityRunway field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *RecommendationPhysicalItem) GetCapacityRunway() RecommendationCapacityRunwayRelationship {
-	if o == nil || o.CapacityRunway == nil {
+	if o == nil || IsNil(o.CapacityRunway.Get()) {
 		var ret RecommendationCapacityRunwayRelationship
 		return ret
 	}
-	return *o.CapacityRunway
+	return *o.CapacityRunway.Get()
 }
 
 // GetCapacityRunwayOk returns a tuple with the CapacityRunway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *RecommendationPhysicalItem) GetCapacityRunwayOk() (*RecommendationCapacityRunwayRelationship, bool) {
-	if o == nil || o.CapacityRunway == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.CapacityRunway, true
+	return o.CapacityRunway.Get(), o.CapacityRunway.IsSet()
 }
 
 // HasCapacityRunway returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasCapacityRunway() bool {
-	if o != nil && o.CapacityRunway != nil {
+	if o != nil && o.CapacityRunway.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCapacityRunway gets a reference to the given RecommendationCapacityRunwayRelationship and assigns it to the CapacityRunway field.
+// SetCapacityRunway gets a reference to the given NullableRecommendationCapacityRunwayRelationship and assigns it to the CapacityRunway field.
 func (o *RecommendationPhysicalItem) SetCapacityRunway(v RecommendationCapacityRunwayRelationship) {
-	o.CapacityRunway = &v
+	o.CapacityRunway.Set(&v)
+}
+
+// SetCapacityRunwayNil sets the value for CapacityRunway to be an explicit nil
+func (o *RecommendationPhysicalItem) SetCapacityRunwayNil() {
+	o.CapacityRunway.Set(nil)
+}
+
+// UnsetCapacityRunway ensures that no value is present for CapacityRunway, not even an explicit nil
+func (o *RecommendationPhysicalItem) UnsetCapacityRunway() {
+	o.CapacityRunway.Unset()
+}
+
+// GetClusterExpansion returns the ClusterExpansion field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *RecommendationPhysicalItem) GetClusterExpansion() RecommendationClusterExpansionRelationship {
+	if o == nil || IsNil(o.ClusterExpansion.Get()) {
+		var ret RecommendationClusterExpansionRelationship
+		return ret
+	}
+	return *o.ClusterExpansion.Get()
+}
+
+// GetClusterExpansionOk returns a tuple with the ClusterExpansion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *RecommendationPhysicalItem) GetClusterExpansionOk() (*RecommendationClusterExpansionRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ClusterExpansion.Get(), o.ClusterExpansion.IsSet()
+}
+
+// HasClusterExpansion returns a boolean if a field has been set.
+func (o *RecommendationPhysicalItem) HasClusterExpansion() bool {
+	if o != nil && o.ClusterExpansion.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetClusterExpansion gets a reference to the given NullableRecommendationClusterExpansionRelationship and assigns it to the ClusterExpansion field.
+func (o *RecommendationPhysicalItem) SetClusterExpansion(v RecommendationClusterExpansionRelationship) {
+	o.ClusterExpansion.Set(&v)
+}
+
+// SetClusterExpansionNil sets the value for ClusterExpansion to be an explicit nil
+func (o *RecommendationPhysicalItem) SetClusterExpansionNil() {
+	o.ClusterExpansion.Set(nil)
+}
+
+// UnsetClusterExpansion ensures that no value is present for ClusterExpansion, not even an explicit nil
+func (o *RecommendationPhysicalItem) UnsetClusterExpansion() {
+	o.ClusterExpansion.Unset()
 }
 
 // GetPhysicalItem returns the PhysicalItem field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -420,7 +557,7 @@ func (o *RecommendationPhysicalItem) GetPhysicalItem() []RecommendationPhysicalI
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *RecommendationPhysicalItem) GetPhysicalItemOk() ([]RecommendationPhysicalItemRelationship, bool) {
-	if o == nil || o.PhysicalItem == nil {
+	if o == nil || IsNil(o.PhysicalItem) {
 		return nil, false
 	}
 	return o.PhysicalItem, true
@@ -428,7 +565,7 @@ func (o *RecommendationPhysicalItem) GetPhysicalItemOk() ([]RecommendationPhysic
 
 // HasPhysicalItem returns a boolean if a field has been set.
 func (o *RecommendationPhysicalItem) HasPhysicalItem() bool {
-	if o != nil && o.PhysicalItem != nil {
+	if o != nil && !IsNil(o.PhysicalItem) {
 		return true
 	}
 
@@ -441,47 +578,66 @@ func (o *RecommendationPhysicalItem) SetPhysicalItem(v []RecommendationPhysicalI
 }
 
 func (o RecommendationPhysicalItem) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o RecommendationPhysicalItem) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedRecommendationAbstractItem, errRecommendationAbstractItem := json.Marshal(o.RecommendationAbstractItem)
 	if errRecommendationAbstractItem != nil {
-		return []byte{}, errRecommendationAbstractItem
+		return map[string]interface{}{}, errRecommendationAbstractItem
 	}
 	errRecommendationAbstractItem = json.Unmarshal([]byte(serializedRecommendationAbstractItem), &toSerialize)
 	if errRecommendationAbstractItem != nil {
-		return []byte{}, errRecommendationAbstractItem
+		return map[string]interface{}{}, errRecommendationAbstractItem
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Capacity != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Capacity) {
 		toSerialize["Capacity"] = o.Capacity
 	}
-	if o.Count != nil {
+	if !IsNil(o.ConfigurationPath) {
+		toSerialize["ConfigurationPath"] = o.ConfigurationPath
+	}
+	if !IsNil(o.Count) {
 		toSerialize["Count"] = o.Count
 	}
-	if o.IsNew != nil {
+	if !IsNil(o.IsNew) {
 		toSerialize["IsNew"] = o.IsNew
 	}
-	if o.MaxCount != nil {
+	if !IsNil(o.MaxCount) {
 		toSerialize["MaxCount"] = o.MaxCount
 	}
-	if o.Model != nil {
+	if !IsNil(o.Model) {
 		toSerialize["Model"] = o.Model
 	}
-	if o.SourceMoid != nil {
+	if !IsNil(o.ParentMoid) {
+		toSerialize["ParentMoid"] = o.ParentMoid
+	}
+	if !IsNil(o.SourceMoid) {
 		toSerialize["SourceMoid"] = o.SourceMoid
 	}
-	if o.Unit != nil {
+	if !IsNil(o.Unit) {
 		toSerialize["Unit"] = o.Unit
 	}
-	if o.Uuid != nil {
+	if !IsNil(o.Uuid) {
 		toSerialize["Uuid"] = o.Uuid
 	}
-	if o.CapacityRunway != nil {
-		toSerialize["CapacityRunway"] = o.CapacityRunway
+	if o.CapacityRunway.IsSet() {
+		toSerialize["CapacityRunway"] = o.CapacityRunway.Get()
+	}
+	if o.ClusterExpansion.IsSet() {
+		toSerialize["ClusterExpansion"] = o.ClusterExpansion.Get()
 	}
 	if o.PhysicalItem != nil {
 		toSerialize["PhysicalItem"] = o.PhysicalItem
@@ -491,10 +647,51 @@ func (o RecommendationPhysicalItem) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *RecommendationPhysicalItem) UnmarshalJSON(bytes []byte) (err error) {
+func (o *RecommendationPhysicalItem) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type RecommendationPhysicalItemWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -502,6 +699,8 @@ func (o *RecommendationPhysicalItem) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// Capacity of the physical entity added.
 		Capacity *int64 `json:"Capacity,omitempty"`
+		// Configuration path for the physical entity to be used when ordering it through the Cisco Commerce Workspace.
+		ConfigurationPath *string `json:"ConfigurationPath,omitempty"`
 		// Count of number of items/devices to be added.For example, number of disks to add on a node PhysicalItem in case of HyperFlex Cluster recommendation.
 		Count *int64 `json:"Count,omitempty"`
 		// If the PhysicalItem is new, this is set to true, else false.
@@ -510,33 +709,39 @@ func (o *RecommendationPhysicalItem) UnmarshalJSON(bytes []byte) (err error) {
 		MaxCount *int64 `json:"MaxCount,omitempty"`
 		// Model of the recommended physical device which is externally identifiable.
 		Model *string `json:"Model,omitempty"`
+		// Moid of the managed object which represents the parent physical entity.
+		ParentMoid *string `json:"ParentMoid,omitempty"`
 		// Moid of the managed object which represents the existing physical entity.
 		SourceMoid *string `json:"SourceMoid,omitempty"`
-		// Unit of the new capacity. * `TB` - The Enum value TB represents that the measurement unit is in terabytes. * `MB` - The Enum value MB represents that the measurement unit is in megabytes.
+		// Unit of the new capacity. * `TB` - The Enum value TB represents that the measurement unit is in terabytes. * `MB` - The Enum value MB represents that the measurement unit is in megabytes. * `GB` - The Enum value GB represents that the measurement unit is in gigabytes. * `MHz` - The Enum value MHz represents that the measurement unit is in megahertz. * `GHz` - The Enum value GHz represents that the measurement unit is in gigahertz. * `Percentage` - The Enum value Percentage represents that the expansion request is in the percentage of resource increase. For example, a 20% increase in CPU capacity.
 		Unit *string `json:"Unit,omitempty"`
 		// Uuid of the recommended physical device.
-		Uuid           *string                                   `json:"Uuid,omitempty"`
-		CapacityRunway *RecommendationCapacityRunwayRelationship `json:"CapacityRunway,omitempty"`
+		Uuid             *string                                            `json:"Uuid,omitempty"`
+		CapacityRunway   NullableRecommendationCapacityRunwayRelationship   `json:"CapacityRunway,omitempty"`
+		ClusterExpansion NullableRecommendationClusterExpansionRelationship `json:"ClusterExpansion,omitempty"`
 		// An array of relationships to recommendationPhysicalItem resources.
 		PhysicalItem []RecommendationPhysicalItemRelationship `json:"PhysicalItem,omitempty"`
 	}
 
 	varRecommendationPhysicalItemWithoutEmbeddedStruct := RecommendationPhysicalItemWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varRecommendationPhysicalItemWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varRecommendationPhysicalItemWithoutEmbeddedStruct)
 	if err == nil {
 		varRecommendationPhysicalItem := _RecommendationPhysicalItem{}
 		varRecommendationPhysicalItem.ClassId = varRecommendationPhysicalItemWithoutEmbeddedStruct.ClassId
 		varRecommendationPhysicalItem.ObjectType = varRecommendationPhysicalItemWithoutEmbeddedStruct.ObjectType
 		varRecommendationPhysicalItem.Capacity = varRecommendationPhysicalItemWithoutEmbeddedStruct.Capacity
+		varRecommendationPhysicalItem.ConfigurationPath = varRecommendationPhysicalItemWithoutEmbeddedStruct.ConfigurationPath
 		varRecommendationPhysicalItem.Count = varRecommendationPhysicalItemWithoutEmbeddedStruct.Count
 		varRecommendationPhysicalItem.IsNew = varRecommendationPhysicalItemWithoutEmbeddedStruct.IsNew
 		varRecommendationPhysicalItem.MaxCount = varRecommendationPhysicalItemWithoutEmbeddedStruct.MaxCount
 		varRecommendationPhysicalItem.Model = varRecommendationPhysicalItemWithoutEmbeddedStruct.Model
+		varRecommendationPhysicalItem.ParentMoid = varRecommendationPhysicalItemWithoutEmbeddedStruct.ParentMoid
 		varRecommendationPhysicalItem.SourceMoid = varRecommendationPhysicalItemWithoutEmbeddedStruct.SourceMoid
 		varRecommendationPhysicalItem.Unit = varRecommendationPhysicalItemWithoutEmbeddedStruct.Unit
 		varRecommendationPhysicalItem.Uuid = varRecommendationPhysicalItemWithoutEmbeddedStruct.Uuid
 		varRecommendationPhysicalItem.CapacityRunway = varRecommendationPhysicalItemWithoutEmbeddedStruct.CapacityRunway
+		varRecommendationPhysicalItem.ClusterExpansion = varRecommendationPhysicalItemWithoutEmbeddedStruct.ClusterExpansion
 		varRecommendationPhysicalItem.PhysicalItem = varRecommendationPhysicalItemWithoutEmbeddedStruct.PhysicalItem
 		*o = RecommendationPhysicalItem(varRecommendationPhysicalItem)
 	} else {
@@ -545,7 +750,7 @@ func (o *RecommendationPhysicalItem) UnmarshalJSON(bytes []byte) (err error) {
 
 	varRecommendationPhysicalItem := _RecommendationPhysicalItem{}
 
-	err = json.Unmarshal(bytes, &varRecommendationPhysicalItem)
+	err = json.Unmarshal(data, &varRecommendationPhysicalItem)
 	if err == nil {
 		o.RecommendationAbstractItem = varRecommendationPhysicalItem.RecommendationAbstractItem
 	} else {
@@ -554,18 +759,21 @@ func (o *RecommendationPhysicalItem) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Capacity")
+		delete(additionalProperties, "ConfigurationPath")
 		delete(additionalProperties, "Count")
 		delete(additionalProperties, "IsNew")
 		delete(additionalProperties, "MaxCount")
 		delete(additionalProperties, "Model")
+		delete(additionalProperties, "ParentMoid")
 		delete(additionalProperties, "SourceMoid")
 		delete(additionalProperties, "Unit")
 		delete(additionalProperties, "Uuid")
 		delete(additionalProperties, "CapacityRunway")
+		delete(additionalProperties, "ClusterExpansion")
 		delete(additionalProperties, "PhysicalItem")
 
 		// remove fields from embedded structs

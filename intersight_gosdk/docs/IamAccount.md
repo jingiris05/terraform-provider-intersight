@@ -7,6 +7,8 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "iam.Account"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "iam.Account"]
 **Name** | Pointer to **string** | Name of the Intersight account. By default, name is same as the MoID of the account. | [optional] 
+**Regions** | Pointer to **[]string** |  | [optional] 
+**SingleAdminLockout** | Pointer to **bool** | Indicates if the account is prone to lockout as it has only a single Account Administrator.  An account is prone to lockout if it has only one configured Account Administrator and no user groups configured that  can grant Account Administrator role to dynamic users. | [optional] [readonly] 
 **Status** | Pointer to **string** | Status of the account. To activate the Intersight account, claim a device to the account. | [optional] [readonly] 
 **AppRegistrations** | Pointer to [**[]IamAppRegistrationRelationship**](IamAppRegistrationRelationship.md) | An array of relationships to iamAppRegistration resources. | [optional] [readonly] 
 **DomainGroups** | Pointer to [**[]IamDomainGroupRelationship**](IamDomainGroupRelationship.md) | An array of relationships to iamDomainGroup resources. | [optional] [readonly] 
@@ -16,10 +18,10 @@ Name | Type | Description | Notes
 **Permissions** | Pointer to [**[]IamPermissionRelationship**](IamPermissionRelationship.md) | An array of relationships to iamPermission resources. | [optional] [readonly] 
 **PrivilegeSets** | Pointer to [**[]IamPrivilegeSetRelationship**](IamPrivilegeSetRelationship.md) | An array of relationships to iamPrivilegeSet resources. | [optional] [readonly] 
 **Privileges** | Pointer to [**[]IamPrivilegeRelationship**](IamPrivilegeRelationship.md) | An array of relationships to iamPrivilege resources. | [optional] [readonly] 
-**ResourceLimits** | Pointer to [**IamResourceLimitsRelationship**](IamResourceLimitsRelationship.md) |  | [optional] 
+**ResourceLimits** | Pointer to [**NullableIamResourceLimitsRelationship**](IamResourceLimitsRelationship.md) |  | [optional] 
 **Roles** | Pointer to [**[]IamRoleRelationship**](IamRoleRelationship.md) | An array of relationships to iamRole resources. | [optional] [readonly] 
-**SecurityHolder** | Pointer to [**IamSecurityHolderRelationship**](IamSecurityHolderRelationship.md) |  | [optional] 
-**SessionLimits** | Pointer to [**IamSessionLimitsRelationship**](IamSessionLimitsRelationship.md) |  | [optional] 
+**SecurityHolder** | Pointer to [**NullableIamSecurityHolderRelationship**](IamSecurityHolderRelationship.md) |  | [optional] 
+**SessionLimits** | Pointer to [**NullableIamSessionLimitsRelationship**](IamSessionLimitsRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -104,6 +106,66 @@ SetName sets Name field to given value.
 `func (o *IamAccount) HasName() bool`
 
 HasName returns a boolean if a field has been set.
+
+### GetRegions
+
+`func (o *IamAccount) GetRegions() []string`
+
+GetRegions returns the Regions field if non-nil, zero value otherwise.
+
+### GetRegionsOk
+
+`func (o *IamAccount) GetRegionsOk() (*[]string, bool)`
+
+GetRegionsOk returns a tuple with the Regions field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRegions
+
+`func (o *IamAccount) SetRegions(v []string)`
+
+SetRegions sets Regions field to given value.
+
+### HasRegions
+
+`func (o *IamAccount) HasRegions() bool`
+
+HasRegions returns a boolean if a field has been set.
+
+### SetRegionsNil
+
+`func (o *IamAccount) SetRegionsNil(b bool)`
+
+ SetRegionsNil sets the value for Regions to be an explicit nil
+
+### UnsetRegions
+`func (o *IamAccount) UnsetRegions()`
+
+UnsetRegions ensures that no value is present for Regions, not even an explicit nil
+### GetSingleAdminLockout
+
+`func (o *IamAccount) GetSingleAdminLockout() bool`
+
+GetSingleAdminLockout returns the SingleAdminLockout field if non-nil, zero value otherwise.
+
+### GetSingleAdminLockoutOk
+
+`func (o *IamAccount) GetSingleAdminLockoutOk() (*bool, bool)`
+
+GetSingleAdminLockoutOk returns a tuple with the SingleAdminLockout field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSingleAdminLockout
+
+`func (o *IamAccount) SetSingleAdminLockout(v bool)`
+
+SetSingleAdminLockout sets SingleAdminLockout field to given value.
+
+### HasSingleAdminLockout
+
+`func (o *IamAccount) HasSingleAdminLockout() bool`
+
+HasSingleAdminLockout returns a boolean if a field has been set.
 
 ### GetStatus
 
@@ -435,6 +497,16 @@ SetResourceLimits sets ResourceLimits field to given value.
 
 HasResourceLimits returns a boolean if a field has been set.
 
+### SetResourceLimitsNil
+
+`func (o *IamAccount) SetResourceLimitsNil(b bool)`
+
+ SetResourceLimitsNil sets the value for ResourceLimits to be an explicit nil
+
+### UnsetResourceLimits
+`func (o *IamAccount) UnsetResourceLimits()`
+
+UnsetResourceLimits ensures that no value is present for ResourceLimits, not even an explicit nil
 ### GetRoles
 
 `func (o *IamAccount) GetRoles() []IamRoleRelationship`
@@ -495,6 +567,16 @@ SetSecurityHolder sets SecurityHolder field to given value.
 
 HasSecurityHolder returns a boolean if a field has been set.
 
+### SetSecurityHolderNil
+
+`func (o *IamAccount) SetSecurityHolderNil(b bool)`
+
+ SetSecurityHolderNil sets the value for SecurityHolder to be an explicit nil
+
+### UnsetSecurityHolder
+`func (o *IamAccount) UnsetSecurityHolder()`
+
+UnsetSecurityHolder ensures that no value is present for SecurityHolder, not even an explicit nil
 ### GetSessionLimits
 
 `func (o *IamAccount) GetSessionLimits() IamSessionLimitsRelationship`
@@ -520,6 +602,16 @@ SetSessionLimits sets SessionLimits field to given value.
 
 HasSessionLimits returns a boolean if a field has been set.
 
+### SetSessionLimitsNil
+
+`func (o *IamAccount) SetSessionLimitsNil(b bool)`
+
+ SetSessionLimitsNil sets the value for SessionLimits to be an explicit nil
+
+### UnsetSessionLimits
+`func (o *IamAccount) UnsetSessionLimits()`
+
+UnsetSessionLimits ensures that no value is present for SessionLimits, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

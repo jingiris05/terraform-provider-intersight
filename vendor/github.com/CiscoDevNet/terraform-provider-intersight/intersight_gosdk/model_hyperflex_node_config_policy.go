@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HyperflexNodeConfigPolicy type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexNodeConfigPolicy{}
 
 // HyperflexNodeConfigPolicy A policy specifying node details such as management and storage data IP ranges. For HyperFlex Edge, storage data IP range is pre-defined.
 type HyperflexNodeConfigPolicy struct {
@@ -30,10 +34,10 @@ type HyperflexNodeConfigPolicy struct {
 	MgmtIpRange              NullableHyperflexIpAddrRange `json:"MgmtIpRange,omitempty"`
 	// The node name prefix that is used to automatically generate the default hostname for each server. A dash (-) will be appended to the prefix followed by the node number to form a hostname. This default naming scheme can be manually overridden in the node configuration. The maximum length of a prefix is 60, must only contain alphanumeric characters or dash (-), and must start with an alphanumeric character.
 	// Deprecated
-	NodeNamePrefix *string `json:"NodeNamePrefix,omitempty"`
+	NodeNamePrefix *string `json:"NodeNamePrefix,omitempty" validate:"regexp=^$|^[a-zA-Z0-9][a-zA-Z0-9-]{1,59}$"`
 	// An array of relationships to hyperflexClusterProfile resources.
-	ClusterProfiles      []HyperflexClusterProfileRelationship `json:"ClusterProfiles,omitempty"`
-	Organization         *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	ClusterProfiles      []HyperflexClusterProfileRelationship        `json:"ClusterProfiles,omitempty"`
+	Organization         NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -86,6 +90,11 @@ func (o *HyperflexNodeConfigPolicy) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.NodeConfigPolicy" of the ClassId field.
+func (o *HyperflexNodeConfigPolicy) GetDefaultClassId() interface{} {
+	return "hyperflex.NodeConfigPolicy"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexNodeConfigPolicy) GetObjectType() string {
 	if o == nil {
@@ -110,9 +119,14 @@ func (o *HyperflexNodeConfigPolicy) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.NodeConfigPolicy" of the ObjectType field.
+func (o *HyperflexNodeConfigPolicy) GetDefaultObjectType() interface{} {
+	return "hyperflex.NodeConfigPolicy"
+}
+
 // GetDataIpRange returns the DataIpRange field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexNodeConfigPolicy) GetDataIpRange() HyperflexIpAddrRange {
-	if o == nil || o.DataIpRange.Get() == nil {
+	if o == nil || IsNil(o.DataIpRange.Get()) {
 		var ret HyperflexIpAddrRange
 		return ret
 	}
@@ -155,7 +169,7 @@ func (o *HyperflexNodeConfigPolicy) UnsetDataIpRange() {
 
 // GetHxdpIpRange returns the HxdpIpRange field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexNodeConfigPolicy) GetHxdpIpRange() HyperflexIpAddrRange {
-	if o == nil || o.HxdpIpRange.Get() == nil {
+	if o == nil || IsNil(o.HxdpIpRange.Get()) {
 		var ret HyperflexIpAddrRange
 		return ret
 	}
@@ -198,7 +212,7 @@ func (o *HyperflexNodeConfigPolicy) UnsetHxdpIpRange() {
 
 // GetHypervisorControlIpRange returns the HypervisorControlIpRange field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexNodeConfigPolicy) GetHypervisorControlIpRange() HyperflexIpAddrRange {
-	if o == nil || o.HypervisorControlIpRange.Get() == nil {
+	if o == nil || IsNil(o.HypervisorControlIpRange.Get()) {
 		var ret HyperflexIpAddrRange
 		return ret
 	}
@@ -241,7 +255,7 @@ func (o *HyperflexNodeConfigPolicy) UnsetHypervisorControlIpRange() {
 
 // GetMgmtIpRange returns the MgmtIpRange field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexNodeConfigPolicy) GetMgmtIpRange() HyperflexIpAddrRange {
-	if o == nil || o.MgmtIpRange.Get() == nil {
+	if o == nil || IsNil(o.MgmtIpRange.Get()) {
 		var ret HyperflexIpAddrRange
 		return ret
 	}
@@ -285,7 +299,7 @@ func (o *HyperflexNodeConfigPolicy) UnsetMgmtIpRange() {
 // GetNodeNamePrefix returns the NodeNamePrefix field value if set, zero value otherwise.
 // Deprecated
 func (o *HyperflexNodeConfigPolicy) GetNodeNamePrefix() string {
-	if o == nil || o.NodeNamePrefix == nil {
+	if o == nil || IsNil(o.NodeNamePrefix) {
 		var ret string
 		return ret
 	}
@@ -296,7 +310,7 @@ func (o *HyperflexNodeConfigPolicy) GetNodeNamePrefix() string {
 // and a boolean to check if the value has been set.
 // Deprecated
 func (o *HyperflexNodeConfigPolicy) GetNodeNamePrefixOk() (*string, bool) {
-	if o == nil || o.NodeNamePrefix == nil {
+	if o == nil || IsNil(o.NodeNamePrefix) {
 		return nil, false
 	}
 	return o.NodeNamePrefix, true
@@ -304,7 +318,7 @@ func (o *HyperflexNodeConfigPolicy) GetNodeNamePrefixOk() (*string, bool) {
 
 // HasNodeNamePrefix returns a boolean if a field has been set.
 func (o *HyperflexNodeConfigPolicy) HasNodeNamePrefix() bool {
-	if o != nil && o.NodeNamePrefix != nil {
+	if o != nil && !IsNil(o.NodeNamePrefix) {
 		return true
 	}
 
@@ -330,7 +344,7 @@ func (o *HyperflexNodeConfigPolicy) GetClusterProfiles() []HyperflexClusterProfi
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexNodeConfigPolicy) GetClusterProfilesOk() ([]HyperflexClusterProfileRelationship, bool) {
-	if o == nil || o.ClusterProfiles == nil {
+	if o == nil || IsNil(o.ClusterProfiles) {
 		return nil, false
 	}
 	return o.ClusterProfiles, true
@@ -338,7 +352,7 @@ func (o *HyperflexNodeConfigPolicy) GetClusterProfilesOk() ([]HyperflexClusterPr
 
 // HasClusterProfiles returns a boolean if a field has been set.
 func (o *HyperflexNodeConfigPolicy) HasClusterProfiles() bool {
-	if o != nil && o.ClusterProfiles != nil {
+	if o != nil && !IsNil(o.ClusterProfiles) {
 		return true
 	}
 
@@ -350,54 +364,75 @@ func (o *HyperflexNodeConfigPolicy) SetClusterProfiles(v []HyperflexClusterProfi
 	o.ClusterProfiles = v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexNodeConfigPolicy) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexNodeConfigPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *HyperflexNodeConfigPolicy) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *HyperflexNodeConfigPolicy) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *HyperflexNodeConfigPolicy) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *HyperflexNodeConfigPolicy) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 func (o HyperflexNodeConfigPolicy) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexNodeConfigPolicy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicy, errPolicyAbstractPolicy := json.Marshal(o.PolicyAbstractPolicy)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
 	errPolicyAbstractPolicy = json.Unmarshal([]byte(serializedPolicyAbstractPolicy), &toSerialize)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.DataIpRange.IsSet() {
 		toSerialize["DataIpRange"] = o.DataIpRange.Get()
 	}
@@ -410,24 +445,65 @@ func (o HyperflexNodeConfigPolicy) MarshalJSON() ([]byte, error) {
 	if o.MgmtIpRange.IsSet() {
 		toSerialize["MgmtIpRange"] = o.MgmtIpRange.Get()
 	}
-	if o.NodeNamePrefix != nil {
+	if !IsNil(o.NodeNamePrefix) {
 		toSerialize["NodeNamePrefix"] = o.NodeNamePrefix
 	}
 	if o.ClusterProfiles != nil {
 		toSerialize["ClusterProfiles"] = o.ClusterProfiles
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexNodeConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexNodeConfigPolicy) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexNodeConfigPolicyWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -439,15 +515,15 @@ func (o *HyperflexNodeConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		MgmtIpRange              NullableHyperflexIpAddrRange `json:"MgmtIpRange,omitempty"`
 		// The node name prefix that is used to automatically generate the default hostname for each server. A dash (-) will be appended to the prefix followed by the node number to form a hostname. This default naming scheme can be manually overridden in the node configuration. The maximum length of a prefix is 60, must only contain alphanumeric characters or dash (-), and must start with an alphanumeric character.
 		// Deprecated
-		NodeNamePrefix *string `json:"NodeNamePrefix,omitempty"`
+		NodeNamePrefix *string `json:"NodeNamePrefix,omitempty" validate:"regexp=^$|^[a-zA-Z0-9][a-zA-Z0-9-]{1,59}$"`
 		// An array of relationships to hyperflexClusterProfile resources.
-		ClusterProfiles []HyperflexClusterProfileRelationship `json:"ClusterProfiles,omitempty"`
-		Organization    *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		ClusterProfiles []HyperflexClusterProfileRelationship        `json:"ClusterProfiles,omitempty"`
+		Organization    NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	}
 
 	varHyperflexNodeConfigPolicyWithoutEmbeddedStruct := HyperflexNodeConfigPolicyWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexNodeConfigPolicyWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexNodeConfigPolicyWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexNodeConfigPolicy := _HyperflexNodeConfigPolicy{}
 		varHyperflexNodeConfigPolicy.ClassId = varHyperflexNodeConfigPolicyWithoutEmbeddedStruct.ClassId
@@ -466,7 +542,7 @@ func (o *HyperflexNodeConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHyperflexNodeConfigPolicy := _HyperflexNodeConfigPolicy{}
 
-	err = json.Unmarshal(bytes, &varHyperflexNodeConfigPolicy)
+	err = json.Unmarshal(data, &varHyperflexNodeConfigPolicy)
 	if err == nil {
 		o.PolicyAbstractPolicy = varHyperflexNodeConfigPolicy.PolicyAbstractPolicy
 	} else {
@@ -475,7 +551,7 @@ func (o *HyperflexNodeConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "DataIpRange")

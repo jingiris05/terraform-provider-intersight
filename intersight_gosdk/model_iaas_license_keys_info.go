@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the IaasLicenseKeysInfo type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IaasLicenseKeysInfo{}
 
 // IaasLicenseKeysInfo License list with the utilization info for UCSD.
 type IaasLicenseKeysInfo struct {
@@ -84,6 +88,11 @@ func (o *IaasLicenseKeysInfo) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "iaas.LicenseKeysInfo" of the ClassId field.
+func (o *IaasLicenseKeysInfo) GetDefaultClassId() interface{} {
+	return "iaas.LicenseKeysInfo"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IaasLicenseKeysInfo) GetObjectType() string {
 	if o == nil {
@@ -108,9 +117,14 @@ func (o *IaasLicenseKeysInfo) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "iaas.LicenseKeysInfo" of the ObjectType field.
+func (o *IaasLicenseKeysInfo) GetDefaultObjectType() interface{} {
+	return "iaas.LicenseKeysInfo"
+}
+
 // GetCount returns the Count field value if set, zero value otherwise.
 func (o *IaasLicenseKeysInfo) GetCount() int64 {
-	if o == nil || o.Count == nil {
+	if o == nil || IsNil(o.Count) {
 		var ret int64
 		return ret
 	}
@@ -120,7 +134,7 @@ func (o *IaasLicenseKeysInfo) GetCount() int64 {
 // GetCountOk returns a tuple with the Count field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IaasLicenseKeysInfo) GetCountOk() (*int64, bool) {
-	if o == nil || o.Count == nil {
+	if o == nil || IsNil(o.Count) {
 		return nil, false
 	}
 	return o.Count, true
@@ -128,7 +142,7 @@ func (o *IaasLicenseKeysInfo) GetCountOk() (*int64, bool) {
 
 // HasCount returns a boolean if a field has been set.
 func (o *IaasLicenseKeysInfo) HasCount() bool {
-	if o != nil && o.Count != nil {
+	if o != nil && !IsNil(o.Count) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *IaasLicenseKeysInfo) SetCount(v int64) {
 
 // GetExpirationDate returns the ExpirationDate field value if set, zero value otherwise.
 func (o *IaasLicenseKeysInfo) GetExpirationDate() string {
-	if o == nil || o.ExpirationDate == nil {
+	if o == nil || IsNil(o.ExpirationDate) {
 		var ret string
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *IaasLicenseKeysInfo) GetExpirationDate() string {
 // GetExpirationDateOk returns a tuple with the ExpirationDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IaasLicenseKeysInfo) GetExpirationDateOk() (*string, bool) {
-	if o == nil || o.ExpirationDate == nil {
+	if o == nil || IsNil(o.ExpirationDate) {
 		return nil, false
 	}
 	return o.ExpirationDate, true
@@ -160,7 +174,7 @@ func (o *IaasLicenseKeysInfo) GetExpirationDateOk() (*string, bool) {
 
 // HasExpirationDate returns a boolean if a field has been set.
 func (o *IaasLicenseKeysInfo) HasExpirationDate() bool {
-	if o != nil && o.ExpirationDate != nil {
+	if o != nil && !IsNil(o.ExpirationDate) {
 		return true
 	}
 
@@ -174,7 +188,7 @@ func (o *IaasLicenseKeysInfo) SetExpirationDate(v string) {
 
 // GetLicenseId returns the LicenseId field value if set, zero value otherwise.
 func (o *IaasLicenseKeysInfo) GetLicenseId() string {
-	if o == nil || o.LicenseId == nil {
+	if o == nil || IsNil(o.LicenseId) {
 		var ret string
 		return ret
 	}
@@ -184,7 +198,7 @@ func (o *IaasLicenseKeysInfo) GetLicenseId() string {
 // GetLicenseIdOk returns a tuple with the LicenseId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IaasLicenseKeysInfo) GetLicenseIdOk() (*string, bool) {
-	if o == nil || o.LicenseId == nil {
+	if o == nil || IsNil(o.LicenseId) {
 		return nil, false
 	}
 	return o.LicenseId, true
@@ -192,7 +206,7 @@ func (o *IaasLicenseKeysInfo) GetLicenseIdOk() (*string, bool) {
 
 // HasLicenseId returns a boolean if a field has been set.
 func (o *IaasLicenseKeysInfo) HasLicenseId() bool {
-	if o != nil && o.LicenseId != nil {
+	if o != nil && !IsNil(o.LicenseId) {
 		return true
 	}
 
@@ -206,7 +220,7 @@ func (o *IaasLicenseKeysInfo) SetLicenseId(v string) {
 
 // GetPid returns the Pid field value if set, zero value otherwise.
 func (o *IaasLicenseKeysInfo) GetPid() string {
-	if o == nil || o.Pid == nil {
+	if o == nil || IsNil(o.Pid) {
 		var ret string
 		return ret
 	}
@@ -216,7 +230,7 @@ func (o *IaasLicenseKeysInfo) GetPid() string {
 // GetPidOk returns a tuple with the Pid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IaasLicenseKeysInfo) GetPidOk() (*string, bool) {
-	if o == nil || o.Pid == nil {
+	if o == nil || IsNil(o.Pid) {
 		return nil, false
 	}
 	return o.Pid, true
@@ -224,7 +238,7 @@ func (o *IaasLicenseKeysInfo) GetPidOk() (*string, bool) {
 
 // HasPid returns a boolean if a field has been set.
 func (o *IaasLicenseKeysInfo) HasPid() bool {
-	if o != nil && o.Pid != nil {
+	if o != nil && !IsNil(o.Pid) {
 		return true
 	}
 
@@ -237,31 +251,41 @@ func (o *IaasLicenseKeysInfo) SetPid(v string) {
 }
 
 func (o IaasLicenseKeysInfo) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IaasLicenseKeysInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Count != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Count) {
 		toSerialize["Count"] = o.Count
 	}
-	if o.ExpirationDate != nil {
+	if !IsNil(o.ExpirationDate) {
 		toSerialize["ExpirationDate"] = o.ExpirationDate
 	}
-	if o.LicenseId != nil {
+	if !IsNil(o.LicenseId) {
 		toSerialize["LicenseId"] = o.LicenseId
 	}
-	if o.Pid != nil {
+	if !IsNil(o.Pid) {
 		toSerialize["Pid"] = o.Pid
 	}
 
@@ -269,10 +293,51 @@ func (o IaasLicenseKeysInfo) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IaasLicenseKeysInfo) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IaasLicenseKeysInfo) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IaasLicenseKeysInfoWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -290,7 +355,7 @@ func (o *IaasLicenseKeysInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIaasLicenseKeysInfoWithoutEmbeddedStruct := IaasLicenseKeysInfoWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIaasLicenseKeysInfoWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIaasLicenseKeysInfoWithoutEmbeddedStruct)
 	if err == nil {
 		varIaasLicenseKeysInfo := _IaasLicenseKeysInfo{}
 		varIaasLicenseKeysInfo.ClassId = varIaasLicenseKeysInfoWithoutEmbeddedStruct.ClassId
@@ -306,7 +371,7 @@ func (o *IaasLicenseKeysInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIaasLicenseKeysInfo := _IaasLicenseKeysInfo{}
 
-	err = json.Unmarshal(bytes, &varIaasLicenseKeysInfo)
+	err = json.Unmarshal(data, &varIaasLicenseKeysInfo)
 	if err == nil {
 		o.MoBaseComplexType = varIaasLicenseKeysInfo.MoBaseComplexType
 	} else {
@@ -315,7 +380,7 @@ func (o *IaasLicenseKeysInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Count")

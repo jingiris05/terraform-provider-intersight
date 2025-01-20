@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VnicEthIfInventory type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VnicEthIfInventory{}
 
 // VnicEthIfInventory Virtual Ethernet Interface.
 type VnicEthIfInventory struct {
@@ -31,40 +35,47 @@ type VnicEthIfInventory struct {
 	IscsiIpV4AddressAllocationType *string                  `json:"IscsiIpV4AddressAllocationType,omitempty"`
 	IscsiIpV4Config                NullableIppoolIpV4Config `json:"IscsiIpV4Config,omitempty"`
 	// IP address associated to the vNIC.
-	IscsiIpv4Address *string `json:"IscsiIpv4Address,omitempty"`
+	IscsiIpv4Address *string `json:"IscsiIpv4Address,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	// The MAC address that is assigned to the vNIC based on the MAC pool that has been assigned to the LAN Connectivity Policy.
 	MacAddress *string `json:"MacAddress,omitempty"`
 	// Type of allocation selected to assign a MAC address for the vnic. * `POOL` - The user selects a pool from which the mac/wwn address will be leased for the Virtual Interface. * `STATIC` - The user assigns a static mac/wwn address for the Virtual Interface.
 	MacAddressType *string `json:"MacAddressType,omitempty"`
 	// Name of the virtual ethernet interface.
-	Name *string `json:"Name,omitempty"`
-	// The order in which the virtual interface is brought up. The order assigned to an interface should be unique for all the Ethernet and Fibre-Channel interfaces on each PCI link on a VIC adapter. The maximum value of PCI order is limited by the number of virtual interfaces (Ethernet and Fibre-Channel) on each PCI link on a VIC adapter. All VIC adapters have a single PCI link except VIC 1385 which has two.
-	Order *int64 `json:"Order,omitempty"`
+	Name *string `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9-._:]+$"`
+	// The order in which the virtual interface is brought up. The order assigned to an interface should be unique for all the Ethernet and Fibre-Channel interfaces on each PCI link on a VIC adapter. The order should start from zero with no overlaps. The maximum value of PCI order is limited by the number of virtual interfaces (Ethernet and Fibre-Channel) on each PCI link on a VIC adapter. All VIC adapters have a single PCI link except VIC 1340, VIC 1380 and VIC 1385 which have two.
+	Order          *int64   `json:"Order,omitempty"`
+	OverriddenList []string `json:"OverriddenList,omitempty"`
 	// Pingroup name associated to vNIC for static pinning. LCP deploy will resolve pingroup name and fetches the correspoding uplink port/port channel to pin the vNIC traffic.
-	PinGroupName *string                       `json:"PinGroupName,omitempty"`
-	Placement    NullableVnicPlacementSettings `json:"Placement,omitempty"`
+	PinGroupName  *string                       `json:"PinGroupName,omitempty" validate:"regexp=^$|^[a-zA-Z0-9_.:-]{1,64}$"`
+	Placement     NullableVnicPlacementSettings `json:"Placement,omitempty"`
+	SriovSettings NullableVnicSriovSettings     `json:"SriovSettings,omitempty"`
 	// The Standby VIF Id is applicable for failover enabled vNICS. It should be the same as the channel number of the standby vethernet created on switch in order to set up the standby data path.
 	StandbyVifId *int64 `json:"StandbyVifId,omitempty"`
 	// The MAC address must be in hexadecimal format xx:xx:xx:xx:xx:xx. To ensure uniqueness of MACs in the LAN fabric, you are strongly encouraged to use the following MAC prefix 00:25:B5:xx:xx:xx.
-	StaticMacAddress *string                   `json:"StaticMacAddress,omitempty"`
-	UsnicSettings    NullableVnicUsnicSettings `json:"UsnicSettings,omitempty"`
+	StaticMacAddress   *string                 `json:"StaticMacAddress,omitempty"`
+	TemplateActions    []MotemplateActionEntry `json:"TemplateActions,omitempty"`
+	TemplateSyncErrors []MotemplateSyncError   `json:"TemplateSyncErrors,omitempty"`
+	// The sync status of the current MO wrt the attached Template MO. * `None` - The Enum value represents that the object is not attached to any template. * `OK` - The Enum value represents that the object values are in sync with attached template. * `Scheduled` - The Enum value represents that the object sync from attached template is scheduled from template. * `InProgress` - The Enum value represents that the object sync with the attached template is in progress. * `OutOfSync` - The Enum value represents that the object values are not in sync with attached template.
+	TemplateSyncStatus *string                   `json:"TemplateSyncStatus,omitempty"`
+	UsnicSettings      NullableVnicUsnicSettings `json:"UsnicSettings,omitempty"`
 	// The Vif Id should be same as the channel number of the vethernet created on switch in order to set up the data path. The property is applicable only for FI attached servers where a vethernet is created on the switch for every vNIC.
-	VifId                         *int64                                              `json:"VifId,omitempty"`
-	VmqSettings                   NullableVnicVmqSettings                             `json:"VmqSettings,omitempty"`
-	EthAdapterPolicy              *VnicEthAdapterPolicyInventoryRelationship          `json:"EthAdapterPolicy,omitempty"`
-	EthNetworkPolicy              *VnicEthNetworkPolicyInventoryRelationship          `json:"EthNetworkPolicy,omitempty"`
-	EthQosPolicy                  *VnicEthQosPolicyInventoryRelationship              `json:"EthQosPolicy,omitempty"`
-	FabricEthNetworkControlPolicy *FabricEthNetworkControlPolicyInventoryRelationship `json:"FabricEthNetworkControlPolicy,omitempty"`
+	VifId                         *int64                                                     `json:"VifId,omitempty"`
+	VmqSettings                   NullableVnicVmqSettings                                    `json:"VmqSettings,omitempty"`
+	EthAdapterPolicy              NullableVnicEthAdapterPolicyInventoryRelationship          `json:"EthAdapterPolicy,omitempty"`
+	EthNetworkPolicy              NullableVnicEthNetworkPolicyInventoryRelationship          `json:"EthNetworkPolicy,omitempty"`
+	EthQosPolicy                  NullableVnicEthQosPolicyInventoryRelationship              `json:"EthQosPolicy,omitempty"`
+	FabricEthNetworkControlPolicy NullableFabricEthNetworkControlPolicyInventoryRelationship `json:"FabricEthNetworkControlPolicy,omitempty"`
 	// An array of relationships to fabricEthNetworkGroupPolicyInventory resources.
-	FabricEthNetworkGroupPolicy []FabricEthNetworkGroupPolicyInventoryRelationship `json:"FabricEthNetworkGroupPolicy,omitempty"`
-	IpLease                     *IppoolIpLeaseRelationship                         `json:"IpLease,omitempty"`
-	IscsiBootPolicy             *VnicIscsiBootPolicyInventoryRelationship          `json:"IscsiBootPolicy,omitempty"`
-	LanConnectivityPolicy       *VnicLanConnectivityPolicyInventoryRelationship    `json:"LanConnectivityPolicy,omitempty"`
-	LcpVnic                     *VnicEthIfInventoryRelationship                    `json:"LcpVnic,omitempty"`
-	MacLease                    *MacpoolLeaseRelationship                          `json:"MacLease,omitempty"`
-	MacPool                     *MacpoolPoolRelationship                           `json:"MacPool,omitempty"`
+	FabricEthNetworkGroupPolicy []FabricEthNetworkGroupPolicyInventoryRelationship     `json:"FabricEthNetworkGroupPolicy,omitempty"`
+	IpLease                     NullableIppoolIpLeaseRelationship                      `json:"IpLease,omitempty"`
+	IscsiBootPolicy             NullableVnicIscsiBootPolicyInventoryRelationship       `json:"IscsiBootPolicy,omitempty"`
+	LanConnectivityPolicy       NullableVnicLanConnectivityPolicyInventoryRelationship `json:"LanConnectivityPolicy,omitempty"`
+	LcpVnic                     NullableVnicEthIfInventoryRelationship                 `json:"LcpVnic,omitempty"`
+	MacLease                    NullableMacpoolLeaseRelationship                       `json:"MacLease,omitempty"`
+	MacPool                     NullableMacpoolPoolRelationship                        `json:"MacPool,omitempty"`
 	// An array of relationships to vnicEthIfInventory resources.
-	SpVnics              []VnicEthIfInventoryRelationship `json:"SpVnics,omitempty"`
+	SpVnics              []VnicEthIfInventoryRelationship     `json:"SpVnics,omitempty"`
+	SrcTemplate          NullableVnicVnicTemplateRelationship `json:"SrcTemplate,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -117,6 +128,11 @@ func (o *VnicEthIfInventory) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "vnic.EthIfInventory" of the ClassId field.
+func (o *VnicEthIfInventory) GetDefaultClassId() interface{} {
+	return "vnic.EthIfInventory"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VnicEthIfInventory) GetObjectType() string {
 	if o == nil {
@@ -141,9 +157,14 @@ func (o *VnicEthIfInventory) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "vnic.EthIfInventory" of the ObjectType field.
+func (o *VnicEthIfInventory) GetDefaultObjectType() interface{} {
+	return "vnic.EthIfInventory"
+}
+
 // GetCdn returns the Cdn field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetCdn() VnicCdn {
-	if o == nil || o.Cdn.Get() == nil {
+	if o == nil || IsNil(o.Cdn.Get()) {
 		var ret VnicCdn
 		return ret
 	}
@@ -186,7 +207,7 @@ func (o *VnicEthIfInventory) UnsetCdn() {
 
 // GetFailoverEnabled returns the FailoverEnabled field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetFailoverEnabled() bool {
-	if o == nil || o.FailoverEnabled == nil {
+	if o == nil || IsNil(o.FailoverEnabled) {
 		var ret bool
 		return ret
 	}
@@ -196,7 +217,7 @@ func (o *VnicEthIfInventory) GetFailoverEnabled() bool {
 // GetFailoverEnabledOk returns a tuple with the FailoverEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetFailoverEnabledOk() (*bool, bool) {
-	if o == nil || o.FailoverEnabled == nil {
+	if o == nil || IsNil(o.FailoverEnabled) {
 		return nil, false
 	}
 	return o.FailoverEnabled, true
@@ -204,7 +225,7 @@ func (o *VnicEthIfInventory) GetFailoverEnabledOk() (*bool, bool) {
 
 // HasFailoverEnabled returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasFailoverEnabled() bool {
-	if o != nil && o.FailoverEnabled != nil {
+	if o != nil && !IsNil(o.FailoverEnabled) {
 		return true
 	}
 
@@ -218,7 +239,7 @@ func (o *VnicEthIfInventory) SetFailoverEnabled(v bool) {
 
 // GetIscsiIpV4AddressAllocationType returns the IscsiIpV4AddressAllocationType field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetIscsiIpV4AddressAllocationType() string {
-	if o == nil || o.IscsiIpV4AddressAllocationType == nil {
+	if o == nil || IsNil(o.IscsiIpV4AddressAllocationType) {
 		var ret string
 		return ret
 	}
@@ -228,7 +249,7 @@ func (o *VnicEthIfInventory) GetIscsiIpV4AddressAllocationType() string {
 // GetIscsiIpV4AddressAllocationTypeOk returns a tuple with the IscsiIpV4AddressAllocationType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetIscsiIpV4AddressAllocationTypeOk() (*string, bool) {
-	if o == nil || o.IscsiIpV4AddressAllocationType == nil {
+	if o == nil || IsNil(o.IscsiIpV4AddressAllocationType) {
 		return nil, false
 	}
 	return o.IscsiIpV4AddressAllocationType, true
@@ -236,7 +257,7 @@ func (o *VnicEthIfInventory) GetIscsiIpV4AddressAllocationTypeOk() (*string, boo
 
 // HasIscsiIpV4AddressAllocationType returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasIscsiIpV4AddressAllocationType() bool {
-	if o != nil && o.IscsiIpV4AddressAllocationType != nil {
+	if o != nil && !IsNil(o.IscsiIpV4AddressAllocationType) {
 		return true
 	}
 
@@ -250,7 +271,7 @@ func (o *VnicEthIfInventory) SetIscsiIpV4AddressAllocationType(v string) {
 
 // GetIscsiIpV4Config returns the IscsiIpV4Config field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetIscsiIpV4Config() IppoolIpV4Config {
-	if o == nil || o.IscsiIpV4Config.Get() == nil {
+	if o == nil || IsNil(o.IscsiIpV4Config.Get()) {
 		var ret IppoolIpV4Config
 		return ret
 	}
@@ -293,7 +314,7 @@ func (o *VnicEthIfInventory) UnsetIscsiIpV4Config() {
 
 // GetIscsiIpv4Address returns the IscsiIpv4Address field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetIscsiIpv4Address() string {
-	if o == nil || o.IscsiIpv4Address == nil {
+	if o == nil || IsNil(o.IscsiIpv4Address) {
 		var ret string
 		return ret
 	}
@@ -303,7 +324,7 @@ func (o *VnicEthIfInventory) GetIscsiIpv4Address() string {
 // GetIscsiIpv4AddressOk returns a tuple with the IscsiIpv4Address field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetIscsiIpv4AddressOk() (*string, bool) {
-	if o == nil || o.IscsiIpv4Address == nil {
+	if o == nil || IsNil(o.IscsiIpv4Address) {
 		return nil, false
 	}
 	return o.IscsiIpv4Address, true
@@ -311,7 +332,7 @@ func (o *VnicEthIfInventory) GetIscsiIpv4AddressOk() (*string, bool) {
 
 // HasIscsiIpv4Address returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasIscsiIpv4Address() bool {
-	if o != nil && o.IscsiIpv4Address != nil {
+	if o != nil && !IsNil(o.IscsiIpv4Address) {
 		return true
 	}
 
@@ -325,7 +346,7 @@ func (o *VnicEthIfInventory) SetIscsiIpv4Address(v string) {
 
 // GetMacAddress returns the MacAddress field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetMacAddress() string {
-	if o == nil || o.MacAddress == nil {
+	if o == nil || IsNil(o.MacAddress) {
 		var ret string
 		return ret
 	}
@@ -335,7 +356,7 @@ func (o *VnicEthIfInventory) GetMacAddress() string {
 // GetMacAddressOk returns a tuple with the MacAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetMacAddressOk() (*string, bool) {
-	if o == nil || o.MacAddress == nil {
+	if o == nil || IsNil(o.MacAddress) {
 		return nil, false
 	}
 	return o.MacAddress, true
@@ -343,7 +364,7 @@ func (o *VnicEthIfInventory) GetMacAddressOk() (*string, bool) {
 
 // HasMacAddress returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasMacAddress() bool {
-	if o != nil && o.MacAddress != nil {
+	if o != nil && !IsNil(o.MacAddress) {
 		return true
 	}
 
@@ -357,7 +378,7 @@ func (o *VnicEthIfInventory) SetMacAddress(v string) {
 
 // GetMacAddressType returns the MacAddressType field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetMacAddressType() string {
-	if o == nil || o.MacAddressType == nil {
+	if o == nil || IsNil(o.MacAddressType) {
 		var ret string
 		return ret
 	}
@@ -367,7 +388,7 @@ func (o *VnicEthIfInventory) GetMacAddressType() string {
 // GetMacAddressTypeOk returns a tuple with the MacAddressType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetMacAddressTypeOk() (*string, bool) {
-	if o == nil || o.MacAddressType == nil {
+	if o == nil || IsNil(o.MacAddressType) {
 		return nil, false
 	}
 	return o.MacAddressType, true
@@ -375,7 +396,7 @@ func (o *VnicEthIfInventory) GetMacAddressTypeOk() (*string, bool) {
 
 // HasMacAddressType returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasMacAddressType() bool {
-	if o != nil && o.MacAddressType != nil {
+	if o != nil && !IsNil(o.MacAddressType) {
 		return true
 	}
 
@@ -389,7 +410,7 @@ func (o *VnicEthIfInventory) SetMacAddressType(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -399,7 +420,7 @@ func (o *VnicEthIfInventory) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -407,7 +428,7 @@ func (o *VnicEthIfInventory) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -421,7 +442,7 @@ func (o *VnicEthIfInventory) SetName(v string) {
 
 // GetOrder returns the Order field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetOrder() int64 {
-	if o == nil || o.Order == nil {
+	if o == nil || IsNil(o.Order) {
 		var ret int64
 		return ret
 	}
@@ -431,7 +452,7 @@ func (o *VnicEthIfInventory) GetOrder() int64 {
 // GetOrderOk returns a tuple with the Order field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetOrderOk() (*int64, bool) {
-	if o == nil || o.Order == nil {
+	if o == nil || IsNil(o.Order) {
 		return nil, false
 	}
 	return o.Order, true
@@ -439,7 +460,7 @@ func (o *VnicEthIfInventory) GetOrderOk() (*int64, bool) {
 
 // HasOrder returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasOrder() bool {
-	if o != nil && o.Order != nil {
+	if o != nil && !IsNil(o.Order) {
 		return true
 	}
 
@@ -451,9 +472,42 @@ func (o *VnicEthIfInventory) SetOrder(v int64) {
 	o.Order = &v
 }
 
+// GetOverriddenList returns the OverriddenList field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VnicEthIfInventory) GetOverriddenList() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.OverriddenList
+}
+
+// GetOverriddenListOk returns a tuple with the OverriddenList field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VnicEthIfInventory) GetOverriddenListOk() ([]string, bool) {
+	if o == nil || IsNil(o.OverriddenList) {
+		return nil, false
+	}
+	return o.OverriddenList, true
+}
+
+// HasOverriddenList returns a boolean if a field has been set.
+func (o *VnicEthIfInventory) HasOverriddenList() bool {
+	if o != nil && !IsNil(o.OverriddenList) {
+		return true
+	}
+
+	return false
+}
+
+// SetOverriddenList gets a reference to the given []string and assigns it to the OverriddenList field.
+func (o *VnicEthIfInventory) SetOverriddenList(v []string) {
+	o.OverriddenList = v
+}
+
 // GetPinGroupName returns the PinGroupName field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetPinGroupName() string {
-	if o == nil || o.PinGroupName == nil {
+	if o == nil || IsNil(o.PinGroupName) {
 		var ret string
 		return ret
 	}
@@ -463,7 +517,7 @@ func (o *VnicEthIfInventory) GetPinGroupName() string {
 // GetPinGroupNameOk returns a tuple with the PinGroupName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetPinGroupNameOk() (*string, bool) {
-	if o == nil || o.PinGroupName == nil {
+	if o == nil || IsNil(o.PinGroupName) {
 		return nil, false
 	}
 	return o.PinGroupName, true
@@ -471,7 +525,7 @@ func (o *VnicEthIfInventory) GetPinGroupNameOk() (*string, bool) {
 
 // HasPinGroupName returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasPinGroupName() bool {
-	if o != nil && o.PinGroupName != nil {
+	if o != nil && !IsNil(o.PinGroupName) {
 		return true
 	}
 
@@ -485,7 +539,7 @@ func (o *VnicEthIfInventory) SetPinGroupName(v string) {
 
 // GetPlacement returns the Placement field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetPlacement() VnicPlacementSettings {
-	if o == nil || o.Placement.Get() == nil {
+	if o == nil || IsNil(o.Placement.Get()) {
 		var ret VnicPlacementSettings
 		return ret
 	}
@@ -526,9 +580,52 @@ func (o *VnicEthIfInventory) UnsetPlacement() {
 	o.Placement.Unset()
 }
 
+// GetSriovSettings returns the SriovSettings field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VnicEthIfInventory) GetSriovSettings() VnicSriovSettings {
+	if o == nil || IsNil(o.SriovSettings.Get()) {
+		var ret VnicSriovSettings
+		return ret
+	}
+	return *o.SriovSettings.Get()
+}
+
+// GetSriovSettingsOk returns a tuple with the SriovSettings field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VnicEthIfInventory) GetSriovSettingsOk() (*VnicSriovSettings, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SriovSettings.Get(), o.SriovSettings.IsSet()
+}
+
+// HasSriovSettings returns a boolean if a field has been set.
+func (o *VnicEthIfInventory) HasSriovSettings() bool {
+	if o != nil && o.SriovSettings.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSriovSettings gets a reference to the given NullableVnicSriovSettings and assigns it to the SriovSettings field.
+func (o *VnicEthIfInventory) SetSriovSettings(v VnicSriovSettings) {
+	o.SriovSettings.Set(&v)
+}
+
+// SetSriovSettingsNil sets the value for SriovSettings to be an explicit nil
+func (o *VnicEthIfInventory) SetSriovSettingsNil() {
+	o.SriovSettings.Set(nil)
+}
+
+// UnsetSriovSettings ensures that no value is present for SriovSettings, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetSriovSettings() {
+	o.SriovSettings.Unset()
+}
+
 // GetStandbyVifId returns the StandbyVifId field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetStandbyVifId() int64 {
-	if o == nil || o.StandbyVifId == nil {
+	if o == nil || IsNil(o.StandbyVifId) {
 		var ret int64
 		return ret
 	}
@@ -538,7 +635,7 @@ func (o *VnicEthIfInventory) GetStandbyVifId() int64 {
 // GetStandbyVifIdOk returns a tuple with the StandbyVifId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetStandbyVifIdOk() (*int64, bool) {
-	if o == nil || o.StandbyVifId == nil {
+	if o == nil || IsNil(o.StandbyVifId) {
 		return nil, false
 	}
 	return o.StandbyVifId, true
@@ -546,7 +643,7 @@ func (o *VnicEthIfInventory) GetStandbyVifIdOk() (*int64, bool) {
 
 // HasStandbyVifId returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasStandbyVifId() bool {
-	if o != nil && o.StandbyVifId != nil {
+	if o != nil && !IsNil(o.StandbyVifId) {
 		return true
 	}
 
@@ -560,7 +657,7 @@ func (o *VnicEthIfInventory) SetStandbyVifId(v int64) {
 
 // GetStaticMacAddress returns the StaticMacAddress field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetStaticMacAddress() string {
-	if o == nil || o.StaticMacAddress == nil {
+	if o == nil || IsNil(o.StaticMacAddress) {
 		var ret string
 		return ret
 	}
@@ -570,7 +667,7 @@ func (o *VnicEthIfInventory) GetStaticMacAddress() string {
 // GetStaticMacAddressOk returns a tuple with the StaticMacAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetStaticMacAddressOk() (*string, bool) {
-	if o == nil || o.StaticMacAddress == nil {
+	if o == nil || IsNil(o.StaticMacAddress) {
 		return nil, false
 	}
 	return o.StaticMacAddress, true
@@ -578,7 +675,7 @@ func (o *VnicEthIfInventory) GetStaticMacAddressOk() (*string, bool) {
 
 // HasStaticMacAddress returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasStaticMacAddress() bool {
-	if o != nil && o.StaticMacAddress != nil {
+	if o != nil && !IsNil(o.StaticMacAddress) {
 		return true
 	}
 
@@ -590,9 +687,107 @@ func (o *VnicEthIfInventory) SetStaticMacAddress(v string) {
 	o.StaticMacAddress = &v
 }
 
+// GetTemplateActions returns the TemplateActions field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VnicEthIfInventory) GetTemplateActions() []MotemplateActionEntry {
+	if o == nil {
+		var ret []MotemplateActionEntry
+		return ret
+	}
+	return o.TemplateActions
+}
+
+// GetTemplateActionsOk returns a tuple with the TemplateActions field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VnicEthIfInventory) GetTemplateActionsOk() ([]MotemplateActionEntry, bool) {
+	if o == nil || IsNil(o.TemplateActions) {
+		return nil, false
+	}
+	return o.TemplateActions, true
+}
+
+// HasTemplateActions returns a boolean if a field has been set.
+func (o *VnicEthIfInventory) HasTemplateActions() bool {
+	if o != nil && !IsNil(o.TemplateActions) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateActions gets a reference to the given []MotemplateActionEntry and assigns it to the TemplateActions field.
+func (o *VnicEthIfInventory) SetTemplateActions(v []MotemplateActionEntry) {
+	o.TemplateActions = v
+}
+
+// GetTemplateSyncErrors returns the TemplateSyncErrors field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VnicEthIfInventory) GetTemplateSyncErrors() []MotemplateSyncError {
+	if o == nil {
+		var ret []MotemplateSyncError
+		return ret
+	}
+	return o.TemplateSyncErrors
+}
+
+// GetTemplateSyncErrorsOk returns a tuple with the TemplateSyncErrors field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VnicEthIfInventory) GetTemplateSyncErrorsOk() ([]MotemplateSyncError, bool) {
+	if o == nil || IsNil(o.TemplateSyncErrors) {
+		return nil, false
+	}
+	return o.TemplateSyncErrors, true
+}
+
+// HasTemplateSyncErrors returns a boolean if a field has been set.
+func (o *VnicEthIfInventory) HasTemplateSyncErrors() bool {
+	if o != nil && !IsNil(o.TemplateSyncErrors) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateSyncErrors gets a reference to the given []MotemplateSyncError and assigns it to the TemplateSyncErrors field.
+func (o *VnicEthIfInventory) SetTemplateSyncErrors(v []MotemplateSyncError) {
+	o.TemplateSyncErrors = v
+}
+
+// GetTemplateSyncStatus returns the TemplateSyncStatus field value if set, zero value otherwise.
+func (o *VnicEthIfInventory) GetTemplateSyncStatus() string {
+	if o == nil || IsNil(o.TemplateSyncStatus) {
+		var ret string
+		return ret
+	}
+	return *o.TemplateSyncStatus
+}
+
+// GetTemplateSyncStatusOk returns a tuple with the TemplateSyncStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VnicEthIfInventory) GetTemplateSyncStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.TemplateSyncStatus) {
+		return nil, false
+	}
+	return o.TemplateSyncStatus, true
+}
+
+// HasTemplateSyncStatus returns a boolean if a field has been set.
+func (o *VnicEthIfInventory) HasTemplateSyncStatus() bool {
+	if o != nil && !IsNil(o.TemplateSyncStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetTemplateSyncStatus gets a reference to the given string and assigns it to the TemplateSyncStatus field.
+func (o *VnicEthIfInventory) SetTemplateSyncStatus(v string) {
+	o.TemplateSyncStatus = &v
+}
+
 // GetUsnicSettings returns the UsnicSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetUsnicSettings() VnicUsnicSettings {
-	if o == nil || o.UsnicSettings.Get() == nil {
+	if o == nil || IsNil(o.UsnicSettings.Get()) {
 		var ret VnicUsnicSettings
 		return ret
 	}
@@ -635,7 +830,7 @@ func (o *VnicEthIfInventory) UnsetUsnicSettings() {
 
 // GetVifId returns the VifId field value if set, zero value otherwise.
 func (o *VnicEthIfInventory) GetVifId() int64 {
-	if o == nil || o.VifId == nil {
+	if o == nil || IsNil(o.VifId) {
 		var ret int64
 		return ret
 	}
@@ -645,7 +840,7 @@ func (o *VnicEthIfInventory) GetVifId() int64 {
 // GetVifIdOk returns a tuple with the VifId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthIfInventory) GetVifIdOk() (*int64, bool) {
-	if o == nil || o.VifId == nil {
+	if o == nil || IsNil(o.VifId) {
 		return nil, false
 	}
 	return o.VifId, true
@@ -653,7 +848,7 @@ func (o *VnicEthIfInventory) GetVifIdOk() (*int64, bool) {
 
 // HasVifId returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasVifId() bool {
-	if o != nil && o.VifId != nil {
+	if o != nil && !IsNil(o.VifId) {
 		return true
 	}
 
@@ -667,7 +862,7 @@ func (o *VnicEthIfInventory) SetVifId(v int64) {
 
 // GetVmqSettings returns the VmqSettings field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetVmqSettings() VnicVmqSettings {
-	if o == nil || o.VmqSettings.Get() == nil {
+	if o == nil || IsNil(o.VmqSettings.Get()) {
 		var ret VnicVmqSettings
 		return ret
 	}
@@ -708,132 +903,176 @@ func (o *VnicEthIfInventory) UnsetVmqSettings() {
 	o.VmqSettings.Unset()
 }
 
-// GetEthAdapterPolicy returns the EthAdapterPolicy field value if set, zero value otherwise.
+// GetEthAdapterPolicy returns the EthAdapterPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetEthAdapterPolicy() VnicEthAdapterPolicyInventoryRelationship {
-	if o == nil || o.EthAdapterPolicy == nil {
+	if o == nil || IsNil(o.EthAdapterPolicy.Get()) {
 		var ret VnicEthAdapterPolicyInventoryRelationship
 		return ret
 	}
-	return *o.EthAdapterPolicy
+	return *o.EthAdapterPolicy.Get()
 }
 
 // GetEthAdapterPolicyOk returns a tuple with the EthAdapterPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetEthAdapterPolicyOk() (*VnicEthAdapterPolicyInventoryRelationship, bool) {
-	if o == nil || o.EthAdapterPolicy == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.EthAdapterPolicy, true
+	return o.EthAdapterPolicy.Get(), o.EthAdapterPolicy.IsSet()
 }
 
 // HasEthAdapterPolicy returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasEthAdapterPolicy() bool {
-	if o != nil && o.EthAdapterPolicy != nil {
+	if o != nil && o.EthAdapterPolicy.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEthAdapterPolicy gets a reference to the given VnicEthAdapterPolicyInventoryRelationship and assigns it to the EthAdapterPolicy field.
+// SetEthAdapterPolicy gets a reference to the given NullableVnicEthAdapterPolicyInventoryRelationship and assigns it to the EthAdapterPolicy field.
 func (o *VnicEthIfInventory) SetEthAdapterPolicy(v VnicEthAdapterPolicyInventoryRelationship) {
-	o.EthAdapterPolicy = &v
+	o.EthAdapterPolicy.Set(&v)
 }
 
-// GetEthNetworkPolicy returns the EthNetworkPolicy field value if set, zero value otherwise.
+// SetEthAdapterPolicyNil sets the value for EthAdapterPolicy to be an explicit nil
+func (o *VnicEthIfInventory) SetEthAdapterPolicyNil() {
+	o.EthAdapterPolicy.Set(nil)
+}
+
+// UnsetEthAdapterPolicy ensures that no value is present for EthAdapterPolicy, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetEthAdapterPolicy() {
+	o.EthAdapterPolicy.Unset()
+}
+
+// GetEthNetworkPolicy returns the EthNetworkPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetEthNetworkPolicy() VnicEthNetworkPolicyInventoryRelationship {
-	if o == nil || o.EthNetworkPolicy == nil {
+	if o == nil || IsNil(o.EthNetworkPolicy.Get()) {
 		var ret VnicEthNetworkPolicyInventoryRelationship
 		return ret
 	}
-	return *o.EthNetworkPolicy
+	return *o.EthNetworkPolicy.Get()
 }
 
 // GetEthNetworkPolicyOk returns a tuple with the EthNetworkPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetEthNetworkPolicyOk() (*VnicEthNetworkPolicyInventoryRelationship, bool) {
-	if o == nil || o.EthNetworkPolicy == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.EthNetworkPolicy, true
+	return o.EthNetworkPolicy.Get(), o.EthNetworkPolicy.IsSet()
 }
 
 // HasEthNetworkPolicy returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasEthNetworkPolicy() bool {
-	if o != nil && o.EthNetworkPolicy != nil {
+	if o != nil && o.EthNetworkPolicy.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEthNetworkPolicy gets a reference to the given VnicEthNetworkPolicyInventoryRelationship and assigns it to the EthNetworkPolicy field.
+// SetEthNetworkPolicy gets a reference to the given NullableVnicEthNetworkPolicyInventoryRelationship and assigns it to the EthNetworkPolicy field.
 func (o *VnicEthIfInventory) SetEthNetworkPolicy(v VnicEthNetworkPolicyInventoryRelationship) {
-	o.EthNetworkPolicy = &v
+	o.EthNetworkPolicy.Set(&v)
 }
 
-// GetEthQosPolicy returns the EthQosPolicy field value if set, zero value otherwise.
+// SetEthNetworkPolicyNil sets the value for EthNetworkPolicy to be an explicit nil
+func (o *VnicEthIfInventory) SetEthNetworkPolicyNil() {
+	o.EthNetworkPolicy.Set(nil)
+}
+
+// UnsetEthNetworkPolicy ensures that no value is present for EthNetworkPolicy, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetEthNetworkPolicy() {
+	o.EthNetworkPolicy.Unset()
+}
+
+// GetEthQosPolicy returns the EthQosPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetEthQosPolicy() VnicEthQosPolicyInventoryRelationship {
-	if o == nil || o.EthQosPolicy == nil {
+	if o == nil || IsNil(o.EthQosPolicy.Get()) {
 		var ret VnicEthQosPolicyInventoryRelationship
 		return ret
 	}
-	return *o.EthQosPolicy
+	return *o.EthQosPolicy.Get()
 }
 
 // GetEthQosPolicyOk returns a tuple with the EthQosPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetEthQosPolicyOk() (*VnicEthQosPolicyInventoryRelationship, bool) {
-	if o == nil || o.EthQosPolicy == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.EthQosPolicy, true
+	return o.EthQosPolicy.Get(), o.EthQosPolicy.IsSet()
 }
 
 // HasEthQosPolicy returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasEthQosPolicy() bool {
-	if o != nil && o.EthQosPolicy != nil {
+	if o != nil && o.EthQosPolicy.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEthQosPolicy gets a reference to the given VnicEthQosPolicyInventoryRelationship and assigns it to the EthQosPolicy field.
+// SetEthQosPolicy gets a reference to the given NullableVnicEthQosPolicyInventoryRelationship and assigns it to the EthQosPolicy field.
 func (o *VnicEthIfInventory) SetEthQosPolicy(v VnicEthQosPolicyInventoryRelationship) {
-	o.EthQosPolicy = &v
+	o.EthQosPolicy.Set(&v)
 }
 
-// GetFabricEthNetworkControlPolicy returns the FabricEthNetworkControlPolicy field value if set, zero value otherwise.
+// SetEthQosPolicyNil sets the value for EthQosPolicy to be an explicit nil
+func (o *VnicEthIfInventory) SetEthQosPolicyNil() {
+	o.EthQosPolicy.Set(nil)
+}
+
+// UnsetEthQosPolicy ensures that no value is present for EthQosPolicy, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetEthQosPolicy() {
+	o.EthQosPolicy.Unset()
+}
+
+// GetFabricEthNetworkControlPolicy returns the FabricEthNetworkControlPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetFabricEthNetworkControlPolicy() FabricEthNetworkControlPolicyInventoryRelationship {
-	if o == nil || o.FabricEthNetworkControlPolicy == nil {
+	if o == nil || IsNil(o.FabricEthNetworkControlPolicy.Get()) {
 		var ret FabricEthNetworkControlPolicyInventoryRelationship
 		return ret
 	}
-	return *o.FabricEthNetworkControlPolicy
+	return *o.FabricEthNetworkControlPolicy.Get()
 }
 
 // GetFabricEthNetworkControlPolicyOk returns a tuple with the FabricEthNetworkControlPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetFabricEthNetworkControlPolicyOk() (*FabricEthNetworkControlPolicyInventoryRelationship, bool) {
-	if o == nil || o.FabricEthNetworkControlPolicy == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.FabricEthNetworkControlPolicy, true
+	return o.FabricEthNetworkControlPolicy.Get(), o.FabricEthNetworkControlPolicy.IsSet()
 }
 
 // HasFabricEthNetworkControlPolicy returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasFabricEthNetworkControlPolicy() bool {
-	if o != nil && o.FabricEthNetworkControlPolicy != nil {
+	if o != nil && o.FabricEthNetworkControlPolicy.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetFabricEthNetworkControlPolicy gets a reference to the given FabricEthNetworkControlPolicyInventoryRelationship and assigns it to the FabricEthNetworkControlPolicy field.
+// SetFabricEthNetworkControlPolicy gets a reference to the given NullableFabricEthNetworkControlPolicyInventoryRelationship and assigns it to the FabricEthNetworkControlPolicy field.
 func (o *VnicEthIfInventory) SetFabricEthNetworkControlPolicy(v FabricEthNetworkControlPolicyInventoryRelationship) {
-	o.FabricEthNetworkControlPolicy = &v
+	o.FabricEthNetworkControlPolicy.Set(&v)
+}
+
+// SetFabricEthNetworkControlPolicyNil sets the value for FabricEthNetworkControlPolicy to be an explicit nil
+func (o *VnicEthIfInventory) SetFabricEthNetworkControlPolicyNil() {
+	o.FabricEthNetworkControlPolicy.Set(nil)
+}
+
+// UnsetFabricEthNetworkControlPolicy ensures that no value is present for FabricEthNetworkControlPolicy, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetFabricEthNetworkControlPolicy() {
+	o.FabricEthNetworkControlPolicy.Unset()
 }
 
 // GetFabricEthNetworkGroupPolicy returns the FabricEthNetworkGroupPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -849,7 +1088,7 @@ func (o *VnicEthIfInventory) GetFabricEthNetworkGroupPolicy() []FabricEthNetwork
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetFabricEthNetworkGroupPolicyOk() ([]FabricEthNetworkGroupPolicyInventoryRelationship, bool) {
-	if o == nil || o.FabricEthNetworkGroupPolicy == nil {
+	if o == nil || IsNil(o.FabricEthNetworkGroupPolicy) {
 		return nil, false
 	}
 	return o.FabricEthNetworkGroupPolicy, true
@@ -857,7 +1096,7 @@ func (o *VnicEthIfInventory) GetFabricEthNetworkGroupPolicyOk() ([]FabricEthNetw
 
 // HasFabricEthNetworkGroupPolicy returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasFabricEthNetworkGroupPolicy() bool {
-	if o != nil && o.FabricEthNetworkGroupPolicy != nil {
+	if o != nil && !IsNil(o.FabricEthNetworkGroupPolicy) {
 		return true
 	}
 
@@ -869,196 +1108,262 @@ func (o *VnicEthIfInventory) SetFabricEthNetworkGroupPolicy(v []FabricEthNetwork
 	o.FabricEthNetworkGroupPolicy = v
 }
 
-// GetIpLease returns the IpLease field value if set, zero value otherwise.
+// GetIpLease returns the IpLease field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetIpLease() IppoolIpLeaseRelationship {
-	if o == nil || o.IpLease == nil {
+	if o == nil || IsNil(o.IpLease.Get()) {
 		var ret IppoolIpLeaseRelationship
 		return ret
 	}
-	return *o.IpLease
+	return *o.IpLease.Get()
 }
 
 // GetIpLeaseOk returns a tuple with the IpLease field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetIpLeaseOk() (*IppoolIpLeaseRelationship, bool) {
-	if o == nil || o.IpLease == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.IpLease, true
+	return o.IpLease.Get(), o.IpLease.IsSet()
 }
 
 // HasIpLease returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasIpLease() bool {
-	if o != nil && o.IpLease != nil {
+	if o != nil && o.IpLease.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetIpLease gets a reference to the given IppoolIpLeaseRelationship and assigns it to the IpLease field.
+// SetIpLease gets a reference to the given NullableIppoolIpLeaseRelationship and assigns it to the IpLease field.
 func (o *VnicEthIfInventory) SetIpLease(v IppoolIpLeaseRelationship) {
-	o.IpLease = &v
+	o.IpLease.Set(&v)
 }
 
-// GetIscsiBootPolicy returns the IscsiBootPolicy field value if set, zero value otherwise.
+// SetIpLeaseNil sets the value for IpLease to be an explicit nil
+func (o *VnicEthIfInventory) SetIpLeaseNil() {
+	o.IpLease.Set(nil)
+}
+
+// UnsetIpLease ensures that no value is present for IpLease, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetIpLease() {
+	o.IpLease.Unset()
+}
+
+// GetIscsiBootPolicy returns the IscsiBootPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetIscsiBootPolicy() VnicIscsiBootPolicyInventoryRelationship {
-	if o == nil || o.IscsiBootPolicy == nil {
+	if o == nil || IsNil(o.IscsiBootPolicy.Get()) {
 		var ret VnicIscsiBootPolicyInventoryRelationship
 		return ret
 	}
-	return *o.IscsiBootPolicy
+	return *o.IscsiBootPolicy.Get()
 }
 
 // GetIscsiBootPolicyOk returns a tuple with the IscsiBootPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetIscsiBootPolicyOk() (*VnicIscsiBootPolicyInventoryRelationship, bool) {
-	if o == nil || o.IscsiBootPolicy == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.IscsiBootPolicy, true
+	return o.IscsiBootPolicy.Get(), o.IscsiBootPolicy.IsSet()
 }
 
 // HasIscsiBootPolicy returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasIscsiBootPolicy() bool {
-	if o != nil && o.IscsiBootPolicy != nil {
+	if o != nil && o.IscsiBootPolicy.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetIscsiBootPolicy gets a reference to the given VnicIscsiBootPolicyInventoryRelationship and assigns it to the IscsiBootPolicy field.
+// SetIscsiBootPolicy gets a reference to the given NullableVnicIscsiBootPolicyInventoryRelationship and assigns it to the IscsiBootPolicy field.
 func (o *VnicEthIfInventory) SetIscsiBootPolicy(v VnicIscsiBootPolicyInventoryRelationship) {
-	o.IscsiBootPolicy = &v
+	o.IscsiBootPolicy.Set(&v)
 }
 
-// GetLanConnectivityPolicy returns the LanConnectivityPolicy field value if set, zero value otherwise.
+// SetIscsiBootPolicyNil sets the value for IscsiBootPolicy to be an explicit nil
+func (o *VnicEthIfInventory) SetIscsiBootPolicyNil() {
+	o.IscsiBootPolicy.Set(nil)
+}
+
+// UnsetIscsiBootPolicy ensures that no value is present for IscsiBootPolicy, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetIscsiBootPolicy() {
+	o.IscsiBootPolicy.Unset()
+}
+
+// GetLanConnectivityPolicy returns the LanConnectivityPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetLanConnectivityPolicy() VnicLanConnectivityPolicyInventoryRelationship {
-	if o == nil || o.LanConnectivityPolicy == nil {
+	if o == nil || IsNil(o.LanConnectivityPolicy.Get()) {
 		var ret VnicLanConnectivityPolicyInventoryRelationship
 		return ret
 	}
-	return *o.LanConnectivityPolicy
+	return *o.LanConnectivityPolicy.Get()
 }
 
 // GetLanConnectivityPolicyOk returns a tuple with the LanConnectivityPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetLanConnectivityPolicyOk() (*VnicLanConnectivityPolicyInventoryRelationship, bool) {
-	if o == nil || o.LanConnectivityPolicy == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.LanConnectivityPolicy, true
+	return o.LanConnectivityPolicy.Get(), o.LanConnectivityPolicy.IsSet()
 }
 
 // HasLanConnectivityPolicy returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasLanConnectivityPolicy() bool {
-	if o != nil && o.LanConnectivityPolicy != nil {
+	if o != nil && o.LanConnectivityPolicy.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLanConnectivityPolicy gets a reference to the given VnicLanConnectivityPolicyInventoryRelationship and assigns it to the LanConnectivityPolicy field.
+// SetLanConnectivityPolicy gets a reference to the given NullableVnicLanConnectivityPolicyInventoryRelationship and assigns it to the LanConnectivityPolicy field.
 func (o *VnicEthIfInventory) SetLanConnectivityPolicy(v VnicLanConnectivityPolicyInventoryRelationship) {
-	o.LanConnectivityPolicy = &v
+	o.LanConnectivityPolicy.Set(&v)
 }
 
-// GetLcpVnic returns the LcpVnic field value if set, zero value otherwise.
+// SetLanConnectivityPolicyNil sets the value for LanConnectivityPolicy to be an explicit nil
+func (o *VnicEthIfInventory) SetLanConnectivityPolicyNil() {
+	o.LanConnectivityPolicy.Set(nil)
+}
+
+// UnsetLanConnectivityPolicy ensures that no value is present for LanConnectivityPolicy, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetLanConnectivityPolicy() {
+	o.LanConnectivityPolicy.Unset()
+}
+
+// GetLcpVnic returns the LcpVnic field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetLcpVnic() VnicEthIfInventoryRelationship {
-	if o == nil || o.LcpVnic == nil {
+	if o == nil || IsNil(o.LcpVnic.Get()) {
 		var ret VnicEthIfInventoryRelationship
 		return ret
 	}
-	return *o.LcpVnic
+	return *o.LcpVnic.Get()
 }
 
 // GetLcpVnicOk returns a tuple with the LcpVnic field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetLcpVnicOk() (*VnicEthIfInventoryRelationship, bool) {
-	if o == nil || o.LcpVnic == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.LcpVnic, true
+	return o.LcpVnic.Get(), o.LcpVnic.IsSet()
 }
 
 // HasLcpVnic returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasLcpVnic() bool {
-	if o != nil && o.LcpVnic != nil {
+	if o != nil && o.LcpVnic.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLcpVnic gets a reference to the given VnicEthIfInventoryRelationship and assigns it to the LcpVnic field.
+// SetLcpVnic gets a reference to the given NullableVnicEthIfInventoryRelationship and assigns it to the LcpVnic field.
 func (o *VnicEthIfInventory) SetLcpVnic(v VnicEthIfInventoryRelationship) {
-	o.LcpVnic = &v
+	o.LcpVnic.Set(&v)
 }
 
-// GetMacLease returns the MacLease field value if set, zero value otherwise.
+// SetLcpVnicNil sets the value for LcpVnic to be an explicit nil
+func (o *VnicEthIfInventory) SetLcpVnicNil() {
+	o.LcpVnic.Set(nil)
+}
+
+// UnsetLcpVnic ensures that no value is present for LcpVnic, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetLcpVnic() {
+	o.LcpVnic.Unset()
+}
+
+// GetMacLease returns the MacLease field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetMacLease() MacpoolLeaseRelationship {
-	if o == nil || o.MacLease == nil {
+	if o == nil || IsNil(o.MacLease.Get()) {
 		var ret MacpoolLeaseRelationship
 		return ret
 	}
-	return *o.MacLease
+	return *o.MacLease.Get()
 }
 
 // GetMacLeaseOk returns a tuple with the MacLease field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetMacLeaseOk() (*MacpoolLeaseRelationship, bool) {
-	if o == nil || o.MacLease == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.MacLease, true
+	return o.MacLease.Get(), o.MacLease.IsSet()
 }
 
 // HasMacLease returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasMacLease() bool {
-	if o != nil && o.MacLease != nil {
+	if o != nil && o.MacLease.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMacLease gets a reference to the given MacpoolLeaseRelationship and assigns it to the MacLease field.
+// SetMacLease gets a reference to the given NullableMacpoolLeaseRelationship and assigns it to the MacLease field.
 func (o *VnicEthIfInventory) SetMacLease(v MacpoolLeaseRelationship) {
-	o.MacLease = &v
+	o.MacLease.Set(&v)
 }
 
-// GetMacPool returns the MacPool field value if set, zero value otherwise.
+// SetMacLeaseNil sets the value for MacLease to be an explicit nil
+func (o *VnicEthIfInventory) SetMacLeaseNil() {
+	o.MacLease.Set(nil)
+}
+
+// UnsetMacLease ensures that no value is present for MacLease, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetMacLease() {
+	o.MacLease.Unset()
+}
+
+// GetMacPool returns the MacPool field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VnicEthIfInventory) GetMacPool() MacpoolPoolRelationship {
-	if o == nil || o.MacPool == nil {
+	if o == nil || IsNil(o.MacPool.Get()) {
 		var ret MacpoolPoolRelationship
 		return ret
 	}
-	return *o.MacPool
+	return *o.MacPool.Get()
 }
 
 // GetMacPoolOk returns a tuple with the MacPool field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetMacPoolOk() (*MacpoolPoolRelationship, bool) {
-	if o == nil || o.MacPool == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.MacPool, true
+	return o.MacPool.Get(), o.MacPool.IsSet()
 }
 
 // HasMacPool returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasMacPool() bool {
-	if o != nil && o.MacPool != nil {
+	if o != nil && o.MacPool.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMacPool gets a reference to the given MacpoolPoolRelationship and assigns it to the MacPool field.
+// SetMacPool gets a reference to the given NullableMacpoolPoolRelationship and assigns it to the MacPool field.
 func (o *VnicEthIfInventory) SetMacPool(v MacpoolPoolRelationship) {
-	o.MacPool = &v
+	o.MacPool.Set(&v)
+}
+
+// SetMacPoolNil sets the value for MacPool to be an explicit nil
+func (o *VnicEthIfInventory) SetMacPoolNil() {
+	o.MacPool.Set(nil)
+}
+
+// UnsetMacPool ensures that no value is present for MacPool, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetMacPool() {
+	o.MacPool.Unset()
 }
 
 // GetSpVnics returns the SpVnics field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1074,7 +1379,7 @@ func (o *VnicEthIfInventory) GetSpVnics() []VnicEthIfInventoryRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VnicEthIfInventory) GetSpVnicsOk() ([]VnicEthIfInventoryRelationship, bool) {
-	if o == nil || o.SpVnics == nil {
+	if o == nil || IsNil(o.SpVnics) {
 		return nil, false
 	}
 	return o.SpVnics, true
@@ -1082,7 +1387,7 @@ func (o *VnicEthIfInventory) GetSpVnicsOk() ([]VnicEthIfInventoryRelationship, b
 
 // HasSpVnics returns a boolean if a field has been set.
 func (o *VnicEthIfInventory) HasSpVnics() bool {
-	if o != nil && o.SpVnics != nil {
+	if o != nil && !IsNil(o.SpVnics) {
 		return true
 	}
 
@@ -1094,115 +1399,227 @@ func (o *VnicEthIfInventory) SetSpVnics(v []VnicEthIfInventoryRelationship) {
 	o.SpVnics = v
 }
 
+// GetSrcTemplate returns the SrcTemplate field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *VnicEthIfInventory) GetSrcTemplate() VnicVnicTemplateRelationship {
+	if o == nil || IsNil(o.SrcTemplate.Get()) {
+		var ret VnicVnicTemplateRelationship
+		return ret
+	}
+	return *o.SrcTemplate.Get()
+}
+
+// GetSrcTemplateOk returns a tuple with the SrcTemplate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *VnicEthIfInventory) GetSrcTemplateOk() (*VnicVnicTemplateRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.SrcTemplate.Get(), o.SrcTemplate.IsSet()
+}
+
+// HasSrcTemplate returns a boolean if a field has been set.
+func (o *VnicEthIfInventory) HasSrcTemplate() bool {
+	if o != nil && o.SrcTemplate.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetSrcTemplate gets a reference to the given NullableVnicVnicTemplateRelationship and assigns it to the SrcTemplate field.
+func (o *VnicEthIfInventory) SetSrcTemplate(v VnicVnicTemplateRelationship) {
+	o.SrcTemplate.Set(&v)
+}
+
+// SetSrcTemplateNil sets the value for SrcTemplate to be an explicit nil
+func (o *VnicEthIfInventory) SetSrcTemplateNil() {
+	o.SrcTemplate.Set(nil)
+}
+
+// UnsetSrcTemplate ensures that no value is present for SrcTemplate, not even an explicit nil
+func (o *VnicEthIfInventory) UnsetSrcTemplate() {
+	o.SrcTemplate.Unset()
+}
+
 func (o VnicEthIfInventory) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VnicEthIfInventory) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractInventory, errPolicyAbstractInventory := json.Marshal(o.PolicyAbstractInventory)
 	if errPolicyAbstractInventory != nil {
-		return []byte{}, errPolicyAbstractInventory
+		return map[string]interface{}{}, errPolicyAbstractInventory
 	}
 	errPolicyAbstractInventory = json.Unmarshal([]byte(serializedPolicyAbstractInventory), &toSerialize)
 	if errPolicyAbstractInventory != nil {
-		return []byte{}, errPolicyAbstractInventory
+		return map[string]interface{}{}, errPolicyAbstractInventory
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.Cdn.IsSet() {
 		toSerialize["Cdn"] = o.Cdn.Get()
 	}
-	if o.FailoverEnabled != nil {
+	if !IsNil(o.FailoverEnabled) {
 		toSerialize["FailoverEnabled"] = o.FailoverEnabled
 	}
-	if o.IscsiIpV4AddressAllocationType != nil {
+	if !IsNil(o.IscsiIpV4AddressAllocationType) {
 		toSerialize["IscsiIpV4AddressAllocationType"] = o.IscsiIpV4AddressAllocationType
 	}
 	if o.IscsiIpV4Config.IsSet() {
 		toSerialize["IscsiIpV4Config"] = o.IscsiIpV4Config.Get()
 	}
-	if o.IscsiIpv4Address != nil {
+	if !IsNil(o.IscsiIpv4Address) {
 		toSerialize["IscsiIpv4Address"] = o.IscsiIpv4Address
 	}
-	if o.MacAddress != nil {
+	if !IsNil(o.MacAddress) {
 		toSerialize["MacAddress"] = o.MacAddress
 	}
-	if o.MacAddressType != nil {
+	if !IsNil(o.MacAddressType) {
 		toSerialize["MacAddressType"] = o.MacAddressType
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.Order != nil {
+	if !IsNil(o.Order) {
 		toSerialize["Order"] = o.Order
 	}
-	if o.PinGroupName != nil {
+	if o.OverriddenList != nil {
+		toSerialize["OverriddenList"] = o.OverriddenList
+	}
+	if !IsNil(o.PinGroupName) {
 		toSerialize["PinGroupName"] = o.PinGroupName
 	}
 	if o.Placement.IsSet() {
 		toSerialize["Placement"] = o.Placement.Get()
 	}
-	if o.StandbyVifId != nil {
+	if o.SriovSettings.IsSet() {
+		toSerialize["SriovSettings"] = o.SriovSettings.Get()
+	}
+	if !IsNil(o.StandbyVifId) {
 		toSerialize["StandbyVifId"] = o.StandbyVifId
 	}
-	if o.StaticMacAddress != nil {
+	if !IsNil(o.StaticMacAddress) {
 		toSerialize["StaticMacAddress"] = o.StaticMacAddress
+	}
+	if o.TemplateActions != nil {
+		toSerialize["TemplateActions"] = o.TemplateActions
+	}
+	if o.TemplateSyncErrors != nil {
+		toSerialize["TemplateSyncErrors"] = o.TemplateSyncErrors
+	}
+	if !IsNil(o.TemplateSyncStatus) {
+		toSerialize["TemplateSyncStatus"] = o.TemplateSyncStatus
 	}
 	if o.UsnicSettings.IsSet() {
 		toSerialize["UsnicSettings"] = o.UsnicSettings.Get()
 	}
-	if o.VifId != nil {
+	if !IsNil(o.VifId) {
 		toSerialize["VifId"] = o.VifId
 	}
 	if o.VmqSettings.IsSet() {
 		toSerialize["VmqSettings"] = o.VmqSettings.Get()
 	}
-	if o.EthAdapterPolicy != nil {
-		toSerialize["EthAdapterPolicy"] = o.EthAdapterPolicy
+	if o.EthAdapterPolicy.IsSet() {
+		toSerialize["EthAdapterPolicy"] = o.EthAdapterPolicy.Get()
 	}
-	if o.EthNetworkPolicy != nil {
-		toSerialize["EthNetworkPolicy"] = o.EthNetworkPolicy
+	if o.EthNetworkPolicy.IsSet() {
+		toSerialize["EthNetworkPolicy"] = o.EthNetworkPolicy.Get()
 	}
-	if o.EthQosPolicy != nil {
-		toSerialize["EthQosPolicy"] = o.EthQosPolicy
+	if o.EthQosPolicy.IsSet() {
+		toSerialize["EthQosPolicy"] = o.EthQosPolicy.Get()
 	}
-	if o.FabricEthNetworkControlPolicy != nil {
-		toSerialize["FabricEthNetworkControlPolicy"] = o.FabricEthNetworkControlPolicy
+	if o.FabricEthNetworkControlPolicy.IsSet() {
+		toSerialize["FabricEthNetworkControlPolicy"] = o.FabricEthNetworkControlPolicy.Get()
 	}
 	if o.FabricEthNetworkGroupPolicy != nil {
 		toSerialize["FabricEthNetworkGroupPolicy"] = o.FabricEthNetworkGroupPolicy
 	}
-	if o.IpLease != nil {
-		toSerialize["IpLease"] = o.IpLease
+	if o.IpLease.IsSet() {
+		toSerialize["IpLease"] = o.IpLease.Get()
 	}
-	if o.IscsiBootPolicy != nil {
-		toSerialize["IscsiBootPolicy"] = o.IscsiBootPolicy
+	if o.IscsiBootPolicy.IsSet() {
+		toSerialize["IscsiBootPolicy"] = o.IscsiBootPolicy.Get()
 	}
-	if o.LanConnectivityPolicy != nil {
-		toSerialize["LanConnectivityPolicy"] = o.LanConnectivityPolicy
+	if o.LanConnectivityPolicy.IsSet() {
+		toSerialize["LanConnectivityPolicy"] = o.LanConnectivityPolicy.Get()
 	}
-	if o.LcpVnic != nil {
-		toSerialize["LcpVnic"] = o.LcpVnic
+	if o.LcpVnic.IsSet() {
+		toSerialize["LcpVnic"] = o.LcpVnic.Get()
 	}
-	if o.MacLease != nil {
-		toSerialize["MacLease"] = o.MacLease
+	if o.MacLease.IsSet() {
+		toSerialize["MacLease"] = o.MacLease.Get()
 	}
-	if o.MacPool != nil {
-		toSerialize["MacPool"] = o.MacPool
+	if o.MacPool.IsSet() {
+		toSerialize["MacPool"] = o.MacPool.Get()
 	}
 	if o.SpVnics != nil {
 		toSerialize["SpVnics"] = o.SpVnics
+	}
+	if o.SrcTemplate.IsSet() {
+		toSerialize["SrcTemplate"] = o.SrcTemplate.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VnicEthIfInventory) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VnicEthIfInventory) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VnicEthIfInventoryWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -1215,45 +1632,52 @@ func (o *VnicEthIfInventory) UnmarshalJSON(bytes []byte) (err error) {
 		IscsiIpV4AddressAllocationType *string                  `json:"IscsiIpV4AddressAllocationType,omitempty"`
 		IscsiIpV4Config                NullableIppoolIpV4Config `json:"IscsiIpV4Config,omitempty"`
 		// IP address associated to the vNIC.
-		IscsiIpv4Address *string `json:"IscsiIpv4Address,omitempty"`
+		IscsiIpv4Address *string `json:"IscsiIpv4Address,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 		// The MAC address that is assigned to the vNIC based on the MAC pool that has been assigned to the LAN Connectivity Policy.
 		MacAddress *string `json:"MacAddress,omitempty"`
 		// Type of allocation selected to assign a MAC address for the vnic. * `POOL` - The user selects a pool from which the mac/wwn address will be leased for the Virtual Interface. * `STATIC` - The user assigns a static mac/wwn address for the Virtual Interface.
 		MacAddressType *string `json:"MacAddressType,omitempty"`
 		// Name of the virtual ethernet interface.
-		Name *string `json:"Name,omitempty"`
-		// The order in which the virtual interface is brought up. The order assigned to an interface should be unique for all the Ethernet and Fibre-Channel interfaces on each PCI link on a VIC adapter. The maximum value of PCI order is limited by the number of virtual interfaces (Ethernet and Fibre-Channel) on each PCI link on a VIC adapter. All VIC adapters have a single PCI link except VIC 1385 which has two.
-		Order *int64 `json:"Order,omitempty"`
+		Name *string `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9-._:]+$"`
+		// The order in which the virtual interface is brought up. The order assigned to an interface should be unique for all the Ethernet and Fibre-Channel interfaces on each PCI link on a VIC adapter. The order should start from zero with no overlaps. The maximum value of PCI order is limited by the number of virtual interfaces (Ethernet and Fibre-Channel) on each PCI link on a VIC adapter. All VIC adapters have a single PCI link except VIC 1340, VIC 1380 and VIC 1385 which have two.
+		Order          *int64   `json:"Order,omitempty"`
+		OverriddenList []string `json:"OverriddenList,omitempty"`
 		// Pingroup name associated to vNIC for static pinning. LCP deploy will resolve pingroup name and fetches the correspoding uplink port/port channel to pin the vNIC traffic.
-		PinGroupName *string                       `json:"PinGroupName,omitempty"`
-		Placement    NullableVnicPlacementSettings `json:"Placement,omitempty"`
+		PinGroupName  *string                       `json:"PinGroupName,omitempty" validate:"regexp=^$|^[a-zA-Z0-9_.:-]{1,64}$"`
+		Placement     NullableVnicPlacementSettings `json:"Placement,omitempty"`
+		SriovSettings NullableVnicSriovSettings     `json:"SriovSettings,omitempty"`
 		// The Standby VIF Id is applicable for failover enabled vNICS. It should be the same as the channel number of the standby vethernet created on switch in order to set up the standby data path.
 		StandbyVifId *int64 `json:"StandbyVifId,omitempty"`
 		// The MAC address must be in hexadecimal format xx:xx:xx:xx:xx:xx. To ensure uniqueness of MACs in the LAN fabric, you are strongly encouraged to use the following MAC prefix 00:25:B5:xx:xx:xx.
-		StaticMacAddress *string                   `json:"StaticMacAddress,omitempty"`
-		UsnicSettings    NullableVnicUsnicSettings `json:"UsnicSettings,omitempty"`
+		StaticMacAddress   *string                 `json:"StaticMacAddress,omitempty"`
+		TemplateActions    []MotemplateActionEntry `json:"TemplateActions,omitempty"`
+		TemplateSyncErrors []MotemplateSyncError   `json:"TemplateSyncErrors,omitempty"`
+		// The sync status of the current MO wrt the attached Template MO. * `None` - The Enum value represents that the object is not attached to any template. * `OK` - The Enum value represents that the object values are in sync with attached template. * `Scheduled` - The Enum value represents that the object sync from attached template is scheduled from template. * `InProgress` - The Enum value represents that the object sync with the attached template is in progress. * `OutOfSync` - The Enum value represents that the object values are not in sync with attached template.
+		TemplateSyncStatus *string                   `json:"TemplateSyncStatus,omitempty"`
+		UsnicSettings      NullableVnicUsnicSettings `json:"UsnicSettings,omitempty"`
 		// The Vif Id should be same as the channel number of the vethernet created on switch in order to set up the data path. The property is applicable only for FI attached servers where a vethernet is created on the switch for every vNIC.
-		VifId                         *int64                                              `json:"VifId,omitempty"`
-		VmqSettings                   NullableVnicVmqSettings                             `json:"VmqSettings,omitempty"`
-		EthAdapterPolicy              *VnicEthAdapterPolicyInventoryRelationship          `json:"EthAdapterPolicy,omitempty"`
-		EthNetworkPolicy              *VnicEthNetworkPolicyInventoryRelationship          `json:"EthNetworkPolicy,omitempty"`
-		EthQosPolicy                  *VnicEthQosPolicyInventoryRelationship              `json:"EthQosPolicy,omitempty"`
-		FabricEthNetworkControlPolicy *FabricEthNetworkControlPolicyInventoryRelationship `json:"FabricEthNetworkControlPolicy,omitempty"`
+		VifId                         *int64                                                     `json:"VifId,omitempty"`
+		VmqSettings                   NullableVnicVmqSettings                                    `json:"VmqSettings,omitempty"`
+		EthAdapterPolicy              NullableVnicEthAdapterPolicyInventoryRelationship          `json:"EthAdapterPolicy,omitempty"`
+		EthNetworkPolicy              NullableVnicEthNetworkPolicyInventoryRelationship          `json:"EthNetworkPolicy,omitempty"`
+		EthQosPolicy                  NullableVnicEthQosPolicyInventoryRelationship              `json:"EthQosPolicy,omitempty"`
+		FabricEthNetworkControlPolicy NullableFabricEthNetworkControlPolicyInventoryRelationship `json:"FabricEthNetworkControlPolicy,omitempty"`
 		// An array of relationships to fabricEthNetworkGroupPolicyInventory resources.
-		FabricEthNetworkGroupPolicy []FabricEthNetworkGroupPolicyInventoryRelationship `json:"FabricEthNetworkGroupPolicy,omitempty"`
-		IpLease                     *IppoolIpLeaseRelationship                         `json:"IpLease,omitempty"`
-		IscsiBootPolicy             *VnicIscsiBootPolicyInventoryRelationship          `json:"IscsiBootPolicy,omitempty"`
-		LanConnectivityPolicy       *VnicLanConnectivityPolicyInventoryRelationship    `json:"LanConnectivityPolicy,omitempty"`
-		LcpVnic                     *VnicEthIfInventoryRelationship                    `json:"LcpVnic,omitempty"`
-		MacLease                    *MacpoolLeaseRelationship                          `json:"MacLease,omitempty"`
-		MacPool                     *MacpoolPoolRelationship                           `json:"MacPool,omitempty"`
+		FabricEthNetworkGroupPolicy []FabricEthNetworkGroupPolicyInventoryRelationship     `json:"FabricEthNetworkGroupPolicy,omitempty"`
+		IpLease                     NullableIppoolIpLeaseRelationship                      `json:"IpLease,omitempty"`
+		IscsiBootPolicy             NullableVnicIscsiBootPolicyInventoryRelationship       `json:"IscsiBootPolicy,omitempty"`
+		LanConnectivityPolicy       NullableVnicLanConnectivityPolicyInventoryRelationship `json:"LanConnectivityPolicy,omitempty"`
+		LcpVnic                     NullableVnicEthIfInventoryRelationship                 `json:"LcpVnic,omitempty"`
+		MacLease                    NullableMacpoolLeaseRelationship                       `json:"MacLease,omitempty"`
+		MacPool                     NullableMacpoolPoolRelationship                        `json:"MacPool,omitempty"`
 		// An array of relationships to vnicEthIfInventory resources.
-		SpVnics []VnicEthIfInventoryRelationship `json:"SpVnics,omitempty"`
+		SpVnics     []VnicEthIfInventoryRelationship     `json:"SpVnics,omitempty"`
+		SrcTemplate NullableVnicVnicTemplateRelationship `json:"SrcTemplate,omitempty"`
 	}
 
 	varVnicEthIfInventoryWithoutEmbeddedStruct := VnicEthIfInventoryWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVnicEthIfInventoryWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVnicEthIfInventoryWithoutEmbeddedStruct)
 	if err == nil {
 		varVnicEthIfInventory := _VnicEthIfInventory{}
 		varVnicEthIfInventory.ClassId = varVnicEthIfInventoryWithoutEmbeddedStruct.ClassId
@@ -1267,10 +1691,15 @@ func (o *VnicEthIfInventory) UnmarshalJSON(bytes []byte) (err error) {
 		varVnicEthIfInventory.MacAddressType = varVnicEthIfInventoryWithoutEmbeddedStruct.MacAddressType
 		varVnicEthIfInventory.Name = varVnicEthIfInventoryWithoutEmbeddedStruct.Name
 		varVnicEthIfInventory.Order = varVnicEthIfInventoryWithoutEmbeddedStruct.Order
+		varVnicEthIfInventory.OverriddenList = varVnicEthIfInventoryWithoutEmbeddedStruct.OverriddenList
 		varVnicEthIfInventory.PinGroupName = varVnicEthIfInventoryWithoutEmbeddedStruct.PinGroupName
 		varVnicEthIfInventory.Placement = varVnicEthIfInventoryWithoutEmbeddedStruct.Placement
+		varVnicEthIfInventory.SriovSettings = varVnicEthIfInventoryWithoutEmbeddedStruct.SriovSettings
 		varVnicEthIfInventory.StandbyVifId = varVnicEthIfInventoryWithoutEmbeddedStruct.StandbyVifId
 		varVnicEthIfInventory.StaticMacAddress = varVnicEthIfInventoryWithoutEmbeddedStruct.StaticMacAddress
+		varVnicEthIfInventory.TemplateActions = varVnicEthIfInventoryWithoutEmbeddedStruct.TemplateActions
+		varVnicEthIfInventory.TemplateSyncErrors = varVnicEthIfInventoryWithoutEmbeddedStruct.TemplateSyncErrors
+		varVnicEthIfInventory.TemplateSyncStatus = varVnicEthIfInventoryWithoutEmbeddedStruct.TemplateSyncStatus
 		varVnicEthIfInventory.UsnicSettings = varVnicEthIfInventoryWithoutEmbeddedStruct.UsnicSettings
 		varVnicEthIfInventory.VifId = varVnicEthIfInventoryWithoutEmbeddedStruct.VifId
 		varVnicEthIfInventory.VmqSettings = varVnicEthIfInventoryWithoutEmbeddedStruct.VmqSettings
@@ -1286,6 +1715,7 @@ func (o *VnicEthIfInventory) UnmarshalJSON(bytes []byte) (err error) {
 		varVnicEthIfInventory.MacLease = varVnicEthIfInventoryWithoutEmbeddedStruct.MacLease
 		varVnicEthIfInventory.MacPool = varVnicEthIfInventoryWithoutEmbeddedStruct.MacPool
 		varVnicEthIfInventory.SpVnics = varVnicEthIfInventoryWithoutEmbeddedStruct.SpVnics
+		varVnicEthIfInventory.SrcTemplate = varVnicEthIfInventoryWithoutEmbeddedStruct.SrcTemplate
 		*o = VnicEthIfInventory(varVnicEthIfInventory)
 	} else {
 		return err
@@ -1293,7 +1723,7 @@ func (o *VnicEthIfInventory) UnmarshalJSON(bytes []byte) (err error) {
 
 	varVnicEthIfInventory := _VnicEthIfInventory{}
 
-	err = json.Unmarshal(bytes, &varVnicEthIfInventory)
+	err = json.Unmarshal(data, &varVnicEthIfInventory)
 	if err == nil {
 		o.PolicyAbstractInventory = varVnicEthIfInventory.PolicyAbstractInventory
 	} else {
@@ -1302,7 +1732,7 @@ func (o *VnicEthIfInventory) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Cdn")
@@ -1314,10 +1744,15 @@ func (o *VnicEthIfInventory) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "MacAddressType")
 		delete(additionalProperties, "Name")
 		delete(additionalProperties, "Order")
+		delete(additionalProperties, "OverriddenList")
 		delete(additionalProperties, "PinGroupName")
 		delete(additionalProperties, "Placement")
+		delete(additionalProperties, "SriovSettings")
 		delete(additionalProperties, "StandbyVifId")
 		delete(additionalProperties, "StaticMacAddress")
+		delete(additionalProperties, "TemplateActions")
+		delete(additionalProperties, "TemplateSyncErrors")
+		delete(additionalProperties, "TemplateSyncStatus")
 		delete(additionalProperties, "UsnicSettings")
 		delete(additionalProperties, "VifId")
 		delete(additionalProperties, "VmqSettings")
@@ -1333,6 +1768,7 @@ func (o *VnicEthIfInventory) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "MacLease")
 		delete(additionalProperties, "MacPool")
 		delete(additionalProperties, "SpVnics")
+		delete(additionalProperties, "SrcTemplate")
 
 		// remove fields from embedded structs
 		reflectPolicyAbstractInventory := reflect.ValueOf(o.PolicyAbstractInventory)

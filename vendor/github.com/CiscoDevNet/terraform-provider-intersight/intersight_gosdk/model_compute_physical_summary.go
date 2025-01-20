@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,13 +13,17 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
+// checks if the ComputePhysicalSummary type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ComputePhysicalSummary{}
+
 // ComputePhysicalSummary Consolidated view of Blades and RackUnits.
 type ComputePhysicalSummary struct {
-	ViewsView
+	MoBaseMo
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
@@ -29,7 +33,7 @@ type ComputePhysicalSummary struct {
 	AlarmSummary    NullableComputeAlarmSummary `json:"AlarmSummary,omitempty"`
 	// The user defined asset tag assigned to the server.
 	AssetTag *string `json:"AssetTag,omitempty"`
-	// The amount of memory available on the server.
+	// Total memeory of the server in MB.
 	AvailableMemory *int64 `json:"AvailableMemory,omitempty"`
 	// The BIOS POST completion status of the server.
 	BiosPostComplete *bool `json:"BiosPostComplete,omitempty"`
@@ -37,26 +41,31 @@ type ComputePhysicalSummary struct {
 	ChassisId *string `json:"ChassisId,omitempty"`
 	// Connectivity Status of RackUnit to Switch - A or B or AB.
 	ConnectionStatus *string `json:"ConnectionStatus,omitempty"`
-	// CPU Capacity = Number of CPU Sockets x Enabled Cores x Speed (GHz).
+	// Total processing capacity of the server.
 	CpuCapacity *float32 `json:"CpuCapacity,omitempty"`
-	// The database identifier of the registered device of an object.
+	// The MoId of the registered device that coresponds to the server.
 	DeviceMoId *string `json:"DeviceMoId,omitempty"`
 	// The Distinguished Name unambiguously identifies an object in the system.
 	Dn *string `json:"Dn,omitempty"`
 	// The fault summary for the server.
-	// Deprecated
 	FaultSummary *int64 `json:"FaultSummary,omitempty"`
 	// The firmware version of the Cisco Integrated Management Controller (CIMC) for this server.
 	Firmware *string `json:"Firmware,omitempty"`
+	// The actual front panel state of the server. * `None` - Front Panel of the server is set to None state. It is required so that the next frontPanelLockState operation can be triggered. * `Lock` - Front Panel of the server is set to Locked state. * `Unlock` - Front Panel of the server is set to Unlocked state.
+	FrontPanelLockState *string `json:"FrontPanelLockState,omitempty"`
 	// The universally unique hardware identity of the server provided by the manufacturer.
 	HardwareUuid *string `json:"HardwareUuid,omitempty"`
 	// The IPv4 address configured on the management interface of the Integrated Management Controller.
-	Ipv4Address    *string            `json:"Ipv4Address,omitempty"`
+	Ipv4Address *string `json:"Ipv4Address,omitempty"`
+	// This field indicates the compute status of the catalog values for the associated component or hardware.
+	IsUpgraded     *bool              `json:"IsUpgraded,omitempty"`
 	KvmIpAddresses []ComputeIpAddress `json:"KvmIpAddresses,omitempty"`
 	// The KVM server state of the server.
 	KvmServerStateEnabled *bool `json:"KvmServerStateEnabled,omitempty"`
 	// The KVM Vendor for the server.
 	KvmVendor *string `json:"KvmVendor,omitempty"`
+	// The lifecycle of the blade server. * `None` - Default state of an equipment. This should be an initial state when no state is defined for an equipment. * `Active` - Default Lifecycle State for a physical entity. * `Decommissioned` - Decommission Lifecycle state. * `DiscoveryInProgress` - DiscoveryInProgress Lifecycle state. * `DiscoveryFailed` - DiscoveryFailed Lifecycle state. * `FirmwareUpgradeInProgress` - Firmware upgrade is in progress on given physical entity. * `SecureEraseInProgress` - Secure Erase is in progress on given physical entity. * `ScrubInProgress` - Scrub is in progress on given physical entity. * `BladeMigrationInProgress` - Server slot migration is in progress on given physical entity. * `SlotMismatch` - The blade server is detected in a different chassis/slot than it was previously. * `Removed` - The blade server has been removed from its discovered slot, and not detected anywhere else. Blade inventory can be cleaned up by performing a software remove operation on the physically removed blade. * `Moved` - The blade server has been moved from its discovered location to a new location. Blade inventory can be updated by performing a rediscover operation on the moved blade. * `Replaced` - The blade server has been removed from its discovered location and another blade has been inserted in that location. Blade inventory can be cleaned up and updated by doing a software remove operation on the physically removed blade. * `MovedAndReplaced` - The blade server has been moved from its discovered location to a new location and another blade has been inserted into the old discovered location. Blade inventory can be updated by performing a rediscover operation on the moved blade.
+	Lifecycle *string `json:"Lifecycle,omitempty"`
 	// The management mode of the server. * `IntersightStandalone` - Intersight Standalone mode of operation. * `UCSM` - Unified Computing System Manager mode of operation. * `Intersight` - Intersight managed mode of operation.
 	ManagementMode *string `json:"ManagementMode,omitempty"`
 	// The maximum memory speed in MHz available on the server.
@@ -69,7 +78,7 @@ type ComputePhysicalSummary struct {
 	Name *string `json:"Name,omitempty"`
 	// The total number of network adapters present on the server.
 	NumAdaptors *int64 `json:"NumAdaptors,omitempty"`
-	// The total number of CPU cores present on the server.
+	// The total number of CPU cores enabled on the server.
 	NumCpuCores *int64 `json:"NumCpuCores,omitempty"`
 	// The total number of CPU cores enabled on the server.
 	NumCpuCoresEnabled *int64 `json:"NumCpuCoresEnabled,omitempty"`
@@ -88,7 +97,9 @@ type ComputePhysicalSummary struct {
 	OperState *string `json:"OperState,omitempty"`
 	// The operability of the server.
 	Operability *string `json:"Operability,omitempty"`
-	// The Rack unit software Personality.
+	// Bundle version which the firmware belongs to.
+	PackageVersion *string `json:"PackageVersion,omitempty"`
+	// Unique identity of added software personality.
 	Personality *string `json:"Personality,omitempty"`
 	// The platform type of the registered device - whether managed by UCSM or operating in standalone mode.
 	PlatformType *string `json:"PlatformType,omitempty"`
@@ -108,7 +119,7 @@ type ComputePhysicalSummary struct {
 	ServiceProfile *string `json:"ServiceProfile,omitempty"`
 	// The slot number in the chassis that the blade is discovered in.
 	SlotId *int64 `json:"SlotId,omitempty"`
-	// The source object type of this view MO.
+	// Stores the source object type. This feild will either be RackUnit or Blade.
 	SourceObjectType *string `json:"SourceObjectType,omitempty"`
 	// To maintain the Topology workflow run status.
 	TopologyScanStatus *string `json:"TopologyScanStatus,omitempty"`
@@ -121,10 +132,11 @@ type ComputePhysicalSummary struct {
 	// The universally unique identity of the server.
 	Uuid *string `json:"Uuid,omitempty"`
 	// This field identifies the vendor of the given component.
-	Vendor               *string                              `json:"Vendor,omitempty"`
-	EquipmentChassis     *EquipmentChassisRelationship        `json:"EquipmentChassis,omitempty"`
-	InventoryDeviceInfo  *InventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
-	RegisteredDevice     *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	Vendor               *string                                     `json:"Vendor,omitempty"`
+	EquipmentChassis     NullableEquipmentChassisRelationship        `json:"EquipmentChassis,omitempty"`
+	InventoryDeviceInfo  NullableInventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
+	InventoryParent      NullableMoBaseMoRelationship                `json:"InventoryParent,omitempty"`
+	RegisteredDevice     NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -138,6 +150,8 @@ func NewComputePhysicalSummary(classId string, objectType string) *ComputePhysic
 	this := ComputePhysicalSummary{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var frontPanelLockState string = "None"
+	this.FrontPanelLockState = &frontPanelLockState
 	return &this
 }
 
@@ -150,6 +164,8 @@ func NewComputePhysicalSummaryWithDefaults() *ComputePhysicalSummary {
 	this.ClassId = classId
 	var objectType string = "compute.PhysicalSummary"
 	this.ObjectType = objectType
+	var frontPanelLockState string = "None"
+	this.FrontPanelLockState = &frontPanelLockState
 	return &this
 }
 
@@ -177,6 +193,11 @@ func (o *ComputePhysicalSummary) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "compute.PhysicalSummary" of the ClassId field.
+func (o *ComputePhysicalSummary) GetDefaultClassId() interface{} {
+	return "compute.PhysicalSummary"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ComputePhysicalSummary) GetObjectType() string {
 	if o == nil {
@@ -201,9 +222,14 @@ func (o *ComputePhysicalSummary) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "compute.PhysicalSummary" of the ObjectType field.
+func (o *ComputePhysicalSummary) GetDefaultObjectType() interface{} {
+	return "compute.PhysicalSummary"
+}
+
 // GetAdminPowerState returns the AdminPowerState field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetAdminPowerState() string {
-	if o == nil || o.AdminPowerState == nil {
+	if o == nil || IsNil(o.AdminPowerState) {
 		var ret string
 		return ret
 	}
@@ -213,7 +239,7 @@ func (o *ComputePhysicalSummary) GetAdminPowerState() string {
 // GetAdminPowerStateOk returns a tuple with the AdminPowerState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetAdminPowerStateOk() (*string, bool) {
-	if o == nil || o.AdminPowerState == nil {
+	if o == nil || IsNil(o.AdminPowerState) {
 		return nil, false
 	}
 	return o.AdminPowerState, true
@@ -221,7 +247,7 @@ func (o *ComputePhysicalSummary) GetAdminPowerStateOk() (*string, bool) {
 
 // HasAdminPowerState returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasAdminPowerState() bool {
-	if o != nil && o.AdminPowerState != nil {
+	if o != nil && !IsNil(o.AdminPowerState) {
 		return true
 	}
 
@@ -235,7 +261,7 @@ func (o *ComputePhysicalSummary) SetAdminPowerState(v string) {
 
 // GetAlarmSummary returns the AlarmSummary field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ComputePhysicalSummary) GetAlarmSummary() ComputeAlarmSummary {
-	if o == nil || o.AlarmSummary.Get() == nil {
+	if o == nil || IsNil(o.AlarmSummary.Get()) {
 		var ret ComputeAlarmSummary
 		return ret
 	}
@@ -278,7 +304,7 @@ func (o *ComputePhysicalSummary) UnsetAlarmSummary() {
 
 // GetAssetTag returns the AssetTag field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetAssetTag() string {
-	if o == nil || o.AssetTag == nil {
+	if o == nil || IsNil(o.AssetTag) {
 		var ret string
 		return ret
 	}
@@ -288,7 +314,7 @@ func (o *ComputePhysicalSummary) GetAssetTag() string {
 // GetAssetTagOk returns a tuple with the AssetTag field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetAssetTagOk() (*string, bool) {
-	if o == nil || o.AssetTag == nil {
+	if o == nil || IsNil(o.AssetTag) {
 		return nil, false
 	}
 	return o.AssetTag, true
@@ -296,7 +322,7 @@ func (o *ComputePhysicalSummary) GetAssetTagOk() (*string, bool) {
 
 // HasAssetTag returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasAssetTag() bool {
-	if o != nil && o.AssetTag != nil {
+	if o != nil && !IsNil(o.AssetTag) {
 		return true
 	}
 
@@ -310,7 +336,7 @@ func (o *ComputePhysicalSummary) SetAssetTag(v string) {
 
 // GetAvailableMemory returns the AvailableMemory field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetAvailableMemory() int64 {
-	if o == nil || o.AvailableMemory == nil {
+	if o == nil || IsNil(o.AvailableMemory) {
 		var ret int64
 		return ret
 	}
@@ -320,7 +346,7 @@ func (o *ComputePhysicalSummary) GetAvailableMemory() int64 {
 // GetAvailableMemoryOk returns a tuple with the AvailableMemory field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetAvailableMemoryOk() (*int64, bool) {
-	if o == nil || o.AvailableMemory == nil {
+	if o == nil || IsNil(o.AvailableMemory) {
 		return nil, false
 	}
 	return o.AvailableMemory, true
@@ -328,7 +354,7 @@ func (o *ComputePhysicalSummary) GetAvailableMemoryOk() (*int64, bool) {
 
 // HasAvailableMemory returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasAvailableMemory() bool {
-	if o != nil && o.AvailableMemory != nil {
+	if o != nil && !IsNil(o.AvailableMemory) {
 		return true
 	}
 
@@ -342,7 +368,7 @@ func (o *ComputePhysicalSummary) SetAvailableMemory(v int64) {
 
 // GetBiosPostComplete returns the BiosPostComplete field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetBiosPostComplete() bool {
-	if o == nil || o.BiosPostComplete == nil {
+	if o == nil || IsNil(o.BiosPostComplete) {
 		var ret bool
 		return ret
 	}
@@ -352,7 +378,7 @@ func (o *ComputePhysicalSummary) GetBiosPostComplete() bool {
 // GetBiosPostCompleteOk returns a tuple with the BiosPostComplete field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetBiosPostCompleteOk() (*bool, bool) {
-	if o == nil || o.BiosPostComplete == nil {
+	if o == nil || IsNil(o.BiosPostComplete) {
 		return nil, false
 	}
 	return o.BiosPostComplete, true
@@ -360,7 +386,7 @@ func (o *ComputePhysicalSummary) GetBiosPostCompleteOk() (*bool, bool) {
 
 // HasBiosPostComplete returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasBiosPostComplete() bool {
-	if o != nil && o.BiosPostComplete != nil {
+	if o != nil && !IsNil(o.BiosPostComplete) {
 		return true
 	}
 
@@ -374,7 +400,7 @@ func (o *ComputePhysicalSummary) SetBiosPostComplete(v bool) {
 
 // GetChassisId returns the ChassisId field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetChassisId() string {
-	if o == nil || o.ChassisId == nil {
+	if o == nil || IsNil(o.ChassisId) {
 		var ret string
 		return ret
 	}
@@ -384,7 +410,7 @@ func (o *ComputePhysicalSummary) GetChassisId() string {
 // GetChassisIdOk returns a tuple with the ChassisId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetChassisIdOk() (*string, bool) {
-	if o == nil || o.ChassisId == nil {
+	if o == nil || IsNil(o.ChassisId) {
 		return nil, false
 	}
 	return o.ChassisId, true
@@ -392,7 +418,7 @@ func (o *ComputePhysicalSummary) GetChassisIdOk() (*string, bool) {
 
 // HasChassisId returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasChassisId() bool {
-	if o != nil && o.ChassisId != nil {
+	if o != nil && !IsNil(o.ChassisId) {
 		return true
 	}
 
@@ -406,7 +432,7 @@ func (o *ComputePhysicalSummary) SetChassisId(v string) {
 
 // GetConnectionStatus returns the ConnectionStatus field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetConnectionStatus() string {
-	if o == nil || o.ConnectionStatus == nil {
+	if o == nil || IsNil(o.ConnectionStatus) {
 		var ret string
 		return ret
 	}
@@ -416,7 +442,7 @@ func (o *ComputePhysicalSummary) GetConnectionStatus() string {
 // GetConnectionStatusOk returns a tuple with the ConnectionStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetConnectionStatusOk() (*string, bool) {
-	if o == nil || o.ConnectionStatus == nil {
+	if o == nil || IsNil(o.ConnectionStatus) {
 		return nil, false
 	}
 	return o.ConnectionStatus, true
@@ -424,7 +450,7 @@ func (o *ComputePhysicalSummary) GetConnectionStatusOk() (*string, bool) {
 
 // HasConnectionStatus returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasConnectionStatus() bool {
-	if o != nil && o.ConnectionStatus != nil {
+	if o != nil && !IsNil(o.ConnectionStatus) {
 		return true
 	}
 
@@ -438,7 +464,7 @@ func (o *ComputePhysicalSummary) SetConnectionStatus(v string) {
 
 // GetCpuCapacity returns the CpuCapacity field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetCpuCapacity() float32 {
-	if o == nil || o.CpuCapacity == nil {
+	if o == nil || IsNil(o.CpuCapacity) {
 		var ret float32
 		return ret
 	}
@@ -448,7 +474,7 @@ func (o *ComputePhysicalSummary) GetCpuCapacity() float32 {
 // GetCpuCapacityOk returns a tuple with the CpuCapacity field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetCpuCapacityOk() (*float32, bool) {
-	if o == nil || o.CpuCapacity == nil {
+	if o == nil || IsNil(o.CpuCapacity) {
 		return nil, false
 	}
 	return o.CpuCapacity, true
@@ -456,7 +482,7 @@ func (o *ComputePhysicalSummary) GetCpuCapacityOk() (*float32, bool) {
 
 // HasCpuCapacity returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasCpuCapacity() bool {
-	if o != nil && o.CpuCapacity != nil {
+	if o != nil && !IsNil(o.CpuCapacity) {
 		return true
 	}
 
@@ -470,7 +496,7 @@ func (o *ComputePhysicalSummary) SetCpuCapacity(v float32) {
 
 // GetDeviceMoId returns the DeviceMoId field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetDeviceMoId() string {
-	if o == nil || o.DeviceMoId == nil {
+	if o == nil || IsNil(o.DeviceMoId) {
 		var ret string
 		return ret
 	}
@@ -480,7 +506,7 @@ func (o *ComputePhysicalSummary) GetDeviceMoId() string {
 // GetDeviceMoIdOk returns a tuple with the DeviceMoId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetDeviceMoIdOk() (*string, bool) {
-	if o == nil || o.DeviceMoId == nil {
+	if o == nil || IsNil(o.DeviceMoId) {
 		return nil, false
 	}
 	return o.DeviceMoId, true
@@ -488,7 +514,7 @@ func (o *ComputePhysicalSummary) GetDeviceMoIdOk() (*string, bool) {
 
 // HasDeviceMoId returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasDeviceMoId() bool {
-	if o != nil && o.DeviceMoId != nil {
+	if o != nil && !IsNil(o.DeviceMoId) {
 		return true
 	}
 
@@ -502,7 +528,7 @@ func (o *ComputePhysicalSummary) SetDeviceMoId(v string) {
 
 // GetDn returns the Dn field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetDn() string {
-	if o == nil || o.Dn == nil {
+	if o == nil || IsNil(o.Dn) {
 		var ret string
 		return ret
 	}
@@ -512,7 +538,7 @@ func (o *ComputePhysicalSummary) GetDn() string {
 // GetDnOk returns a tuple with the Dn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetDnOk() (*string, bool) {
-	if o == nil || o.Dn == nil {
+	if o == nil || IsNil(o.Dn) {
 		return nil, false
 	}
 	return o.Dn, true
@@ -520,7 +546,7 @@ func (o *ComputePhysicalSummary) GetDnOk() (*string, bool) {
 
 // HasDn returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasDn() bool {
-	if o != nil && o.Dn != nil {
+	if o != nil && !IsNil(o.Dn) {
 		return true
 	}
 
@@ -533,9 +559,8 @@ func (o *ComputePhysicalSummary) SetDn(v string) {
 }
 
 // GetFaultSummary returns the FaultSummary field value if set, zero value otherwise.
-// Deprecated
 func (o *ComputePhysicalSummary) GetFaultSummary() int64 {
-	if o == nil || o.FaultSummary == nil {
+	if o == nil || IsNil(o.FaultSummary) {
 		var ret int64
 		return ret
 	}
@@ -544,9 +569,8 @@ func (o *ComputePhysicalSummary) GetFaultSummary() int64 {
 
 // GetFaultSummaryOk returns a tuple with the FaultSummary field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-// Deprecated
 func (o *ComputePhysicalSummary) GetFaultSummaryOk() (*int64, bool) {
-	if o == nil || o.FaultSummary == nil {
+	if o == nil || IsNil(o.FaultSummary) {
 		return nil, false
 	}
 	return o.FaultSummary, true
@@ -554,7 +578,7 @@ func (o *ComputePhysicalSummary) GetFaultSummaryOk() (*int64, bool) {
 
 // HasFaultSummary returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasFaultSummary() bool {
-	if o != nil && o.FaultSummary != nil {
+	if o != nil && !IsNil(o.FaultSummary) {
 		return true
 	}
 
@@ -562,14 +586,13 @@ func (o *ComputePhysicalSummary) HasFaultSummary() bool {
 }
 
 // SetFaultSummary gets a reference to the given int64 and assigns it to the FaultSummary field.
-// Deprecated
 func (o *ComputePhysicalSummary) SetFaultSummary(v int64) {
 	o.FaultSummary = &v
 }
 
 // GetFirmware returns the Firmware field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetFirmware() string {
-	if o == nil || o.Firmware == nil {
+	if o == nil || IsNil(o.Firmware) {
 		var ret string
 		return ret
 	}
@@ -579,7 +602,7 @@ func (o *ComputePhysicalSummary) GetFirmware() string {
 // GetFirmwareOk returns a tuple with the Firmware field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetFirmwareOk() (*string, bool) {
-	if o == nil || o.Firmware == nil {
+	if o == nil || IsNil(o.Firmware) {
 		return nil, false
 	}
 	return o.Firmware, true
@@ -587,7 +610,7 @@ func (o *ComputePhysicalSummary) GetFirmwareOk() (*string, bool) {
 
 // HasFirmware returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasFirmware() bool {
-	if o != nil && o.Firmware != nil {
+	if o != nil && !IsNil(o.Firmware) {
 		return true
 	}
 
@@ -599,9 +622,41 @@ func (o *ComputePhysicalSummary) SetFirmware(v string) {
 	o.Firmware = &v
 }
 
+// GetFrontPanelLockState returns the FrontPanelLockState field value if set, zero value otherwise.
+func (o *ComputePhysicalSummary) GetFrontPanelLockState() string {
+	if o == nil || IsNil(o.FrontPanelLockState) {
+		var ret string
+		return ret
+	}
+	return *o.FrontPanelLockState
+}
+
+// GetFrontPanelLockStateOk returns a tuple with the FrontPanelLockState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ComputePhysicalSummary) GetFrontPanelLockStateOk() (*string, bool) {
+	if o == nil || IsNil(o.FrontPanelLockState) {
+		return nil, false
+	}
+	return o.FrontPanelLockState, true
+}
+
+// HasFrontPanelLockState returns a boolean if a field has been set.
+func (o *ComputePhysicalSummary) HasFrontPanelLockState() bool {
+	if o != nil && !IsNil(o.FrontPanelLockState) {
+		return true
+	}
+
+	return false
+}
+
+// SetFrontPanelLockState gets a reference to the given string and assigns it to the FrontPanelLockState field.
+func (o *ComputePhysicalSummary) SetFrontPanelLockState(v string) {
+	o.FrontPanelLockState = &v
+}
+
 // GetHardwareUuid returns the HardwareUuid field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetHardwareUuid() string {
-	if o == nil || o.HardwareUuid == nil {
+	if o == nil || IsNil(o.HardwareUuid) {
 		var ret string
 		return ret
 	}
@@ -611,7 +666,7 @@ func (o *ComputePhysicalSummary) GetHardwareUuid() string {
 // GetHardwareUuidOk returns a tuple with the HardwareUuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetHardwareUuidOk() (*string, bool) {
-	if o == nil || o.HardwareUuid == nil {
+	if o == nil || IsNil(o.HardwareUuid) {
 		return nil, false
 	}
 	return o.HardwareUuid, true
@@ -619,7 +674,7 @@ func (o *ComputePhysicalSummary) GetHardwareUuidOk() (*string, bool) {
 
 // HasHardwareUuid returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasHardwareUuid() bool {
-	if o != nil && o.HardwareUuid != nil {
+	if o != nil && !IsNil(o.HardwareUuid) {
 		return true
 	}
 
@@ -633,7 +688,7 @@ func (o *ComputePhysicalSummary) SetHardwareUuid(v string) {
 
 // GetIpv4Address returns the Ipv4Address field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetIpv4Address() string {
-	if o == nil || o.Ipv4Address == nil {
+	if o == nil || IsNil(o.Ipv4Address) {
 		var ret string
 		return ret
 	}
@@ -643,7 +698,7 @@ func (o *ComputePhysicalSummary) GetIpv4Address() string {
 // GetIpv4AddressOk returns a tuple with the Ipv4Address field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetIpv4AddressOk() (*string, bool) {
-	if o == nil || o.Ipv4Address == nil {
+	if o == nil || IsNil(o.Ipv4Address) {
 		return nil, false
 	}
 	return o.Ipv4Address, true
@@ -651,7 +706,7 @@ func (o *ComputePhysicalSummary) GetIpv4AddressOk() (*string, bool) {
 
 // HasIpv4Address returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasIpv4Address() bool {
-	if o != nil && o.Ipv4Address != nil {
+	if o != nil && !IsNil(o.Ipv4Address) {
 		return true
 	}
 
@@ -661,6 +716,38 @@ func (o *ComputePhysicalSummary) HasIpv4Address() bool {
 // SetIpv4Address gets a reference to the given string and assigns it to the Ipv4Address field.
 func (o *ComputePhysicalSummary) SetIpv4Address(v string) {
 	o.Ipv4Address = &v
+}
+
+// GetIsUpgraded returns the IsUpgraded field value if set, zero value otherwise.
+func (o *ComputePhysicalSummary) GetIsUpgraded() bool {
+	if o == nil || IsNil(o.IsUpgraded) {
+		var ret bool
+		return ret
+	}
+	return *o.IsUpgraded
+}
+
+// GetIsUpgradedOk returns a tuple with the IsUpgraded field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ComputePhysicalSummary) GetIsUpgradedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsUpgraded) {
+		return nil, false
+	}
+	return o.IsUpgraded, true
+}
+
+// HasIsUpgraded returns a boolean if a field has been set.
+func (o *ComputePhysicalSummary) HasIsUpgraded() bool {
+	if o != nil && !IsNil(o.IsUpgraded) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsUpgraded gets a reference to the given bool and assigns it to the IsUpgraded field.
+func (o *ComputePhysicalSummary) SetIsUpgraded(v bool) {
+	o.IsUpgraded = &v
 }
 
 // GetKvmIpAddresses returns the KvmIpAddresses field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -676,7 +763,7 @@ func (o *ComputePhysicalSummary) GetKvmIpAddresses() []ComputeIpAddress {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ComputePhysicalSummary) GetKvmIpAddressesOk() ([]ComputeIpAddress, bool) {
-	if o == nil || o.KvmIpAddresses == nil {
+	if o == nil || IsNil(o.KvmIpAddresses) {
 		return nil, false
 	}
 	return o.KvmIpAddresses, true
@@ -684,7 +771,7 @@ func (o *ComputePhysicalSummary) GetKvmIpAddressesOk() ([]ComputeIpAddress, bool
 
 // HasKvmIpAddresses returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasKvmIpAddresses() bool {
-	if o != nil && o.KvmIpAddresses != nil {
+	if o != nil && !IsNil(o.KvmIpAddresses) {
 		return true
 	}
 
@@ -698,7 +785,7 @@ func (o *ComputePhysicalSummary) SetKvmIpAddresses(v []ComputeIpAddress) {
 
 // GetKvmServerStateEnabled returns the KvmServerStateEnabled field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetKvmServerStateEnabled() bool {
-	if o == nil || o.KvmServerStateEnabled == nil {
+	if o == nil || IsNil(o.KvmServerStateEnabled) {
 		var ret bool
 		return ret
 	}
@@ -708,7 +795,7 @@ func (o *ComputePhysicalSummary) GetKvmServerStateEnabled() bool {
 // GetKvmServerStateEnabledOk returns a tuple with the KvmServerStateEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetKvmServerStateEnabledOk() (*bool, bool) {
-	if o == nil || o.KvmServerStateEnabled == nil {
+	if o == nil || IsNil(o.KvmServerStateEnabled) {
 		return nil, false
 	}
 	return o.KvmServerStateEnabled, true
@@ -716,7 +803,7 @@ func (o *ComputePhysicalSummary) GetKvmServerStateEnabledOk() (*bool, bool) {
 
 // HasKvmServerStateEnabled returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasKvmServerStateEnabled() bool {
-	if o != nil && o.KvmServerStateEnabled != nil {
+	if o != nil && !IsNil(o.KvmServerStateEnabled) {
 		return true
 	}
 
@@ -730,7 +817,7 @@ func (o *ComputePhysicalSummary) SetKvmServerStateEnabled(v bool) {
 
 // GetKvmVendor returns the KvmVendor field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetKvmVendor() string {
-	if o == nil || o.KvmVendor == nil {
+	if o == nil || IsNil(o.KvmVendor) {
 		var ret string
 		return ret
 	}
@@ -740,7 +827,7 @@ func (o *ComputePhysicalSummary) GetKvmVendor() string {
 // GetKvmVendorOk returns a tuple with the KvmVendor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetKvmVendorOk() (*string, bool) {
-	if o == nil || o.KvmVendor == nil {
+	if o == nil || IsNil(o.KvmVendor) {
 		return nil, false
 	}
 	return o.KvmVendor, true
@@ -748,7 +835,7 @@ func (o *ComputePhysicalSummary) GetKvmVendorOk() (*string, bool) {
 
 // HasKvmVendor returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasKvmVendor() bool {
-	if o != nil && o.KvmVendor != nil {
+	if o != nil && !IsNil(o.KvmVendor) {
 		return true
 	}
 
@@ -760,9 +847,41 @@ func (o *ComputePhysicalSummary) SetKvmVendor(v string) {
 	o.KvmVendor = &v
 }
 
+// GetLifecycle returns the Lifecycle field value if set, zero value otherwise.
+func (o *ComputePhysicalSummary) GetLifecycle() string {
+	if o == nil || IsNil(o.Lifecycle) {
+		var ret string
+		return ret
+	}
+	return *o.Lifecycle
+}
+
+// GetLifecycleOk returns a tuple with the Lifecycle field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ComputePhysicalSummary) GetLifecycleOk() (*string, bool) {
+	if o == nil || IsNil(o.Lifecycle) {
+		return nil, false
+	}
+	return o.Lifecycle, true
+}
+
+// HasLifecycle returns a boolean if a field has been set.
+func (o *ComputePhysicalSummary) HasLifecycle() bool {
+	if o != nil && !IsNil(o.Lifecycle) {
+		return true
+	}
+
+	return false
+}
+
+// SetLifecycle gets a reference to the given string and assigns it to the Lifecycle field.
+func (o *ComputePhysicalSummary) SetLifecycle(v string) {
+	o.Lifecycle = &v
+}
+
 // GetManagementMode returns the ManagementMode field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetManagementMode() string {
-	if o == nil || o.ManagementMode == nil {
+	if o == nil || IsNil(o.ManagementMode) {
 		var ret string
 		return ret
 	}
@@ -772,7 +891,7 @@ func (o *ComputePhysicalSummary) GetManagementMode() string {
 // GetManagementModeOk returns a tuple with the ManagementMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetManagementModeOk() (*string, bool) {
-	if o == nil || o.ManagementMode == nil {
+	if o == nil || IsNil(o.ManagementMode) {
 		return nil, false
 	}
 	return o.ManagementMode, true
@@ -780,7 +899,7 @@ func (o *ComputePhysicalSummary) GetManagementModeOk() (*string, bool) {
 
 // HasManagementMode returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasManagementMode() bool {
-	if o != nil && o.ManagementMode != nil {
+	if o != nil && !IsNil(o.ManagementMode) {
 		return true
 	}
 
@@ -794,7 +913,7 @@ func (o *ComputePhysicalSummary) SetManagementMode(v string) {
 
 // GetMemorySpeed returns the MemorySpeed field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetMemorySpeed() string {
-	if o == nil || o.MemorySpeed == nil {
+	if o == nil || IsNil(o.MemorySpeed) {
 		var ret string
 		return ret
 	}
@@ -804,7 +923,7 @@ func (o *ComputePhysicalSummary) GetMemorySpeed() string {
 // GetMemorySpeedOk returns a tuple with the MemorySpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetMemorySpeedOk() (*string, bool) {
-	if o == nil || o.MemorySpeed == nil {
+	if o == nil || IsNil(o.MemorySpeed) {
 		return nil, false
 	}
 	return o.MemorySpeed, true
@@ -812,7 +931,7 @@ func (o *ComputePhysicalSummary) GetMemorySpeedOk() (*string, bool) {
 
 // HasMemorySpeed returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasMemorySpeed() bool {
-	if o != nil && o.MemorySpeed != nil {
+	if o != nil && !IsNil(o.MemorySpeed) {
 		return true
 	}
 
@@ -826,7 +945,7 @@ func (o *ComputePhysicalSummary) SetMemorySpeed(v string) {
 
 // GetMgmtIpAddress returns the MgmtIpAddress field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetMgmtIpAddress() string {
-	if o == nil || o.MgmtIpAddress == nil {
+	if o == nil || IsNil(o.MgmtIpAddress) {
 		var ret string
 		return ret
 	}
@@ -836,7 +955,7 @@ func (o *ComputePhysicalSummary) GetMgmtIpAddress() string {
 // GetMgmtIpAddressOk returns a tuple with the MgmtIpAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetMgmtIpAddressOk() (*string, bool) {
-	if o == nil || o.MgmtIpAddress == nil {
+	if o == nil || IsNil(o.MgmtIpAddress) {
 		return nil, false
 	}
 	return o.MgmtIpAddress, true
@@ -844,7 +963,7 @@ func (o *ComputePhysicalSummary) GetMgmtIpAddressOk() (*string, bool) {
 
 // HasMgmtIpAddress returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasMgmtIpAddress() bool {
-	if o != nil && o.MgmtIpAddress != nil {
+	if o != nil && !IsNil(o.MgmtIpAddress) {
 		return true
 	}
 
@@ -858,7 +977,7 @@ func (o *ComputePhysicalSummary) SetMgmtIpAddress(v string) {
 
 // GetModel returns the Model field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetModel() string {
-	if o == nil || o.Model == nil {
+	if o == nil || IsNil(o.Model) {
 		var ret string
 		return ret
 	}
@@ -868,7 +987,7 @@ func (o *ComputePhysicalSummary) GetModel() string {
 // GetModelOk returns a tuple with the Model field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetModelOk() (*string, bool) {
-	if o == nil || o.Model == nil {
+	if o == nil || IsNil(o.Model) {
 		return nil, false
 	}
 	return o.Model, true
@@ -876,7 +995,7 @@ func (o *ComputePhysicalSummary) GetModelOk() (*string, bool) {
 
 // HasModel returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasModel() bool {
-	if o != nil && o.Model != nil {
+	if o != nil && !IsNil(o.Model) {
 		return true
 	}
 
@@ -890,7 +1009,7 @@ func (o *ComputePhysicalSummary) SetModel(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -900,7 +1019,7 @@ func (o *ComputePhysicalSummary) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -908,7 +1027,7 @@ func (o *ComputePhysicalSummary) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -922,7 +1041,7 @@ func (o *ComputePhysicalSummary) SetName(v string) {
 
 // GetNumAdaptors returns the NumAdaptors field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetNumAdaptors() int64 {
-	if o == nil || o.NumAdaptors == nil {
+	if o == nil || IsNil(o.NumAdaptors) {
 		var ret int64
 		return ret
 	}
@@ -932,7 +1051,7 @@ func (o *ComputePhysicalSummary) GetNumAdaptors() int64 {
 // GetNumAdaptorsOk returns a tuple with the NumAdaptors field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetNumAdaptorsOk() (*int64, bool) {
-	if o == nil || o.NumAdaptors == nil {
+	if o == nil || IsNil(o.NumAdaptors) {
 		return nil, false
 	}
 	return o.NumAdaptors, true
@@ -940,7 +1059,7 @@ func (o *ComputePhysicalSummary) GetNumAdaptorsOk() (*int64, bool) {
 
 // HasNumAdaptors returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasNumAdaptors() bool {
-	if o != nil && o.NumAdaptors != nil {
+	if o != nil && !IsNil(o.NumAdaptors) {
 		return true
 	}
 
@@ -954,7 +1073,7 @@ func (o *ComputePhysicalSummary) SetNumAdaptors(v int64) {
 
 // GetNumCpuCores returns the NumCpuCores field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetNumCpuCores() int64 {
-	if o == nil || o.NumCpuCores == nil {
+	if o == nil || IsNil(o.NumCpuCores) {
 		var ret int64
 		return ret
 	}
@@ -964,7 +1083,7 @@ func (o *ComputePhysicalSummary) GetNumCpuCores() int64 {
 // GetNumCpuCoresOk returns a tuple with the NumCpuCores field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetNumCpuCoresOk() (*int64, bool) {
-	if o == nil || o.NumCpuCores == nil {
+	if o == nil || IsNil(o.NumCpuCores) {
 		return nil, false
 	}
 	return o.NumCpuCores, true
@@ -972,7 +1091,7 @@ func (o *ComputePhysicalSummary) GetNumCpuCoresOk() (*int64, bool) {
 
 // HasNumCpuCores returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasNumCpuCores() bool {
-	if o != nil && o.NumCpuCores != nil {
+	if o != nil && !IsNil(o.NumCpuCores) {
 		return true
 	}
 
@@ -986,7 +1105,7 @@ func (o *ComputePhysicalSummary) SetNumCpuCores(v int64) {
 
 // GetNumCpuCoresEnabled returns the NumCpuCoresEnabled field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetNumCpuCoresEnabled() int64 {
-	if o == nil || o.NumCpuCoresEnabled == nil {
+	if o == nil || IsNil(o.NumCpuCoresEnabled) {
 		var ret int64
 		return ret
 	}
@@ -996,7 +1115,7 @@ func (o *ComputePhysicalSummary) GetNumCpuCoresEnabled() int64 {
 // GetNumCpuCoresEnabledOk returns a tuple with the NumCpuCoresEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetNumCpuCoresEnabledOk() (*int64, bool) {
-	if o == nil || o.NumCpuCoresEnabled == nil {
+	if o == nil || IsNil(o.NumCpuCoresEnabled) {
 		return nil, false
 	}
 	return o.NumCpuCoresEnabled, true
@@ -1004,7 +1123,7 @@ func (o *ComputePhysicalSummary) GetNumCpuCoresEnabledOk() (*int64, bool) {
 
 // HasNumCpuCoresEnabled returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasNumCpuCoresEnabled() bool {
-	if o != nil && o.NumCpuCoresEnabled != nil {
+	if o != nil && !IsNil(o.NumCpuCoresEnabled) {
 		return true
 	}
 
@@ -1018,7 +1137,7 @@ func (o *ComputePhysicalSummary) SetNumCpuCoresEnabled(v int64) {
 
 // GetNumCpus returns the NumCpus field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetNumCpus() int64 {
-	if o == nil || o.NumCpus == nil {
+	if o == nil || IsNil(o.NumCpus) {
 		var ret int64
 		return ret
 	}
@@ -1028,7 +1147,7 @@ func (o *ComputePhysicalSummary) GetNumCpus() int64 {
 // GetNumCpusOk returns a tuple with the NumCpus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetNumCpusOk() (*int64, bool) {
-	if o == nil || o.NumCpus == nil {
+	if o == nil || IsNil(o.NumCpus) {
 		return nil, false
 	}
 	return o.NumCpus, true
@@ -1036,7 +1155,7 @@ func (o *ComputePhysicalSummary) GetNumCpusOk() (*int64, bool) {
 
 // HasNumCpus returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasNumCpus() bool {
-	if o != nil && o.NumCpus != nil {
+	if o != nil && !IsNil(o.NumCpus) {
 		return true
 	}
 
@@ -1050,7 +1169,7 @@ func (o *ComputePhysicalSummary) SetNumCpus(v int64) {
 
 // GetNumEthHostInterfaces returns the NumEthHostInterfaces field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetNumEthHostInterfaces() int64 {
-	if o == nil || o.NumEthHostInterfaces == nil {
+	if o == nil || IsNil(o.NumEthHostInterfaces) {
 		var ret int64
 		return ret
 	}
@@ -1060,7 +1179,7 @@ func (o *ComputePhysicalSummary) GetNumEthHostInterfaces() int64 {
 // GetNumEthHostInterfacesOk returns a tuple with the NumEthHostInterfaces field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetNumEthHostInterfacesOk() (*int64, bool) {
-	if o == nil || o.NumEthHostInterfaces == nil {
+	if o == nil || IsNil(o.NumEthHostInterfaces) {
 		return nil, false
 	}
 	return o.NumEthHostInterfaces, true
@@ -1068,7 +1187,7 @@ func (o *ComputePhysicalSummary) GetNumEthHostInterfacesOk() (*int64, bool) {
 
 // HasNumEthHostInterfaces returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasNumEthHostInterfaces() bool {
-	if o != nil && o.NumEthHostInterfaces != nil {
+	if o != nil && !IsNil(o.NumEthHostInterfaces) {
 		return true
 	}
 
@@ -1082,7 +1201,7 @@ func (o *ComputePhysicalSummary) SetNumEthHostInterfaces(v int64) {
 
 // GetNumFcHostInterfaces returns the NumFcHostInterfaces field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetNumFcHostInterfaces() int64 {
-	if o == nil || o.NumFcHostInterfaces == nil {
+	if o == nil || IsNil(o.NumFcHostInterfaces) {
 		var ret int64
 		return ret
 	}
@@ -1092,7 +1211,7 @@ func (o *ComputePhysicalSummary) GetNumFcHostInterfaces() int64 {
 // GetNumFcHostInterfacesOk returns a tuple with the NumFcHostInterfaces field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetNumFcHostInterfacesOk() (*int64, bool) {
-	if o == nil || o.NumFcHostInterfaces == nil {
+	if o == nil || IsNil(o.NumFcHostInterfaces) {
 		return nil, false
 	}
 	return o.NumFcHostInterfaces, true
@@ -1100,7 +1219,7 @@ func (o *ComputePhysicalSummary) GetNumFcHostInterfacesOk() (*int64, bool) {
 
 // HasNumFcHostInterfaces returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasNumFcHostInterfaces() bool {
-	if o != nil && o.NumFcHostInterfaces != nil {
+	if o != nil && !IsNil(o.NumFcHostInterfaces) {
 		return true
 	}
 
@@ -1114,7 +1233,7 @@ func (o *ComputePhysicalSummary) SetNumFcHostInterfaces(v int64) {
 
 // GetNumThreads returns the NumThreads field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetNumThreads() int64 {
-	if o == nil || o.NumThreads == nil {
+	if o == nil || IsNil(o.NumThreads) {
 		var ret int64
 		return ret
 	}
@@ -1124,7 +1243,7 @@ func (o *ComputePhysicalSummary) GetNumThreads() int64 {
 // GetNumThreadsOk returns a tuple with the NumThreads field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetNumThreadsOk() (*int64, bool) {
-	if o == nil || o.NumThreads == nil {
+	if o == nil || IsNil(o.NumThreads) {
 		return nil, false
 	}
 	return o.NumThreads, true
@@ -1132,7 +1251,7 @@ func (o *ComputePhysicalSummary) GetNumThreadsOk() (*int64, bool) {
 
 // HasNumThreads returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasNumThreads() bool {
-	if o != nil && o.NumThreads != nil {
+	if o != nil && !IsNil(o.NumThreads) {
 		return true
 	}
 
@@ -1146,7 +1265,7 @@ func (o *ComputePhysicalSummary) SetNumThreads(v int64) {
 
 // GetOperPowerState returns the OperPowerState field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetOperPowerState() string {
-	if o == nil || o.OperPowerState == nil {
+	if o == nil || IsNil(o.OperPowerState) {
 		var ret string
 		return ret
 	}
@@ -1156,7 +1275,7 @@ func (o *ComputePhysicalSummary) GetOperPowerState() string {
 // GetOperPowerStateOk returns a tuple with the OperPowerState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetOperPowerStateOk() (*string, bool) {
-	if o == nil || o.OperPowerState == nil {
+	if o == nil || IsNil(o.OperPowerState) {
 		return nil, false
 	}
 	return o.OperPowerState, true
@@ -1164,7 +1283,7 @@ func (o *ComputePhysicalSummary) GetOperPowerStateOk() (*string, bool) {
 
 // HasOperPowerState returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasOperPowerState() bool {
-	if o != nil && o.OperPowerState != nil {
+	if o != nil && !IsNil(o.OperPowerState) {
 		return true
 	}
 
@@ -1189,7 +1308,7 @@ func (o *ComputePhysicalSummary) GetOperReason() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ComputePhysicalSummary) GetOperReasonOk() ([]string, bool) {
-	if o == nil || o.OperReason == nil {
+	if o == nil || IsNil(o.OperReason) {
 		return nil, false
 	}
 	return o.OperReason, true
@@ -1197,7 +1316,7 @@ func (o *ComputePhysicalSummary) GetOperReasonOk() ([]string, bool) {
 
 // HasOperReason returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasOperReason() bool {
-	if o != nil && o.OperReason != nil {
+	if o != nil && !IsNil(o.OperReason) {
 		return true
 	}
 
@@ -1211,7 +1330,7 @@ func (o *ComputePhysicalSummary) SetOperReason(v []string) {
 
 // GetOperState returns the OperState field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetOperState() string {
-	if o == nil || o.OperState == nil {
+	if o == nil || IsNil(o.OperState) {
 		var ret string
 		return ret
 	}
@@ -1221,7 +1340,7 @@ func (o *ComputePhysicalSummary) GetOperState() string {
 // GetOperStateOk returns a tuple with the OperState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetOperStateOk() (*string, bool) {
-	if o == nil || o.OperState == nil {
+	if o == nil || IsNil(o.OperState) {
 		return nil, false
 	}
 	return o.OperState, true
@@ -1229,7 +1348,7 @@ func (o *ComputePhysicalSummary) GetOperStateOk() (*string, bool) {
 
 // HasOperState returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasOperState() bool {
-	if o != nil && o.OperState != nil {
+	if o != nil && !IsNil(o.OperState) {
 		return true
 	}
 
@@ -1243,7 +1362,7 @@ func (o *ComputePhysicalSummary) SetOperState(v string) {
 
 // GetOperability returns the Operability field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetOperability() string {
-	if o == nil || o.Operability == nil {
+	if o == nil || IsNil(o.Operability) {
 		var ret string
 		return ret
 	}
@@ -1253,7 +1372,7 @@ func (o *ComputePhysicalSummary) GetOperability() string {
 // GetOperabilityOk returns a tuple with the Operability field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetOperabilityOk() (*string, bool) {
-	if o == nil || o.Operability == nil {
+	if o == nil || IsNil(o.Operability) {
 		return nil, false
 	}
 	return o.Operability, true
@@ -1261,7 +1380,7 @@ func (o *ComputePhysicalSummary) GetOperabilityOk() (*string, bool) {
 
 // HasOperability returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasOperability() bool {
-	if o != nil && o.Operability != nil {
+	if o != nil && !IsNil(o.Operability) {
 		return true
 	}
 
@@ -1273,9 +1392,41 @@ func (o *ComputePhysicalSummary) SetOperability(v string) {
 	o.Operability = &v
 }
 
+// GetPackageVersion returns the PackageVersion field value if set, zero value otherwise.
+func (o *ComputePhysicalSummary) GetPackageVersion() string {
+	if o == nil || IsNil(o.PackageVersion) {
+		var ret string
+		return ret
+	}
+	return *o.PackageVersion
+}
+
+// GetPackageVersionOk returns a tuple with the PackageVersion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ComputePhysicalSummary) GetPackageVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.PackageVersion) {
+		return nil, false
+	}
+	return o.PackageVersion, true
+}
+
+// HasPackageVersion returns a boolean if a field has been set.
+func (o *ComputePhysicalSummary) HasPackageVersion() bool {
+	if o != nil && !IsNil(o.PackageVersion) {
+		return true
+	}
+
+	return false
+}
+
+// SetPackageVersion gets a reference to the given string and assigns it to the PackageVersion field.
+func (o *ComputePhysicalSummary) SetPackageVersion(v string) {
+	o.PackageVersion = &v
+}
+
 // GetPersonality returns the Personality field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetPersonality() string {
-	if o == nil || o.Personality == nil {
+	if o == nil || IsNil(o.Personality) {
 		var ret string
 		return ret
 	}
@@ -1285,7 +1436,7 @@ func (o *ComputePhysicalSummary) GetPersonality() string {
 // GetPersonalityOk returns a tuple with the Personality field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetPersonalityOk() (*string, bool) {
-	if o == nil || o.Personality == nil {
+	if o == nil || IsNil(o.Personality) {
 		return nil, false
 	}
 	return o.Personality, true
@@ -1293,7 +1444,7 @@ func (o *ComputePhysicalSummary) GetPersonalityOk() (*string, bool) {
 
 // HasPersonality returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasPersonality() bool {
-	if o != nil && o.Personality != nil {
+	if o != nil && !IsNil(o.Personality) {
 		return true
 	}
 
@@ -1307,7 +1458,7 @@ func (o *ComputePhysicalSummary) SetPersonality(v string) {
 
 // GetPlatformType returns the PlatformType field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetPlatformType() string {
-	if o == nil || o.PlatformType == nil {
+	if o == nil || IsNil(o.PlatformType) {
 		var ret string
 		return ret
 	}
@@ -1317,7 +1468,7 @@ func (o *ComputePhysicalSummary) GetPlatformType() string {
 // GetPlatformTypeOk returns a tuple with the PlatformType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetPlatformTypeOk() (*string, bool) {
-	if o == nil || o.PlatformType == nil {
+	if o == nil || IsNil(o.PlatformType) {
 		return nil, false
 	}
 	return o.PlatformType, true
@@ -1325,7 +1476,7 @@ func (o *ComputePhysicalSummary) GetPlatformTypeOk() (*string, bool) {
 
 // HasPlatformType returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasPlatformType() bool {
-	if o != nil && o.PlatformType != nil {
+	if o != nil && !IsNil(o.PlatformType) {
 		return true
 	}
 
@@ -1339,7 +1490,7 @@ func (o *ComputePhysicalSummary) SetPlatformType(v string) {
 
 // GetPresence returns the Presence field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetPresence() string {
-	if o == nil || o.Presence == nil {
+	if o == nil || IsNil(o.Presence) {
 		var ret string
 		return ret
 	}
@@ -1349,7 +1500,7 @@ func (o *ComputePhysicalSummary) GetPresence() string {
 // GetPresenceOk returns a tuple with the Presence field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetPresenceOk() (*string, bool) {
-	if o == nil || o.Presence == nil {
+	if o == nil || IsNil(o.Presence) {
 		return nil, false
 	}
 	return o.Presence, true
@@ -1357,7 +1508,7 @@ func (o *ComputePhysicalSummary) GetPresenceOk() (*string, bool) {
 
 // HasPresence returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasPresence() bool {
-	if o != nil && o.Presence != nil {
+	if o != nil && !IsNil(o.Presence) {
 		return true
 	}
 
@@ -1371,7 +1522,7 @@ func (o *ComputePhysicalSummary) SetPresence(v string) {
 
 // GetRevision returns the Revision field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetRevision() string {
-	if o == nil || o.Revision == nil {
+	if o == nil || IsNil(o.Revision) {
 		var ret string
 		return ret
 	}
@@ -1381,7 +1532,7 @@ func (o *ComputePhysicalSummary) GetRevision() string {
 // GetRevisionOk returns a tuple with the Revision field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetRevisionOk() (*string, bool) {
-	if o == nil || o.Revision == nil {
+	if o == nil || IsNil(o.Revision) {
 		return nil, false
 	}
 	return o.Revision, true
@@ -1389,7 +1540,7 @@ func (o *ComputePhysicalSummary) GetRevisionOk() (*string, bool) {
 
 // HasRevision returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasRevision() bool {
-	if o != nil && o.Revision != nil {
+	if o != nil && !IsNil(o.Revision) {
 		return true
 	}
 
@@ -1403,7 +1554,7 @@ func (o *ComputePhysicalSummary) SetRevision(v string) {
 
 // GetRn returns the Rn field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetRn() string {
-	if o == nil || o.Rn == nil {
+	if o == nil || IsNil(o.Rn) {
 		var ret string
 		return ret
 	}
@@ -1413,7 +1564,7 @@ func (o *ComputePhysicalSummary) GetRn() string {
 // GetRnOk returns a tuple with the Rn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetRnOk() (*string, bool) {
-	if o == nil || o.Rn == nil {
+	if o == nil || IsNil(o.Rn) {
 		return nil, false
 	}
 	return o.Rn, true
@@ -1421,7 +1572,7 @@ func (o *ComputePhysicalSummary) GetRnOk() (*string, bool) {
 
 // HasRn returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasRn() bool {
-	if o != nil && o.Rn != nil {
+	if o != nil && !IsNil(o.Rn) {
 		return true
 	}
 
@@ -1435,7 +1586,7 @@ func (o *ComputePhysicalSummary) SetRn(v string) {
 
 // GetScaledMode returns the ScaledMode field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetScaledMode() string {
-	if o == nil || o.ScaledMode == nil {
+	if o == nil || IsNil(o.ScaledMode) {
 		var ret string
 		return ret
 	}
@@ -1445,7 +1596,7 @@ func (o *ComputePhysicalSummary) GetScaledMode() string {
 // GetScaledModeOk returns a tuple with the ScaledMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetScaledModeOk() (*string, bool) {
-	if o == nil || o.ScaledMode == nil {
+	if o == nil || IsNil(o.ScaledMode) {
 		return nil, false
 	}
 	return o.ScaledMode, true
@@ -1453,7 +1604,7 @@ func (o *ComputePhysicalSummary) GetScaledModeOk() (*string, bool) {
 
 // HasScaledMode returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasScaledMode() bool {
-	if o != nil && o.ScaledMode != nil {
+	if o != nil && !IsNil(o.ScaledMode) {
 		return true
 	}
 
@@ -1467,7 +1618,7 @@ func (o *ComputePhysicalSummary) SetScaledMode(v string) {
 
 // GetSerial returns the Serial field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetSerial() string {
-	if o == nil || o.Serial == nil {
+	if o == nil || IsNil(o.Serial) {
 		var ret string
 		return ret
 	}
@@ -1477,7 +1628,7 @@ func (o *ComputePhysicalSummary) GetSerial() string {
 // GetSerialOk returns a tuple with the Serial field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetSerialOk() (*string, bool) {
-	if o == nil || o.Serial == nil {
+	if o == nil || IsNil(o.Serial) {
 		return nil, false
 	}
 	return o.Serial, true
@@ -1485,7 +1636,7 @@ func (o *ComputePhysicalSummary) GetSerialOk() (*string, bool) {
 
 // HasSerial returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasSerial() bool {
-	if o != nil && o.Serial != nil {
+	if o != nil && !IsNil(o.Serial) {
 		return true
 	}
 
@@ -1499,7 +1650,7 @@ func (o *ComputePhysicalSummary) SetSerial(v string) {
 
 // GetServerId returns the ServerId field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetServerId() int64 {
-	if o == nil || o.ServerId == nil {
+	if o == nil || IsNil(o.ServerId) {
 		var ret int64
 		return ret
 	}
@@ -1509,7 +1660,7 @@ func (o *ComputePhysicalSummary) GetServerId() int64 {
 // GetServerIdOk returns a tuple with the ServerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetServerIdOk() (*int64, bool) {
-	if o == nil || o.ServerId == nil {
+	if o == nil || IsNil(o.ServerId) {
 		return nil, false
 	}
 	return o.ServerId, true
@@ -1517,7 +1668,7 @@ func (o *ComputePhysicalSummary) GetServerIdOk() (*int64, bool) {
 
 // HasServerId returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasServerId() bool {
-	if o != nil && o.ServerId != nil {
+	if o != nil && !IsNil(o.ServerId) {
 		return true
 	}
 
@@ -1531,7 +1682,7 @@ func (o *ComputePhysicalSummary) SetServerId(v int64) {
 
 // GetServiceProfile returns the ServiceProfile field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetServiceProfile() string {
-	if o == nil || o.ServiceProfile == nil {
+	if o == nil || IsNil(o.ServiceProfile) {
 		var ret string
 		return ret
 	}
@@ -1541,7 +1692,7 @@ func (o *ComputePhysicalSummary) GetServiceProfile() string {
 // GetServiceProfileOk returns a tuple with the ServiceProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetServiceProfileOk() (*string, bool) {
-	if o == nil || o.ServiceProfile == nil {
+	if o == nil || IsNil(o.ServiceProfile) {
 		return nil, false
 	}
 	return o.ServiceProfile, true
@@ -1549,7 +1700,7 @@ func (o *ComputePhysicalSummary) GetServiceProfileOk() (*string, bool) {
 
 // HasServiceProfile returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasServiceProfile() bool {
-	if o != nil && o.ServiceProfile != nil {
+	if o != nil && !IsNil(o.ServiceProfile) {
 		return true
 	}
 
@@ -1563,7 +1714,7 @@ func (o *ComputePhysicalSummary) SetServiceProfile(v string) {
 
 // GetSlotId returns the SlotId field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetSlotId() int64 {
-	if o == nil || o.SlotId == nil {
+	if o == nil || IsNil(o.SlotId) {
 		var ret int64
 		return ret
 	}
@@ -1573,7 +1724,7 @@ func (o *ComputePhysicalSummary) GetSlotId() int64 {
 // GetSlotIdOk returns a tuple with the SlotId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetSlotIdOk() (*int64, bool) {
-	if o == nil || o.SlotId == nil {
+	if o == nil || IsNil(o.SlotId) {
 		return nil, false
 	}
 	return o.SlotId, true
@@ -1581,7 +1732,7 @@ func (o *ComputePhysicalSummary) GetSlotIdOk() (*int64, bool) {
 
 // HasSlotId returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasSlotId() bool {
-	if o != nil && o.SlotId != nil {
+	if o != nil && !IsNil(o.SlotId) {
 		return true
 	}
 
@@ -1595,7 +1746,7 @@ func (o *ComputePhysicalSummary) SetSlotId(v int64) {
 
 // GetSourceObjectType returns the SourceObjectType field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetSourceObjectType() string {
-	if o == nil || o.SourceObjectType == nil {
+	if o == nil || IsNil(o.SourceObjectType) {
 		var ret string
 		return ret
 	}
@@ -1605,7 +1756,7 @@ func (o *ComputePhysicalSummary) GetSourceObjectType() string {
 // GetSourceObjectTypeOk returns a tuple with the SourceObjectType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetSourceObjectTypeOk() (*string, bool) {
-	if o == nil || o.SourceObjectType == nil {
+	if o == nil || IsNil(o.SourceObjectType) {
 		return nil, false
 	}
 	return o.SourceObjectType, true
@@ -1613,7 +1764,7 @@ func (o *ComputePhysicalSummary) GetSourceObjectTypeOk() (*string, bool) {
 
 // HasSourceObjectType returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasSourceObjectType() bool {
-	if o != nil && o.SourceObjectType != nil {
+	if o != nil && !IsNil(o.SourceObjectType) {
 		return true
 	}
 
@@ -1627,7 +1778,7 @@ func (o *ComputePhysicalSummary) SetSourceObjectType(v string) {
 
 // GetTopologyScanStatus returns the TopologyScanStatus field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetTopologyScanStatus() string {
-	if o == nil || o.TopologyScanStatus == nil {
+	if o == nil || IsNil(o.TopologyScanStatus) {
 		var ret string
 		return ret
 	}
@@ -1637,7 +1788,7 @@ func (o *ComputePhysicalSummary) GetTopologyScanStatus() string {
 // GetTopologyScanStatusOk returns a tuple with the TopologyScanStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetTopologyScanStatusOk() (*string, bool) {
-	if o == nil || o.TopologyScanStatus == nil {
+	if o == nil || IsNil(o.TopologyScanStatus) {
 		return nil, false
 	}
 	return o.TopologyScanStatus, true
@@ -1645,7 +1796,7 @@ func (o *ComputePhysicalSummary) GetTopologyScanStatusOk() (*string, bool) {
 
 // HasTopologyScanStatus returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasTopologyScanStatus() bool {
-	if o != nil && o.TopologyScanStatus != nil {
+	if o != nil && !IsNil(o.TopologyScanStatus) {
 		return true
 	}
 
@@ -1659,7 +1810,7 @@ func (o *ComputePhysicalSummary) SetTopologyScanStatus(v string) {
 
 // GetTotalMemory returns the TotalMemory field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetTotalMemory() int64 {
-	if o == nil || o.TotalMemory == nil {
+	if o == nil || IsNil(o.TotalMemory) {
 		var ret int64
 		return ret
 	}
@@ -1669,7 +1820,7 @@ func (o *ComputePhysicalSummary) GetTotalMemory() int64 {
 // GetTotalMemoryOk returns a tuple with the TotalMemory field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetTotalMemoryOk() (*int64, bool) {
-	if o == nil || o.TotalMemory == nil {
+	if o == nil || IsNil(o.TotalMemory) {
 		return nil, false
 	}
 	return o.TotalMemory, true
@@ -1677,7 +1828,7 @@ func (o *ComputePhysicalSummary) GetTotalMemoryOk() (*int64, bool) {
 
 // HasTotalMemory returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasTotalMemory() bool {
-	if o != nil && o.TotalMemory != nil {
+	if o != nil && !IsNil(o.TotalMemory) {
 		return true
 	}
 
@@ -1691,7 +1842,7 @@ func (o *ComputePhysicalSummary) SetTotalMemory(v int64) {
 
 // GetTunneledKvm returns the TunneledKvm field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetTunneledKvm() bool {
-	if o == nil || o.TunneledKvm == nil {
+	if o == nil || IsNil(o.TunneledKvm) {
 		var ret bool
 		return ret
 	}
@@ -1701,7 +1852,7 @@ func (o *ComputePhysicalSummary) GetTunneledKvm() bool {
 // GetTunneledKvmOk returns a tuple with the TunneledKvm field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetTunneledKvmOk() (*bool, bool) {
-	if o == nil || o.TunneledKvm == nil {
+	if o == nil || IsNil(o.TunneledKvm) {
 		return nil, false
 	}
 	return o.TunneledKvm, true
@@ -1709,7 +1860,7 @@ func (o *ComputePhysicalSummary) GetTunneledKvmOk() (*bool, bool) {
 
 // HasTunneledKvm returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasTunneledKvm() bool {
-	if o != nil && o.TunneledKvm != nil {
+	if o != nil && !IsNil(o.TunneledKvm) {
 		return true
 	}
 
@@ -1723,7 +1874,7 @@ func (o *ComputePhysicalSummary) SetTunneledKvm(v bool) {
 
 // GetUserLabel returns the UserLabel field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetUserLabel() string {
-	if o == nil || o.UserLabel == nil {
+	if o == nil || IsNil(o.UserLabel) {
 		var ret string
 		return ret
 	}
@@ -1733,7 +1884,7 @@ func (o *ComputePhysicalSummary) GetUserLabel() string {
 // GetUserLabelOk returns a tuple with the UserLabel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetUserLabelOk() (*string, bool) {
-	if o == nil || o.UserLabel == nil {
+	if o == nil || IsNil(o.UserLabel) {
 		return nil, false
 	}
 	return o.UserLabel, true
@@ -1741,7 +1892,7 @@ func (o *ComputePhysicalSummary) GetUserLabelOk() (*string, bool) {
 
 // HasUserLabel returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasUserLabel() bool {
-	if o != nil && o.UserLabel != nil {
+	if o != nil && !IsNil(o.UserLabel) {
 		return true
 	}
 
@@ -1755,7 +1906,7 @@ func (o *ComputePhysicalSummary) SetUserLabel(v string) {
 
 // GetUuid returns the Uuid field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetUuid() string {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		var ret string
 		return ret
 	}
@@ -1765,7 +1916,7 @@ func (o *ComputePhysicalSummary) GetUuid() string {
 // GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetUuidOk() (*string, bool) {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		return nil, false
 	}
 	return o.Uuid, true
@@ -1773,7 +1924,7 @@ func (o *ComputePhysicalSummary) GetUuidOk() (*string, bool) {
 
 // HasUuid returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasUuid() bool {
-	if o != nil && o.Uuid != nil {
+	if o != nil && !IsNil(o.Uuid) {
 		return true
 	}
 
@@ -1787,7 +1938,7 @@ func (o *ComputePhysicalSummary) SetUuid(v string) {
 
 // GetVendor returns the Vendor field value if set, zero value otherwise.
 func (o *ComputePhysicalSummary) GetVendor() string {
-	if o == nil || o.Vendor == nil {
+	if o == nil || IsNil(o.Vendor) {
 		var ret string
 		return ret
 	}
@@ -1797,7 +1948,7 @@ func (o *ComputePhysicalSummary) GetVendor() string {
 // GetVendorOk returns a tuple with the Vendor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputePhysicalSummary) GetVendorOk() (*string, bool) {
-	if o == nil || o.Vendor == nil {
+	if o == nil || IsNil(o.Vendor) {
 		return nil, false
 	}
 	return o.Vendor, true
@@ -1805,7 +1956,7 @@ func (o *ComputePhysicalSummary) GetVendorOk() (*string, bool) {
 
 // HasVendor returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasVendor() bool {
-	if o != nil && o.Vendor != nil {
+	if o != nil && !IsNil(o.Vendor) {
 		return true
 	}
 
@@ -1817,286 +1968,428 @@ func (o *ComputePhysicalSummary) SetVendor(v string) {
 	o.Vendor = &v
 }
 
-// GetEquipmentChassis returns the EquipmentChassis field value if set, zero value otherwise.
+// GetEquipmentChassis returns the EquipmentChassis field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ComputePhysicalSummary) GetEquipmentChassis() EquipmentChassisRelationship {
-	if o == nil || o.EquipmentChassis == nil {
+	if o == nil || IsNil(o.EquipmentChassis.Get()) {
 		var ret EquipmentChassisRelationship
 		return ret
 	}
-	return *o.EquipmentChassis
+	return *o.EquipmentChassis.Get()
 }
 
 // GetEquipmentChassisOk returns a tuple with the EquipmentChassis field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ComputePhysicalSummary) GetEquipmentChassisOk() (*EquipmentChassisRelationship, bool) {
-	if o == nil || o.EquipmentChassis == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.EquipmentChassis, true
+	return o.EquipmentChassis.Get(), o.EquipmentChassis.IsSet()
 }
 
 // HasEquipmentChassis returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasEquipmentChassis() bool {
-	if o != nil && o.EquipmentChassis != nil {
+	if o != nil && o.EquipmentChassis.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEquipmentChassis gets a reference to the given EquipmentChassisRelationship and assigns it to the EquipmentChassis field.
+// SetEquipmentChassis gets a reference to the given NullableEquipmentChassisRelationship and assigns it to the EquipmentChassis field.
 func (o *ComputePhysicalSummary) SetEquipmentChassis(v EquipmentChassisRelationship) {
-	o.EquipmentChassis = &v
+	o.EquipmentChassis.Set(&v)
 }
 
-// GetInventoryDeviceInfo returns the InventoryDeviceInfo field value if set, zero value otherwise.
+// SetEquipmentChassisNil sets the value for EquipmentChassis to be an explicit nil
+func (o *ComputePhysicalSummary) SetEquipmentChassisNil() {
+	o.EquipmentChassis.Set(nil)
+}
+
+// UnsetEquipmentChassis ensures that no value is present for EquipmentChassis, not even an explicit nil
+func (o *ComputePhysicalSummary) UnsetEquipmentChassis() {
+	o.EquipmentChassis.Unset()
+}
+
+// GetInventoryDeviceInfo returns the InventoryDeviceInfo field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ComputePhysicalSummary) GetInventoryDeviceInfo() InventoryDeviceInfoRelationship {
-	if o == nil || o.InventoryDeviceInfo == nil {
+	if o == nil || IsNil(o.InventoryDeviceInfo.Get()) {
 		var ret InventoryDeviceInfoRelationship
 		return ret
 	}
-	return *o.InventoryDeviceInfo
+	return *o.InventoryDeviceInfo.Get()
 }
 
 // GetInventoryDeviceInfoOk returns a tuple with the InventoryDeviceInfo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ComputePhysicalSummary) GetInventoryDeviceInfoOk() (*InventoryDeviceInfoRelationship, bool) {
-	if o == nil || o.InventoryDeviceInfo == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.InventoryDeviceInfo, true
+	return o.InventoryDeviceInfo.Get(), o.InventoryDeviceInfo.IsSet()
 }
 
 // HasInventoryDeviceInfo returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasInventoryDeviceInfo() bool {
-	if o != nil && o.InventoryDeviceInfo != nil {
+	if o != nil && o.InventoryDeviceInfo.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetInventoryDeviceInfo gets a reference to the given InventoryDeviceInfoRelationship and assigns it to the InventoryDeviceInfo field.
+// SetInventoryDeviceInfo gets a reference to the given NullableInventoryDeviceInfoRelationship and assigns it to the InventoryDeviceInfo field.
 func (o *ComputePhysicalSummary) SetInventoryDeviceInfo(v InventoryDeviceInfoRelationship) {
-	o.InventoryDeviceInfo = &v
+	o.InventoryDeviceInfo.Set(&v)
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+func (o *ComputePhysicalSummary) SetInventoryDeviceInfoNil() {
+	o.InventoryDeviceInfo.Set(nil)
+}
+
+// UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
+func (o *ComputePhysicalSummary) UnsetInventoryDeviceInfo() {
+	o.InventoryDeviceInfo.Unset()
+}
+
+// GetInventoryParent returns the InventoryParent field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ComputePhysicalSummary) GetInventoryParent() MoBaseMoRelationship {
+	if o == nil || IsNil(o.InventoryParent.Get()) {
+		var ret MoBaseMoRelationship
+		return ret
+	}
+	return *o.InventoryParent.Get()
+}
+
+// GetInventoryParentOk returns a tuple with the InventoryParent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ComputePhysicalSummary) GetInventoryParentOk() (*MoBaseMoRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.InventoryParent.Get(), o.InventoryParent.IsSet()
+}
+
+// HasInventoryParent returns a boolean if a field has been set.
+func (o *ComputePhysicalSummary) HasInventoryParent() bool {
+	if o != nil && o.InventoryParent.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetInventoryParent gets a reference to the given NullableMoBaseMoRelationship and assigns it to the InventoryParent field.
+func (o *ComputePhysicalSummary) SetInventoryParent(v MoBaseMoRelationship) {
+	o.InventoryParent.Set(&v)
+}
+
+// SetInventoryParentNil sets the value for InventoryParent to be an explicit nil
+func (o *ComputePhysicalSummary) SetInventoryParentNil() {
+	o.InventoryParent.Set(nil)
+}
+
+// UnsetInventoryParent ensures that no value is present for InventoryParent, not even an explicit nil
+func (o *ComputePhysicalSummary) UnsetInventoryParent() {
+	o.InventoryParent.Unset()
+}
+
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ComputePhysicalSummary) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ComputePhysicalSummary) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *ComputePhysicalSummary) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *ComputePhysicalSummary) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
+}
+
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *ComputePhysicalSummary) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *ComputePhysicalSummary) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
 }
 
 func (o ComputePhysicalSummary) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ComputePhysicalSummary) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedViewsView, errViewsView := json.Marshal(o.ViewsView)
-	if errViewsView != nil {
-		return []byte{}, errViewsView
+	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
+	if errMoBaseMo != nil {
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	errViewsView = json.Unmarshal([]byte(serializedViewsView), &toSerialize)
-	if errViewsView != nil {
-		return []byte{}, errViewsView
+	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
+	if errMoBaseMo != nil {
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AdminPowerState != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AdminPowerState) {
 		toSerialize["AdminPowerState"] = o.AdminPowerState
 	}
 	if o.AlarmSummary.IsSet() {
 		toSerialize["AlarmSummary"] = o.AlarmSummary.Get()
 	}
-	if o.AssetTag != nil {
+	if !IsNil(o.AssetTag) {
 		toSerialize["AssetTag"] = o.AssetTag
 	}
-	if o.AvailableMemory != nil {
+	if !IsNil(o.AvailableMemory) {
 		toSerialize["AvailableMemory"] = o.AvailableMemory
 	}
-	if o.BiosPostComplete != nil {
+	if !IsNil(o.BiosPostComplete) {
 		toSerialize["BiosPostComplete"] = o.BiosPostComplete
 	}
-	if o.ChassisId != nil {
+	if !IsNil(o.ChassisId) {
 		toSerialize["ChassisId"] = o.ChassisId
 	}
-	if o.ConnectionStatus != nil {
+	if !IsNil(o.ConnectionStatus) {
 		toSerialize["ConnectionStatus"] = o.ConnectionStatus
 	}
-	if o.CpuCapacity != nil {
+	if !IsNil(o.CpuCapacity) {
 		toSerialize["CpuCapacity"] = o.CpuCapacity
 	}
-	if o.DeviceMoId != nil {
+	if !IsNil(o.DeviceMoId) {
 		toSerialize["DeviceMoId"] = o.DeviceMoId
 	}
-	if o.Dn != nil {
+	if !IsNil(o.Dn) {
 		toSerialize["Dn"] = o.Dn
 	}
-	if o.FaultSummary != nil {
+	if !IsNil(o.FaultSummary) {
 		toSerialize["FaultSummary"] = o.FaultSummary
 	}
-	if o.Firmware != nil {
+	if !IsNil(o.Firmware) {
 		toSerialize["Firmware"] = o.Firmware
 	}
-	if o.HardwareUuid != nil {
+	if !IsNil(o.FrontPanelLockState) {
+		toSerialize["FrontPanelLockState"] = o.FrontPanelLockState
+	}
+	if !IsNil(o.HardwareUuid) {
 		toSerialize["HardwareUuid"] = o.HardwareUuid
 	}
-	if o.Ipv4Address != nil {
+	if !IsNil(o.Ipv4Address) {
 		toSerialize["Ipv4Address"] = o.Ipv4Address
+	}
+	if !IsNil(o.IsUpgraded) {
+		toSerialize["IsUpgraded"] = o.IsUpgraded
 	}
 	if o.KvmIpAddresses != nil {
 		toSerialize["KvmIpAddresses"] = o.KvmIpAddresses
 	}
-	if o.KvmServerStateEnabled != nil {
+	if !IsNil(o.KvmServerStateEnabled) {
 		toSerialize["KvmServerStateEnabled"] = o.KvmServerStateEnabled
 	}
-	if o.KvmVendor != nil {
+	if !IsNil(o.KvmVendor) {
 		toSerialize["KvmVendor"] = o.KvmVendor
 	}
-	if o.ManagementMode != nil {
+	if !IsNil(o.Lifecycle) {
+		toSerialize["Lifecycle"] = o.Lifecycle
+	}
+	if !IsNil(o.ManagementMode) {
 		toSerialize["ManagementMode"] = o.ManagementMode
 	}
-	if o.MemorySpeed != nil {
+	if !IsNil(o.MemorySpeed) {
 		toSerialize["MemorySpeed"] = o.MemorySpeed
 	}
-	if o.MgmtIpAddress != nil {
+	if !IsNil(o.MgmtIpAddress) {
 		toSerialize["MgmtIpAddress"] = o.MgmtIpAddress
 	}
-	if o.Model != nil {
+	if !IsNil(o.Model) {
 		toSerialize["Model"] = o.Model
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.NumAdaptors != nil {
+	if !IsNil(o.NumAdaptors) {
 		toSerialize["NumAdaptors"] = o.NumAdaptors
 	}
-	if o.NumCpuCores != nil {
+	if !IsNil(o.NumCpuCores) {
 		toSerialize["NumCpuCores"] = o.NumCpuCores
 	}
-	if o.NumCpuCoresEnabled != nil {
+	if !IsNil(o.NumCpuCoresEnabled) {
 		toSerialize["NumCpuCoresEnabled"] = o.NumCpuCoresEnabled
 	}
-	if o.NumCpus != nil {
+	if !IsNil(o.NumCpus) {
 		toSerialize["NumCpus"] = o.NumCpus
 	}
-	if o.NumEthHostInterfaces != nil {
+	if !IsNil(o.NumEthHostInterfaces) {
 		toSerialize["NumEthHostInterfaces"] = o.NumEthHostInterfaces
 	}
-	if o.NumFcHostInterfaces != nil {
+	if !IsNil(o.NumFcHostInterfaces) {
 		toSerialize["NumFcHostInterfaces"] = o.NumFcHostInterfaces
 	}
-	if o.NumThreads != nil {
+	if !IsNil(o.NumThreads) {
 		toSerialize["NumThreads"] = o.NumThreads
 	}
-	if o.OperPowerState != nil {
+	if !IsNil(o.OperPowerState) {
 		toSerialize["OperPowerState"] = o.OperPowerState
 	}
 	if o.OperReason != nil {
 		toSerialize["OperReason"] = o.OperReason
 	}
-	if o.OperState != nil {
+	if !IsNil(o.OperState) {
 		toSerialize["OperState"] = o.OperState
 	}
-	if o.Operability != nil {
+	if !IsNil(o.Operability) {
 		toSerialize["Operability"] = o.Operability
 	}
-	if o.Personality != nil {
+	if !IsNil(o.PackageVersion) {
+		toSerialize["PackageVersion"] = o.PackageVersion
+	}
+	if !IsNil(o.Personality) {
 		toSerialize["Personality"] = o.Personality
 	}
-	if o.PlatformType != nil {
+	if !IsNil(o.PlatformType) {
 		toSerialize["PlatformType"] = o.PlatformType
 	}
-	if o.Presence != nil {
+	if !IsNil(o.Presence) {
 		toSerialize["Presence"] = o.Presence
 	}
-	if o.Revision != nil {
+	if !IsNil(o.Revision) {
 		toSerialize["Revision"] = o.Revision
 	}
-	if o.Rn != nil {
+	if !IsNil(o.Rn) {
 		toSerialize["Rn"] = o.Rn
 	}
-	if o.ScaledMode != nil {
+	if !IsNil(o.ScaledMode) {
 		toSerialize["ScaledMode"] = o.ScaledMode
 	}
-	if o.Serial != nil {
+	if !IsNil(o.Serial) {
 		toSerialize["Serial"] = o.Serial
 	}
-	if o.ServerId != nil {
+	if !IsNil(o.ServerId) {
 		toSerialize["ServerId"] = o.ServerId
 	}
-	if o.ServiceProfile != nil {
+	if !IsNil(o.ServiceProfile) {
 		toSerialize["ServiceProfile"] = o.ServiceProfile
 	}
-	if o.SlotId != nil {
+	if !IsNil(o.SlotId) {
 		toSerialize["SlotId"] = o.SlotId
 	}
-	if o.SourceObjectType != nil {
+	if !IsNil(o.SourceObjectType) {
 		toSerialize["SourceObjectType"] = o.SourceObjectType
 	}
-	if o.TopologyScanStatus != nil {
+	if !IsNil(o.TopologyScanStatus) {
 		toSerialize["TopologyScanStatus"] = o.TopologyScanStatus
 	}
-	if o.TotalMemory != nil {
+	if !IsNil(o.TotalMemory) {
 		toSerialize["TotalMemory"] = o.TotalMemory
 	}
-	if o.TunneledKvm != nil {
+	if !IsNil(o.TunneledKvm) {
 		toSerialize["TunneledKvm"] = o.TunneledKvm
 	}
-	if o.UserLabel != nil {
+	if !IsNil(o.UserLabel) {
 		toSerialize["UserLabel"] = o.UserLabel
 	}
-	if o.Uuid != nil {
+	if !IsNil(o.Uuid) {
 		toSerialize["Uuid"] = o.Uuid
 	}
-	if o.Vendor != nil {
+	if !IsNil(o.Vendor) {
 		toSerialize["Vendor"] = o.Vendor
 	}
-	if o.EquipmentChassis != nil {
-		toSerialize["EquipmentChassis"] = o.EquipmentChassis
+	if o.EquipmentChassis.IsSet() {
+		toSerialize["EquipmentChassis"] = o.EquipmentChassis.Get()
 	}
-	if o.InventoryDeviceInfo != nil {
-		toSerialize["InventoryDeviceInfo"] = o.InventoryDeviceInfo
+	if o.InventoryDeviceInfo.IsSet() {
+		toSerialize["InventoryDeviceInfo"] = o.InventoryDeviceInfo.Get()
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.InventoryParent.IsSet() {
+		toSerialize["InventoryParent"] = o.InventoryParent.Get()
+	}
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ComputePhysicalSummary) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ComputePhysicalSummaryWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -2107,7 +2400,7 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		AlarmSummary    NullableComputeAlarmSummary `json:"AlarmSummary,omitempty"`
 		// The user defined asset tag assigned to the server.
 		AssetTag *string `json:"AssetTag,omitempty"`
-		// The amount of memory available on the server.
+		// Total memeory of the server in MB.
 		AvailableMemory *int64 `json:"AvailableMemory,omitempty"`
 		// The BIOS POST completion status of the server.
 		BiosPostComplete *bool `json:"BiosPostComplete,omitempty"`
@@ -2115,26 +2408,31 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		ChassisId *string `json:"ChassisId,omitempty"`
 		// Connectivity Status of RackUnit to Switch - A or B or AB.
 		ConnectionStatus *string `json:"ConnectionStatus,omitempty"`
-		// CPU Capacity = Number of CPU Sockets x Enabled Cores x Speed (GHz).
+		// Total processing capacity of the server.
 		CpuCapacity *float32 `json:"CpuCapacity,omitempty"`
-		// The database identifier of the registered device of an object.
+		// The MoId of the registered device that coresponds to the server.
 		DeviceMoId *string `json:"DeviceMoId,omitempty"`
 		// The Distinguished Name unambiguously identifies an object in the system.
 		Dn *string `json:"Dn,omitempty"`
 		// The fault summary for the server.
-		// Deprecated
 		FaultSummary *int64 `json:"FaultSummary,omitempty"`
 		// The firmware version of the Cisco Integrated Management Controller (CIMC) for this server.
 		Firmware *string `json:"Firmware,omitempty"`
+		// The actual front panel state of the server. * `None` - Front Panel of the server is set to None state. It is required so that the next frontPanelLockState operation can be triggered. * `Lock` - Front Panel of the server is set to Locked state. * `Unlock` - Front Panel of the server is set to Unlocked state.
+		FrontPanelLockState *string `json:"FrontPanelLockState,omitempty"`
 		// The universally unique hardware identity of the server provided by the manufacturer.
 		HardwareUuid *string `json:"HardwareUuid,omitempty"`
 		// The IPv4 address configured on the management interface of the Integrated Management Controller.
-		Ipv4Address    *string            `json:"Ipv4Address,omitempty"`
+		Ipv4Address *string `json:"Ipv4Address,omitempty"`
+		// This field indicates the compute status of the catalog values for the associated component or hardware.
+		IsUpgraded     *bool              `json:"IsUpgraded,omitempty"`
 		KvmIpAddresses []ComputeIpAddress `json:"KvmIpAddresses,omitempty"`
 		// The KVM server state of the server.
 		KvmServerStateEnabled *bool `json:"KvmServerStateEnabled,omitempty"`
 		// The KVM Vendor for the server.
 		KvmVendor *string `json:"KvmVendor,omitempty"`
+		// The lifecycle of the blade server. * `None` - Default state of an equipment. This should be an initial state when no state is defined for an equipment. * `Active` - Default Lifecycle State for a physical entity. * `Decommissioned` - Decommission Lifecycle state. * `DiscoveryInProgress` - DiscoveryInProgress Lifecycle state. * `DiscoveryFailed` - DiscoveryFailed Lifecycle state. * `FirmwareUpgradeInProgress` - Firmware upgrade is in progress on given physical entity. * `SecureEraseInProgress` - Secure Erase is in progress on given physical entity. * `ScrubInProgress` - Scrub is in progress on given physical entity. * `BladeMigrationInProgress` - Server slot migration is in progress on given physical entity. * `SlotMismatch` - The blade server is detected in a different chassis/slot than it was previously. * `Removed` - The blade server has been removed from its discovered slot, and not detected anywhere else. Blade inventory can be cleaned up by performing a software remove operation on the physically removed blade. * `Moved` - The blade server has been moved from its discovered location to a new location. Blade inventory can be updated by performing a rediscover operation on the moved blade. * `Replaced` - The blade server has been removed from its discovered location and another blade has been inserted in that location. Blade inventory can be cleaned up and updated by doing a software remove operation on the physically removed blade. * `MovedAndReplaced` - The blade server has been moved from its discovered location to a new location and another blade has been inserted into the old discovered location. Blade inventory can be updated by performing a rediscover operation on the moved blade.
+		Lifecycle *string `json:"Lifecycle,omitempty"`
 		// The management mode of the server. * `IntersightStandalone` - Intersight Standalone mode of operation. * `UCSM` - Unified Computing System Manager mode of operation. * `Intersight` - Intersight managed mode of operation.
 		ManagementMode *string `json:"ManagementMode,omitempty"`
 		// The maximum memory speed in MHz available on the server.
@@ -2147,7 +2445,7 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		Name *string `json:"Name,omitempty"`
 		// The total number of network adapters present on the server.
 		NumAdaptors *int64 `json:"NumAdaptors,omitempty"`
-		// The total number of CPU cores present on the server.
+		// The total number of CPU cores enabled on the server.
 		NumCpuCores *int64 `json:"NumCpuCores,omitempty"`
 		// The total number of CPU cores enabled on the server.
 		NumCpuCoresEnabled *int64 `json:"NumCpuCoresEnabled,omitempty"`
@@ -2166,7 +2464,9 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		OperState *string `json:"OperState,omitempty"`
 		// The operability of the server.
 		Operability *string `json:"Operability,omitempty"`
-		// The Rack unit software Personality.
+		// Bundle version which the firmware belongs to.
+		PackageVersion *string `json:"PackageVersion,omitempty"`
+		// Unique identity of added software personality.
 		Personality *string `json:"Personality,omitempty"`
 		// The platform type of the registered device - whether managed by UCSM or operating in standalone mode.
 		PlatformType *string `json:"PlatformType,omitempty"`
@@ -2186,7 +2486,7 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		ServiceProfile *string `json:"ServiceProfile,omitempty"`
 		// The slot number in the chassis that the blade is discovered in.
 		SlotId *int64 `json:"SlotId,omitempty"`
-		// The source object type of this view MO.
+		// Stores the source object type. This feild will either be RackUnit or Blade.
 		SourceObjectType *string `json:"SourceObjectType,omitempty"`
 		// To maintain the Topology workflow run status.
 		TopologyScanStatus *string `json:"TopologyScanStatus,omitempty"`
@@ -2199,15 +2499,16 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		// The universally unique identity of the server.
 		Uuid *string `json:"Uuid,omitempty"`
 		// This field identifies the vendor of the given component.
-		Vendor              *string                              `json:"Vendor,omitempty"`
-		EquipmentChassis    *EquipmentChassisRelationship        `json:"EquipmentChassis,omitempty"`
-		InventoryDeviceInfo *InventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
-		RegisteredDevice    *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		Vendor              *string                                     `json:"Vendor,omitempty"`
+		EquipmentChassis    NullableEquipmentChassisRelationship        `json:"EquipmentChassis,omitempty"`
+		InventoryDeviceInfo NullableInventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
+		InventoryParent     NullableMoBaseMoRelationship                `json:"InventoryParent,omitempty"`
+		RegisteredDevice    NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	}
 
 	varComputePhysicalSummaryWithoutEmbeddedStruct := ComputePhysicalSummaryWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varComputePhysicalSummaryWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varComputePhysicalSummaryWithoutEmbeddedStruct)
 	if err == nil {
 		varComputePhysicalSummary := _ComputePhysicalSummary{}
 		varComputePhysicalSummary.ClassId = varComputePhysicalSummaryWithoutEmbeddedStruct.ClassId
@@ -2224,11 +2525,14 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		varComputePhysicalSummary.Dn = varComputePhysicalSummaryWithoutEmbeddedStruct.Dn
 		varComputePhysicalSummary.FaultSummary = varComputePhysicalSummaryWithoutEmbeddedStruct.FaultSummary
 		varComputePhysicalSummary.Firmware = varComputePhysicalSummaryWithoutEmbeddedStruct.Firmware
+		varComputePhysicalSummary.FrontPanelLockState = varComputePhysicalSummaryWithoutEmbeddedStruct.FrontPanelLockState
 		varComputePhysicalSummary.HardwareUuid = varComputePhysicalSummaryWithoutEmbeddedStruct.HardwareUuid
 		varComputePhysicalSummary.Ipv4Address = varComputePhysicalSummaryWithoutEmbeddedStruct.Ipv4Address
+		varComputePhysicalSummary.IsUpgraded = varComputePhysicalSummaryWithoutEmbeddedStruct.IsUpgraded
 		varComputePhysicalSummary.KvmIpAddresses = varComputePhysicalSummaryWithoutEmbeddedStruct.KvmIpAddresses
 		varComputePhysicalSummary.KvmServerStateEnabled = varComputePhysicalSummaryWithoutEmbeddedStruct.KvmServerStateEnabled
 		varComputePhysicalSummary.KvmVendor = varComputePhysicalSummaryWithoutEmbeddedStruct.KvmVendor
+		varComputePhysicalSummary.Lifecycle = varComputePhysicalSummaryWithoutEmbeddedStruct.Lifecycle
 		varComputePhysicalSummary.ManagementMode = varComputePhysicalSummaryWithoutEmbeddedStruct.ManagementMode
 		varComputePhysicalSummary.MemorySpeed = varComputePhysicalSummaryWithoutEmbeddedStruct.MemorySpeed
 		varComputePhysicalSummary.MgmtIpAddress = varComputePhysicalSummaryWithoutEmbeddedStruct.MgmtIpAddress
@@ -2245,6 +2549,7 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		varComputePhysicalSummary.OperReason = varComputePhysicalSummaryWithoutEmbeddedStruct.OperReason
 		varComputePhysicalSummary.OperState = varComputePhysicalSummaryWithoutEmbeddedStruct.OperState
 		varComputePhysicalSummary.Operability = varComputePhysicalSummaryWithoutEmbeddedStruct.Operability
+		varComputePhysicalSummary.PackageVersion = varComputePhysicalSummaryWithoutEmbeddedStruct.PackageVersion
 		varComputePhysicalSummary.Personality = varComputePhysicalSummaryWithoutEmbeddedStruct.Personality
 		varComputePhysicalSummary.PlatformType = varComputePhysicalSummaryWithoutEmbeddedStruct.PlatformType
 		varComputePhysicalSummary.Presence = varComputePhysicalSummaryWithoutEmbeddedStruct.Presence
@@ -2264,6 +2569,7 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		varComputePhysicalSummary.Vendor = varComputePhysicalSummaryWithoutEmbeddedStruct.Vendor
 		varComputePhysicalSummary.EquipmentChassis = varComputePhysicalSummaryWithoutEmbeddedStruct.EquipmentChassis
 		varComputePhysicalSummary.InventoryDeviceInfo = varComputePhysicalSummaryWithoutEmbeddedStruct.InventoryDeviceInfo
+		varComputePhysicalSummary.InventoryParent = varComputePhysicalSummaryWithoutEmbeddedStruct.InventoryParent
 		varComputePhysicalSummary.RegisteredDevice = varComputePhysicalSummaryWithoutEmbeddedStruct.RegisteredDevice
 		*o = ComputePhysicalSummary(varComputePhysicalSummary)
 	} else {
@@ -2272,16 +2578,16 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 
 	varComputePhysicalSummary := _ComputePhysicalSummary{}
 
-	err = json.Unmarshal(bytes, &varComputePhysicalSummary)
+	err = json.Unmarshal(data, &varComputePhysicalSummary)
 	if err == nil {
-		o.ViewsView = varComputePhysicalSummary.ViewsView
+		o.MoBaseMo = varComputePhysicalSummary.MoBaseMo
 	} else {
 		return err
 	}
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AdminPowerState")
@@ -2296,11 +2602,14 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "Dn")
 		delete(additionalProperties, "FaultSummary")
 		delete(additionalProperties, "Firmware")
+		delete(additionalProperties, "FrontPanelLockState")
 		delete(additionalProperties, "HardwareUuid")
 		delete(additionalProperties, "Ipv4Address")
+		delete(additionalProperties, "IsUpgraded")
 		delete(additionalProperties, "KvmIpAddresses")
 		delete(additionalProperties, "KvmServerStateEnabled")
 		delete(additionalProperties, "KvmVendor")
+		delete(additionalProperties, "Lifecycle")
 		delete(additionalProperties, "ManagementMode")
 		delete(additionalProperties, "MemorySpeed")
 		delete(additionalProperties, "MgmtIpAddress")
@@ -2317,6 +2626,7 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "OperReason")
 		delete(additionalProperties, "OperState")
 		delete(additionalProperties, "Operability")
+		delete(additionalProperties, "PackageVersion")
 		delete(additionalProperties, "Personality")
 		delete(additionalProperties, "PlatformType")
 		delete(additionalProperties, "Presence")
@@ -2336,12 +2646,13 @@ func (o *ComputePhysicalSummary) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "Vendor")
 		delete(additionalProperties, "EquipmentChassis")
 		delete(additionalProperties, "InventoryDeviceInfo")
+		delete(additionalProperties, "InventoryParent")
 		delete(additionalProperties, "RegisteredDevice")
 
 		// remove fields from embedded structs
-		reflectViewsView := reflect.ValueOf(o.ViewsView)
-		for i := 0; i < reflectViewsView.Type().NumField(); i++ {
-			t := reflectViewsView.Type().Field(i)
+		reflectMoBaseMo := reflect.ValueOf(o.MoBaseMo)
+		for i := 0; i < reflectMoBaseMo.Type().NumField(); i++ {
+			t := reflectMoBaseMo.Type().Field(i)
 
 			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
 				fieldName := ""

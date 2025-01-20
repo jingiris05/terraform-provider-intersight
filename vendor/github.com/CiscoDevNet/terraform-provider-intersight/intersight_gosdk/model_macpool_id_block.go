@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the MacpoolIdBlock type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &MacpoolIdBlock{}
 
 // MacpoolIdBlock A block of contiguous MAC addresses that are part of a pool.
 type MacpoolIdBlock struct {
@@ -23,9 +27,11 @@ type MacpoolIdBlock struct {
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-	ObjectType           string                   `json:"ObjectType"`
-	MacBlock             *MacpoolBlock            `json:"MacBlock,omitempty"`
-	Pool                 *MacpoolPoolRelationship `json:"Pool,omitempty"`
+	ObjectType string                          `json:"ObjectType"`
+	MacBlock   *MacpoolBlock                   `json:"MacBlock,omitempty"`
+	Pool       NullableMacpoolPoolRelationship `json:"Pool,omitempty"`
+	// An array of relationships to macpoolReservation resources.
+	Reservations         []MacpoolReservationRelationship `json:"Reservations,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -78,6 +84,11 @@ func (o *MacpoolIdBlock) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "macpool.IdBlock" of the ClassId field.
+func (o *MacpoolIdBlock) GetDefaultClassId() interface{} {
+	return "macpool.IdBlock"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *MacpoolIdBlock) GetObjectType() string {
 	if o == nil {
@@ -102,9 +113,14 @@ func (o *MacpoolIdBlock) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "macpool.IdBlock" of the ObjectType field.
+func (o *MacpoolIdBlock) GetDefaultObjectType() interface{} {
+	return "macpool.IdBlock"
+}
+
 // GetMacBlock returns the MacBlock field value if set, zero value otherwise.
 func (o *MacpoolIdBlock) GetMacBlock() MacpoolBlock {
-	if o == nil || o.MacBlock == nil {
+	if o == nil || IsNil(o.MacBlock) {
 		var ret MacpoolBlock
 		return ret
 	}
@@ -114,7 +130,7 @@ func (o *MacpoolIdBlock) GetMacBlock() MacpoolBlock {
 // GetMacBlockOk returns a tuple with the MacBlock field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MacpoolIdBlock) GetMacBlockOk() (*MacpoolBlock, bool) {
-	if o == nil || o.MacBlock == nil {
+	if o == nil || IsNil(o.MacBlock) {
 		return nil, false
 	}
 	return o.MacBlock, true
@@ -122,7 +138,7 @@ func (o *MacpoolIdBlock) GetMacBlockOk() (*MacpoolBlock, bool) {
 
 // HasMacBlock returns a boolean if a field has been set.
 func (o *MacpoolIdBlock) HasMacBlock() bool {
-	if o != nil && o.MacBlock != nil {
+	if o != nil && !IsNil(o.MacBlock) {
 		return true
 	}
 
@@ -134,87 +150,188 @@ func (o *MacpoolIdBlock) SetMacBlock(v MacpoolBlock) {
 	o.MacBlock = &v
 }
 
-// GetPool returns the Pool field value if set, zero value otherwise.
+// GetPool returns the Pool field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *MacpoolIdBlock) GetPool() MacpoolPoolRelationship {
-	if o == nil || o.Pool == nil {
+	if o == nil || IsNil(o.Pool.Get()) {
 		var ret MacpoolPoolRelationship
 		return ret
 	}
-	return *o.Pool
+	return *o.Pool.Get()
 }
 
 // GetPoolOk returns a tuple with the Pool field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *MacpoolIdBlock) GetPoolOk() (*MacpoolPoolRelationship, bool) {
-	if o == nil || o.Pool == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Pool, true
+	return o.Pool.Get(), o.Pool.IsSet()
 }
 
 // HasPool returns a boolean if a field has been set.
 func (o *MacpoolIdBlock) HasPool() bool {
-	if o != nil && o.Pool != nil {
+	if o != nil && o.Pool.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPool gets a reference to the given MacpoolPoolRelationship and assigns it to the Pool field.
+// SetPool gets a reference to the given NullableMacpoolPoolRelationship and assigns it to the Pool field.
 func (o *MacpoolIdBlock) SetPool(v MacpoolPoolRelationship) {
-	o.Pool = &v
+	o.Pool.Set(&v)
+}
+
+// SetPoolNil sets the value for Pool to be an explicit nil
+func (o *MacpoolIdBlock) SetPoolNil() {
+	o.Pool.Set(nil)
+}
+
+// UnsetPool ensures that no value is present for Pool, not even an explicit nil
+func (o *MacpoolIdBlock) UnsetPool() {
+	o.Pool.Unset()
+}
+
+// GetReservations returns the Reservations field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *MacpoolIdBlock) GetReservations() []MacpoolReservationRelationship {
+	if o == nil {
+		var ret []MacpoolReservationRelationship
+		return ret
+	}
+	return o.Reservations
+}
+
+// GetReservationsOk returns a tuple with the Reservations field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *MacpoolIdBlock) GetReservationsOk() ([]MacpoolReservationRelationship, bool) {
+	if o == nil || IsNil(o.Reservations) {
+		return nil, false
+	}
+	return o.Reservations, true
+}
+
+// HasReservations returns a boolean if a field has been set.
+func (o *MacpoolIdBlock) HasReservations() bool {
+	if o != nil && !IsNil(o.Reservations) {
+		return true
+	}
+
+	return false
+}
+
+// SetReservations gets a reference to the given []MacpoolReservationRelationship and assigns it to the Reservations field.
+func (o *MacpoolIdBlock) SetReservations(v []MacpoolReservationRelationship) {
+	o.Reservations = v
 }
 
 func (o MacpoolIdBlock) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o MacpoolIdBlock) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPoolAbstractBlock, errPoolAbstractBlock := json.Marshal(o.PoolAbstractBlock)
 	if errPoolAbstractBlock != nil {
-		return []byte{}, errPoolAbstractBlock
+		return map[string]interface{}{}, errPoolAbstractBlock
 	}
 	errPoolAbstractBlock = json.Unmarshal([]byte(serializedPoolAbstractBlock), &toSerialize)
 	if errPoolAbstractBlock != nil {
-		return []byte{}, errPoolAbstractBlock
+		return map[string]interface{}{}, errPoolAbstractBlock
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.MacBlock != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.MacBlock) {
 		toSerialize["MacBlock"] = o.MacBlock
 	}
-	if o.Pool != nil {
-		toSerialize["Pool"] = o.Pool
+	if o.Pool.IsSet() {
+		toSerialize["Pool"] = o.Pool.Get()
+	}
+	if o.Reservations != nil {
+		toSerialize["Reservations"] = o.Reservations
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *MacpoolIdBlock) UnmarshalJSON(bytes []byte) (err error) {
+func (o *MacpoolIdBlock) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type MacpoolIdBlockWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-		ObjectType string                   `json:"ObjectType"`
-		MacBlock   *MacpoolBlock            `json:"MacBlock,omitempty"`
-		Pool       *MacpoolPoolRelationship `json:"Pool,omitempty"`
+		ObjectType string                          `json:"ObjectType"`
+		MacBlock   *MacpoolBlock                   `json:"MacBlock,omitempty"`
+		Pool       NullableMacpoolPoolRelationship `json:"Pool,omitempty"`
+		// An array of relationships to macpoolReservation resources.
+		Reservations []MacpoolReservationRelationship `json:"Reservations,omitempty"`
 	}
 
 	varMacpoolIdBlockWithoutEmbeddedStruct := MacpoolIdBlockWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varMacpoolIdBlockWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varMacpoolIdBlockWithoutEmbeddedStruct)
 	if err == nil {
 		varMacpoolIdBlock := _MacpoolIdBlock{}
 		varMacpoolIdBlock.ClassId = varMacpoolIdBlockWithoutEmbeddedStruct.ClassId
 		varMacpoolIdBlock.ObjectType = varMacpoolIdBlockWithoutEmbeddedStruct.ObjectType
 		varMacpoolIdBlock.MacBlock = varMacpoolIdBlockWithoutEmbeddedStruct.MacBlock
 		varMacpoolIdBlock.Pool = varMacpoolIdBlockWithoutEmbeddedStruct.Pool
+		varMacpoolIdBlock.Reservations = varMacpoolIdBlockWithoutEmbeddedStruct.Reservations
 		*o = MacpoolIdBlock(varMacpoolIdBlock)
 	} else {
 		return err
@@ -222,7 +339,7 @@ func (o *MacpoolIdBlock) UnmarshalJSON(bytes []byte) (err error) {
 
 	varMacpoolIdBlock := _MacpoolIdBlock{}
 
-	err = json.Unmarshal(bytes, &varMacpoolIdBlock)
+	err = json.Unmarshal(data, &varMacpoolIdBlock)
 	if err == nil {
 		o.PoolAbstractBlock = varMacpoolIdBlock.PoolAbstractBlock
 	} else {
@@ -231,11 +348,12 @@ func (o *MacpoolIdBlock) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "MacBlock")
 		delete(additionalProperties, "Pool")
+		delete(additionalProperties, "Reservations")
 
 		// remove fields from embedded structs
 		reflectPoolAbstractBlock := reflect.ValueOf(o.PoolAbstractBlock)

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,21 +13,23 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
+// checks if the ComputeServerIdPool type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ComputeServerIdPool{}
+
 // ComputeServerIdPool Identifier pool that generates a unique number for a server object.
 type ComputeServerIdPool struct {
-	MoBaseMo
+	SwIdPoolBase
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-	ObjectType      string  `json:"ObjectType"`
-	GapAvailableIds []int64 `json:"GapAvailableIds,omitempty"`
-	// Shows the next available server ID to be allocated.
-	NextAvailableId      *int64                               `json:"NextAvailableId,omitempty"`
-	DeviceRegistration   *AssetDeviceRegistrationRelationship `json:"DeviceRegistration,omitempty"`
+	ObjectType           string                                      `json:"ObjectType"`
+	PreferredIds         []int64                                     `json:"PreferredIds,omitempty"`
+	DeviceRegistration   NullableAssetDeviceRegistrationRelationship `json:"DeviceRegistration,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -80,6 +82,11 @@ func (o *ComputeServerIdPool) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "compute.ServerIdPool" of the ClassId field.
+func (o *ComputeServerIdPool) GetDefaultClassId() interface{} {
+	return "compute.ServerIdPool"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ComputeServerIdPool) GetObjectType() string {
 	if o == nil {
@@ -104,157 +111,186 @@ func (o *ComputeServerIdPool) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
-// GetGapAvailableIds returns the GapAvailableIds field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *ComputeServerIdPool) GetGapAvailableIds() []int64 {
+// GetDefaultObjectType returns the default value "compute.ServerIdPool" of the ObjectType field.
+func (o *ComputeServerIdPool) GetDefaultObjectType() interface{} {
+	return "compute.ServerIdPool"
+}
+
+// GetPreferredIds returns the PreferredIds field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ComputeServerIdPool) GetPreferredIds() []int64 {
 	if o == nil {
 		var ret []int64
 		return ret
 	}
-	return o.GapAvailableIds
+	return o.PreferredIds
 }
 
-// GetGapAvailableIdsOk returns a tuple with the GapAvailableIds field value if set, nil otherwise
+// GetPreferredIdsOk returns a tuple with the PreferredIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ComputeServerIdPool) GetGapAvailableIdsOk() ([]int64, bool) {
-	if o == nil || o.GapAvailableIds == nil {
+func (o *ComputeServerIdPool) GetPreferredIdsOk() ([]int64, bool) {
+	if o == nil || IsNil(o.PreferredIds) {
 		return nil, false
 	}
-	return o.GapAvailableIds, true
+	return o.PreferredIds, true
 }
 
-// HasGapAvailableIds returns a boolean if a field has been set.
-func (o *ComputeServerIdPool) HasGapAvailableIds() bool {
-	if o != nil && o.GapAvailableIds != nil {
+// HasPreferredIds returns a boolean if a field has been set.
+func (o *ComputeServerIdPool) HasPreferredIds() bool {
+	if o != nil && !IsNil(o.PreferredIds) {
 		return true
 	}
 
 	return false
 }
 
-// SetGapAvailableIds gets a reference to the given []int64 and assigns it to the GapAvailableIds field.
-func (o *ComputeServerIdPool) SetGapAvailableIds(v []int64) {
-	o.GapAvailableIds = v
+// SetPreferredIds gets a reference to the given []int64 and assigns it to the PreferredIds field.
+func (o *ComputeServerIdPool) SetPreferredIds(v []int64) {
+	o.PreferredIds = v
 }
 
-// GetNextAvailableId returns the NextAvailableId field value if set, zero value otherwise.
-func (o *ComputeServerIdPool) GetNextAvailableId() int64 {
-	if o == nil || o.NextAvailableId == nil {
-		var ret int64
-		return ret
-	}
-	return *o.NextAvailableId
-}
-
-// GetNextAvailableIdOk returns a tuple with the NextAvailableId field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *ComputeServerIdPool) GetNextAvailableIdOk() (*int64, bool) {
-	if o == nil || o.NextAvailableId == nil {
-		return nil, false
-	}
-	return o.NextAvailableId, true
-}
-
-// HasNextAvailableId returns a boolean if a field has been set.
-func (o *ComputeServerIdPool) HasNextAvailableId() bool {
-	if o != nil && o.NextAvailableId != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetNextAvailableId gets a reference to the given int64 and assigns it to the NextAvailableId field.
-func (o *ComputeServerIdPool) SetNextAvailableId(v int64) {
-	o.NextAvailableId = &v
-}
-
-// GetDeviceRegistration returns the DeviceRegistration field value if set, zero value otherwise.
+// GetDeviceRegistration returns the DeviceRegistration field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ComputeServerIdPool) GetDeviceRegistration() AssetDeviceRegistrationRelationship {
-	if o == nil || o.DeviceRegistration == nil {
+	if o == nil || IsNil(o.DeviceRegistration.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.DeviceRegistration
+	return *o.DeviceRegistration.Get()
 }
 
 // GetDeviceRegistrationOk returns a tuple with the DeviceRegistration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ComputeServerIdPool) GetDeviceRegistrationOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.DeviceRegistration == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.DeviceRegistration, true
+	return o.DeviceRegistration.Get(), o.DeviceRegistration.IsSet()
 }
 
 // HasDeviceRegistration returns a boolean if a field has been set.
 func (o *ComputeServerIdPool) HasDeviceRegistration() bool {
-	if o != nil && o.DeviceRegistration != nil {
+	if o != nil && o.DeviceRegistration.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetDeviceRegistration gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the DeviceRegistration field.
+// SetDeviceRegistration gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the DeviceRegistration field.
 func (o *ComputeServerIdPool) SetDeviceRegistration(v AssetDeviceRegistrationRelationship) {
-	o.DeviceRegistration = &v
+	o.DeviceRegistration.Set(&v)
+}
+
+// SetDeviceRegistrationNil sets the value for DeviceRegistration to be an explicit nil
+func (o *ComputeServerIdPool) SetDeviceRegistrationNil() {
+	o.DeviceRegistration.Set(nil)
+}
+
+// UnsetDeviceRegistration ensures that no value is present for DeviceRegistration, not even an explicit nil
+func (o *ComputeServerIdPool) UnsetDeviceRegistration() {
+	o.DeviceRegistration.Unset()
 }
 
 func (o ComputeServerIdPool) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ComputeServerIdPool) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
-	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+	serializedSwIdPoolBase, errSwIdPoolBase := json.Marshal(o.SwIdPoolBase)
+	if errSwIdPoolBase != nil {
+		return map[string]interface{}{}, errSwIdPoolBase
 	}
-	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
-	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+	errSwIdPoolBase = json.Unmarshal([]byte(serializedSwIdPoolBase), &toSerialize)
+	if errSwIdPoolBase != nil {
+		return map[string]interface{}{}, errSwIdPoolBase
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.GapAvailableIds != nil {
-		toSerialize["GapAvailableIds"] = o.GapAvailableIds
+	toSerialize["ObjectType"] = o.ObjectType
+	if o.PreferredIds != nil {
+		toSerialize["PreferredIds"] = o.PreferredIds
 	}
-	if o.NextAvailableId != nil {
-		toSerialize["NextAvailableId"] = o.NextAvailableId
-	}
-	if o.DeviceRegistration != nil {
-		toSerialize["DeviceRegistration"] = o.DeviceRegistration
+	if o.DeviceRegistration.IsSet() {
+		toSerialize["DeviceRegistration"] = o.DeviceRegistration.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ComputeServerIdPool) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ComputeServerIdPool) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ComputeServerIdPoolWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-		ObjectType      string  `json:"ObjectType"`
-		GapAvailableIds []int64 `json:"GapAvailableIds,omitempty"`
-		// Shows the next available server ID to be allocated.
-		NextAvailableId    *int64                               `json:"NextAvailableId,omitempty"`
-		DeviceRegistration *AssetDeviceRegistrationRelationship `json:"DeviceRegistration,omitempty"`
+		ObjectType         string                                      `json:"ObjectType"`
+		PreferredIds       []int64                                     `json:"PreferredIds,omitempty"`
+		DeviceRegistration NullableAssetDeviceRegistrationRelationship `json:"DeviceRegistration,omitempty"`
 	}
 
 	varComputeServerIdPoolWithoutEmbeddedStruct := ComputeServerIdPoolWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varComputeServerIdPoolWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varComputeServerIdPoolWithoutEmbeddedStruct)
 	if err == nil {
 		varComputeServerIdPool := _ComputeServerIdPool{}
 		varComputeServerIdPool.ClassId = varComputeServerIdPoolWithoutEmbeddedStruct.ClassId
 		varComputeServerIdPool.ObjectType = varComputeServerIdPoolWithoutEmbeddedStruct.ObjectType
-		varComputeServerIdPool.GapAvailableIds = varComputeServerIdPoolWithoutEmbeddedStruct.GapAvailableIds
-		varComputeServerIdPool.NextAvailableId = varComputeServerIdPoolWithoutEmbeddedStruct.NextAvailableId
+		varComputeServerIdPool.PreferredIds = varComputeServerIdPoolWithoutEmbeddedStruct.PreferredIds
 		varComputeServerIdPool.DeviceRegistration = varComputeServerIdPoolWithoutEmbeddedStruct.DeviceRegistration
 		*o = ComputeServerIdPool(varComputeServerIdPool)
 	} else {
@@ -263,26 +299,25 @@ func (o *ComputeServerIdPool) UnmarshalJSON(bytes []byte) (err error) {
 
 	varComputeServerIdPool := _ComputeServerIdPool{}
 
-	err = json.Unmarshal(bytes, &varComputeServerIdPool)
+	err = json.Unmarshal(data, &varComputeServerIdPool)
 	if err == nil {
-		o.MoBaseMo = varComputeServerIdPool.MoBaseMo
+		o.SwIdPoolBase = varComputeServerIdPool.SwIdPoolBase
 	} else {
 		return err
 	}
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
-		delete(additionalProperties, "GapAvailableIds")
-		delete(additionalProperties, "NextAvailableId")
+		delete(additionalProperties, "PreferredIds")
 		delete(additionalProperties, "DeviceRegistration")
 
 		// remove fields from embedded structs
-		reflectMoBaseMo := reflect.ValueOf(o.MoBaseMo)
-		for i := 0; i < reflectMoBaseMo.Type().NumField(); i++ {
-			t := reflectMoBaseMo.Type().Field(i)
+		reflectSwIdPoolBase := reflect.ValueOf(o.SwIdPoolBase)
+		for i := 0; i < reflectSwIdPoolBase.Type().NumField(); i++ {
+			t := reflectSwIdPoolBase.Type().Field(i)
 
 			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
 				fieldName := ""

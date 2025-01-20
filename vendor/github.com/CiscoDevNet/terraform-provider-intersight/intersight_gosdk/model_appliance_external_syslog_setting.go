@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the ApplianceExternalSyslogSetting type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ApplianceExternalSyslogSetting{}
 
 // ApplianceExternalSyslogSetting Configure External Syslog Server.
 type ApplianceExternalSyslogSetting struct {
@@ -26,6 +30,10 @@ type ApplianceExternalSyslogSetting struct {
 	ObjectType string `json:"ObjectType"`
 	// Enable or disable External Syslog Server.
 	Enabled *bool `json:"Enabled,omitempty"`
+	// If the flag is set, the alarms reported in Intersight Appliances are exported to external syslog server based on the alarm severity selection.
+	ExportAlarms *bool `json:"ExportAlarms,omitempty"`
+	// Enable or disable exporting of Audit logs.
+	ExportAudit *bool `json:"ExportAudit,omitempty"`
 	// Enable or disable exporting of Web Server access logs.
 	ExportNginx *bool `json:"ExportNginx,omitempty"`
 	// External Syslog Server Port for connection establishment.
@@ -33,8 +41,10 @@ type ApplianceExternalSyslogSetting struct {
 	// Protocol used to connect to external syslog server. * `TCP` - External Syslog messages sent over TCP. * `UDP` - External Syslog messages sent over UDP. * `TLS` - Secure External Syslog messages sent over TLS.
 	Protocol *string `json:"Protocol,omitempty"`
 	// External Syslog Server Address, can be IP address or hostname.
-	Server               *string                 `json:"Server,omitempty"`
-	Account              *IamAccountRelationship `json:"Account,omitempty"`
+	Server *string `json:"Server,omitempty"`
+	// Minimum severity level to report. * `None` - The Enum value None represents that there is no severity. * `Info` - The Enum value Info represents the Informational level of severity. * `Critical` - The Enum value Critical represents the Critical level of severity. * `Warning` - The Enum value Warning represents the Warning level of severity. * `Cleared` - The Enum value Cleared represents that the alarm severity has been cleared.
+	Severity             *string                        `json:"Severity,omitempty"`
+	Account              NullableIamAccountRelationship `json:"Account,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -50,12 +60,18 @@ func NewApplianceExternalSyslogSetting(classId string, objectType string) *Appli
 	this.ObjectType = objectType
 	var enabled bool = false
 	this.Enabled = &enabled
+	var exportAlarms bool = false
+	this.ExportAlarms = &exportAlarms
+	var exportAudit bool = false
+	this.ExportAudit = &exportAudit
 	var exportNginx bool = false
 	this.ExportNginx = &exportNginx
 	var port int64 = 10514
 	this.Port = &port
 	var protocol string = "TCP"
 	this.Protocol = &protocol
+	var severity string = "None"
+	this.Severity = &severity
 	return &this
 }
 
@@ -70,12 +86,18 @@ func NewApplianceExternalSyslogSettingWithDefaults() *ApplianceExternalSyslogSet
 	this.ObjectType = objectType
 	var enabled bool = false
 	this.Enabled = &enabled
+	var exportAlarms bool = false
+	this.ExportAlarms = &exportAlarms
+	var exportAudit bool = false
+	this.ExportAudit = &exportAudit
 	var exportNginx bool = false
 	this.ExportNginx = &exportNginx
 	var port int64 = 10514
 	this.Port = &port
 	var protocol string = "TCP"
 	this.Protocol = &protocol
+	var severity string = "None"
+	this.Severity = &severity
 	return &this
 }
 
@@ -103,6 +125,11 @@ func (o *ApplianceExternalSyslogSetting) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "appliance.ExternalSyslogSetting" of the ClassId field.
+func (o *ApplianceExternalSyslogSetting) GetDefaultClassId() interface{} {
+	return "appliance.ExternalSyslogSetting"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ApplianceExternalSyslogSetting) GetObjectType() string {
 	if o == nil {
@@ -127,9 +154,14 @@ func (o *ApplianceExternalSyslogSetting) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "appliance.ExternalSyslogSetting" of the ObjectType field.
+func (o *ApplianceExternalSyslogSetting) GetDefaultObjectType() interface{} {
+	return "appliance.ExternalSyslogSetting"
+}
+
 // GetEnabled returns the Enabled field value if set, zero value otherwise.
 func (o *ApplianceExternalSyslogSetting) GetEnabled() bool {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		var ret bool
 		return ret
 	}
@@ -139,7 +171,7 @@ func (o *ApplianceExternalSyslogSetting) GetEnabled() bool {
 // GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceExternalSyslogSetting) GetEnabledOk() (*bool, bool) {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		return nil, false
 	}
 	return o.Enabled, true
@@ -147,7 +179,7 @@ func (o *ApplianceExternalSyslogSetting) GetEnabledOk() (*bool, bool) {
 
 // HasEnabled returns a boolean if a field has been set.
 func (o *ApplianceExternalSyslogSetting) HasEnabled() bool {
-	if o != nil && o.Enabled != nil {
+	if o != nil && !IsNil(o.Enabled) {
 		return true
 	}
 
@@ -159,9 +191,73 @@ func (o *ApplianceExternalSyslogSetting) SetEnabled(v bool) {
 	o.Enabled = &v
 }
 
+// GetExportAlarms returns the ExportAlarms field value if set, zero value otherwise.
+func (o *ApplianceExternalSyslogSetting) GetExportAlarms() bool {
+	if o == nil || IsNil(o.ExportAlarms) {
+		var ret bool
+		return ret
+	}
+	return *o.ExportAlarms
+}
+
+// GetExportAlarmsOk returns a tuple with the ExportAlarms field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApplianceExternalSyslogSetting) GetExportAlarmsOk() (*bool, bool) {
+	if o == nil || IsNil(o.ExportAlarms) {
+		return nil, false
+	}
+	return o.ExportAlarms, true
+}
+
+// HasExportAlarms returns a boolean if a field has been set.
+func (o *ApplianceExternalSyslogSetting) HasExportAlarms() bool {
+	if o != nil && !IsNil(o.ExportAlarms) {
+		return true
+	}
+
+	return false
+}
+
+// SetExportAlarms gets a reference to the given bool and assigns it to the ExportAlarms field.
+func (o *ApplianceExternalSyslogSetting) SetExportAlarms(v bool) {
+	o.ExportAlarms = &v
+}
+
+// GetExportAudit returns the ExportAudit field value if set, zero value otherwise.
+func (o *ApplianceExternalSyslogSetting) GetExportAudit() bool {
+	if o == nil || IsNil(o.ExportAudit) {
+		var ret bool
+		return ret
+	}
+	return *o.ExportAudit
+}
+
+// GetExportAuditOk returns a tuple with the ExportAudit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApplianceExternalSyslogSetting) GetExportAuditOk() (*bool, bool) {
+	if o == nil || IsNil(o.ExportAudit) {
+		return nil, false
+	}
+	return o.ExportAudit, true
+}
+
+// HasExportAudit returns a boolean if a field has been set.
+func (o *ApplianceExternalSyslogSetting) HasExportAudit() bool {
+	if o != nil && !IsNil(o.ExportAudit) {
+		return true
+	}
+
+	return false
+}
+
+// SetExportAudit gets a reference to the given bool and assigns it to the ExportAudit field.
+func (o *ApplianceExternalSyslogSetting) SetExportAudit(v bool) {
+	o.ExportAudit = &v
+}
+
 // GetExportNginx returns the ExportNginx field value if set, zero value otherwise.
 func (o *ApplianceExternalSyslogSetting) GetExportNginx() bool {
-	if o == nil || o.ExportNginx == nil {
+	if o == nil || IsNil(o.ExportNginx) {
 		var ret bool
 		return ret
 	}
@@ -171,7 +267,7 @@ func (o *ApplianceExternalSyslogSetting) GetExportNginx() bool {
 // GetExportNginxOk returns a tuple with the ExportNginx field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceExternalSyslogSetting) GetExportNginxOk() (*bool, bool) {
-	if o == nil || o.ExportNginx == nil {
+	if o == nil || IsNil(o.ExportNginx) {
 		return nil, false
 	}
 	return o.ExportNginx, true
@@ -179,7 +275,7 @@ func (o *ApplianceExternalSyslogSetting) GetExportNginxOk() (*bool, bool) {
 
 // HasExportNginx returns a boolean if a field has been set.
 func (o *ApplianceExternalSyslogSetting) HasExportNginx() bool {
-	if o != nil && o.ExportNginx != nil {
+	if o != nil && !IsNil(o.ExportNginx) {
 		return true
 	}
 
@@ -193,7 +289,7 @@ func (o *ApplianceExternalSyslogSetting) SetExportNginx(v bool) {
 
 // GetPort returns the Port field value if set, zero value otherwise.
 func (o *ApplianceExternalSyslogSetting) GetPort() int64 {
-	if o == nil || o.Port == nil {
+	if o == nil || IsNil(o.Port) {
 		var ret int64
 		return ret
 	}
@@ -203,7 +299,7 @@ func (o *ApplianceExternalSyslogSetting) GetPort() int64 {
 // GetPortOk returns a tuple with the Port field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceExternalSyslogSetting) GetPortOk() (*int64, bool) {
-	if o == nil || o.Port == nil {
+	if o == nil || IsNil(o.Port) {
 		return nil, false
 	}
 	return o.Port, true
@@ -211,7 +307,7 @@ func (o *ApplianceExternalSyslogSetting) GetPortOk() (*int64, bool) {
 
 // HasPort returns a boolean if a field has been set.
 func (o *ApplianceExternalSyslogSetting) HasPort() bool {
-	if o != nil && o.Port != nil {
+	if o != nil && !IsNil(o.Port) {
 		return true
 	}
 
@@ -225,7 +321,7 @@ func (o *ApplianceExternalSyslogSetting) SetPort(v int64) {
 
 // GetProtocol returns the Protocol field value if set, zero value otherwise.
 func (o *ApplianceExternalSyslogSetting) GetProtocol() string {
-	if o == nil || o.Protocol == nil {
+	if o == nil || IsNil(o.Protocol) {
 		var ret string
 		return ret
 	}
@@ -235,7 +331,7 @@ func (o *ApplianceExternalSyslogSetting) GetProtocol() string {
 // GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceExternalSyslogSetting) GetProtocolOk() (*string, bool) {
-	if o == nil || o.Protocol == nil {
+	if o == nil || IsNil(o.Protocol) {
 		return nil, false
 	}
 	return o.Protocol, true
@@ -243,7 +339,7 @@ func (o *ApplianceExternalSyslogSetting) GetProtocolOk() (*string, bool) {
 
 // HasProtocol returns a boolean if a field has been set.
 func (o *ApplianceExternalSyslogSetting) HasProtocol() bool {
-	if o != nil && o.Protocol != nil {
+	if o != nil && !IsNil(o.Protocol) {
 		return true
 	}
 
@@ -257,7 +353,7 @@ func (o *ApplianceExternalSyslogSetting) SetProtocol(v string) {
 
 // GetServer returns the Server field value if set, zero value otherwise.
 func (o *ApplianceExternalSyslogSetting) GetServer() string {
-	if o == nil || o.Server == nil {
+	if o == nil || IsNil(o.Server) {
 		var ret string
 		return ret
 	}
@@ -267,7 +363,7 @@ func (o *ApplianceExternalSyslogSetting) GetServer() string {
 // GetServerOk returns a tuple with the Server field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceExternalSyslogSetting) GetServerOk() (*string, bool) {
-	if o == nil || o.Server == nil {
+	if o == nil || IsNil(o.Server) {
 		return nil, false
 	}
 	return o.Server, true
@@ -275,7 +371,7 @@ func (o *ApplianceExternalSyslogSetting) GetServerOk() (*string, bool) {
 
 // HasServer returns a boolean if a field has been set.
 func (o *ApplianceExternalSyslogSetting) HasServer() bool {
-	if o != nil && o.Server != nil {
+	if o != nil && !IsNil(o.Server) {
 		return true
 	}
 
@@ -287,81 +383,184 @@ func (o *ApplianceExternalSyslogSetting) SetServer(v string) {
 	o.Server = &v
 }
 
-// GetAccount returns the Account field value if set, zero value otherwise.
-func (o *ApplianceExternalSyslogSetting) GetAccount() IamAccountRelationship {
-	if o == nil || o.Account == nil {
-		var ret IamAccountRelationship
+// GetSeverity returns the Severity field value if set, zero value otherwise.
+func (o *ApplianceExternalSyslogSetting) GetSeverity() string {
+	if o == nil || IsNil(o.Severity) {
+		var ret string
 		return ret
 	}
-	return *o.Account
+	return *o.Severity
 }
 
-// GetAccountOk returns a tuple with the Account field value if set, nil otherwise
+// GetSeverityOk returns a tuple with the Severity field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ApplianceExternalSyslogSetting) GetAccountOk() (*IamAccountRelationship, bool) {
-	if o == nil || o.Account == nil {
+func (o *ApplianceExternalSyslogSetting) GetSeverityOk() (*string, bool) {
+	if o == nil || IsNil(o.Severity) {
 		return nil, false
 	}
-	return o.Account, true
+	return o.Severity, true
 }
 
-// HasAccount returns a boolean if a field has been set.
-func (o *ApplianceExternalSyslogSetting) HasAccount() bool {
-	if o != nil && o.Account != nil {
+// HasSeverity returns a boolean if a field has been set.
+func (o *ApplianceExternalSyslogSetting) HasSeverity() bool {
+	if o != nil && !IsNil(o.Severity) {
 		return true
 	}
 
 	return false
 }
 
-// SetAccount gets a reference to the given IamAccountRelationship and assigns it to the Account field.
+// SetSeverity gets a reference to the given string and assigns it to the Severity field.
+func (o *ApplianceExternalSyslogSetting) SetSeverity(v string) {
+	o.Severity = &v
+}
+
+// GetAccount returns the Account field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *ApplianceExternalSyslogSetting) GetAccount() IamAccountRelationship {
+	if o == nil || IsNil(o.Account.Get()) {
+		var ret IamAccountRelationship
+		return ret
+	}
+	return *o.Account.Get()
+}
+
+// GetAccountOk returns a tuple with the Account field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *ApplianceExternalSyslogSetting) GetAccountOk() (*IamAccountRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Account.Get(), o.Account.IsSet()
+}
+
+// HasAccount returns a boolean if a field has been set.
+func (o *ApplianceExternalSyslogSetting) HasAccount() bool {
+	if o != nil && o.Account.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAccount gets a reference to the given NullableIamAccountRelationship and assigns it to the Account field.
 func (o *ApplianceExternalSyslogSetting) SetAccount(v IamAccountRelationship) {
-	o.Account = &v
+	o.Account.Set(&v)
+}
+
+// SetAccountNil sets the value for Account to be an explicit nil
+func (o *ApplianceExternalSyslogSetting) SetAccountNil() {
+	o.Account.Set(nil)
+}
+
+// UnsetAccount ensures that no value is present for Account, not even an explicit nil
+func (o *ApplianceExternalSyslogSetting) UnsetAccount() {
+	o.Account.Unset()
 }
 
 func (o ApplianceExternalSyslogSetting) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ApplianceExternalSyslogSetting) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Enabled != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Enabled) {
 		toSerialize["Enabled"] = o.Enabled
 	}
-	if o.ExportNginx != nil {
+	if !IsNil(o.ExportAlarms) {
+		toSerialize["ExportAlarms"] = o.ExportAlarms
+	}
+	if !IsNil(o.ExportAudit) {
+		toSerialize["ExportAudit"] = o.ExportAudit
+	}
+	if !IsNil(o.ExportNginx) {
 		toSerialize["ExportNginx"] = o.ExportNginx
 	}
-	if o.Port != nil {
+	if !IsNil(o.Port) {
 		toSerialize["Port"] = o.Port
 	}
-	if o.Protocol != nil {
+	if !IsNil(o.Protocol) {
 		toSerialize["Protocol"] = o.Protocol
 	}
-	if o.Server != nil {
+	if !IsNil(o.Server) {
 		toSerialize["Server"] = o.Server
 	}
-	if o.Account != nil {
-		toSerialize["Account"] = o.Account
+	if !IsNil(o.Severity) {
+		toSerialize["Severity"] = o.Severity
+	}
+	if o.Account.IsSet() {
+		toSerialize["Account"] = o.Account.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ApplianceExternalSyslogSetting) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ApplianceExternalSyslogSetting) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ApplianceExternalSyslogSettingWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -369,6 +568,10 @@ func (o *ApplianceExternalSyslogSetting) UnmarshalJSON(bytes []byte) (err error)
 		ObjectType string `json:"ObjectType"`
 		// Enable or disable External Syslog Server.
 		Enabled *bool `json:"Enabled,omitempty"`
+		// If the flag is set, the alarms reported in Intersight Appliances are exported to external syslog server based on the alarm severity selection.
+		ExportAlarms *bool `json:"ExportAlarms,omitempty"`
+		// Enable or disable exporting of Audit logs.
+		ExportAudit *bool `json:"ExportAudit,omitempty"`
 		// Enable or disable exporting of Web Server access logs.
 		ExportNginx *bool `json:"ExportNginx,omitempty"`
 		// External Syslog Server Port for connection establishment.
@@ -376,22 +579,27 @@ func (o *ApplianceExternalSyslogSetting) UnmarshalJSON(bytes []byte) (err error)
 		// Protocol used to connect to external syslog server. * `TCP` - External Syslog messages sent over TCP. * `UDP` - External Syslog messages sent over UDP. * `TLS` - Secure External Syslog messages sent over TLS.
 		Protocol *string `json:"Protocol,omitempty"`
 		// External Syslog Server Address, can be IP address or hostname.
-		Server  *string                 `json:"Server,omitempty"`
-		Account *IamAccountRelationship `json:"Account,omitempty"`
+		Server *string `json:"Server,omitempty"`
+		// Minimum severity level to report. * `None` - The Enum value None represents that there is no severity. * `Info` - The Enum value Info represents the Informational level of severity. * `Critical` - The Enum value Critical represents the Critical level of severity. * `Warning` - The Enum value Warning represents the Warning level of severity. * `Cleared` - The Enum value Cleared represents that the alarm severity has been cleared.
+		Severity *string                        `json:"Severity,omitempty"`
+		Account  NullableIamAccountRelationship `json:"Account,omitempty"`
 	}
 
 	varApplianceExternalSyslogSettingWithoutEmbeddedStruct := ApplianceExternalSyslogSettingWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varApplianceExternalSyslogSettingWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varApplianceExternalSyslogSettingWithoutEmbeddedStruct)
 	if err == nil {
 		varApplianceExternalSyslogSetting := _ApplianceExternalSyslogSetting{}
 		varApplianceExternalSyslogSetting.ClassId = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.ClassId
 		varApplianceExternalSyslogSetting.ObjectType = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.ObjectType
 		varApplianceExternalSyslogSetting.Enabled = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.Enabled
+		varApplianceExternalSyslogSetting.ExportAlarms = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.ExportAlarms
+		varApplianceExternalSyslogSetting.ExportAudit = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.ExportAudit
 		varApplianceExternalSyslogSetting.ExportNginx = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.ExportNginx
 		varApplianceExternalSyslogSetting.Port = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.Port
 		varApplianceExternalSyslogSetting.Protocol = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.Protocol
 		varApplianceExternalSyslogSetting.Server = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.Server
+		varApplianceExternalSyslogSetting.Severity = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.Severity
 		varApplianceExternalSyslogSetting.Account = varApplianceExternalSyslogSettingWithoutEmbeddedStruct.Account
 		*o = ApplianceExternalSyslogSetting(varApplianceExternalSyslogSetting)
 	} else {
@@ -400,7 +608,7 @@ func (o *ApplianceExternalSyslogSetting) UnmarshalJSON(bytes []byte) (err error)
 
 	varApplianceExternalSyslogSetting := _ApplianceExternalSyslogSetting{}
 
-	err = json.Unmarshal(bytes, &varApplianceExternalSyslogSetting)
+	err = json.Unmarshal(data, &varApplianceExternalSyslogSetting)
 	if err == nil {
 		o.MoBaseMo = varApplianceExternalSyslogSetting.MoBaseMo
 	} else {
@@ -409,14 +617,17 @@ func (o *ApplianceExternalSyslogSetting) UnmarshalJSON(bytes []byte) (err error)
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Enabled")
+		delete(additionalProperties, "ExportAlarms")
+		delete(additionalProperties, "ExportAudit")
 		delete(additionalProperties, "ExportNginx")
 		delete(additionalProperties, "Port")
 		delete(additionalProperties, "Protocol")
 		delete(additionalProperties, "Server")
+		delete(additionalProperties, "Severity")
 		delete(additionalProperties, "Account")
 
 		// remove fields from embedded structs

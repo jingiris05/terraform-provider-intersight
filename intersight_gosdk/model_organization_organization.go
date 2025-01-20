@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the OrganizationOrganization type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &OrganizationOrganization{}
 
 // OrganizationOrganization Organization provides multi-tenancy within an account. Multiple organizations can be present under an account. Resources are associated to organization using resource groups. Organization can have heterogeneous resources. Resources can be shared among multiple organizations. Organizations are associated to user permissions and privileges can be specified to provide access control. User can have access to multiple organizations in same permission and with different privileges on each organization.
 type OrganizationOrganization struct {
@@ -27,10 +31,12 @@ type OrganizationOrganization struct {
 	// The informative description about the usage of this organization.
 	Description *string `json:"Description,omitempty"`
 	// The name of the organization. There can be multiple organizations under an account.
-	Name    *string                 `json:"Name,omitempty"`
-	Account *IamAccountRelationship `json:"Account,omitempty"`
+	Name    *string                        `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9_.:-]{1,64}$"`
+	Account NullableIamAccountRelationship `json:"Account,omitempty"`
 	// An array of relationships to resourceGroup resources.
-	ResourceGroups       []ResourceGroupRelationship `json:"ResourceGroups,omitempty"`
+	ResourceGroups []ResourceGroupRelationship `json:"ResourceGroups,omitempty"`
+	// An array of relationships to moBaseMo resources.
+	SharedWithResources  []MoBaseMoRelationship `json:"SharedWithResources,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -83,6 +89,11 @@ func (o *OrganizationOrganization) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "organization.Organization" of the ClassId field.
+func (o *OrganizationOrganization) GetDefaultClassId() interface{} {
+	return "organization.Organization"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *OrganizationOrganization) GetObjectType() string {
 	if o == nil {
@@ -107,9 +118,14 @@ func (o *OrganizationOrganization) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "organization.Organization" of the ObjectType field.
+func (o *OrganizationOrganization) GetDefaultObjectType() interface{} {
+	return "organization.Organization"
+}
+
 // GetDescription returns the Description field value if set, zero value otherwise.
 func (o *OrganizationOrganization) GetDescription() string {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		var ret string
 		return ret
 	}
@@ -119,7 +135,7 @@ func (o *OrganizationOrganization) GetDescription() string {
 // GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OrganizationOrganization) GetDescriptionOk() (*string, bool) {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		return nil, false
 	}
 	return o.Description, true
@@ -127,7 +143,7 @@ func (o *OrganizationOrganization) GetDescriptionOk() (*string, bool) {
 
 // HasDescription returns a boolean if a field has been set.
 func (o *OrganizationOrganization) HasDescription() bool {
-	if o != nil && o.Description != nil {
+	if o != nil && !IsNil(o.Description) {
 		return true
 	}
 
@@ -141,7 +157,7 @@ func (o *OrganizationOrganization) SetDescription(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *OrganizationOrganization) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -151,7 +167,7 @@ func (o *OrganizationOrganization) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OrganizationOrganization) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -159,7 +175,7 @@ func (o *OrganizationOrganization) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *OrganizationOrganization) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -171,36 +187,47 @@ func (o *OrganizationOrganization) SetName(v string) {
 	o.Name = &v
 }
 
-// GetAccount returns the Account field value if set, zero value otherwise.
+// GetAccount returns the Account field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *OrganizationOrganization) GetAccount() IamAccountRelationship {
-	if o == nil || o.Account == nil {
+	if o == nil || IsNil(o.Account.Get()) {
 		var ret IamAccountRelationship
 		return ret
 	}
-	return *o.Account
+	return *o.Account.Get()
 }
 
 // GetAccountOk returns a tuple with the Account field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *OrganizationOrganization) GetAccountOk() (*IamAccountRelationship, bool) {
-	if o == nil || o.Account == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Account, true
+	return o.Account.Get(), o.Account.IsSet()
 }
 
 // HasAccount returns a boolean if a field has been set.
 func (o *OrganizationOrganization) HasAccount() bool {
-	if o != nil && o.Account != nil {
+	if o != nil && o.Account.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAccount gets a reference to the given IamAccountRelationship and assigns it to the Account field.
+// SetAccount gets a reference to the given NullableIamAccountRelationship and assigns it to the Account field.
 func (o *OrganizationOrganization) SetAccount(v IamAccountRelationship) {
-	o.Account = &v
+	o.Account.Set(&v)
+}
+
+// SetAccountNil sets the value for Account to be an explicit nil
+func (o *OrganizationOrganization) SetAccountNil() {
+	o.Account.Set(nil)
+}
+
+// UnsetAccount ensures that no value is present for Account, not even an explicit nil
+func (o *OrganizationOrganization) UnsetAccount() {
+	o.Account.Unset()
 }
 
 // GetResourceGroups returns the ResourceGroups field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -216,7 +243,7 @@ func (o *OrganizationOrganization) GetResourceGroups() []ResourceGroupRelationsh
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *OrganizationOrganization) GetResourceGroupsOk() ([]ResourceGroupRelationship, bool) {
-	if o == nil || o.ResourceGroups == nil {
+	if o == nil || IsNil(o.ResourceGroups) {
 		return nil, false
 	}
 	return o.ResourceGroups, true
@@ -224,7 +251,7 @@ func (o *OrganizationOrganization) GetResourceGroupsOk() ([]ResourceGroupRelatio
 
 // HasResourceGroups returns a boolean if a field has been set.
 func (o *OrganizationOrganization) HasResourceGroups() bool {
-	if o != nil && o.ResourceGroups != nil {
+	if o != nil && !IsNil(o.ResourceGroups) {
 		return true
 	}
 
@@ -236,43 +263,130 @@ func (o *OrganizationOrganization) SetResourceGroups(v []ResourceGroupRelationsh
 	o.ResourceGroups = v
 }
 
+// GetSharedWithResources returns the SharedWithResources field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *OrganizationOrganization) GetSharedWithResources() []MoBaseMoRelationship {
+	if o == nil {
+		var ret []MoBaseMoRelationship
+		return ret
+	}
+	return o.SharedWithResources
+}
+
+// GetSharedWithResourcesOk returns a tuple with the SharedWithResources field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *OrganizationOrganization) GetSharedWithResourcesOk() ([]MoBaseMoRelationship, bool) {
+	if o == nil || IsNil(o.SharedWithResources) {
+		return nil, false
+	}
+	return o.SharedWithResources, true
+}
+
+// HasSharedWithResources returns a boolean if a field has been set.
+func (o *OrganizationOrganization) HasSharedWithResources() bool {
+	if o != nil && !IsNil(o.SharedWithResources) {
+		return true
+	}
+
+	return false
+}
+
+// SetSharedWithResources gets a reference to the given []MoBaseMoRelationship and assigns it to the SharedWithResources field.
+func (o *OrganizationOrganization) SetSharedWithResources(v []MoBaseMoRelationship) {
+	o.SharedWithResources = v
+}
+
 func (o OrganizationOrganization) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o OrganizationOrganization) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Description != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Description) {
 		toSerialize["Description"] = o.Description
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.Account != nil {
-		toSerialize["Account"] = o.Account
+	if o.Account.IsSet() {
+		toSerialize["Account"] = o.Account.Get()
 	}
 	if o.ResourceGroups != nil {
 		toSerialize["ResourceGroups"] = o.ResourceGroups
+	}
+	if o.SharedWithResources != nil {
+		toSerialize["SharedWithResources"] = o.SharedWithResources
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *OrganizationOrganization) UnmarshalJSON(bytes []byte) (err error) {
+func (o *OrganizationOrganization) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type OrganizationOrganizationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -281,15 +395,17 @@ func (o *OrganizationOrganization) UnmarshalJSON(bytes []byte) (err error) {
 		// The informative description about the usage of this organization.
 		Description *string `json:"Description,omitempty"`
 		// The name of the organization. There can be multiple organizations under an account.
-		Name    *string                 `json:"Name,omitempty"`
-		Account *IamAccountRelationship `json:"Account,omitempty"`
+		Name    *string                        `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9_.:-]{1,64}$"`
+		Account NullableIamAccountRelationship `json:"Account,omitempty"`
 		// An array of relationships to resourceGroup resources.
 		ResourceGroups []ResourceGroupRelationship `json:"ResourceGroups,omitempty"`
+		// An array of relationships to moBaseMo resources.
+		SharedWithResources []MoBaseMoRelationship `json:"SharedWithResources,omitempty"`
 	}
 
 	varOrganizationOrganizationWithoutEmbeddedStruct := OrganizationOrganizationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varOrganizationOrganizationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varOrganizationOrganizationWithoutEmbeddedStruct)
 	if err == nil {
 		varOrganizationOrganization := _OrganizationOrganization{}
 		varOrganizationOrganization.ClassId = varOrganizationOrganizationWithoutEmbeddedStruct.ClassId
@@ -298,6 +414,7 @@ func (o *OrganizationOrganization) UnmarshalJSON(bytes []byte) (err error) {
 		varOrganizationOrganization.Name = varOrganizationOrganizationWithoutEmbeddedStruct.Name
 		varOrganizationOrganization.Account = varOrganizationOrganizationWithoutEmbeddedStruct.Account
 		varOrganizationOrganization.ResourceGroups = varOrganizationOrganizationWithoutEmbeddedStruct.ResourceGroups
+		varOrganizationOrganization.SharedWithResources = varOrganizationOrganizationWithoutEmbeddedStruct.SharedWithResources
 		*o = OrganizationOrganization(varOrganizationOrganization)
 	} else {
 		return err
@@ -305,7 +422,7 @@ func (o *OrganizationOrganization) UnmarshalJSON(bytes []byte) (err error) {
 
 	varOrganizationOrganization := _OrganizationOrganization{}
 
-	err = json.Unmarshal(bytes, &varOrganizationOrganization)
+	err = json.Unmarshal(data, &varOrganizationOrganization)
 	if err == nil {
 		o.MoBaseMo = varOrganizationOrganization.MoBaseMo
 	} else {
@@ -314,13 +431,14 @@ func (o *OrganizationOrganization) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Description")
 		delete(additionalProperties, "Name")
 		delete(additionalProperties, "Account")
 		delete(additionalProperties, "ResourceGroups")
+		delete(additionalProperties, "SharedWithResources")
 
 		// remove fields from embedded structs
 		reflectMoBaseMo := reflect.ValueOf(o.MoBaseMo)

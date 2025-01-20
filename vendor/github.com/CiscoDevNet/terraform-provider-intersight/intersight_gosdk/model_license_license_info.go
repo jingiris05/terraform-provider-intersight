@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the LicenseLicenseInfo type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &LicenseLicenseInfo{}
 
 // LicenseLicenseInfo License state information for a specific license entitlement. Essentials license entitlement is supported currently. licenseState attribute is used for license enforcement. When license state is one of TrialPeriod, Compliance, or OutOfCompliance, the feature set defined for the license entitlement is granted to the customer.
 type LicenseLicenseInfo struct {
@@ -27,6 +31,8 @@ type LicenseLicenseInfo struct {
 	ObjectType string `json:"ObjectType"`
 	// The license administrative state. Set this property to 'true' to activate the license entitlements.
 	ActiveAdmin *bool `json:"ActiveAdmin,omitempty"`
+	// The total balance we have for licenses.
+	Balance *int64 `json:"Balance,omitempty"`
 	// The number of days left for licenseState to stay in TrialPeriod or OutOfCompliance state.
 	DaysLeft *int64 `json:"DaysLeft,omitempty"`
 	// The date and time when the trial period expires. The value of the 'endTime' property is set when the account enters the TrialPeriod or OutOfCompliance state.
@@ -47,13 +53,18 @@ type LicenseLicenseInfo struct {
 	LicenseCountPurchased *int64 `json:"LicenseCountPurchased,omitempty"`
 	// The license state defined by Intersight. The value may be one of NotLicensed, TrialPeriod, OutOfCompliance, Compliance, GraceExpired, or TrialExpired. * `NotLicensed` - The license token is neither activated nor registered. * `GraceExpired` - The license grace period has expired. * `TrialPeriod` - The 90 days of trial period. * `OutOfCompliance` - The license is out of compliance. * `Compliance` - The license is in compliance. * `TrialExpired` - The trial period of 90 days has expired.
 	LicenseState *string `json:"LicenseState,omitempty"`
-	// The name of the Intersight license entitlement. For example, this property may be set to 'Essential'. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+	// The name of the Intersight license entitlement. For example, this property may be set to 'Essential'. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 	LicenseType *string `json:"LicenseType,omitempty"`
+	// The total number of substituted licenses added or removed.
+	NetSubstitution *int64 `json:"NetSubstitution,omitempty"`
 	// The date and time when the licenseState entered the TrialPeriod or OutOfCompliance state.
 	StartTime *time.Time `json:"StartTime,omitempty"`
+	// The id of license subscription.
+	SubscriptionId     *string                    `json:"SubscriptionId,omitempty"`
+	SubstitutedLicense []LicenseSubstituteLicense `json:"SubstitutedLicense,omitempty"`
 	// The administrative state of the trial license. When the LicenseState is set to 'NotLicensed', 'trialAdmin' can be set to true to start the trial period, i.e. licenseState is set to be TrialPeriod.
-	TrialAdmin           *bool                                  `json:"TrialAdmin,omitempty"`
-	AccountLicenseData   *LicenseAccountLicenseDataRelationship `json:"AccountLicenseData,omitempty"`
+	TrialAdmin           *bool                                         `json:"TrialAdmin,omitempty"`
+	AccountLicenseData   NullableLicenseAccountLicenseDataRelationship `json:"AccountLicenseData,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -106,6 +117,11 @@ func (o *LicenseLicenseInfo) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "license.LicenseInfo" of the ClassId field.
+func (o *LicenseLicenseInfo) GetDefaultClassId() interface{} {
+	return "license.LicenseInfo"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *LicenseLicenseInfo) GetObjectType() string {
 	if o == nil {
@@ -130,9 +146,14 @@ func (o *LicenseLicenseInfo) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "license.LicenseInfo" of the ObjectType field.
+func (o *LicenseLicenseInfo) GetDefaultObjectType() interface{} {
+	return "license.LicenseInfo"
+}
+
 // GetActiveAdmin returns the ActiveAdmin field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetActiveAdmin() bool {
-	if o == nil || o.ActiveAdmin == nil {
+	if o == nil || IsNil(o.ActiveAdmin) {
 		var ret bool
 		return ret
 	}
@@ -142,7 +163,7 @@ func (o *LicenseLicenseInfo) GetActiveAdmin() bool {
 // GetActiveAdminOk returns a tuple with the ActiveAdmin field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetActiveAdminOk() (*bool, bool) {
-	if o == nil || o.ActiveAdmin == nil {
+	if o == nil || IsNil(o.ActiveAdmin) {
 		return nil, false
 	}
 	return o.ActiveAdmin, true
@@ -150,7 +171,7 @@ func (o *LicenseLicenseInfo) GetActiveAdminOk() (*bool, bool) {
 
 // HasActiveAdmin returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasActiveAdmin() bool {
-	if o != nil && o.ActiveAdmin != nil {
+	if o != nil && !IsNil(o.ActiveAdmin) {
 		return true
 	}
 
@@ -162,9 +183,41 @@ func (o *LicenseLicenseInfo) SetActiveAdmin(v bool) {
 	o.ActiveAdmin = &v
 }
 
+// GetBalance returns the Balance field value if set, zero value otherwise.
+func (o *LicenseLicenseInfo) GetBalance() int64 {
+	if o == nil || IsNil(o.Balance) {
+		var ret int64
+		return ret
+	}
+	return *o.Balance
+}
+
+// GetBalanceOk returns a tuple with the Balance field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LicenseLicenseInfo) GetBalanceOk() (*int64, bool) {
+	if o == nil || IsNil(o.Balance) {
+		return nil, false
+	}
+	return o.Balance, true
+}
+
+// HasBalance returns a boolean if a field has been set.
+func (o *LicenseLicenseInfo) HasBalance() bool {
+	if o != nil && !IsNil(o.Balance) {
+		return true
+	}
+
+	return false
+}
+
+// SetBalance gets a reference to the given int64 and assigns it to the Balance field.
+func (o *LicenseLicenseInfo) SetBalance(v int64) {
+	o.Balance = &v
+}
+
 // GetDaysLeft returns the DaysLeft field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetDaysLeft() int64 {
-	if o == nil || o.DaysLeft == nil {
+	if o == nil || IsNil(o.DaysLeft) {
 		var ret int64
 		return ret
 	}
@@ -174,7 +227,7 @@ func (o *LicenseLicenseInfo) GetDaysLeft() int64 {
 // GetDaysLeftOk returns a tuple with the DaysLeft field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetDaysLeftOk() (*int64, bool) {
-	if o == nil || o.DaysLeft == nil {
+	if o == nil || IsNil(o.DaysLeft) {
 		return nil, false
 	}
 	return o.DaysLeft, true
@@ -182,7 +235,7 @@ func (o *LicenseLicenseInfo) GetDaysLeftOk() (*int64, bool) {
 
 // HasDaysLeft returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasDaysLeft() bool {
-	if o != nil && o.DaysLeft != nil {
+	if o != nil && !IsNil(o.DaysLeft) {
 		return true
 	}
 
@@ -196,7 +249,7 @@ func (o *LicenseLicenseInfo) SetDaysLeft(v int64) {
 
 // GetEndTime returns the EndTime field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetEndTime() time.Time {
-	if o == nil || o.EndTime == nil {
+	if o == nil || IsNil(o.EndTime) {
 		var ret time.Time
 		return ret
 	}
@@ -206,7 +259,7 @@ func (o *LicenseLicenseInfo) GetEndTime() time.Time {
 // GetEndTimeOk returns a tuple with the EndTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetEndTimeOk() (*time.Time, bool) {
-	if o == nil || o.EndTime == nil {
+	if o == nil || IsNil(o.EndTime) {
 		return nil, false
 	}
 	return o.EndTime, true
@@ -214,7 +267,7 @@ func (o *LicenseLicenseInfo) GetEndTimeOk() (*time.Time, bool) {
 
 // HasEndTime returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasEndTime() bool {
-	if o != nil && o.EndTime != nil {
+	if o != nil && !IsNil(o.EndTime) {
 		return true
 	}
 
@@ -228,7 +281,7 @@ func (o *LicenseLicenseInfo) SetEndTime(v time.Time) {
 
 // GetEnforceMode returns the EnforceMode field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetEnforceMode() string {
-	if o == nil || o.EnforceMode == nil {
+	if o == nil || IsNil(o.EnforceMode) {
 		var ret string
 		return ret
 	}
@@ -238,7 +291,7 @@ func (o *LicenseLicenseInfo) GetEnforceMode() string {
 // GetEnforceModeOk returns a tuple with the EnforceMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetEnforceModeOk() (*string, bool) {
-	if o == nil || o.EnforceMode == nil {
+	if o == nil || IsNil(o.EnforceMode) {
 		return nil, false
 	}
 	return o.EnforceMode, true
@@ -246,7 +299,7 @@ func (o *LicenseLicenseInfo) GetEnforceModeOk() (*string, bool) {
 
 // HasEnforceMode returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasEnforceMode() bool {
-	if o != nil && o.EnforceMode != nil {
+	if o != nil && !IsNil(o.EnforceMode) {
 		return true
 	}
 
@@ -260,7 +313,7 @@ func (o *LicenseLicenseInfo) SetEnforceMode(v string) {
 
 // GetErrorDesc returns the ErrorDesc field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetErrorDesc() string {
-	if o == nil || o.ErrorDesc == nil {
+	if o == nil || IsNil(o.ErrorDesc) {
 		var ret string
 		return ret
 	}
@@ -270,7 +323,7 @@ func (o *LicenseLicenseInfo) GetErrorDesc() string {
 // GetErrorDescOk returns a tuple with the ErrorDesc field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetErrorDescOk() (*string, bool) {
-	if o == nil || o.ErrorDesc == nil {
+	if o == nil || IsNil(o.ErrorDesc) {
 		return nil, false
 	}
 	return o.ErrorDesc, true
@@ -278,7 +331,7 @@ func (o *LicenseLicenseInfo) GetErrorDescOk() (*string, bool) {
 
 // HasErrorDesc returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasErrorDesc() bool {
-	if o != nil && o.ErrorDesc != nil {
+	if o != nil && !IsNil(o.ErrorDesc) {
 		return true
 	}
 
@@ -292,7 +345,7 @@ func (o *LicenseLicenseInfo) SetErrorDesc(v string) {
 
 // GetEvaluationPeriod returns the EvaluationPeriod field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetEvaluationPeriod() int64 {
-	if o == nil || o.EvaluationPeriod == nil {
+	if o == nil || IsNil(o.EvaluationPeriod) {
 		var ret int64
 		return ret
 	}
@@ -302,7 +355,7 @@ func (o *LicenseLicenseInfo) GetEvaluationPeriod() int64 {
 // GetEvaluationPeriodOk returns a tuple with the EvaluationPeriod field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetEvaluationPeriodOk() (*int64, bool) {
-	if o == nil || o.EvaluationPeriod == nil {
+	if o == nil || IsNil(o.EvaluationPeriod) {
 		return nil, false
 	}
 	return o.EvaluationPeriod, true
@@ -310,7 +363,7 @@ func (o *LicenseLicenseInfo) GetEvaluationPeriodOk() (*int64, bool) {
 
 // HasEvaluationPeriod returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasEvaluationPeriod() bool {
-	if o != nil && o.EvaluationPeriod != nil {
+	if o != nil && !IsNil(o.EvaluationPeriod) {
 		return true
 	}
 
@@ -324,7 +377,7 @@ func (o *LicenseLicenseInfo) SetEvaluationPeriod(v int64) {
 
 // GetExpireTime returns the ExpireTime field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetExpireTime() time.Time {
-	if o == nil || o.ExpireTime == nil {
+	if o == nil || IsNil(o.ExpireTime) {
 		var ret time.Time
 		return ret
 	}
@@ -334,7 +387,7 @@ func (o *LicenseLicenseInfo) GetExpireTime() time.Time {
 // GetExpireTimeOk returns a tuple with the ExpireTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetExpireTimeOk() (*time.Time, bool) {
-	if o == nil || o.ExpireTime == nil {
+	if o == nil || IsNil(o.ExpireTime) {
 		return nil, false
 	}
 	return o.ExpireTime, true
@@ -342,7 +395,7 @@ func (o *LicenseLicenseInfo) GetExpireTimeOk() (*time.Time, bool) {
 
 // HasExpireTime returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasExpireTime() bool {
-	if o != nil && o.ExpireTime != nil {
+	if o != nil && !IsNil(o.ExpireTime) {
 		return true
 	}
 
@@ -356,7 +409,7 @@ func (o *LicenseLicenseInfo) SetExpireTime(v time.Time) {
 
 // GetExtraEvaluation returns the ExtraEvaluation field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetExtraEvaluation() int64 {
-	if o == nil || o.ExtraEvaluation == nil {
+	if o == nil || IsNil(o.ExtraEvaluation) {
 		var ret int64
 		return ret
 	}
@@ -366,7 +419,7 @@ func (o *LicenseLicenseInfo) GetExtraEvaluation() int64 {
 // GetExtraEvaluationOk returns a tuple with the ExtraEvaluation field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetExtraEvaluationOk() (*int64, bool) {
-	if o == nil || o.ExtraEvaluation == nil {
+	if o == nil || IsNil(o.ExtraEvaluation) {
 		return nil, false
 	}
 	return o.ExtraEvaluation, true
@@ -374,7 +427,7 @@ func (o *LicenseLicenseInfo) GetExtraEvaluationOk() (*int64, bool) {
 
 // HasExtraEvaluation returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasExtraEvaluation() bool {
-	if o != nil && o.ExtraEvaluation != nil {
+	if o != nil && !IsNil(o.ExtraEvaluation) {
 		return true
 	}
 
@@ -388,7 +441,7 @@ func (o *LicenseLicenseInfo) SetExtraEvaluation(v int64) {
 
 // GetLicenseCount returns the LicenseCount field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetLicenseCount() int64 {
-	if o == nil || o.LicenseCount == nil {
+	if o == nil || IsNil(o.LicenseCount) {
 		var ret int64
 		return ret
 	}
@@ -398,7 +451,7 @@ func (o *LicenseLicenseInfo) GetLicenseCount() int64 {
 // GetLicenseCountOk returns a tuple with the LicenseCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetLicenseCountOk() (*int64, bool) {
-	if o == nil || o.LicenseCount == nil {
+	if o == nil || IsNil(o.LicenseCount) {
 		return nil, false
 	}
 	return o.LicenseCount, true
@@ -406,7 +459,7 @@ func (o *LicenseLicenseInfo) GetLicenseCountOk() (*int64, bool) {
 
 // HasLicenseCount returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasLicenseCount() bool {
-	if o != nil && o.LicenseCount != nil {
+	if o != nil && !IsNil(o.LicenseCount) {
 		return true
 	}
 
@@ -420,7 +473,7 @@ func (o *LicenseLicenseInfo) SetLicenseCount(v int64) {
 
 // GetLicenseCountPurchased returns the LicenseCountPurchased field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetLicenseCountPurchased() int64 {
-	if o == nil || o.LicenseCountPurchased == nil {
+	if o == nil || IsNil(o.LicenseCountPurchased) {
 		var ret int64
 		return ret
 	}
@@ -430,7 +483,7 @@ func (o *LicenseLicenseInfo) GetLicenseCountPurchased() int64 {
 // GetLicenseCountPurchasedOk returns a tuple with the LicenseCountPurchased field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetLicenseCountPurchasedOk() (*int64, bool) {
-	if o == nil || o.LicenseCountPurchased == nil {
+	if o == nil || IsNil(o.LicenseCountPurchased) {
 		return nil, false
 	}
 	return o.LicenseCountPurchased, true
@@ -438,7 +491,7 @@ func (o *LicenseLicenseInfo) GetLicenseCountPurchasedOk() (*int64, bool) {
 
 // HasLicenseCountPurchased returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasLicenseCountPurchased() bool {
-	if o != nil && o.LicenseCountPurchased != nil {
+	if o != nil && !IsNil(o.LicenseCountPurchased) {
 		return true
 	}
 
@@ -452,7 +505,7 @@ func (o *LicenseLicenseInfo) SetLicenseCountPurchased(v int64) {
 
 // GetLicenseState returns the LicenseState field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetLicenseState() string {
-	if o == nil || o.LicenseState == nil {
+	if o == nil || IsNil(o.LicenseState) {
 		var ret string
 		return ret
 	}
@@ -462,7 +515,7 @@ func (o *LicenseLicenseInfo) GetLicenseState() string {
 // GetLicenseStateOk returns a tuple with the LicenseState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetLicenseStateOk() (*string, bool) {
-	if o == nil || o.LicenseState == nil {
+	if o == nil || IsNil(o.LicenseState) {
 		return nil, false
 	}
 	return o.LicenseState, true
@@ -470,7 +523,7 @@ func (o *LicenseLicenseInfo) GetLicenseStateOk() (*string, bool) {
 
 // HasLicenseState returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasLicenseState() bool {
-	if o != nil && o.LicenseState != nil {
+	if o != nil && !IsNil(o.LicenseState) {
 		return true
 	}
 
@@ -484,7 +537,7 @@ func (o *LicenseLicenseInfo) SetLicenseState(v string) {
 
 // GetLicenseType returns the LicenseType field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetLicenseType() string {
-	if o == nil || o.LicenseType == nil {
+	if o == nil || IsNil(o.LicenseType) {
 		var ret string
 		return ret
 	}
@@ -494,7 +547,7 @@ func (o *LicenseLicenseInfo) GetLicenseType() string {
 // GetLicenseTypeOk returns a tuple with the LicenseType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetLicenseTypeOk() (*string, bool) {
-	if o == nil || o.LicenseType == nil {
+	if o == nil || IsNil(o.LicenseType) {
 		return nil, false
 	}
 	return o.LicenseType, true
@@ -502,7 +555,7 @@ func (o *LicenseLicenseInfo) GetLicenseTypeOk() (*string, bool) {
 
 // HasLicenseType returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasLicenseType() bool {
-	if o != nil && o.LicenseType != nil {
+	if o != nil && !IsNil(o.LicenseType) {
 		return true
 	}
 
@@ -514,9 +567,41 @@ func (o *LicenseLicenseInfo) SetLicenseType(v string) {
 	o.LicenseType = &v
 }
 
+// GetNetSubstitution returns the NetSubstitution field value if set, zero value otherwise.
+func (o *LicenseLicenseInfo) GetNetSubstitution() int64 {
+	if o == nil || IsNil(o.NetSubstitution) {
+		var ret int64
+		return ret
+	}
+	return *o.NetSubstitution
+}
+
+// GetNetSubstitutionOk returns a tuple with the NetSubstitution field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LicenseLicenseInfo) GetNetSubstitutionOk() (*int64, bool) {
+	if o == nil || IsNil(o.NetSubstitution) {
+		return nil, false
+	}
+	return o.NetSubstitution, true
+}
+
+// HasNetSubstitution returns a boolean if a field has been set.
+func (o *LicenseLicenseInfo) HasNetSubstitution() bool {
+	if o != nil && !IsNil(o.NetSubstitution) {
+		return true
+	}
+
+	return false
+}
+
+// SetNetSubstitution gets a reference to the given int64 and assigns it to the NetSubstitution field.
+func (o *LicenseLicenseInfo) SetNetSubstitution(v int64) {
+	o.NetSubstitution = &v
+}
+
 // GetStartTime returns the StartTime field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetStartTime() time.Time {
-	if o == nil || o.StartTime == nil {
+	if o == nil || IsNil(o.StartTime) {
 		var ret time.Time
 		return ret
 	}
@@ -526,7 +611,7 @@ func (o *LicenseLicenseInfo) GetStartTime() time.Time {
 // GetStartTimeOk returns a tuple with the StartTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetStartTimeOk() (*time.Time, bool) {
-	if o == nil || o.StartTime == nil {
+	if o == nil || IsNil(o.StartTime) {
 		return nil, false
 	}
 	return o.StartTime, true
@@ -534,7 +619,7 @@ func (o *LicenseLicenseInfo) GetStartTimeOk() (*time.Time, bool) {
 
 // HasStartTime returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasStartTime() bool {
-	if o != nil && o.StartTime != nil {
+	if o != nil && !IsNil(o.StartTime) {
 		return true
 	}
 
@@ -546,9 +631,74 @@ func (o *LicenseLicenseInfo) SetStartTime(v time.Time) {
 	o.StartTime = &v
 }
 
+// GetSubscriptionId returns the SubscriptionId field value if set, zero value otherwise.
+func (o *LicenseLicenseInfo) GetSubscriptionId() string {
+	if o == nil || IsNil(o.SubscriptionId) {
+		var ret string
+		return ret
+	}
+	return *o.SubscriptionId
+}
+
+// GetSubscriptionIdOk returns a tuple with the SubscriptionId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LicenseLicenseInfo) GetSubscriptionIdOk() (*string, bool) {
+	if o == nil || IsNil(o.SubscriptionId) {
+		return nil, false
+	}
+	return o.SubscriptionId, true
+}
+
+// HasSubscriptionId returns a boolean if a field has been set.
+func (o *LicenseLicenseInfo) HasSubscriptionId() bool {
+	if o != nil && !IsNil(o.SubscriptionId) {
+		return true
+	}
+
+	return false
+}
+
+// SetSubscriptionId gets a reference to the given string and assigns it to the SubscriptionId field.
+func (o *LicenseLicenseInfo) SetSubscriptionId(v string) {
+	o.SubscriptionId = &v
+}
+
+// GetSubstitutedLicense returns the SubstitutedLicense field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LicenseLicenseInfo) GetSubstitutedLicense() []LicenseSubstituteLicense {
+	if o == nil {
+		var ret []LicenseSubstituteLicense
+		return ret
+	}
+	return o.SubstitutedLicense
+}
+
+// GetSubstitutedLicenseOk returns a tuple with the SubstitutedLicense field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LicenseLicenseInfo) GetSubstitutedLicenseOk() ([]LicenseSubstituteLicense, bool) {
+	if o == nil || IsNil(o.SubstitutedLicense) {
+		return nil, false
+	}
+	return o.SubstitutedLicense, true
+}
+
+// HasSubstitutedLicense returns a boolean if a field has been set.
+func (o *LicenseLicenseInfo) HasSubstitutedLicense() bool {
+	if o != nil && !IsNil(o.SubstitutedLicense) {
+		return true
+	}
+
+	return false
+}
+
+// SetSubstitutedLicense gets a reference to the given []LicenseSubstituteLicense and assigns it to the SubstitutedLicense field.
+func (o *LicenseLicenseInfo) SetSubstitutedLicense(v []LicenseSubstituteLicense) {
+	o.SubstitutedLicense = v
+}
+
 // GetTrialAdmin returns the TrialAdmin field value if set, zero value otherwise.
 func (o *LicenseLicenseInfo) GetTrialAdmin() bool {
-	if o == nil || o.TrialAdmin == nil {
+	if o == nil || IsNil(o.TrialAdmin) {
 		var ret bool
 		return ret
 	}
@@ -558,7 +708,7 @@ func (o *LicenseLicenseInfo) GetTrialAdmin() bool {
 // GetTrialAdminOk returns a tuple with the TrialAdmin field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseLicenseInfo) GetTrialAdminOk() (*bool, bool) {
-	if o == nil || o.TrialAdmin == nil {
+	if o == nil || IsNil(o.TrialAdmin) {
 		return nil, false
 	}
 	return o.TrialAdmin, true
@@ -566,7 +716,7 @@ func (o *LicenseLicenseInfo) GetTrialAdminOk() (*bool, bool) {
 
 // HasTrialAdmin returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasTrialAdmin() bool {
-	if o != nil && o.TrialAdmin != nil {
+	if o != nil && !IsNil(o.TrialAdmin) {
 		return true
 	}
 
@@ -578,108 +728,182 @@ func (o *LicenseLicenseInfo) SetTrialAdmin(v bool) {
 	o.TrialAdmin = &v
 }
 
-// GetAccountLicenseData returns the AccountLicenseData field value if set, zero value otherwise.
+// GetAccountLicenseData returns the AccountLicenseData field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LicenseLicenseInfo) GetAccountLicenseData() LicenseAccountLicenseDataRelationship {
-	if o == nil || o.AccountLicenseData == nil {
+	if o == nil || IsNil(o.AccountLicenseData.Get()) {
 		var ret LicenseAccountLicenseDataRelationship
 		return ret
 	}
-	return *o.AccountLicenseData
+	return *o.AccountLicenseData.Get()
 }
 
 // GetAccountLicenseDataOk returns a tuple with the AccountLicenseData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseLicenseInfo) GetAccountLicenseDataOk() (*LicenseAccountLicenseDataRelationship, bool) {
-	if o == nil || o.AccountLicenseData == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.AccountLicenseData, true
+	return o.AccountLicenseData.Get(), o.AccountLicenseData.IsSet()
 }
 
 // HasAccountLicenseData returns a boolean if a field has been set.
 func (o *LicenseLicenseInfo) HasAccountLicenseData() bool {
-	if o != nil && o.AccountLicenseData != nil {
+	if o != nil && o.AccountLicenseData.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAccountLicenseData gets a reference to the given LicenseAccountLicenseDataRelationship and assigns it to the AccountLicenseData field.
+// SetAccountLicenseData gets a reference to the given NullableLicenseAccountLicenseDataRelationship and assigns it to the AccountLicenseData field.
 func (o *LicenseLicenseInfo) SetAccountLicenseData(v LicenseAccountLicenseDataRelationship) {
-	o.AccountLicenseData = &v
+	o.AccountLicenseData.Set(&v)
+}
+
+// SetAccountLicenseDataNil sets the value for AccountLicenseData to be an explicit nil
+func (o *LicenseLicenseInfo) SetAccountLicenseDataNil() {
+	o.AccountLicenseData.Set(nil)
+}
+
+// UnsetAccountLicenseData ensures that no value is present for AccountLicenseData, not even an explicit nil
+func (o *LicenseLicenseInfo) UnsetAccountLicenseData() {
+	o.AccountLicenseData.Unset()
 }
 
 func (o LicenseLicenseInfo) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o LicenseLicenseInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ActiveAdmin != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ActiveAdmin) {
 		toSerialize["ActiveAdmin"] = o.ActiveAdmin
 	}
-	if o.DaysLeft != nil {
+	if !IsNil(o.Balance) {
+		toSerialize["Balance"] = o.Balance
+	}
+	if !IsNil(o.DaysLeft) {
 		toSerialize["DaysLeft"] = o.DaysLeft
 	}
-	if o.EndTime != nil {
+	if !IsNil(o.EndTime) {
 		toSerialize["EndTime"] = o.EndTime
 	}
-	if o.EnforceMode != nil {
+	if !IsNil(o.EnforceMode) {
 		toSerialize["EnforceMode"] = o.EnforceMode
 	}
-	if o.ErrorDesc != nil {
+	if !IsNil(o.ErrorDesc) {
 		toSerialize["ErrorDesc"] = o.ErrorDesc
 	}
-	if o.EvaluationPeriod != nil {
+	if !IsNil(o.EvaluationPeriod) {
 		toSerialize["EvaluationPeriod"] = o.EvaluationPeriod
 	}
-	if o.ExpireTime != nil {
+	if !IsNil(o.ExpireTime) {
 		toSerialize["ExpireTime"] = o.ExpireTime
 	}
-	if o.ExtraEvaluation != nil {
+	if !IsNil(o.ExtraEvaluation) {
 		toSerialize["ExtraEvaluation"] = o.ExtraEvaluation
 	}
-	if o.LicenseCount != nil {
+	if !IsNil(o.LicenseCount) {
 		toSerialize["LicenseCount"] = o.LicenseCount
 	}
-	if o.LicenseCountPurchased != nil {
+	if !IsNil(o.LicenseCountPurchased) {
 		toSerialize["LicenseCountPurchased"] = o.LicenseCountPurchased
 	}
-	if o.LicenseState != nil {
+	if !IsNil(o.LicenseState) {
 		toSerialize["LicenseState"] = o.LicenseState
 	}
-	if o.LicenseType != nil {
+	if !IsNil(o.LicenseType) {
 		toSerialize["LicenseType"] = o.LicenseType
 	}
-	if o.StartTime != nil {
+	if !IsNil(o.NetSubstitution) {
+		toSerialize["NetSubstitution"] = o.NetSubstitution
+	}
+	if !IsNil(o.StartTime) {
 		toSerialize["StartTime"] = o.StartTime
 	}
-	if o.TrialAdmin != nil {
+	if !IsNil(o.SubscriptionId) {
+		toSerialize["SubscriptionId"] = o.SubscriptionId
+	}
+	if o.SubstitutedLicense != nil {
+		toSerialize["SubstitutedLicense"] = o.SubstitutedLicense
+	}
+	if !IsNil(o.TrialAdmin) {
 		toSerialize["TrialAdmin"] = o.TrialAdmin
 	}
-	if o.AccountLicenseData != nil {
-		toSerialize["AccountLicenseData"] = o.AccountLicenseData
+	if o.AccountLicenseData.IsSet() {
+		toSerialize["AccountLicenseData"] = o.AccountLicenseData.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *LicenseLicenseInfo) UnmarshalJSON(bytes []byte) (err error) {
+func (o *LicenseLicenseInfo) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type LicenseLicenseInfoWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -687,6 +911,8 @@ func (o *LicenseLicenseInfo) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// The license administrative state. Set this property to 'true' to activate the license entitlements.
 		ActiveAdmin *bool `json:"ActiveAdmin,omitempty"`
+		// The total balance we have for licenses.
+		Balance *int64 `json:"Balance,omitempty"`
 		// The number of days left for licenseState to stay in TrialPeriod or OutOfCompliance state.
 		DaysLeft *int64 `json:"DaysLeft,omitempty"`
 		// The date and time when the trial period expires. The value of the 'endTime' property is set when the account enters the TrialPeriod or OutOfCompliance state.
@@ -707,23 +933,29 @@ func (o *LicenseLicenseInfo) UnmarshalJSON(bytes []byte) (err error) {
 		LicenseCountPurchased *int64 `json:"LicenseCountPurchased,omitempty"`
 		// The license state defined by Intersight. The value may be one of NotLicensed, TrialPeriod, OutOfCompliance, Compliance, GraceExpired, or TrialExpired. * `NotLicensed` - The license token is neither activated nor registered. * `GraceExpired` - The license grace period has expired. * `TrialPeriod` - The 90 days of trial period. * `OutOfCompliance` - The license is out of compliance. * `Compliance` - The license is in compliance. * `TrialExpired` - The trial period of 90 days has expired.
 		LicenseState *string `json:"LicenseState,omitempty"`
-		// The name of the Intersight license entitlement. For example, this property may be set to 'Essential'. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+		// The name of the Intersight license entitlement. For example, this property may be set to 'Essential'. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 		LicenseType *string `json:"LicenseType,omitempty"`
+		// The total number of substituted licenses added or removed.
+		NetSubstitution *int64 `json:"NetSubstitution,omitempty"`
 		// The date and time when the licenseState entered the TrialPeriod or OutOfCompliance state.
 		StartTime *time.Time `json:"StartTime,omitempty"`
+		// The id of license subscription.
+		SubscriptionId     *string                    `json:"SubscriptionId,omitempty"`
+		SubstitutedLicense []LicenseSubstituteLicense `json:"SubstitutedLicense,omitempty"`
 		// The administrative state of the trial license. When the LicenseState is set to 'NotLicensed', 'trialAdmin' can be set to true to start the trial period, i.e. licenseState is set to be TrialPeriod.
-		TrialAdmin         *bool                                  `json:"TrialAdmin,omitempty"`
-		AccountLicenseData *LicenseAccountLicenseDataRelationship `json:"AccountLicenseData,omitempty"`
+		TrialAdmin         *bool                                         `json:"TrialAdmin,omitempty"`
+		AccountLicenseData NullableLicenseAccountLicenseDataRelationship `json:"AccountLicenseData,omitempty"`
 	}
 
 	varLicenseLicenseInfoWithoutEmbeddedStruct := LicenseLicenseInfoWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varLicenseLicenseInfoWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varLicenseLicenseInfoWithoutEmbeddedStruct)
 	if err == nil {
 		varLicenseLicenseInfo := _LicenseLicenseInfo{}
 		varLicenseLicenseInfo.ClassId = varLicenseLicenseInfoWithoutEmbeddedStruct.ClassId
 		varLicenseLicenseInfo.ObjectType = varLicenseLicenseInfoWithoutEmbeddedStruct.ObjectType
 		varLicenseLicenseInfo.ActiveAdmin = varLicenseLicenseInfoWithoutEmbeddedStruct.ActiveAdmin
+		varLicenseLicenseInfo.Balance = varLicenseLicenseInfoWithoutEmbeddedStruct.Balance
 		varLicenseLicenseInfo.DaysLeft = varLicenseLicenseInfoWithoutEmbeddedStruct.DaysLeft
 		varLicenseLicenseInfo.EndTime = varLicenseLicenseInfoWithoutEmbeddedStruct.EndTime
 		varLicenseLicenseInfo.EnforceMode = varLicenseLicenseInfoWithoutEmbeddedStruct.EnforceMode
@@ -735,7 +967,10 @@ func (o *LicenseLicenseInfo) UnmarshalJSON(bytes []byte) (err error) {
 		varLicenseLicenseInfo.LicenseCountPurchased = varLicenseLicenseInfoWithoutEmbeddedStruct.LicenseCountPurchased
 		varLicenseLicenseInfo.LicenseState = varLicenseLicenseInfoWithoutEmbeddedStruct.LicenseState
 		varLicenseLicenseInfo.LicenseType = varLicenseLicenseInfoWithoutEmbeddedStruct.LicenseType
+		varLicenseLicenseInfo.NetSubstitution = varLicenseLicenseInfoWithoutEmbeddedStruct.NetSubstitution
 		varLicenseLicenseInfo.StartTime = varLicenseLicenseInfoWithoutEmbeddedStruct.StartTime
+		varLicenseLicenseInfo.SubscriptionId = varLicenseLicenseInfoWithoutEmbeddedStruct.SubscriptionId
+		varLicenseLicenseInfo.SubstitutedLicense = varLicenseLicenseInfoWithoutEmbeddedStruct.SubstitutedLicense
 		varLicenseLicenseInfo.TrialAdmin = varLicenseLicenseInfoWithoutEmbeddedStruct.TrialAdmin
 		varLicenseLicenseInfo.AccountLicenseData = varLicenseLicenseInfoWithoutEmbeddedStruct.AccountLicenseData
 		*o = LicenseLicenseInfo(varLicenseLicenseInfo)
@@ -745,7 +980,7 @@ func (o *LicenseLicenseInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	varLicenseLicenseInfo := _LicenseLicenseInfo{}
 
-	err = json.Unmarshal(bytes, &varLicenseLicenseInfo)
+	err = json.Unmarshal(data, &varLicenseLicenseInfo)
 	if err == nil {
 		o.MoBaseMo = varLicenseLicenseInfo.MoBaseMo
 	} else {
@@ -754,10 +989,11 @@ func (o *LicenseLicenseInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ActiveAdmin")
+		delete(additionalProperties, "Balance")
 		delete(additionalProperties, "DaysLeft")
 		delete(additionalProperties, "EndTime")
 		delete(additionalProperties, "EnforceMode")
@@ -769,7 +1005,10 @@ func (o *LicenseLicenseInfo) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "LicenseCountPurchased")
 		delete(additionalProperties, "LicenseState")
 		delete(additionalProperties, "LicenseType")
+		delete(additionalProperties, "NetSubstitution")
 		delete(additionalProperties, "StartTime")
+		delete(additionalProperties, "SubscriptionId")
+		delete(additionalProperties, "SubstitutedLicense")
 		delete(additionalProperties, "TrialAdmin")
 		delete(additionalProperties, "AccountLicenseData")
 

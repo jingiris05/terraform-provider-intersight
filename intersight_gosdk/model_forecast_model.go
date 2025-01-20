@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the ForecastModel type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ForecastModel{}
 
 // ForecastModel Model encapsulates model type and the model generated based on the type for computing forecast. For example if linear regression predictive modeling is used then the model data contains slope, coefficient and RMSE.
 type ForecastModel struct {
@@ -24,7 +28,7 @@ type ForecastModel struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// The standard error of the estimate is a measure of the accuracy of predictions from predective modeling.
+	// The standard error of the estimate is a measure of the accuracy of predictions from predictive modeling.
 	Accuracy  *float32  `json:"Accuracy,omitempty"`
 	ModelData []float32 `json:"ModelData,omitempty"`
 	// Model type indicating type of predictive model used for computing forecast. * `Linear` - The Enum value Linear represents that the predictive model type used for forecast computation is linear regression.
@@ -42,8 +46,6 @@ func NewForecastModel(classId string, objectType string) *ForecastModel {
 	this := ForecastModel{}
 	this.ClassId = classId
 	this.ObjectType = objectType
-	var modelType string = "Linear"
-	this.ModelType = &modelType
 	return &this
 }
 
@@ -56,8 +58,6 @@ func NewForecastModelWithDefaults() *ForecastModel {
 	this.ClassId = classId
 	var objectType string = "forecast.Model"
 	this.ObjectType = objectType
-	var modelType string = "Linear"
-	this.ModelType = &modelType
 	return &this
 }
 
@@ -85,6 +85,11 @@ func (o *ForecastModel) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "forecast.Model" of the ClassId field.
+func (o *ForecastModel) GetDefaultClassId() interface{} {
+	return "forecast.Model"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ForecastModel) GetObjectType() string {
 	if o == nil {
@@ -109,9 +114,14 @@ func (o *ForecastModel) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "forecast.Model" of the ObjectType field.
+func (o *ForecastModel) GetDefaultObjectType() interface{} {
+	return "forecast.Model"
+}
+
 // GetAccuracy returns the Accuracy field value if set, zero value otherwise.
 func (o *ForecastModel) GetAccuracy() float32 {
-	if o == nil || o.Accuracy == nil {
+	if o == nil || IsNil(o.Accuracy) {
 		var ret float32
 		return ret
 	}
@@ -121,7 +131,7 @@ func (o *ForecastModel) GetAccuracy() float32 {
 // GetAccuracyOk returns a tuple with the Accuracy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ForecastModel) GetAccuracyOk() (*float32, bool) {
-	if o == nil || o.Accuracy == nil {
+	if o == nil || IsNil(o.Accuracy) {
 		return nil, false
 	}
 	return o.Accuracy, true
@@ -129,7 +139,7 @@ func (o *ForecastModel) GetAccuracyOk() (*float32, bool) {
 
 // HasAccuracy returns a boolean if a field has been set.
 func (o *ForecastModel) HasAccuracy() bool {
-	if o != nil && o.Accuracy != nil {
+	if o != nil && !IsNil(o.Accuracy) {
 		return true
 	}
 
@@ -154,7 +164,7 @@ func (o *ForecastModel) GetModelData() []float32 {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ForecastModel) GetModelDataOk() ([]float32, bool) {
-	if o == nil || o.ModelData == nil {
+	if o == nil || IsNil(o.ModelData) {
 		return nil, false
 	}
 	return o.ModelData, true
@@ -162,7 +172,7 @@ func (o *ForecastModel) GetModelDataOk() ([]float32, bool) {
 
 // HasModelData returns a boolean if a field has been set.
 func (o *ForecastModel) HasModelData() bool {
-	if o != nil && o.ModelData != nil {
+	if o != nil && !IsNil(o.ModelData) {
 		return true
 	}
 
@@ -176,7 +186,7 @@ func (o *ForecastModel) SetModelData(v []float32) {
 
 // GetModelType returns the ModelType field value if set, zero value otherwise.
 func (o *ForecastModel) GetModelType() string {
-	if o == nil || o.ModelType == nil {
+	if o == nil || IsNil(o.ModelType) {
 		var ret string
 		return ret
 	}
@@ -186,7 +196,7 @@ func (o *ForecastModel) GetModelType() string {
 // GetModelTypeOk returns a tuple with the ModelType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ForecastModel) GetModelTypeOk() (*string, bool) {
-	if o == nil || o.ModelType == nil {
+	if o == nil || IsNil(o.ModelType) {
 		return nil, false
 	}
 	return o.ModelType, true
@@ -194,7 +204,7 @@ func (o *ForecastModel) GetModelTypeOk() (*string, bool) {
 
 // HasModelType returns a boolean if a field has been set.
 func (o *ForecastModel) HasModelType() bool {
-	if o != nil && o.ModelType != nil {
+	if o != nil && !IsNil(o.ModelType) {
 		return true
 	}
 
@@ -207,28 +217,38 @@ func (o *ForecastModel) SetModelType(v string) {
 }
 
 func (o ForecastModel) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ForecastModel) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Accuracy != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Accuracy) {
 		toSerialize["Accuracy"] = o.Accuracy
 	}
 	if o.ModelData != nil {
 		toSerialize["ModelData"] = o.ModelData
 	}
-	if o.ModelType != nil {
+	if !IsNil(o.ModelType) {
 		toSerialize["ModelType"] = o.ModelType
 	}
 
@@ -236,16 +256,57 @@ func (o ForecastModel) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ForecastModel) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ForecastModel) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ForecastModelWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// The standard error of the estimate is a measure of the accuracy of predictions from predective modeling.
+		// The standard error of the estimate is a measure of the accuracy of predictions from predictive modeling.
 		Accuracy  *float32  `json:"Accuracy,omitempty"`
 		ModelData []float32 `json:"ModelData,omitempty"`
 		// Model type indicating type of predictive model used for computing forecast. * `Linear` - The Enum value Linear represents that the predictive model type used for forecast computation is linear regression.
@@ -254,7 +315,7 @@ func (o *ForecastModel) UnmarshalJSON(bytes []byte) (err error) {
 
 	varForecastModelWithoutEmbeddedStruct := ForecastModelWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varForecastModelWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varForecastModelWithoutEmbeddedStruct)
 	if err == nil {
 		varForecastModel := _ForecastModel{}
 		varForecastModel.ClassId = varForecastModelWithoutEmbeddedStruct.ClassId
@@ -269,7 +330,7 @@ func (o *ForecastModel) UnmarshalJSON(bytes []byte) (err error) {
 
 	varForecastModel := _ForecastModel{}
 
-	err = json.Unmarshal(bytes, &varForecastModel)
+	err = json.Unmarshal(data, &varForecastModel)
 	if err == nil {
 		o.MoBaseComplexType = varForecastModel.MoBaseComplexType
 	} else {
@@ -278,7 +339,7 @@ func (o *ForecastModel) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Accuracy")

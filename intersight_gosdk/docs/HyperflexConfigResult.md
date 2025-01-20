@@ -6,10 +6,10 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "hyperflex.ConfigResult"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "hyperflex.ConfigResult"]
-**ConfigProgress** | Pointer to **string** | The progress percentage of the running configuration or workflow. | [optional] 
-**Duration** | Pointer to **string** | The duration of the running configuration or workflow. | [optional] 
-**StartTime** | Pointer to **string** | The start time of the configuration or workflow. | [optional] 
-**ClusterProfile** | Pointer to [**HyperflexClusterProfileRelationship**](HyperflexClusterProfileRelationship.md) |  | [optional] 
+**ConfigProgress** | Pointer to **string** | The progress percentage of the running configuration or workflow. | [optional] [readonly] 
+**Duration** | Pointer to **string** | The duration of the running configuration or workflow. | [optional] [readonly] 
+**StartTime** | Pointer to **string** | The start time of the configuration or workflow. | [optional] [readonly] 
+**ClusterProfile** | Pointer to [**NullableHyperflexClusterProfileRelationship**](HyperflexClusterProfileRelationship.md) |  | [optional] 
 **ResultEntries** | Pointer to [**[]HyperflexConfigResultEntryRelationship**](HyperflexConfigResultEntryRelationship.md) | An array of relationships to hyperflexConfigResultEntry resources. | [optional] 
 
 ## Methods
@@ -171,6 +171,16 @@ SetClusterProfile sets ClusterProfile field to given value.
 
 HasClusterProfile returns a boolean if a field has been set.
 
+### SetClusterProfileNil
+
+`func (o *HyperflexConfigResult) SetClusterProfileNil(b bool)`
+
+ SetClusterProfileNil sets the value for ClusterProfile to be an explicit nil
+
+### UnsetClusterProfile
+`func (o *HyperflexConfigResult) UnsetClusterProfile()`
+
+UnsetClusterProfile ensures that no value is present for ClusterProfile, not even an explicit nil
 ### GetResultEntries
 
 `func (o *HyperflexConfigResult) GetResultEntries() []HyperflexConfigResultEntryRelationship`

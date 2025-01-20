@@ -14,17 +14,18 @@ Name | Type | Description | Notes
 **IsSshEnabled** | Pointer to **bool** | True if SSH is enabled in the host, false otherwise. | [optional] 
 **NetworkAdapterCount** | Pointer to **int64** | The count of all network adapters attached to this host. | [optional] 
 **NtpServers** | Pointer to **[]string** |  | [optional] 
+**QuarantineMode** | Pointer to **bool** | Indicates if the host is in quarantine mode. Will be set to True, when in quarantine mode. | [optional] 
 **ResourceConsumed** | Pointer to [**NullableVirtualizationVmwareResourceConsumption**](VirtualizationVmwareResourceConsumption.md) |  | [optional] 
 **StorageAdapterCount** | Pointer to **int64** | The count of all storage adapters attached to this host. | [optional] 
 **TimeZone** | Pointer to **string** | Time zone this host is in. | [optional] 
 **VcenterHostId** | Pointer to **string** | The identity of this host within vCenter (optional). | [optional] 
-**Cluster** | Pointer to [**VirtualizationVmwareClusterRelationship**](VirtualizationVmwareClusterRelationship.md) |  | [optional] 
-**Datacenter** | Pointer to [**VirtualizationVmwareDatacenterRelationship**](VirtualizationVmwareDatacenterRelationship.md) |  | [optional] 
+**Cluster** | Pointer to [**NullableVirtualizationVmwareClusterRelationship**](VirtualizationVmwareClusterRelationship.md) |  | [optional] 
+**Datacenter** | Pointer to [**NullableVirtualizationVmwareDatacenterRelationship**](VirtualizationVmwareDatacenterRelationship.md) |  | [optional] 
 **Datastores** | Pointer to [**[]VirtualizationVmwareDatastoreRelationship**](VirtualizationVmwareDatastoreRelationship.md) | An array of relationships to virtualizationVmwareDatastore resources. | [optional] [readonly] 
 **DistributedNetworks** | Pointer to [**[]VirtualizationVmwareDistributedNetworkRelationship**](VirtualizationVmwareDistributedNetworkRelationship.md) | An array of relationships to virtualizationVmwareDistributedNetwork resources. | [optional] [readonly] 
 **DistributedSwitches** | Pointer to [**[]VirtualizationVmwareDistributedSwitchRelationship**](VirtualizationVmwareDistributedSwitchRelationship.md) | An array of relationships to virtualizationVmwareDistributedSwitch resources. | [optional] [readonly] 
-**HyperFlexNode** | Pointer to [**HyperflexNodeRelationship**](HyperflexNodeRelationship.md) |  | [optional] 
-**Server** | Pointer to [**ComputePhysicalSummaryRelationship**](ComputePhysicalSummaryRelationship.md) |  | [optional] 
+**HyperFlexNode** | Pointer to [**NullableHyperflexNodeRelationship**](HyperflexNodeRelationship.md) |  | [optional] 
+**Server** | Pointer to [**NullableComputePhysicalSummaryRelationship**](ComputePhysicalSummaryRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -305,6 +306,31 @@ HasNtpServers returns a boolean if a field has been set.
 `func (o *VirtualizationVmwareHost) UnsetNtpServers()`
 
 UnsetNtpServers ensures that no value is present for NtpServers, not even an explicit nil
+### GetQuarantineMode
+
+`func (o *VirtualizationVmwareHost) GetQuarantineMode() bool`
+
+GetQuarantineMode returns the QuarantineMode field if non-nil, zero value otherwise.
+
+### GetQuarantineModeOk
+
+`func (o *VirtualizationVmwareHost) GetQuarantineModeOk() (*bool, bool)`
+
+GetQuarantineModeOk returns a tuple with the QuarantineMode field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetQuarantineMode
+
+`func (o *VirtualizationVmwareHost) SetQuarantineMode(v bool)`
+
+SetQuarantineMode sets QuarantineMode field to given value.
+
+### HasQuarantineMode
+
+`func (o *VirtualizationVmwareHost) HasQuarantineMode() bool`
+
+HasQuarantineMode returns a boolean if a field has been set.
+
 ### GetResourceConsumed
 
 `func (o *VirtualizationVmwareHost) GetResourceConsumed() VirtualizationVmwareResourceConsumption`
@@ -440,6 +466,16 @@ SetCluster sets Cluster field to given value.
 
 HasCluster returns a boolean if a field has been set.
 
+### SetClusterNil
+
+`func (o *VirtualizationVmwareHost) SetClusterNil(b bool)`
+
+ SetClusterNil sets the value for Cluster to be an explicit nil
+
+### UnsetCluster
+`func (o *VirtualizationVmwareHost) UnsetCluster()`
+
+UnsetCluster ensures that no value is present for Cluster, not even an explicit nil
 ### GetDatacenter
 
 `func (o *VirtualizationVmwareHost) GetDatacenter() VirtualizationVmwareDatacenterRelationship`
@@ -465,6 +501,16 @@ SetDatacenter sets Datacenter field to given value.
 
 HasDatacenter returns a boolean if a field has been set.
 
+### SetDatacenterNil
+
+`func (o *VirtualizationVmwareHost) SetDatacenterNil(b bool)`
+
+ SetDatacenterNil sets the value for Datacenter to be an explicit nil
+
+### UnsetDatacenter
+`func (o *VirtualizationVmwareHost) UnsetDatacenter()`
+
+UnsetDatacenter ensures that no value is present for Datacenter, not even an explicit nil
 ### GetDatastores
 
 `func (o *VirtualizationVmwareHost) GetDatastores() []VirtualizationVmwareDatastoreRelationship`
@@ -595,6 +641,16 @@ SetHyperFlexNode sets HyperFlexNode field to given value.
 
 HasHyperFlexNode returns a boolean if a field has been set.
 
+### SetHyperFlexNodeNil
+
+`func (o *VirtualizationVmwareHost) SetHyperFlexNodeNil(b bool)`
+
+ SetHyperFlexNodeNil sets the value for HyperFlexNode to be an explicit nil
+
+### UnsetHyperFlexNode
+`func (o *VirtualizationVmwareHost) UnsetHyperFlexNode()`
+
+UnsetHyperFlexNode ensures that no value is present for HyperFlexNode, not even an explicit nil
 ### GetServer
 
 `func (o *VirtualizationVmwareHost) GetServer() ComputePhysicalSummaryRelationship`
@@ -620,6 +676,16 @@ SetServer sets Server field to given value.
 
 HasServer returns a boolean if a field has been set.
 
+### SetServerNil
+
+`func (o *VirtualizationVmwareHost) SetServerNil(b bool)`
+
+ SetServerNil sets the value for Server to be an explicit nil
+
+### UnsetServer
+`func (o *VirtualizationVmwareHost) UnsetServer()`
+
+UnsetServer ensures that no value is present for Server, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

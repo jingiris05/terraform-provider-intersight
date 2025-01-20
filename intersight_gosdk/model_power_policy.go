@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the PowerPolicy type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &PowerPolicy{}
 
 // PowerPolicy Power Management policy models a configuration that can be applied to Chassis or Server to manage Power Related Features.
 type PowerPolicy struct {
@@ -24,23 +28,25 @@ type PowerPolicy struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// Sets the Allocated Power Budget of the Chassis (in Watts). This field is only supported for Cisco UCS X series Chassis.
+	// Sets the allocated power budget of the chassis (in Watts).
 	AllocatedBudget *int64 `json:"AllocatedBudget,omitempty"`
-	// Sets the Dynamic Power Rebalancing mode of the Chassis. If enabled, this mode allows the chassis to dynamically reallocate the power between servers depending on their power usage. This option is only supported for Cisco UCS X series Chassis. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
+	// Sets the dynamic power rebalancing mode of the chassis. If enabled, this mode allows the chassis to dynamically reallocate the power between servers depending on their power usage. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
 	DynamicRebalancing *string `json:"DynamicRebalancing,omitempty"`
 	// Sets the Extended Power Capacity of the Chassis. If Enabled, this mode allows chassis available power to be increased by borrowing power from redundant power supplies.  This option is only supported for Cisco UCS X series Chassis. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
 	ExtendedPowerCapacity *string `json:"ExtendedPowerCapacity,omitempty"`
-	// Sets the Power Priority of the Server. This priority is used to determine the initial power allocation for servers. This field is only supported for Cisco UCS X series servers. * `Low` - Set the Power Priority to Low. * `Medium` - Set the Power Priority to Medium. * `High` - Set the Power Priority to High.
+	// Sets the Power Priority of the Server. This priority is used to determine the initial power allocation for servers. This field is only supported for Cisco UCS B series and X series servers. * `Low` - Set the Power Priority to Low. * `Medium` - Set the Power Priority to Medium. * `High` - Set the Power Priority to High.
 	PowerPriority *string `json:"PowerPriority,omitempty"`
 	// Sets the Power Profiling of the Server. If Enabled, this field allows the power manager to run power profiling  utility to determine the power needs of the server.  This field is only supported for Cisco UCS X series servers. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
 	PowerProfiling *string `json:"PowerProfiling,omitempty"`
-	// Sets the Power Restore State of the Server. In the absence of Intersight connectivity, the chassis will use this policy  to recover the host power after a power loss event.  This field is only supported for Cisco UCS X series servers. * `AlwaysOff` - Set the Power Restore Mode to Off. * `AlwaysOn` - Set the Power Restore Mode to On. * `LastState` - Set the Power Restore Mode to LastState.
+	// Sets the Power Restore State of the Server. In the absence of Intersight connectivity, the chassis/server will use this policy  to recover the host power after a power loss event. * `AlwaysOff` - Set the Power Restore Mode to Off. * `AlwaysOn` - Set the Power Restore Mode to On. * `LastState` - Set the Power Restore Mode to LastState.
 	PowerRestoreState *string `json:"PowerRestoreState,omitempty"`
-	// Sets the Power Save mode of the Chassis. If the requested power budget is less than available power capacity,  the additional PSUs not required to comply with redundancy policy are placed in Power Save mode. This option is only supported for Cisco UCS X series Chassis. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
+	// Sets the power save mode of the chassis. If the requested power budget is less than available power capacity,  the additional PSUs not required to comply with redundancy policy are placed in power save mode. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
 	PowerSaveMode *string `json:"PowerSaveMode,omitempty"`
+	// Sets the Processor Package Power Limit (PPL) of a server. PPL refers to the amount of power that a CPU can draw from the power supply. The Processor Package Power Limit (PPL) feature is currently available exclusively on Cisco UCS C225/C245 M8 servers. * `Default` - Set the Package Power Limit to the platform defined default value. * `Maximum` - Set the Package Power Limit to the platform defined maximum value. * `Minimum` - Set the Package Power Limit to the platform defined minimum value.
+	ProcessorPackagePowerLimit *string `json:"ProcessorPackagePowerLimit,omitempty"`
 	// Sets the Power Redundancy Mode of the Chassis.  Redundancy Mode determines the number of PSUs the chassis keeps as redundant.  N+2 mode is only supported for Cisco UCS X series Chassis. * `Grid` - Grid Mode requires two power sources. If one source fails, the surviving PSUs connected to the other source provides power to the chassis. * `NotRedundant` - Power Manager turns on the minimum number of PSUs required to support chassis power requirements. No Redundant PSUs are maintained. * `N+1` - Power Manager turns on the minimum number of PSUs required to support chassis power requirements plus one additional PSU for redundancy. * `N+2` - Power Manager turns on the minimum number of PSUs required to support chassis power requirements plus two additional PSU for redundancy. This Mode is only supported for UCS X series Chassis.
-	RedundancyMode *string                               `json:"RedundancyMode,omitempty"`
-	Organization   *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	RedundancyMode *string                                      `json:"RedundancyMode,omitempty"`
+	Organization   NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	// An array of relationships to policyAbstractConfigProfile resources.
 	Profiles             []PolicyAbstractConfigProfileRelationship `json:"Profiles,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -70,6 +76,8 @@ func NewPowerPolicy(classId string, objectType string) *PowerPolicy {
 	this.PowerRestoreState = &powerRestoreState
 	var powerSaveMode string = "Enabled"
 	this.PowerSaveMode = &powerSaveMode
+	var processorPackagePowerLimit string = "Default"
+	this.ProcessorPackagePowerLimit = &processorPackagePowerLimit
 	var redundancyMode string = "Grid"
 	this.RedundancyMode = &redundancyMode
 	return &this
@@ -98,6 +106,8 @@ func NewPowerPolicyWithDefaults() *PowerPolicy {
 	this.PowerRestoreState = &powerRestoreState
 	var powerSaveMode string = "Enabled"
 	this.PowerSaveMode = &powerSaveMode
+	var processorPackagePowerLimit string = "Default"
+	this.ProcessorPackagePowerLimit = &processorPackagePowerLimit
 	var redundancyMode string = "Grid"
 	this.RedundancyMode = &redundancyMode
 	return &this
@@ -127,6 +137,11 @@ func (o *PowerPolicy) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "power.Policy" of the ClassId field.
+func (o *PowerPolicy) GetDefaultClassId() interface{} {
+	return "power.Policy"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *PowerPolicy) GetObjectType() string {
 	if o == nil {
@@ -151,9 +166,14 @@ func (o *PowerPolicy) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "power.Policy" of the ObjectType field.
+func (o *PowerPolicy) GetDefaultObjectType() interface{} {
+	return "power.Policy"
+}
+
 // GetAllocatedBudget returns the AllocatedBudget field value if set, zero value otherwise.
 func (o *PowerPolicy) GetAllocatedBudget() int64 {
-	if o == nil || o.AllocatedBudget == nil {
+	if o == nil || IsNil(o.AllocatedBudget) {
 		var ret int64
 		return ret
 	}
@@ -163,7 +183,7 @@ func (o *PowerPolicy) GetAllocatedBudget() int64 {
 // GetAllocatedBudgetOk returns a tuple with the AllocatedBudget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PowerPolicy) GetAllocatedBudgetOk() (*int64, bool) {
-	if o == nil || o.AllocatedBudget == nil {
+	if o == nil || IsNil(o.AllocatedBudget) {
 		return nil, false
 	}
 	return o.AllocatedBudget, true
@@ -171,7 +191,7 @@ func (o *PowerPolicy) GetAllocatedBudgetOk() (*int64, bool) {
 
 // HasAllocatedBudget returns a boolean if a field has been set.
 func (o *PowerPolicy) HasAllocatedBudget() bool {
-	if o != nil && o.AllocatedBudget != nil {
+	if o != nil && !IsNil(o.AllocatedBudget) {
 		return true
 	}
 
@@ -185,7 +205,7 @@ func (o *PowerPolicy) SetAllocatedBudget(v int64) {
 
 // GetDynamicRebalancing returns the DynamicRebalancing field value if set, zero value otherwise.
 func (o *PowerPolicy) GetDynamicRebalancing() string {
-	if o == nil || o.DynamicRebalancing == nil {
+	if o == nil || IsNil(o.DynamicRebalancing) {
 		var ret string
 		return ret
 	}
@@ -195,7 +215,7 @@ func (o *PowerPolicy) GetDynamicRebalancing() string {
 // GetDynamicRebalancingOk returns a tuple with the DynamicRebalancing field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PowerPolicy) GetDynamicRebalancingOk() (*string, bool) {
-	if o == nil || o.DynamicRebalancing == nil {
+	if o == nil || IsNil(o.DynamicRebalancing) {
 		return nil, false
 	}
 	return o.DynamicRebalancing, true
@@ -203,7 +223,7 @@ func (o *PowerPolicy) GetDynamicRebalancingOk() (*string, bool) {
 
 // HasDynamicRebalancing returns a boolean if a field has been set.
 func (o *PowerPolicy) HasDynamicRebalancing() bool {
-	if o != nil && o.DynamicRebalancing != nil {
+	if o != nil && !IsNil(o.DynamicRebalancing) {
 		return true
 	}
 
@@ -217,7 +237,7 @@ func (o *PowerPolicy) SetDynamicRebalancing(v string) {
 
 // GetExtendedPowerCapacity returns the ExtendedPowerCapacity field value if set, zero value otherwise.
 func (o *PowerPolicy) GetExtendedPowerCapacity() string {
-	if o == nil || o.ExtendedPowerCapacity == nil {
+	if o == nil || IsNil(o.ExtendedPowerCapacity) {
 		var ret string
 		return ret
 	}
@@ -227,7 +247,7 @@ func (o *PowerPolicy) GetExtendedPowerCapacity() string {
 // GetExtendedPowerCapacityOk returns a tuple with the ExtendedPowerCapacity field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PowerPolicy) GetExtendedPowerCapacityOk() (*string, bool) {
-	if o == nil || o.ExtendedPowerCapacity == nil {
+	if o == nil || IsNil(o.ExtendedPowerCapacity) {
 		return nil, false
 	}
 	return o.ExtendedPowerCapacity, true
@@ -235,7 +255,7 @@ func (o *PowerPolicy) GetExtendedPowerCapacityOk() (*string, bool) {
 
 // HasExtendedPowerCapacity returns a boolean if a field has been set.
 func (o *PowerPolicy) HasExtendedPowerCapacity() bool {
-	if o != nil && o.ExtendedPowerCapacity != nil {
+	if o != nil && !IsNil(o.ExtendedPowerCapacity) {
 		return true
 	}
 
@@ -249,7 +269,7 @@ func (o *PowerPolicy) SetExtendedPowerCapacity(v string) {
 
 // GetPowerPriority returns the PowerPriority field value if set, zero value otherwise.
 func (o *PowerPolicy) GetPowerPriority() string {
-	if o == nil || o.PowerPriority == nil {
+	if o == nil || IsNil(o.PowerPriority) {
 		var ret string
 		return ret
 	}
@@ -259,7 +279,7 @@ func (o *PowerPolicy) GetPowerPriority() string {
 // GetPowerPriorityOk returns a tuple with the PowerPriority field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PowerPolicy) GetPowerPriorityOk() (*string, bool) {
-	if o == nil || o.PowerPriority == nil {
+	if o == nil || IsNil(o.PowerPriority) {
 		return nil, false
 	}
 	return o.PowerPriority, true
@@ -267,7 +287,7 @@ func (o *PowerPolicy) GetPowerPriorityOk() (*string, bool) {
 
 // HasPowerPriority returns a boolean if a field has been set.
 func (o *PowerPolicy) HasPowerPriority() bool {
-	if o != nil && o.PowerPriority != nil {
+	if o != nil && !IsNil(o.PowerPriority) {
 		return true
 	}
 
@@ -281,7 +301,7 @@ func (o *PowerPolicy) SetPowerPriority(v string) {
 
 // GetPowerProfiling returns the PowerProfiling field value if set, zero value otherwise.
 func (o *PowerPolicy) GetPowerProfiling() string {
-	if o == nil || o.PowerProfiling == nil {
+	if o == nil || IsNil(o.PowerProfiling) {
 		var ret string
 		return ret
 	}
@@ -291,7 +311,7 @@ func (o *PowerPolicy) GetPowerProfiling() string {
 // GetPowerProfilingOk returns a tuple with the PowerProfiling field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PowerPolicy) GetPowerProfilingOk() (*string, bool) {
-	if o == nil || o.PowerProfiling == nil {
+	if o == nil || IsNil(o.PowerProfiling) {
 		return nil, false
 	}
 	return o.PowerProfiling, true
@@ -299,7 +319,7 @@ func (o *PowerPolicy) GetPowerProfilingOk() (*string, bool) {
 
 // HasPowerProfiling returns a boolean if a field has been set.
 func (o *PowerPolicy) HasPowerProfiling() bool {
-	if o != nil && o.PowerProfiling != nil {
+	if o != nil && !IsNil(o.PowerProfiling) {
 		return true
 	}
 
@@ -313,7 +333,7 @@ func (o *PowerPolicy) SetPowerProfiling(v string) {
 
 // GetPowerRestoreState returns the PowerRestoreState field value if set, zero value otherwise.
 func (o *PowerPolicy) GetPowerRestoreState() string {
-	if o == nil || o.PowerRestoreState == nil {
+	if o == nil || IsNil(o.PowerRestoreState) {
 		var ret string
 		return ret
 	}
@@ -323,7 +343,7 @@ func (o *PowerPolicy) GetPowerRestoreState() string {
 // GetPowerRestoreStateOk returns a tuple with the PowerRestoreState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PowerPolicy) GetPowerRestoreStateOk() (*string, bool) {
-	if o == nil || o.PowerRestoreState == nil {
+	if o == nil || IsNil(o.PowerRestoreState) {
 		return nil, false
 	}
 	return o.PowerRestoreState, true
@@ -331,7 +351,7 @@ func (o *PowerPolicy) GetPowerRestoreStateOk() (*string, bool) {
 
 // HasPowerRestoreState returns a boolean if a field has been set.
 func (o *PowerPolicy) HasPowerRestoreState() bool {
-	if o != nil && o.PowerRestoreState != nil {
+	if o != nil && !IsNil(o.PowerRestoreState) {
 		return true
 	}
 
@@ -345,7 +365,7 @@ func (o *PowerPolicy) SetPowerRestoreState(v string) {
 
 // GetPowerSaveMode returns the PowerSaveMode field value if set, zero value otherwise.
 func (o *PowerPolicy) GetPowerSaveMode() string {
-	if o == nil || o.PowerSaveMode == nil {
+	if o == nil || IsNil(o.PowerSaveMode) {
 		var ret string
 		return ret
 	}
@@ -355,7 +375,7 @@ func (o *PowerPolicy) GetPowerSaveMode() string {
 // GetPowerSaveModeOk returns a tuple with the PowerSaveMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PowerPolicy) GetPowerSaveModeOk() (*string, bool) {
-	if o == nil || o.PowerSaveMode == nil {
+	if o == nil || IsNil(o.PowerSaveMode) {
 		return nil, false
 	}
 	return o.PowerSaveMode, true
@@ -363,7 +383,7 @@ func (o *PowerPolicy) GetPowerSaveModeOk() (*string, bool) {
 
 // HasPowerSaveMode returns a boolean if a field has been set.
 func (o *PowerPolicy) HasPowerSaveMode() bool {
-	if o != nil && o.PowerSaveMode != nil {
+	if o != nil && !IsNil(o.PowerSaveMode) {
 		return true
 	}
 
@@ -375,9 +395,41 @@ func (o *PowerPolicy) SetPowerSaveMode(v string) {
 	o.PowerSaveMode = &v
 }
 
+// GetProcessorPackagePowerLimit returns the ProcessorPackagePowerLimit field value if set, zero value otherwise.
+func (o *PowerPolicy) GetProcessorPackagePowerLimit() string {
+	if o == nil || IsNil(o.ProcessorPackagePowerLimit) {
+		var ret string
+		return ret
+	}
+	return *o.ProcessorPackagePowerLimit
+}
+
+// GetProcessorPackagePowerLimitOk returns a tuple with the ProcessorPackagePowerLimit field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *PowerPolicy) GetProcessorPackagePowerLimitOk() (*string, bool) {
+	if o == nil || IsNil(o.ProcessorPackagePowerLimit) {
+		return nil, false
+	}
+	return o.ProcessorPackagePowerLimit, true
+}
+
+// HasProcessorPackagePowerLimit returns a boolean if a field has been set.
+func (o *PowerPolicy) HasProcessorPackagePowerLimit() bool {
+	if o != nil && !IsNil(o.ProcessorPackagePowerLimit) {
+		return true
+	}
+
+	return false
+}
+
+// SetProcessorPackagePowerLimit gets a reference to the given string and assigns it to the ProcessorPackagePowerLimit field.
+func (o *PowerPolicy) SetProcessorPackagePowerLimit(v string) {
+	o.ProcessorPackagePowerLimit = &v
+}
+
 // GetRedundancyMode returns the RedundancyMode field value if set, zero value otherwise.
 func (o *PowerPolicy) GetRedundancyMode() string {
-	if o == nil || o.RedundancyMode == nil {
+	if o == nil || IsNil(o.RedundancyMode) {
 		var ret string
 		return ret
 	}
@@ -387,7 +439,7 @@ func (o *PowerPolicy) GetRedundancyMode() string {
 // GetRedundancyModeOk returns a tuple with the RedundancyMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PowerPolicy) GetRedundancyModeOk() (*string, bool) {
-	if o == nil || o.RedundancyMode == nil {
+	if o == nil || IsNil(o.RedundancyMode) {
 		return nil, false
 	}
 	return o.RedundancyMode, true
@@ -395,7 +447,7 @@ func (o *PowerPolicy) GetRedundancyModeOk() (*string, bool) {
 
 // HasRedundancyMode returns a boolean if a field has been set.
 func (o *PowerPolicy) HasRedundancyMode() bool {
-	if o != nil && o.RedundancyMode != nil {
+	if o != nil && !IsNil(o.RedundancyMode) {
 		return true
 	}
 
@@ -407,36 +459,47 @@ func (o *PowerPolicy) SetRedundancyMode(v string) {
 	o.RedundancyMode = &v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *PowerPolicy) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PowerPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *PowerPolicy) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *PowerPolicy) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *PowerPolicy) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *PowerPolicy) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 // GetProfiles returns the Profiles field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -452,7 +515,7 @@ func (o *PowerPolicy) GetProfiles() []PolicyAbstractConfigProfileRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *PowerPolicy) GetProfilesOk() ([]PolicyAbstractConfigProfileRelationship, bool) {
-	if o == nil || o.Profiles == nil {
+	if o == nil || IsNil(o.Profiles) {
 		return nil, false
 	}
 	return o.Profiles, true
@@ -460,7 +523,7 @@ func (o *PowerPolicy) GetProfilesOk() ([]PolicyAbstractConfigProfileRelationship
 
 // HasProfiles returns a boolean if a field has been set.
 func (o *PowerPolicy) HasProfiles() bool {
-	if o != nil && o.Profiles != nil {
+	if o != nil && !IsNil(o.Profiles) {
 		return true
 	}
 
@@ -473,47 +536,60 @@ func (o *PowerPolicy) SetProfiles(v []PolicyAbstractConfigProfileRelationship) {
 }
 
 func (o PowerPolicy) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o PowerPolicy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicy, errPolicyAbstractPolicy := json.Marshal(o.PolicyAbstractPolicy)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
 	errPolicyAbstractPolicy = json.Unmarshal([]byte(serializedPolicyAbstractPolicy), &toSerialize)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AllocatedBudget != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AllocatedBudget) {
 		toSerialize["AllocatedBudget"] = o.AllocatedBudget
 	}
-	if o.DynamicRebalancing != nil {
+	if !IsNil(o.DynamicRebalancing) {
 		toSerialize["DynamicRebalancing"] = o.DynamicRebalancing
 	}
-	if o.ExtendedPowerCapacity != nil {
+	if !IsNil(o.ExtendedPowerCapacity) {
 		toSerialize["ExtendedPowerCapacity"] = o.ExtendedPowerCapacity
 	}
-	if o.PowerPriority != nil {
+	if !IsNil(o.PowerPriority) {
 		toSerialize["PowerPriority"] = o.PowerPriority
 	}
-	if o.PowerProfiling != nil {
+	if !IsNil(o.PowerProfiling) {
 		toSerialize["PowerProfiling"] = o.PowerProfiling
 	}
-	if o.PowerRestoreState != nil {
+	if !IsNil(o.PowerRestoreState) {
 		toSerialize["PowerRestoreState"] = o.PowerRestoreState
 	}
-	if o.PowerSaveMode != nil {
+	if !IsNil(o.PowerSaveMode) {
 		toSerialize["PowerSaveMode"] = o.PowerSaveMode
 	}
-	if o.RedundancyMode != nil {
+	if !IsNil(o.ProcessorPackagePowerLimit) {
+		toSerialize["ProcessorPackagePowerLimit"] = o.ProcessorPackagePowerLimit
+	}
+	if !IsNil(o.RedundancyMode) {
 		toSerialize["RedundancyMode"] = o.RedundancyMode
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 	if o.Profiles != nil {
 		toSerialize["Profiles"] = o.Profiles
@@ -523,39 +599,82 @@ func (o PowerPolicy) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *PowerPolicy) UnmarshalJSON(bytes []byte) (err error) {
+func (o *PowerPolicy) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type PowerPolicyWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// Sets the Allocated Power Budget of the Chassis (in Watts). This field is only supported for Cisco UCS X series Chassis.
+		// Sets the allocated power budget of the chassis (in Watts).
 		AllocatedBudget *int64 `json:"AllocatedBudget,omitempty"`
-		// Sets the Dynamic Power Rebalancing mode of the Chassis. If enabled, this mode allows the chassis to dynamically reallocate the power between servers depending on their power usage. This option is only supported for Cisco UCS X series Chassis. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
+		// Sets the dynamic power rebalancing mode of the chassis. If enabled, this mode allows the chassis to dynamically reallocate the power between servers depending on their power usage. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
 		DynamicRebalancing *string `json:"DynamicRebalancing,omitempty"`
 		// Sets the Extended Power Capacity of the Chassis. If Enabled, this mode allows chassis available power to be increased by borrowing power from redundant power supplies.  This option is only supported for Cisco UCS X series Chassis. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
 		ExtendedPowerCapacity *string `json:"ExtendedPowerCapacity,omitempty"`
-		// Sets the Power Priority of the Server. This priority is used to determine the initial power allocation for servers. This field is only supported for Cisco UCS X series servers. * `Low` - Set the Power Priority to Low. * `Medium` - Set the Power Priority to Medium. * `High` - Set the Power Priority to High.
+		// Sets the Power Priority of the Server. This priority is used to determine the initial power allocation for servers. This field is only supported for Cisco UCS B series and X series servers. * `Low` - Set the Power Priority to Low. * `Medium` - Set the Power Priority to Medium. * `High` - Set the Power Priority to High.
 		PowerPriority *string `json:"PowerPriority,omitempty"`
 		// Sets the Power Profiling of the Server. If Enabled, this field allows the power manager to run power profiling  utility to determine the power needs of the server.  This field is only supported for Cisco UCS X series servers. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
 		PowerProfiling *string `json:"PowerProfiling,omitempty"`
-		// Sets the Power Restore State of the Server. In the absence of Intersight connectivity, the chassis will use this policy  to recover the host power after a power loss event.  This field is only supported for Cisco UCS X series servers. * `AlwaysOff` - Set the Power Restore Mode to Off. * `AlwaysOn` - Set the Power Restore Mode to On. * `LastState` - Set the Power Restore Mode to LastState.
+		// Sets the Power Restore State of the Server. In the absence of Intersight connectivity, the chassis/server will use this policy  to recover the host power after a power loss event. * `AlwaysOff` - Set the Power Restore Mode to Off. * `AlwaysOn` - Set the Power Restore Mode to On. * `LastState` - Set the Power Restore Mode to LastState.
 		PowerRestoreState *string `json:"PowerRestoreState,omitempty"`
-		// Sets the Power Save mode of the Chassis. If the requested power budget is less than available power capacity,  the additional PSUs not required to comply with redundancy policy are placed in Power Save mode. This option is only supported for Cisco UCS X series Chassis. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
+		// Sets the power save mode of the chassis. If the requested power budget is less than available power capacity,  the additional PSUs not required to comply with redundancy policy are placed in power save mode. * `Enabled` - Set the value to Enabled. * `Disabled` - Set the value to Disabled.
 		PowerSaveMode *string `json:"PowerSaveMode,omitempty"`
+		// Sets the Processor Package Power Limit (PPL) of a server. PPL refers to the amount of power that a CPU can draw from the power supply. The Processor Package Power Limit (PPL) feature is currently available exclusively on Cisco UCS C225/C245 M8 servers. * `Default` - Set the Package Power Limit to the platform defined default value. * `Maximum` - Set the Package Power Limit to the platform defined maximum value. * `Minimum` - Set the Package Power Limit to the platform defined minimum value.
+		ProcessorPackagePowerLimit *string `json:"ProcessorPackagePowerLimit,omitempty"`
 		// Sets the Power Redundancy Mode of the Chassis.  Redundancy Mode determines the number of PSUs the chassis keeps as redundant.  N+2 mode is only supported for Cisco UCS X series Chassis. * `Grid` - Grid Mode requires two power sources. If one source fails, the surviving PSUs connected to the other source provides power to the chassis. * `NotRedundant` - Power Manager turns on the minimum number of PSUs required to support chassis power requirements. No Redundant PSUs are maintained. * `N+1` - Power Manager turns on the minimum number of PSUs required to support chassis power requirements plus one additional PSU for redundancy. * `N+2` - Power Manager turns on the minimum number of PSUs required to support chassis power requirements plus two additional PSU for redundancy. This Mode is only supported for UCS X series Chassis.
-		RedundancyMode *string                               `json:"RedundancyMode,omitempty"`
-		Organization   *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		RedundancyMode *string                                      `json:"RedundancyMode,omitempty"`
+		Organization   NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 		// An array of relationships to policyAbstractConfigProfile resources.
 		Profiles []PolicyAbstractConfigProfileRelationship `json:"Profiles,omitempty"`
 	}
 
 	varPowerPolicyWithoutEmbeddedStruct := PowerPolicyWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varPowerPolicyWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varPowerPolicyWithoutEmbeddedStruct)
 	if err == nil {
 		varPowerPolicy := _PowerPolicy{}
 		varPowerPolicy.ClassId = varPowerPolicyWithoutEmbeddedStruct.ClassId
@@ -567,6 +686,7 @@ func (o *PowerPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		varPowerPolicy.PowerProfiling = varPowerPolicyWithoutEmbeddedStruct.PowerProfiling
 		varPowerPolicy.PowerRestoreState = varPowerPolicyWithoutEmbeddedStruct.PowerRestoreState
 		varPowerPolicy.PowerSaveMode = varPowerPolicyWithoutEmbeddedStruct.PowerSaveMode
+		varPowerPolicy.ProcessorPackagePowerLimit = varPowerPolicyWithoutEmbeddedStruct.ProcessorPackagePowerLimit
 		varPowerPolicy.RedundancyMode = varPowerPolicyWithoutEmbeddedStruct.RedundancyMode
 		varPowerPolicy.Organization = varPowerPolicyWithoutEmbeddedStruct.Organization
 		varPowerPolicy.Profiles = varPowerPolicyWithoutEmbeddedStruct.Profiles
@@ -577,7 +697,7 @@ func (o *PowerPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	varPowerPolicy := _PowerPolicy{}
 
-	err = json.Unmarshal(bytes, &varPowerPolicy)
+	err = json.Unmarshal(data, &varPowerPolicy)
 	if err == nil {
 		o.PolicyAbstractPolicy = varPowerPolicy.PolicyAbstractPolicy
 	} else {
@@ -586,7 +706,7 @@ func (o *PowerPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AllocatedBudget")
@@ -596,6 +716,7 @@ func (o *PowerPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "PowerProfiling")
 		delete(additionalProperties, "PowerRestoreState")
 		delete(additionalProperties, "PowerSaveMode")
+		delete(additionalProperties, "ProcessorPackagePowerLimit")
 		delete(additionalProperties, "RedundancyMode")
 		delete(additionalProperties, "Organization")
 		delete(additionalProperties, "Profiles")

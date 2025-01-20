@@ -7,20 +7,25 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "storage.NetAppVolume"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.NetAppVolume"]
 **AutosizeMode** | Pointer to **string** | The autosize mode for NetApp Volume. Modes can be off or grow or grow_shrink. * &#x60;off&#x60; - The volume will not grow or shrink in size in response to the amount of used space. * &#x60;grow&#x60; - The volume will automatically grow when used space in the volume is above the grow threshold. * &#x60;grow_shrink&#x60; - The volume will grow or shrink in size in response to the amount of used space. | [optional] [readonly] [default to "off"]
-**AvgPerformanceMetrics** | Pointer to [**StorageNetAppPerformanceMetricsAverage**](StorageNetAppPerformanceMetricsAverage.md) |  | [optional] 
+**AvgPerformanceMetrics** | Pointer to [**NullableStorageBasePerformanceMetricsAverage**](StorageBasePerformanceMetricsAverage.md) | Average performance metrics data for a NetApp storage resource over a given period of time. | [optional] 
 **ExportPolicyName** | Pointer to **string** | The name of the Export Policy. | [optional] [readonly] 
-**Key** | Pointer to **string** | Unique identifier of NetApp Volume across data center. | [optional] [readonly] 
+**FlexCacheEndpointType** | Pointer to **string** | FlexCache endpoint type. The endpoint type can be the origin of a FlexCache volume, a FlexCache volume, or neither. | [optional] [readonly] 
+**IsObjectStore** | Pointer to **bool** | Specifies whether the volume is provisioned for an object store server. | [optional] [readonly] 
+**Key** | Pointer to **string** | Unique identifier of a NetApp Volume across data center. | [optional] [readonly] 
+**SnapshotAutodeleteEnabled** | Pointer to **bool** | Specifies whether Snaphot copy autodelete is currently enabled on this volume. | [optional] [readonly] 
 **SnapshotPolicyName** | Pointer to **string** | The name of the Snapshot Policy. | [optional] [readonly] 
 **SnapshotPolicyUuid** | Pointer to **string** | The UUID of the Snapshot Policy. | [optional] [readonly] 
 **SnapshotReservePercent** | Pointer to **int64** | The space that has been set aside as a reserve for Snapshot copy usage represented as a percent. | [optional] [readonly] 
 **SnapshotUsed** | Pointer to **float64** | The total space used by Snapshot copies in the volume represented in bytes. | [optional] [readonly] 
 **State** | Pointer to **string** | The current state of a NetApp volume. * &#x60;offline&#x60; - Read and write access to the volume is not allowed. * &#x60;online&#x60; - Read and write access to the volume is allowed. * &#x60;error&#x60; - Storage volume state of error type. * &#x60;mixed&#x60; - The constituents of a FlexGroup volume are not all in the same state. | [optional] [readonly] [default to "offline"]
+**Style** | Pointer to **string** | The style of the volume (FlexGroup or FlexVol). | [optional] [readonly] 
+**SvmName** | Pointer to **string** | The storage virtual machine name for the volume. | [optional] [readonly] 
 **Type** | Pointer to **string** | NetApp volume type. The volume type can be Read-write, Data-protection, or Load-sharing. * &#x60;data-protection&#x60; - Prevents modification of the data on the Volume. * &#x60;read-write&#x60; - Data on the Volume can be modified. * &#x60;load-sharing&#x60; - The volume type is Load Sharing DP. | [optional] [readonly] [default to "data-protection"]
 **Uuid** | Pointer to **string** | Universally unique identifier of a NetApp Volume. | [optional] [readonly] 
-**Array** | Pointer to [**StorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
+**Array** | Pointer to [**NullableStorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
 **DiskPool** | Pointer to [**[]StorageNetAppAggregateRelationship**](StorageNetAppAggregateRelationship.md) | An array of relationships to storageNetAppAggregate resources. | [optional] [readonly] 
 **Events** | Pointer to [**[]StorageNetAppVolumeEventRelationship**](StorageNetAppVolumeEventRelationship.md) | An array of relationships to storageNetAppVolumeEvent resources. | [optional] [readonly] 
-**Tenant** | Pointer to [**StorageNetAppStorageVmRelationship**](StorageNetAppStorageVmRelationship.md) |  | [optional] 
+**Tenant** | Pointer to [**NullableStorageNetAppStorageVmRelationship**](StorageNetAppStorageVmRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -108,20 +113,20 @@ HasAutosizeMode returns a boolean if a field has been set.
 
 ### GetAvgPerformanceMetrics
 
-`func (o *StorageNetAppVolume) GetAvgPerformanceMetrics() StorageNetAppPerformanceMetricsAverage`
+`func (o *StorageNetAppVolume) GetAvgPerformanceMetrics() StorageBasePerformanceMetricsAverage`
 
 GetAvgPerformanceMetrics returns the AvgPerformanceMetrics field if non-nil, zero value otherwise.
 
 ### GetAvgPerformanceMetricsOk
 
-`func (o *StorageNetAppVolume) GetAvgPerformanceMetricsOk() (*StorageNetAppPerformanceMetricsAverage, bool)`
+`func (o *StorageNetAppVolume) GetAvgPerformanceMetricsOk() (*StorageBasePerformanceMetricsAverage, bool)`
 
 GetAvgPerformanceMetricsOk returns a tuple with the AvgPerformanceMetrics field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAvgPerformanceMetrics
 
-`func (o *StorageNetAppVolume) SetAvgPerformanceMetrics(v StorageNetAppPerformanceMetricsAverage)`
+`func (o *StorageNetAppVolume) SetAvgPerformanceMetrics(v StorageBasePerformanceMetricsAverage)`
 
 SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
@@ -131,6 +136,16 @@ SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
 HasAvgPerformanceMetrics returns a boolean if a field has been set.
 
+### SetAvgPerformanceMetricsNil
+
+`func (o *StorageNetAppVolume) SetAvgPerformanceMetricsNil(b bool)`
+
+ SetAvgPerformanceMetricsNil sets the value for AvgPerformanceMetrics to be an explicit nil
+
+### UnsetAvgPerformanceMetrics
+`func (o *StorageNetAppVolume) UnsetAvgPerformanceMetrics()`
+
+UnsetAvgPerformanceMetrics ensures that no value is present for AvgPerformanceMetrics, not even an explicit nil
 ### GetExportPolicyName
 
 `func (o *StorageNetAppVolume) GetExportPolicyName() string`
@@ -156,6 +171,56 @@ SetExportPolicyName sets ExportPolicyName field to given value.
 
 HasExportPolicyName returns a boolean if a field has been set.
 
+### GetFlexCacheEndpointType
+
+`func (o *StorageNetAppVolume) GetFlexCacheEndpointType() string`
+
+GetFlexCacheEndpointType returns the FlexCacheEndpointType field if non-nil, zero value otherwise.
+
+### GetFlexCacheEndpointTypeOk
+
+`func (o *StorageNetAppVolume) GetFlexCacheEndpointTypeOk() (*string, bool)`
+
+GetFlexCacheEndpointTypeOk returns a tuple with the FlexCacheEndpointType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFlexCacheEndpointType
+
+`func (o *StorageNetAppVolume) SetFlexCacheEndpointType(v string)`
+
+SetFlexCacheEndpointType sets FlexCacheEndpointType field to given value.
+
+### HasFlexCacheEndpointType
+
+`func (o *StorageNetAppVolume) HasFlexCacheEndpointType() bool`
+
+HasFlexCacheEndpointType returns a boolean if a field has been set.
+
+### GetIsObjectStore
+
+`func (o *StorageNetAppVolume) GetIsObjectStore() bool`
+
+GetIsObjectStore returns the IsObjectStore field if non-nil, zero value otherwise.
+
+### GetIsObjectStoreOk
+
+`func (o *StorageNetAppVolume) GetIsObjectStoreOk() (*bool, bool)`
+
+GetIsObjectStoreOk returns a tuple with the IsObjectStore field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsObjectStore
+
+`func (o *StorageNetAppVolume) SetIsObjectStore(v bool)`
+
+SetIsObjectStore sets IsObjectStore field to given value.
+
+### HasIsObjectStore
+
+`func (o *StorageNetAppVolume) HasIsObjectStore() bool`
+
+HasIsObjectStore returns a boolean if a field has been set.
+
 ### GetKey
 
 `func (o *StorageNetAppVolume) GetKey() string`
@@ -180,6 +245,31 @@ SetKey sets Key field to given value.
 `func (o *StorageNetAppVolume) HasKey() bool`
 
 HasKey returns a boolean if a field has been set.
+
+### GetSnapshotAutodeleteEnabled
+
+`func (o *StorageNetAppVolume) GetSnapshotAutodeleteEnabled() bool`
+
+GetSnapshotAutodeleteEnabled returns the SnapshotAutodeleteEnabled field if non-nil, zero value otherwise.
+
+### GetSnapshotAutodeleteEnabledOk
+
+`func (o *StorageNetAppVolume) GetSnapshotAutodeleteEnabledOk() (*bool, bool)`
+
+GetSnapshotAutodeleteEnabledOk returns a tuple with the SnapshotAutodeleteEnabled field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSnapshotAutodeleteEnabled
+
+`func (o *StorageNetAppVolume) SetSnapshotAutodeleteEnabled(v bool)`
+
+SetSnapshotAutodeleteEnabled sets SnapshotAutodeleteEnabled field to given value.
+
+### HasSnapshotAutodeleteEnabled
+
+`func (o *StorageNetAppVolume) HasSnapshotAutodeleteEnabled() bool`
+
+HasSnapshotAutodeleteEnabled returns a boolean if a field has been set.
 
 ### GetSnapshotPolicyName
 
@@ -306,6 +396,56 @@ SetState sets State field to given value.
 
 HasState returns a boolean if a field has been set.
 
+### GetStyle
+
+`func (o *StorageNetAppVolume) GetStyle() string`
+
+GetStyle returns the Style field if non-nil, zero value otherwise.
+
+### GetStyleOk
+
+`func (o *StorageNetAppVolume) GetStyleOk() (*string, bool)`
+
+GetStyleOk returns a tuple with the Style field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetStyle
+
+`func (o *StorageNetAppVolume) SetStyle(v string)`
+
+SetStyle sets Style field to given value.
+
+### HasStyle
+
+`func (o *StorageNetAppVolume) HasStyle() bool`
+
+HasStyle returns a boolean if a field has been set.
+
+### GetSvmName
+
+`func (o *StorageNetAppVolume) GetSvmName() string`
+
+GetSvmName returns the SvmName field if non-nil, zero value otherwise.
+
+### GetSvmNameOk
+
+`func (o *StorageNetAppVolume) GetSvmNameOk() (*string, bool)`
+
+GetSvmNameOk returns a tuple with the SvmName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSvmName
+
+`func (o *StorageNetAppVolume) SetSvmName(v string)`
+
+SetSvmName sets SvmName field to given value.
+
+### HasSvmName
+
+`func (o *StorageNetAppVolume) HasSvmName() bool`
+
+HasSvmName returns a boolean if a field has been set.
+
 ### GetType
 
 `func (o *StorageNetAppVolume) GetType() string`
@@ -381,6 +521,16 @@ SetArray sets Array field to given value.
 
 HasArray returns a boolean if a field has been set.
 
+### SetArrayNil
+
+`func (o *StorageNetAppVolume) SetArrayNil(b bool)`
+
+ SetArrayNil sets the value for Array to be an explicit nil
+
+### UnsetArray
+`func (o *StorageNetAppVolume) UnsetArray()`
+
+UnsetArray ensures that no value is present for Array, not even an explicit nil
 ### GetDiskPool
 
 `func (o *StorageNetAppVolume) GetDiskPool() []StorageNetAppAggregateRelationship`
@@ -476,6 +626,16 @@ SetTenant sets Tenant field to given value.
 
 HasTenant returns a boolean if a field has been set.
 
+### SetTenantNil
+
+`func (o *StorageNetAppVolume) SetTenantNil(b bool)`
+
+ SetTenantNil sets the value for Tenant to be an explicit nil
+
+### UnsetTenant
+`func (o *StorageNetAppVolume) UnsetTenant()`
+
+UnsetTenant ensures that no value is present for Tenant, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

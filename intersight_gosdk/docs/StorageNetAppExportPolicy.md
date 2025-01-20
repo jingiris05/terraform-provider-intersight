@@ -9,8 +9,9 @@ Name | Type | Description | Notes
 **ClusterUuid** | Pointer to **string** | Unique identity of the device. | [optional] [readonly] 
 **NetAppExportPolicyRule** | Pointer to [**[]StorageNetAppExportPolicyRule**](StorageNetAppExportPolicyRule.md) |  | [optional] 
 **PolicyId** | Pointer to **int64** | ID for the Export Policy. | [optional] [readonly] 
-**Array** | Pointer to [**StorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
-**Tenant** | Pointer to [**StorageNetAppStorageVmRelationship**](StorageNetAppStorageVmRelationship.md) |  | [optional] 
+**SvmName** | Pointer to **string** | The storage virtual machine name for the export policy. | [optional] [readonly] 
+**Array** | Pointer to [**NullableStorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
+**Tenant** | Pointer to [**NullableStorageNetAppStorageVmRelationship**](StorageNetAppStorageVmRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -156,6 +157,31 @@ SetPolicyId sets PolicyId field to given value.
 
 HasPolicyId returns a boolean if a field has been set.
 
+### GetSvmName
+
+`func (o *StorageNetAppExportPolicy) GetSvmName() string`
+
+GetSvmName returns the SvmName field if non-nil, zero value otherwise.
+
+### GetSvmNameOk
+
+`func (o *StorageNetAppExportPolicy) GetSvmNameOk() (*string, bool)`
+
+GetSvmNameOk returns a tuple with the SvmName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSvmName
+
+`func (o *StorageNetAppExportPolicy) SetSvmName(v string)`
+
+SetSvmName sets SvmName field to given value.
+
+### HasSvmName
+
+`func (o *StorageNetAppExportPolicy) HasSvmName() bool`
+
+HasSvmName returns a boolean if a field has been set.
+
 ### GetArray
 
 `func (o *StorageNetAppExportPolicy) GetArray() StorageNetAppClusterRelationship`
@@ -181,6 +207,16 @@ SetArray sets Array field to given value.
 
 HasArray returns a boolean if a field has been set.
 
+### SetArrayNil
+
+`func (o *StorageNetAppExportPolicy) SetArrayNil(b bool)`
+
+ SetArrayNil sets the value for Array to be an explicit nil
+
+### UnsetArray
+`func (o *StorageNetAppExportPolicy) UnsetArray()`
+
+UnsetArray ensures that no value is present for Array, not even an explicit nil
 ### GetTenant
 
 `func (o *StorageNetAppExportPolicy) GetTenant() StorageNetAppStorageVmRelationship`
@@ -206,6 +242,16 @@ SetTenant sets Tenant field to given value.
 
 HasTenant returns a boolean if a field has been set.
 
+### SetTenantNil
+
+`func (o *StorageNetAppExportPolicy) SetTenantNil(b bool)`
+
+ SetTenantNil sets the value for Tenant to be an explicit nil
+
+### UnsetTenant
+`func (o *StorageNetAppExportPolicy) UnsetTenant()`
+
+UnsetTenant ensures that no value is present for Tenant, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

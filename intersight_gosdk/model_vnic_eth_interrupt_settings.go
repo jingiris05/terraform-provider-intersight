@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VnicEthInterruptSettings type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VnicEthInterruptSettings{}
 
 // VnicEthInterruptSettings Interrupt settings for the virtual ethernet interface.
 type VnicEthInterruptSettings struct {
@@ -100,6 +104,11 @@ func (o *VnicEthInterruptSettings) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "vnic.EthInterruptSettings" of the ClassId field.
+func (o *VnicEthInterruptSettings) GetDefaultClassId() interface{} {
+	return "vnic.EthInterruptSettings"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VnicEthInterruptSettings) GetObjectType() string {
 	if o == nil {
@@ -124,9 +133,14 @@ func (o *VnicEthInterruptSettings) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "vnic.EthInterruptSettings" of the ObjectType field.
+func (o *VnicEthInterruptSettings) GetDefaultObjectType() interface{} {
+	return "vnic.EthInterruptSettings"
+}
+
 // GetCoalescingTime returns the CoalescingTime field value if set, zero value otherwise.
 func (o *VnicEthInterruptSettings) GetCoalescingTime() int64 {
-	if o == nil || o.CoalescingTime == nil {
+	if o == nil || IsNil(o.CoalescingTime) {
 		var ret int64
 		return ret
 	}
@@ -136,7 +150,7 @@ func (o *VnicEthInterruptSettings) GetCoalescingTime() int64 {
 // GetCoalescingTimeOk returns a tuple with the CoalescingTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthInterruptSettings) GetCoalescingTimeOk() (*int64, bool) {
-	if o == nil || o.CoalescingTime == nil {
+	if o == nil || IsNil(o.CoalescingTime) {
 		return nil, false
 	}
 	return o.CoalescingTime, true
@@ -144,7 +158,7 @@ func (o *VnicEthInterruptSettings) GetCoalescingTimeOk() (*int64, bool) {
 
 // HasCoalescingTime returns a boolean if a field has been set.
 func (o *VnicEthInterruptSettings) HasCoalescingTime() bool {
-	if o != nil && o.CoalescingTime != nil {
+	if o != nil && !IsNil(o.CoalescingTime) {
 		return true
 	}
 
@@ -158,7 +172,7 @@ func (o *VnicEthInterruptSettings) SetCoalescingTime(v int64) {
 
 // GetCoalescingType returns the CoalescingType field value if set, zero value otherwise.
 func (o *VnicEthInterruptSettings) GetCoalescingType() string {
-	if o == nil || o.CoalescingType == nil {
+	if o == nil || IsNil(o.CoalescingType) {
 		var ret string
 		return ret
 	}
@@ -168,7 +182,7 @@ func (o *VnicEthInterruptSettings) GetCoalescingType() string {
 // GetCoalescingTypeOk returns a tuple with the CoalescingType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthInterruptSettings) GetCoalescingTypeOk() (*string, bool) {
-	if o == nil || o.CoalescingType == nil {
+	if o == nil || IsNil(o.CoalescingType) {
 		return nil, false
 	}
 	return o.CoalescingType, true
@@ -176,7 +190,7 @@ func (o *VnicEthInterruptSettings) GetCoalescingTypeOk() (*string, bool) {
 
 // HasCoalescingType returns a boolean if a field has been set.
 func (o *VnicEthInterruptSettings) HasCoalescingType() bool {
-	if o != nil && o.CoalescingType != nil {
+	if o != nil && !IsNil(o.CoalescingType) {
 		return true
 	}
 
@@ -190,7 +204,7 @@ func (o *VnicEthInterruptSettings) SetCoalescingType(v string) {
 
 // GetCount returns the Count field value if set, zero value otherwise.
 func (o *VnicEthInterruptSettings) GetCount() int64 {
-	if o == nil || o.Count == nil {
+	if o == nil || IsNil(o.Count) {
 		var ret int64
 		return ret
 	}
@@ -200,7 +214,7 @@ func (o *VnicEthInterruptSettings) GetCount() int64 {
 // GetCountOk returns a tuple with the Count field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthInterruptSettings) GetCountOk() (*int64, bool) {
-	if o == nil || o.Count == nil {
+	if o == nil || IsNil(o.Count) {
 		return nil, false
 	}
 	return o.Count, true
@@ -208,7 +222,7 @@ func (o *VnicEthInterruptSettings) GetCountOk() (*int64, bool) {
 
 // HasCount returns a boolean if a field has been set.
 func (o *VnicEthInterruptSettings) HasCount() bool {
-	if o != nil && o.Count != nil {
+	if o != nil && !IsNil(o.Count) {
 		return true
 	}
 
@@ -222,7 +236,7 @@ func (o *VnicEthInterruptSettings) SetCount(v int64) {
 
 // GetMode returns the Mode field value if set, zero value otherwise.
 func (o *VnicEthInterruptSettings) GetMode() string {
-	if o == nil || o.Mode == nil {
+	if o == nil || IsNil(o.Mode) {
 		var ret string
 		return ret
 	}
@@ -232,7 +246,7 @@ func (o *VnicEthInterruptSettings) GetMode() string {
 // GetModeOk returns a tuple with the Mode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicEthInterruptSettings) GetModeOk() (*string, bool) {
-	if o == nil || o.Mode == nil {
+	if o == nil || IsNil(o.Mode) {
 		return nil, false
 	}
 	return o.Mode, true
@@ -240,7 +254,7 @@ func (o *VnicEthInterruptSettings) GetModeOk() (*string, bool) {
 
 // HasMode returns a boolean if a field has been set.
 func (o *VnicEthInterruptSettings) HasMode() bool {
-	if o != nil && o.Mode != nil {
+	if o != nil && !IsNil(o.Mode) {
 		return true
 	}
 
@@ -253,31 +267,41 @@ func (o *VnicEthInterruptSettings) SetMode(v string) {
 }
 
 func (o VnicEthInterruptSettings) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VnicEthInterruptSettings) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.CoalescingTime != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.CoalescingTime) {
 		toSerialize["CoalescingTime"] = o.CoalescingTime
 	}
-	if o.CoalescingType != nil {
+	if !IsNil(o.CoalescingType) {
 		toSerialize["CoalescingType"] = o.CoalescingType
 	}
-	if o.Count != nil {
+	if !IsNil(o.Count) {
 		toSerialize["Count"] = o.Count
 	}
-	if o.Mode != nil {
+	if !IsNil(o.Mode) {
 		toSerialize["Mode"] = o.Mode
 	}
 
@@ -285,10 +309,51 @@ func (o VnicEthInterruptSettings) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VnicEthInterruptSettings) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VnicEthInterruptSettings) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VnicEthInterruptSettingsWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -306,7 +371,7 @@ func (o *VnicEthInterruptSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	varVnicEthInterruptSettingsWithoutEmbeddedStruct := VnicEthInterruptSettingsWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVnicEthInterruptSettingsWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVnicEthInterruptSettingsWithoutEmbeddedStruct)
 	if err == nil {
 		varVnicEthInterruptSettings := _VnicEthInterruptSettings{}
 		varVnicEthInterruptSettings.ClassId = varVnicEthInterruptSettingsWithoutEmbeddedStruct.ClassId
@@ -322,7 +387,7 @@ func (o *VnicEthInterruptSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	varVnicEthInterruptSettings := _VnicEthInterruptSettings{}
 
-	err = json.Unmarshal(bytes, &varVnicEthInterruptSettings)
+	err = json.Unmarshal(data, &varVnicEthInterruptSettings)
 	if err == nil {
 		o.MoBaseComplexType = varVnicEthInterruptSettings.MoBaseComplexType
 	} else {
@@ -331,7 +396,7 @@ func (o *VnicEthInterruptSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "CoalescingTime")

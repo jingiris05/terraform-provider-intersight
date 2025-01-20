@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VnicVmqSettings type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VnicVmqSettings{}
 
 // VnicVmqSettings Virtual Machine Queue Settings for the virtual interface that allow efficient transfer of network traffic to the guest OS.
 type VnicVmqSettings struct {
@@ -108,6 +112,11 @@ func (o *VnicVmqSettings) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "vnic.VmqSettings" of the ClassId field.
+func (o *VnicVmqSettings) GetDefaultClassId() interface{} {
+	return "vnic.VmqSettings"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VnicVmqSettings) GetObjectType() string {
 	if o == nil {
@@ -132,9 +141,14 @@ func (o *VnicVmqSettings) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "vnic.VmqSettings" of the ObjectType field.
+func (o *VnicVmqSettings) GetDefaultObjectType() interface{} {
+	return "vnic.VmqSettings"
+}
+
 // GetEnabled returns the Enabled field value if set, zero value otherwise.
 func (o *VnicVmqSettings) GetEnabled() bool {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		var ret bool
 		return ret
 	}
@@ -144,7 +158,7 @@ func (o *VnicVmqSettings) GetEnabled() bool {
 // GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicVmqSettings) GetEnabledOk() (*bool, bool) {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		return nil, false
 	}
 	return o.Enabled, true
@@ -152,7 +166,7 @@ func (o *VnicVmqSettings) GetEnabledOk() (*bool, bool) {
 
 // HasEnabled returns a boolean if a field has been set.
 func (o *VnicVmqSettings) HasEnabled() bool {
-	if o != nil && o.Enabled != nil {
+	if o != nil && !IsNil(o.Enabled) {
 		return true
 	}
 
@@ -166,7 +180,7 @@ func (o *VnicVmqSettings) SetEnabled(v bool) {
 
 // GetMultiQueueSupport returns the MultiQueueSupport field value if set, zero value otherwise.
 func (o *VnicVmqSettings) GetMultiQueueSupport() bool {
-	if o == nil || o.MultiQueueSupport == nil {
+	if o == nil || IsNil(o.MultiQueueSupport) {
 		var ret bool
 		return ret
 	}
@@ -176,7 +190,7 @@ func (o *VnicVmqSettings) GetMultiQueueSupport() bool {
 // GetMultiQueueSupportOk returns a tuple with the MultiQueueSupport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicVmqSettings) GetMultiQueueSupportOk() (*bool, bool) {
-	if o == nil || o.MultiQueueSupport == nil {
+	if o == nil || IsNil(o.MultiQueueSupport) {
 		return nil, false
 	}
 	return o.MultiQueueSupport, true
@@ -184,7 +198,7 @@ func (o *VnicVmqSettings) GetMultiQueueSupportOk() (*bool, bool) {
 
 // HasMultiQueueSupport returns a boolean if a field has been set.
 func (o *VnicVmqSettings) HasMultiQueueSupport() bool {
-	if o != nil && o.MultiQueueSupport != nil {
+	if o != nil && !IsNil(o.MultiQueueSupport) {
 		return true
 	}
 
@@ -198,7 +212,7 @@ func (o *VnicVmqSettings) SetMultiQueueSupport(v bool) {
 
 // GetNumInterrupts returns the NumInterrupts field value if set, zero value otherwise.
 func (o *VnicVmqSettings) GetNumInterrupts() int64 {
-	if o == nil || o.NumInterrupts == nil {
+	if o == nil || IsNil(o.NumInterrupts) {
 		var ret int64
 		return ret
 	}
@@ -208,7 +222,7 @@ func (o *VnicVmqSettings) GetNumInterrupts() int64 {
 // GetNumInterruptsOk returns a tuple with the NumInterrupts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicVmqSettings) GetNumInterruptsOk() (*int64, bool) {
-	if o == nil || o.NumInterrupts == nil {
+	if o == nil || IsNil(o.NumInterrupts) {
 		return nil, false
 	}
 	return o.NumInterrupts, true
@@ -216,7 +230,7 @@ func (o *VnicVmqSettings) GetNumInterruptsOk() (*int64, bool) {
 
 // HasNumInterrupts returns a boolean if a field has been set.
 func (o *VnicVmqSettings) HasNumInterrupts() bool {
-	if o != nil && o.NumInterrupts != nil {
+	if o != nil && !IsNil(o.NumInterrupts) {
 		return true
 	}
 
@@ -230,7 +244,7 @@ func (o *VnicVmqSettings) SetNumInterrupts(v int64) {
 
 // GetNumSubVnics returns the NumSubVnics field value if set, zero value otherwise.
 func (o *VnicVmqSettings) GetNumSubVnics() int64 {
-	if o == nil || o.NumSubVnics == nil {
+	if o == nil || IsNil(o.NumSubVnics) {
 		var ret int64
 		return ret
 	}
@@ -240,7 +254,7 @@ func (o *VnicVmqSettings) GetNumSubVnics() int64 {
 // GetNumSubVnicsOk returns a tuple with the NumSubVnics field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicVmqSettings) GetNumSubVnicsOk() (*int64, bool) {
-	if o == nil || o.NumSubVnics == nil {
+	if o == nil || IsNil(o.NumSubVnics) {
 		return nil, false
 	}
 	return o.NumSubVnics, true
@@ -248,7 +262,7 @@ func (o *VnicVmqSettings) GetNumSubVnicsOk() (*int64, bool) {
 
 // HasNumSubVnics returns a boolean if a field has been set.
 func (o *VnicVmqSettings) HasNumSubVnics() bool {
-	if o != nil && o.NumSubVnics != nil {
+	if o != nil && !IsNil(o.NumSubVnics) {
 		return true
 	}
 
@@ -262,7 +276,7 @@ func (o *VnicVmqSettings) SetNumSubVnics(v int64) {
 
 // GetNumVmqs returns the NumVmqs field value if set, zero value otherwise.
 func (o *VnicVmqSettings) GetNumVmqs() int64 {
-	if o == nil || o.NumVmqs == nil {
+	if o == nil || IsNil(o.NumVmqs) {
 		var ret int64
 		return ret
 	}
@@ -272,7 +286,7 @@ func (o *VnicVmqSettings) GetNumVmqs() int64 {
 // GetNumVmqsOk returns a tuple with the NumVmqs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicVmqSettings) GetNumVmqsOk() (*int64, bool) {
-	if o == nil || o.NumVmqs == nil {
+	if o == nil || IsNil(o.NumVmqs) {
 		return nil, false
 	}
 	return o.NumVmqs, true
@@ -280,7 +294,7 @@ func (o *VnicVmqSettings) GetNumVmqsOk() (*int64, bool) {
 
 // HasNumVmqs returns a boolean if a field has been set.
 func (o *VnicVmqSettings) HasNumVmqs() bool {
-	if o != nil && o.NumVmqs != nil {
+	if o != nil && !IsNil(o.NumVmqs) {
 		return true
 	}
 
@@ -294,7 +308,7 @@ func (o *VnicVmqSettings) SetNumVmqs(v int64) {
 
 // GetVmmqAdapterPolicy returns the VmmqAdapterPolicy field value if set, zero value otherwise.
 func (o *VnicVmqSettings) GetVmmqAdapterPolicy() string {
-	if o == nil || o.VmmqAdapterPolicy == nil {
+	if o == nil || IsNil(o.VmmqAdapterPolicy) {
 		var ret string
 		return ret
 	}
@@ -304,7 +318,7 @@ func (o *VnicVmqSettings) GetVmmqAdapterPolicy() string {
 // GetVmmqAdapterPolicyOk returns a tuple with the VmmqAdapterPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicVmqSettings) GetVmmqAdapterPolicyOk() (*string, bool) {
-	if o == nil || o.VmmqAdapterPolicy == nil {
+	if o == nil || IsNil(o.VmmqAdapterPolicy) {
 		return nil, false
 	}
 	return o.VmmqAdapterPolicy, true
@@ -312,7 +326,7 @@ func (o *VnicVmqSettings) GetVmmqAdapterPolicyOk() (*string, bool) {
 
 // HasVmmqAdapterPolicy returns a boolean if a field has been set.
 func (o *VnicVmqSettings) HasVmmqAdapterPolicy() bool {
-	if o != nil && o.VmmqAdapterPolicy != nil {
+	if o != nil && !IsNil(o.VmmqAdapterPolicy) {
 		return true
 	}
 
@@ -325,37 +339,47 @@ func (o *VnicVmqSettings) SetVmmqAdapterPolicy(v string) {
 }
 
 func (o VnicVmqSettings) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VnicVmqSettings) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Enabled != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Enabled) {
 		toSerialize["Enabled"] = o.Enabled
 	}
-	if o.MultiQueueSupport != nil {
+	if !IsNil(o.MultiQueueSupport) {
 		toSerialize["MultiQueueSupport"] = o.MultiQueueSupport
 	}
-	if o.NumInterrupts != nil {
+	if !IsNil(o.NumInterrupts) {
 		toSerialize["NumInterrupts"] = o.NumInterrupts
 	}
-	if o.NumSubVnics != nil {
+	if !IsNil(o.NumSubVnics) {
 		toSerialize["NumSubVnics"] = o.NumSubVnics
 	}
-	if o.NumVmqs != nil {
+	if !IsNil(o.NumVmqs) {
 		toSerialize["NumVmqs"] = o.NumVmqs
 	}
-	if o.VmmqAdapterPolicy != nil {
+	if !IsNil(o.VmmqAdapterPolicy) {
 		toSerialize["VmmqAdapterPolicy"] = o.VmmqAdapterPolicy
 	}
 
@@ -363,10 +387,51 @@ func (o VnicVmqSettings) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VnicVmqSettings) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VnicVmqSettings) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VnicVmqSettingsWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -388,7 +453,7 @@ func (o *VnicVmqSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	varVnicVmqSettingsWithoutEmbeddedStruct := VnicVmqSettingsWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVnicVmqSettingsWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVnicVmqSettingsWithoutEmbeddedStruct)
 	if err == nil {
 		varVnicVmqSettings := _VnicVmqSettings{}
 		varVnicVmqSettings.ClassId = varVnicVmqSettingsWithoutEmbeddedStruct.ClassId
@@ -406,7 +471,7 @@ func (o *VnicVmqSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	varVnicVmqSettings := _VnicVmqSettings{}
 
-	err = json.Unmarshal(bytes, &varVnicVmqSettings)
+	err = json.Unmarshal(data, &varVnicVmqSettings)
 	if err == nil {
 		o.MoBaseComplexType = varVnicVmqSettings.MoBaseComplexType
 	} else {
@@ -415,7 +480,7 @@ func (o *VnicVmqSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Enabled")

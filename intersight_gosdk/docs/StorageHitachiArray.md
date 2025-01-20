@@ -11,9 +11,10 @@ Name | Type | Description | Notes
 **Ctl2Ip** | Pointer to **string** | IP address of controller 2 of the storage system. | [optional] [readonly] 
 **Ctl2MicroVersion** | Pointer to **string** | GUM (Gateway for Unified Management) version of the controller 2. | [optional] [readonly] 
 **DeviceId** | Pointer to **string** | ID of the Storage device. | [optional] [readonly] 
+**Ip** | Pointer to **string** | The representative IP address (IPv4) of the storage. | [optional] [readonly] 
 **SvpIp** | Pointer to **string** | IP address of the SVP (Service Processor). The SVP provides out-of-band configuration and management of the storage system, and collects performance data for key components to enable diagnostic testing and analysis. | [optional] [readonly] 
 **TargetCtl** | Pointer to **string** | Controller operated by the REST API. | [optional] [readonly] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -199,6 +200,31 @@ SetDeviceId sets DeviceId field to given value.
 
 HasDeviceId returns a boolean if a field has been set.
 
+### GetIp
+
+`func (o *StorageHitachiArray) GetIp() string`
+
+GetIp returns the Ip field if non-nil, zero value otherwise.
+
+### GetIpOk
+
+`func (o *StorageHitachiArray) GetIpOk() (*string, bool)`
+
+GetIpOk returns a tuple with the Ip field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIp
+
+`func (o *StorageHitachiArray) SetIp(v string)`
+
+SetIp sets Ip field to given value.
+
+### HasIp
+
+`func (o *StorageHitachiArray) HasIp() bool`
+
+HasIp returns a boolean if a field has been set.
+
 ### GetSvpIp
 
 `func (o *StorageHitachiArray) GetSvpIp() string`
@@ -274,6 +300,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *StorageHitachiArray) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *StorageHitachiArray) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HyperflexIpAddrRange type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexIpAddrRange{}
 
 // HyperflexIpAddrRange A range of IPv4 addresses. The range is inclusive and comprised of a start IP address, an end IP address, netmask, and default gateway.
 type HyperflexIpAddrRange struct {
@@ -26,15 +30,15 @@ type HyperflexIpAddrRange struct {
 	ObjectType string `json:"ObjectType"`
 	// The end IPv4 address of the range.
 	// Deprecated
-	EndAddr *string `json:"EndAddr,omitempty"`
+	EndAddr *string `json:"EndAddr,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	// The default gateway for the start and end IPv4 addresses.
-	Gateway      *string                `json:"Gateway,omitempty"`
+	Gateway      *string                `json:"Gateway,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	IpAddrBlocks []CommIpV4AddressBlock `json:"IpAddrBlocks,omitempty"`
 	// The netmask specified in dot decimal notation. The start address, end address, and gateway must all be within the network specified by this netmask.
-	Netmask *string `json:"Netmask,omitempty"`
+	Netmask *string `json:"Netmask,omitempty" validate:"regexp=^$|^(((255\\\\.){3}(255|254|252|248|240|224|192|128|0+))|((255\\\\.){2}(255|254|252|248|240|224|192|128|0+)\\\\.0)|((255\\\\.)(255|254|252|248|240|224|192|128|0+)(\\\\.0+){2})|((255|254|252|248|240|224|192|128|0+)(\\\\.0+){3}))$"`
 	// The start IPv4 address of the range.
 	// Deprecated
-	StartAddr            *string `json:"StartAddr,omitempty"`
+	StartAddr            *string `json:"StartAddr,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -87,6 +91,11 @@ func (o *HyperflexIpAddrRange) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.IpAddrRange" of the ClassId field.
+func (o *HyperflexIpAddrRange) GetDefaultClassId() interface{} {
+	return "hyperflex.IpAddrRange"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexIpAddrRange) GetObjectType() string {
 	if o == nil {
@@ -111,10 +120,15 @@ func (o *HyperflexIpAddrRange) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.IpAddrRange" of the ObjectType field.
+func (o *HyperflexIpAddrRange) GetDefaultObjectType() interface{} {
+	return "hyperflex.IpAddrRange"
+}
+
 // GetEndAddr returns the EndAddr field value if set, zero value otherwise.
 // Deprecated
 func (o *HyperflexIpAddrRange) GetEndAddr() string {
-	if o == nil || o.EndAddr == nil {
+	if o == nil || IsNil(o.EndAddr) {
 		var ret string
 		return ret
 	}
@@ -125,7 +139,7 @@ func (o *HyperflexIpAddrRange) GetEndAddr() string {
 // and a boolean to check if the value has been set.
 // Deprecated
 func (o *HyperflexIpAddrRange) GetEndAddrOk() (*string, bool) {
-	if o == nil || o.EndAddr == nil {
+	if o == nil || IsNil(o.EndAddr) {
 		return nil, false
 	}
 	return o.EndAddr, true
@@ -133,7 +147,7 @@ func (o *HyperflexIpAddrRange) GetEndAddrOk() (*string, bool) {
 
 // HasEndAddr returns a boolean if a field has been set.
 func (o *HyperflexIpAddrRange) HasEndAddr() bool {
-	if o != nil && o.EndAddr != nil {
+	if o != nil && !IsNil(o.EndAddr) {
 		return true
 	}
 
@@ -148,7 +162,7 @@ func (o *HyperflexIpAddrRange) SetEndAddr(v string) {
 
 // GetGateway returns the Gateway field value if set, zero value otherwise.
 func (o *HyperflexIpAddrRange) GetGateway() string {
-	if o == nil || o.Gateway == nil {
+	if o == nil || IsNil(o.Gateway) {
 		var ret string
 		return ret
 	}
@@ -158,7 +172,7 @@ func (o *HyperflexIpAddrRange) GetGateway() string {
 // GetGatewayOk returns a tuple with the Gateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexIpAddrRange) GetGatewayOk() (*string, bool) {
-	if o == nil || o.Gateway == nil {
+	if o == nil || IsNil(o.Gateway) {
 		return nil, false
 	}
 	return o.Gateway, true
@@ -166,7 +180,7 @@ func (o *HyperflexIpAddrRange) GetGatewayOk() (*string, bool) {
 
 // HasGateway returns a boolean if a field has been set.
 func (o *HyperflexIpAddrRange) HasGateway() bool {
-	if o != nil && o.Gateway != nil {
+	if o != nil && !IsNil(o.Gateway) {
 		return true
 	}
 
@@ -191,7 +205,7 @@ func (o *HyperflexIpAddrRange) GetIpAddrBlocks() []CommIpV4AddressBlock {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexIpAddrRange) GetIpAddrBlocksOk() ([]CommIpV4AddressBlock, bool) {
-	if o == nil || o.IpAddrBlocks == nil {
+	if o == nil || IsNil(o.IpAddrBlocks) {
 		return nil, false
 	}
 	return o.IpAddrBlocks, true
@@ -199,7 +213,7 @@ func (o *HyperflexIpAddrRange) GetIpAddrBlocksOk() ([]CommIpV4AddressBlock, bool
 
 // HasIpAddrBlocks returns a boolean if a field has been set.
 func (o *HyperflexIpAddrRange) HasIpAddrBlocks() bool {
-	if o != nil && o.IpAddrBlocks != nil {
+	if o != nil && !IsNil(o.IpAddrBlocks) {
 		return true
 	}
 
@@ -213,7 +227,7 @@ func (o *HyperflexIpAddrRange) SetIpAddrBlocks(v []CommIpV4AddressBlock) {
 
 // GetNetmask returns the Netmask field value if set, zero value otherwise.
 func (o *HyperflexIpAddrRange) GetNetmask() string {
-	if o == nil || o.Netmask == nil {
+	if o == nil || IsNil(o.Netmask) {
 		var ret string
 		return ret
 	}
@@ -223,7 +237,7 @@ func (o *HyperflexIpAddrRange) GetNetmask() string {
 // GetNetmaskOk returns a tuple with the Netmask field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexIpAddrRange) GetNetmaskOk() (*string, bool) {
-	if o == nil || o.Netmask == nil {
+	if o == nil || IsNil(o.Netmask) {
 		return nil, false
 	}
 	return o.Netmask, true
@@ -231,7 +245,7 @@ func (o *HyperflexIpAddrRange) GetNetmaskOk() (*string, bool) {
 
 // HasNetmask returns a boolean if a field has been set.
 func (o *HyperflexIpAddrRange) HasNetmask() bool {
-	if o != nil && o.Netmask != nil {
+	if o != nil && !IsNil(o.Netmask) {
 		return true
 	}
 
@@ -246,7 +260,7 @@ func (o *HyperflexIpAddrRange) SetNetmask(v string) {
 // GetStartAddr returns the StartAddr field value if set, zero value otherwise.
 // Deprecated
 func (o *HyperflexIpAddrRange) GetStartAddr() string {
-	if o == nil || o.StartAddr == nil {
+	if o == nil || IsNil(o.StartAddr) {
 		var ret string
 		return ret
 	}
@@ -257,7 +271,7 @@ func (o *HyperflexIpAddrRange) GetStartAddr() string {
 // and a boolean to check if the value has been set.
 // Deprecated
 func (o *HyperflexIpAddrRange) GetStartAddrOk() (*string, bool) {
-	if o == nil || o.StartAddr == nil {
+	if o == nil || IsNil(o.StartAddr) {
 		return nil, false
 	}
 	return o.StartAddr, true
@@ -265,7 +279,7 @@ func (o *HyperflexIpAddrRange) GetStartAddrOk() (*string, bool) {
 
 // HasStartAddr returns a boolean if a field has been set.
 func (o *HyperflexIpAddrRange) HasStartAddr() bool {
-	if o != nil && o.StartAddr != nil {
+	if o != nil && !IsNil(o.StartAddr) {
 		return true
 	}
 
@@ -279,34 +293,44 @@ func (o *HyperflexIpAddrRange) SetStartAddr(v string) {
 }
 
 func (o HyperflexIpAddrRange) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexIpAddrRange) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.EndAddr != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.EndAddr) {
 		toSerialize["EndAddr"] = o.EndAddr
 	}
-	if o.Gateway != nil {
+	if !IsNil(o.Gateway) {
 		toSerialize["Gateway"] = o.Gateway
 	}
 	if o.IpAddrBlocks != nil {
 		toSerialize["IpAddrBlocks"] = o.IpAddrBlocks
 	}
-	if o.Netmask != nil {
+	if !IsNil(o.Netmask) {
 		toSerialize["Netmask"] = o.Netmask
 	}
-	if o.StartAddr != nil {
+	if !IsNil(o.StartAddr) {
 		toSerialize["StartAddr"] = o.StartAddr
 	}
 
@@ -314,10 +338,51 @@ func (o HyperflexIpAddrRange) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexIpAddrRange) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexIpAddrRange) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexIpAddrRangeWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -325,20 +390,20 @@ func (o *HyperflexIpAddrRange) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// The end IPv4 address of the range.
 		// Deprecated
-		EndAddr *string `json:"EndAddr,omitempty"`
+		EndAddr *string `json:"EndAddr,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 		// The default gateway for the start and end IPv4 addresses.
-		Gateway      *string                `json:"Gateway,omitempty"`
+		Gateway      *string                `json:"Gateway,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 		IpAddrBlocks []CommIpV4AddressBlock `json:"IpAddrBlocks,omitempty"`
 		// The netmask specified in dot decimal notation. The start address, end address, and gateway must all be within the network specified by this netmask.
-		Netmask *string `json:"Netmask,omitempty"`
+		Netmask *string `json:"Netmask,omitempty" validate:"regexp=^$|^(((255\\\\.){3}(255|254|252|248|240|224|192|128|0+))|((255\\\\.){2}(255|254|252|248|240|224|192|128|0+)\\\\.0)|((255\\\\.)(255|254|252|248|240|224|192|128|0+)(\\\\.0+){2})|((255|254|252|248|240|224|192|128|0+)(\\\\.0+){3}))$"`
 		// The start IPv4 address of the range.
 		// Deprecated
-		StartAddr *string `json:"StartAddr,omitempty"`
+		StartAddr *string `json:"StartAddr,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	}
 
 	varHyperflexIpAddrRangeWithoutEmbeddedStruct := HyperflexIpAddrRangeWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexIpAddrRangeWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexIpAddrRangeWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexIpAddrRange := _HyperflexIpAddrRange{}
 		varHyperflexIpAddrRange.ClassId = varHyperflexIpAddrRangeWithoutEmbeddedStruct.ClassId
@@ -355,7 +420,7 @@ func (o *HyperflexIpAddrRange) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHyperflexIpAddrRange := _HyperflexIpAddrRange{}
 
-	err = json.Unmarshal(bytes, &varHyperflexIpAddrRange)
+	err = json.Unmarshal(data, &varHyperflexIpAddrRange)
 	if err == nil {
 		o.MoBaseComplexType = varHyperflexIpAddrRange.MoBaseComplexType
 	} else {
@@ -364,7 +429,7 @@ func (o *HyperflexIpAddrRange) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "EndAddr")

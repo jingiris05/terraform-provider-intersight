@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the ApplianceNodeInfo type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ApplianceNodeInfo{}
 
 // ApplianceNodeInfo NodeInfo managed object stores the Intersight Appliance's cluster node information. NodeInfo managed objects are created during the Intersight Appliance setup. The Intersight Appliance updates the NodeInfo managed objects with status information periodically.
 type ApplianceNodeInfo struct {
@@ -30,7 +34,7 @@ type ApplianceNodeInfo struct {
 	NodeId         *int64                    `json:"NodeId,omitempty"`
 	NodeIpV4Config NullableCommIpV4Interface `json:"NodeIpV4Config,omitempty"`
 	NodeIpV6Config NullableCommIpV6Interface `json:"NodeIpV6Config,omitempty"`
-	// Operational status of the Intersight Appliance node. * `Unknown` - Operational status of the Intersight Appliance entity is Unknown. * `Operational` - Operational status of the Intersight Appliance entity is Operational. * `Impaired` - Operational status of the Intersight Appliance entity is Impaired. * `AttentionNeeded` - Operational status of the Intersight Appliance entity is AttentionNeeded.
+	// Operational status of the Intersight Appliance node. * `Unknown` - The status of the appliance node is unknown. * `Operational` - The appliance node is operational. * `Impaired` - The appliance node is impaired. * `AttentionNeeded` - The appliance node needs attention. * `ReadyToJoin` - The node is ready to be added to a standalone Intersight Appliance to form a cluster. * `OutOfService` - The user has taken this node (part of a cluster) to out of service. * `ReadyForReplacement` - The cluster node is ready to be replaced. * `ReplacementInProgress` - The cluster node replacement is in progress. * `ReplacementFailed` - There was a failure during the cluster node replacement.
 	OperationalStatus    *string `json:"OperationalStatus,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -84,6 +88,11 @@ func (o *ApplianceNodeInfo) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "appliance.NodeInfo" of the ClassId field.
+func (o *ApplianceNodeInfo) GetDefaultClassId() interface{} {
+	return "appliance.NodeInfo"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ApplianceNodeInfo) GetObjectType() string {
 	if o == nil {
@@ -108,9 +117,14 @@ func (o *ApplianceNodeInfo) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "appliance.NodeInfo" of the ObjectType field.
+func (o *ApplianceNodeInfo) GetDefaultObjectType() interface{} {
+	return "appliance.NodeInfo"
+}
+
 // GetHostname returns the Hostname field value if set, zero value otherwise.
 func (o *ApplianceNodeInfo) GetHostname() string {
-	if o == nil || o.Hostname == nil {
+	if o == nil || IsNil(o.Hostname) {
 		var ret string
 		return ret
 	}
@@ -120,7 +134,7 @@ func (o *ApplianceNodeInfo) GetHostname() string {
 // GetHostnameOk returns a tuple with the Hostname field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceNodeInfo) GetHostnameOk() (*string, bool) {
-	if o == nil || o.Hostname == nil {
+	if o == nil || IsNil(o.Hostname) {
 		return nil, false
 	}
 	return o.Hostname, true
@@ -128,7 +142,7 @@ func (o *ApplianceNodeInfo) GetHostnameOk() (*string, bool) {
 
 // HasHostname returns a boolean if a field has been set.
 func (o *ApplianceNodeInfo) HasHostname() bool {
-	if o != nil && o.Hostname != nil {
+	if o != nil && !IsNil(o.Hostname) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *ApplianceNodeInfo) SetHostname(v string) {
 
 // GetNodeId returns the NodeId field value if set, zero value otherwise.
 func (o *ApplianceNodeInfo) GetNodeId() int64 {
-	if o == nil || o.NodeId == nil {
+	if o == nil || IsNil(o.NodeId) {
 		var ret int64
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *ApplianceNodeInfo) GetNodeId() int64 {
 // GetNodeIdOk returns a tuple with the NodeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceNodeInfo) GetNodeIdOk() (*int64, bool) {
-	if o == nil || o.NodeId == nil {
+	if o == nil || IsNil(o.NodeId) {
 		return nil, false
 	}
 	return o.NodeId, true
@@ -160,7 +174,7 @@ func (o *ApplianceNodeInfo) GetNodeIdOk() (*int64, bool) {
 
 // HasNodeId returns a boolean if a field has been set.
 func (o *ApplianceNodeInfo) HasNodeId() bool {
-	if o != nil && o.NodeId != nil {
+	if o != nil && !IsNil(o.NodeId) {
 		return true
 	}
 
@@ -174,7 +188,7 @@ func (o *ApplianceNodeInfo) SetNodeId(v int64) {
 
 // GetNodeIpV4Config returns the NodeIpV4Config field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ApplianceNodeInfo) GetNodeIpV4Config() CommIpV4Interface {
-	if o == nil || o.NodeIpV4Config.Get() == nil {
+	if o == nil || IsNil(o.NodeIpV4Config.Get()) {
 		var ret CommIpV4Interface
 		return ret
 	}
@@ -217,7 +231,7 @@ func (o *ApplianceNodeInfo) UnsetNodeIpV4Config() {
 
 // GetNodeIpV6Config returns the NodeIpV6Config field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ApplianceNodeInfo) GetNodeIpV6Config() CommIpV6Interface {
-	if o == nil || o.NodeIpV6Config.Get() == nil {
+	if o == nil || IsNil(o.NodeIpV6Config.Get()) {
 		var ret CommIpV6Interface
 		return ret
 	}
@@ -260,7 +274,7 @@ func (o *ApplianceNodeInfo) UnsetNodeIpV6Config() {
 
 // GetOperationalStatus returns the OperationalStatus field value if set, zero value otherwise.
 func (o *ApplianceNodeInfo) GetOperationalStatus() string {
-	if o == nil || o.OperationalStatus == nil {
+	if o == nil || IsNil(o.OperationalStatus) {
 		var ret string
 		return ret
 	}
@@ -270,7 +284,7 @@ func (o *ApplianceNodeInfo) GetOperationalStatus() string {
 // GetOperationalStatusOk returns a tuple with the OperationalStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceNodeInfo) GetOperationalStatusOk() (*string, bool) {
-	if o == nil || o.OperationalStatus == nil {
+	if o == nil || IsNil(o.OperationalStatus) {
 		return nil, false
 	}
 	return o.OperationalStatus, true
@@ -278,7 +292,7 @@ func (o *ApplianceNodeInfo) GetOperationalStatusOk() (*string, bool) {
 
 // HasOperationalStatus returns a boolean if a field has been set.
 func (o *ApplianceNodeInfo) HasOperationalStatus() bool {
-	if o != nil && o.OperationalStatus != nil {
+	if o != nil && !IsNil(o.OperationalStatus) {
 		return true
 	}
 
@@ -291,25 +305,35 @@ func (o *ApplianceNodeInfo) SetOperationalStatus(v string) {
 }
 
 func (o ApplianceNodeInfo) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ApplianceNodeInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Hostname != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Hostname) {
 		toSerialize["Hostname"] = o.Hostname
 	}
-	if o.NodeId != nil {
+	if !IsNil(o.NodeId) {
 		toSerialize["NodeId"] = o.NodeId
 	}
 	if o.NodeIpV4Config.IsSet() {
@@ -318,7 +342,7 @@ func (o ApplianceNodeInfo) MarshalJSON() ([]byte, error) {
 	if o.NodeIpV6Config.IsSet() {
 		toSerialize["NodeIpV6Config"] = o.NodeIpV6Config.Get()
 	}
-	if o.OperationalStatus != nil {
+	if !IsNil(o.OperationalStatus) {
 		toSerialize["OperationalStatus"] = o.OperationalStatus
 	}
 
@@ -326,10 +350,51 @@ func (o ApplianceNodeInfo) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ApplianceNodeInfo) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ApplianceNodeInfo) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ApplianceNodeInfoWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -341,13 +406,13 @@ func (o *ApplianceNodeInfo) UnmarshalJSON(bytes []byte) (err error) {
 		NodeId         *int64                    `json:"NodeId,omitempty"`
 		NodeIpV4Config NullableCommIpV4Interface `json:"NodeIpV4Config,omitempty"`
 		NodeIpV6Config NullableCommIpV6Interface `json:"NodeIpV6Config,omitempty"`
-		// Operational status of the Intersight Appliance node. * `Unknown` - Operational status of the Intersight Appliance entity is Unknown. * `Operational` - Operational status of the Intersight Appliance entity is Operational. * `Impaired` - Operational status of the Intersight Appliance entity is Impaired. * `AttentionNeeded` - Operational status of the Intersight Appliance entity is AttentionNeeded.
+		// Operational status of the Intersight Appliance node. * `Unknown` - The status of the appliance node is unknown. * `Operational` - The appliance node is operational. * `Impaired` - The appliance node is impaired. * `AttentionNeeded` - The appliance node needs attention. * `ReadyToJoin` - The node is ready to be added to a standalone Intersight Appliance to form a cluster. * `OutOfService` - The user has taken this node (part of a cluster) to out of service. * `ReadyForReplacement` - The cluster node is ready to be replaced. * `ReplacementInProgress` - The cluster node replacement is in progress. * `ReplacementFailed` - There was a failure during the cluster node replacement.
 		OperationalStatus *string `json:"OperationalStatus,omitempty"`
 	}
 
 	varApplianceNodeInfoWithoutEmbeddedStruct := ApplianceNodeInfoWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varApplianceNodeInfoWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varApplianceNodeInfoWithoutEmbeddedStruct)
 	if err == nil {
 		varApplianceNodeInfo := _ApplianceNodeInfo{}
 		varApplianceNodeInfo.ClassId = varApplianceNodeInfoWithoutEmbeddedStruct.ClassId
@@ -364,7 +429,7 @@ func (o *ApplianceNodeInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	varApplianceNodeInfo := _ApplianceNodeInfo{}
 
-	err = json.Unmarshal(bytes, &varApplianceNodeInfo)
+	err = json.Unmarshal(data, &varApplianceNodeInfo)
 	if err == nil {
 		o.MoBaseMo = varApplianceNodeInfo.MoBaseMo
 	} else {
@@ -373,7 +438,7 @@ func (o *ApplianceNodeInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Hostname")

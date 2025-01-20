@@ -7,12 +7,14 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "fabric.SwitchControlPolicy"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "fabric.SwitchControlPolicy"]
 **EthernetSwitchingMode** | Pointer to **string** | Enable or Disable Ethernet End Host Switching Mode. * &#x60;end-host&#x60; - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * &#x60;switch&#x60; - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode. | [optional] [default to "end-host"]
+**FabricPcVhbaReset** | Pointer to **string** | When enabled, a Registered State Change Notification (RSCN) is sent to the VIC adapter when any member port within the fabric port-channel goes down and vHBA would reset to restore the connection immediately. When disabled (default), vHBA reset is done only when all the members of a fabric port-channel are down. * &#x60;Disabled&#x60; - Admin configured Disabled State. * &#x60;Enabled&#x60; - Admin configured Enabled State. | [optional] [default to "Disabled"]
 **FcSwitchingMode** | Pointer to **string** | Enable or Disable FC End Host Switching Mode. * &#x60;end-host&#x60; - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * &#x60;switch&#x60; - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode. | [optional] [default to "end-host"]
 **MacAgingSettings** | Pointer to [**NullableFabricMacAgingSettings**](FabricMacAgingSettings.md) |  | [optional] 
+**ReservedVlanStartId** | Pointer to **int64** | The starting ID for VLANs reserved for internal use within the Fabric Interconnect. This VLAN ID is the starting ID of a contiguous block of 128 VLANs that cannot be configured for user data.  This range of VLANs cannot be configured in VLAN policy. If this property is not configured, VLAN range 3915 - 4042 is reserved for internal use by default. | [optional] [default to 3915]
 **UdldSettings** | Pointer to [**NullableFabricUdldGlobalSettings**](FabricUdldGlobalSettings.md) |  | [optional] 
-**VlanPortOptimizationEnabled** | Pointer to **bool** | To enable or disable the VLAN port count optimization. | [optional] [default to false]
-**Organization** | Pointer to [**OrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
-**Profiles** | Pointer to [**[]FabricSwitchProfileRelationship**](FabricSwitchProfileRelationship.md) | An array of relationships to fabricSwitchProfile resources. | [optional] 
+**VlanPortOptimizationEnabled** | Pointer to **bool** | To enable or disable the VLAN port count optimization. This feature will always be enabled for Cisco UCS Fabric Interconnect 9108 100G. | [optional] [default to false]
+**Organization** | Pointer to [**NullableOrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**Profiles** | Pointer to [**[]FabricBaseSwitchProfileRelationship**](FabricBaseSwitchProfileRelationship.md) | An array of relationships to fabricBaseSwitchProfile resources. | [optional] 
 
 ## Methods
 
@@ -98,6 +100,31 @@ SetEthernetSwitchingMode sets EthernetSwitchingMode field to given value.
 
 HasEthernetSwitchingMode returns a boolean if a field has been set.
 
+### GetFabricPcVhbaReset
+
+`func (o *FabricSwitchControlPolicy) GetFabricPcVhbaReset() string`
+
+GetFabricPcVhbaReset returns the FabricPcVhbaReset field if non-nil, zero value otherwise.
+
+### GetFabricPcVhbaResetOk
+
+`func (o *FabricSwitchControlPolicy) GetFabricPcVhbaResetOk() (*string, bool)`
+
+GetFabricPcVhbaResetOk returns a tuple with the FabricPcVhbaReset field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFabricPcVhbaReset
+
+`func (o *FabricSwitchControlPolicy) SetFabricPcVhbaReset(v string)`
+
+SetFabricPcVhbaReset sets FabricPcVhbaReset field to given value.
+
+### HasFabricPcVhbaReset
+
+`func (o *FabricSwitchControlPolicy) HasFabricPcVhbaReset() bool`
+
+HasFabricPcVhbaReset returns a boolean if a field has been set.
+
 ### GetFcSwitchingMode
 
 `func (o *FabricSwitchControlPolicy) GetFcSwitchingMode() string`
@@ -158,6 +185,31 @@ HasMacAgingSettings returns a boolean if a field has been set.
 `func (o *FabricSwitchControlPolicy) UnsetMacAgingSettings()`
 
 UnsetMacAgingSettings ensures that no value is present for MacAgingSettings, not even an explicit nil
+### GetReservedVlanStartId
+
+`func (o *FabricSwitchControlPolicy) GetReservedVlanStartId() int64`
+
+GetReservedVlanStartId returns the ReservedVlanStartId field if non-nil, zero value otherwise.
+
+### GetReservedVlanStartIdOk
+
+`func (o *FabricSwitchControlPolicy) GetReservedVlanStartIdOk() (*int64, bool)`
+
+GetReservedVlanStartIdOk returns a tuple with the ReservedVlanStartId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReservedVlanStartId
+
+`func (o *FabricSwitchControlPolicy) SetReservedVlanStartId(v int64)`
+
+SetReservedVlanStartId sets ReservedVlanStartId field to given value.
+
+### HasReservedVlanStartId
+
+`func (o *FabricSwitchControlPolicy) HasReservedVlanStartId() bool`
+
+HasReservedVlanStartId returns a boolean if a field has been set.
+
 ### GetUdldSettings
 
 `func (o *FabricSwitchControlPolicy) GetUdldSettings() FabricUdldGlobalSettings`
@@ -243,22 +295,32 @@ SetOrganization sets Organization field to given value.
 
 HasOrganization returns a boolean if a field has been set.
 
+### SetOrganizationNil
+
+`func (o *FabricSwitchControlPolicy) SetOrganizationNil(b bool)`
+
+ SetOrganizationNil sets the value for Organization to be an explicit nil
+
+### UnsetOrganization
+`func (o *FabricSwitchControlPolicy) UnsetOrganization()`
+
+UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
 ### GetProfiles
 
-`func (o *FabricSwitchControlPolicy) GetProfiles() []FabricSwitchProfileRelationship`
+`func (o *FabricSwitchControlPolicy) GetProfiles() []FabricBaseSwitchProfileRelationship`
 
 GetProfiles returns the Profiles field if non-nil, zero value otherwise.
 
 ### GetProfilesOk
 
-`func (o *FabricSwitchControlPolicy) GetProfilesOk() (*[]FabricSwitchProfileRelationship, bool)`
+`func (o *FabricSwitchControlPolicy) GetProfilesOk() (*[]FabricBaseSwitchProfileRelationship, bool)`
 
 GetProfilesOk returns a tuple with the Profiles field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetProfiles
 
-`func (o *FabricSwitchControlPolicy) SetProfiles(v []FabricSwitchProfileRelationship)`
+`func (o *FabricSwitchControlPolicy) SetProfiles(v []FabricBaseSwitchProfileRelationship)`
 
 SetProfiles sets Profiles field to given value.
 

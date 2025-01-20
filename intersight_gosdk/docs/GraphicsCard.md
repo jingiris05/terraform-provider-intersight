@@ -7,28 +7,32 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "graphics.Card"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "graphics.Card"]
 **CardId** | Pointer to **int64** | The id of the graphics card. | [optional] [readonly] 
+**Description** | Pointer to **string** | This field displays the description of the Graphics Processing Unit. | [optional] [readonly] 
 **DeviceId** | Pointer to **int64** | The device id of the graphics card. | [optional] [readonly] 
 **ExpanderSlot** | Pointer to **string** | The expander slot information of the card. | [optional] [readonly] 
 **FirmwareVersion** | Pointer to **string** | The firmware version of the graphics card. | [optional] [readonly] 
 **GpuId** | Pointer to **string** | The identifier of the graphics processor unit. | [optional] [readonly] 
+**IsPlatformSupported** | Pointer to **bool** | This field indicates whether the Graphics Processing Unit is supported on the server or not. | [optional] [readonly] [default to true]
 **Mode** | Pointer to **string** | The current mode of the graphics card. | [optional] [readonly] 
 **NumGpus** | Pointer to **string** | The number of controllers under each card. | [optional] 
 **OperReason** | Pointer to **[]string** |  | [optional] 
 **OperState** | Pointer to **string** | The current operational state of the graphics card. | [optional] [readonly] 
+**PartNumber** | Pointer to **string** | This field displays the part number of the Graphics Processing Unit. | [optional] [readonly] 
 **PciAddress** | Pointer to **string** | The PCI address of the graphics card. | [optional] [readonly] 
 **PciAddressList** | Pointer to **string** | This list contains the PCI address of all controllers for corresponding card. | [optional] [readonly] 
 **PciSlot** | Pointer to **string** | The PCI slot name of the graphics card. | [optional] [readonly] 
+**Pid** | Pointer to **string** | This field displays the product ID of the Graphics Processing Unit. | [optional] [readonly] 
 **SubDeviceId** | Pointer to **int64** | The sub device id of the graphics processor unit. | [optional] [readonly] 
 **SubVendorId** | Pointer to **int64** | The sub vendor id of the graphics processor unit. | [optional] [readonly] 
 **VendorId** | Pointer to **int64** | The vendor id of the graphics processor unit. | [optional] [readonly] 
-**ComputeBlade** | Pointer to [**ComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
-**ComputeBoard** | Pointer to [**ComputeBoardRelationship**](ComputeBoardRelationship.md) |  | [optional] 
-**ComputeRackUnit** | Pointer to [**ComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
+**ComputeBlade** | Pointer to [**NullableComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
+**ComputeBoard** | Pointer to [**NullableComputeBoardRelationship**](ComputeBoardRelationship.md) |  | [optional] 
+**ComputeRackUnit** | Pointer to [**NullableComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
 **GraphicsControllers** | Pointer to [**[]GraphicsControllerRelationship**](GraphicsControllerRelationship.md) | An array of relationships to graphicsController resources. | [optional] [readonly] 
-**InventoryDeviceInfo** | Pointer to [**InventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
-**PciDevice** | Pointer to [**PciDeviceRelationship**](PciDeviceRelationship.md) |  | [optional] 
-**PciNode** | Pointer to [**PciNodeRelationship**](PciNodeRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**InventoryDeviceInfo** | Pointer to [**NullableInventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
+**PciDevice** | Pointer to [**NullablePciDeviceRelationship**](PciDeviceRelationship.md) |  | [optional] 
+**PciNode** | Pointer to [**NullablePciNodeRelationship**](PciNodeRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 **RunningFirmware** | Pointer to [**[]FirmwareRunningFirmwareRelationship**](FirmwareRunningFirmwareRelationship.md) | An array of relationships to firmwareRunningFirmware resources. | [optional] [readonly] 
 
 ## Methods
@@ -114,6 +118,31 @@ SetCardId sets CardId field to given value.
 `func (o *GraphicsCard) HasCardId() bool`
 
 HasCardId returns a boolean if a field has been set.
+
+### GetDescription
+
+`func (o *GraphicsCard) GetDescription() string`
+
+GetDescription returns the Description field if non-nil, zero value otherwise.
+
+### GetDescriptionOk
+
+`func (o *GraphicsCard) GetDescriptionOk() (*string, bool)`
+
+GetDescriptionOk returns a tuple with the Description field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDescription
+
+`func (o *GraphicsCard) SetDescription(v string)`
+
+SetDescription sets Description field to given value.
+
+### HasDescription
+
+`func (o *GraphicsCard) HasDescription() bool`
+
+HasDescription returns a boolean if a field has been set.
 
 ### GetDeviceId
 
@@ -214,6 +243,31 @@ SetGpuId sets GpuId field to given value.
 `func (o *GraphicsCard) HasGpuId() bool`
 
 HasGpuId returns a boolean if a field has been set.
+
+### GetIsPlatformSupported
+
+`func (o *GraphicsCard) GetIsPlatformSupported() bool`
+
+GetIsPlatformSupported returns the IsPlatformSupported field if non-nil, zero value otherwise.
+
+### GetIsPlatformSupportedOk
+
+`func (o *GraphicsCard) GetIsPlatformSupportedOk() (*bool, bool)`
+
+GetIsPlatformSupportedOk returns a tuple with the IsPlatformSupported field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsPlatformSupported
+
+`func (o *GraphicsCard) SetIsPlatformSupported(v bool)`
+
+SetIsPlatformSupported sets IsPlatformSupported field to given value.
+
+### HasIsPlatformSupported
+
+`func (o *GraphicsCard) HasIsPlatformSupported() bool`
+
+HasIsPlatformSupported returns a boolean if a field has been set.
 
 ### GetMode
 
@@ -325,6 +379,31 @@ SetOperState sets OperState field to given value.
 
 HasOperState returns a boolean if a field has been set.
 
+### GetPartNumber
+
+`func (o *GraphicsCard) GetPartNumber() string`
+
+GetPartNumber returns the PartNumber field if non-nil, zero value otherwise.
+
+### GetPartNumberOk
+
+`func (o *GraphicsCard) GetPartNumberOk() (*string, bool)`
+
+GetPartNumberOk returns a tuple with the PartNumber field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPartNumber
+
+`func (o *GraphicsCard) SetPartNumber(v string)`
+
+SetPartNumber sets PartNumber field to given value.
+
+### HasPartNumber
+
+`func (o *GraphicsCard) HasPartNumber() bool`
+
+HasPartNumber returns a boolean if a field has been set.
+
 ### GetPciAddress
 
 `func (o *GraphicsCard) GetPciAddress() string`
@@ -399,6 +478,31 @@ SetPciSlot sets PciSlot field to given value.
 `func (o *GraphicsCard) HasPciSlot() bool`
 
 HasPciSlot returns a boolean if a field has been set.
+
+### GetPid
+
+`func (o *GraphicsCard) GetPid() string`
+
+GetPid returns the Pid field if non-nil, zero value otherwise.
+
+### GetPidOk
+
+`func (o *GraphicsCard) GetPidOk() (*string, bool)`
+
+GetPidOk returns a tuple with the Pid field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPid
+
+`func (o *GraphicsCard) SetPid(v string)`
+
+SetPid sets Pid field to given value.
+
+### HasPid
+
+`func (o *GraphicsCard) HasPid() bool`
+
+HasPid returns a boolean if a field has been set.
 
 ### GetSubDeviceId
 
@@ -500,6 +604,16 @@ SetComputeBlade sets ComputeBlade field to given value.
 
 HasComputeBlade returns a boolean if a field has been set.
 
+### SetComputeBladeNil
+
+`func (o *GraphicsCard) SetComputeBladeNil(b bool)`
+
+ SetComputeBladeNil sets the value for ComputeBlade to be an explicit nil
+
+### UnsetComputeBlade
+`func (o *GraphicsCard) UnsetComputeBlade()`
+
+UnsetComputeBlade ensures that no value is present for ComputeBlade, not even an explicit nil
 ### GetComputeBoard
 
 `func (o *GraphicsCard) GetComputeBoard() ComputeBoardRelationship`
@@ -525,6 +639,16 @@ SetComputeBoard sets ComputeBoard field to given value.
 
 HasComputeBoard returns a boolean if a field has been set.
 
+### SetComputeBoardNil
+
+`func (o *GraphicsCard) SetComputeBoardNil(b bool)`
+
+ SetComputeBoardNil sets the value for ComputeBoard to be an explicit nil
+
+### UnsetComputeBoard
+`func (o *GraphicsCard) UnsetComputeBoard()`
+
+UnsetComputeBoard ensures that no value is present for ComputeBoard, not even an explicit nil
 ### GetComputeRackUnit
 
 `func (o *GraphicsCard) GetComputeRackUnit() ComputeRackUnitRelationship`
@@ -550,6 +674,16 @@ SetComputeRackUnit sets ComputeRackUnit field to given value.
 
 HasComputeRackUnit returns a boolean if a field has been set.
 
+### SetComputeRackUnitNil
+
+`func (o *GraphicsCard) SetComputeRackUnitNil(b bool)`
+
+ SetComputeRackUnitNil sets the value for ComputeRackUnit to be an explicit nil
+
+### UnsetComputeRackUnit
+`func (o *GraphicsCard) UnsetComputeRackUnit()`
+
+UnsetComputeRackUnit ensures that no value is present for ComputeRackUnit, not even an explicit nil
 ### GetGraphicsControllers
 
 `func (o *GraphicsCard) GetGraphicsControllers() []GraphicsControllerRelationship`
@@ -610,6 +744,16 @@ SetInventoryDeviceInfo sets InventoryDeviceInfo field to given value.
 
 HasInventoryDeviceInfo returns a boolean if a field has been set.
 
+### SetInventoryDeviceInfoNil
+
+`func (o *GraphicsCard) SetInventoryDeviceInfoNil(b bool)`
+
+ SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+
+### UnsetInventoryDeviceInfo
+`func (o *GraphicsCard) UnsetInventoryDeviceInfo()`
+
+UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
 ### GetPciDevice
 
 `func (o *GraphicsCard) GetPciDevice() PciDeviceRelationship`
@@ -635,6 +779,16 @@ SetPciDevice sets PciDevice field to given value.
 
 HasPciDevice returns a boolean if a field has been set.
 
+### SetPciDeviceNil
+
+`func (o *GraphicsCard) SetPciDeviceNil(b bool)`
+
+ SetPciDeviceNil sets the value for PciDevice to be an explicit nil
+
+### UnsetPciDevice
+`func (o *GraphicsCard) UnsetPciDevice()`
+
+UnsetPciDevice ensures that no value is present for PciDevice, not even an explicit nil
 ### GetPciNode
 
 `func (o *GraphicsCard) GetPciNode() PciNodeRelationship`
@@ -660,6 +814,16 @@ SetPciNode sets PciNode field to given value.
 
 HasPciNode returns a boolean if a field has been set.
 
+### SetPciNodeNil
+
+`func (o *GraphicsCard) SetPciNodeNil(b bool)`
+
+ SetPciNodeNil sets the value for PciNode to be an explicit nil
+
+### UnsetPciNode
+`func (o *GraphicsCard) UnsetPciNode()`
+
+UnsetPciNode ensures that no value is present for PciNode, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *GraphicsCard) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -685,6 +849,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *GraphicsCard) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *GraphicsCard) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 ### GetRunningFirmware
 
 `func (o *GraphicsCard) GetRunningFirmware() []FirmwareRunningFirmwareRelationship`

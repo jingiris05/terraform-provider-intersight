@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceFabricFcZonePolicy() *schema.Resource {
 		UpdateContext: resourceFabricFcZonePolicyUpdate,
 		DeleteContext: resourceFabricFcZonePolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -157,7 +159,7 @@ func resourceFabricFcZonePolicy() *schema.Resource {
 						"wwpn": {
 							Description:  "WWPN that is a member of the FC zone.",
 							Type:         schema.TypeString,
-							ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|((^20|5[0-9a-fA-F]{1}):([0-9a-fA-F]{2}:){6}([0-9a-fA-F]{2}))"), ""),
+							ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|([0-9a-fA-F]{2}:){7}[0-9a-fA-F]{2}$"), ""),
 							Optional:     true,
 						},
 					},
@@ -424,6 +426,17 @@ func resourceFabricFcZonePolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -691,14 +704,25 @@ func resourceFabricFcZonePolicyCreate(c context.Context, d *schema.ResourceData,
 		}
 		return diag.Errorf("error occurred while creating FabricFcZonePolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceFabricFcZonePolicyRead(c, d, meta)...)
 }
 
 func resourceFabricFcZonePolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.FabricApi.GetFabricFcZonePolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

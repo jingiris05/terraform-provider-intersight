@@ -8,14 +8,15 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.FlexUtilVirtualDrive"]
 **DriveStatus** | Pointer to **string** | Status of the Flex Util virtual drive. | [optional] 
 **DriveType** | Pointer to **string** | Type of virtual drive managed by flex util controller. | [optional] 
+**HostAccessible** | Pointer to **string** | Connection status of the Flex Util virtual drive to the host. | [optional] 
 **PartitionId** | Pointer to **string** | Disk Partition Id of virtual drive managed by flex util controller. | [optional] 
 **PartitionName** | Pointer to **string** | Partition name of the Flex Util virtual drive. | [optional] 
 **ResidentImage** | Pointer to **string** | The resident image on the flex util virtual Drive. | [optional] 
 **Size** | Pointer to **string** | Size of the Flex Util virtual drive. | [optional] 
 **VirtualDrive** | Pointer to **string** | Virtual drive on the Flex Util controller. | [optional] 
-**InventoryDeviceInfo** | Pointer to [**InventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
-**StorageFlexUtilController** | Pointer to [**StorageFlexUtilControllerRelationship**](StorageFlexUtilControllerRelationship.md) |  | [optional] 
+**InventoryDeviceInfo** | Pointer to [**NullableInventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**StorageFlexUtilController** | Pointer to [**NullableStorageFlexUtilControllerRelationship**](StorageFlexUtilControllerRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -125,6 +126,31 @@ SetDriveType sets DriveType field to given value.
 `func (o *StorageFlexUtilVirtualDrive) HasDriveType() bool`
 
 HasDriveType returns a boolean if a field has been set.
+
+### GetHostAccessible
+
+`func (o *StorageFlexUtilVirtualDrive) GetHostAccessible() string`
+
+GetHostAccessible returns the HostAccessible field if non-nil, zero value otherwise.
+
+### GetHostAccessibleOk
+
+`func (o *StorageFlexUtilVirtualDrive) GetHostAccessibleOk() (*string, bool)`
+
+GetHostAccessibleOk returns a tuple with the HostAccessible field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHostAccessible
+
+`func (o *StorageFlexUtilVirtualDrive) SetHostAccessible(v string)`
+
+SetHostAccessible sets HostAccessible field to given value.
+
+### HasHostAccessible
+
+`func (o *StorageFlexUtilVirtualDrive) HasHostAccessible() bool`
+
+HasHostAccessible returns a boolean if a field has been set.
 
 ### GetPartitionId
 
@@ -276,6 +302,16 @@ SetInventoryDeviceInfo sets InventoryDeviceInfo field to given value.
 
 HasInventoryDeviceInfo returns a boolean if a field has been set.
 
+### SetInventoryDeviceInfoNil
+
+`func (o *StorageFlexUtilVirtualDrive) SetInventoryDeviceInfoNil(b bool)`
+
+ SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+
+### UnsetInventoryDeviceInfo
+`func (o *StorageFlexUtilVirtualDrive) UnsetInventoryDeviceInfo()`
+
+UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *StorageFlexUtilVirtualDrive) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -301,6 +337,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *StorageFlexUtilVirtualDrive) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *StorageFlexUtilVirtualDrive) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 ### GetStorageFlexUtilController
 
 `func (o *StorageFlexUtilVirtualDrive) GetStorageFlexUtilController() StorageFlexUtilControllerRelationship`
@@ -326,6 +372,16 @@ SetStorageFlexUtilController sets StorageFlexUtilController field to given value
 
 HasStorageFlexUtilController returns a boolean if a field has been set.
 
+### SetStorageFlexUtilControllerNil
+
+`func (o *StorageFlexUtilVirtualDrive) SetStorageFlexUtilControllerNil(b bool)`
+
+ SetStorageFlexUtilControllerNil sets the value for StorageFlexUtilController to be an explicit nil
+
+### UnsetStorageFlexUtilController
+`func (o *StorageFlexUtilVirtualDrive) UnsetStorageFlexUtilController()`
+
+UnsetStorageFlexUtilController ensures that no value is present for StorageFlexUtilController, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

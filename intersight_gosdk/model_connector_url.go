@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the ConnectorUrl type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ConnectorUrl{}
 
 // ConnectorUrl The URL to proxy the request to.
 type ConnectorUrl struct {
@@ -24,11 +28,11 @@ type ConnectorUrl struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// Flag to append a query to the url even if rawQuery is empty.
+	// Flag to append a query to the URL even if rawQuery is empty.
 	ForceQuery *bool `json:"ForceQuery,omitempty"`
 	// The fragment identifier component of a URI allows indirect identification of a secondary resource by reference to a primary resource and additional identifying information. The identified secondary resource may be some portion or subset of the primary resource, some view on representations of the primary resource, or some other resource defined or described by those representations. A fragment identifier component is indicated by the presence of a number sign (\"#\") character and terminated by the end of the URI.
 	Fragment *string `json:"Fragment,omitempty"`
-	// The host name identifies the host that holds the resource. The host can be an IP or a hostname that is resolvable by the dns server configured on the platform.
+	// The host name identifies the host that holds the resource. The host can be an IP or a hostname that is resolvable by the DNS server configured on the platform.
 	Host *string `json:"Host,omitempty"`
 	// A URI is opaque if, and only if, it is absolute and its scheme-specific part does not begin with a slash character ('/'). An opaque URI has a scheme, a scheme-specific part, and possibly a fragment; all other components are undefined.
 	Opaque *string `json:"Opaque,omitempty"`
@@ -92,6 +96,11 @@ func (o *ConnectorUrl) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "connector.Url" of the ClassId field.
+func (o *ConnectorUrl) GetDefaultClassId() interface{} {
+	return "connector.Url"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ConnectorUrl) GetObjectType() string {
 	if o == nil {
@@ -116,9 +125,14 @@ func (o *ConnectorUrl) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "connector.Url" of the ObjectType field.
+func (o *ConnectorUrl) GetDefaultObjectType() interface{} {
+	return "connector.Url"
+}
+
 // GetForceQuery returns the ForceQuery field value if set, zero value otherwise.
 func (o *ConnectorUrl) GetForceQuery() bool {
-	if o == nil || o.ForceQuery == nil {
+	if o == nil || IsNil(o.ForceQuery) {
 		var ret bool
 		return ret
 	}
@@ -128,7 +142,7 @@ func (o *ConnectorUrl) GetForceQuery() bool {
 // GetForceQueryOk returns a tuple with the ForceQuery field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorUrl) GetForceQueryOk() (*bool, bool) {
-	if o == nil || o.ForceQuery == nil {
+	if o == nil || IsNil(o.ForceQuery) {
 		return nil, false
 	}
 	return o.ForceQuery, true
@@ -136,7 +150,7 @@ func (o *ConnectorUrl) GetForceQueryOk() (*bool, bool) {
 
 // HasForceQuery returns a boolean if a field has been set.
 func (o *ConnectorUrl) HasForceQuery() bool {
-	if o != nil && o.ForceQuery != nil {
+	if o != nil && !IsNil(o.ForceQuery) {
 		return true
 	}
 
@@ -150,7 +164,7 @@ func (o *ConnectorUrl) SetForceQuery(v bool) {
 
 // GetFragment returns the Fragment field value if set, zero value otherwise.
 func (o *ConnectorUrl) GetFragment() string {
-	if o == nil || o.Fragment == nil {
+	if o == nil || IsNil(o.Fragment) {
 		var ret string
 		return ret
 	}
@@ -160,7 +174,7 @@ func (o *ConnectorUrl) GetFragment() string {
 // GetFragmentOk returns a tuple with the Fragment field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorUrl) GetFragmentOk() (*string, bool) {
-	if o == nil || o.Fragment == nil {
+	if o == nil || IsNil(o.Fragment) {
 		return nil, false
 	}
 	return o.Fragment, true
@@ -168,7 +182,7 @@ func (o *ConnectorUrl) GetFragmentOk() (*string, bool) {
 
 // HasFragment returns a boolean if a field has been set.
 func (o *ConnectorUrl) HasFragment() bool {
-	if o != nil && o.Fragment != nil {
+	if o != nil && !IsNil(o.Fragment) {
 		return true
 	}
 
@@ -182,7 +196,7 @@ func (o *ConnectorUrl) SetFragment(v string) {
 
 // GetHost returns the Host field value if set, zero value otherwise.
 func (o *ConnectorUrl) GetHost() string {
-	if o == nil || o.Host == nil {
+	if o == nil || IsNil(o.Host) {
 		var ret string
 		return ret
 	}
@@ -192,7 +206,7 @@ func (o *ConnectorUrl) GetHost() string {
 // GetHostOk returns a tuple with the Host field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorUrl) GetHostOk() (*string, bool) {
-	if o == nil || o.Host == nil {
+	if o == nil || IsNil(o.Host) {
 		return nil, false
 	}
 	return o.Host, true
@@ -200,7 +214,7 @@ func (o *ConnectorUrl) GetHostOk() (*string, bool) {
 
 // HasHost returns a boolean if a field has been set.
 func (o *ConnectorUrl) HasHost() bool {
-	if o != nil && o.Host != nil {
+	if o != nil && !IsNil(o.Host) {
 		return true
 	}
 
@@ -214,7 +228,7 @@ func (o *ConnectorUrl) SetHost(v string) {
 
 // GetOpaque returns the Opaque field value if set, zero value otherwise.
 func (o *ConnectorUrl) GetOpaque() string {
-	if o == nil || o.Opaque == nil {
+	if o == nil || IsNil(o.Opaque) {
 		var ret string
 		return ret
 	}
@@ -224,7 +238,7 @@ func (o *ConnectorUrl) GetOpaque() string {
 // GetOpaqueOk returns a tuple with the Opaque field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorUrl) GetOpaqueOk() (*string, bool) {
-	if o == nil || o.Opaque == nil {
+	if o == nil || IsNil(o.Opaque) {
 		return nil, false
 	}
 	return o.Opaque, true
@@ -232,7 +246,7 @@ func (o *ConnectorUrl) GetOpaqueOk() (*string, bool) {
 
 // HasOpaque returns a boolean if a field has been set.
 func (o *ConnectorUrl) HasOpaque() bool {
-	if o != nil && o.Opaque != nil {
+	if o != nil && !IsNil(o.Opaque) {
 		return true
 	}
 
@@ -246,7 +260,7 @@ func (o *ConnectorUrl) SetOpaque(v string) {
 
 // GetPath returns the Path field value if set, zero value otherwise.
 func (o *ConnectorUrl) GetPath() string {
-	if o == nil || o.Path == nil {
+	if o == nil || IsNil(o.Path) {
 		var ret string
 		return ret
 	}
@@ -256,7 +270,7 @@ func (o *ConnectorUrl) GetPath() string {
 // GetPathOk returns a tuple with the Path field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorUrl) GetPathOk() (*string, bool) {
-	if o == nil || o.Path == nil {
+	if o == nil || IsNil(o.Path) {
 		return nil, false
 	}
 	return o.Path, true
@@ -264,7 +278,7 @@ func (o *ConnectorUrl) GetPathOk() (*string, bool) {
 
 // HasPath returns a boolean if a field has been set.
 func (o *ConnectorUrl) HasPath() bool {
-	if o != nil && o.Path != nil {
+	if o != nil && !IsNil(o.Path) {
 		return true
 	}
 
@@ -278,7 +292,7 @@ func (o *ConnectorUrl) SetPath(v string) {
 
 // GetRawPath returns the RawPath field value if set, zero value otherwise.
 func (o *ConnectorUrl) GetRawPath() string {
-	if o == nil || o.RawPath == nil {
+	if o == nil || IsNil(o.RawPath) {
 		var ret string
 		return ret
 	}
@@ -288,7 +302,7 @@ func (o *ConnectorUrl) GetRawPath() string {
 // GetRawPathOk returns a tuple with the RawPath field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorUrl) GetRawPathOk() (*string, bool) {
-	if o == nil || o.RawPath == nil {
+	if o == nil || IsNil(o.RawPath) {
 		return nil, false
 	}
 	return o.RawPath, true
@@ -296,7 +310,7 @@ func (o *ConnectorUrl) GetRawPathOk() (*string, bool) {
 
 // HasRawPath returns a boolean if a field has been set.
 func (o *ConnectorUrl) HasRawPath() bool {
-	if o != nil && o.RawPath != nil {
+	if o != nil && !IsNil(o.RawPath) {
 		return true
 	}
 
@@ -310,7 +324,7 @@ func (o *ConnectorUrl) SetRawPath(v string) {
 
 // GetRawQuery returns the RawQuery field value if set, zero value otherwise.
 func (o *ConnectorUrl) GetRawQuery() string {
-	if o == nil || o.RawQuery == nil {
+	if o == nil || IsNil(o.RawQuery) {
 		var ret string
 		return ret
 	}
@@ -320,7 +334,7 @@ func (o *ConnectorUrl) GetRawQuery() string {
 // GetRawQueryOk returns a tuple with the RawQuery field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorUrl) GetRawQueryOk() (*string, bool) {
-	if o == nil || o.RawQuery == nil {
+	if o == nil || IsNil(o.RawQuery) {
 		return nil, false
 	}
 	return o.RawQuery, true
@@ -328,7 +342,7 @@ func (o *ConnectorUrl) GetRawQueryOk() (*string, bool) {
 
 // HasRawQuery returns a boolean if a field has been set.
 func (o *ConnectorUrl) HasRawQuery() bool {
-	if o != nil && o.RawQuery != nil {
+	if o != nil && !IsNil(o.RawQuery) {
 		return true
 	}
 
@@ -342,7 +356,7 @@ func (o *ConnectorUrl) SetRawQuery(v string) {
 
 // GetScheme returns the Scheme field value if set, zero value otherwise.
 func (o *ConnectorUrl) GetScheme() string {
-	if o == nil || o.Scheme == nil {
+	if o == nil || IsNil(o.Scheme) {
 		var ret string
 		return ret
 	}
@@ -352,7 +366,7 @@ func (o *ConnectorUrl) GetScheme() string {
 // GetSchemeOk returns a tuple with the Scheme field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorUrl) GetSchemeOk() (*string, bool) {
-	if o == nil || o.Scheme == nil {
+	if o == nil || IsNil(o.Scheme) {
 		return nil, false
 	}
 	return o.Scheme, true
@@ -360,7 +374,7 @@ func (o *ConnectorUrl) GetSchemeOk() (*string, bool) {
 
 // HasScheme returns a boolean if a field has been set.
 func (o *ConnectorUrl) HasScheme() bool {
-	if o != nil && o.Scheme != nil {
+	if o != nil && !IsNil(o.Scheme) {
 		return true
 	}
 
@@ -373,43 +387,53 @@ func (o *ConnectorUrl) SetScheme(v string) {
 }
 
 func (o ConnectorUrl) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ConnectorUrl) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ForceQuery != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ForceQuery) {
 		toSerialize["ForceQuery"] = o.ForceQuery
 	}
-	if o.Fragment != nil {
+	if !IsNil(o.Fragment) {
 		toSerialize["Fragment"] = o.Fragment
 	}
-	if o.Host != nil {
+	if !IsNil(o.Host) {
 		toSerialize["Host"] = o.Host
 	}
-	if o.Opaque != nil {
+	if !IsNil(o.Opaque) {
 		toSerialize["Opaque"] = o.Opaque
 	}
-	if o.Path != nil {
+	if !IsNil(o.Path) {
 		toSerialize["Path"] = o.Path
 	}
-	if o.RawPath != nil {
+	if !IsNil(o.RawPath) {
 		toSerialize["RawPath"] = o.RawPath
 	}
-	if o.RawQuery != nil {
+	if !IsNil(o.RawQuery) {
 		toSerialize["RawQuery"] = o.RawQuery
 	}
-	if o.Scheme != nil {
+	if !IsNil(o.Scheme) {
 		toSerialize["Scheme"] = o.Scheme
 	}
 
@@ -417,20 +441,61 @@ func (o ConnectorUrl) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ConnectorUrl) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ConnectorUrl) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ConnectorUrlWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// Flag to append a query to the url even if rawQuery is empty.
+		// Flag to append a query to the URL even if rawQuery is empty.
 		ForceQuery *bool `json:"ForceQuery,omitempty"`
 		// The fragment identifier component of a URI allows indirect identification of a secondary resource by reference to a primary resource and additional identifying information. The identified secondary resource may be some portion or subset of the primary resource, some view on representations of the primary resource, or some other resource defined or described by those representations. A fragment identifier component is indicated by the presence of a number sign (\"#\") character and terminated by the end of the URI.
 		Fragment *string `json:"Fragment,omitempty"`
-		// The host name identifies the host that holds the resource. The host can be an IP or a hostname that is resolvable by the dns server configured on the platform.
+		// The host name identifies the host that holds the resource. The host can be an IP or a hostname that is resolvable by the DNS server configured on the platform.
 		Host *string `json:"Host,omitempty"`
 		// A URI is opaque if, and only if, it is absolute and its scheme-specific part does not begin with a slash character ('/'). An opaque URI has a scheme, a scheme-specific part, and possibly a fragment; all other components are undefined.
 		Opaque *string `json:"Opaque,omitempty"`
@@ -446,7 +511,7 @@ func (o *ConnectorUrl) UnmarshalJSON(bytes []byte) (err error) {
 
 	varConnectorUrlWithoutEmbeddedStruct := ConnectorUrlWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varConnectorUrlWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varConnectorUrlWithoutEmbeddedStruct)
 	if err == nil {
 		varConnectorUrl := _ConnectorUrl{}
 		varConnectorUrl.ClassId = varConnectorUrlWithoutEmbeddedStruct.ClassId
@@ -466,7 +531,7 @@ func (o *ConnectorUrl) UnmarshalJSON(bytes []byte) (err error) {
 
 	varConnectorUrl := _ConnectorUrl{}
 
-	err = json.Unmarshal(bytes, &varConnectorUrl)
+	err = json.Unmarshal(data, &varConnectorUrl)
 	if err == nil {
 		o.MoBaseComplexType = varConnectorUrl.MoBaseComplexType
 	} else {
@@ -475,7 +540,7 @@ func (o *ConnectorUrl) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ForceQuery")

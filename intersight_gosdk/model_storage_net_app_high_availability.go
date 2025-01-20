@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the StorageNetAppHighAvailability type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &StorageNetAppHighAvailability{}
 
 // StorageNetAppHighAvailability Storage failover and giveback information.
 type StorageNetAppHighAvailability struct {
@@ -24,10 +28,14 @@ type StorageNetAppHighAvailability struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
+	// Specifies whether or not giveback is automatically initiated when the node that owns the storage is ready.
+	AutoGivebackEnabled *bool `json:"AutoGivebackEnabled,omitempty"`
 	// Specifies whether or not storage failover is enabled.
 	Enabled *bool `json:"Enabled,omitempty"`
 	// The state of the node that is giving storage back to its HA partner. * `unknown` - Default unknown giveback state. * `nothing_to_giveback` - The node has nothing to give back to its HA partner. * `not_attempted` - The node has not attempted to give back storage to its HA partner. * `in_progress` - The node is in progress of giving back storage to its HA partner. * `failed` - The node has failed to give back storage to its HA partner.
 	GivebackState *string `json:"GivebackState,omitempty"`
+	// The model of the partner in this node's High Availability (HA) group.
+	PartnerModel *string `json:"PartnerModel,omitempty"`
 	// The partner node name in this node's High Availability (HA) group.
 	PartnerName *string `json:"PartnerName,omitempty"`
 	// The partner node uuid in this node's High Availability (HA) group.
@@ -86,6 +94,11 @@ func (o *StorageNetAppHighAvailability) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "storage.NetAppHighAvailability" of the ClassId field.
+func (o *StorageNetAppHighAvailability) GetDefaultClassId() interface{} {
+	return "storage.NetAppHighAvailability"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *StorageNetAppHighAvailability) GetObjectType() string {
 	if o == nil {
@@ -110,9 +123,46 @@ func (o *StorageNetAppHighAvailability) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "storage.NetAppHighAvailability" of the ObjectType field.
+func (o *StorageNetAppHighAvailability) GetDefaultObjectType() interface{} {
+	return "storage.NetAppHighAvailability"
+}
+
+// GetAutoGivebackEnabled returns the AutoGivebackEnabled field value if set, zero value otherwise.
+func (o *StorageNetAppHighAvailability) GetAutoGivebackEnabled() bool {
+	if o == nil || IsNil(o.AutoGivebackEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.AutoGivebackEnabled
+}
+
+// GetAutoGivebackEnabledOk returns a tuple with the AutoGivebackEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppHighAvailability) GetAutoGivebackEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.AutoGivebackEnabled) {
+		return nil, false
+	}
+	return o.AutoGivebackEnabled, true
+}
+
+// HasAutoGivebackEnabled returns a boolean if a field has been set.
+func (o *StorageNetAppHighAvailability) HasAutoGivebackEnabled() bool {
+	if o != nil && !IsNil(o.AutoGivebackEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoGivebackEnabled gets a reference to the given bool and assigns it to the AutoGivebackEnabled field.
+func (o *StorageNetAppHighAvailability) SetAutoGivebackEnabled(v bool) {
+	o.AutoGivebackEnabled = &v
+}
+
 // GetEnabled returns the Enabled field value if set, zero value otherwise.
 func (o *StorageNetAppHighAvailability) GetEnabled() bool {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		var ret bool
 		return ret
 	}
@@ -122,7 +172,7 @@ func (o *StorageNetAppHighAvailability) GetEnabled() bool {
 // GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppHighAvailability) GetEnabledOk() (*bool, bool) {
-	if o == nil || o.Enabled == nil {
+	if o == nil || IsNil(o.Enabled) {
 		return nil, false
 	}
 	return o.Enabled, true
@@ -130,7 +180,7 @@ func (o *StorageNetAppHighAvailability) GetEnabledOk() (*bool, bool) {
 
 // HasEnabled returns a boolean if a field has been set.
 func (o *StorageNetAppHighAvailability) HasEnabled() bool {
-	if o != nil && o.Enabled != nil {
+	if o != nil && !IsNil(o.Enabled) {
 		return true
 	}
 
@@ -144,7 +194,7 @@ func (o *StorageNetAppHighAvailability) SetEnabled(v bool) {
 
 // GetGivebackState returns the GivebackState field value if set, zero value otherwise.
 func (o *StorageNetAppHighAvailability) GetGivebackState() string {
-	if o == nil || o.GivebackState == nil {
+	if o == nil || IsNil(o.GivebackState) {
 		var ret string
 		return ret
 	}
@@ -154,7 +204,7 @@ func (o *StorageNetAppHighAvailability) GetGivebackState() string {
 // GetGivebackStateOk returns a tuple with the GivebackState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppHighAvailability) GetGivebackStateOk() (*string, bool) {
-	if o == nil || o.GivebackState == nil {
+	if o == nil || IsNil(o.GivebackState) {
 		return nil, false
 	}
 	return o.GivebackState, true
@@ -162,7 +212,7 @@ func (o *StorageNetAppHighAvailability) GetGivebackStateOk() (*string, bool) {
 
 // HasGivebackState returns a boolean if a field has been set.
 func (o *StorageNetAppHighAvailability) HasGivebackState() bool {
-	if o != nil && o.GivebackState != nil {
+	if o != nil && !IsNil(o.GivebackState) {
 		return true
 	}
 
@@ -174,9 +224,41 @@ func (o *StorageNetAppHighAvailability) SetGivebackState(v string) {
 	o.GivebackState = &v
 }
 
+// GetPartnerModel returns the PartnerModel field value if set, zero value otherwise.
+func (o *StorageNetAppHighAvailability) GetPartnerModel() string {
+	if o == nil || IsNil(o.PartnerModel) {
+		var ret string
+		return ret
+	}
+	return *o.PartnerModel
+}
+
+// GetPartnerModelOk returns a tuple with the PartnerModel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppHighAvailability) GetPartnerModelOk() (*string, bool) {
+	if o == nil || IsNil(o.PartnerModel) {
+		return nil, false
+	}
+	return o.PartnerModel, true
+}
+
+// HasPartnerModel returns a boolean if a field has been set.
+func (o *StorageNetAppHighAvailability) HasPartnerModel() bool {
+	if o != nil && !IsNil(o.PartnerModel) {
+		return true
+	}
+
+	return false
+}
+
+// SetPartnerModel gets a reference to the given string and assigns it to the PartnerModel field.
+func (o *StorageNetAppHighAvailability) SetPartnerModel(v string) {
+	o.PartnerModel = &v
+}
+
 // GetPartnerName returns the PartnerName field value if set, zero value otherwise.
 func (o *StorageNetAppHighAvailability) GetPartnerName() string {
-	if o == nil || o.PartnerName == nil {
+	if o == nil || IsNil(o.PartnerName) {
 		var ret string
 		return ret
 	}
@@ -186,7 +268,7 @@ func (o *StorageNetAppHighAvailability) GetPartnerName() string {
 // GetPartnerNameOk returns a tuple with the PartnerName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppHighAvailability) GetPartnerNameOk() (*string, bool) {
-	if o == nil || o.PartnerName == nil {
+	if o == nil || IsNil(o.PartnerName) {
 		return nil, false
 	}
 	return o.PartnerName, true
@@ -194,7 +276,7 @@ func (o *StorageNetAppHighAvailability) GetPartnerNameOk() (*string, bool) {
 
 // HasPartnerName returns a boolean if a field has been set.
 func (o *StorageNetAppHighAvailability) HasPartnerName() bool {
-	if o != nil && o.PartnerName != nil {
+	if o != nil && !IsNil(o.PartnerName) {
 		return true
 	}
 
@@ -208,7 +290,7 @@ func (o *StorageNetAppHighAvailability) SetPartnerName(v string) {
 
 // GetPartnerUuid returns the PartnerUuid field value if set, zero value otherwise.
 func (o *StorageNetAppHighAvailability) GetPartnerUuid() string {
-	if o == nil || o.PartnerUuid == nil {
+	if o == nil || IsNil(o.PartnerUuid) {
 		var ret string
 		return ret
 	}
@@ -218,7 +300,7 @@ func (o *StorageNetAppHighAvailability) GetPartnerUuid() string {
 // GetPartnerUuidOk returns a tuple with the PartnerUuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppHighAvailability) GetPartnerUuidOk() (*string, bool) {
-	if o == nil || o.PartnerUuid == nil {
+	if o == nil || IsNil(o.PartnerUuid) {
 		return nil, false
 	}
 	return o.PartnerUuid, true
@@ -226,7 +308,7 @@ func (o *StorageNetAppHighAvailability) GetPartnerUuidOk() (*string, bool) {
 
 // HasPartnerUuid returns a boolean if a field has been set.
 func (o *StorageNetAppHighAvailability) HasPartnerUuid() bool {
-	if o != nil && o.PartnerUuid != nil {
+	if o != nil && !IsNil(o.PartnerUuid) {
 		return true
 	}
 
@@ -240,7 +322,7 @@ func (o *StorageNetAppHighAvailability) SetPartnerUuid(v string) {
 
 // GetTakeoverState returns the TakeoverState field value if set, zero value otherwise.
 func (o *StorageNetAppHighAvailability) GetTakeoverState() string {
-	if o == nil || o.TakeoverState == nil {
+	if o == nil || IsNil(o.TakeoverState) {
 		var ret string
 		return ret
 	}
@@ -250,7 +332,7 @@ func (o *StorageNetAppHighAvailability) GetTakeoverState() string {
 // GetTakeoverStateOk returns a tuple with the TakeoverState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppHighAvailability) GetTakeoverStateOk() (*string, bool) {
-	if o == nil || o.TakeoverState == nil {
+	if o == nil || IsNil(o.TakeoverState) {
 		return nil, false
 	}
 	return o.TakeoverState, true
@@ -258,7 +340,7 @@ func (o *StorageNetAppHighAvailability) GetTakeoverStateOk() (*string, bool) {
 
 // HasTakeoverState returns a boolean if a field has been set.
 func (o *StorageNetAppHighAvailability) HasTakeoverState() bool {
-	if o != nil && o.TakeoverState != nil {
+	if o != nil && !IsNil(o.TakeoverState) {
 		return true
 	}
 
@@ -271,34 +353,50 @@ func (o *StorageNetAppHighAvailability) SetTakeoverState(v string) {
 }
 
 func (o StorageNetAppHighAvailability) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o StorageNetAppHighAvailability) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Enabled != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AutoGivebackEnabled) {
+		toSerialize["AutoGivebackEnabled"] = o.AutoGivebackEnabled
+	}
+	if !IsNil(o.Enabled) {
 		toSerialize["Enabled"] = o.Enabled
 	}
-	if o.GivebackState != nil {
+	if !IsNil(o.GivebackState) {
 		toSerialize["GivebackState"] = o.GivebackState
 	}
-	if o.PartnerName != nil {
+	if !IsNil(o.PartnerModel) {
+		toSerialize["PartnerModel"] = o.PartnerModel
+	}
+	if !IsNil(o.PartnerName) {
 		toSerialize["PartnerName"] = o.PartnerName
 	}
-	if o.PartnerUuid != nil {
+	if !IsNil(o.PartnerUuid) {
 		toSerialize["PartnerUuid"] = o.PartnerUuid
 	}
-	if o.TakeoverState != nil {
+	if !IsNil(o.TakeoverState) {
 		toSerialize["TakeoverState"] = o.TakeoverState
 	}
 
@@ -306,19 +404,64 @@ func (o StorageNetAppHighAvailability) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *StorageNetAppHighAvailability) UnmarshalJSON(bytes []byte) (err error) {
+func (o *StorageNetAppHighAvailability) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type StorageNetAppHighAvailabilityWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
+		// Specifies whether or not giveback is automatically initiated when the node that owns the storage is ready.
+		AutoGivebackEnabled *bool `json:"AutoGivebackEnabled,omitempty"`
 		// Specifies whether or not storage failover is enabled.
 		Enabled *bool `json:"Enabled,omitempty"`
 		// The state of the node that is giving storage back to its HA partner. * `unknown` - Default unknown giveback state. * `nothing_to_giveback` - The node has nothing to give back to its HA partner. * `not_attempted` - The node has not attempted to give back storage to its HA partner. * `in_progress` - The node is in progress of giving back storage to its HA partner. * `failed` - The node has failed to give back storage to its HA partner.
 		GivebackState *string `json:"GivebackState,omitempty"`
+		// The model of the partner in this node's High Availability (HA) group.
+		PartnerModel *string `json:"PartnerModel,omitempty"`
 		// The partner node name in this node's High Availability (HA) group.
 		PartnerName *string `json:"PartnerName,omitempty"`
 		// The partner node uuid in this node's High Availability (HA) group.
@@ -329,13 +472,15 @@ func (o *StorageNetAppHighAvailability) UnmarshalJSON(bytes []byte) (err error) 
 
 	varStorageNetAppHighAvailabilityWithoutEmbeddedStruct := StorageNetAppHighAvailabilityWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppHighAvailabilityWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varStorageNetAppHighAvailabilityWithoutEmbeddedStruct)
 	if err == nil {
 		varStorageNetAppHighAvailability := _StorageNetAppHighAvailability{}
 		varStorageNetAppHighAvailability.ClassId = varStorageNetAppHighAvailabilityWithoutEmbeddedStruct.ClassId
 		varStorageNetAppHighAvailability.ObjectType = varStorageNetAppHighAvailabilityWithoutEmbeddedStruct.ObjectType
+		varStorageNetAppHighAvailability.AutoGivebackEnabled = varStorageNetAppHighAvailabilityWithoutEmbeddedStruct.AutoGivebackEnabled
 		varStorageNetAppHighAvailability.Enabled = varStorageNetAppHighAvailabilityWithoutEmbeddedStruct.Enabled
 		varStorageNetAppHighAvailability.GivebackState = varStorageNetAppHighAvailabilityWithoutEmbeddedStruct.GivebackState
+		varStorageNetAppHighAvailability.PartnerModel = varStorageNetAppHighAvailabilityWithoutEmbeddedStruct.PartnerModel
 		varStorageNetAppHighAvailability.PartnerName = varStorageNetAppHighAvailabilityWithoutEmbeddedStruct.PartnerName
 		varStorageNetAppHighAvailability.PartnerUuid = varStorageNetAppHighAvailabilityWithoutEmbeddedStruct.PartnerUuid
 		varStorageNetAppHighAvailability.TakeoverState = varStorageNetAppHighAvailabilityWithoutEmbeddedStruct.TakeoverState
@@ -346,7 +491,7 @@ func (o *StorageNetAppHighAvailability) UnmarshalJSON(bytes []byte) (err error) 
 
 	varStorageNetAppHighAvailability := _StorageNetAppHighAvailability{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppHighAvailability)
+	err = json.Unmarshal(data, &varStorageNetAppHighAvailability)
 	if err == nil {
 		o.MoBaseComplexType = varStorageNetAppHighAvailability.MoBaseComplexType
 	} else {
@@ -355,11 +500,13 @@ func (o *StorageNetAppHighAvailability) UnmarshalJSON(bytes []byte) (err error) 
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "AutoGivebackEnabled")
 		delete(additionalProperties, "Enabled")
 		delete(additionalProperties, "GivebackState")
+		delete(additionalProperties, "PartnerModel")
 		delete(additionalProperties, "PartnerName")
 		delete(additionalProperties, "PartnerUuid")
 		delete(additionalProperties, "TakeoverState")

@@ -11,6 +11,7 @@ Name | Type | Description | Notes
 **Bootable** | Pointer to **string** | This field identifies the disk drive as bootable if set to true. | [optional] [readonly] 
 **ConfigurationCheckpoint** | Pointer to **string** | The current configuration checkpoint of the physical disk. | [optional] [readonly] 
 **ConfigurationState** | Pointer to **string** | The current configuration state of the physical disk. | [optional] [readonly] 
+**Description** | Pointer to **string** | This field displays the description of the physical disk. | [optional] [readonly] 
 **DisabledForRemoval** | Pointer to **bool** | The physical disk is disabled for removal. | [optional] 
 **DiscoveredPath** | Pointer to **string** | The discovered path of the physical disk. | [optional] [readonly] 
 **DiskId** | Pointer to **string** | This field identifies the ID assigned to physical disks. | [optional] [readonly] 
@@ -22,6 +23,7 @@ Name | Type | Description | Notes
 **FdeCapable** | Pointer to **string** | Full-Disk Encryption capability parameter of the physical disk. | [optional] 
 **HotSpareType** | Pointer to **string** | Type of hotspare configured on the physical disk. | [optional] 
 **IndicatorLed** | Pointer to **string** | Status of the locator LED corresponding to the physical disk. | [optional] 
+**IsPlatformSupported** | Pointer to **bool** | This field indicates whether the physical disk is supported on the server or not. | [optional] [readonly] [default to true]
 **LinkSpeed** | Pointer to **string** | The speed of the link between the drive and the controller. | [optional] [readonly] 
 **LinkState** | Pointer to **string** | The current link state of the physical disk. | [optional] [readonly] 
 **MaximumOperatingTemperature** | Pointer to **int64** | Maximum operating temperature of drive in Celsius. | [optional] 
@@ -33,18 +35,20 @@ Name | Type | Description | Notes
 **OperQualifierReason** | Pointer to **string** | For certain states, indicates the reason why the operState is in that state. | [optional] [readonly] 
 **Operability** | Pointer to **string** | This field identifies the disk operability of the disk. | [optional] [readonly] 
 **OperatingTemperature** | Pointer to **int64** | Operating temperature of drive in Celsius. | [optional] 
+**PartNumber** | Pointer to **string** | This field displays the part number of the physical disk. | [optional] [readonly] 
 **PercentLifeLeft** | Pointer to **int64** | Percentage of write cycles remaining in a solid state drive (SSD). | [optional] 
 **PercentReservedCapacityConsumed** | Pointer to **int64** | Percentage of reserve capacity consumed. | [optional] 
 **PerformancePercent** | Pointer to **int64** | Performance at which the device operating expressed in percentage. | [optional] 
 **PhysicalBlockSize** | Pointer to **string** | The block size of the installed physical disk. | [optional] [readonly] 
-**Pid** | Pointer to **string** | This field identifies the Product ID for physicalDisk. | [optional] [readonly] 
+**Pid** | Pointer to **string** | This field displays the product ID of the physical disk. | [optional] [readonly] 
 **PowerCycleCount** | Pointer to **int64** | Number of powercycles the drive has undergone. | [optional] 
 **PowerOnHours** | Pointer to **int64** | Number of hours the drive has been powered on. | [optional] 
+**PowerOnHoursPercentage** | Pointer to **int64** | Percentage of life used based on five year life span of Cisco supported drives. | [optional] [readonly] 
 **PredictedMediaLifeLeftPercent** | Pointer to **int64** | Predicted physical disk life left in percentage. | [optional] 
 **PredictiveFailureCount** | Pointer to **int64** | Error count on the physical disk. | [optional] 
 **Protocol** | Pointer to **string** | This field identifies the disk protocol used for communication. | [optional] [readonly] 
 **RawSize** | Pointer to **string** | The raw size of the physical disk in MB. | [optional] [readonly] 
-**ReadErrorCountThreshold** | Pointer to **int64** | The number of read errors that are permitted while accessing the drive/card. | [optional] 
+**ReadErrorCountThreshold** | Pointer to **int64** | The number of read errors that are permitted while accessing the drive/card. | [optional] [readonly] 
 **ReadIoErrorCount** | Pointer to **int64** | Number of IO Errors that occured while reading data from the disk. | [optional] 
 **Secured** | Pointer to **string** | This field identifies whether the disk is encrypted. | [optional] 
 **Size** | Pointer to **string** | The size of the physical disk in MB. | [optional] [readonly] 
@@ -53,16 +57,16 @@ Name | Type | Description | Notes
 **Type** | Pointer to **string** | This field identifies the type of the physical disk. | [optional] [readonly] 
 **VariantType** | Pointer to **string** | The variant type of the physical disk. | [optional] [readonly] 
 **WearStatusInDays** | Pointer to **int64** | The number of days an SSD has gone through with the write cycles. | [optional] 
-**WriteErrorCountThreshold** | Pointer to **int64** | The number of write errors that are permitted while accessing the drive/card. | [optional] 
-**WriteIoErrorCount** | Pointer to **int64** | Number of IO Errors that occured while writing data to the disk. | [optional] 
-**InventoryDeviceInfo** | Pointer to [**InventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
-**LocatorLed** | Pointer to [**EquipmentLocatorLedRelationship**](EquipmentLocatorLedRelationship.md) |  | [optional] 
+**WriteErrorCountThreshold** | Pointer to **int64** | The number of write errors that are permitted while accessing the drive/card. | [optional] [readonly] 
+**WriteIoErrorCount** | Pointer to **int64** | Number of IO Errors that occured while writing data to the disk. | [optional] [readonly] 
+**InventoryDeviceInfo** | Pointer to [**NullableInventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
+**LocatorLed** | Pointer to [**NullableEquipmentLocatorLedRelationship**](EquipmentLocatorLedRelationship.md) |  | [optional] 
 **PhysicalDiskExtensions** | Pointer to [**[]StoragePhysicalDiskExtensionRelationship**](StoragePhysicalDiskExtensionRelationship.md) | An array of relationships to storagePhysicalDiskExtension resources. | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 **RunningFirmware** | Pointer to [**[]FirmwareRunningFirmwareRelationship**](FirmwareRunningFirmwareRelationship.md) | An array of relationships to firmwareRunningFirmware resources. | [optional] [readonly] 
 **SasPorts** | Pointer to [**[]StorageSasPortRelationship**](StorageSasPortRelationship.md) | An array of relationships to storageSasPort resources. | [optional] [readonly] 
-**StorageController** | Pointer to [**StorageControllerRelationship**](StorageControllerRelationship.md) |  | [optional] 
-**StorageEnclosure** | Pointer to [**StorageEnclosureRelationship**](StorageEnclosureRelationship.md) |  | [optional] 
+**StorageController** | Pointer to [**NullableStorageControllerRelationship**](StorageControllerRelationship.md) |  | [optional] 
+**StorageEnclosure** | Pointer to [**NullableStorageEnclosureRelationship**](StorageEnclosureRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -247,6 +251,31 @@ SetConfigurationState sets ConfigurationState field to given value.
 `func (o *StoragePhysicalDisk) HasConfigurationState() bool`
 
 HasConfigurationState returns a boolean if a field has been set.
+
+### GetDescription
+
+`func (o *StoragePhysicalDisk) GetDescription() string`
+
+GetDescription returns the Description field if non-nil, zero value otherwise.
+
+### GetDescriptionOk
+
+`func (o *StoragePhysicalDisk) GetDescriptionOk() (*string, bool)`
+
+GetDescriptionOk returns a tuple with the Description field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDescription
+
+`func (o *StoragePhysicalDisk) SetDescription(v string)`
+
+SetDescription sets Description field to given value.
+
+### HasDescription
+
+`func (o *StoragePhysicalDisk) HasDescription() bool`
+
+HasDescription returns a boolean if a field has been set.
 
 ### GetDisabledForRemoval
 
@@ -523,6 +552,31 @@ SetIndicatorLed sets IndicatorLed field to given value.
 
 HasIndicatorLed returns a boolean if a field has been set.
 
+### GetIsPlatformSupported
+
+`func (o *StoragePhysicalDisk) GetIsPlatformSupported() bool`
+
+GetIsPlatformSupported returns the IsPlatformSupported field if non-nil, zero value otherwise.
+
+### GetIsPlatformSupportedOk
+
+`func (o *StoragePhysicalDisk) GetIsPlatformSupportedOk() (*bool, bool)`
+
+GetIsPlatformSupportedOk returns a tuple with the IsPlatformSupported field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsPlatformSupported
+
+`func (o *StoragePhysicalDisk) SetIsPlatformSupported(v bool)`
+
+SetIsPlatformSupported sets IsPlatformSupported field to given value.
+
+### HasIsPlatformSupported
+
+`func (o *StoragePhysicalDisk) HasIsPlatformSupported() bool`
+
+HasIsPlatformSupported returns a boolean if a field has been set.
+
 ### GetLinkSpeed
 
 `func (o *StoragePhysicalDisk) GetLinkSpeed() string`
@@ -798,6 +852,31 @@ SetOperatingTemperature sets OperatingTemperature field to given value.
 
 HasOperatingTemperature returns a boolean if a field has been set.
 
+### GetPartNumber
+
+`func (o *StoragePhysicalDisk) GetPartNumber() string`
+
+GetPartNumber returns the PartNumber field if non-nil, zero value otherwise.
+
+### GetPartNumberOk
+
+`func (o *StoragePhysicalDisk) GetPartNumberOk() (*string, bool)`
+
+GetPartNumberOk returns a tuple with the PartNumber field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPartNumber
+
+`func (o *StoragePhysicalDisk) SetPartNumber(v string)`
+
+SetPartNumber sets PartNumber field to given value.
+
+### HasPartNumber
+
+`func (o *StoragePhysicalDisk) HasPartNumber() bool`
+
+HasPartNumber returns a boolean if a field has been set.
+
 ### GetPercentLifeLeft
 
 `func (o *StoragePhysicalDisk) GetPercentLifeLeft() int64`
@@ -972,6 +1051,31 @@ SetPowerOnHours sets PowerOnHours field to given value.
 `func (o *StoragePhysicalDisk) HasPowerOnHours() bool`
 
 HasPowerOnHours returns a boolean if a field has been set.
+
+### GetPowerOnHoursPercentage
+
+`func (o *StoragePhysicalDisk) GetPowerOnHoursPercentage() int64`
+
+GetPowerOnHoursPercentage returns the PowerOnHoursPercentage field if non-nil, zero value otherwise.
+
+### GetPowerOnHoursPercentageOk
+
+`func (o *StoragePhysicalDisk) GetPowerOnHoursPercentageOk() (*int64, bool)`
+
+GetPowerOnHoursPercentageOk returns a tuple with the PowerOnHoursPercentage field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPowerOnHoursPercentage
+
+`func (o *StoragePhysicalDisk) SetPowerOnHoursPercentage(v int64)`
+
+SetPowerOnHoursPercentage sets PowerOnHoursPercentage field to given value.
+
+### HasPowerOnHoursPercentage
+
+`func (o *StoragePhysicalDisk) HasPowerOnHoursPercentage() bool`
+
+HasPowerOnHoursPercentage returns a boolean if a field has been set.
 
 ### GetPredictedMediaLifeLeftPercent
 
@@ -1373,6 +1477,16 @@ SetInventoryDeviceInfo sets InventoryDeviceInfo field to given value.
 
 HasInventoryDeviceInfo returns a boolean if a field has been set.
 
+### SetInventoryDeviceInfoNil
+
+`func (o *StoragePhysicalDisk) SetInventoryDeviceInfoNil(b bool)`
+
+ SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+
+### UnsetInventoryDeviceInfo
+`func (o *StoragePhysicalDisk) UnsetInventoryDeviceInfo()`
+
+UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
 ### GetLocatorLed
 
 `func (o *StoragePhysicalDisk) GetLocatorLed() EquipmentLocatorLedRelationship`
@@ -1398,6 +1512,16 @@ SetLocatorLed sets LocatorLed field to given value.
 
 HasLocatorLed returns a boolean if a field has been set.
 
+### SetLocatorLedNil
+
+`func (o *StoragePhysicalDisk) SetLocatorLedNil(b bool)`
+
+ SetLocatorLedNil sets the value for LocatorLed to be an explicit nil
+
+### UnsetLocatorLed
+`func (o *StoragePhysicalDisk) UnsetLocatorLed()`
+
+UnsetLocatorLed ensures that no value is present for LocatorLed, not even an explicit nil
 ### GetPhysicalDiskExtensions
 
 `func (o *StoragePhysicalDisk) GetPhysicalDiskExtensions() []StoragePhysicalDiskExtensionRelationship`
@@ -1458,6 +1582,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *StoragePhysicalDisk) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *StoragePhysicalDisk) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 ### GetRunningFirmware
 
 `func (o *StoragePhysicalDisk) GetRunningFirmware() []FirmwareRunningFirmwareRelationship`
@@ -1553,6 +1687,16 @@ SetStorageController sets StorageController field to given value.
 
 HasStorageController returns a boolean if a field has been set.
 
+### SetStorageControllerNil
+
+`func (o *StoragePhysicalDisk) SetStorageControllerNil(b bool)`
+
+ SetStorageControllerNil sets the value for StorageController to be an explicit nil
+
+### UnsetStorageController
+`func (o *StoragePhysicalDisk) UnsetStorageController()`
+
+UnsetStorageController ensures that no value is present for StorageController, not even an explicit nil
 ### GetStorageEnclosure
 
 `func (o *StoragePhysicalDisk) GetStorageEnclosure() StorageEnclosureRelationship`
@@ -1578,6 +1722,16 @@ SetStorageEnclosure sets StorageEnclosure field to given value.
 
 HasStorageEnclosure returns a boolean if a field has been set.
 
+### SetStorageEnclosureNil
+
+`func (o *StoragePhysicalDisk) SetStorageEnclosureNil(b bool)`
+
+ SetStorageEnclosureNil sets the value for StorageEnclosure to be an explicit nil
+
+### UnsetStorageEnclosure
+`func (o *StoragePhysicalDisk) UnsetStorageEnclosure()`
+
+UnsetStorageEnclosure ensures that no value is present for StorageEnclosure, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

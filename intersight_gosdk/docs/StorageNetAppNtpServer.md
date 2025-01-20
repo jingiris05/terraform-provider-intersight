@@ -8,9 +8,11 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.NetAppNtpServer"]
 **AuthenticationEnabled** | Pointer to **bool** | Indicates whether or not NTP symmetric authentication is enabled. | [optional] [readonly] 
 **AuthenticationKeyId** | Pointer to **string** | NTP symmetric authentication key identifier or index number (ID). | [optional] [readonly] 
+**ClusterUuid** | Pointer to **string** | Unique identity of the device. | [optional] [readonly] 
+**IsAuthenticationEnabled** | Pointer to **string** | Indicates whether or not NTP symmetric authentication is enabled. | [optional] [readonly] 
 **Server** | Pointer to **string** | NTP server host name, IPv4, or IPv6 address. | [optional] [readonly] 
 **Version** | Pointer to **string** | NTP protocol version for server. Valid versions are 3, 4, or auto. * &#x60;none&#x60; - Default unknown NTP protocol version. * &#x60;3&#x60; - NTP protocol version is 3. * &#x60;4&#x60; - NTP protocol version is 4. * &#x60;auto&#x60; - NTP protocol version is auto. | [optional] [readonly] [default to "none"]
-**Array** | Pointer to [**StorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
+**Array** | Pointer to [**NullableStorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -121,6 +123,56 @@ SetAuthenticationKeyId sets AuthenticationKeyId field to given value.
 
 HasAuthenticationKeyId returns a boolean if a field has been set.
 
+### GetClusterUuid
+
+`func (o *StorageNetAppNtpServer) GetClusterUuid() string`
+
+GetClusterUuid returns the ClusterUuid field if non-nil, zero value otherwise.
+
+### GetClusterUuidOk
+
+`func (o *StorageNetAppNtpServer) GetClusterUuidOk() (*string, bool)`
+
+GetClusterUuidOk returns a tuple with the ClusterUuid field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetClusterUuid
+
+`func (o *StorageNetAppNtpServer) SetClusterUuid(v string)`
+
+SetClusterUuid sets ClusterUuid field to given value.
+
+### HasClusterUuid
+
+`func (o *StorageNetAppNtpServer) HasClusterUuid() bool`
+
+HasClusterUuid returns a boolean if a field has been set.
+
+### GetIsAuthenticationEnabled
+
+`func (o *StorageNetAppNtpServer) GetIsAuthenticationEnabled() string`
+
+GetIsAuthenticationEnabled returns the IsAuthenticationEnabled field if non-nil, zero value otherwise.
+
+### GetIsAuthenticationEnabledOk
+
+`func (o *StorageNetAppNtpServer) GetIsAuthenticationEnabledOk() (*string, bool)`
+
+GetIsAuthenticationEnabledOk returns a tuple with the IsAuthenticationEnabled field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsAuthenticationEnabled
+
+`func (o *StorageNetAppNtpServer) SetIsAuthenticationEnabled(v string)`
+
+SetIsAuthenticationEnabled sets IsAuthenticationEnabled field to given value.
+
+### HasIsAuthenticationEnabled
+
+`func (o *StorageNetAppNtpServer) HasIsAuthenticationEnabled() bool`
+
+HasIsAuthenticationEnabled returns a boolean if a field has been set.
+
 ### GetServer
 
 `func (o *StorageNetAppNtpServer) GetServer() string`
@@ -196,6 +248,16 @@ SetArray sets Array field to given value.
 
 HasArray returns a boolean if a field has been set.
 
+### SetArrayNil
+
+`func (o *StorageNetAppNtpServer) SetArrayNil(b bool)`
+
+ SetArrayNil sets the value for Array to be an explicit nil
+
+### UnsetArray
+`func (o *StorageNetAppNtpServer) UnsetArray()`
+
+UnsetArray ensures that no value is present for Array, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

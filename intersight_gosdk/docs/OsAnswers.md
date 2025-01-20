@@ -6,15 +6,16 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "os.Answers"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "os.Answers"]
+**AlternateNameServers** | Pointer to **[]string** |  | [optional] 
 **AnswerFile** | Pointer to **string** | If the source of the answers is a static file, the content of the file is stored as value in this property. The value is mandatory only when the &#39;Source&#39; property has been set to &#39;File&#39;. | [optional] 
 **Hostname** | Pointer to **string** | Hostname to be configured for the server in the OS. | [optional] 
 **IpConfigType** | Pointer to **string** | IP configuration type. Values are Static or Dynamic configuration of IP. In case of static IP configuration, IP address, gateway and other details need to be populated. In case of dynamic the IP configuration is obtained dynamically from DHCP. * &#x60;static&#x60; - In case of static IP configuraton, provide the details such as IP address, netmask, and gateway. * &#x60;DHCP&#x60; - In case of dynamic IP configuration, the IP address, netmask and gateway detailsare obtained from DHCP. | [optional] [default to "static"]
-**IpConfiguration** | Pointer to [**NullableOsIpConfiguration**](OsIpConfiguration.md) |  | [optional] 
+**IpConfiguration** | Pointer to [**NullableMoBaseComplexType**](MoBaseComplexType.md) | The IP configuration used to configure Static IPv4/IPv6 configurations. | [optional] 
 **IsAnswerFileSet** | Pointer to **bool** | Indicates whether the value of the &#39;answerFile&#39; property has been set. | [optional] [readonly] [default to false]
 **IsRootPasswordCrypted** | Pointer to **bool** | Enable to indicate Root Password provided is encrypted. | [optional] 
 **IsRootPasswordSet** | Pointer to **bool** | Indicates whether the value of the &#39;rootPassword&#39; property has been set. | [optional] [readonly] [default to false]
 **Nameserver** | Pointer to **string** | IP address of the name server to be configured in the OS. | [optional] 
-**NetworkDevice** | Pointer to **string** | Network Device where the IP address must be configured. Network Interface names and MAC address are supported. | [optional] 
+**NetworkDevice** | Pointer to **string** | Network Device where the IP address must be configured. Network Interface names and MAC address are supported. For SUSE Linux Enterprise Server, Network Interface name is a required input and if provided as a MAC address, A persistent interface name is binded to the MAC address and the interface name will be used for network configuration. Refer https://documentation.suse.com/sles/15-SP2/html/SLES-all/cha-configuration-installation-options.html#CreateProfile-Network-names. | [optional] 
 **ProductKey** | Pointer to **string** | The product key to be used for a specific version of Windows installation. | [optional] 
 **RootPassword** | Pointer to **string** | Password configured for the root / administrator user in the OS. You can enter a plain text or an encrypted password. Intersight encrypts the plaintext password. Enable the Encrypted Password option to provide an encrypted password. For more details on encrypting passwords, see Help Center. | [optional] 
 **Source** | Pointer to **string** | Answer values can be provided from three sources - Embedded in OS image, static file, or as placeholder values for an answer file template. Source of the answers is given as value, Embedded/File/Template. &#39;Embedded&#39; option indicates that the answer file is embedded within the OS Image. &#39;File&#39; option indicates that the answers are provided as a file. &#39;Template&#39; indicates that the placeholders in the selected os.ConfigurationFile MO are replaced with values provided as os.Answers MO. * &#x60;None&#x60; - Indicates that answers is not sent and values must be populated from Install Template.   * &#x60;Embedded&#x60; - Indicates that the answer file is embedded within OS image. * &#x60;File&#x60; - Indicates that the answer file is a static content that has all thevalues populated. * &#x60;Template&#x60; - Indicates that the given answers are used to populate the answer filetemplate. The template allows the users to refer some server specificanswers as fields/placeholders and replace these placeholders with theactual values for each Server during OS installation using &#39;Answers&#39; and&#39;AdditionalParameters&#39; properties in os.Install MO.The answer file templates can be created by users as os.ConfigurationFile objects. | [optional] [default to "None"]
@@ -78,6 +79,41 @@ and a boolean to check if the value has been set.
 SetObjectType sets ObjectType field to given value.
 
 
+### GetAlternateNameServers
+
+`func (o *OsAnswers) GetAlternateNameServers() []string`
+
+GetAlternateNameServers returns the AlternateNameServers field if non-nil, zero value otherwise.
+
+### GetAlternateNameServersOk
+
+`func (o *OsAnswers) GetAlternateNameServersOk() (*[]string, bool)`
+
+GetAlternateNameServersOk returns a tuple with the AlternateNameServers field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAlternateNameServers
+
+`func (o *OsAnswers) SetAlternateNameServers(v []string)`
+
+SetAlternateNameServers sets AlternateNameServers field to given value.
+
+### HasAlternateNameServers
+
+`func (o *OsAnswers) HasAlternateNameServers() bool`
+
+HasAlternateNameServers returns a boolean if a field has been set.
+
+### SetAlternateNameServersNil
+
+`func (o *OsAnswers) SetAlternateNameServersNil(b bool)`
+
+ SetAlternateNameServersNil sets the value for AlternateNameServers to be an explicit nil
+
+### UnsetAlternateNameServers
+`func (o *OsAnswers) UnsetAlternateNameServers()`
+
+UnsetAlternateNameServers ensures that no value is present for AlternateNameServers, not even an explicit nil
 ### GetAnswerFile
 
 `func (o *OsAnswers) GetAnswerFile() string`
@@ -155,20 +191,20 @@ HasIpConfigType returns a boolean if a field has been set.
 
 ### GetIpConfiguration
 
-`func (o *OsAnswers) GetIpConfiguration() OsIpConfiguration`
+`func (o *OsAnswers) GetIpConfiguration() MoBaseComplexType`
 
 GetIpConfiguration returns the IpConfiguration field if non-nil, zero value otherwise.
 
 ### GetIpConfigurationOk
 
-`func (o *OsAnswers) GetIpConfigurationOk() (*OsIpConfiguration, bool)`
+`func (o *OsAnswers) GetIpConfigurationOk() (*MoBaseComplexType, bool)`
 
 GetIpConfigurationOk returns a tuple with the IpConfiguration field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetIpConfiguration
 
-`func (o *OsAnswers) SetIpConfiguration(v OsIpConfiguration)`
+`func (o *OsAnswers) SetIpConfiguration(v MoBaseComplexType)`
 
 SetIpConfiguration sets IpConfiguration field to given value.
 

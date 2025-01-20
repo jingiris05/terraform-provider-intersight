@@ -6,14 +6,15 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "pci.Device"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "pci.Device"]
+**DeviceId** | Pointer to **string** | The PCI device id of the PCI device. | [optional] 
 **FirmwareVersion** | Pointer to **string** | The running firmware version of the PCI device. | [optional] 
 **Pid** | Pointer to **string** | The product identifier of the PCI device. | [optional] 
 **SlotId** | Pointer to **string** | The PCI slot id of the PCI device. | [optional] [readonly] 
-**ComputeBlade** | Pointer to [**ComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
-**ComputeRackUnit** | Pointer to [**ComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
+**ComputeBlade** | Pointer to [**NullableComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
+**ComputeRackUnit** | Pointer to [**NullableComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
 **GraphicsCards** | Pointer to [**[]GraphicsCardRelationship**](GraphicsCardRelationship.md) | An array of relationships to graphicsCard resources. | [optional] 
-**InventoryDeviceInfo** | Pointer to [**InventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**InventoryDeviceInfo** | Pointer to [**NullableInventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -73,6 +74,31 @@ and a boolean to check if the value has been set.
 
 SetObjectType sets ObjectType field to given value.
 
+
+### GetDeviceId
+
+`func (o *PciDevice) GetDeviceId() string`
+
+GetDeviceId returns the DeviceId field if non-nil, zero value otherwise.
+
+### GetDeviceIdOk
+
+`func (o *PciDevice) GetDeviceIdOk() (*string, bool)`
+
+GetDeviceIdOk returns a tuple with the DeviceId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDeviceId
+
+`func (o *PciDevice) SetDeviceId(v string)`
+
+SetDeviceId sets DeviceId field to given value.
+
+### HasDeviceId
+
+`func (o *PciDevice) HasDeviceId() bool`
+
+HasDeviceId returns a boolean if a field has been set.
 
 ### GetFirmwareVersion
 
@@ -174,6 +200,16 @@ SetComputeBlade sets ComputeBlade field to given value.
 
 HasComputeBlade returns a boolean if a field has been set.
 
+### SetComputeBladeNil
+
+`func (o *PciDevice) SetComputeBladeNil(b bool)`
+
+ SetComputeBladeNil sets the value for ComputeBlade to be an explicit nil
+
+### UnsetComputeBlade
+`func (o *PciDevice) UnsetComputeBlade()`
+
+UnsetComputeBlade ensures that no value is present for ComputeBlade, not even an explicit nil
 ### GetComputeRackUnit
 
 `func (o *PciDevice) GetComputeRackUnit() ComputeRackUnitRelationship`
@@ -199,6 +235,16 @@ SetComputeRackUnit sets ComputeRackUnit field to given value.
 
 HasComputeRackUnit returns a boolean if a field has been set.
 
+### SetComputeRackUnitNil
+
+`func (o *PciDevice) SetComputeRackUnitNil(b bool)`
+
+ SetComputeRackUnitNil sets the value for ComputeRackUnit to be an explicit nil
+
+### UnsetComputeRackUnit
+`func (o *PciDevice) UnsetComputeRackUnit()`
+
+UnsetComputeRackUnit ensures that no value is present for ComputeRackUnit, not even an explicit nil
 ### GetGraphicsCards
 
 `func (o *PciDevice) GetGraphicsCards() []GraphicsCardRelationship`
@@ -259,6 +305,16 @@ SetInventoryDeviceInfo sets InventoryDeviceInfo field to given value.
 
 HasInventoryDeviceInfo returns a boolean if a field has been set.
 
+### SetInventoryDeviceInfoNil
+
+`func (o *PciDevice) SetInventoryDeviceInfoNil(b bool)`
+
+ SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+
+### UnsetInventoryDeviceInfo
+`func (o *PciDevice) UnsetInventoryDeviceInfo()`
+
+UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *PciDevice) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -284,6 +340,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *PciDevice) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *PciDevice) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

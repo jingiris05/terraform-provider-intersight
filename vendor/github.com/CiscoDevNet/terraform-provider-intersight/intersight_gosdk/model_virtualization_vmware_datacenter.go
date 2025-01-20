@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VirtualizationVmwareDatacenter type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VirtualizationVmwareDatacenter{}
 
 // VirtualizationVmwareDatacenter Datacenter object in VMware inventory. It is the logical container for all other objects like Datastore, Host, VirtualMachine, etc.
 type VirtualizationVmwareDatacenter struct {
@@ -28,18 +32,24 @@ type VirtualizationVmwareDatacenter struct {
 	ClusterCount *int64 `json:"ClusterCount,omitempty"`
 	// Count of all datastores associated with this DC.
 	DatastoreCount *int64 `json:"DatastoreCount,omitempty"`
+	// Count of all distributed networks associated with this datacenter (DC).
+	DistributedNetworkCount *int64 `json:"DistributedNetworkCount,omitempty"`
+	// Count of all distributed virtual switches associated with this datacenter (DC).
+	DistributedVirtualSwitchCount *int64 `json:"DistributedVirtualSwitchCount,omitempty"`
 	// Count of all hosts associated with this DC.
 	HostCount *int64 `json:"HostCount,omitempty"`
 	// Inventory path of the DC.
 	InventoryPath *string `json:"InventoryPath,omitempty"`
 	// Count of all networks associated with this datacenter (DC).
 	NetworkCount *int64 `json:"NetworkCount,omitempty"`
+	// Count of all standard networks associated with this datacenter (DC).
+	StandardNetworkCount *int64 `json:"StandardNetworkCount,omitempty"`
 	// Count of all virtual machines (VMs) associated with this DC.
 	VmCount *int64 `json:"VmCount,omitempty"`
 	// Count of all virtual machines templates associated with this DC.
-	VmTemplateCount      *int64                                   `json:"VmTemplateCount,omitempty"`
-	HypervisorManager    *VirtualizationVmwareVcenterRelationship `json:"HypervisorManager,omitempty"`
-	ParentFolder         *VirtualizationVmwareFolderRelationship  `json:"ParentFolder,omitempty"`
+	VmTemplateCount      *int64                                          `json:"VmTemplateCount,omitempty"`
+	HypervisorManager    NullableVirtualizationVmwareVcenterRelationship `json:"HypervisorManager,omitempty"`
+	ParentFolder         NullableVirtualizationVmwareFolderRelationship  `json:"ParentFolder,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -92,6 +102,11 @@ func (o *VirtualizationVmwareDatacenter) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "virtualization.VmwareDatacenter" of the ClassId field.
+func (o *VirtualizationVmwareDatacenter) GetDefaultClassId() interface{} {
+	return "virtualization.VmwareDatacenter"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VirtualizationVmwareDatacenter) GetObjectType() string {
 	if o == nil {
@@ -116,9 +131,14 @@ func (o *VirtualizationVmwareDatacenter) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "virtualization.VmwareDatacenter" of the ObjectType field.
+func (o *VirtualizationVmwareDatacenter) GetDefaultObjectType() interface{} {
+	return "virtualization.VmwareDatacenter"
+}
+
 // GetClusterCount returns the ClusterCount field value if set, zero value otherwise.
 func (o *VirtualizationVmwareDatacenter) GetClusterCount() int64 {
-	if o == nil || o.ClusterCount == nil {
+	if o == nil || IsNil(o.ClusterCount) {
 		var ret int64
 		return ret
 	}
@@ -128,7 +148,7 @@ func (o *VirtualizationVmwareDatacenter) GetClusterCount() int64 {
 // GetClusterCountOk returns a tuple with the ClusterCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareDatacenter) GetClusterCountOk() (*int64, bool) {
-	if o == nil || o.ClusterCount == nil {
+	if o == nil || IsNil(o.ClusterCount) {
 		return nil, false
 	}
 	return o.ClusterCount, true
@@ -136,7 +156,7 @@ func (o *VirtualizationVmwareDatacenter) GetClusterCountOk() (*int64, bool) {
 
 // HasClusterCount returns a boolean if a field has been set.
 func (o *VirtualizationVmwareDatacenter) HasClusterCount() bool {
-	if o != nil && o.ClusterCount != nil {
+	if o != nil && !IsNil(o.ClusterCount) {
 		return true
 	}
 
@@ -150,7 +170,7 @@ func (o *VirtualizationVmwareDatacenter) SetClusterCount(v int64) {
 
 // GetDatastoreCount returns the DatastoreCount field value if set, zero value otherwise.
 func (o *VirtualizationVmwareDatacenter) GetDatastoreCount() int64 {
-	if o == nil || o.DatastoreCount == nil {
+	if o == nil || IsNil(o.DatastoreCount) {
 		var ret int64
 		return ret
 	}
@@ -160,7 +180,7 @@ func (o *VirtualizationVmwareDatacenter) GetDatastoreCount() int64 {
 // GetDatastoreCountOk returns a tuple with the DatastoreCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareDatacenter) GetDatastoreCountOk() (*int64, bool) {
-	if o == nil || o.DatastoreCount == nil {
+	if o == nil || IsNil(o.DatastoreCount) {
 		return nil, false
 	}
 	return o.DatastoreCount, true
@@ -168,7 +188,7 @@ func (o *VirtualizationVmwareDatacenter) GetDatastoreCountOk() (*int64, bool) {
 
 // HasDatastoreCount returns a boolean if a field has been set.
 func (o *VirtualizationVmwareDatacenter) HasDatastoreCount() bool {
-	if o != nil && o.DatastoreCount != nil {
+	if o != nil && !IsNil(o.DatastoreCount) {
 		return true
 	}
 
@@ -180,9 +200,73 @@ func (o *VirtualizationVmwareDatacenter) SetDatastoreCount(v int64) {
 	o.DatastoreCount = &v
 }
 
+// GetDistributedNetworkCount returns the DistributedNetworkCount field value if set, zero value otherwise.
+func (o *VirtualizationVmwareDatacenter) GetDistributedNetworkCount() int64 {
+	if o == nil || IsNil(o.DistributedNetworkCount) {
+		var ret int64
+		return ret
+	}
+	return *o.DistributedNetworkCount
+}
+
+// GetDistributedNetworkCountOk returns a tuple with the DistributedNetworkCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VirtualizationVmwareDatacenter) GetDistributedNetworkCountOk() (*int64, bool) {
+	if o == nil || IsNil(o.DistributedNetworkCount) {
+		return nil, false
+	}
+	return o.DistributedNetworkCount, true
+}
+
+// HasDistributedNetworkCount returns a boolean if a field has been set.
+func (o *VirtualizationVmwareDatacenter) HasDistributedNetworkCount() bool {
+	if o != nil && !IsNil(o.DistributedNetworkCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetDistributedNetworkCount gets a reference to the given int64 and assigns it to the DistributedNetworkCount field.
+func (o *VirtualizationVmwareDatacenter) SetDistributedNetworkCount(v int64) {
+	o.DistributedNetworkCount = &v
+}
+
+// GetDistributedVirtualSwitchCount returns the DistributedVirtualSwitchCount field value if set, zero value otherwise.
+func (o *VirtualizationVmwareDatacenter) GetDistributedVirtualSwitchCount() int64 {
+	if o == nil || IsNil(o.DistributedVirtualSwitchCount) {
+		var ret int64
+		return ret
+	}
+	return *o.DistributedVirtualSwitchCount
+}
+
+// GetDistributedVirtualSwitchCountOk returns a tuple with the DistributedVirtualSwitchCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VirtualizationVmwareDatacenter) GetDistributedVirtualSwitchCountOk() (*int64, bool) {
+	if o == nil || IsNil(o.DistributedVirtualSwitchCount) {
+		return nil, false
+	}
+	return o.DistributedVirtualSwitchCount, true
+}
+
+// HasDistributedVirtualSwitchCount returns a boolean if a field has been set.
+func (o *VirtualizationVmwareDatacenter) HasDistributedVirtualSwitchCount() bool {
+	if o != nil && !IsNil(o.DistributedVirtualSwitchCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetDistributedVirtualSwitchCount gets a reference to the given int64 and assigns it to the DistributedVirtualSwitchCount field.
+func (o *VirtualizationVmwareDatacenter) SetDistributedVirtualSwitchCount(v int64) {
+	o.DistributedVirtualSwitchCount = &v
+}
+
 // GetHostCount returns the HostCount field value if set, zero value otherwise.
 func (o *VirtualizationVmwareDatacenter) GetHostCount() int64 {
-	if o == nil || o.HostCount == nil {
+	if o == nil || IsNil(o.HostCount) {
 		var ret int64
 		return ret
 	}
@@ -192,7 +276,7 @@ func (o *VirtualizationVmwareDatacenter) GetHostCount() int64 {
 // GetHostCountOk returns a tuple with the HostCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareDatacenter) GetHostCountOk() (*int64, bool) {
-	if o == nil || o.HostCount == nil {
+	if o == nil || IsNil(o.HostCount) {
 		return nil, false
 	}
 	return o.HostCount, true
@@ -200,7 +284,7 @@ func (o *VirtualizationVmwareDatacenter) GetHostCountOk() (*int64, bool) {
 
 // HasHostCount returns a boolean if a field has been set.
 func (o *VirtualizationVmwareDatacenter) HasHostCount() bool {
-	if o != nil && o.HostCount != nil {
+	if o != nil && !IsNil(o.HostCount) {
 		return true
 	}
 
@@ -214,7 +298,7 @@ func (o *VirtualizationVmwareDatacenter) SetHostCount(v int64) {
 
 // GetInventoryPath returns the InventoryPath field value if set, zero value otherwise.
 func (o *VirtualizationVmwareDatacenter) GetInventoryPath() string {
-	if o == nil || o.InventoryPath == nil {
+	if o == nil || IsNil(o.InventoryPath) {
 		var ret string
 		return ret
 	}
@@ -224,7 +308,7 @@ func (o *VirtualizationVmwareDatacenter) GetInventoryPath() string {
 // GetInventoryPathOk returns a tuple with the InventoryPath field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareDatacenter) GetInventoryPathOk() (*string, bool) {
-	if o == nil || o.InventoryPath == nil {
+	if o == nil || IsNil(o.InventoryPath) {
 		return nil, false
 	}
 	return o.InventoryPath, true
@@ -232,7 +316,7 @@ func (o *VirtualizationVmwareDatacenter) GetInventoryPathOk() (*string, bool) {
 
 // HasInventoryPath returns a boolean if a field has been set.
 func (o *VirtualizationVmwareDatacenter) HasInventoryPath() bool {
-	if o != nil && o.InventoryPath != nil {
+	if o != nil && !IsNil(o.InventoryPath) {
 		return true
 	}
 
@@ -246,7 +330,7 @@ func (o *VirtualizationVmwareDatacenter) SetInventoryPath(v string) {
 
 // GetNetworkCount returns the NetworkCount field value if set, zero value otherwise.
 func (o *VirtualizationVmwareDatacenter) GetNetworkCount() int64 {
-	if o == nil || o.NetworkCount == nil {
+	if o == nil || IsNil(o.NetworkCount) {
 		var ret int64
 		return ret
 	}
@@ -256,7 +340,7 @@ func (o *VirtualizationVmwareDatacenter) GetNetworkCount() int64 {
 // GetNetworkCountOk returns a tuple with the NetworkCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareDatacenter) GetNetworkCountOk() (*int64, bool) {
-	if o == nil || o.NetworkCount == nil {
+	if o == nil || IsNil(o.NetworkCount) {
 		return nil, false
 	}
 	return o.NetworkCount, true
@@ -264,7 +348,7 @@ func (o *VirtualizationVmwareDatacenter) GetNetworkCountOk() (*int64, bool) {
 
 // HasNetworkCount returns a boolean if a field has been set.
 func (o *VirtualizationVmwareDatacenter) HasNetworkCount() bool {
-	if o != nil && o.NetworkCount != nil {
+	if o != nil && !IsNil(o.NetworkCount) {
 		return true
 	}
 
@@ -276,9 +360,41 @@ func (o *VirtualizationVmwareDatacenter) SetNetworkCount(v int64) {
 	o.NetworkCount = &v
 }
 
+// GetStandardNetworkCount returns the StandardNetworkCount field value if set, zero value otherwise.
+func (o *VirtualizationVmwareDatacenter) GetStandardNetworkCount() int64 {
+	if o == nil || IsNil(o.StandardNetworkCount) {
+		var ret int64
+		return ret
+	}
+	return *o.StandardNetworkCount
+}
+
+// GetStandardNetworkCountOk returns a tuple with the StandardNetworkCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VirtualizationVmwareDatacenter) GetStandardNetworkCountOk() (*int64, bool) {
+	if o == nil || IsNil(o.StandardNetworkCount) {
+		return nil, false
+	}
+	return o.StandardNetworkCount, true
+}
+
+// HasStandardNetworkCount returns a boolean if a field has been set.
+func (o *VirtualizationVmwareDatacenter) HasStandardNetworkCount() bool {
+	if o != nil && !IsNil(o.StandardNetworkCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetStandardNetworkCount gets a reference to the given int64 and assigns it to the StandardNetworkCount field.
+func (o *VirtualizationVmwareDatacenter) SetStandardNetworkCount(v int64) {
+	o.StandardNetworkCount = &v
+}
+
 // GetVmCount returns the VmCount field value if set, zero value otherwise.
 func (o *VirtualizationVmwareDatacenter) GetVmCount() int64 {
-	if o == nil || o.VmCount == nil {
+	if o == nil || IsNil(o.VmCount) {
 		var ret int64
 		return ret
 	}
@@ -288,7 +404,7 @@ func (o *VirtualizationVmwareDatacenter) GetVmCount() int64 {
 // GetVmCountOk returns a tuple with the VmCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareDatacenter) GetVmCountOk() (*int64, bool) {
-	if o == nil || o.VmCount == nil {
+	if o == nil || IsNil(o.VmCount) {
 		return nil, false
 	}
 	return o.VmCount, true
@@ -296,7 +412,7 @@ func (o *VirtualizationVmwareDatacenter) GetVmCountOk() (*int64, bool) {
 
 // HasVmCount returns a boolean if a field has been set.
 func (o *VirtualizationVmwareDatacenter) HasVmCount() bool {
-	if o != nil && o.VmCount != nil {
+	if o != nil && !IsNil(o.VmCount) {
 		return true
 	}
 
@@ -310,7 +426,7 @@ func (o *VirtualizationVmwareDatacenter) SetVmCount(v int64) {
 
 // GetVmTemplateCount returns the VmTemplateCount field value if set, zero value otherwise.
 func (o *VirtualizationVmwareDatacenter) GetVmTemplateCount() int64 {
-	if o == nil || o.VmTemplateCount == nil {
+	if o == nil || IsNil(o.VmTemplateCount) {
 		var ret int64
 		return ret
 	}
@@ -320,7 +436,7 @@ func (o *VirtualizationVmwareDatacenter) GetVmTemplateCount() int64 {
 // GetVmTemplateCountOk returns a tuple with the VmTemplateCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareDatacenter) GetVmTemplateCountOk() (*int64, bool) {
-	if o == nil || o.VmTemplateCount == nil {
+	if o == nil || IsNil(o.VmTemplateCount) {
 		return nil, false
 	}
 	return o.VmTemplateCount, true
@@ -328,7 +444,7 @@ func (o *VirtualizationVmwareDatacenter) GetVmTemplateCountOk() (*int64, bool) {
 
 // HasVmTemplateCount returns a boolean if a field has been set.
 func (o *VirtualizationVmwareDatacenter) HasVmTemplateCount() bool {
-	if o != nil && o.VmTemplateCount != nil {
+	if o != nil && !IsNil(o.VmTemplateCount) {
 		return true
 	}
 
@@ -340,122 +456,204 @@ func (o *VirtualizationVmwareDatacenter) SetVmTemplateCount(v int64) {
 	o.VmTemplateCount = &v
 }
 
-// GetHypervisorManager returns the HypervisorManager field value if set, zero value otherwise.
+// GetHypervisorManager returns the HypervisorManager field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VirtualizationVmwareDatacenter) GetHypervisorManager() VirtualizationVmwareVcenterRelationship {
-	if o == nil || o.HypervisorManager == nil {
+	if o == nil || IsNil(o.HypervisorManager.Get()) {
 		var ret VirtualizationVmwareVcenterRelationship
 		return ret
 	}
-	return *o.HypervisorManager
+	return *o.HypervisorManager.Get()
 }
 
 // GetHypervisorManagerOk returns a tuple with the HypervisorManager field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VirtualizationVmwareDatacenter) GetHypervisorManagerOk() (*VirtualizationVmwareVcenterRelationship, bool) {
-	if o == nil || o.HypervisorManager == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.HypervisorManager, true
+	return o.HypervisorManager.Get(), o.HypervisorManager.IsSet()
 }
 
 // HasHypervisorManager returns a boolean if a field has been set.
 func (o *VirtualizationVmwareDatacenter) HasHypervisorManager() bool {
-	if o != nil && o.HypervisorManager != nil {
+	if o != nil && o.HypervisorManager.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetHypervisorManager gets a reference to the given VirtualizationVmwareVcenterRelationship and assigns it to the HypervisorManager field.
+// SetHypervisorManager gets a reference to the given NullableVirtualizationVmwareVcenterRelationship and assigns it to the HypervisorManager field.
 func (o *VirtualizationVmwareDatacenter) SetHypervisorManager(v VirtualizationVmwareVcenterRelationship) {
-	o.HypervisorManager = &v
+	o.HypervisorManager.Set(&v)
 }
 
-// GetParentFolder returns the ParentFolder field value if set, zero value otherwise.
+// SetHypervisorManagerNil sets the value for HypervisorManager to be an explicit nil
+func (o *VirtualizationVmwareDatacenter) SetHypervisorManagerNil() {
+	o.HypervisorManager.Set(nil)
+}
+
+// UnsetHypervisorManager ensures that no value is present for HypervisorManager, not even an explicit nil
+func (o *VirtualizationVmwareDatacenter) UnsetHypervisorManager() {
+	o.HypervisorManager.Unset()
+}
+
+// GetParentFolder returns the ParentFolder field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VirtualizationVmwareDatacenter) GetParentFolder() VirtualizationVmwareFolderRelationship {
-	if o == nil || o.ParentFolder == nil {
+	if o == nil || IsNil(o.ParentFolder.Get()) {
 		var ret VirtualizationVmwareFolderRelationship
 		return ret
 	}
-	return *o.ParentFolder
+	return *o.ParentFolder.Get()
 }
 
 // GetParentFolderOk returns a tuple with the ParentFolder field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VirtualizationVmwareDatacenter) GetParentFolderOk() (*VirtualizationVmwareFolderRelationship, bool) {
-	if o == nil || o.ParentFolder == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ParentFolder, true
+	return o.ParentFolder.Get(), o.ParentFolder.IsSet()
 }
 
 // HasParentFolder returns a boolean if a field has been set.
 func (o *VirtualizationVmwareDatacenter) HasParentFolder() bool {
-	if o != nil && o.ParentFolder != nil {
+	if o != nil && o.ParentFolder.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetParentFolder gets a reference to the given VirtualizationVmwareFolderRelationship and assigns it to the ParentFolder field.
+// SetParentFolder gets a reference to the given NullableVirtualizationVmwareFolderRelationship and assigns it to the ParentFolder field.
 func (o *VirtualizationVmwareDatacenter) SetParentFolder(v VirtualizationVmwareFolderRelationship) {
-	o.ParentFolder = &v
+	o.ParentFolder.Set(&v)
+}
+
+// SetParentFolderNil sets the value for ParentFolder to be an explicit nil
+func (o *VirtualizationVmwareDatacenter) SetParentFolderNil() {
+	o.ParentFolder.Set(nil)
+}
+
+// UnsetParentFolder ensures that no value is present for ParentFolder, not even an explicit nil
+func (o *VirtualizationVmwareDatacenter) UnsetParentFolder() {
+	o.ParentFolder.Unset()
 }
 
 func (o VirtualizationVmwareDatacenter) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VirtualizationVmwareDatacenter) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedVirtualizationBaseDatacenter, errVirtualizationBaseDatacenter := json.Marshal(o.VirtualizationBaseDatacenter)
 	if errVirtualizationBaseDatacenter != nil {
-		return []byte{}, errVirtualizationBaseDatacenter
+		return map[string]interface{}{}, errVirtualizationBaseDatacenter
 	}
 	errVirtualizationBaseDatacenter = json.Unmarshal([]byte(serializedVirtualizationBaseDatacenter), &toSerialize)
 	if errVirtualizationBaseDatacenter != nil {
-		return []byte{}, errVirtualizationBaseDatacenter
+		return map[string]interface{}{}, errVirtualizationBaseDatacenter
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ClusterCount != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ClusterCount) {
 		toSerialize["ClusterCount"] = o.ClusterCount
 	}
-	if o.DatastoreCount != nil {
+	if !IsNil(o.DatastoreCount) {
 		toSerialize["DatastoreCount"] = o.DatastoreCount
 	}
-	if o.HostCount != nil {
+	if !IsNil(o.DistributedNetworkCount) {
+		toSerialize["DistributedNetworkCount"] = o.DistributedNetworkCount
+	}
+	if !IsNil(o.DistributedVirtualSwitchCount) {
+		toSerialize["DistributedVirtualSwitchCount"] = o.DistributedVirtualSwitchCount
+	}
+	if !IsNil(o.HostCount) {
 		toSerialize["HostCount"] = o.HostCount
 	}
-	if o.InventoryPath != nil {
+	if !IsNil(o.InventoryPath) {
 		toSerialize["InventoryPath"] = o.InventoryPath
 	}
-	if o.NetworkCount != nil {
+	if !IsNil(o.NetworkCount) {
 		toSerialize["NetworkCount"] = o.NetworkCount
 	}
-	if o.VmCount != nil {
+	if !IsNil(o.StandardNetworkCount) {
+		toSerialize["StandardNetworkCount"] = o.StandardNetworkCount
+	}
+	if !IsNil(o.VmCount) {
 		toSerialize["VmCount"] = o.VmCount
 	}
-	if o.VmTemplateCount != nil {
+	if !IsNil(o.VmTemplateCount) {
 		toSerialize["VmTemplateCount"] = o.VmTemplateCount
 	}
-	if o.HypervisorManager != nil {
-		toSerialize["HypervisorManager"] = o.HypervisorManager
+	if o.HypervisorManager.IsSet() {
+		toSerialize["HypervisorManager"] = o.HypervisorManager.Get()
 	}
-	if o.ParentFolder != nil {
-		toSerialize["ParentFolder"] = o.ParentFolder
+	if o.ParentFolder.IsSet() {
+		toSerialize["ParentFolder"] = o.ParentFolder.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VirtualizationVmwareDatacenter) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VirtualizationVmwareDatacenter) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VirtualizationVmwareDatacenterWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -465,32 +663,41 @@ func (o *VirtualizationVmwareDatacenter) UnmarshalJSON(bytes []byte) (err error)
 		ClusterCount *int64 `json:"ClusterCount,omitempty"`
 		// Count of all datastores associated with this DC.
 		DatastoreCount *int64 `json:"DatastoreCount,omitempty"`
+		// Count of all distributed networks associated with this datacenter (DC).
+		DistributedNetworkCount *int64 `json:"DistributedNetworkCount,omitempty"`
+		// Count of all distributed virtual switches associated with this datacenter (DC).
+		DistributedVirtualSwitchCount *int64 `json:"DistributedVirtualSwitchCount,omitempty"`
 		// Count of all hosts associated with this DC.
 		HostCount *int64 `json:"HostCount,omitempty"`
 		// Inventory path of the DC.
 		InventoryPath *string `json:"InventoryPath,omitempty"`
 		// Count of all networks associated with this datacenter (DC).
 		NetworkCount *int64 `json:"NetworkCount,omitempty"`
+		// Count of all standard networks associated with this datacenter (DC).
+		StandardNetworkCount *int64 `json:"StandardNetworkCount,omitempty"`
 		// Count of all virtual machines (VMs) associated with this DC.
 		VmCount *int64 `json:"VmCount,omitempty"`
 		// Count of all virtual machines templates associated with this DC.
-		VmTemplateCount   *int64                                   `json:"VmTemplateCount,omitempty"`
-		HypervisorManager *VirtualizationVmwareVcenterRelationship `json:"HypervisorManager,omitempty"`
-		ParentFolder      *VirtualizationVmwareFolderRelationship  `json:"ParentFolder,omitempty"`
+		VmTemplateCount   *int64                                          `json:"VmTemplateCount,omitempty"`
+		HypervisorManager NullableVirtualizationVmwareVcenterRelationship `json:"HypervisorManager,omitempty"`
+		ParentFolder      NullableVirtualizationVmwareFolderRelationship  `json:"ParentFolder,omitempty"`
 	}
 
 	varVirtualizationVmwareDatacenterWithoutEmbeddedStruct := VirtualizationVmwareDatacenterWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationVmwareDatacenterWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVirtualizationVmwareDatacenterWithoutEmbeddedStruct)
 	if err == nil {
 		varVirtualizationVmwareDatacenter := _VirtualizationVmwareDatacenter{}
 		varVirtualizationVmwareDatacenter.ClassId = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.ClassId
 		varVirtualizationVmwareDatacenter.ObjectType = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.ObjectType
 		varVirtualizationVmwareDatacenter.ClusterCount = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.ClusterCount
 		varVirtualizationVmwareDatacenter.DatastoreCount = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.DatastoreCount
+		varVirtualizationVmwareDatacenter.DistributedNetworkCount = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.DistributedNetworkCount
+		varVirtualizationVmwareDatacenter.DistributedVirtualSwitchCount = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.DistributedVirtualSwitchCount
 		varVirtualizationVmwareDatacenter.HostCount = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.HostCount
 		varVirtualizationVmwareDatacenter.InventoryPath = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.InventoryPath
 		varVirtualizationVmwareDatacenter.NetworkCount = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.NetworkCount
+		varVirtualizationVmwareDatacenter.StandardNetworkCount = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.StandardNetworkCount
 		varVirtualizationVmwareDatacenter.VmCount = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.VmCount
 		varVirtualizationVmwareDatacenter.VmTemplateCount = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.VmTemplateCount
 		varVirtualizationVmwareDatacenter.HypervisorManager = varVirtualizationVmwareDatacenterWithoutEmbeddedStruct.HypervisorManager
@@ -502,7 +709,7 @@ func (o *VirtualizationVmwareDatacenter) UnmarshalJSON(bytes []byte) (err error)
 
 	varVirtualizationVmwareDatacenter := _VirtualizationVmwareDatacenter{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationVmwareDatacenter)
+	err = json.Unmarshal(data, &varVirtualizationVmwareDatacenter)
 	if err == nil {
 		o.VirtualizationBaseDatacenter = varVirtualizationVmwareDatacenter.VirtualizationBaseDatacenter
 	} else {
@@ -511,14 +718,17 @@ func (o *VirtualizationVmwareDatacenter) UnmarshalJSON(bytes []byte) (err error)
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ClusterCount")
 		delete(additionalProperties, "DatastoreCount")
+		delete(additionalProperties, "DistributedNetworkCount")
+		delete(additionalProperties, "DistributedVirtualSwitchCount")
 		delete(additionalProperties, "HostCount")
 		delete(additionalProperties, "InventoryPath")
 		delete(additionalProperties, "NetworkCount")
+		delete(additionalProperties, "StandardNetworkCount")
 		delete(additionalProperties, "VmCount")
 		delete(additionalProperties, "VmTemplateCount")
 		delete(additionalProperties, "HypervisorManager")

@@ -6,19 +6,20 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "network.SupervisorCard"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "network.SupervisorCard"]
-**Description** | Pointer to **string** | The description of the supervisor card. | [optional] 
-**HardwareVersion** | Pointer to **string** | The hardware version of the supervisor card. | [optional] 
-**Name** | Pointer to **string** | The name of the supervisor card like Supervisor Card-1. | [optional] 
-**NumberOfPorts** | Pointer to **int64** | The number of ports on the supervisor card. | [optional] 
-**OperState** | Pointer to **string** | The operational status of the supervisor card. | [optional] 
-**PartNumber** | Pointer to **string** | The part number of the supervisor card. | [optional] 
-**PowerState** | Pointer to **string** | The power state of the supervisor card. | [optional] 
-**Status** | Pointer to **string** | The status of the supervisor card. | [optional] 
-**SupervisorId** | Pointer to **string** | The identifier for the supervisor card. | [optional] 
-**Type** | Pointer to **string** | The type of the supervisor card. | [optional] 
-**FcPorts** | Pointer to [**[]FcPhysicalPortRelationship**](FcPhysicalPortRelationship.md) | An array of relationships to fcPhysicalPort resources. | [optional] 
-**NetworkElement** | Pointer to [**NetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**Description** | Pointer to **string** | The description of the supervisor card. | [optional] [readonly] 
+**HardwareVersion** | Pointer to **string** | The hardware version of the supervisor card. | [optional] [readonly] 
+**Name** | Pointer to **string** | The name of the supervisor card like Supervisor Card-1. | [optional] [readonly] 
+**NumberOfPorts** | Pointer to **int64** | The number of ports on the supervisor card. | [optional] [readonly] 
+**OperReason** | Pointer to **string** | The health issue of the supervisor card. | [optional] [readonly] 
+**OperState** | Pointer to **string** | The operational status of the supervisor card. | [optional] [readonly] 
+**PartNumber** | Pointer to **string** | The part number of the supervisor card. | [optional] [readonly] 
+**PowerState** | Pointer to **string** | The power state of the supervisor card. | [optional] [readonly] 
+**Status** | Pointer to **string** | The status of the supervisor card. | [optional] [readonly] 
+**SupervisorId** | Pointer to **string** | The identifier for the supervisor card. | [optional] [readonly] 
+**Type** | Pointer to **string** | The type of the supervisor card. | [optional] [readonly] 
+**FcPorts** | Pointer to [**[]FcPhysicalPortRelationship**](FcPhysicalPortRelationship.md) | An array of relationships to fcPhysicalPort resources. | [optional] [readonly] 
+**NetworkElement** | Pointer to [**NullableNetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -178,6 +179,31 @@ SetNumberOfPorts sets NumberOfPorts field to given value.
 `func (o *NetworkSupervisorCard) HasNumberOfPorts() bool`
 
 HasNumberOfPorts returns a boolean if a field has been set.
+
+### GetOperReason
+
+`func (o *NetworkSupervisorCard) GetOperReason() string`
+
+GetOperReason returns the OperReason field if non-nil, zero value otherwise.
+
+### GetOperReasonOk
+
+`func (o *NetworkSupervisorCard) GetOperReasonOk() (*string, bool)`
+
+GetOperReasonOk returns a tuple with the OperReason field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOperReason
+
+`func (o *NetworkSupervisorCard) SetOperReason(v string)`
+
+SetOperReason sets OperReason field to given value.
+
+### HasOperReason
+
+`func (o *NetworkSupervisorCard) HasOperReason() bool`
+
+HasOperReason returns a boolean if a field has been set.
 
 ### GetOperState
 
@@ -389,6 +415,16 @@ SetNetworkElement sets NetworkElement field to given value.
 
 HasNetworkElement returns a boolean if a field has been set.
 
+### SetNetworkElementNil
+
+`func (o *NetworkSupervisorCard) SetNetworkElementNil(b bool)`
+
+ SetNetworkElementNil sets the value for NetworkElement to be an explicit nil
+
+### UnsetNetworkElement
+`func (o *NetworkSupervisorCard) UnsetNetworkElement()`
+
+UnsetNetworkElement ensures that no value is present for NetworkElement, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *NetworkSupervisorCard) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -414,6 +450,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *NetworkSupervisorCard) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *NetworkSupervisorCard) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

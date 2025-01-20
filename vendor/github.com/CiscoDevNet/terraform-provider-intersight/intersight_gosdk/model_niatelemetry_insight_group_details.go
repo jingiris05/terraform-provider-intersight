@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the NiatelemetryInsightGroupDetails type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &NiatelemetryInsightGroupDetails{}
 
 // NiatelemetryInsightGroupDetails Insight group details in ND.
 type NiatelemetryInsightGroupDetails struct {
@@ -48,8 +52,8 @@ type NiatelemetryInsightGroupDetails struct {
 	// Prechange analysis count of the Insight group.
 	PrechangeAnalysisCount *int64 `json:"PrechangeAnalysisCount,omitempty"`
 	// TAC collection config count of the Insight group.
-	TacCollectionConfigCount *int64                               `json:"TacCollectionConfigCount,omitempty"`
-	RegisteredDevice         *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	TacCollectionConfigCount *int64                                      `json:"TacCollectionConfigCount,omitempty"`
+	RegisteredDevice         NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	AdditionalProperties     map[string]interface{}
 }
 
@@ -102,6 +106,11 @@ func (o *NiatelemetryInsightGroupDetails) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "niatelemetry.InsightGroupDetails" of the ClassId field.
+func (o *NiatelemetryInsightGroupDetails) GetDefaultClassId() interface{} {
+	return "niatelemetry.InsightGroupDetails"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *NiatelemetryInsightGroupDetails) GetObjectType() string {
 	if o == nil {
@@ -126,9 +135,14 @@ func (o *NiatelemetryInsightGroupDetails) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "niatelemetry.InsightGroupDetails" of the ObjectType field.
+func (o *NiatelemetryInsightGroupDetails) GetDefaultObjectType() interface{} {
+	return "niatelemetry.InsightGroupDetails"
+}
+
 // GetAlertRulesCount returns the AlertRulesCount field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetAlertRulesCount() int64 {
-	if o == nil || o.AlertRulesCount == nil {
+	if o == nil || IsNil(o.AlertRulesCount) {
 		var ret int64
 		return ret
 	}
@@ -138,7 +152,7 @@ func (o *NiatelemetryInsightGroupDetails) GetAlertRulesCount() int64 {
 // GetAlertRulesCountOk returns a tuple with the AlertRulesCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetAlertRulesCountOk() (*int64, bool) {
-	if o == nil || o.AlertRulesCount == nil {
+	if o == nil || IsNil(o.AlertRulesCount) {
 		return nil, false
 	}
 	return o.AlertRulesCount, true
@@ -146,7 +160,7 @@ func (o *NiatelemetryInsightGroupDetails) GetAlertRulesCountOk() (*int64, bool) 
 
 // HasAlertRulesCount returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasAlertRulesCount() bool {
-	if o != nil && o.AlertRulesCount != nil {
+	if o != nil && !IsNil(o.AlertRulesCount) {
 		return true
 	}
 
@@ -160,7 +174,7 @@ func (o *NiatelemetryInsightGroupDetails) SetAlertRulesCount(v int64) {
 
 // GetAnalysisSettingsStatus returns the AnalysisSettingsStatus field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetAnalysisSettingsStatus() string {
-	if o == nil || o.AnalysisSettingsStatus == nil {
+	if o == nil || IsNil(o.AnalysisSettingsStatus) {
 		var ret string
 		return ret
 	}
@@ -170,7 +184,7 @@ func (o *NiatelemetryInsightGroupDetails) GetAnalysisSettingsStatus() string {
 // GetAnalysisSettingsStatusOk returns a tuple with the AnalysisSettingsStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetAnalysisSettingsStatusOk() (*string, bool) {
-	if o == nil || o.AnalysisSettingsStatus == nil {
+	if o == nil || IsNil(o.AnalysisSettingsStatus) {
 		return nil, false
 	}
 	return o.AnalysisSettingsStatus, true
@@ -178,7 +192,7 @@ func (o *NiatelemetryInsightGroupDetails) GetAnalysisSettingsStatusOk() (*string
 
 // HasAnalysisSettingsStatus returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasAnalysisSettingsStatus() bool {
-	if o != nil && o.AnalysisSettingsStatus != nil {
+	if o != nil && !IsNil(o.AnalysisSettingsStatus) {
 		return true
 	}
 
@@ -192,7 +206,7 @@ func (o *NiatelemetryInsightGroupDetails) SetAnalysisSettingsStatus(v string) {
 
 // GetBugScanSettingsStatus returns the BugScanSettingsStatus field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetBugScanSettingsStatus() string {
-	if o == nil || o.BugScanSettingsStatus == nil {
+	if o == nil || IsNil(o.BugScanSettingsStatus) {
 		var ret string
 		return ret
 	}
@@ -202,7 +216,7 @@ func (o *NiatelemetryInsightGroupDetails) GetBugScanSettingsStatus() string {
 // GetBugScanSettingsStatusOk returns a tuple with the BugScanSettingsStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetBugScanSettingsStatusOk() (*string, bool) {
-	if o == nil || o.BugScanSettingsStatus == nil {
+	if o == nil || IsNil(o.BugScanSettingsStatus) {
 		return nil, false
 	}
 	return o.BugScanSettingsStatus, true
@@ -210,7 +224,7 @@ func (o *NiatelemetryInsightGroupDetails) GetBugScanSettingsStatusOk() (*string,
 
 // HasBugScanSettingsStatus returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasBugScanSettingsStatus() bool {
-	if o != nil && o.BugScanSettingsStatus != nil {
+	if o != nil && !IsNil(o.BugScanSettingsStatus) {
 		return true
 	}
 
@@ -224,7 +238,7 @@ func (o *NiatelemetryInsightGroupDetails) SetBugScanSettingsStatus(v string) {
 
 // GetDeltaAnalysisJobCount returns the DeltaAnalysisJobCount field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetDeltaAnalysisJobCount() int64 {
-	if o == nil || o.DeltaAnalysisJobCount == nil {
+	if o == nil || IsNil(o.DeltaAnalysisJobCount) {
 		var ret int64
 		return ret
 	}
@@ -234,7 +248,7 @@ func (o *NiatelemetryInsightGroupDetails) GetDeltaAnalysisJobCount() int64 {
 // GetDeltaAnalysisJobCountOk returns a tuple with the DeltaAnalysisJobCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetDeltaAnalysisJobCountOk() (*int64, bool) {
-	if o == nil || o.DeltaAnalysisJobCount == nil {
+	if o == nil || IsNil(o.DeltaAnalysisJobCount) {
 		return nil, false
 	}
 	return o.DeltaAnalysisJobCount, true
@@ -242,7 +256,7 @@ func (o *NiatelemetryInsightGroupDetails) GetDeltaAnalysisJobCountOk() (*int64, 
 
 // HasDeltaAnalysisJobCount returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasDeltaAnalysisJobCount() bool {
-	if o != nil && o.DeltaAnalysisJobCount != nil {
+	if o != nil && !IsNil(o.DeltaAnalysisJobCount) {
 		return true
 	}
 
@@ -256,7 +270,7 @@ func (o *NiatelemetryInsightGroupDetails) SetDeltaAnalysisJobCount(v int64) {
 
 // GetEmailSettingsCount returns the EmailSettingsCount field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetEmailSettingsCount() int64 {
-	if o == nil || o.EmailSettingsCount == nil {
+	if o == nil || IsNil(o.EmailSettingsCount) {
 		var ret int64
 		return ret
 	}
@@ -266,7 +280,7 @@ func (o *NiatelemetryInsightGroupDetails) GetEmailSettingsCount() int64 {
 // GetEmailSettingsCountOk returns a tuple with the EmailSettingsCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetEmailSettingsCountOk() (*int64, bool) {
-	if o == nil || o.EmailSettingsCount == nil {
+	if o == nil || IsNil(o.EmailSettingsCount) {
 		return nil, false
 	}
 	return o.EmailSettingsCount, true
@@ -274,7 +288,7 @@ func (o *NiatelemetryInsightGroupDetails) GetEmailSettingsCountOk() (*int64, boo
 
 // HasEmailSettingsCount returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasEmailSettingsCount() bool {
-	if o != nil && o.EmailSettingsCount != nil {
+	if o != nil && !IsNil(o.EmailSettingsCount) {
 		return true
 	}
 
@@ -288,7 +302,7 @@ func (o *NiatelemetryInsightGroupDetails) SetEmailSettingsCount(v int64) {
 
 // GetFlowSettingsCount returns the FlowSettingsCount field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetFlowSettingsCount() int64 {
-	if o == nil || o.FlowSettingsCount == nil {
+	if o == nil || IsNil(o.FlowSettingsCount) {
 		var ret int64
 		return ret
 	}
@@ -298,7 +312,7 @@ func (o *NiatelemetryInsightGroupDetails) GetFlowSettingsCount() int64 {
 // GetFlowSettingsCountOk returns a tuple with the FlowSettingsCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetFlowSettingsCountOk() (*int64, bool) {
-	if o == nil || o.FlowSettingsCount == nil {
+	if o == nil || IsNil(o.FlowSettingsCount) {
 		return nil, false
 	}
 	return o.FlowSettingsCount, true
@@ -306,7 +320,7 @@ func (o *NiatelemetryInsightGroupDetails) GetFlowSettingsCountOk() (*int64, bool
 
 // HasFlowSettingsCount returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasFlowSettingsCount() bool {
-	if o != nil && o.FlowSettingsCount != nil {
+	if o != nil && !IsNil(o.FlowSettingsCount) {
 		return true
 	}
 
@@ -320,7 +334,7 @@ func (o *NiatelemetryInsightGroupDetails) SetFlowSettingsCount(v int64) {
 
 // GetFlowSettingsStatus returns the FlowSettingsStatus field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetFlowSettingsStatus() string {
-	if o == nil || o.FlowSettingsStatus == nil {
+	if o == nil || IsNil(o.FlowSettingsStatus) {
 		var ret string
 		return ret
 	}
@@ -330,7 +344,7 @@ func (o *NiatelemetryInsightGroupDetails) GetFlowSettingsStatus() string {
 // GetFlowSettingsStatusOk returns a tuple with the FlowSettingsStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetFlowSettingsStatusOk() (*string, bool) {
-	if o == nil || o.FlowSettingsStatus == nil {
+	if o == nil || IsNil(o.FlowSettingsStatus) {
 		return nil, false
 	}
 	return o.FlowSettingsStatus, true
@@ -338,7 +352,7 @@ func (o *NiatelemetryInsightGroupDetails) GetFlowSettingsStatusOk() (*string, bo
 
 // HasFlowSettingsStatus returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasFlowSettingsStatus() bool {
-	if o != nil && o.FlowSettingsStatus != nil {
+	if o != nil && !IsNil(o.FlowSettingsStatus) {
 		return true
 	}
 
@@ -352,7 +366,7 @@ func (o *NiatelemetryInsightGroupDetails) SetFlowSettingsStatus(v string) {
 
 // GetGroupName returns the GroupName field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetGroupName() string {
-	if o == nil || o.GroupName == nil {
+	if o == nil || IsNil(o.GroupName) {
 		var ret string
 		return ret
 	}
@@ -362,7 +376,7 @@ func (o *NiatelemetryInsightGroupDetails) GetGroupName() string {
 // GetGroupNameOk returns a tuple with the GroupName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetGroupNameOk() (*string, bool) {
-	if o == nil || o.GroupName == nil {
+	if o == nil || IsNil(o.GroupName) {
 		return nil, false
 	}
 	return o.GroupName, true
@@ -370,7 +384,7 @@ func (o *NiatelemetryInsightGroupDetails) GetGroupNameOk() (*string, bool) {
 
 // HasGroupName returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasGroupName() bool {
-	if o != nil && o.GroupName != nil {
+	if o != nil && !IsNil(o.GroupName) {
 		return true
 	}
 
@@ -395,7 +409,7 @@ func (o *NiatelemetryInsightGroupDetails) GetInsightSites() []NiatelemetrySites 
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *NiatelemetryInsightGroupDetails) GetInsightSitesOk() ([]NiatelemetrySites, bool) {
-	if o == nil || o.InsightSites == nil {
+	if o == nil || IsNil(o.InsightSites) {
 		return nil, false
 	}
 	return o.InsightSites, true
@@ -403,7 +417,7 @@ func (o *NiatelemetryInsightGroupDetails) GetInsightSitesOk() ([]NiatelemetrySit
 
 // HasInsightSites returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasInsightSites() bool {
-	if o != nil && o.InsightSites != nil {
+	if o != nil && !IsNil(o.InsightSites) {
 		return true
 	}
 
@@ -417,7 +431,7 @@ func (o *NiatelemetryInsightGroupDetails) SetInsightSites(v []NiatelemetrySites)
 
 // GetKafkaSettingsCount returns the KafkaSettingsCount field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetKafkaSettingsCount() int64 {
-	if o == nil || o.KafkaSettingsCount == nil {
+	if o == nil || IsNil(o.KafkaSettingsCount) {
 		var ret int64
 		return ret
 	}
@@ -427,7 +441,7 @@ func (o *NiatelemetryInsightGroupDetails) GetKafkaSettingsCount() int64 {
 // GetKafkaSettingsCountOk returns a tuple with the KafkaSettingsCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetKafkaSettingsCountOk() (*int64, bool) {
-	if o == nil || o.KafkaSettingsCount == nil {
+	if o == nil || IsNil(o.KafkaSettingsCount) {
 		return nil, false
 	}
 	return o.KafkaSettingsCount, true
@@ -435,7 +449,7 @@ func (o *NiatelemetryInsightGroupDetails) GetKafkaSettingsCountOk() (*int64, boo
 
 // HasKafkaSettingsCount returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasKafkaSettingsCount() bool {
-	if o != nil && o.KafkaSettingsCount != nil {
+	if o != nil && !IsNil(o.KafkaSettingsCount) {
 		return true
 	}
 
@@ -449,7 +463,7 @@ func (o *NiatelemetryInsightGroupDetails) SetKafkaSettingsCount(v int64) {
 
 // GetMicroBurstSettingsStatus returns the MicroBurstSettingsStatus field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetMicroBurstSettingsStatus() string {
-	if o == nil || o.MicroBurstSettingsStatus == nil {
+	if o == nil || IsNil(o.MicroBurstSettingsStatus) {
 		var ret string
 		return ret
 	}
@@ -459,7 +473,7 @@ func (o *NiatelemetryInsightGroupDetails) GetMicroBurstSettingsStatus() string {
 // GetMicroBurstSettingsStatusOk returns a tuple with the MicroBurstSettingsStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetMicroBurstSettingsStatusOk() (*string, bool) {
-	if o == nil || o.MicroBurstSettingsStatus == nil {
+	if o == nil || IsNil(o.MicroBurstSettingsStatus) {
 		return nil, false
 	}
 	return o.MicroBurstSettingsStatus, true
@@ -467,7 +481,7 @@ func (o *NiatelemetryInsightGroupDetails) GetMicroBurstSettingsStatusOk() (*stri
 
 // HasMicroBurstSettingsStatus returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasMicroBurstSettingsStatus() bool {
-	if o != nil && o.MicroBurstSettingsStatus != nil {
+	if o != nil && !IsNil(o.MicroBurstSettingsStatus) {
 		return true
 	}
 
@@ -481,7 +495,7 @@ func (o *NiatelemetryInsightGroupDetails) SetMicroBurstSettingsStatus(v string) 
 
 // GetPrechangeAnalysisCount returns the PrechangeAnalysisCount field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetPrechangeAnalysisCount() int64 {
-	if o == nil || o.PrechangeAnalysisCount == nil {
+	if o == nil || IsNil(o.PrechangeAnalysisCount) {
 		var ret int64
 		return ret
 	}
@@ -491,7 +505,7 @@ func (o *NiatelemetryInsightGroupDetails) GetPrechangeAnalysisCount() int64 {
 // GetPrechangeAnalysisCountOk returns a tuple with the PrechangeAnalysisCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetPrechangeAnalysisCountOk() (*int64, bool) {
-	if o == nil || o.PrechangeAnalysisCount == nil {
+	if o == nil || IsNil(o.PrechangeAnalysisCount) {
 		return nil, false
 	}
 	return o.PrechangeAnalysisCount, true
@@ -499,7 +513,7 @@ func (o *NiatelemetryInsightGroupDetails) GetPrechangeAnalysisCountOk() (*int64,
 
 // HasPrechangeAnalysisCount returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasPrechangeAnalysisCount() bool {
-	if o != nil && o.PrechangeAnalysisCount != nil {
+	if o != nil && !IsNil(o.PrechangeAnalysisCount) {
 		return true
 	}
 
@@ -513,7 +527,7 @@ func (o *NiatelemetryInsightGroupDetails) SetPrechangeAnalysisCount(v int64) {
 
 // GetTacCollectionConfigCount returns the TacCollectionConfigCount field value if set, zero value otherwise.
 func (o *NiatelemetryInsightGroupDetails) GetTacCollectionConfigCount() int64 {
-	if o == nil || o.TacCollectionConfigCount == nil {
+	if o == nil || IsNil(o.TacCollectionConfigCount) {
 		var ret int64
 		return ret
 	}
@@ -523,7 +537,7 @@ func (o *NiatelemetryInsightGroupDetails) GetTacCollectionConfigCount() int64 {
 // GetTacCollectionConfigCountOk returns a tuple with the TacCollectionConfigCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryInsightGroupDetails) GetTacCollectionConfigCountOk() (*int64, bool) {
-	if o == nil || o.TacCollectionConfigCount == nil {
+	if o == nil || IsNil(o.TacCollectionConfigCount) {
 		return nil, false
 	}
 	return o.TacCollectionConfigCount, true
@@ -531,7 +545,7 @@ func (o *NiatelemetryInsightGroupDetails) GetTacCollectionConfigCountOk() (*int6
 
 // HasTacCollectionConfigCount returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasTacCollectionConfigCount() bool {
-	if o != nil && o.TacCollectionConfigCount != nil {
+	if o != nil && !IsNil(o.TacCollectionConfigCount) {
 		return true
 	}
 
@@ -543,105 +557,167 @@ func (o *NiatelemetryInsightGroupDetails) SetTacCollectionConfigCount(v int64) {
 	o.TacCollectionConfigCount = &v
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *NiatelemetryInsightGroupDetails) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *NiatelemetryInsightGroupDetails) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *NiatelemetryInsightGroupDetails) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *NiatelemetryInsightGroupDetails) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
+}
+
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *NiatelemetryInsightGroupDetails) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *NiatelemetryInsightGroupDetails) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
 }
 
 func (o NiatelemetryInsightGroupDetails) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o NiatelemetryInsightGroupDetails) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AlertRulesCount != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AlertRulesCount) {
 		toSerialize["AlertRulesCount"] = o.AlertRulesCount
 	}
-	if o.AnalysisSettingsStatus != nil {
+	if !IsNil(o.AnalysisSettingsStatus) {
 		toSerialize["AnalysisSettingsStatus"] = o.AnalysisSettingsStatus
 	}
-	if o.BugScanSettingsStatus != nil {
+	if !IsNil(o.BugScanSettingsStatus) {
 		toSerialize["BugScanSettingsStatus"] = o.BugScanSettingsStatus
 	}
-	if o.DeltaAnalysisJobCount != nil {
+	if !IsNil(o.DeltaAnalysisJobCount) {
 		toSerialize["DeltaAnalysisJobCount"] = o.DeltaAnalysisJobCount
 	}
-	if o.EmailSettingsCount != nil {
+	if !IsNil(o.EmailSettingsCount) {
 		toSerialize["EmailSettingsCount"] = o.EmailSettingsCount
 	}
-	if o.FlowSettingsCount != nil {
+	if !IsNil(o.FlowSettingsCount) {
 		toSerialize["FlowSettingsCount"] = o.FlowSettingsCount
 	}
-	if o.FlowSettingsStatus != nil {
+	if !IsNil(o.FlowSettingsStatus) {
 		toSerialize["FlowSettingsStatus"] = o.FlowSettingsStatus
 	}
-	if o.GroupName != nil {
+	if !IsNil(o.GroupName) {
 		toSerialize["GroupName"] = o.GroupName
 	}
 	if o.InsightSites != nil {
 		toSerialize["InsightSites"] = o.InsightSites
 	}
-	if o.KafkaSettingsCount != nil {
+	if !IsNil(o.KafkaSettingsCount) {
 		toSerialize["KafkaSettingsCount"] = o.KafkaSettingsCount
 	}
-	if o.MicroBurstSettingsStatus != nil {
+	if !IsNil(o.MicroBurstSettingsStatus) {
 		toSerialize["MicroBurstSettingsStatus"] = o.MicroBurstSettingsStatus
 	}
-	if o.PrechangeAnalysisCount != nil {
+	if !IsNil(o.PrechangeAnalysisCount) {
 		toSerialize["PrechangeAnalysisCount"] = o.PrechangeAnalysisCount
 	}
-	if o.TacCollectionConfigCount != nil {
+	if !IsNil(o.TacCollectionConfigCount) {
 		toSerialize["TacCollectionConfigCount"] = o.TacCollectionConfigCount
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *NiatelemetryInsightGroupDetails) UnmarshalJSON(bytes []byte) (err error) {
+func (o *NiatelemetryInsightGroupDetails) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type NiatelemetryInsightGroupDetailsWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -671,13 +747,13 @@ func (o *NiatelemetryInsightGroupDetails) UnmarshalJSON(bytes []byte) (err error
 		// Prechange analysis count of the Insight group.
 		PrechangeAnalysisCount *int64 `json:"PrechangeAnalysisCount,omitempty"`
 		// TAC collection config count of the Insight group.
-		TacCollectionConfigCount *int64                               `json:"TacCollectionConfigCount,omitempty"`
-		RegisteredDevice         *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		TacCollectionConfigCount *int64                                      `json:"TacCollectionConfigCount,omitempty"`
+		RegisteredDevice         NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	}
 
 	varNiatelemetryInsightGroupDetailsWithoutEmbeddedStruct := NiatelemetryInsightGroupDetailsWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varNiatelemetryInsightGroupDetailsWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varNiatelemetryInsightGroupDetailsWithoutEmbeddedStruct)
 	if err == nil {
 		varNiatelemetryInsightGroupDetails := _NiatelemetryInsightGroupDetails{}
 		varNiatelemetryInsightGroupDetails.ClassId = varNiatelemetryInsightGroupDetailsWithoutEmbeddedStruct.ClassId
@@ -703,7 +779,7 @@ func (o *NiatelemetryInsightGroupDetails) UnmarshalJSON(bytes []byte) (err error
 
 	varNiatelemetryInsightGroupDetails := _NiatelemetryInsightGroupDetails{}
 
-	err = json.Unmarshal(bytes, &varNiatelemetryInsightGroupDetails)
+	err = json.Unmarshal(data, &varNiatelemetryInsightGroupDetails)
 	if err == nil {
 		o.MoBaseMo = varNiatelemetryInsightGroupDetails.MoBaseMo
 	} else {
@@ -712,7 +788,7 @@ func (o *NiatelemetryInsightGroupDetails) UnmarshalJSON(bytes []byte) (err error
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AlertRulesCount")

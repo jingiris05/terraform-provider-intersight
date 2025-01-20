@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the FabricUplinkPcRole type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &FabricUplinkPcRole{}
 
 // FabricUplinkPcRole Object sent by user to configure a ethernet uplink port-channel on the collection of ports.
 type FabricUplinkPcRole struct {
@@ -24,13 +28,15 @@ type FabricUplinkPcRole struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// Admin configured speed for the port. * `Auto` - Admin configurable speed AUTO ( default ). * `1Gbps` - Admin configurable speed 1Gbps. * `10Gbps` - Admin configurable speed 10Gbps. * `25Gbps` - Admin configurable speed 25Gbps. * `40Gbps` - Admin configurable speed 40Gbps. * `100Gbps` - Admin configurable speed 100Gbps.
+	// Admin configured speed for the port. * `Auto` - Admin configurable speed AUTO ( default ). * `1Gbps` - Admin configurable speed 1Gbps. * `10Gbps` - Admin configurable speed 10Gbps. * `25Gbps` - Admin configurable speed 25Gbps. * `40Gbps` - Admin configurable speed 40Gbps. * `100Gbps` - Admin configurable speed 100Gbps. * `NegAuto25Gbps` - Admin configurable 25Gbps auto negotiation for ports and port-channels.Speed is applicable on Ethernet Uplink, Ethernet Appliance and FCoE Uplink port and port-channel roles.This speed config is only applicable to non-breakout ports on UCS-FI-6454 and UCS-FI-64108.
 	AdminSpeed *string `json:"AdminSpeed,omitempty"`
+	// Forward error correction configuration for Uplink Port Channel member ports. * `Auto` - Forward error correction option 'Auto'. * `Cl91` - Forward error correction option 'cl91'. * `Cl74` - Forward error correction option 'cl74'.
+	Fec *string `json:"Fec,omitempty"`
 	// An array of relationships to fabricEthNetworkGroupPolicy resources.
-	EthNetworkGroupPolicy []FabricEthNetworkGroupPolicyRelationship `json:"EthNetworkGroupPolicy,omitempty"`
-	FlowControlPolicy     *FabricFlowControlPolicyRelationship      `json:"FlowControlPolicy,omitempty"`
-	LinkAggregationPolicy *FabricLinkAggregationPolicyRelationship  `json:"LinkAggregationPolicy,omitempty"`
-	LinkControlPolicy     *FabricLinkControlPolicyRelationship      `json:"LinkControlPolicy,omitempty"`
+	EthNetworkGroupPolicy []FabricEthNetworkGroupPolicyRelationship       `json:"EthNetworkGroupPolicy,omitempty"`
+	FlowControlPolicy     NullableFabricFlowControlPolicyRelationship     `json:"FlowControlPolicy,omitempty"`
+	LinkAggregationPolicy NullableFabricLinkAggregationPolicyRelationship `json:"LinkAggregationPolicy,omitempty"`
+	LinkControlPolicy     NullableFabricLinkControlPolicyRelationship     `json:"LinkControlPolicy,omitempty"`
 	AdditionalProperties  map[string]interface{}
 }
 
@@ -46,6 +52,8 @@ func NewFabricUplinkPcRole(classId string, objectType string) *FabricUplinkPcRol
 	this.ObjectType = objectType
 	var adminSpeed string = "Auto"
 	this.AdminSpeed = &adminSpeed
+	var fec string = "Auto"
+	this.Fec = &fec
 	return &this
 }
 
@@ -60,6 +68,8 @@ func NewFabricUplinkPcRoleWithDefaults() *FabricUplinkPcRole {
 	this.ObjectType = objectType
 	var adminSpeed string = "Auto"
 	this.AdminSpeed = &adminSpeed
+	var fec string = "Auto"
+	this.Fec = &fec
 	return &this
 }
 
@@ -87,6 +97,11 @@ func (o *FabricUplinkPcRole) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "fabric.UplinkPcRole" of the ClassId field.
+func (o *FabricUplinkPcRole) GetDefaultClassId() interface{} {
+	return "fabric.UplinkPcRole"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *FabricUplinkPcRole) GetObjectType() string {
 	if o == nil {
@@ -111,9 +126,14 @@ func (o *FabricUplinkPcRole) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "fabric.UplinkPcRole" of the ObjectType field.
+func (o *FabricUplinkPcRole) GetDefaultObjectType() interface{} {
+	return "fabric.UplinkPcRole"
+}
+
 // GetAdminSpeed returns the AdminSpeed field value if set, zero value otherwise.
 func (o *FabricUplinkPcRole) GetAdminSpeed() string {
-	if o == nil || o.AdminSpeed == nil {
+	if o == nil || IsNil(o.AdminSpeed) {
 		var ret string
 		return ret
 	}
@@ -123,7 +143,7 @@ func (o *FabricUplinkPcRole) GetAdminSpeed() string {
 // GetAdminSpeedOk returns a tuple with the AdminSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FabricUplinkPcRole) GetAdminSpeedOk() (*string, bool) {
-	if o == nil || o.AdminSpeed == nil {
+	if o == nil || IsNil(o.AdminSpeed) {
 		return nil, false
 	}
 	return o.AdminSpeed, true
@@ -131,7 +151,7 @@ func (o *FabricUplinkPcRole) GetAdminSpeedOk() (*string, bool) {
 
 // HasAdminSpeed returns a boolean if a field has been set.
 func (o *FabricUplinkPcRole) HasAdminSpeed() bool {
-	if o != nil && o.AdminSpeed != nil {
+	if o != nil && !IsNil(o.AdminSpeed) {
 		return true
 	}
 
@@ -141,6 +161,38 @@ func (o *FabricUplinkPcRole) HasAdminSpeed() bool {
 // SetAdminSpeed gets a reference to the given string and assigns it to the AdminSpeed field.
 func (o *FabricUplinkPcRole) SetAdminSpeed(v string) {
 	o.AdminSpeed = &v
+}
+
+// GetFec returns the Fec field value if set, zero value otherwise.
+func (o *FabricUplinkPcRole) GetFec() string {
+	if o == nil || IsNil(o.Fec) {
+		var ret string
+		return ret
+	}
+	return *o.Fec
+}
+
+// GetFecOk returns a tuple with the Fec field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FabricUplinkPcRole) GetFecOk() (*string, bool) {
+	if o == nil || IsNil(o.Fec) {
+		return nil, false
+	}
+	return o.Fec, true
+}
+
+// HasFec returns a boolean if a field has been set.
+func (o *FabricUplinkPcRole) HasFec() bool {
+	if o != nil && !IsNil(o.Fec) {
+		return true
+	}
+
+	return false
+}
+
+// SetFec gets a reference to the given string and assigns it to the Fec field.
+func (o *FabricUplinkPcRole) SetFec(v string) {
+	o.Fec = &v
 }
 
 // GetEthNetworkGroupPolicy returns the EthNetworkGroupPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -156,7 +208,7 @@ func (o *FabricUplinkPcRole) GetEthNetworkGroupPolicy() []FabricEthNetworkGroupP
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricUplinkPcRole) GetEthNetworkGroupPolicyOk() ([]FabricEthNetworkGroupPolicyRelationship, bool) {
-	if o == nil || o.EthNetworkGroupPolicy == nil {
+	if o == nil || IsNil(o.EthNetworkGroupPolicy) {
 		return nil, false
 	}
 	return o.EthNetworkGroupPolicy, true
@@ -164,7 +216,7 @@ func (o *FabricUplinkPcRole) GetEthNetworkGroupPolicyOk() ([]FabricEthNetworkGro
 
 // HasEthNetworkGroupPolicy returns a boolean if a field has been set.
 func (o *FabricUplinkPcRole) HasEthNetworkGroupPolicy() bool {
-	if o != nil && o.EthNetworkGroupPolicy != nil {
+	if o != nil && !IsNil(o.EthNetworkGroupPolicy) {
 		return true
 	}
 
@@ -176,164 +228,254 @@ func (o *FabricUplinkPcRole) SetEthNetworkGroupPolicy(v []FabricEthNetworkGroupP
 	o.EthNetworkGroupPolicy = v
 }
 
-// GetFlowControlPolicy returns the FlowControlPolicy field value if set, zero value otherwise.
+// GetFlowControlPolicy returns the FlowControlPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricUplinkPcRole) GetFlowControlPolicy() FabricFlowControlPolicyRelationship {
-	if o == nil || o.FlowControlPolicy == nil {
+	if o == nil || IsNil(o.FlowControlPolicy.Get()) {
 		var ret FabricFlowControlPolicyRelationship
 		return ret
 	}
-	return *o.FlowControlPolicy
+	return *o.FlowControlPolicy.Get()
 }
 
 // GetFlowControlPolicyOk returns a tuple with the FlowControlPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricUplinkPcRole) GetFlowControlPolicyOk() (*FabricFlowControlPolicyRelationship, bool) {
-	if o == nil || o.FlowControlPolicy == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.FlowControlPolicy, true
+	return o.FlowControlPolicy.Get(), o.FlowControlPolicy.IsSet()
 }
 
 // HasFlowControlPolicy returns a boolean if a field has been set.
 func (o *FabricUplinkPcRole) HasFlowControlPolicy() bool {
-	if o != nil && o.FlowControlPolicy != nil {
+	if o != nil && o.FlowControlPolicy.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetFlowControlPolicy gets a reference to the given FabricFlowControlPolicyRelationship and assigns it to the FlowControlPolicy field.
+// SetFlowControlPolicy gets a reference to the given NullableFabricFlowControlPolicyRelationship and assigns it to the FlowControlPolicy field.
 func (o *FabricUplinkPcRole) SetFlowControlPolicy(v FabricFlowControlPolicyRelationship) {
-	o.FlowControlPolicy = &v
+	o.FlowControlPolicy.Set(&v)
 }
 
-// GetLinkAggregationPolicy returns the LinkAggregationPolicy field value if set, zero value otherwise.
+// SetFlowControlPolicyNil sets the value for FlowControlPolicy to be an explicit nil
+func (o *FabricUplinkPcRole) SetFlowControlPolicyNil() {
+	o.FlowControlPolicy.Set(nil)
+}
+
+// UnsetFlowControlPolicy ensures that no value is present for FlowControlPolicy, not even an explicit nil
+func (o *FabricUplinkPcRole) UnsetFlowControlPolicy() {
+	o.FlowControlPolicy.Unset()
+}
+
+// GetLinkAggregationPolicy returns the LinkAggregationPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricUplinkPcRole) GetLinkAggregationPolicy() FabricLinkAggregationPolicyRelationship {
-	if o == nil || o.LinkAggregationPolicy == nil {
+	if o == nil || IsNil(o.LinkAggregationPolicy.Get()) {
 		var ret FabricLinkAggregationPolicyRelationship
 		return ret
 	}
-	return *o.LinkAggregationPolicy
+	return *o.LinkAggregationPolicy.Get()
 }
 
 // GetLinkAggregationPolicyOk returns a tuple with the LinkAggregationPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricUplinkPcRole) GetLinkAggregationPolicyOk() (*FabricLinkAggregationPolicyRelationship, bool) {
-	if o == nil || o.LinkAggregationPolicy == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.LinkAggregationPolicy, true
+	return o.LinkAggregationPolicy.Get(), o.LinkAggregationPolicy.IsSet()
 }
 
 // HasLinkAggregationPolicy returns a boolean if a field has been set.
 func (o *FabricUplinkPcRole) HasLinkAggregationPolicy() bool {
-	if o != nil && o.LinkAggregationPolicy != nil {
+	if o != nil && o.LinkAggregationPolicy.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLinkAggregationPolicy gets a reference to the given FabricLinkAggregationPolicyRelationship and assigns it to the LinkAggregationPolicy field.
+// SetLinkAggregationPolicy gets a reference to the given NullableFabricLinkAggregationPolicyRelationship and assigns it to the LinkAggregationPolicy field.
 func (o *FabricUplinkPcRole) SetLinkAggregationPolicy(v FabricLinkAggregationPolicyRelationship) {
-	o.LinkAggregationPolicy = &v
+	o.LinkAggregationPolicy.Set(&v)
 }
 
-// GetLinkControlPolicy returns the LinkControlPolicy field value if set, zero value otherwise.
+// SetLinkAggregationPolicyNil sets the value for LinkAggregationPolicy to be an explicit nil
+func (o *FabricUplinkPcRole) SetLinkAggregationPolicyNil() {
+	o.LinkAggregationPolicy.Set(nil)
+}
+
+// UnsetLinkAggregationPolicy ensures that no value is present for LinkAggregationPolicy, not even an explicit nil
+func (o *FabricUplinkPcRole) UnsetLinkAggregationPolicy() {
+	o.LinkAggregationPolicy.Unset()
+}
+
+// GetLinkControlPolicy returns the LinkControlPolicy field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricUplinkPcRole) GetLinkControlPolicy() FabricLinkControlPolicyRelationship {
-	if o == nil || o.LinkControlPolicy == nil {
+	if o == nil || IsNil(o.LinkControlPolicy.Get()) {
 		var ret FabricLinkControlPolicyRelationship
 		return ret
 	}
-	return *o.LinkControlPolicy
+	return *o.LinkControlPolicy.Get()
 }
 
 // GetLinkControlPolicyOk returns a tuple with the LinkControlPolicy field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricUplinkPcRole) GetLinkControlPolicyOk() (*FabricLinkControlPolicyRelationship, bool) {
-	if o == nil || o.LinkControlPolicy == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.LinkControlPolicy, true
+	return o.LinkControlPolicy.Get(), o.LinkControlPolicy.IsSet()
 }
 
 // HasLinkControlPolicy returns a boolean if a field has been set.
 func (o *FabricUplinkPcRole) HasLinkControlPolicy() bool {
-	if o != nil && o.LinkControlPolicy != nil {
+	if o != nil && o.LinkControlPolicy.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLinkControlPolicy gets a reference to the given FabricLinkControlPolicyRelationship and assigns it to the LinkControlPolicy field.
+// SetLinkControlPolicy gets a reference to the given NullableFabricLinkControlPolicyRelationship and assigns it to the LinkControlPolicy field.
 func (o *FabricUplinkPcRole) SetLinkControlPolicy(v FabricLinkControlPolicyRelationship) {
-	o.LinkControlPolicy = &v
+	o.LinkControlPolicy.Set(&v)
+}
+
+// SetLinkControlPolicyNil sets the value for LinkControlPolicy to be an explicit nil
+func (o *FabricUplinkPcRole) SetLinkControlPolicyNil() {
+	o.LinkControlPolicy.Set(nil)
+}
+
+// UnsetLinkControlPolicy ensures that no value is present for LinkControlPolicy, not even an explicit nil
+func (o *FabricUplinkPcRole) UnsetLinkControlPolicy() {
+	o.LinkControlPolicy.Unset()
 }
 
 func (o FabricUplinkPcRole) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o FabricUplinkPcRole) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedFabricPortChannelRole, errFabricPortChannelRole := json.Marshal(o.FabricPortChannelRole)
 	if errFabricPortChannelRole != nil {
-		return []byte{}, errFabricPortChannelRole
+		return map[string]interface{}{}, errFabricPortChannelRole
 	}
 	errFabricPortChannelRole = json.Unmarshal([]byte(serializedFabricPortChannelRole), &toSerialize)
 	if errFabricPortChannelRole != nil {
-		return []byte{}, errFabricPortChannelRole
+		return map[string]interface{}{}, errFabricPortChannelRole
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AdminSpeed != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AdminSpeed) {
 		toSerialize["AdminSpeed"] = o.AdminSpeed
+	}
+	if !IsNil(o.Fec) {
+		toSerialize["Fec"] = o.Fec
 	}
 	if o.EthNetworkGroupPolicy != nil {
 		toSerialize["EthNetworkGroupPolicy"] = o.EthNetworkGroupPolicy
 	}
-	if o.FlowControlPolicy != nil {
-		toSerialize["FlowControlPolicy"] = o.FlowControlPolicy
+	if o.FlowControlPolicy.IsSet() {
+		toSerialize["FlowControlPolicy"] = o.FlowControlPolicy.Get()
 	}
-	if o.LinkAggregationPolicy != nil {
-		toSerialize["LinkAggregationPolicy"] = o.LinkAggregationPolicy
+	if o.LinkAggregationPolicy.IsSet() {
+		toSerialize["LinkAggregationPolicy"] = o.LinkAggregationPolicy.Get()
 	}
-	if o.LinkControlPolicy != nil {
-		toSerialize["LinkControlPolicy"] = o.LinkControlPolicy
+	if o.LinkControlPolicy.IsSet() {
+		toSerialize["LinkControlPolicy"] = o.LinkControlPolicy.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *FabricUplinkPcRole) UnmarshalJSON(bytes []byte) (err error) {
+func (o *FabricUplinkPcRole) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type FabricUplinkPcRoleWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// Admin configured speed for the port. * `Auto` - Admin configurable speed AUTO ( default ). * `1Gbps` - Admin configurable speed 1Gbps. * `10Gbps` - Admin configurable speed 10Gbps. * `25Gbps` - Admin configurable speed 25Gbps. * `40Gbps` - Admin configurable speed 40Gbps. * `100Gbps` - Admin configurable speed 100Gbps.
+		// Admin configured speed for the port. * `Auto` - Admin configurable speed AUTO ( default ). * `1Gbps` - Admin configurable speed 1Gbps. * `10Gbps` - Admin configurable speed 10Gbps. * `25Gbps` - Admin configurable speed 25Gbps. * `40Gbps` - Admin configurable speed 40Gbps. * `100Gbps` - Admin configurable speed 100Gbps. * `NegAuto25Gbps` - Admin configurable 25Gbps auto negotiation for ports and port-channels.Speed is applicable on Ethernet Uplink, Ethernet Appliance and FCoE Uplink port and port-channel roles.This speed config is only applicable to non-breakout ports on UCS-FI-6454 and UCS-FI-64108.
 		AdminSpeed *string `json:"AdminSpeed,omitempty"`
+		// Forward error correction configuration for Uplink Port Channel member ports. * `Auto` - Forward error correction option 'Auto'. * `Cl91` - Forward error correction option 'cl91'. * `Cl74` - Forward error correction option 'cl74'.
+		Fec *string `json:"Fec,omitempty"`
 		// An array of relationships to fabricEthNetworkGroupPolicy resources.
-		EthNetworkGroupPolicy []FabricEthNetworkGroupPolicyRelationship `json:"EthNetworkGroupPolicy,omitempty"`
-		FlowControlPolicy     *FabricFlowControlPolicyRelationship      `json:"FlowControlPolicy,omitempty"`
-		LinkAggregationPolicy *FabricLinkAggregationPolicyRelationship  `json:"LinkAggregationPolicy,omitempty"`
-		LinkControlPolicy     *FabricLinkControlPolicyRelationship      `json:"LinkControlPolicy,omitempty"`
+		EthNetworkGroupPolicy []FabricEthNetworkGroupPolicyRelationship       `json:"EthNetworkGroupPolicy,omitempty"`
+		FlowControlPolicy     NullableFabricFlowControlPolicyRelationship     `json:"FlowControlPolicy,omitempty"`
+		LinkAggregationPolicy NullableFabricLinkAggregationPolicyRelationship `json:"LinkAggregationPolicy,omitempty"`
+		LinkControlPolicy     NullableFabricLinkControlPolicyRelationship     `json:"LinkControlPolicy,omitempty"`
 	}
 
 	varFabricUplinkPcRoleWithoutEmbeddedStruct := FabricUplinkPcRoleWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varFabricUplinkPcRoleWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varFabricUplinkPcRoleWithoutEmbeddedStruct)
 	if err == nil {
 		varFabricUplinkPcRole := _FabricUplinkPcRole{}
 		varFabricUplinkPcRole.ClassId = varFabricUplinkPcRoleWithoutEmbeddedStruct.ClassId
 		varFabricUplinkPcRole.ObjectType = varFabricUplinkPcRoleWithoutEmbeddedStruct.ObjectType
 		varFabricUplinkPcRole.AdminSpeed = varFabricUplinkPcRoleWithoutEmbeddedStruct.AdminSpeed
+		varFabricUplinkPcRole.Fec = varFabricUplinkPcRoleWithoutEmbeddedStruct.Fec
 		varFabricUplinkPcRole.EthNetworkGroupPolicy = varFabricUplinkPcRoleWithoutEmbeddedStruct.EthNetworkGroupPolicy
 		varFabricUplinkPcRole.FlowControlPolicy = varFabricUplinkPcRoleWithoutEmbeddedStruct.FlowControlPolicy
 		varFabricUplinkPcRole.LinkAggregationPolicy = varFabricUplinkPcRoleWithoutEmbeddedStruct.LinkAggregationPolicy
@@ -345,7 +487,7 @@ func (o *FabricUplinkPcRole) UnmarshalJSON(bytes []byte) (err error) {
 
 	varFabricUplinkPcRole := _FabricUplinkPcRole{}
 
-	err = json.Unmarshal(bytes, &varFabricUplinkPcRole)
+	err = json.Unmarshal(data, &varFabricUplinkPcRole)
 	if err == nil {
 		o.FabricPortChannelRole = varFabricUplinkPcRole.FabricPortChannelRole
 	} else {
@@ -354,10 +496,11 @@ func (o *FabricUplinkPcRole) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AdminSpeed")
+		delete(additionalProperties, "Fec")
 		delete(additionalProperties, "EthNetworkGroupPolicy")
 		delete(additionalProperties, "FlowControlPolicy")
 		delete(additionalProperties, "LinkAggregationPolicy")

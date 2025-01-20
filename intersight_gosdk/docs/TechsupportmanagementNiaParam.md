@@ -6,11 +6,14 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "techsupportmanagement.NiaParam"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "techsupportmanagement.NiaParam"]
+**CollectionClass** | Pointer to **int32** | CollectionClass specifies which app to collect ND techsupport from - infra/NDI/NDO/NDFC. * &#x60;1&#x60; - Collect infra logs for Nexus Dashboard TACASSIST. * &#x60;2&#x60; - Collect logs for Nexus Dashboard Insights app through NDTACASSIST. * &#x60;3&#x60; - Collect logs for Nexus Dashboard Orchestrator app through NDTACASSIST. * &#x60;4&#x60; - Collect logs for Nexus Dashboard Fabric Controller app through NDTACASSIST. * &#x60;5&#x60; - Collect logs for Nexus Data Broker app through NDTACASSIST. * &#x60;6&#x60; - Collect logs for Nexus Data Broker Orchestrator app through NDTACASSIST. | [optional] [default to 1]
 **CollectionLevel** | Pointer to **int32** | CollectionLevel controls the size / depth of the tech support files collected. * &#x60;1&#x60; - Use cached data in the returned collection. * &#x60;2&#x60; - Use current data in the returned collection. | [optional] [default to 1]
 **Filename** | Pointer to **string** | Filename specifies an individual filename to collect from the endpoint. | [optional] 
 **ForceFresh** | Pointer to **bool** | ForceFresh controls whether to return pre-collected files or force the collection of new files. | [optional] 
+**Period** | Pointer to **int64** | Number of days for which to collect techsupport. | [optional] [default to 2]
 **Pids** | Pointer to **[]string** |  | [optional] 
 **SerialNumbers** | Pointer to **[]string** |  | [optional] 
+**UpgradeLogs** | Pointer to **bool** | UpgradeLogs controls the inclusion of upgrade logs in tech support bundles. | [optional] 
 
 ## Methods
 
@@ -70,6 +73,31 @@ and a boolean to check if the value has been set.
 
 SetObjectType sets ObjectType field to given value.
 
+
+### GetCollectionClass
+
+`func (o *TechsupportmanagementNiaParam) GetCollectionClass() int32`
+
+GetCollectionClass returns the CollectionClass field if non-nil, zero value otherwise.
+
+### GetCollectionClassOk
+
+`func (o *TechsupportmanagementNiaParam) GetCollectionClassOk() (*int32, bool)`
+
+GetCollectionClassOk returns a tuple with the CollectionClass field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCollectionClass
+
+`func (o *TechsupportmanagementNiaParam) SetCollectionClass(v int32)`
+
+SetCollectionClass sets CollectionClass field to given value.
+
+### HasCollectionClass
+
+`func (o *TechsupportmanagementNiaParam) HasCollectionClass() bool`
+
+HasCollectionClass returns a boolean if a field has been set.
 
 ### GetCollectionLevel
 
@@ -146,6 +174,31 @@ SetForceFresh sets ForceFresh field to given value.
 
 HasForceFresh returns a boolean if a field has been set.
 
+### GetPeriod
+
+`func (o *TechsupportmanagementNiaParam) GetPeriod() int64`
+
+GetPeriod returns the Period field if non-nil, zero value otherwise.
+
+### GetPeriodOk
+
+`func (o *TechsupportmanagementNiaParam) GetPeriodOk() (*int64, bool)`
+
+GetPeriodOk returns a tuple with the Period field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPeriod
+
+`func (o *TechsupportmanagementNiaParam) SetPeriod(v int64)`
+
+SetPeriod sets Period field to given value.
+
+### HasPeriod
+
+`func (o *TechsupportmanagementNiaParam) HasPeriod() bool`
+
+HasPeriod returns a boolean if a field has been set.
+
 ### GetPids
 
 `func (o *TechsupportmanagementNiaParam) GetPids() []string`
@@ -216,6 +269,31 @@ HasSerialNumbers returns a boolean if a field has been set.
 `func (o *TechsupportmanagementNiaParam) UnsetSerialNumbers()`
 
 UnsetSerialNumbers ensures that no value is present for SerialNumbers, not even an explicit nil
+### GetUpgradeLogs
+
+`func (o *TechsupportmanagementNiaParam) GetUpgradeLogs() bool`
+
+GetUpgradeLogs returns the UpgradeLogs field if non-nil, zero value otherwise.
+
+### GetUpgradeLogsOk
+
+`func (o *TechsupportmanagementNiaParam) GetUpgradeLogsOk() (*bool, bool)`
+
+GetUpgradeLogsOk returns a tuple with the UpgradeLogs field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUpgradeLogs
+
+`func (o *TechsupportmanagementNiaParam) SetUpgradeLogs(v bool)`
+
+SetUpgradeLogs sets UpgradeLogs field to given value.
+
+### HasUpgradeLogs
+
+`func (o *TechsupportmanagementNiaParam) HasUpgradeLogs() bool`
+
+HasUpgradeLogs returns a boolean if a field has been set.
+
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

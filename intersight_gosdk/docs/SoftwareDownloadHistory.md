@@ -9,9 +9,10 @@ Name | Type | Description | Notes
 **Name** | Pointer to **string** | The name of software which was downloaded. | [optional] [readonly] 
 **Product** | Pointer to **string** | The product type of the downloaded software. | [optional] 
 **Timestamp** | Pointer to **time.Time** | The download time of the software image. | [optional] [readonly] 
+**UserIdOrEmail** | Pointer to **string** | The email id of the user who initiated the software download. | [optional] [readonly] 
 **Version** | Pointer to **string** | The version of software which was downloaded. | [optional] [readonly] 
-**Account** | Pointer to [**IamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
-**Image** | Pointer to [**FirmwareBaseDistributableRelationship**](FirmwareBaseDistributableRelationship.md) |  | [optional] 
+**Account** | Pointer to [**NullableIamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
+**Image** | Pointer to [**NullableFirmwareBaseDistributableRelationship**](FirmwareBaseDistributableRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -147,6 +148,31 @@ SetTimestamp sets Timestamp field to given value.
 
 HasTimestamp returns a boolean if a field has been set.
 
+### GetUserIdOrEmail
+
+`func (o *SoftwareDownloadHistory) GetUserIdOrEmail() string`
+
+GetUserIdOrEmail returns the UserIdOrEmail field if non-nil, zero value otherwise.
+
+### GetUserIdOrEmailOk
+
+`func (o *SoftwareDownloadHistory) GetUserIdOrEmailOk() (*string, bool)`
+
+GetUserIdOrEmailOk returns a tuple with the UserIdOrEmail field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUserIdOrEmail
+
+`func (o *SoftwareDownloadHistory) SetUserIdOrEmail(v string)`
+
+SetUserIdOrEmail sets UserIdOrEmail field to given value.
+
+### HasUserIdOrEmail
+
+`func (o *SoftwareDownloadHistory) HasUserIdOrEmail() bool`
+
+HasUserIdOrEmail returns a boolean if a field has been set.
+
 ### GetVersion
 
 `func (o *SoftwareDownloadHistory) GetVersion() string`
@@ -197,6 +223,16 @@ SetAccount sets Account field to given value.
 
 HasAccount returns a boolean if a field has been set.
 
+### SetAccountNil
+
+`func (o *SoftwareDownloadHistory) SetAccountNil(b bool)`
+
+ SetAccountNil sets the value for Account to be an explicit nil
+
+### UnsetAccount
+`func (o *SoftwareDownloadHistory) UnsetAccount()`
+
+UnsetAccount ensures that no value is present for Account, not even an explicit nil
 ### GetImage
 
 `func (o *SoftwareDownloadHistory) GetImage() FirmwareBaseDistributableRelationship`
@@ -222,6 +258,16 @@ SetImage sets Image field to given value.
 
 HasImage returns a boolean if a field has been set.
 
+### SetImageNil
+
+`func (o *SoftwareDownloadHistory) SetImageNil(b bool)`
+
+ SetImageNil sets the value for Image to be an explicit nil
+
+### UnsetImage
+`func (o *SoftwareDownloadHistory) UnsetImage()`
+
+UnsetImage ensures that no value is present for Image, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

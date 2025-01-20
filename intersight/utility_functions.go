@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -19,7 +20,7 @@ var (
 )
 
 // SuppressDiffAdditionProps Suppress Difference functions for additional properties
-//old is from tfstate file
+// old is from tfstate file
 // new is from tf config file
 func SuppressDiffAdditionProps(k, old, new string, d *schema.ResourceData) bool {
 	if old == "" && new == "" {
@@ -56,7 +57,7 @@ func parseFilterMap(m map[string]interface{}) ([]string, []string) {
 	var keyArray []string
 	var valArray []string
 	for k, v := range m {
-		if (k == "ClassId" && v == "") || (k == "ObjectType" && v == "") {
+		if (k == "ClassId") || (k == "ObjectType" && v == "") {
 			continue
 		}
 		switch reflect.TypeOf(v).Kind() {
@@ -156,6 +157,10 @@ func checkWorkflowStatus(conn *Config, w models.WorkflowWorkflowInfoRelationship
 	var workflowInfo models.WorkflowWorkflowInfo
 	for { // infinite loop
 		moid := w.MoMoRef.GetMoid()
+		if len(moid) == 0 {
+			// nothing to wait for workflowInfo Moid does not exist
+			return fmt.Sprintf("workflow moid is empty %v", w), nil
+		}
 		// accepting pointer to workflowInfo and assigning to workflowInfo after de-referencing
 		workflowInfoRef, _, responseErr := conn.ApiClient.WorkflowApi.GetWorkflowWorkflowInfoByMoid(conn.ctx, moid).Execute()
 		if responseErr != nil {
@@ -173,8 +178,14 @@ func checkWorkflowStatus(conn *Config, w models.WorkflowWorkflowInfoRelationship
 	return warning, nil
 }
 
+func sortTags(tags []map[string]interface{}) {
+	sort.SliceStable(tags, func(i, j int) bool {
+		return tags[i]["key"].(string) < tags[j]["key"].(string)
+	})
+}
+
 // CustomizeTagDiff Customize tag diff to ignore cisco.meta tags
-func CustomizeTagDiff(ctx context.Context, diff *schema.ResourceDiff, i interface{}) error {
+func CustomizeTagDiff(tags interface{}, diff *schema.ResourceDiff) error {
 	if tags, ok := diff.GetOk("tags"); ok {
 		tagsArray := tags.([]interface{})
 		log.Println("tags", tagsArray) // user config
@@ -200,8 +211,94 @@ func CustomizeTagDiff(ctx context.Context, diff *schema.ResourceDiff, i interfac
 			subNew = append(subNew, x)
 		}
 		newTags = append(newTags, subNew...)
+		sortTags(newTags)
 		err := diff.SetNew("tags", newTags)
 		return err
 	}
 	return nil
+}
+
+func isNonEmptySliceOfMaps(v interface{}) bool {
+	if vSlice, ok := v.([]interface{}); ok && len(vSlice) > 0 {
+		if _, ok := vSlice[0].(map[string]interface{}); ok {
+			return ok
+		}
+	}
+	return false
+}
+
+func ReorderPolicyBucket(old, new []interface{}) []interface{} {
+	if len(old) == 0 {
+		return new
+	}
+
+	oldMap := make(map[string]interface{})
+	newMap := make(map[string]interface{})
+	var oldMoidArray []string
+
+	for _, item := range old {
+		m := item.(map[string]interface{})
+		moid := m["moid"].(string)
+		oldMap[moid] = m
+		oldMoidArray = append(oldMoidArray, moid)
+	}
+
+	for _, item := range new {
+		m := item.(map[string]interface{})
+		moid := m["moid"].(string)
+		newMap[moid] = m
+	}
+
+	var newModArray []interface{}
+
+	// Arrange newArray according to oldArray
+	for _, moid := range oldMoidArray {
+		newPolicy, ok := newMap[moid]
+		if ok {
+			newModArray = append(newModArray, newPolicy)
+			delete(newMap, moid)
+		}
+	}
+
+	// Append left out data to newArray
+	for _, item := range new {
+		m := item.(map[string]interface{})
+		moid := m["moid"].(string)
+		newPolicy, ok := newMap[moid]
+		if ok {
+			newModArray = append(newModArray, newPolicy)
+		}
+	}
+
+	return newModArray
+}
+
+// CustomizePolicyBucketDiff Customizes the diff for policy_bucket to handle ordering
+func CustomizePolicyBucketDiff(policyBuckets interface{}, diff *schema.ResourceDiff) error {
+	policyBucketArray := policyBuckets.([]interface{})
+	log.Println("policy_bucket", policyBucketArray)
+	old, _new := diff.GetChange("policy_bucket")
+	oldArray := old.([]interface{})
+	newArray := _new.([]interface{})
+	log.Printf("old Array %#v", oldArray)
+	log.Printf("new Array %#v", newArray)
+
+	newModArray := ReorderPolicyBucket(oldArray, newArray)
+	log.Printf("new mod Array %#v", newModArray)
+
+	err := diff.SetNew("policy_bucket", newModArray)
+	return err
+}
+
+func CombinedCustomizeDiff(ctx context.Context, diff *schema.ResourceDiff, i interface{}) error {
+	// Handle tag diff logic
+	var err error
+	if tags, ok := diff.GetOk("tags"); ok {
+		err = CustomizeTagDiff(tags, diff)
+	}
+	// Handle policy bucket diff logic
+	if policy_bucket, ok := diff.GetOk("policy_bucket"); ok {
+		err = CustomizePolicyBucketDiff(policy_bucket, diff)
+	}
+	return err
 }

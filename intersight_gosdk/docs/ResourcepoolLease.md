@@ -8,14 +8,15 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "resourcepool.Lease"]
 **Condition** | Pointer to [**[]ResourceSelector**](ResourceSelector.md) |  | [optional] 
 **Feature** | Pointer to **string** | Lease opertion applied for the feature. | [optional] 
-**LeaseParameters** | Pointer to [**NullableResourcepoolLeaseParameters**](ResourcepoolLeaseParameters.md) |  | [optional] 
+**IsExclusiveAtAssignedEntity** | Pointer to **bool** | Indicates whether a lease allocation is exclusive based on the Assigned Entity, if the AssignedEntity holds any lease then not allowed to create new lease later. | [optional] [default to false]
+**LeaseParameters** | Pointer to [**NullableMoBaseComplexType**](MoBaseComplexType.md) | The lease operations has some special operations based on the PoolType and ResourceType. Those special operations are handled based on this parameter. | [optional] 
 **Resource** | Pointer to [**MoBaseMo**](MoBaseMo.md) |  | [optional] 
-**ResourceType** | Pointer to **string** | The type of the resource present in the pool, example &#39;server&#39; its combination of RackUnit and Blade. * &#x60;None&#x60; - The resource cannot consider for Resource Pool. * &#x60;Server&#x60; - Resource Pool holds the server kind of resources, example - RackServer, Blade. | [optional] [default to "None"]
-**AssignedToEntity** | Pointer to [**MoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
-**LeasedResource** | Pointer to [**ResourcepoolLeaseResourceRelationship**](ResourcepoolLeaseResourceRelationship.md) |  | [optional] 
-**Pool** | Pointer to [**ResourcepoolPoolRelationship**](ResourcepoolPoolRelationship.md) |  | [optional] 
-**PoolMember** | Pointer to [**ResourcepoolPoolMemberRelationship**](ResourcepoolPoolMemberRelationship.md) |  | [optional] 
-**Universe** | Pointer to [**ResourcepoolUniverseRelationship**](ResourcepoolUniverseRelationship.md) |  | [optional] 
+**ResourceType** | Pointer to **string** | The type of resource present in the pool, such as &#39;server&#39; can be a RackUnit or Blade. * &#x60;Server&#x60; - Resource Pool holds the server kind of resources, example - RackServer, Blade. * &#x60;None&#x60; - The resource cannot consider for Resource Pool. | [optional] [default to "Server"]
+**AssignedToEntity** | Pointer to [**NullableMoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
+**LeasedResource** | Pointer to [**NullableResourcepoolLeaseResourceRelationship**](ResourcepoolLeaseResourceRelationship.md) |  | [optional] 
+**Pool** | Pointer to [**NullableResourcepoolPoolRelationship**](ResourcepoolPoolRelationship.md) |  | [optional] 
+**PoolMember** | Pointer to [**NullableResourcepoolPoolMemberRelationship**](ResourcepoolPoolMemberRelationship.md) |  | [optional] 
+**Universe** | Pointer to [**NullableResourcepoolUniverseRelationship**](ResourcepoolUniverseRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -136,22 +137,47 @@ SetFeature sets Feature field to given value.
 
 HasFeature returns a boolean if a field has been set.
 
+### GetIsExclusiveAtAssignedEntity
+
+`func (o *ResourcepoolLease) GetIsExclusiveAtAssignedEntity() bool`
+
+GetIsExclusiveAtAssignedEntity returns the IsExclusiveAtAssignedEntity field if non-nil, zero value otherwise.
+
+### GetIsExclusiveAtAssignedEntityOk
+
+`func (o *ResourcepoolLease) GetIsExclusiveAtAssignedEntityOk() (*bool, bool)`
+
+GetIsExclusiveAtAssignedEntityOk returns a tuple with the IsExclusiveAtAssignedEntity field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsExclusiveAtAssignedEntity
+
+`func (o *ResourcepoolLease) SetIsExclusiveAtAssignedEntity(v bool)`
+
+SetIsExclusiveAtAssignedEntity sets IsExclusiveAtAssignedEntity field to given value.
+
+### HasIsExclusiveAtAssignedEntity
+
+`func (o *ResourcepoolLease) HasIsExclusiveAtAssignedEntity() bool`
+
+HasIsExclusiveAtAssignedEntity returns a boolean if a field has been set.
+
 ### GetLeaseParameters
 
-`func (o *ResourcepoolLease) GetLeaseParameters() ResourcepoolLeaseParameters`
+`func (o *ResourcepoolLease) GetLeaseParameters() MoBaseComplexType`
 
 GetLeaseParameters returns the LeaseParameters field if non-nil, zero value otherwise.
 
 ### GetLeaseParametersOk
 
-`func (o *ResourcepoolLease) GetLeaseParametersOk() (*ResourcepoolLeaseParameters, bool)`
+`func (o *ResourcepoolLease) GetLeaseParametersOk() (*MoBaseComplexType, bool)`
 
 GetLeaseParametersOk returns a tuple with the LeaseParameters field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetLeaseParameters
 
-`func (o *ResourcepoolLease) SetLeaseParameters(v ResourcepoolLeaseParameters)`
+`func (o *ResourcepoolLease) SetLeaseParameters(v MoBaseComplexType)`
 
 SetLeaseParameters sets LeaseParameters field to given value.
 
@@ -246,6 +272,16 @@ SetAssignedToEntity sets AssignedToEntity field to given value.
 
 HasAssignedToEntity returns a boolean if a field has been set.
 
+### SetAssignedToEntityNil
+
+`func (o *ResourcepoolLease) SetAssignedToEntityNil(b bool)`
+
+ SetAssignedToEntityNil sets the value for AssignedToEntity to be an explicit nil
+
+### UnsetAssignedToEntity
+`func (o *ResourcepoolLease) UnsetAssignedToEntity()`
+
+UnsetAssignedToEntity ensures that no value is present for AssignedToEntity, not even an explicit nil
 ### GetLeasedResource
 
 `func (o *ResourcepoolLease) GetLeasedResource() ResourcepoolLeaseResourceRelationship`
@@ -271,6 +307,16 @@ SetLeasedResource sets LeasedResource field to given value.
 
 HasLeasedResource returns a boolean if a field has been set.
 
+### SetLeasedResourceNil
+
+`func (o *ResourcepoolLease) SetLeasedResourceNil(b bool)`
+
+ SetLeasedResourceNil sets the value for LeasedResource to be an explicit nil
+
+### UnsetLeasedResource
+`func (o *ResourcepoolLease) UnsetLeasedResource()`
+
+UnsetLeasedResource ensures that no value is present for LeasedResource, not even an explicit nil
 ### GetPool
 
 `func (o *ResourcepoolLease) GetPool() ResourcepoolPoolRelationship`
@@ -296,6 +342,16 @@ SetPool sets Pool field to given value.
 
 HasPool returns a boolean if a field has been set.
 
+### SetPoolNil
+
+`func (o *ResourcepoolLease) SetPoolNil(b bool)`
+
+ SetPoolNil sets the value for Pool to be an explicit nil
+
+### UnsetPool
+`func (o *ResourcepoolLease) UnsetPool()`
+
+UnsetPool ensures that no value is present for Pool, not even an explicit nil
 ### GetPoolMember
 
 `func (o *ResourcepoolLease) GetPoolMember() ResourcepoolPoolMemberRelationship`
@@ -321,6 +377,16 @@ SetPoolMember sets PoolMember field to given value.
 
 HasPoolMember returns a boolean if a field has been set.
 
+### SetPoolMemberNil
+
+`func (o *ResourcepoolLease) SetPoolMemberNil(b bool)`
+
+ SetPoolMemberNil sets the value for PoolMember to be an explicit nil
+
+### UnsetPoolMember
+`func (o *ResourcepoolLease) UnsetPoolMember()`
+
+UnsetPoolMember ensures that no value is present for PoolMember, not even an explicit nil
 ### GetUniverse
 
 `func (o *ResourcepoolLease) GetUniverse() ResourcepoolUniverseRelationship`
@@ -346,6 +412,16 @@ SetUniverse sets Universe field to given value.
 
 HasUniverse returns a boolean if a field has been set.
 
+### SetUniverseNil
+
+`func (o *ResourcepoolLease) SetUniverseNil(b bool)`
+
+ SetUniverseNil sets the value for Universe to be an explicit nil
+
+### UnsetUniverse
+`func (o *ResourcepoolLease) UnsetUniverse()`
+
+UnsetUniverse ensures that no value is present for Universe, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

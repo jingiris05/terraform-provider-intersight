@@ -21,6 +21,7 @@ Name | Type | Description | Notes
 **BdCount** | Pointer to **int64** | Number of BDs. This determines the total number of Broadcast Domains across the fabric. | [optional] 
 **CallhomeSmartGroupCount** | Pointer to **int64** | Number of call home smart monitoring policies on the fabric. | [optional] 
 **CloudSecPeerCount** | Pointer to **int64** | Number of Cloudsec SA peers. | [optional] 
+**CloudTenantCount** | Pointer to **int64** | Returns the total number of tenants deployed. | [optional] 
 **CompHvCount** | Pointer to **int64** | Number of compute hypervisors on the fabric. | [optional] 
 **ConfigExportpCount** | Pointer to **int64** | Number of system backup configure export policies on the fabric. | [optional] 
 **ConfigJobCount** | Pointer to **int64** | Number of system backup configure jobs on the fabric. | [optional] 
@@ -117,7 +118,7 @@ Name | Type | Description | Notes
 **VnsmDevCount** | Pointer to **int64** | Number of objects with L4-L7 Device Package Import enabled. Checks for the vendor and the model. | [optional] 
 **VpodCount** | Pointer to **int64** | Virtual pod feature usage. This determines the total number of virtual POD configurations in the fabrics. | [optional] 
 **WebtokenTimeoutSeconds** | Pointer to **int64** | Timeout for web token in seconds. | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -552,6 +553,31 @@ SetCloudSecPeerCount sets CloudSecPeerCount field to given value.
 `func (o *NiatelemetryNiaFeatureUsage) HasCloudSecPeerCount() bool`
 
 HasCloudSecPeerCount returns a boolean if a field has been set.
+
+### GetCloudTenantCount
+
+`func (o *NiatelemetryNiaFeatureUsage) GetCloudTenantCount() int64`
+
+GetCloudTenantCount returns the CloudTenantCount field if non-nil, zero value otherwise.
+
+### GetCloudTenantCountOk
+
+`func (o *NiatelemetryNiaFeatureUsage) GetCloudTenantCountOk() (*int64, bool)`
+
+GetCloudTenantCountOk returns a tuple with the CloudTenantCount field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCloudTenantCount
+
+`func (o *NiatelemetryNiaFeatureUsage) SetCloudTenantCount(v int64)`
+
+SetCloudTenantCount sets CloudTenantCount field to given value.
+
+### HasCloudTenantCount
+
+`func (o *NiatelemetryNiaFeatureUsage) HasCloudTenantCount() bool`
+
+HasCloudTenantCount returns a boolean if a field has been set.
 
 ### GetCompHvCount
 
@@ -2988,6 +3014,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *NiatelemetryNiaFeatureUsage) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *NiatelemetryNiaFeatureUsage) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -10,23 +10,25 @@ Name | Type | Description | Notes
 **BaseMacAddress** | Pointer to **string** | Original Base Mac address of an adapter unit. | [optional] [readonly] 
 **ConnectionStatus** | Pointer to **string** | Connectivity Status of adapter - A or B or AB. | [optional] [readonly] 
 **Integrated** | Pointer to **string** | Cisco Integrated adapter or other type. | [optional] [readonly] 
+**OperReason** | Pointer to **[]string** |  | [optional] 
 **OperState** | Pointer to **string** | Operational state of an adapter unit. | [optional] [readonly] 
 **Operability** | Pointer to **string** | Operability state of an adapter unit. | [optional] [readonly] 
 **PartNumber** | Pointer to **string** | Part number of an adapter unit. | [optional] [readonly] 
 **PciSlot** | Pointer to **string** | PCIe slot of the adapter in the server. | [optional] [readonly] 
 **Power** | Pointer to **string** | Power state of an adapter unit. | [optional] [readonly] 
 **Thermal** | Pointer to **string** | Thermal state of an adapter unit. | [optional] [readonly] 
+**VicCommunicable** | Pointer to **string** | Records the current state of communication between the Virtual Interface Card (VIC) and the Cisco Integrated Management Controller (CIMC) on the server. * &#x60;Not Applicable&#x60; - Set the state of VIC communication to Not Applicable for other Platforms. * &#x60;Yes&#x60; - VIC is reachable from CIMC. * &#x60;No&#x60; - VIC is not reachable from CIMC. | [optional] [readonly] [default to "Not Applicable"]
 **Vid** | Pointer to **string** | Virtual Id of the adapter in the server. | [optional] [readonly] 
-**AdapterUnitExpander** | Pointer to [**AdapterUnitExpanderRelationship**](AdapterUnitExpanderRelationship.md) |  | [optional] 
-**ComputeBlade** | Pointer to [**ComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
-**ComputeRackUnit** | Pointer to [**ComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
-**Controller** | Pointer to [**ManagementControllerRelationship**](ManagementControllerRelationship.md) |  | [optional] 
+**AdapterUnitExpander** | Pointer to [**NullableAdapterUnitExpanderRelationship**](AdapterUnitExpanderRelationship.md) |  | [optional] 
+**ComputeBlade** | Pointer to [**NullableComputeBladeRelationship**](ComputeBladeRelationship.md) |  | [optional] 
+**ComputeRackUnit** | Pointer to [**NullableComputeRackUnitRelationship**](ComputeRackUnitRelationship.md) |  | [optional] 
+**Controller** | Pointer to [**NullableManagementControllerRelationship**](ManagementControllerRelationship.md) |  | [optional] 
 **ExtEthIfs** | Pointer to [**[]AdapterExtEthInterfaceRelationship**](AdapterExtEthInterfaceRelationship.md) | An array of relationships to adapterExtEthInterface resources. | [optional] [readonly] 
 **HostEthIfs** | Pointer to [**[]AdapterHostEthInterfaceRelationship**](AdapterHostEthInterfaceRelationship.md) | An array of relationships to adapterHostEthInterface resources. | [optional] [readonly] 
 **HostFcIfs** | Pointer to [**[]AdapterHostFcInterfaceRelationship**](AdapterHostFcInterfaceRelationship.md) | An array of relationships to adapterHostFcInterface resources. | [optional] [readonly] 
 **HostIscsiIfs** | Pointer to [**[]AdapterHostIscsiInterfaceRelationship**](AdapterHostIscsiInterfaceRelationship.md) | An array of relationships to adapterHostIscsiInterface resources. | [optional] [readonly] 
-**InventoryDeviceInfo** | Pointer to [**InventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**InventoryDeviceInfo** | Pointer to [**NullableInventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -187,6 +189,41 @@ SetIntegrated sets Integrated field to given value.
 
 HasIntegrated returns a boolean if a field has been set.
 
+### GetOperReason
+
+`func (o *AdapterUnit) GetOperReason() []string`
+
+GetOperReason returns the OperReason field if non-nil, zero value otherwise.
+
+### GetOperReasonOk
+
+`func (o *AdapterUnit) GetOperReasonOk() (*[]string, bool)`
+
+GetOperReasonOk returns a tuple with the OperReason field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOperReason
+
+`func (o *AdapterUnit) SetOperReason(v []string)`
+
+SetOperReason sets OperReason field to given value.
+
+### HasOperReason
+
+`func (o *AdapterUnit) HasOperReason() bool`
+
+HasOperReason returns a boolean if a field has been set.
+
+### SetOperReasonNil
+
+`func (o *AdapterUnit) SetOperReasonNil(b bool)`
+
+ SetOperReasonNil sets the value for OperReason to be an explicit nil
+
+### UnsetOperReason
+`func (o *AdapterUnit) UnsetOperReason()`
+
+UnsetOperReason ensures that no value is present for OperReason, not even an explicit nil
 ### GetOperState
 
 `func (o *AdapterUnit) GetOperState() string`
@@ -337,6 +374,31 @@ SetThermal sets Thermal field to given value.
 
 HasThermal returns a boolean if a field has been set.
 
+### GetVicCommunicable
+
+`func (o *AdapterUnit) GetVicCommunicable() string`
+
+GetVicCommunicable returns the VicCommunicable field if non-nil, zero value otherwise.
+
+### GetVicCommunicableOk
+
+`func (o *AdapterUnit) GetVicCommunicableOk() (*string, bool)`
+
+GetVicCommunicableOk returns a tuple with the VicCommunicable field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVicCommunicable
+
+`func (o *AdapterUnit) SetVicCommunicable(v string)`
+
+SetVicCommunicable sets VicCommunicable field to given value.
+
+### HasVicCommunicable
+
+`func (o *AdapterUnit) HasVicCommunicable() bool`
+
+HasVicCommunicable returns a boolean if a field has been set.
+
 ### GetVid
 
 `func (o *AdapterUnit) GetVid() string`
@@ -387,6 +449,16 @@ SetAdapterUnitExpander sets AdapterUnitExpander field to given value.
 
 HasAdapterUnitExpander returns a boolean if a field has been set.
 
+### SetAdapterUnitExpanderNil
+
+`func (o *AdapterUnit) SetAdapterUnitExpanderNil(b bool)`
+
+ SetAdapterUnitExpanderNil sets the value for AdapterUnitExpander to be an explicit nil
+
+### UnsetAdapterUnitExpander
+`func (o *AdapterUnit) UnsetAdapterUnitExpander()`
+
+UnsetAdapterUnitExpander ensures that no value is present for AdapterUnitExpander, not even an explicit nil
 ### GetComputeBlade
 
 `func (o *AdapterUnit) GetComputeBlade() ComputeBladeRelationship`
@@ -412,6 +484,16 @@ SetComputeBlade sets ComputeBlade field to given value.
 
 HasComputeBlade returns a boolean if a field has been set.
 
+### SetComputeBladeNil
+
+`func (o *AdapterUnit) SetComputeBladeNil(b bool)`
+
+ SetComputeBladeNil sets the value for ComputeBlade to be an explicit nil
+
+### UnsetComputeBlade
+`func (o *AdapterUnit) UnsetComputeBlade()`
+
+UnsetComputeBlade ensures that no value is present for ComputeBlade, not even an explicit nil
 ### GetComputeRackUnit
 
 `func (o *AdapterUnit) GetComputeRackUnit() ComputeRackUnitRelationship`
@@ -437,6 +519,16 @@ SetComputeRackUnit sets ComputeRackUnit field to given value.
 
 HasComputeRackUnit returns a boolean if a field has been set.
 
+### SetComputeRackUnitNil
+
+`func (o *AdapterUnit) SetComputeRackUnitNil(b bool)`
+
+ SetComputeRackUnitNil sets the value for ComputeRackUnit to be an explicit nil
+
+### UnsetComputeRackUnit
+`func (o *AdapterUnit) UnsetComputeRackUnit()`
+
+UnsetComputeRackUnit ensures that no value is present for ComputeRackUnit, not even an explicit nil
 ### GetController
 
 `func (o *AdapterUnit) GetController() ManagementControllerRelationship`
@@ -462,6 +554,16 @@ SetController sets Controller field to given value.
 
 HasController returns a boolean if a field has been set.
 
+### SetControllerNil
+
+`func (o *AdapterUnit) SetControllerNil(b bool)`
+
+ SetControllerNil sets the value for Controller to be an explicit nil
+
+### UnsetController
+`func (o *AdapterUnit) UnsetController()`
+
+UnsetController ensures that no value is present for Controller, not even an explicit nil
 ### GetExtEthIfs
 
 `func (o *AdapterUnit) GetExtEthIfs() []AdapterExtEthInterfaceRelationship`
@@ -627,6 +729,16 @@ SetInventoryDeviceInfo sets InventoryDeviceInfo field to given value.
 
 HasInventoryDeviceInfo returns a boolean if a field has been set.
 
+### SetInventoryDeviceInfoNil
+
+`func (o *AdapterUnit) SetInventoryDeviceInfoNil(b bool)`
+
+ SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+
+### UnsetInventoryDeviceInfo
+`func (o *AdapterUnit) UnsetInventoryDeviceInfo()`
+
+UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *AdapterUnit) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -652,6 +764,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *AdapterUnit) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *AdapterUnit) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the KubernetesConfigResult type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &KubernetesConfigResult{}
 
 // KubernetesConfigResult The profile configuration (deploy, validation) results with the overall state and detailed result messages.
 type KubernetesConfigResult struct {
@@ -23,8 +27,8 @@ type KubernetesConfigResult struct {
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-	ObjectType string                             `json:"ObjectType"`
-	Profile    *KubernetesNodeProfileRelationship `json:"Profile,omitempty"`
+	ObjectType string                                    `json:"ObjectType"`
+	Profile    NullableKubernetesNodeProfileRelationship `json:"Profile,omitempty"`
 	// An array of relationships to kubernetesConfigResultEntry resources.
 	ResultEntries        []KubernetesConfigResultEntryRelationship `json:"ResultEntries,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -79,6 +83,11 @@ func (o *KubernetesConfigResult) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "kubernetes.ConfigResult" of the ClassId field.
+func (o *KubernetesConfigResult) GetDefaultClassId() interface{} {
+	return "kubernetes.ConfigResult"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *KubernetesConfigResult) GetObjectType() string {
 	if o == nil {
@@ -103,36 +112,52 @@ func (o *KubernetesConfigResult) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
-// GetProfile returns the Profile field value if set, zero value otherwise.
+// GetDefaultObjectType returns the default value "kubernetes.ConfigResult" of the ObjectType field.
+func (o *KubernetesConfigResult) GetDefaultObjectType() interface{} {
+	return "kubernetes.ConfigResult"
+}
+
+// GetProfile returns the Profile field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *KubernetesConfigResult) GetProfile() KubernetesNodeProfileRelationship {
-	if o == nil || o.Profile == nil {
+	if o == nil || IsNil(o.Profile.Get()) {
 		var ret KubernetesNodeProfileRelationship
 		return ret
 	}
-	return *o.Profile
+	return *o.Profile.Get()
 }
 
 // GetProfileOk returns a tuple with the Profile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *KubernetesConfigResult) GetProfileOk() (*KubernetesNodeProfileRelationship, bool) {
-	if o == nil || o.Profile == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Profile, true
+	return o.Profile.Get(), o.Profile.IsSet()
 }
 
 // HasProfile returns a boolean if a field has been set.
 func (o *KubernetesConfigResult) HasProfile() bool {
-	if o != nil && o.Profile != nil {
+	if o != nil && o.Profile.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetProfile gets a reference to the given KubernetesNodeProfileRelationship and assigns it to the Profile field.
+// SetProfile gets a reference to the given NullableKubernetesNodeProfileRelationship and assigns it to the Profile field.
 func (o *KubernetesConfigResult) SetProfile(v KubernetesNodeProfileRelationship) {
-	o.Profile = &v
+	o.Profile.Set(&v)
+}
+
+// SetProfileNil sets the value for Profile to be an explicit nil
+func (o *KubernetesConfigResult) SetProfileNil() {
+	o.Profile.Set(nil)
+}
+
+// UnsetProfile ensures that no value is present for Profile, not even an explicit nil
+func (o *KubernetesConfigResult) UnsetProfile() {
+	o.Profile.Unset()
 }
 
 // GetResultEntries returns the ResultEntries field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -148,7 +173,7 @@ func (o *KubernetesConfigResult) GetResultEntries() []KubernetesConfigResultEntr
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *KubernetesConfigResult) GetResultEntriesOk() ([]KubernetesConfigResultEntryRelationship, bool) {
-	if o == nil || o.ResultEntries == nil {
+	if o == nil || IsNil(o.ResultEntries) {
 		return nil, false
 	}
 	return o.ResultEntries, true
@@ -156,7 +181,7 @@ func (o *KubernetesConfigResult) GetResultEntriesOk() ([]KubernetesConfigResultE
 
 // HasResultEntries returns a boolean if a field has been set.
 func (o *KubernetesConfigResult) HasResultEntries() bool {
-	if o != nil && o.ResultEntries != nil {
+	if o != nil && !IsNil(o.ResultEntries) {
 		return true
 	}
 
@@ -169,23 +194,33 @@ func (o *KubernetesConfigResult) SetResultEntries(v []KubernetesConfigResultEntr
 }
 
 func (o KubernetesConfigResult) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o KubernetesConfigResult) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractConfigResult, errPolicyAbstractConfigResult := json.Marshal(o.PolicyAbstractConfigResult)
 	if errPolicyAbstractConfigResult != nil {
-		return []byte{}, errPolicyAbstractConfigResult
+		return map[string]interface{}{}, errPolicyAbstractConfigResult
 	}
 	errPolicyAbstractConfigResult = json.Unmarshal([]byte(serializedPolicyAbstractConfigResult), &toSerialize)
 	if errPolicyAbstractConfigResult != nil {
-		return []byte{}, errPolicyAbstractConfigResult
+		return map[string]interface{}{}, errPolicyAbstractConfigResult
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Profile != nil {
-		toSerialize["Profile"] = o.Profile
+	toSerialize["ObjectType"] = o.ObjectType
+	if o.Profile.IsSet() {
+		toSerialize["Profile"] = o.Profile.Get()
 	}
 	if o.ResultEntries != nil {
 		toSerialize["ResultEntries"] = o.ResultEntries
@@ -195,23 +230,64 @@ func (o KubernetesConfigResult) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *KubernetesConfigResult) UnmarshalJSON(bytes []byte) (err error) {
+func (o *KubernetesConfigResult) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type KubernetesConfigResultWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-		ObjectType string                             `json:"ObjectType"`
-		Profile    *KubernetesNodeProfileRelationship `json:"Profile,omitempty"`
+		ObjectType string                                    `json:"ObjectType"`
+		Profile    NullableKubernetesNodeProfileRelationship `json:"Profile,omitempty"`
 		// An array of relationships to kubernetesConfigResultEntry resources.
 		ResultEntries []KubernetesConfigResultEntryRelationship `json:"ResultEntries,omitempty"`
 	}
 
 	varKubernetesConfigResultWithoutEmbeddedStruct := KubernetesConfigResultWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varKubernetesConfigResultWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varKubernetesConfigResultWithoutEmbeddedStruct)
 	if err == nil {
 		varKubernetesConfigResult := _KubernetesConfigResult{}
 		varKubernetesConfigResult.ClassId = varKubernetesConfigResultWithoutEmbeddedStruct.ClassId
@@ -225,7 +301,7 @@ func (o *KubernetesConfigResult) UnmarshalJSON(bytes []byte) (err error) {
 
 	varKubernetesConfigResult := _KubernetesConfigResult{}
 
-	err = json.Unmarshal(bytes, &varKubernetesConfigResult)
+	err = json.Unmarshal(data, &varKubernetesConfigResult)
 	if err == nil {
 		o.PolicyAbstractConfigResult = varKubernetesConfigResult.PolicyAbstractConfigResult
 	} else {
@@ -234,7 +310,7 @@ func (o *KubernetesConfigResult) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Profile")

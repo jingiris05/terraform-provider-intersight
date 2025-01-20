@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VnicPlacementSettings type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VnicPlacementSettings{}
 
 // VnicPlacementSettings Placement Settings for the virtual interface.
 type VnicPlacementSettings struct {
@@ -24,10 +28,16 @@ type VnicPlacementSettings struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
+	// Enable or disable automatic assignment of the PCI Link in a dual-link adapter. This option applies only to 13xx series VICs that support dual-link. If enabled, the system determines the placement of the vNIC/vHBA on either of the PCI Links.
+	AutoPciLink *bool `json:"AutoPciLink,omitempty"`
+	// Enable or disable automatic assignment of the VIC slot ID. If enabled and the server has only one VIC, the same VIC is chosen for all the vNICs. If enabled and the server has multiple VICs, the vNIC/vHBA are deployed on the first VIC. The Slot ID determines the first VIC. MLOM is the first Slot ID and the ID increments to 2, 3, and so on.
+	AutoSlotId *bool `json:"AutoSlotId,omitempty"`
 	// PCIe Slot where the VIC adapter is installed. Supported values are (1-15) and MLOM.
-	Id *string `json:"Id,omitempty"`
-	// The PCI Link used as transport for the virtual interface. This field is applicable only for VIC 1385 model (UCSC-PCIE-C40Q-03) which support two PCI links. The value, if specified, for any other VIC model will be ignored.
+	Id *string `json:"Id,omitempty" validate:"regexp=^$|^([1-9]|1[0-5]|MLOM)$"`
+	// The PCI Link used as transport for the virtual interface. PCI Link is only applicable for select Cisco UCS VIC 1300 models (UCSC-PCIE-C40Q-03, UCSB-MLOM-40G-03, UCSB-VIC-M83-8P) that support two PCI links. The value, if specified, for any other VIC model will be ignored.
 	PciLink *int64 `json:"PciLink,omitempty"`
+	// If the autoPciLink is disabled, the user can either choose to place the vNICs manually or based on a policy.If the autoPciLink is enabled, it will be set to None. * `Custom` - The user needs to specify the PCI Link manually. * `Load-Balanced` - The system will uniformly distribute the interfaces across the PCI Links. * `None` - Assignment is not applicable and will be set when the AutoPciLink is set to true.
+	PciLinkAssignmentMode *string `json:"PciLinkAssignmentMode,omitempty"`
 	// The fabric port to which the vNICs will be associated. * `None` - Fabric Id is not set to either A or B for the standalone case where the server is not connected to Fabric Interconnects. The value 'None' should be used. * `A` - Fabric A of the FI cluster. * `B` - Fabric B of the FI cluster.
 	SwitchId *string `json:"SwitchId,omitempty"`
 	// Adapter port on which the virtual interface will be created.
@@ -45,8 +55,14 @@ func NewVnicPlacementSettings(classId string, objectType string) *VnicPlacementS
 	this := VnicPlacementSettings{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var autoPciLink bool = false
+	this.AutoPciLink = &autoPciLink
+	var autoSlotId bool = false
+	this.AutoSlotId = &autoSlotId
 	var pciLink int64 = 0
 	this.PciLink = &pciLink
+	var pciLinkAssignmentMode string = "Custom"
+	this.PciLinkAssignmentMode = &pciLinkAssignmentMode
 	var switchId string = "None"
 	this.SwitchId = &switchId
 	return &this
@@ -61,8 +77,14 @@ func NewVnicPlacementSettingsWithDefaults() *VnicPlacementSettings {
 	this.ClassId = classId
 	var objectType string = "vnic.PlacementSettings"
 	this.ObjectType = objectType
+	var autoPciLink bool = false
+	this.AutoPciLink = &autoPciLink
+	var autoSlotId bool = false
+	this.AutoSlotId = &autoSlotId
 	var pciLink int64 = 0
 	this.PciLink = &pciLink
+	var pciLinkAssignmentMode string = "Custom"
+	this.PciLinkAssignmentMode = &pciLinkAssignmentMode
 	var switchId string = "None"
 	this.SwitchId = &switchId
 	return &this
@@ -92,6 +114,11 @@ func (o *VnicPlacementSettings) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "vnic.PlacementSettings" of the ClassId field.
+func (o *VnicPlacementSettings) GetDefaultClassId() interface{} {
+	return "vnic.PlacementSettings"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VnicPlacementSettings) GetObjectType() string {
 	if o == nil {
@@ -116,9 +143,78 @@ func (o *VnicPlacementSettings) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "vnic.PlacementSettings" of the ObjectType field.
+func (o *VnicPlacementSettings) GetDefaultObjectType() interface{} {
+	return "vnic.PlacementSettings"
+}
+
+// GetAutoPciLink returns the AutoPciLink field value if set, zero value otherwise.
+func (o *VnicPlacementSettings) GetAutoPciLink() bool {
+	if o == nil || IsNil(o.AutoPciLink) {
+		var ret bool
+		return ret
+	}
+	return *o.AutoPciLink
+}
+
+// GetAutoPciLinkOk returns a tuple with the AutoPciLink field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VnicPlacementSettings) GetAutoPciLinkOk() (*bool, bool) {
+	if o == nil || IsNil(o.AutoPciLink) {
+		return nil, false
+	}
+	return o.AutoPciLink, true
+}
+
+// HasAutoPciLink returns a boolean if a field has been set.
+func (o *VnicPlacementSettings) HasAutoPciLink() bool {
+	if o != nil && !IsNil(o.AutoPciLink) {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoPciLink gets a reference to the given bool and assigns it to the AutoPciLink field.
+func (o *VnicPlacementSettings) SetAutoPciLink(v bool) {
+	o.AutoPciLink = &v
+}
+
+// GetAutoSlotId returns the AutoSlotId field value if set, zero value otherwise.
+func (o *VnicPlacementSettings) GetAutoSlotId() bool {
+	if o == nil || IsNil(o.AutoSlotId) {
+		var ret bool
+		return ret
+	}
+	return *o.AutoSlotId
+}
+
+// GetAutoSlotIdOk returns a tuple with the AutoSlotId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VnicPlacementSettings) GetAutoSlotIdOk() (*bool, bool) {
+	if o == nil || IsNil(o.AutoSlotId) {
+		return nil, false
+	}
+	return o.AutoSlotId, true
+}
+
+// HasAutoSlotId returns a boolean if a field has been set.
+func (o *VnicPlacementSettings) HasAutoSlotId() bool {
+	if o != nil && !IsNil(o.AutoSlotId) {
+		return true
+	}
+
+	return false
+}
+
+// SetAutoSlotId gets a reference to the given bool and assigns it to the AutoSlotId field.
+func (o *VnicPlacementSettings) SetAutoSlotId(v bool) {
+	o.AutoSlotId = &v
+}
+
 // GetId returns the Id field value if set, zero value otherwise.
 func (o *VnicPlacementSettings) GetId() string {
-	if o == nil || o.Id == nil {
+	if o == nil || IsNil(o.Id) {
 		var ret string
 		return ret
 	}
@@ -128,7 +224,7 @@ func (o *VnicPlacementSettings) GetId() string {
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicPlacementSettings) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
+	if o == nil || IsNil(o.Id) {
 		return nil, false
 	}
 	return o.Id, true
@@ -136,7 +232,7 @@ func (o *VnicPlacementSettings) GetIdOk() (*string, bool) {
 
 // HasId returns a boolean if a field has been set.
 func (o *VnicPlacementSettings) HasId() bool {
-	if o != nil && o.Id != nil {
+	if o != nil && !IsNil(o.Id) {
 		return true
 	}
 
@@ -150,7 +246,7 @@ func (o *VnicPlacementSettings) SetId(v string) {
 
 // GetPciLink returns the PciLink field value if set, zero value otherwise.
 func (o *VnicPlacementSettings) GetPciLink() int64 {
-	if o == nil || o.PciLink == nil {
+	if o == nil || IsNil(o.PciLink) {
 		var ret int64
 		return ret
 	}
@@ -160,7 +256,7 @@ func (o *VnicPlacementSettings) GetPciLink() int64 {
 // GetPciLinkOk returns a tuple with the PciLink field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicPlacementSettings) GetPciLinkOk() (*int64, bool) {
-	if o == nil || o.PciLink == nil {
+	if o == nil || IsNil(o.PciLink) {
 		return nil, false
 	}
 	return o.PciLink, true
@@ -168,7 +264,7 @@ func (o *VnicPlacementSettings) GetPciLinkOk() (*int64, bool) {
 
 // HasPciLink returns a boolean if a field has been set.
 func (o *VnicPlacementSettings) HasPciLink() bool {
-	if o != nil && o.PciLink != nil {
+	if o != nil && !IsNil(o.PciLink) {
 		return true
 	}
 
@@ -180,9 +276,41 @@ func (o *VnicPlacementSettings) SetPciLink(v int64) {
 	o.PciLink = &v
 }
 
+// GetPciLinkAssignmentMode returns the PciLinkAssignmentMode field value if set, zero value otherwise.
+func (o *VnicPlacementSettings) GetPciLinkAssignmentMode() string {
+	if o == nil || IsNil(o.PciLinkAssignmentMode) {
+		var ret string
+		return ret
+	}
+	return *o.PciLinkAssignmentMode
+}
+
+// GetPciLinkAssignmentModeOk returns a tuple with the PciLinkAssignmentMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VnicPlacementSettings) GetPciLinkAssignmentModeOk() (*string, bool) {
+	if o == nil || IsNil(o.PciLinkAssignmentMode) {
+		return nil, false
+	}
+	return o.PciLinkAssignmentMode, true
+}
+
+// HasPciLinkAssignmentMode returns a boolean if a field has been set.
+func (o *VnicPlacementSettings) HasPciLinkAssignmentMode() bool {
+	if o != nil && !IsNil(o.PciLinkAssignmentMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetPciLinkAssignmentMode gets a reference to the given string and assigns it to the PciLinkAssignmentMode field.
+func (o *VnicPlacementSettings) SetPciLinkAssignmentMode(v string) {
+	o.PciLinkAssignmentMode = &v
+}
+
 // GetSwitchId returns the SwitchId field value if set, zero value otherwise.
 func (o *VnicPlacementSettings) GetSwitchId() string {
-	if o == nil || o.SwitchId == nil {
+	if o == nil || IsNil(o.SwitchId) {
 		var ret string
 		return ret
 	}
@@ -192,7 +320,7 @@ func (o *VnicPlacementSettings) GetSwitchId() string {
 // GetSwitchIdOk returns a tuple with the SwitchId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicPlacementSettings) GetSwitchIdOk() (*string, bool) {
-	if o == nil || o.SwitchId == nil {
+	if o == nil || IsNil(o.SwitchId) {
 		return nil, false
 	}
 	return o.SwitchId, true
@@ -200,7 +328,7 @@ func (o *VnicPlacementSettings) GetSwitchIdOk() (*string, bool) {
 
 // HasSwitchId returns a boolean if a field has been set.
 func (o *VnicPlacementSettings) HasSwitchId() bool {
-	if o != nil && o.SwitchId != nil {
+	if o != nil && !IsNil(o.SwitchId) {
 		return true
 	}
 
@@ -214,7 +342,7 @@ func (o *VnicPlacementSettings) SetSwitchId(v string) {
 
 // GetUplink returns the Uplink field value if set, zero value otherwise.
 func (o *VnicPlacementSettings) GetUplink() int64 {
-	if o == nil || o.Uplink == nil {
+	if o == nil || IsNil(o.Uplink) {
 		var ret int64
 		return ret
 	}
@@ -224,7 +352,7 @@ func (o *VnicPlacementSettings) GetUplink() int64 {
 // GetUplinkOk returns a tuple with the Uplink field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicPlacementSettings) GetUplinkOk() (*int64, bool) {
-	if o == nil || o.Uplink == nil {
+	if o == nil || IsNil(o.Uplink) {
 		return nil, false
 	}
 	return o.Uplink, true
@@ -232,7 +360,7 @@ func (o *VnicPlacementSettings) GetUplinkOk() (*int64, bool) {
 
 // HasUplink returns a boolean if a field has been set.
 func (o *VnicPlacementSettings) HasUplink() bool {
-	if o != nil && o.Uplink != nil {
+	if o != nil && !IsNil(o.Uplink) {
 		return true
 	}
 
@@ -245,31 +373,50 @@ func (o *VnicPlacementSettings) SetUplink(v int64) {
 }
 
 func (o VnicPlacementSettings) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VnicPlacementSettings) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Id != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AutoPciLink) {
+		toSerialize["AutoPciLink"] = o.AutoPciLink
+	}
+	if !IsNil(o.AutoSlotId) {
+		toSerialize["AutoSlotId"] = o.AutoSlotId
+	}
+	if !IsNil(o.Id) {
 		toSerialize["Id"] = o.Id
 	}
-	if o.PciLink != nil {
+	if !IsNil(o.PciLink) {
 		toSerialize["PciLink"] = o.PciLink
 	}
-	if o.SwitchId != nil {
+	if !IsNil(o.PciLinkAssignmentMode) {
+		toSerialize["PciLinkAssignmentMode"] = o.PciLinkAssignmentMode
+	}
+	if !IsNil(o.SwitchId) {
 		toSerialize["SwitchId"] = o.SwitchId
 	}
-	if o.Uplink != nil {
+	if !IsNil(o.Uplink) {
 		toSerialize["Uplink"] = o.Uplink
 	}
 
@@ -277,19 +424,66 @@ func (o VnicPlacementSettings) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VnicPlacementSettings) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VnicPlacementSettings) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VnicPlacementSettingsWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
+		// Enable or disable automatic assignment of the PCI Link in a dual-link adapter. This option applies only to 13xx series VICs that support dual-link. If enabled, the system determines the placement of the vNIC/vHBA on either of the PCI Links.
+		AutoPciLink *bool `json:"AutoPciLink,omitempty"`
+		// Enable or disable automatic assignment of the VIC slot ID. If enabled and the server has only one VIC, the same VIC is chosen for all the vNICs. If enabled and the server has multiple VICs, the vNIC/vHBA are deployed on the first VIC. The Slot ID determines the first VIC. MLOM is the first Slot ID and the ID increments to 2, 3, and so on.
+		AutoSlotId *bool `json:"AutoSlotId,omitempty"`
 		// PCIe Slot where the VIC adapter is installed. Supported values are (1-15) and MLOM.
-		Id *string `json:"Id,omitempty"`
-		// The PCI Link used as transport for the virtual interface. This field is applicable only for VIC 1385 model (UCSC-PCIE-C40Q-03) which support two PCI links. The value, if specified, for any other VIC model will be ignored.
+		Id *string `json:"Id,omitempty" validate:"regexp=^$|^([1-9]|1[0-5]|MLOM)$"`
+		// The PCI Link used as transport for the virtual interface. PCI Link is only applicable for select Cisco UCS VIC 1300 models (UCSC-PCIE-C40Q-03, UCSB-MLOM-40G-03, UCSB-VIC-M83-8P) that support two PCI links. The value, if specified, for any other VIC model will be ignored.
 		PciLink *int64 `json:"PciLink,omitempty"`
+		// If the autoPciLink is disabled, the user can either choose to place the vNICs manually or based on a policy.If the autoPciLink is enabled, it will be set to None. * `Custom` - The user needs to specify the PCI Link manually. * `Load-Balanced` - The system will uniformly distribute the interfaces across the PCI Links. * `None` - Assignment is not applicable and will be set when the AutoPciLink is set to true.
+		PciLinkAssignmentMode *string `json:"PciLinkAssignmentMode,omitempty"`
 		// The fabric port to which the vNICs will be associated. * `None` - Fabric Id is not set to either A or B for the standalone case where the server is not connected to Fabric Interconnects. The value 'None' should be used. * `A` - Fabric A of the FI cluster. * `B` - Fabric B of the FI cluster.
 		SwitchId *string `json:"SwitchId,omitempty"`
 		// Adapter port on which the virtual interface will be created.
@@ -298,13 +492,16 @@ func (o *VnicPlacementSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	varVnicPlacementSettingsWithoutEmbeddedStruct := VnicPlacementSettingsWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVnicPlacementSettingsWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVnicPlacementSettingsWithoutEmbeddedStruct)
 	if err == nil {
 		varVnicPlacementSettings := _VnicPlacementSettings{}
 		varVnicPlacementSettings.ClassId = varVnicPlacementSettingsWithoutEmbeddedStruct.ClassId
 		varVnicPlacementSettings.ObjectType = varVnicPlacementSettingsWithoutEmbeddedStruct.ObjectType
+		varVnicPlacementSettings.AutoPciLink = varVnicPlacementSettingsWithoutEmbeddedStruct.AutoPciLink
+		varVnicPlacementSettings.AutoSlotId = varVnicPlacementSettingsWithoutEmbeddedStruct.AutoSlotId
 		varVnicPlacementSettings.Id = varVnicPlacementSettingsWithoutEmbeddedStruct.Id
 		varVnicPlacementSettings.PciLink = varVnicPlacementSettingsWithoutEmbeddedStruct.PciLink
+		varVnicPlacementSettings.PciLinkAssignmentMode = varVnicPlacementSettingsWithoutEmbeddedStruct.PciLinkAssignmentMode
 		varVnicPlacementSettings.SwitchId = varVnicPlacementSettingsWithoutEmbeddedStruct.SwitchId
 		varVnicPlacementSettings.Uplink = varVnicPlacementSettingsWithoutEmbeddedStruct.Uplink
 		*o = VnicPlacementSettings(varVnicPlacementSettings)
@@ -314,7 +511,7 @@ func (o *VnicPlacementSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	varVnicPlacementSettings := _VnicPlacementSettings{}
 
-	err = json.Unmarshal(bytes, &varVnicPlacementSettings)
+	err = json.Unmarshal(data, &varVnicPlacementSettings)
 	if err == nil {
 		o.MoBaseComplexType = varVnicPlacementSettings.MoBaseComplexType
 	} else {
@@ -323,11 +520,14 @@ func (o *VnicPlacementSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "AutoPciLink")
+		delete(additionalProperties, "AutoSlotId")
 		delete(additionalProperties, "Id")
 		delete(additionalProperties, "PciLink")
+		delete(additionalProperties, "PciLinkAssignmentMode")
 		delete(additionalProperties, "SwitchId")
 		delete(additionalProperties, "Uplink")
 

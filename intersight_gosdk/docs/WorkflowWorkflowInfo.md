@@ -6,45 +6,42 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "workflow.WorkflowInfo"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "workflow.WorkflowInfo"]
-**Action** | Pointer to **string** | The action of the workflow such as start, cancel, retry, pause. * &#x60;None&#x60; - No action is set, this is the default value for action field. * &#x60;Create&#x60; - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * &#x60;Start&#x60; - Start a new execution of the workflow. * &#x60;Pause&#x60; - Pause the workflow, this can only be issued on workflows that are in running state. * &#x60;Resume&#x60; - Resume the workflow which was previously paused through pause action on the workflow. * &#x60;Retry&#x60; - Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn&#39;t run in the previous iteration. * &#x60;RetryFailed&#x60; - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * &#x60;Cancel&#x60; - Cancel the workflow that is in running or waiting state. | [optional] [default to "None"]
-**CleanupTime** | Pointer to **time.Time** | The time when the workflow info will be removed from database. | [optional] [readonly] 
-**Email** | Pointer to **string** | The email address of the user who started this workflow. | [optional] [readonly] 
+**Action** | Pointer to **string** | The action of the workflow such as start, cancel, retry, pause. * &#x60;None&#x60; - No action is set, this is the default value for action field. * &#x60;Create&#x60; - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * &#x60;Start&#x60; - Start a new execution of the workflow. * &#x60;Pause&#x60; - Pause the workflow, this can only be issued on workflows that are in running state. A workflow can be paused for a maximum of 180 days, after 180 days the workflow will be terminated by the system. * &#x60;Resume&#x60; - Resume the workflow which was previously paused through pause action on the workflow. * &#x60;Rerun&#x60; - Rerun the workflow that has previously reached a failed state. The workflow is run from the beginning using inputs from previous execution. Completed and currently running workflows cannot be rerun. Workflows do not have to be marked for retry to use this action. * &#x60;Retry&#x60; - This action has been deprecated. Please use RetryFailed, Rerun or RetryFromTask action. Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn&#39;t run in the previous iteration. * &#x60;RetryFailed&#x60; - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * &#x60;RetryFromTask&#x60; - Retry the workflow that has previously reached a failed state and has the retryable property set to true. A running or waiting workflow cannot be retried. RetryFromTaskName must be passed along with this action, and the workflow will be started from that specific task. The task name in RetryFromTaskName must be one of the tasks that was executed in the previous attempt. It is not possible to retry a workflow from a task that wasn&#39;t run in the previous execution attempt. * &#x60;Cancel&#x60; - Cancel the workflow that is in running or waiting state. | [optional] [default to "None"]
+**CleanupTime** | Pointer to **time.Time** | The time when the workflow info will be removed from the database. When WorkflowInfo is created, cleanup time will be set to 181 days. As the workflow progresses through different states the cleanup time can be updated. A cleanup time of 0 means the workflow is not scheduled for cleanup. An active workflow that continues to schedule &amp; run tasks can run for any amount of time and there is no upper bound for such workflows. Workflows that are not actively running, say in Paused or Waiting states will be removed after 181 days. | [optional] [readonly] 
+**Email** | Pointer to **string** | The email address of the user who started this workflow. In the case of LDAP users, this field can hold either a username or an email. | [optional] [readonly] 
 **EndTime** | Pointer to **time.Time** | The time when the workflow reached a final state. | [optional] [readonly] 
-**FailedWorkflowCleanupDuration** | Pointer to **int64** | The duration in hours after which the workflow info for failed, terminated or timed out workflow will be removed from database. | [optional] [default to 2160]
-**Input** | Pointer to **interface{}** | All the given inputs for the workflow. | [optional] 
+**FailedWorkflowCleanupDuration** | Pointer to **int64** | The duration in hours after which the workflow info for failed, terminated or timed out workflow will be removed from database. The minimum is 1 hour, maximum is 365 days and default is 90 days. | [optional] [default to 2160]
+**Input** | Pointer to **interface{}** | All the given inputs for the workflow. The schema for the inputs is defined in the InputDefinition section of the WorkflowDefinition. The InputDefinition will provide a list of input fields to be accepted, the associated datatype of the inputs and any additional constraints on the inputs. For more information please refer to InputDefinition property in the the the WorkflowDefinition resource. The inputs for a workflow are provided as a collection of key-value pairs, where key is the name of the input and value is any valid JSON data which conforms to the datatype of the input as specified in the InputDefinition. When the input passed into a workflow does not match the datatype or the constraints specified in the workflow definition, it will not be accepted. For example, if the InputDefinition specified that workflow must accept a string name &#39;key&#39; and the value passed for key must adhere to a regex pattern. If Workflow was started with input where &#39;key&#39; is not a string matching the regex pattern, an error will be generated and workflow will not start execution. During workflow definition design, the input passed into the workflow will be referred using the format &#39;workflow.input.&lt;inputName&gt;&#39;. If the input is referred directly in a mapping it will be in the format &#39;${workflow.input.&lt;inputName&gt;}&#39; or inside a template mapping in the format &#39;{{.global.workflow.input.&lt;inputName&gt;}}&#39;. | [optional] 
 **InstId** | Pointer to **string** | A workflow instance Id which is the unique identified for the workflow execution. | [optional] [readonly] 
-**Internal** | Pointer to **bool** | Denotes if this workflow is internal and should be hidden from user view of running workflows. | [optional] 
-**LastAction** | Pointer to **string** | The last action that was issued on the workflow is saved in this field. * &#x60;None&#x60; - No action is set, this is the default value for action field. * &#x60;Create&#x60; - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * &#x60;Start&#x60; - Start a new execution of the workflow. * &#x60;Pause&#x60; - Pause the workflow, this can only be issued on workflows that are in running state. * &#x60;Resume&#x60; - Resume the workflow which was previously paused through pause action on the workflow. * &#x60;Retry&#x60; - Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn&#39;t run in the previous iteration. * &#x60;RetryFailed&#x60; - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * &#x60;Cancel&#x60; - Cancel the workflow that is in running or waiting state. | [optional] [readonly] [default to "None"]
+**Internal** | Pointer to **bool** | Denotes that an Intersight service started this workflow as internal and hence will not be shown in Intersight User Interface. Typically these are internal system maintenance workflows which are triggered by Intersight services. | [optional] [readonly] 
+**LastAction** | Pointer to **string** | The last action that was issued on the workflow is saved in this field. * &#x60;None&#x60; - No action is set, this is the default value for action field. * &#x60;Create&#x60; - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * &#x60;Start&#x60; - Start a new execution of the workflow. * &#x60;Pause&#x60; - Pause the workflow, this can only be issued on workflows that are in running state. A workflow can be paused for a maximum of 180 days, after 180 days the workflow will be terminated by the system. * &#x60;Resume&#x60; - Resume the workflow which was previously paused through pause action on the workflow. * &#x60;Rerun&#x60; - Rerun the workflow that has previously reached a failed state. The workflow is run from the beginning using inputs from previous execution. Completed and currently running workflows cannot be rerun. Workflows do not have to be marked for retry to use this action. * &#x60;Retry&#x60; - This action has been deprecated. Please use RetryFailed, Rerun or RetryFromTask action. Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn&#39;t run in the previous iteration. * &#x60;RetryFailed&#x60; - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * &#x60;RetryFromTask&#x60; - Retry the workflow that has previously reached a failed state and has the retryable property set to true. A running or waiting workflow cannot be retried. RetryFromTaskName must be passed along with this action, and the workflow will be started from that specific task. The task name in RetryFromTaskName must be one of the tasks that was executed in the previous attempt. It is not possible to retry a workflow from a task that wasn&#39;t run in the previous execution attempt. * &#x60;Cancel&#x60; - Cancel the workflow that is in running or waiting state. | [optional] [readonly] [default to "None"]
 **Message** | Pointer to [**[]WorkflowMessage**](WorkflowMessage.md) |  | [optional] 
-**MetaVersion** | Pointer to **int64** | Version of the workflow metadata for which this workflow execution was started. | [optional] 
 **Name** | Pointer to **string** | A name of the workflow execution instance. | [optional] 
-**Output** | Pointer to **interface{}** | All the generated outputs for the workflow. | [optional] [readonly] 
-**PauseReason** | Pointer to **string** | Denotes the reason workflow is in paused status. * &#x60;None&#x60; - Pause reason is none, which indicates there is no reason for the pause state. * &#x60;TaskWithWarning&#x60; - Pause reason indicates the workflow is in this state due to a task that has a status as completed with warnings. * &#x60;SystemMaintenance&#x60; - Pause reason indicates the workflow is in this state based on actions of system admin for maintenance. | [optional] [default to "None"]
-**Progress** | Pointer to **float32** | This field indicates percentage of workflow task execution. | [optional] [readonly] 
+**Output** | Pointer to **interface{}** | All the generated outputs for the workflow. The schema for the outputs are defined in the OutputDefinition section of the WorkflowDefinition. The OutputDefinition will provide a list of output fields that could be generated after workflow execution is completed and the associated datatype of the outputs. For more information please refer to OutputDefinition property in WorkflowDefinition resource. The output for the workflow is generated as a collection of key-value pairs, where key is the name of the output and value is any valid JSON data which conforms to the datatype of output as specified in the OutputDefinition. During workflow definition design, if a workflow is included as a sub-workflow inside a parent workflow then the outputs generated by the sub-workflow can be used in the workflow design. For example, if workflow was included into parent workflow as &#39;SubWorkflowSample1&#39;, then that output can be referred as &#39;SubWorkflowSample1.output.&lt;outputName&gt;&#39;. In the output is referred directly in a mapping it will be in the format &#39;${SubWorkflowSample1.output.&lt;outputName&gt;}&#39; or inside a template mapping will be in the format &#39;{{SubWorkflowSample1.output.&lt;outputName&gt;}}&#39;. | [optional] [readonly] 
+**PauseReason** | Pointer to **string** | Denotes the reason workflow is in paused status. * &#x60;None&#x60; - Pause reason is none, which indicates there is no reason for the pause state. * &#x60;TaskWithWarning&#x60; - Pause reason indicates the workflow is in this state due to a task that has a status as completed with warnings. * &#x60;SystemMaintenance&#x60; - Pause reason indicates the workflow is in this state based on actions of system admin for maintenance. | [optional] [readonly] [default to "None"]
+**Progress** | Pointer to **float32** | This field indicates percentage of workflow task completion based on the total number of tasks in the workflow. The total number of tasks in the workflow is calculated based on the longest path the workflow execution can take. So progress is calculated based on the percentage of tasks that completed out of the total number of tasks that could be executed. Progress is not a representation of the time taken to complete the workflow. A task is considered as completed if the task status is either \&quot;NO_OP\&quot; or \&quot;COMPLETED\&quot;. If the task status is \&quot;SKIP_TO_FAIL\&quot;, the workflow will be terminated and the progress of the workflow will be set to 100. | [optional] [readonly] 
 **Properties** | Pointer to [**NullableWorkflowWorkflowInfoProperties**](WorkflowWorkflowInfoProperties.md) |  | [optional] 
-**RetryFromTaskName** | Pointer to **string** | This field is applicable when Retry action is issued for a workflow which is in &#39;final&#39; state. When this field is not specified, the workflow will be retried from the start i.e., the first task. When this field is specified then the workflow will be retried from the specified task. This field should specify the task name which is the unique name of the task within the workflow. The task name must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn&#39;t run in the previous iteration. | [optional] 
-**Src** | Pointer to **string** | The source microservice name which is the owner for this workflow. | [optional] [readonly] 
+**RetryFromTaskName** | Pointer to **string** | This field is required when RetryFromTask action is issued for a workflow that is in a &#39;final&#39; state. The workflow will be retried from the specified task. This field must specify a task name which is the unique name of the task within the workflow. The task name must be one of the tasks that were completed or failed in the previous run. It is not possible to retry a workflow from a task that wasn&#39;t run in the previous execution attempt. | [optional] 
+**Src** | Pointer to **string** | The source service that started the workflow execution and hence represents the owning service for this workflow. | [optional] [readonly] 
 **StartTime** | Pointer to **time.Time** | The time when the workflow was started for execution. | [optional] [readonly] 
-**Status** | Pointer to **string** | A status of the workflow (RUNNING, WAITING, COMPLETED, TIME_OUT, FAILED). | [optional] [readonly] 
-**SuccessWorkflowCleanupDuration** | Pointer to **int64** | The duration in hours after which the workflow info for successful workflow will be removed from database. | [optional] [default to 2160]
+**Status** | Pointer to **string** | A status of the workflow (RUNNING, WAITING, COMPLETED, TIME_OUT, FAILED). The \&quot;status\&quot; field has been deprecated and is now replaced with the \&quot;workflowStatus\&quot; field. | [optional] [readonly] 
+**SuccessWorkflowCleanupDuration** | Pointer to **int64** | The duration in hours after which the workflow info for successful workflow will be removed from database. The minimum is 1 hour, maximum is 365 days and default is 90 days. | [optional] [default to 2160]
+**TaskInfoUpdate** | Pointer to [**NullableWorkflowTaskInfoUpdate**](WorkflowTaskInfoUpdate.md) |  | [optional] 
 **TraceId** | Pointer to **string** | The trace id to keep track of workflow execution. | [optional] [readonly] 
 **Type** | Pointer to **string** | A type of the workflow (serverconfig, ansible_monitoring). | [optional] [readonly] 
-**UserActionRequired** | Pointer to **bool** | Property will be set when an user action is required on the workflow. This can be because the workflow is waiting for a wait task to be updated, workflow is paused or workflow launched by a configuration object has failed and needs to be retried in order to complete successfully. | [optional] [readonly] [default to false]
+**UserActionRequired** | Pointer to **bool** | Property will be set when a user action is required on the workflow. This can be because the workflow is waiting for a wait task to be updated, workflow is paused or workflow launched by a configuration object has failed and needs to be retried in order to complete successfully. | [optional] [readonly] [default to false]
 **UserId** | Pointer to **string** | The user identifier which indicates the user that started this workflow. | [optional] [readonly] 
 **Variable** | Pointer to **interface{}** | All the generated variables for the workflow. During workflow execution, the variables will be updated as per the variableParameters specified after each task execution. | [optional] [readonly] 
-**WaitReason** | Pointer to **string** | Denotes the reason workflow is in waiting status. * &#x60;None&#x60; - Wait reason is none, which indicates there is no reason for the waiting state. * &#x60;GatherTasks&#x60; - Wait reason is gathering tasks, which indicates the workflow is in this state in order to gather tasks. * &#x60;Duplicate&#x60; - Wait reason is duplicate, which indicates the workflow is a duplicate of current running workflow. * &#x60;RateLimit&#x60; - Wait reason is rate limit, which indicates the workflow is rate limited by account/instance level throttling threshold. * &#x60;WaitTask&#x60; - Wait reason when there are one or more wait tasks in the workflow which are yet to receive a task status update. * &#x60;PendingRetryFailed&#x60; - Wait reason when the workflow is pending a RetryFailed action. * &#x60;WaitingToStart&#x60; - Workflow is waiting to start on workflow engine. | [optional] [default to "None"]
+**WaitReason** | Pointer to **string** | Denotes the reason workflow is in waiting status. * &#x60;None&#x60; - Wait reason is none, which indicates there is no reason for the waiting state. * &#x60;GatherTasks&#x60; - Wait reason is gathering tasks, which indicates the workflow is in this state in order to gather tasks. * &#x60;Duplicate&#x60; - Wait reason is duplicate, which indicates the workflow is a duplicate of current running workflow. * &#x60;RateLimit&#x60; - Wait reason is rate limit, which indicates the workflow is rate limited by account/instance level throttling threshold. * &#x60;WaitTask&#x60; - Wait reason when there are one or more wait tasks in the workflow which are yet to receive a task status update. * &#x60;PendingRetryFailed&#x60; - Wait reason when the workflow is pending a RetryFailed action. * &#x60;WaitingToStart&#x60; - Workflow is waiting to start on workflow engine. | [optional] [readonly] [default to "None"]
 **WorkflowCtx** | Pointer to [**NullableWorkflowWorkflowCtx**](WorkflowWorkflowCtx.md) |  | [optional] 
-**WorkflowMetaType** | Pointer to **string** | The type of workflow meta. Derived from the workflow meta that is used to launch this workflow instance. * &#x60;SystemDefined&#x60; - System defined workflow definition. * &#x60;UserDefined&#x60; - User defined workflow definition. * &#x60;Dynamic&#x60; - Dynamically defined workflow definition. | [optional] [default to "SystemDefined"]
-**WorkflowTaskCount** | Pointer to **int64** | Total number of workflow tasks in this workflow. | [optional] [readonly] 
-**WorkflowWorkerTaskCount** | Pointer to **int64** | Total number of worker tasks in this workflow. This count doesn&#39;t include the control tasks in the workflow. | [optional] [readonly] 
-**Account** | Pointer to [**IamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
-**AssociatedObject** | Pointer to [**MoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
-**Organization** | Pointer to [**OrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
-**ParentTaskInfo** | Pointer to [**WorkflowTaskInfoRelationship**](WorkflowTaskInfoRelationship.md) |  | [optional] 
-**PendingDynamicWorkflowInfo** | Pointer to [**WorkflowPendingDynamicWorkflowInfoRelationship**](WorkflowPendingDynamicWorkflowInfoRelationship.md) |  | [optional] 
-**Permission** | Pointer to [**IamPermissionRelationship**](IamPermissionRelationship.md) |  | [optional] 
+**WorkflowStatus** | Pointer to **string** | The current state of the workflow execution instance. A draft workflow execution will be in NotStarted state and when \&quot;Start\&quot; action is issued then the workflow will move into Waiting state until the first task of the workflow is scheduled at which time it will move into InProgress state. When execution reaches a final state it move to either Completed, Failed or Terminated state. For more details look at the description for each state. * &#x60;NotStarted&#x60; - Initially all the workflow instances are at \&quot;NotStarted\&quot; state. A workflow can be drafted in this state by issuing Create action. When a workflow is in this state the inputs can be updated until the workflow is started. * &#x60;InProgress&#x60; - A workflow execution moves into \&quot;InProgress\&quot; state when the first task of the workflow is scheduled for execution and continues to remain in that state as long as there are tasks executing or yet to be scheduled for execution. * &#x60;Waiting&#x60; - Workflow can go to waiting state due to execution of wait task present in the workflow or the workflow has not started yet either due to duplicate workflow is running or due to workflow throttling. Once Workflow engine picks up the workflow for execution, it will move to in progress state. * &#x60;Completed&#x60; - A workflow execution moves into Completed state when the execution path of the workflow has reached the Success node in the workflow design and there are no more tasks to be executed. Completed is the final state for the workflow execution instance and no further actions are allowed on this workflow instance. * &#x60;Failed&#x60; - A workflow execution moves into a Failed state when the execution path of the workflow has reached the Failed node in the workflow design and there are no more tasks to be scheduled. A Failed node can be reached when the last executed task has failed or timed out and there are no further retries available for the task. Also as per the workflow design, the last executed task did not specify an OnFailure task to be executed and hence by default, the execution will reach the Failed node. Actions like \&quot;Rerun\&quot;, \&quot;RetryFailed\&quot; and \&quot;RetryFromTask\&quot; can be issued on failed workflow instances. Please refer to the \&quot;Action\&quot; description for more details. * &#x60;Terminated&#x60; - A workflow execution moves to Terminated state when user issues a \&quot;Cancel\&quot; action or due to internal errors caused during workflow execution. e.g. - Task input transformation has failed. Terminated is a final state of the workflow, no further action are allowed on this workflow instance. * &#x60;Canceled&#x60; - A workflow execution moves to Canceled state when a user issues a \&quot;Cancel\&quot; action. Cancel is not a final state, the workflow engine will issue cancel to all the running tasks and then move the workflow to the \&quot;Terminated\&quot; state. * &#x60;Paused&#x60; - A workflow execution moves to Paused state when user issues a \&quot;Pause\&quot; action. When in paused state the current running task will complete its execution but no further tasks will be scheduled until the workflow is resumed. A paused workflow is resumed when the user issues a \&quot;Resume\&quot; action. Paused workflows can be canceled by user. | [optional] [readonly] [default to "NotStarted"]
+**Account** | Pointer to [**NullableIamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
+**AssociatedObject** | Pointer to [**NullableMoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
+**Organization** | Pointer to [**NullableOrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**ParentTaskInfo** | Pointer to [**NullableWorkflowTaskInfoRelationship**](WorkflowTaskInfoRelationship.md) |  | [optional] 
+**Permission** | Pointer to [**NullableIamPermissionRelationship**](IamPermissionRelationship.md) |  | [optional] 
 **TaskInfos** | Pointer to [**[]WorkflowTaskInfoRelationship**](WorkflowTaskInfoRelationship.md) | An array of relationships to workflowTaskInfo resources. | [optional] [readonly] 
-**WorkflowDefinition** | Pointer to [**WorkflowWorkflowDefinitionRelationship**](WorkflowWorkflowDefinitionRelationship.md) |  | [optional] 
+**WorkflowDefinition** | Pointer to [**NullableWorkflowWorkflowDefinitionRelationship**](WorkflowWorkflowDefinitionRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -375,31 +372,6 @@ HasMessage returns a boolean if a field has been set.
 `func (o *WorkflowWorkflowInfo) UnsetMessage()`
 
 UnsetMessage ensures that no value is present for Message, not even an explicit nil
-### GetMetaVersion
-
-`func (o *WorkflowWorkflowInfo) GetMetaVersion() int64`
-
-GetMetaVersion returns the MetaVersion field if non-nil, zero value otherwise.
-
-### GetMetaVersionOk
-
-`func (o *WorkflowWorkflowInfo) GetMetaVersionOk() (*int64, bool)`
-
-GetMetaVersionOk returns a tuple with the MetaVersion field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetMetaVersion
-
-`func (o *WorkflowWorkflowInfo) SetMetaVersion(v int64)`
-
-SetMetaVersion sets MetaVersion field to given value.
-
-### HasMetaVersion
-
-`func (o *WorkflowWorkflowInfo) HasMetaVersion() bool`
-
-HasMetaVersion returns a boolean if a field has been set.
-
 ### GetName
 
 `func (o *WorkflowWorkflowInfo) GetName() string`
@@ -670,6 +642,41 @@ SetSuccessWorkflowCleanupDuration sets SuccessWorkflowCleanupDuration field to g
 
 HasSuccessWorkflowCleanupDuration returns a boolean if a field has been set.
 
+### GetTaskInfoUpdate
+
+`func (o *WorkflowWorkflowInfo) GetTaskInfoUpdate() WorkflowTaskInfoUpdate`
+
+GetTaskInfoUpdate returns the TaskInfoUpdate field if non-nil, zero value otherwise.
+
+### GetTaskInfoUpdateOk
+
+`func (o *WorkflowWorkflowInfo) GetTaskInfoUpdateOk() (*WorkflowTaskInfoUpdate, bool)`
+
+GetTaskInfoUpdateOk returns a tuple with the TaskInfoUpdate field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTaskInfoUpdate
+
+`func (o *WorkflowWorkflowInfo) SetTaskInfoUpdate(v WorkflowTaskInfoUpdate)`
+
+SetTaskInfoUpdate sets TaskInfoUpdate field to given value.
+
+### HasTaskInfoUpdate
+
+`func (o *WorkflowWorkflowInfo) HasTaskInfoUpdate() bool`
+
+HasTaskInfoUpdate returns a boolean if a field has been set.
+
+### SetTaskInfoUpdateNil
+
+`func (o *WorkflowWorkflowInfo) SetTaskInfoUpdateNil(b bool)`
+
+ SetTaskInfoUpdateNil sets the value for TaskInfoUpdate to be an explicit nil
+
+### UnsetTaskInfoUpdate
+`func (o *WorkflowWorkflowInfo) UnsetTaskInfoUpdate()`
+
+UnsetTaskInfoUpdate ensures that no value is present for TaskInfoUpdate, not even an explicit nil
 ### GetTraceId
 
 `func (o *WorkflowWorkflowInfo) GetTraceId() string`
@@ -865,80 +872,30 @@ HasWorkflowCtx returns a boolean if a field has been set.
 `func (o *WorkflowWorkflowInfo) UnsetWorkflowCtx()`
 
 UnsetWorkflowCtx ensures that no value is present for WorkflowCtx, not even an explicit nil
-### GetWorkflowMetaType
+### GetWorkflowStatus
 
-`func (o *WorkflowWorkflowInfo) GetWorkflowMetaType() string`
+`func (o *WorkflowWorkflowInfo) GetWorkflowStatus() string`
 
-GetWorkflowMetaType returns the WorkflowMetaType field if non-nil, zero value otherwise.
+GetWorkflowStatus returns the WorkflowStatus field if non-nil, zero value otherwise.
 
-### GetWorkflowMetaTypeOk
+### GetWorkflowStatusOk
 
-`func (o *WorkflowWorkflowInfo) GetWorkflowMetaTypeOk() (*string, bool)`
+`func (o *WorkflowWorkflowInfo) GetWorkflowStatusOk() (*string, bool)`
 
-GetWorkflowMetaTypeOk returns a tuple with the WorkflowMetaType field if it's non-nil, zero value otherwise
+GetWorkflowStatusOk returns a tuple with the WorkflowStatus field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
-### SetWorkflowMetaType
+### SetWorkflowStatus
 
-`func (o *WorkflowWorkflowInfo) SetWorkflowMetaType(v string)`
+`func (o *WorkflowWorkflowInfo) SetWorkflowStatus(v string)`
 
-SetWorkflowMetaType sets WorkflowMetaType field to given value.
+SetWorkflowStatus sets WorkflowStatus field to given value.
 
-### HasWorkflowMetaType
+### HasWorkflowStatus
 
-`func (o *WorkflowWorkflowInfo) HasWorkflowMetaType() bool`
+`func (o *WorkflowWorkflowInfo) HasWorkflowStatus() bool`
 
-HasWorkflowMetaType returns a boolean if a field has been set.
-
-### GetWorkflowTaskCount
-
-`func (o *WorkflowWorkflowInfo) GetWorkflowTaskCount() int64`
-
-GetWorkflowTaskCount returns the WorkflowTaskCount field if non-nil, zero value otherwise.
-
-### GetWorkflowTaskCountOk
-
-`func (o *WorkflowWorkflowInfo) GetWorkflowTaskCountOk() (*int64, bool)`
-
-GetWorkflowTaskCountOk returns a tuple with the WorkflowTaskCount field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetWorkflowTaskCount
-
-`func (o *WorkflowWorkflowInfo) SetWorkflowTaskCount(v int64)`
-
-SetWorkflowTaskCount sets WorkflowTaskCount field to given value.
-
-### HasWorkflowTaskCount
-
-`func (o *WorkflowWorkflowInfo) HasWorkflowTaskCount() bool`
-
-HasWorkflowTaskCount returns a boolean if a field has been set.
-
-### GetWorkflowWorkerTaskCount
-
-`func (o *WorkflowWorkflowInfo) GetWorkflowWorkerTaskCount() int64`
-
-GetWorkflowWorkerTaskCount returns the WorkflowWorkerTaskCount field if non-nil, zero value otherwise.
-
-### GetWorkflowWorkerTaskCountOk
-
-`func (o *WorkflowWorkflowInfo) GetWorkflowWorkerTaskCountOk() (*int64, bool)`
-
-GetWorkflowWorkerTaskCountOk returns a tuple with the WorkflowWorkerTaskCount field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetWorkflowWorkerTaskCount
-
-`func (o *WorkflowWorkflowInfo) SetWorkflowWorkerTaskCount(v int64)`
-
-SetWorkflowWorkerTaskCount sets WorkflowWorkerTaskCount field to given value.
-
-### HasWorkflowWorkerTaskCount
-
-`func (o *WorkflowWorkflowInfo) HasWorkflowWorkerTaskCount() bool`
-
-HasWorkflowWorkerTaskCount returns a boolean if a field has been set.
+HasWorkflowStatus returns a boolean if a field has been set.
 
 ### GetAccount
 
@@ -965,6 +922,16 @@ SetAccount sets Account field to given value.
 
 HasAccount returns a boolean if a field has been set.
 
+### SetAccountNil
+
+`func (o *WorkflowWorkflowInfo) SetAccountNil(b bool)`
+
+ SetAccountNil sets the value for Account to be an explicit nil
+
+### UnsetAccount
+`func (o *WorkflowWorkflowInfo) UnsetAccount()`
+
+UnsetAccount ensures that no value is present for Account, not even an explicit nil
 ### GetAssociatedObject
 
 `func (o *WorkflowWorkflowInfo) GetAssociatedObject() MoBaseMoRelationship`
@@ -990,6 +957,16 @@ SetAssociatedObject sets AssociatedObject field to given value.
 
 HasAssociatedObject returns a boolean if a field has been set.
 
+### SetAssociatedObjectNil
+
+`func (o *WorkflowWorkflowInfo) SetAssociatedObjectNil(b bool)`
+
+ SetAssociatedObjectNil sets the value for AssociatedObject to be an explicit nil
+
+### UnsetAssociatedObject
+`func (o *WorkflowWorkflowInfo) UnsetAssociatedObject()`
+
+UnsetAssociatedObject ensures that no value is present for AssociatedObject, not even an explicit nil
 ### GetOrganization
 
 `func (o *WorkflowWorkflowInfo) GetOrganization() OrganizationOrganizationRelationship`
@@ -1015,6 +992,16 @@ SetOrganization sets Organization field to given value.
 
 HasOrganization returns a boolean if a field has been set.
 
+### SetOrganizationNil
+
+`func (o *WorkflowWorkflowInfo) SetOrganizationNil(b bool)`
+
+ SetOrganizationNil sets the value for Organization to be an explicit nil
+
+### UnsetOrganization
+`func (o *WorkflowWorkflowInfo) UnsetOrganization()`
+
+UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
 ### GetParentTaskInfo
 
 `func (o *WorkflowWorkflowInfo) GetParentTaskInfo() WorkflowTaskInfoRelationship`
@@ -1040,31 +1027,16 @@ SetParentTaskInfo sets ParentTaskInfo field to given value.
 
 HasParentTaskInfo returns a boolean if a field has been set.
 
-### GetPendingDynamicWorkflowInfo
+### SetParentTaskInfoNil
 
-`func (o *WorkflowWorkflowInfo) GetPendingDynamicWorkflowInfo() WorkflowPendingDynamicWorkflowInfoRelationship`
+`func (o *WorkflowWorkflowInfo) SetParentTaskInfoNil(b bool)`
 
-GetPendingDynamicWorkflowInfo returns the PendingDynamicWorkflowInfo field if non-nil, zero value otherwise.
+ SetParentTaskInfoNil sets the value for ParentTaskInfo to be an explicit nil
 
-### GetPendingDynamicWorkflowInfoOk
+### UnsetParentTaskInfo
+`func (o *WorkflowWorkflowInfo) UnsetParentTaskInfo()`
 
-`func (o *WorkflowWorkflowInfo) GetPendingDynamicWorkflowInfoOk() (*WorkflowPendingDynamicWorkflowInfoRelationship, bool)`
-
-GetPendingDynamicWorkflowInfoOk returns a tuple with the PendingDynamicWorkflowInfo field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPendingDynamicWorkflowInfo
-
-`func (o *WorkflowWorkflowInfo) SetPendingDynamicWorkflowInfo(v WorkflowPendingDynamicWorkflowInfoRelationship)`
-
-SetPendingDynamicWorkflowInfo sets PendingDynamicWorkflowInfo field to given value.
-
-### HasPendingDynamicWorkflowInfo
-
-`func (o *WorkflowWorkflowInfo) HasPendingDynamicWorkflowInfo() bool`
-
-HasPendingDynamicWorkflowInfo returns a boolean if a field has been set.
-
+UnsetParentTaskInfo ensures that no value is present for ParentTaskInfo, not even an explicit nil
 ### GetPermission
 
 `func (o *WorkflowWorkflowInfo) GetPermission() IamPermissionRelationship`
@@ -1090,6 +1062,16 @@ SetPermission sets Permission field to given value.
 
 HasPermission returns a boolean if a field has been set.
 
+### SetPermissionNil
+
+`func (o *WorkflowWorkflowInfo) SetPermissionNil(b bool)`
+
+ SetPermissionNil sets the value for Permission to be an explicit nil
+
+### UnsetPermission
+`func (o *WorkflowWorkflowInfo) UnsetPermission()`
+
+UnsetPermission ensures that no value is present for Permission, not even an explicit nil
 ### GetTaskInfos
 
 `func (o *WorkflowWorkflowInfo) GetTaskInfos() []WorkflowTaskInfoRelationship`
@@ -1150,6 +1132,16 @@ SetWorkflowDefinition sets WorkflowDefinition field to given value.
 
 HasWorkflowDefinition returns a boolean if a field has been set.
 
+### SetWorkflowDefinitionNil
+
+`func (o *WorkflowWorkflowInfo) SetWorkflowDefinitionNil(b bool)`
+
+ SetWorkflowDefinitionNil sets the value for WorkflowDefinition to be an explicit nil
+
+### UnsetWorkflowDefinition
+`func (o *WorkflowWorkflowInfo) UnsetWorkflowDefinition()`
+
+UnsetWorkflowDefinition ensures that no value is present for WorkflowDefinition, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

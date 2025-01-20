@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HclFirmware type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HclFirmware{}
 
 // HclFirmware Model which holds the details of firmware version and driver version.
 type HclFirmware struct {
@@ -90,6 +94,11 @@ func (o *HclFirmware) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hcl.Firmware" of the ClassId field.
+func (o *HclFirmware) GetDefaultClassId() interface{} {
+	return "hcl.Firmware"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HclFirmware) GetObjectType() string {
 	if o == nil {
@@ -114,9 +123,14 @@ func (o *HclFirmware) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hcl.Firmware" of the ObjectType field.
+func (o *HclFirmware) GetDefaultObjectType() interface{} {
+	return "hcl.Firmware"
+}
+
 // GetDriverName returns the DriverName field value if set, zero value otherwise.
 func (o *HclFirmware) GetDriverName() string {
-	if o == nil || o.DriverName == nil {
+	if o == nil || IsNil(o.DriverName) {
 		var ret string
 		return ret
 	}
@@ -126,7 +140,7 @@ func (o *HclFirmware) GetDriverName() string {
 // GetDriverNameOk returns a tuple with the DriverName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclFirmware) GetDriverNameOk() (*string, bool) {
-	if o == nil || o.DriverName == nil {
+	if o == nil || IsNil(o.DriverName) {
 		return nil, false
 	}
 	return o.DriverName, true
@@ -134,7 +148,7 @@ func (o *HclFirmware) GetDriverNameOk() (*string, bool) {
 
 // HasDriverName returns a boolean if a field has been set.
 func (o *HclFirmware) HasDriverName() bool {
-	if o != nil && o.DriverName != nil {
+	if o != nil && !IsNil(o.DriverName) {
 		return true
 	}
 
@@ -148,7 +162,7 @@ func (o *HclFirmware) SetDriverName(v string) {
 
 // GetDriverVersion returns the DriverVersion field value if set, zero value otherwise.
 func (o *HclFirmware) GetDriverVersion() string {
-	if o == nil || o.DriverVersion == nil {
+	if o == nil || IsNil(o.DriverVersion) {
 		var ret string
 		return ret
 	}
@@ -158,7 +172,7 @@ func (o *HclFirmware) GetDriverVersion() string {
 // GetDriverVersionOk returns a tuple with the DriverVersion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclFirmware) GetDriverVersionOk() (*string, bool) {
-	if o == nil || o.DriverVersion == nil {
+	if o == nil || IsNil(o.DriverVersion) {
 		return nil, false
 	}
 	return o.DriverVersion, true
@@ -166,7 +180,7 @@ func (o *HclFirmware) GetDriverVersionOk() (*string, bool) {
 
 // HasDriverVersion returns a boolean if a field has been set.
 func (o *HclFirmware) HasDriverVersion() bool {
-	if o != nil && o.DriverVersion != nil {
+	if o != nil && !IsNil(o.DriverVersion) {
 		return true
 	}
 
@@ -180,7 +194,7 @@ func (o *HclFirmware) SetDriverVersion(v string) {
 
 // GetErrorCode returns the ErrorCode field value if set, zero value otherwise.
 func (o *HclFirmware) GetErrorCode() string {
-	if o == nil || o.ErrorCode == nil {
+	if o == nil || IsNil(o.ErrorCode) {
 		var ret string
 		return ret
 	}
@@ -190,7 +204,7 @@ func (o *HclFirmware) GetErrorCode() string {
 // GetErrorCodeOk returns a tuple with the ErrorCode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclFirmware) GetErrorCodeOk() (*string, bool) {
-	if o == nil || o.ErrorCode == nil {
+	if o == nil || IsNil(o.ErrorCode) {
 		return nil, false
 	}
 	return o.ErrorCode, true
@@ -198,7 +212,7 @@ func (o *HclFirmware) GetErrorCodeOk() (*string, bool) {
 
 // HasErrorCode returns a boolean if a field has been set.
 func (o *HclFirmware) HasErrorCode() bool {
-	if o != nil && o.ErrorCode != nil {
+	if o != nil && !IsNil(o.ErrorCode) {
 		return true
 	}
 
@@ -212,7 +226,7 @@ func (o *HclFirmware) SetErrorCode(v string) {
 
 // GetFirmwareVersion returns the FirmwareVersion field value if set, zero value otherwise.
 func (o *HclFirmware) GetFirmwareVersion() string {
-	if o == nil || o.FirmwareVersion == nil {
+	if o == nil || IsNil(o.FirmwareVersion) {
 		var ret string
 		return ret
 	}
@@ -222,7 +236,7 @@ func (o *HclFirmware) GetFirmwareVersion() string {
 // GetFirmwareVersionOk returns a tuple with the FirmwareVersion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclFirmware) GetFirmwareVersionOk() (*string, bool) {
-	if o == nil || o.FirmwareVersion == nil {
+	if o == nil || IsNil(o.FirmwareVersion) {
 		return nil, false
 	}
 	return o.FirmwareVersion, true
@@ -230,7 +244,7 @@ func (o *HclFirmware) GetFirmwareVersionOk() (*string, bool) {
 
 // HasFirmwareVersion returns a boolean if a field has been set.
 func (o *HclFirmware) HasFirmwareVersion() bool {
-	if o != nil && o.FirmwareVersion != nil {
+	if o != nil && !IsNil(o.FirmwareVersion) {
 		return true
 	}
 
@@ -244,7 +258,7 @@ func (o *HclFirmware) SetFirmwareVersion(v string) {
 
 // GetId returns the Id field value if set, zero value otherwise.
 func (o *HclFirmware) GetId() string {
-	if o == nil || o.Id == nil {
+	if o == nil || IsNil(o.Id) {
 		var ret string
 		return ret
 	}
@@ -254,7 +268,7 @@ func (o *HclFirmware) GetId() string {
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclFirmware) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
+	if o == nil || IsNil(o.Id) {
 		return nil, false
 	}
 	return o.Id, true
@@ -262,7 +276,7 @@ func (o *HclFirmware) GetIdOk() (*string, bool) {
 
 // HasId returns a boolean if a field has been set.
 func (o *HclFirmware) HasId() bool {
-	if o != nil && o.Id != nil {
+	if o != nil && !IsNil(o.Id) {
 		return true
 	}
 
@@ -276,7 +290,7 @@ func (o *HclFirmware) SetId(v string) {
 
 // GetLatestDriver returns the LatestDriver field value if set, zero value otherwise.
 func (o *HclFirmware) GetLatestDriver() bool {
-	if o == nil || o.LatestDriver == nil {
+	if o == nil || IsNil(o.LatestDriver) {
 		var ret bool
 		return ret
 	}
@@ -286,7 +300,7 @@ func (o *HclFirmware) GetLatestDriver() bool {
 // GetLatestDriverOk returns a tuple with the LatestDriver field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclFirmware) GetLatestDriverOk() (*bool, bool) {
-	if o == nil || o.LatestDriver == nil {
+	if o == nil || IsNil(o.LatestDriver) {
 		return nil, false
 	}
 	return o.LatestDriver, true
@@ -294,7 +308,7 @@ func (o *HclFirmware) GetLatestDriverOk() (*bool, bool) {
 
 // HasLatestDriver returns a boolean if a field has been set.
 func (o *HclFirmware) HasLatestDriver() bool {
-	if o != nil && o.LatestDriver != nil {
+	if o != nil && !IsNil(o.LatestDriver) {
 		return true
 	}
 
@@ -308,7 +322,7 @@ func (o *HclFirmware) SetLatestDriver(v bool) {
 
 // GetLatestFirmware returns the LatestFirmware field value if set, zero value otherwise.
 func (o *HclFirmware) GetLatestFirmware() bool {
-	if o == nil || o.LatestFirmware == nil {
+	if o == nil || IsNil(o.LatestFirmware) {
 		var ret bool
 		return ret
 	}
@@ -318,7 +332,7 @@ func (o *HclFirmware) GetLatestFirmware() bool {
 // GetLatestFirmwareOk returns a tuple with the LatestFirmware field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclFirmware) GetLatestFirmwareOk() (*bool, bool) {
-	if o == nil || o.LatestFirmware == nil {
+	if o == nil || IsNil(o.LatestFirmware) {
 		return nil, false
 	}
 	return o.LatestFirmware, true
@@ -326,7 +340,7 @@ func (o *HclFirmware) GetLatestFirmwareOk() (*bool, bool) {
 
 // HasLatestFirmware returns a boolean if a field has been set.
 func (o *HclFirmware) HasLatestFirmware() bool {
-	if o != nil && o.LatestFirmware != nil {
+	if o != nil && !IsNil(o.LatestFirmware) {
 		return true
 	}
 
@@ -339,40 +353,50 @@ func (o *HclFirmware) SetLatestFirmware(v bool) {
 }
 
 func (o HclFirmware) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HclFirmware) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.DriverName != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.DriverName) {
 		toSerialize["DriverName"] = o.DriverName
 	}
-	if o.DriverVersion != nil {
+	if !IsNil(o.DriverVersion) {
 		toSerialize["DriverVersion"] = o.DriverVersion
 	}
-	if o.ErrorCode != nil {
+	if !IsNil(o.ErrorCode) {
 		toSerialize["ErrorCode"] = o.ErrorCode
 	}
-	if o.FirmwareVersion != nil {
+	if !IsNil(o.FirmwareVersion) {
 		toSerialize["FirmwareVersion"] = o.FirmwareVersion
 	}
-	if o.Id != nil {
+	if !IsNil(o.Id) {
 		toSerialize["Id"] = o.Id
 	}
-	if o.LatestDriver != nil {
+	if !IsNil(o.LatestDriver) {
 		toSerialize["LatestDriver"] = o.LatestDriver
 	}
-	if o.LatestFirmware != nil {
+	if !IsNil(o.LatestFirmware) {
 		toSerialize["LatestFirmware"] = o.LatestFirmware
 	}
 
@@ -380,10 +404,51 @@ func (o HclFirmware) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HclFirmware) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HclFirmware) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HclFirmwareWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -407,7 +472,7 @@ func (o *HclFirmware) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHclFirmwareWithoutEmbeddedStruct := HclFirmwareWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHclFirmwareWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHclFirmwareWithoutEmbeddedStruct)
 	if err == nil {
 		varHclFirmware := _HclFirmware{}
 		varHclFirmware.ClassId = varHclFirmwareWithoutEmbeddedStruct.ClassId
@@ -426,7 +491,7 @@ func (o *HclFirmware) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHclFirmware := _HclFirmware{}
 
-	err = json.Unmarshal(bytes, &varHclFirmware)
+	err = json.Unmarshal(data, &varHclFirmware)
 	if err == nil {
 		o.MoBaseComplexType = varHclFirmware.MoBaseComplexType
 	} else {
@@ -435,7 +500,7 @@ func (o *HclFirmware) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "DriverName")

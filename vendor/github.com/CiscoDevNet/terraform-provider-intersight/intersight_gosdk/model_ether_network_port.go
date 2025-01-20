@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,11 +13,15 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
-// EtherNetworkPort Model contains the details of the ethernet port connected to the FI side.
+// checks if the EtherNetworkPort type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &EtherNetworkPort{}
+
+// EtherNetworkPort Ethernet network port connected to the Fabric Interconnect. These ports facilitate the connection of the Fabric Interconnect to other network devices.
 type EtherNetworkPort struct {
 	PortInterfaceBase
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
@@ -25,19 +29,20 @@ type EtherNetworkPort struct {
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
 	// Febric extender identifier for this port.
-	ModuleId *int64 `json:"ModuleId,omitempty"`
+	ModuleId   *int64   `json:"ModuleId,omitempty"`
+	OperReason []string `json:"OperReason,omitempty"`
 	// Peer DN for network host port of fabric extender.
 	PeerDn *string `json:"PeerDn,omitempty"`
 	// Switch physical port identifier.
 	PortId *int64 `json:"PortId,omitempty"`
 	// Switch expansion slot module identifier.
 	SlotId *int64 `json:"SlotId,omitempty"`
-	// Network Port Speed of IO card or fabric extender.
+	// Network Port operational speed of IO card or fabric extender.
 	Speed *string `json:"Speed,omitempty"`
 	// Switch Identifier that is local to a cluster.
-	SwitchId             *string                              `json:"SwitchId,omitempty"`
-	EquipmentIoCardBase  *EquipmentIoCardBaseRelationship     `json:"EquipmentIoCardBase,omitempty"`
-	RegisteredDevice     *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	SwitchId             *string                                     `json:"SwitchId,omitempty"`
+	EquipmentIoCardBase  NullableEquipmentIoCardBaseRelationship     `json:"EquipmentIoCardBase,omitempty"`
+	RegisteredDevice     NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -90,6 +95,11 @@ func (o *EtherNetworkPort) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "ether.NetworkPort" of the ClassId field.
+func (o *EtherNetworkPort) GetDefaultClassId() interface{} {
+	return "ether.NetworkPort"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *EtherNetworkPort) GetObjectType() string {
 	if o == nil {
@@ -114,9 +124,14 @@ func (o *EtherNetworkPort) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "ether.NetworkPort" of the ObjectType field.
+func (o *EtherNetworkPort) GetDefaultObjectType() interface{} {
+	return "ether.NetworkPort"
+}
+
 // GetModuleId returns the ModuleId field value if set, zero value otherwise.
 func (o *EtherNetworkPort) GetModuleId() int64 {
-	if o == nil || o.ModuleId == nil {
+	if o == nil || IsNil(o.ModuleId) {
 		var ret int64
 		return ret
 	}
@@ -126,7 +141,7 @@ func (o *EtherNetworkPort) GetModuleId() int64 {
 // GetModuleIdOk returns a tuple with the ModuleId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherNetworkPort) GetModuleIdOk() (*int64, bool) {
-	if o == nil || o.ModuleId == nil {
+	if o == nil || IsNil(o.ModuleId) {
 		return nil, false
 	}
 	return o.ModuleId, true
@@ -134,7 +149,7 @@ func (o *EtherNetworkPort) GetModuleIdOk() (*int64, bool) {
 
 // HasModuleId returns a boolean if a field has been set.
 func (o *EtherNetworkPort) HasModuleId() bool {
-	if o != nil && o.ModuleId != nil {
+	if o != nil && !IsNil(o.ModuleId) {
 		return true
 	}
 
@@ -146,9 +161,42 @@ func (o *EtherNetworkPort) SetModuleId(v int64) {
 	o.ModuleId = &v
 }
 
+// GetOperReason returns the OperReason field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EtherNetworkPort) GetOperReason() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.OperReason
+}
+
+// GetOperReasonOk returns a tuple with the OperReason field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EtherNetworkPort) GetOperReasonOk() ([]string, bool) {
+	if o == nil || IsNil(o.OperReason) {
+		return nil, false
+	}
+	return o.OperReason, true
+}
+
+// HasOperReason returns a boolean if a field has been set.
+func (o *EtherNetworkPort) HasOperReason() bool {
+	if o != nil && !IsNil(o.OperReason) {
+		return true
+	}
+
+	return false
+}
+
+// SetOperReason gets a reference to the given []string and assigns it to the OperReason field.
+func (o *EtherNetworkPort) SetOperReason(v []string) {
+	o.OperReason = v
+}
+
 // GetPeerDn returns the PeerDn field value if set, zero value otherwise.
 func (o *EtherNetworkPort) GetPeerDn() string {
-	if o == nil || o.PeerDn == nil {
+	if o == nil || IsNil(o.PeerDn) {
 		var ret string
 		return ret
 	}
@@ -158,7 +206,7 @@ func (o *EtherNetworkPort) GetPeerDn() string {
 // GetPeerDnOk returns a tuple with the PeerDn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherNetworkPort) GetPeerDnOk() (*string, bool) {
-	if o == nil || o.PeerDn == nil {
+	if o == nil || IsNil(o.PeerDn) {
 		return nil, false
 	}
 	return o.PeerDn, true
@@ -166,7 +214,7 @@ func (o *EtherNetworkPort) GetPeerDnOk() (*string, bool) {
 
 // HasPeerDn returns a boolean if a field has been set.
 func (o *EtherNetworkPort) HasPeerDn() bool {
-	if o != nil && o.PeerDn != nil {
+	if o != nil && !IsNil(o.PeerDn) {
 		return true
 	}
 
@@ -180,7 +228,7 @@ func (o *EtherNetworkPort) SetPeerDn(v string) {
 
 // GetPortId returns the PortId field value if set, zero value otherwise.
 func (o *EtherNetworkPort) GetPortId() int64 {
-	if o == nil || o.PortId == nil {
+	if o == nil || IsNil(o.PortId) {
 		var ret int64
 		return ret
 	}
@@ -190,7 +238,7 @@ func (o *EtherNetworkPort) GetPortId() int64 {
 // GetPortIdOk returns a tuple with the PortId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherNetworkPort) GetPortIdOk() (*int64, bool) {
-	if o == nil || o.PortId == nil {
+	if o == nil || IsNil(o.PortId) {
 		return nil, false
 	}
 	return o.PortId, true
@@ -198,7 +246,7 @@ func (o *EtherNetworkPort) GetPortIdOk() (*int64, bool) {
 
 // HasPortId returns a boolean if a field has been set.
 func (o *EtherNetworkPort) HasPortId() bool {
-	if o != nil && o.PortId != nil {
+	if o != nil && !IsNil(o.PortId) {
 		return true
 	}
 
@@ -212,7 +260,7 @@ func (o *EtherNetworkPort) SetPortId(v int64) {
 
 // GetSlotId returns the SlotId field value if set, zero value otherwise.
 func (o *EtherNetworkPort) GetSlotId() int64 {
-	if o == nil || o.SlotId == nil {
+	if o == nil || IsNil(o.SlotId) {
 		var ret int64
 		return ret
 	}
@@ -222,7 +270,7 @@ func (o *EtherNetworkPort) GetSlotId() int64 {
 // GetSlotIdOk returns a tuple with the SlotId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherNetworkPort) GetSlotIdOk() (*int64, bool) {
-	if o == nil || o.SlotId == nil {
+	if o == nil || IsNil(o.SlotId) {
 		return nil, false
 	}
 	return o.SlotId, true
@@ -230,7 +278,7 @@ func (o *EtherNetworkPort) GetSlotIdOk() (*int64, bool) {
 
 // HasSlotId returns a boolean if a field has been set.
 func (o *EtherNetworkPort) HasSlotId() bool {
-	if o != nil && o.SlotId != nil {
+	if o != nil && !IsNil(o.SlotId) {
 		return true
 	}
 
@@ -244,7 +292,7 @@ func (o *EtherNetworkPort) SetSlotId(v int64) {
 
 // GetSpeed returns the Speed field value if set, zero value otherwise.
 func (o *EtherNetworkPort) GetSpeed() string {
-	if o == nil || o.Speed == nil {
+	if o == nil || IsNil(o.Speed) {
 		var ret string
 		return ret
 	}
@@ -254,7 +302,7 @@ func (o *EtherNetworkPort) GetSpeed() string {
 // GetSpeedOk returns a tuple with the Speed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherNetworkPort) GetSpeedOk() (*string, bool) {
-	if o == nil || o.Speed == nil {
+	if o == nil || IsNil(o.Speed) {
 		return nil, false
 	}
 	return o.Speed, true
@@ -262,7 +310,7 @@ func (o *EtherNetworkPort) GetSpeedOk() (*string, bool) {
 
 // HasSpeed returns a boolean if a field has been set.
 func (o *EtherNetworkPort) HasSpeed() bool {
-	if o != nil && o.Speed != nil {
+	if o != nil && !IsNil(o.Speed) {
 		return true
 	}
 
@@ -276,7 +324,7 @@ func (o *EtherNetworkPort) SetSpeed(v string) {
 
 // GetSwitchId returns the SwitchId field value if set, zero value otherwise.
 func (o *EtherNetworkPort) GetSwitchId() string {
-	if o == nil || o.SwitchId == nil {
+	if o == nil || IsNil(o.SwitchId) {
 		var ret string
 		return ret
 	}
@@ -286,7 +334,7 @@ func (o *EtherNetworkPort) GetSwitchId() string {
 // GetSwitchIdOk returns a tuple with the SwitchId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherNetworkPort) GetSwitchIdOk() (*string, bool) {
-	if o == nil || o.SwitchId == nil {
+	if o == nil || IsNil(o.SwitchId) {
 		return nil, false
 	}
 	return o.SwitchId, true
@@ -294,7 +342,7 @@ func (o *EtherNetworkPort) GetSwitchIdOk() (*string, bool) {
 
 // HasSwitchId returns a boolean if a field has been set.
 func (o *EtherNetworkPort) HasSwitchId() bool {
-	if o != nil && o.SwitchId != nil {
+	if o != nil && !IsNil(o.SwitchId) {
 		return true
 	}
 
@@ -306,148 +354,226 @@ func (o *EtherNetworkPort) SetSwitchId(v string) {
 	o.SwitchId = &v
 }
 
-// GetEquipmentIoCardBase returns the EquipmentIoCardBase field value if set, zero value otherwise.
+// GetEquipmentIoCardBase returns the EquipmentIoCardBase field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EtherNetworkPort) GetEquipmentIoCardBase() EquipmentIoCardBaseRelationship {
-	if o == nil || o.EquipmentIoCardBase == nil {
+	if o == nil || IsNil(o.EquipmentIoCardBase.Get()) {
 		var ret EquipmentIoCardBaseRelationship
 		return ret
 	}
-	return *o.EquipmentIoCardBase
+	return *o.EquipmentIoCardBase.Get()
 }
 
 // GetEquipmentIoCardBaseOk returns a tuple with the EquipmentIoCardBase field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EtherNetworkPort) GetEquipmentIoCardBaseOk() (*EquipmentIoCardBaseRelationship, bool) {
-	if o == nil || o.EquipmentIoCardBase == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.EquipmentIoCardBase, true
+	return o.EquipmentIoCardBase.Get(), o.EquipmentIoCardBase.IsSet()
 }
 
 // HasEquipmentIoCardBase returns a boolean if a field has been set.
 func (o *EtherNetworkPort) HasEquipmentIoCardBase() bool {
-	if o != nil && o.EquipmentIoCardBase != nil {
+	if o != nil && o.EquipmentIoCardBase.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEquipmentIoCardBase gets a reference to the given EquipmentIoCardBaseRelationship and assigns it to the EquipmentIoCardBase field.
+// SetEquipmentIoCardBase gets a reference to the given NullableEquipmentIoCardBaseRelationship and assigns it to the EquipmentIoCardBase field.
 func (o *EtherNetworkPort) SetEquipmentIoCardBase(v EquipmentIoCardBaseRelationship) {
-	o.EquipmentIoCardBase = &v
+	o.EquipmentIoCardBase.Set(&v)
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// SetEquipmentIoCardBaseNil sets the value for EquipmentIoCardBase to be an explicit nil
+func (o *EtherNetworkPort) SetEquipmentIoCardBaseNil() {
+	o.EquipmentIoCardBase.Set(nil)
+}
+
+// UnsetEquipmentIoCardBase ensures that no value is present for EquipmentIoCardBase, not even an explicit nil
+func (o *EtherNetworkPort) UnsetEquipmentIoCardBase() {
+	o.EquipmentIoCardBase.Unset()
+}
+
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EtherNetworkPort) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EtherNetworkPort) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *EtherNetworkPort) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *EtherNetworkPort) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
+}
+
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *EtherNetworkPort) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *EtherNetworkPort) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
 }
 
 func (o EtherNetworkPort) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o EtherNetworkPort) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPortInterfaceBase, errPortInterfaceBase := json.Marshal(o.PortInterfaceBase)
 	if errPortInterfaceBase != nil {
-		return []byte{}, errPortInterfaceBase
+		return map[string]interface{}{}, errPortInterfaceBase
 	}
 	errPortInterfaceBase = json.Unmarshal([]byte(serializedPortInterfaceBase), &toSerialize)
 	if errPortInterfaceBase != nil {
-		return []byte{}, errPortInterfaceBase
+		return map[string]interface{}{}, errPortInterfaceBase
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ModuleId != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ModuleId) {
 		toSerialize["ModuleId"] = o.ModuleId
 	}
-	if o.PeerDn != nil {
+	if o.OperReason != nil {
+		toSerialize["OperReason"] = o.OperReason
+	}
+	if !IsNil(o.PeerDn) {
 		toSerialize["PeerDn"] = o.PeerDn
 	}
-	if o.PortId != nil {
+	if !IsNil(o.PortId) {
 		toSerialize["PortId"] = o.PortId
 	}
-	if o.SlotId != nil {
+	if !IsNil(o.SlotId) {
 		toSerialize["SlotId"] = o.SlotId
 	}
-	if o.Speed != nil {
+	if !IsNil(o.Speed) {
 		toSerialize["Speed"] = o.Speed
 	}
-	if o.SwitchId != nil {
+	if !IsNil(o.SwitchId) {
 		toSerialize["SwitchId"] = o.SwitchId
 	}
-	if o.EquipmentIoCardBase != nil {
-		toSerialize["EquipmentIoCardBase"] = o.EquipmentIoCardBase
+	if o.EquipmentIoCardBase.IsSet() {
+		toSerialize["EquipmentIoCardBase"] = o.EquipmentIoCardBase.Get()
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *EtherNetworkPort) UnmarshalJSON(bytes []byte) (err error) {
+func (o *EtherNetworkPort) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type EtherNetworkPortWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
 		// Febric extender identifier for this port.
-		ModuleId *int64 `json:"ModuleId,omitempty"`
+		ModuleId   *int64   `json:"ModuleId,omitempty"`
+		OperReason []string `json:"OperReason,omitempty"`
 		// Peer DN for network host port of fabric extender.
 		PeerDn *string `json:"PeerDn,omitempty"`
 		// Switch physical port identifier.
 		PortId *int64 `json:"PortId,omitempty"`
 		// Switch expansion slot module identifier.
 		SlotId *int64 `json:"SlotId,omitempty"`
-		// Network Port Speed of IO card or fabric extender.
+		// Network Port operational speed of IO card or fabric extender.
 		Speed *string `json:"Speed,omitempty"`
 		// Switch Identifier that is local to a cluster.
-		SwitchId            *string                              `json:"SwitchId,omitempty"`
-		EquipmentIoCardBase *EquipmentIoCardBaseRelationship     `json:"EquipmentIoCardBase,omitempty"`
-		RegisteredDevice    *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		SwitchId            *string                                     `json:"SwitchId,omitempty"`
+		EquipmentIoCardBase NullableEquipmentIoCardBaseRelationship     `json:"EquipmentIoCardBase,omitempty"`
+		RegisteredDevice    NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	}
 
 	varEtherNetworkPortWithoutEmbeddedStruct := EtherNetworkPortWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varEtherNetworkPortWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varEtherNetworkPortWithoutEmbeddedStruct)
 	if err == nil {
 		varEtherNetworkPort := _EtherNetworkPort{}
 		varEtherNetworkPort.ClassId = varEtherNetworkPortWithoutEmbeddedStruct.ClassId
 		varEtherNetworkPort.ObjectType = varEtherNetworkPortWithoutEmbeddedStruct.ObjectType
 		varEtherNetworkPort.ModuleId = varEtherNetworkPortWithoutEmbeddedStruct.ModuleId
+		varEtherNetworkPort.OperReason = varEtherNetworkPortWithoutEmbeddedStruct.OperReason
 		varEtherNetworkPort.PeerDn = varEtherNetworkPortWithoutEmbeddedStruct.PeerDn
 		varEtherNetworkPort.PortId = varEtherNetworkPortWithoutEmbeddedStruct.PortId
 		varEtherNetworkPort.SlotId = varEtherNetworkPortWithoutEmbeddedStruct.SlotId
@@ -462,7 +588,7 @@ func (o *EtherNetworkPort) UnmarshalJSON(bytes []byte) (err error) {
 
 	varEtherNetworkPort := _EtherNetworkPort{}
 
-	err = json.Unmarshal(bytes, &varEtherNetworkPort)
+	err = json.Unmarshal(data, &varEtherNetworkPort)
 	if err == nil {
 		o.PortInterfaceBase = varEtherNetworkPort.PortInterfaceBase
 	} else {
@@ -471,10 +597,11 @@ func (o *EtherNetworkPort) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ModuleId")
+		delete(additionalProperties, "OperReason")
 		delete(additionalProperties, "PeerDn")
 		delete(additionalProperties, "PortId")
 		delete(additionalProperties, "SlotId")

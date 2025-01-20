@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceIamApiKey() *schema.Resource {
 		UpdateContext: resourceIamApiKeyUpdate,
 		DeleteContext: resourceIamApiKeyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -37,6 +39,13 @@ func resourceIamApiKey() *schema.Resource {
 				Type:             schema.TypeString,
 				Optional:         true,
 				DiffSuppressFunc: SuppressDiffAdditionProps,
+			},
+			"admin_status": {
+				Description:  "Used to trigger the enable or disable action on the API key. These actions change the status of an API key.\n* `enable` - Used to enable a disabled API key/App Registration. If the API key/App Registration is already expired, this action has no effect.\n* `disable` - Used to disable an active API key/App Registration. If the API key/App Registration is already expired, this action has no effect.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringInSlice([]string{"enable", "disable"}, false),
+				Optional:     true,
+				Default:      "enable",
 			},
 			"ancestors": {
 				Description: "An array of relationships to moBaseMo resources.",
@@ -105,6 +114,11 @@ func resourceIamApiKey() *schema.Resource {
 					}
 					return
 				}},
+			"expiry_date_time": {
+				Description: "The expiration date of the API key which is set at the time of creation of the key. Its value can only be assigned a date that falls within the range determined by the maximum expiration time configured at the account level. The expiry date can be edited to be earlier or later, provided it stays within the designated expiry period. This period is determined by adding the 'startTime' property of the API key to the maximum expiry time configured at the account level.",
+				Type:        schema.TypeString,
+				Optional:    true,
+			},
 			"hash_algorithm": {
 				Description:  "The cryptographic hash algorithm to calculate the message digest.\n* `SHA256` - The SHA-256 cryptographic hash, as defined by NIST in FIPS 180-4.\n* `SHA384` - The SHA-384 cryptographic hash, as defined by NIST in FIPS 180-4.\n* `SHA512` - The SHA-512 cryptographic hash, as defined by NIST in FIPS 180-4.\n* `SHA512_224` - The SHA-512/224 cryptographic hash, as defined by NIST in FIPS 180-4.\n* `SHA512_256` - The SHA-512/256 cryptographic hash, as defined by NIST in FIPS 180-4.",
 				Type:         schema.TypeString,
@@ -112,6 +126,12 @@ func resourceIamApiKey() *schema.Resource {
 				Optional:     true,
 				Default:      "SHA256",
 				ForceNew:     true,
+			},
+			"is_never_expiring": {
+				Description: "Used to mark the API key as a never-expiring API key.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
 			},
 			"key_spec": {
 				Description: "The key generation specification provides the algorithm and the parameters required for this algorithm to generate a private key, public key pair. Supported key generation schemes include RSA, ECDSA and Edwards-Curve Digital Signature Algorithm (EdDSA).",
@@ -154,6 +174,28 @@ func resourceIamApiKey() *schema.Resource {
 				},
 				ForceNew: true,
 			},
+			"last_used_ip": {
+				Description: "The IP address from which the API key was last used.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
+			"last_used_time": {
+				Description: "The time at which the API key was last used. It is updated every 24 hours.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"mod_time": {
 				Description: "The time when this managed object was last modified.",
 				Type:        schema.TypeString,
@@ -178,6 +220,17 @@ func resourceIamApiKey() *schema.Resource {
 				Optional:    true,
 				Default:     "iam.ApiKey",
 			},
+			"oper_status": {
+				Description: "The current status of the API key that dictates the validity of the key.\n* `enabled` - An API key/App Registration having enabled status can be used for API invocation.\n* `disabled` - An API key/App Registration having disabled status cannot be used for API invocation.\n* `expired` - An API key/App Registration having expired status cannot be used for API invocation as the expiration date has passed.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"owners": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -321,6 +374,157 @@ func resourceIamApiKey() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"scope": {
+				Description: "Scope holds a collection of account Id, permission Id to which the current session is scoped to.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"account_access_control_id": {
+							Description: "Moid of the AccountAccessControl through which the access is given to switch scope.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "iam.SwitchScopePermissions",
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "iam.SwitchScopePermissions",
+						},
+						"request_identifier": {
+							Description: "Stores the identifier of the issue for which user is trying to switch scope to another account.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"switched_from_account": {
+							Description: "Permission for the Account from which user switched the scope.",
+							Type:        schema.TypeList,
+							MaxItems:    1,
+							Optional:    true,
+							Computed:    true,
+							ConfigMode:  schema.SchemaConfigModeAttr,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"account_id": {
+										Description: "Moid of the Account to/from which user switched the scope.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+										ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+											if val != nil {
+												warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+											}
+											return
+										}},
+									"additional_properties": {
+										Type:             schema.TypeString,
+										Optional:         true,
+										DiffSuppressFunc: SuppressDiffAdditionProps,
+									},
+									"class_id": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "iam.SwitchAccountPermission",
+									},
+									"object_type": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "iam.SwitchAccountPermission",
+									},
+									"permission_id": {
+										Description: "Moid of the Permission for the Account to/from which user switched the scope.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+										ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+											if val != nil {
+												warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+											}
+											return
+										}},
+								},
+							},
+						},
+						"switched_to_accounts": {
+							Type:       schema.TypeList,
+							Optional:   true,
+							ConfigMode: schema.SchemaConfigModeAttr,
+							Computed:   true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"account_id": {
+										Description: "Moid of the Account to/from which user switched the scope.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+										ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+											if val != nil {
+												warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+											}
+											return
+										}},
+									"additional_properties": {
+										Type:             schema.TypeString,
+										Optional:         true,
+										DiffSuppressFunc: SuppressDiffAdditionProps,
+									},
+									"class_id": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "iam.SwitchAccountPermission",
+									},
+									"object_type": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "iam.SwitchAccountPermission",
+									},
+									"permission_id": {
+										Description: "Moid of the Permission for the Account to/from which user switched the scope.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+										ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+											if val != nil {
+												warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+											}
+											return
+										}},
+								},
+							},
+						},
+					},
+				},
+			},
 			"shared_scope": {
 				Description: "Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.\nObjects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs.",
 				Type:        schema.TypeString,
@@ -340,6 +544,17 @@ func resourceIamApiKey() *schema.Resource {
 				Default:      "RSASSA-PKCS1-v1_5",
 				ForceNew:     true,
 			},
+			"start_time": {
+				Description: "The timestamp at which an expiry date was first set on this API key. For expiring API keys, this field is same as the create time of the API key. For never-expiring API keys, this field is set initially to zero time value. If a never-expiry API key is later changed to have an expiration, the timestamp marking the start of this transition is recorded in this field.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"tags": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -465,6 +680,17 @@ func resourceIamApiKey() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -566,11 +792,26 @@ func resourceIamApiKeyCreate(c context.Context, d *schema.ResourceData, meta int
 		}
 	}
 
+	if v, ok := d.GetOk("admin_status"); ok {
+		x := (v.(string))
+		o.SetAdminStatus(x)
+	}
+
 	o.SetClassId("iam.ApiKey")
+
+	if v, ok := d.GetOk("expiry_date_time"); ok {
+		x, _ := time.Parse(time.RFC1123, v.(string))
+		o.SetExpiryDateTime(x)
+	}
 
 	if v, ok := d.GetOk("hash_algorithm"); ok {
 		x := (v.(string))
 		o.SetHashAlgorithm(x)
+	}
+
+	if v, ok := d.GetOkExists("is_never_expiring"); ok {
+		x := (v.(bool))
+		o.SetIsNeverExpiring(x)
 	}
 
 	if v, ok := d.GetOk("key_spec"); ok {
@@ -671,8 +912,13 @@ func resourceIamApiKeyCreate(c context.Context, d *schema.ResourceData, meta int
 		}
 		return diag.Errorf("error occurred while creating IamApiKey: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
 	de = append(de, resourceIamApiKeyRead(c, d, meta)...)
 	if err := d.Set("private_key", (resultMo.GetPrivateKey())); err != nil {
 		return diag.Errorf("error occurred while setting property PrivateKey in IamApiKey object: %s", err.Error())
@@ -684,6 +930,9 @@ func resourceIamApiKeyCreate(c context.Context, d *schema.ResourceData, meta int
 func resourceIamApiKeyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.IamApi.GetIamApiKeyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -709,6 +958,10 @@ func resourceIamApiKeyRead(c context.Context, d *schema.ResourceData, meta inter
 		return diag.Errorf("error occurred while setting property AdditionalProperties in IamApiKey object: %s", err.Error())
 	}
 
+	if err := d.Set("admin_status", (s.GetAdminStatus())); err != nil {
+		return diag.Errorf("error occurred while setting property AdminStatus in IamApiKey object: %s", err.Error())
+	}
+
 	if err := d.Set("ancestors", flattenListMoBaseMoRelationship(s.GetAncestors(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Ancestors in IamApiKey object: %s", err.Error())
 	}
@@ -725,12 +978,28 @@ func resourceIamApiKeyRead(c context.Context, d *schema.ResourceData, meta inter
 		return diag.Errorf("error occurred while setting property DomainGroupMoid in IamApiKey object: %s", err.Error())
 	}
 
+	if err := d.Set("expiry_date_time", (s.GetExpiryDateTime()).String()); err != nil {
+		return diag.Errorf("error occurred while setting property ExpiryDateTime in IamApiKey object: %s", err.Error())
+	}
+
 	if err := d.Set("hash_algorithm", (s.GetHashAlgorithm())); err != nil {
 		return diag.Errorf("error occurred while setting property HashAlgorithm in IamApiKey object: %s", err.Error())
 	}
 
+	if err := d.Set("is_never_expiring", (s.GetIsNeverExpiring())); err != nil {
+		return diag.Errorf("error occurred while setting property IsNeverExpiring in IamApiKey object: %s", err.Error())
+	}
+
 	if err := d.Set("key_spec", flattenMapPkixKeyGenerationSpec(s.GetKeySpec(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property KeySpec in IamApiKey object: %s", err.Error())
+	}
+
+	if err := d.Set("last_used_ip", (s.GetLastUsedIp())); err != nil {
+		return diag.Errorf("error occurred while setting property LastUsedIp in IamApiKey object: %s", err.Error())
+	}
+
+	if err := d.Set("last_used_time", (s.GetLastUsedTime()).String()); err != nil {
+		return diag.Errorf("error occurred while setting property LastUsedTime in IamApiKey object: %s", err.Error())
 	}
 
 	if err := d.Set("mod_time", (s.GetModTime()).String()); err != nil {
@@ -743,6 +1012,10 @@ func resourceIamApiKeyRead(c context.Context, d *schema.ResourceData, meta inter
 
 	if err := d.Set("object_type", (s.GetObjectType())); err != nil {
 		return diag.Errorf("error occurred while setting property ObjectType in IamApiKey object: %s", err.Error())
+	}
+
+	if err := d.Set("oper_status", (s.GetOperStatus())); err != nil {
+		return diag.Errorf("error occurred while setting property OperStatus in IamApiKey object: %s", err.Error())
 	}
 
 	if err := d.Set("owners", (s.GetOwners())); err != nil {
@@ -769,12 +1042,20 @@ func resourceIamApiKeyRead(c context.Context, d *schema.ResourceData, meta inter
 		return diag.Errorf("error occurred while setting property Purpose in IamApiKey object: %s", err.Error())
 	}
 
+	if err := d.Set("scope", flattenMapIamSwitchScopePermissions(s.GetScope(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property Scope in IamApiKey object: %s", err.Error())
+	}
+
 	if err := d.Set("shared_scope", (s.GetSharedScope())); err != nil {
 		return diag.Errorf("error occurred while setting property SharedScope in IamApiKey object: %s", err.Error())
 	}
 
 	if err := d.Set("signing_algorithm", (s.GetSigningAlgorithm())); err != nil {
 		return diag.Errorf("error occurred while setting property SigningAlgorithm in IamApiKey object: %s", err.Error())
+	}
+
+	if err := d.Set("start_time", (s.GetStartTime()).String()); err != nil {
+		return diag.Errorf("error occurred while setting property StartTime in IamApiKey object: %s", err.Error())
 	}
 
 	if err := d.Set("tags", flattenListMoTag(s.GetTags(), d)); err != nil {
@@ -810,12 +1091,30 @@ func resourceIamApiKeyUpdate(c context.Context, d *schema.ResourceData, meta int
 		}
 	}
 
+	if d.HasChange("admin_status") {
+		v := d.Get("admin_status")
+		x := (v.(string))
+		o.SetAdminStatus(x)
+	}
+
 	o.SetClassId("iam.ApiKey")
+
+	if d.HasChange("expiry_date_time") {
+		v := d.Get("expiry_date_time")
+		x, _ := time.Parse(time.RFC1123, v.(string))
+		o.SetExpiryDateTime(x)
+	}
 
 	if d.HasChange("hash_algorithm") {
 		v := d.Get("hash_algorithm")
 		x := (v.(string))
 		o.SetHashAlgorithm(x)
+	}
+
+	if d.HasChange("is_never_expiring") {
+		v := d.Get("is_never_expiring")
+		x := (v.(bool))
+		o.SetIsNeverExpiring(x)
 	}
 
 	if d.HasChange("key_spec") {

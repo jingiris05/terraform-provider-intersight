@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceLicenseLicenseInfo() *schema.Resource {
 		UpdateContext: resourceLicenseLicenseInfoUpdate,
 		DeleteContext: resourceLicenseLicenseInfoDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_license_data": {
 				Description: "A reference to a licenseAccountLicenseData resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
@@ -128,6 +130,17 @@ func resourceLicenseLicenseInfo() *schema.Resource {
 					},
 				},
 			},
+			"balance": {
+				Description: "The total balance we have for licenses.",
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"class_id": {
 				Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
 				Type:        schema.TypeString,
@@ -255,7 +268,7 @@ func resourceLicenseLicenseInfo() *schema.Resource {
 					return
 				}},
 			"license_type": {
-				Description: "The name of the Intersight license entitlement.\nFor example, this property may be set to 'Essential'.\n* `Base` - Base as a License type. It is default license type.\n* `Essential` - Essential as a License type.\n* `Standard` - Standard as a License type.\n* `Advantage` - Advantage as a License type.\n* `Premier` - Premier as a License type.\n* `IWO-Essential` - IWO-Essential as a License type.\n* `IWO-Advantage` - IWO-Advantage as a License type.\n* `IWO-Premier` - IWO-Premier as a License type.\n* `IKS-Advantage` - IKS-Advantage as a License type.",
+				Description: "The name of the Intersight license entitlement.\nFor example, this property may be set to 'Essential'.\n* `Base` - Base as a License type. It is default license type.\n* `Essential` - Essential as a License type.\n* `Standard` - Standard as a License type.\n* `Advantage` - Advantage as a License type.\n* `Premier` - Premier as a License type.\n* `IWO-Essential` - IWO-Essential as a License type.\n* `IWO-Advantage` - IWO-Advantage as a License type.\n* `IWO-Premier` - IWO-Premier as a License type.\n* `IKS-Advantage` - IKS-Advantage as a License type.\n* `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud.\n* `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud.\n* `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud.\n* `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud.\n* `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud.\n* `ERP-Advantage` - Advantage license tier for ERP workflows.\n* `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers.\n* `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers.\n* `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers.\n* `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -283,6 +296,17 @@ func resourceLicenseLicenseInfo() *schema.Resource {
 				Computed:    true,
 				ForceNew:    true,
 			},
+			"net_substitution": {
+				Description: "The total number of substituted licenses added or removed.",
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"object_type": {
 				Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 				Type:        schema.TypeString,
@@ -398,6 +422,77 @@ func resourceLicenseLicenseInfo() *schema.Resource {
 					}
 					return
 				}},
+			"subscription_id": {
+				Description: "The id of license subscription.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
+			"substituted_license": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "license.SubstituteLicense",
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "license.SubstituteLicense",
+						},
+						"substituted_license": {
+							Description: "The substitute license that is used.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"substituted_quantity": {
+							Description: "The number of substitute licenses that are used.",
+							Type:        schema.TypeInt,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"substitution_type": {
+							Description: "The substitution from lower or from higher tier.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+					},
+				},
+			},
 			"tags": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -494,6 +589,17 @@ func resourceLicenseLicenseInfo() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -656,6 +762,36 @@ func resourceLicenseLicenseInfoCreate(c context.Context, d *schema.ResourceData,
 
 	o.SetObjectType("license.LicenseInfo")
 
+	if v, ok := d.GetOk("substituted_license"); ok {
+		x := make([]models.LicenseSubstituteLicense, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := models.NewLicenseSubstituteLicenseWithDefaults()
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("license.SubstituteLicense")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		if len(x) > 0 {
+			o.SetSubstitutedLicense(x)
+		}
+	}
+
 	if v, ok := d.GetOk("tags"); ok {
 		x := make([]models.MoTag, 0)
 		s := v.([]interface{})
@@ -701,14 +837,25 @@ func resourceLicenseLicenseInfoCreate(c context.Context, d *schema.ResourceData,
 		}
 		return diag.Errorf("error occurred while creating LicenseLicenseInfo: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceLicenseLicenseInfoRead(c, d, meta)...)
 }
 
 func resourceLicenseLicenseInfoRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.LicenseApi.GetLicenseLicenseInfoByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -744,6 +891,10 @@ func resourceLicenseLicenseInfoRead(c context.Context, d *schema.ResourceData, m
 
 	if err := d.Set("ancestors", flattenListMoBaseMoRelationship(s.GetAncestors(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Ancestors in LicenseLicenseInfo object: %s", err.Error())
+	}
+
+	if err := d.Set("balance", (s.GetBalance())); err != nil {
+		return diag.Errorf("error occurred while setting property Balance in LicenseLicenseInfo object: %s", err.Error())
 	}
 
 	if err := d.Set("class_id", (s.GetClassId())); err != nil {
@@ -810,6 +961,10 @@ func resourceLicenseLicenseInfoRead(c context.Context, d *schema.ResourceData, m
 		return diag.Errorf("error occurred while setting property Moid in LicenseLicenseInfo object: %s", err.Error())
 	}
 
+	if err := d.Set("net_substitution", (s.GetNetSubstitution())); err != nil {
+		return diag.Errorf("error occurred while setting property NetSubstitution in LicenseLicenseInfo object: %s", err.Error())
+	}
+
 	if err := d.Set("object_type", (s.GetObjectType())); err != nil {
 		return diag.Errorf("error occurred while setting property ObjectType in LicenseLicenseInfo object: %s", err.Error())
 	}
@@ -832,6 +987,14 @@ func resourceLicenseLicenseInfoRead(c context.Context, d *schema.ResourceData, m
 
 	if err := d.Set("start_time", (s.GetStartTime()).String()); err != nil {
 		return diag.Errorf("error occurred while setting property StartTime in LicenseLicenseInfo object: %s", err.Error())
+	}
+
+	if err := d.Set("subscription_id", (s.GetSubscriptionId())); err != nil {
+		return diag.Errorf("error occurred while setting property SubscriptionId in LicenseLicenseInfo object: %s", err.Error())
+	}
+
+	if err := d.Set("substituted_license", flattenListLicenseSubstituteLicense(s.GetSubstitutedLicense(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property SubstitutedLicense in LicenseLicenseInfo object: %s", err.Error())
 	}
 
 	if err := d.Set("tags", flattenListMoTag(s.GetTags(), d)); err != nil {
@@ -931,6 +1094,35 @@ func resourceLicenseLicenseInfoUpdate(c context.Context, d *schema.ResourceData,
 	}
 
 	o.SetObjectType("license.LicenseInfo")
+
+	if d.HasChange("substituted_license") {
+		v := d.Get("substituted_license")
+		x := make([]models.LicenseSubstituteLicense, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := &models.LicenseSubstituteLicense{}
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("license.SubstituteLicense")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		o.SetSubstitutedLicense(x)
+	}
 
 	if d.HasChange("tags") {
 		v := d.Get("tags")

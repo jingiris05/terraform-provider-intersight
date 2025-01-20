@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the AssetDeviceConfiguration type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AssetDeviceConfiguration{}
 
 // AssetDeviceConfiguration The configuration of a device connector. Configuration properties may be changed by a Intersight user or by a device administrator using the connector's API exposed through the platforms management interface.
 type AssetDeviceConfiguration struct {
@@ -29,8 +33,8 @@ type AssetDeviceConfiguration struct {
 	// The log level of the device connector service.
 	LogLevel *string `json:"LogLevel,omitempty"`
 	// Specifies whether Tunneled vKVM is enabled on the device connector.
-	TunneledKvm          *bool                                `json:"TunneledKvm,omitempty"`
-	Device               *AssetDeviceRegistrationRelationship `json:"Device,omitempty"`
+	TunneledKvm          *bool                                       `json:"TunneledKvm,omitempty"`
+	Device               NullableAssetDeviceRegistrationRelationship `json:"Device,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -83,6 +87,11 @@ func (o *AssetDeviceConfiguration) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "asset.DeviceConfiguration" of the ClassId field.
+func (o *AssetDeviceConfiguration) GetDefaultClassId() interface{} {
+	return "asset.DeviceConfiguration"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *AssetDeviceConfiguration) GetObjectType() string {
 	if o == nil {
@@ -107,9 +116,14 @@ func (o *AssetDeviceConfiguration) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "asset.DeviceConfiguration" of the ObjectType field.
+func (o *AssetDeviceConfiguration) GetDefaultObjectType() interface{} {
+	return "asset.DeviceConfiguration"
+}
+
 // GetLocalConfigurationLocked returns the LocalConfigurationLocked field value if set, zero value otherwise.
 func (o *AssetDeviceConfiguration) GetLocalConfigurationLocked() bool {
-	if o == nil || o.LocalConfigurationLocked == nil {
+	if o == nil || IsNil(o.LocalConfigurationLocked) {
 		var ret bool
 		return ret
 	}
@@ -119,7 +133,7 @@ func (o *AssetDeviceConfiguration) GetLocalConfigurationLocked() bool {
 // GetLocalConfigurationLockedOk returns a tuple with the LocalConfigurationLocked field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceConfiguration) GetLocalConfigurationLockedOk() (*bool, bool) {
-	if o == nil || o.LocalConfigurationLocked == nil {
+	if o == nil || IsNil(o.LocalConfigurationLocked) {
 		return nil, false
 	}
 	return o.LocalConfigurationLocked, true
@@ -127,7 +141,7 @@ func (o *AssetDeviceConfiguration) GetLocalConfigurationLockedOk() (*bool, bool)
 
 // HasLocalConfigurationLocked returns a boolean if a field has been set.
 func (o *AssetDeviceConfiguration) HasLocalConfigurationLocked() bool {
-	if o != nil && o.LocalConfigurationLocked != nil {
+	if o != nil && !IsNil(o.LocalConfigurationLocked) {
 		return true
 	}
 
@@ -141,7 +155,7 @@ func (o *AssetDeviceConfiguration) SetLocalConfigurationLocked(v bool) {
 
 // GetLogLevel returns the LogLevel field value if set, zero value otherwise.
 func (o *AssetDeviceConfiguration) GetLogLevel() string {
-	if o == nil || o.LogLevel == nil {
+	if o == nil || IsNil(o.LogLevel) {
 		var ret string
 		return ret
 	}
@@ -151,7 +165,7 @@ func (o *AssetDeviceConfiguration) GetLogLevel() string {
 // GetLogLevelOk returns a tuple with the LogLevel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceConfiguration) GetLogLevelOk() (*string, bool) {
-	if o == nil || o.LogLevel == nil {
+	if o == nil || IsNil(o.LogLevel) {
 		return nil, false
 	}
 	return o.LogLevel, true
@@ -159,7 +173,7 @@ func (o *AssetDeviceConfiguration) GetLogLevelOk() (*string, bool) {
 
 // HasLogLevel returns a boolean if a field has been set.
 func (o *AssetDeviceConfiguration) HasLogLevel() bool {
-	if o != nil && o.LogLevel != nil {
+	if o != nil && !IsNil(o.LogLevel) {
 		return true
 	}
 
@@ -173,7 +187,7 @@ func (o *AssetDeviceConfiguration) SetLogLevel(v string) {
 
 // GetTunneledKvm returns the TunneledKvm field value if set, zero value otherwise.
 func (o *AssetDeviceConfiguration) GetTunneledKvm() bool {
-	if o == nil || o.TunneledKvm == nil {
+	if o == nil || IsNil(o.TunneledKvm) {
 		var ret bool
 		return ret
 	}
@@ -183,7 +197,7 @@ func (o *AssetDeviceConfiguration) GetTunneledKvm() bool {
 // GetTunneledKvmOk returns a tuple with the TunneledKvm field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceConfiguration) GetTunneledKvmOk() (*bool, bool) {
-	if o == nil || o.TunneledKvm == nil {
+	if o == nil || IsNil(o.TunneledKvm) {
 		return nil, false
 	}
 	return o.TunneledKvm, true
@@ -191,7 +205,7 @@ func (o *AssetDeviceConfiguration) GetTunneledKvmOk() (*bool, bool) {
 
 // HasTunneledKvm returns a boolean if a field has been set.
 func (o *AssetDeviceConfiguration) HasTunneledKvm() bool {
-	if o != nil && o.TunneledKvm != nil {
+	if o != nil && !IsNil(o.TunneledKvm) {
 		return true
 	}
 
@@ -203,75 +217,137 @@ func (o *AssetDeviceConfiguration) SetTunneledKvm(v bool) {
 	o.TunneledKvm = &v
 }
 
-// GetDevice returns the Device field value if set, zero value otherwise.
+// GetDevice returns the Device field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceConfiguration) GetDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.Device == nil {
+	if o == nil || IsNil(o.Device.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.Device
+	return *o.Device.Get()
 }
 
 // GetDeviceOk returns a tuple with the Device field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceConfiguration) GetDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.Device == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Device, true
+	return o.Device.Get(), o.Device.IsSet()
 }
 
 // HasDevice returns a boolean if a field has been set.
 func (o *AssetDeviceConfiguration) HasDevice() bool {
-	if o != nil && o.Device != nil {
+	if o != nil && o.Device.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the Device field.
+// SetDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the Device field.
 func (o *AssetDeviceConfiguration) SetDevice(v AssetDeviceRegistrationRelationship) {
-	o.Device = &v
+	o.Device.Set(&v)
+}
+
+// SetDeviceNil sets the value for Device to be an explicit nil
+func (o *AssetDeviceConfiguration) SetDeviceNil() {
+	o.Device.Set(nil)
+}
+
+// UnsetDevice ensures that no value is present for Device, not even an explicit nil
+func (o *AssetDeviceConfiguration) UnsetDevice() {
+	o.Device.Unset()
 }
 
 func (o AssetDeviceConfiguration) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o AssetDeviceConfiguration) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.LocalConfigurationLocked != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.LocalConfigurationLocked) {
 		toSerialize["LocalConfigurationLocked"] = o.LocalConfigurationLocked
 	}
-	if o.LogLevel != nil {
+	if !IsNil(o.LogLevel) {
 		toSerialize["LogLevel"] = o.LogLevel
 	}
-	if o.TunneledKvm != nil {
+	if !IsNil(o.TunneledKvm) {
 		toSerialize["TunneledKvm"] = o.TunneledKvm
 	}
-	if o.Device != nil {
-		toSerialize["Device"] = o.Device
+	if o.Device.IsSet() {
+		toSerialize["Device"] = o.Device.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *AssetDeviceConfiguration) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AssetDeviceConfiguration) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type AssetDeviceConfigurationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -282,13 +358,13 @@ func (o *AssetDeviceConfiguration) UnmarshalJSON(bytes []byte) (err error) {
 		// The log level of the device connector service.
 		LogLevel *string `json:"LogLevel,omitempty"`
 		// Specifies whether Tunneled vKVM is enabled on the device connector.
-		TunneledKvm *bool                                `json:"TunneledKvm,omitempty"`
-		Device      *AssetDeviceRegistrationRelationship `json:"Device,omitempty"`
+		TunneledKvm *bool                                       `json:"TunneledKvm,omitempty"`
+		Device      NullableAssetDeviceRegistrationRelationship `json:"Device,omitempty"`
 	}
 
 	varAssetDeviceConfigurationWithoutEmbeddedStruct := AssetDeviceConfigurationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varAssetDeviceConfigurationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varAssetDeviceConfigurationWithoutEmbeddedStruct)
 	if err == nil {
 		varAssetDeviceConfiguration := _AssetDeviceConfiguration{}
 		varAssetDeviceConfiguration.ClassId = varAssetDeviceConfigurationWithoutEmbeddedStruct.ClassId
@@ -304,7 +380,7 @@ func (o *AssetDeviceConfiguration) UnmarshalJSON(bytes []byte) (err error) {
 
 	varAssetDeviceConfiguration := _AssetDeviceConfiguration{}
 
-	err = json.Unmarshal(bytes, &varAssetDeviceConfiguration)
+	err = json.Unmarshal(data, &varAssetDeviceConfiguration)
 	if err == nil {
 		o.MoBaseMo = varAssetDeviceConfiguration.MoBaseMo
 	} else {
@@ -313,7 +389,7 @@ func (o *AssetDeviceConfiguration) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "LocalConfigurationLocked")

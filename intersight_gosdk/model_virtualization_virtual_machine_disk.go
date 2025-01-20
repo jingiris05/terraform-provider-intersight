@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VirtualizationVirtualMachineDisk type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VirtualizationVirtualMachineDisk{}
 
 // VirtualizationVirtualMachineDisk Virtual machine disk configuration data.
 type VirtualizationVirtualMachineDisk struct {
@@ -31,8 +35,7 @@ type VirtualizationVirtualMachineDisk struct {
 	// Priority order of the disk.
 	Order *int64 `json:"Order,omitempty"`
 	// Disk type hdd or cdrom for a virtual machine. * `hdd` - Allows the virtual machine to mount disk from hard disk drive (hdd) image. * `cdrom` - Allows the virtual machine to mount disk from compact disk (cd) image.
-	Type        *string                                 `json:"Type,omitempty"`
-	VirtualDisk NullableVirtualizationVirtualDiskConfig `json:"VirtualDisk,omitempty"`
+	Type *string `json:"Type,omitempty"`
 	// Name of the existing virtual disk to be attached to the Virtual Machine.
 	VirtualDiskReference *string `json:"VirtualDiskReference,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -95,6 +98,11 @@ func (o *VirtualizationVirtualMachineDisk) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "virtualization.VirtualMachineDisk" of the ClassId field.
+func (o *VirtualizationVirtualMachineDisk) GetDefaultClassId() interface{} {
+	return "virtualization.VirtualMachineDisk"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VirtualizationVirtualMachineDisk) GetObjectType() string {
 	if o == nil {
@@ -119,9 +127,14 @@ func (o *VirtualizationVirtualMachineDisk) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "virtualization.VirtualMachineDisk" of the ObjectType field.
+func (o *VirtualizationVirtualMachineDisk) GetDefaultObjectType() interface{} {
+	return "virtualization.VirtualMachineDisk"
+}
+
 // GetBus returns the Bus field value if set, zero value otherwise.
 func (o *VirtualizationVirtualMachineDisk) GetBus() string {
-	if o == nil || o.Bus == nil {
+	if o == nil || IsNil(o.Bus) {
 		var ret string
 		return ret
 	}
@@ -131,7 +144,7 @@ func (o *VirtualizationVirtualMachineDisk) GetBus() string {
 // GetBusOk returns a tuple with the Bus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVirtualMachineDisk) GetBusOk() (*string, bool) {
-	if o == nil || o.Bus == nil {
+	if o == nil || IsNil(o.Bus) {
 		return nil, false
 	}
 	return o.Bus, true
@@ -139,7 +152,7 @@ func (o *VirtualizationVirtualMachineDisk) GetBusOk() (*string, bool) {
 
 // HasBus returns a boolean if a field has been set.
 func (o *VirtualizationVirtualMachineDisk) HasBus() bool {
-	if o != nil && o.Bus != nil {
+	if o != nil && !IsNil(o.Bus) {
 		return true
 	}
 
@@ -153,7 +166,7 @@ func (o *VirtualizationVirtualMachineDisk) SetBus(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *VirtualizationVirtualMachineDisk) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -163,7 +176,7 @@ func (o *VirtualizationVirtualMachineDisk) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVirtualMachineDisk) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -171,7 +184,7 @@ func (o *VirtualizationVirtualMachineDisk) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *VirtualizationVirtualMachineDisk) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -185,7 +198,7 @@ func (o *VirtualizationVirtualMachineDisk) SetName(v string) {
 
 // GetOrder returns the Order field value if set, zero value otherwise.
 func (o *VirtualizationVirtualMachineDisk) GetOrder() int64 {
-	if o == nil || o.Order == nil {
+	if o == nil || IsNil(o.Order) {
 		var ret int64
 		return ret
 	}
@@ -195,7 +208,7 @@ func (o *VirtualizationVirtualMachineDisk) GetOrder() int64 {
 // GetOrderOk returns a tuple with the Order field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVirtualMachineDisk) GetOrderOk() (*int64, bool) {
-	if o == nil || o.Order == nil {
+	if o == nil || IsNil(o.Order) {
 		return nil, false
 	}
 	return o.Order, true
@@ -203,7 +216,7 @@ func (o *VirtualizationVirtualMachineDisk) GetOrderOk() (*int64, bool) {
 
 // HasOrder returns a boolean if a field has been set.
 func (o *VirtualizationVirtualMachineDisk) HasOrder() bool {
-	if o != nil && o.Order != nil {
+	if o != nil && !IsNil(o.Order) {
 		return true
 	}
 
@@ -217,7 +230,7 @@ func (o *VirtualizationVirtualMachineDisk) SetOrder(v int64) {
 
 // GetType returns the Type field value if set, zero value otherwise.
 func (o *VirtualizationVirtualMachineDisk) GetType() string {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		var ret string
 		return ret
 	}
@@ -227,7 +240,7 @@ func (o *VirtualizationVirtualMachineDisk) GetType() string {
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVirtualMachineDisk) GetTypeOk() (*string, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		return nil, false
 	}
 	return o.Type, true
@@ -235,7 +248,7 @@ func (o *VirtualizationVirtualMachineDisk) GetTypeOk() (*string, bool) {
 
 // HasType returns a boolean if a field has been set.
 func (o *VirtualizationVirtualMachineDisk) HasType() bool {
-	if o != nil && o.Type != nil {
+	if o != nil && !IsNil(o.Type) {
 		return true
 	}
 
@@ -247,52 +260,9 @@ func (o *VirtualizationVirtualMachineDisk) SetType(v string) {
 	o.Type = &v
 }
 
-// GetVirtualDisk returns the VirtualDisk field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *VirtualizationVirtualMachineDisk) GetVirtualDisk() VirtualizationVirtualDiskConfig {
-	if o == nil || o.VirtualDisk.Get() == nil {
-		var ret VirtualizationVirtualDiskConfig
-		return ret
-	}
-	return *o.VirtualDisk.Get()
-}
-
-// GetVirtualDiskOk returns a tuple with the VirtualDisk field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-// NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *VirtualizationVirtualMachineDisk) GetVirtualDiskOk() (*VirtualizationVirtualDiskConfig, bool) {
-	if o == nil {
-		return nil, false
-	}
-	return o.VirtualDisk.Get(), o.VirtualDisk.IsSet()
-}
-
-// HasVirtualDisk returns a boolean if a field has been set.
-func (o *VirtualizationVirtualMachineDisk) HasVirtualDisk() bool {
-	if o != nil && o.VirtualDisk.IsSet() {
-		return true
-	}
-
-	return false
-}
-
-// SetVirtualDisk gets a reference to the given NullableVirtualizationVirtualDiskConfig and assigns it to the VirtualDisk field.
-func (o *VirtualizationVirtualMachineDisk) SetVirtualDisk(v VirtualizationVirtualDiskConfig) {
-	o.VirtualDisk.Set(&v)
-}
-
-// SetVirtualDiskNil sets the value for VirtualDisk to be an explicit nil
-func (o *VirtualizationVirtualMachineDisk) SetVirtualDiskNil() {
-	o.VirtualDisk.Set(nil)
-}
-
-// UnsetVirtualDisk ensures that no value is present for VirtualDisk, not even an explicit nil
-func (o *VirtualizationVirtualMachineDisk) UnsetVirtualDisk() {
-	o.VirtualDisk.Unset()
-}
-
 // GetVirtualDiskReference returns the VirtualDiskReference field value if set, zero value otherwise.
 func (o *VirtualizationVirtualMachineDisk) GetVirtualDiskReference() string {
-	if o == nil || o.VirtualDiskReference == nil {
+	if o == nil || IsNil(o.VirtualDiskReference) {
 		var ret string
 		return ret
 	}
@@ -302,7 +272,7 @@ func (o *VirtualizationVirtualMachineDisk) GetVirtualDiskReference() string {
 // GetVirtualDiskReferenceOk returns a tuple with the VirtualDiskReference field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVirtualMachineDisk) GetVirtualDiskReferenceOk() (*string, bool) {
-	if o == nil || o.VirtualDiskReference == nil {
+	if o == nil || IsNil(o.VirtualDiskReference) {
 		return nil, false
 	}
 	return o.VirtualDiskReference, true
@@ -310,7 +280,7 @@ func (o *VirtualizationVirtualMachineDisk) GetVirtualDiskReferenceOk() (*string,
 
 // HasVirtualDiskReference returns a boolean if a field has been set.
 func (o *VirtualizationVirtualMachineDisk) HasVirtualDiskReference() bool {
-	if o != nil && o.VirtualDiskReference != nil {
+	if o != nil && !IsNil(o.VirtualDiskReference) {
 		return true
 	}
 
@@ -323,37 +293,44 @@ func (o *VirtualizationVirtualMachineDisk) SetVirtualDiskReference(v string) {
 }
 
 func (o VirtualizationVirtualMachineDisk) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VirtualizationVirtualMachineDisk) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Bus != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Bus) {
 		toSerialize["Bus"] = o.Bus
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.Order != nil {
+	if !IsNil(o.Order) {
 		toSerialize["Order"] = o.Order
 	}
-	if o.Type != nil {
+	if !IsNil(o.Type) {
 		toSerialize["Type"] = o.Type
 	}
-	if o.VirtualDisk.IsSet() {
-		toSerialize["VirtualDisk"] = o.VirtualDisk.Get()
-	}
-	if o.VirtualDiskReference != nil {
+	if !IsNil(o.VirtualDiskReference) {
 		toSerialize["VirtualDiskReference"] = o.VirtualDiskReference
 	}
 
@@ -361,10 +338,51 @@ func (o VirtualizationVirtualMachineDisk) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VirtualizationVirtualMachineDisk) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VirtualizationVirtualMachineDisk) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VirtualizationVirtualMachineDiskWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -377,15 +395,14 @@ func (o *VirtualizationVirtualMachineDisk) UnmarshalJSON(bytes []byte) (err erro
 		// Priority order of the disk.
 		Order *int64 `json:"Order,omitempty"`
 		// Disk type hdd or cdrom for a virtual machine. * `hdd` - Allows the virtual machine to mount disk from hard disk drive (hdd) image. * `cdrom` - Allows the virtual machine to mount disk from compact disk (cd) image.
-		Type        *string                                 `json:"Type,omitempty"`
-		VirtualDisk NullableVirtualizationVirtualDiskConfig `json:"VirtualDisk,omitempty"`
+		Type *string `json:"Type,omitempty"`
 		// Name of the existing virtual disk to be attached to the Virtual Machine.
 		VirtualDiskReference *string `json:"VirtualDiskReference,omitempty"`
 	}
 
 	varVirtualizationVirtualMachineDiskWithoutEmbeddedStruct := VirtualizationVirtualMachineDiskWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationVirtualMachineDiskWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVirtualizationVirtualMachineDiskWithoutEmbeddedStruct)
 	if err == nil {
 		varVirtualizationVirtualMachineDisk := _VirtualizationVirtualMachineDisk{}
 		varVirtualizationVirtualMachineDisk.ClassId = varVirtualizationVirtualMachineDiskWithoutEmbeddedStruct.ClassId
@@ -394,7 +411,6 @@ func (o *VirtualizationVirtualMachineDisk) UnmarshalJSON(bytes []byte) (err erro
 		varVirtualizationVirtualMachineDisk.Name = varVirtualizationVirtualMachineDiskWithoutEmbeddedStruct.Name
 		varVirtualizationVirtualMachineDisk.Order = varVirtualizationVirtualMachineDiskWithoutEmbeddedStruct.Order
 		varVirtualizationVirtualMachineDisk.Type = varVirtualizationVirtualMachineDiskWithoutEmbeddedStruct.Type
-		varVirtualizationVirtualMachineDisk.VirtualDisk = varVirtualizationVirtualMachineDiskWithoutEmbeddedStruct.VirtualDisk
 		varVirtualizationVirtualMachineDisk.VirtualDiskReference = varVirtualizationVirtualMachineDiskWithoutEmbeddedStruct.VirtualDiskReference
 		*o = VirtualizationVirtualMachineDisk(varVirtualizationVirtualMachineDisk)
 	} else {
@@ -403,7 +419,7 @@ func (o *VirtualizationVirtualMachineDisk) UnmarshalJSON(bytes []byte) (err erro
 
 	varVirtualizationVirtualMachineDisk := _VirtualizationVirtualMachineDisk{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationVirtualMachineDisk)
+	err = json.Unmarshal(data, &varVirtualizationVirtualMachineDisk)
 	if err == nil {
 		o.MoBaseComplexType = varVirtualizationVirtualMachineDisk.MoBaseComplexType
 	} else {
@@ -412,14 +428,13 @@ func (o *VirtualizationVirtualMachineDisk) UnmarshalJSON(bytes []byte) (err erro
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Bus")
 		delete(additionalProperties, "Name")
 		delete(additionalProperties, "Order")
 		delete(additionalProperties, "Type")
-		delete(additionalProperties, "VirtualDisk")
 		delete(additionalProperties, "VirtualDiskReference")
 
 		// remove fields from embedded structs

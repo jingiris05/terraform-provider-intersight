@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the WorkflowConstraints type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &WorkflowConstraints{}
 
 // WorkflowConstraints Captures the constraints for valid parameter values.
 type WorkflowConstraints struct {
@@ -83,6 +87,11 @@ func (o *WorkflowConstraints) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "workflow.Constraints" of the ClassId field.
+func (o *WorkflowConstraints) GetDefaultClassId() interface{} {
+	return "workflow.Constraints"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *WorkflowConstraints) GetObjectType() string {
 	if o == nil {
@@ -107,6 +116,11 @@ func (o *WorkflowConstraints) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "workflow.Constraints" of the ObjectType field.
+func (o *WorkflowConstraints) GetDefaultObjectType() interface{} {
+	return "workflow.Constraints"
+}
+
 // GetEnumList returns the EnumList field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowConstraints) GetEnumList() []WorkflowEnumEntry {
 	if o == nil {
@@ -120,7 +134,7 @@ func (o *WorkflowConstraints) GetEnumList() []WorkflowEnumEntry {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowConstraints) GetEnumListOk() ([]WorkflowEnumEntry, bool) {
-	if o == nil || o.EnumList == nil {
+	if o == nil || IsNil(o.EnumList) {
 		return nil, false
 	}
 	return o.EnumList, true
@@ -128,7 +142,7 @@ func (o *WorkflowConstraints) GetEnumListOk() ([]WorkflowEnumEntry, bool) {
 
 // HasEnumList returns a boolean if a field has been set.
 func (o *WorkflowConstraints) HasEnumList() bool {
-	if o != nil && o.EnumList != nil {
+	if o != nil && !IsNil(o.EnumList) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *WorkflowConstraints) SetEnumList(v []WorkflowEnumEntry) {
 
 // GetMax returns the Max field value if set, zero value otherwise.
 func (o *WorkflowConstraints) GetMax() float64 {
-	if o == nil || o.Max == nil {
+	if o == nil || IsNil(o.Max) {
 		var ret float64
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *WorkflowConstraints) GetMax() float64 {
 // GetMaxOk returns a tuple with the Max field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowConstraints) GetMaxOk() (*float64, bool) {
-	if o == nil || o.Max == nil {
+	if o == nil || IsNil(o.Max) {
 		return nil, false
 	}
 	return o.Max, true
@@ -160,7 +174,7 @@ func (o *WorkflowConstraints) GetMaxOk() (*float64, bool) {
 
 // HasMax returns a boolean if a field has been set.
 func (o *WorkflowConstraints) HasMax() bool {
-	if o != nil && o.Max != nil {
+	if o != nil && !IsNil(o.Max) {
 		return true
 	}
 
@@ -174,7 +188,7 @@ func (o *WorkflowConstraints) SetMax(v float64) {
 
 // GetMin returns the Min field value if set, zero value otherwise.
 func (o *WorkflowConstraints) GetMin() float64 {
-	if o == nil || o.Min == nil {
+	if o == nil || IsNil(o.Min) {
 		var ret float64
 		return ret
 	}
@@ -184,7 +198,7 @@ func (o *WorkflowConstraints) GetMin() float64 {
 // GetMinOk returns a tuple with the Min field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowConstraints) GetMinOk() (*float64, bool) {
-	if o == nil || o.Min == nil {
+	if o == nil || IsNil(o.Min) {
 		return nil, false
 	}
 	return o.Min, true
@@ -192,7 +206,7 @@ func (o *WorkflowConstraints) GetMinOk() (*float64, bool) {
 
 // HasMin returns a boolean if a field has been set.
 func (o *WorkflowConstraints) HasMin() bool {
-	if o != nil && o.Min != nil {
+	if o != nil && !IsNil(o.Min) {
 		return true
 	}
 
@@ -206,7 +220,7 @@ func (o *WorkflowConstraints) SetMin(v float64) {
 
 // GetRegex returns the Regex field value if set, zero value otherwise.
 func (o *WorkflowConstraints) GetRegex() string {
-	if o == nil || o.Regex == nil {
+	if o == nil || IsNil(o.Regex) {
 		var ret string
 		return ret
 	}
@@ -216,7 +230,7 @@ func (o *WorkflowConstraints) GetRegex() string {
 // GetRegexOk returns a tuple with the Regex field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowConstraints) GetRegexOk() (*string, bool) {
-	if o == nil || o.Regex == nil {
+	if o == nil || IsNil(o.Regex) {
 		return nil, false
 	}
 	return o.Regex, true
@@ -224,7 +238,7 @@ func (o *WorkflowConstraints) GetRegexOk() (*string, bool) {
 
 // HasRegex returns a boolean if a field has been set.
 func (o *WorkflowConstraints) HasRegex() bool {
-	if o != nil && o.Regex != nil {
+	if o != nil && !IsNil(o.Regex) {
 		return true
 	}
 
@@ -237,31 +251,41 @@ func (o *WorkflowConstraints) SetRegex(v string) {
 }
 
 func (o WorkflowConstraints) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o WorkflowConstraints) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.EnumList != nil {
 		toSerialize["EnumList"] = o.EnumList
 	}
-	if o.Max != nil {
+	if !IsNil(o.Max) {
 		toSerialize["Max"] = o.Max
 	}
-	if o.Min != nil {
+	if !IsNil(o.Min) {
 		toSerialize["Min"] = o.Min
 	}
-	if o.Regex != nil {
+	if !IsNil(o.Regex) {
 		toSerialize["Regex"] = o.Regex
 	}
 
@@ -269,10 +293,51 @@ func (o WorkflowConstraints) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *WorkflowConstraints) UnmarshalJSON(bytes []byte) (err error) {
+func (o *WorkflowConstraints) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type WorkflowConstraintsWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -289,7 +354,7 @@ func (o *WorkflowConstraints) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowConstraintsWithoutEmbeddedStruct := WorkflowConstraintsWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varWorkflowConstraintsWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varWorkflowConstraintsWithoutEmbeddedStruct)
 	if err == nil {
 		varWorkflowConstraints := _WorkflowConstraints{}
 		varWorkflowConstraints.ClassId = varWorkflowConstraintsWithoutEmbeddedStruct.ClassId
@@ -305,7 +370,7 @@ func (o *WorkflowConstraints) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowConstraints := _WorkflowConstraints{}
 
-	err = json.Unmarshal(bytes, &varWorkflowConstraints)
+	err = json.Unmarshal(data, &varWorkflowConstraints)
 	if err == nil {
 		o.MoBaseComplexType = varWorkflowConstraints.MoBaseComplexType
 	} else {
@@ -314,7 +379,7 @@ func (o *WorkflowConstraints) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "EnumList")

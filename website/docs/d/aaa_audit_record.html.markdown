@@ -20,6 +20,7 @@ The following arguments can be used to get data of already created objects in In
 * `domain_group_moid`:(string) The DomainGroup ID for this managed object. 
 * `email`:(string) The email of the associated user that made the change.  In case the user is later deleted, we still have some reference to the information. 
 * `event`:(string) The operation that was performed on this Managed Object.The event is a compound string that includes the CRUD operation such as Create, Modify, Delete, and a string representing the Managed Object type. 
+* `http_operation`:(string) The REST URL for the operation. 
 * `inst_id`:(string) The instance id of AuditRecordLocal, which is used to identify if the comming AuditRecordLocal was already processed before. 
 * `mo_type`:(string) The object type of the REST resource that was created, modified or deleted. 
 * `mod_time`:(string) The time when this managed object was last modified. 
@@ -30,5 +31,6 @@ The following arguments can be used to get data of already created objects in In
 * `source_ip`:(string) The source IP of the client. 
 * `timestamp`:(string) The creation time of AuditRecordLocal, which is the time when the affected MO was created/modified/deleted. 
 * `trace_id`:(string) The trace id of the request that was used to create, modify or delete a REST resource.A trace id is a unique identifier for one particular REST request. It may be used for troubleshooting purposeby the Intersight technical support team. 
+* `user_agent_string`:(string) The raw, string representation of the user agent of the request from the user-agent http request header. 
 * `user_id_or_email`:(string) The userId or the email of the associated user that made the change. In case that user is later deleted, we still have some reference to the information. 
  

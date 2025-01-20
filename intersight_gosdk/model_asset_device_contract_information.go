@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the AssetDeviceContractInformation type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AssetDeviceContractInformation{}
 
 // AssetDeviceContractInformation Contains information about the Cisco device identified by a unique identifier like serial number. It also contains information about warranty, contract status, validity of the device. In future this object could be expanded to store Case, RMA, device topology details. We observe new asset.DeviceRegisteration and use it as a trigger for creating an instance of this object. Currently the data is restricted to Cisco Standalone IMC servers and Fabric Interconnects. Support for more product lines will be added in future.
 type AssetDeviceContractInformation struct {
@@ -46,11 +50,13 @@ type AssetDeviceContractInformation struct {
 	IsValid *bool `json:"IsValid,omitempty"`
 	// Item type of this specific Cisco device. example \"Chassis\".
 	ItemType *string `json:"ItemType,omitempty"`
+	// The last date of hardware support for this device.
+	LastDateOfSupport *time.Time `json:"LastDateOfSupport,omitempty"`
 	// Maintenance purchase order number for the Cisco device.
 	MaintenancePurchaseOrderNumber *string `json:"MaintenancePurchaseOrderNumber,omitempty"`
 	// Maintenance sales order number for the Cisco device.
 	MaintenanceSalesOrderNumber *string `json:"MaintenanceSalesOrderNumber,omitempty"`
-	// The platform type of the Cisco device. * `` - The device reported an empty or unrecognized platform type. * `APIC` - An Application Policy Infrastructure Controller cluster. * `CAPIC` - A Cloud Application Policy Infrastructure Controller instance. * `DCNM` - A Data Center Network Manager instance. Data Center Network Manager (DCNM) is the network management platform for all NX-OS-enabled deployments, spanning new fabric architectures, IP Fabric for Media, and storage networking deployments for the Cisco Nexus-powered data center. * `UCSFI` - A UCS Fabric Interconnect in HA or standalone mode, which is being managed by UCS Manager (UCSM). * `UCSFIISM` - A UCS Fabric Interconnect in HA or standalone mode, managed directly by Intersight. * `IMC` - A standalone UCS Server Integrated Management Controller. * `IMCM4` - A standalone UCS M4 Server. * `IMCM5` - A standalone UCS M5 server. * `IMCRack` - A standalone UCS M6 and above server. * `UCSIOM` - An UCS Chassis IO module. * `HX` - A HyperFlex storage controller. * `HyperFlexAP` - A HyperFlex Application Platform. * `IWE` - An Intersight Workload Engine. * `UCSD` - A UCS Director virtual appliance. Cisco UCS Director automates, orchestrates, and manages Cisco and third-party hardware. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance. * `IntersightAssist` - A Cisco Intersight Assist. * `PureStorageFlashArray` - A Pure Storage FlashArray device. * `NexusDevice` - A generic platform type to support Nexus Network Device. This can also be extended to support all network devices later on. * `ACISwitch` - A platform type to support ACI Switches. * `NexusSwitch` - A platform type to support Cisco Nexus Switches. * `MDSSwitch` - A platform type to support Cisco MDS Switches. * `MDSDevice` - A platform type to support MDS devices. * `UCSC890` - A standalone Cisco UCSC890 server. * `RedfishServer` - A generic target type for servers that support Redfish. Current support is limited to managing HPE and Dell servers on Intersight. * `NetAppOntap` - A NetApp ONTAP storage system. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager. * `EmcScaleIo` - An EMC ScaleIO storage system. * `EmcVmax` - An EMC VMAX storage system. * `EmcVplex` - An EMC VPLEX storage system. * `EmcXtremIo` - An EMC XtremIO storage system. * `VmwareVcenter` - A VMware vCenter device that manages Virtual Machines. * `MicrosoftHyperV` - A Microsoft Hyper-V system that manages Virtual Machines. * `AppDynamics` - An AppDynamics controller that monitors applications. * `Dynatrace` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `NewRelic` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `ReadHatOpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server. * `MySqlServer` - An instance of either Oracle MySQL Database or the open source MariaDB. * `Kubernetes` - A Kubernetes cluster that runs containerized applications. * `AmazonWebService` - An Amazon web service target that discovers and monitors different services like EC2. It discovers entities like VMs, Volumes, regions etc. and monitors attributes like Mem, CPU, cost. * `AmazonWebServiceBilling` - An Amazon web service billing target to retrieve billing information stored in S3 bucket. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal target that discovers all the associated Azure subscriptions. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement target that discovers cost, billing and RIs. * `DellCompellent` - A Dell Compellent storage system. * `HPE3Par` - A HPE 3PAR storage system. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis system that combines servers and storage into a distributed infrastructure platform. * `HPEOneView` - A HPE Oneview management system that manages compute, storage, and networking. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform also referred to as Hitachi VSP. It includes various storage systems designed for data centers. * `IMCBlade` - An Intersight managed UCS Blade Server. * `TerraformCloud` - A Terraform Cloud account. * `TerraformAgent` - A Terraform Cloud Agent that Intersight will deploy in datacenter. The agent will execute Terraform plan for Terraform Cloud workspace configured to use the agent. * `CustomTarget` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic. * `AnsibleEndpoint` - An external endpoint added as Target that can be accessed through Ansible in Intersight Cloud Orchestrator automation workflow. * `HTTPEndpoint` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic, Bearer Token. * `SSHEndpoint` - An external endpoint added as Target that can be accessed through SSH in Intersight Cloud Orchestrator automation workflow. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows machine on which PowerShell scripts can be executed remotely.
+	// The platform type of the Cisco device. * `` - An unrecognized platform type. * `APIC` - A Cisco Application Policy Infrastructure Controller (APIC) cluster. * `CAPIC` - A Cisco Cloud Application Policy Infrastructure Controller (Cloud APIC) instance. * `DCNM` - A Cisco Data Center Network Manager (DCNM) instance. * `UCSFI` - A Cisco UCS Fabric Interconnect that is managed by Cisco UCS Manager (UCSM). * `UCSFIISM` - A Cisco UCS Fabric Interconnect that is managed by Cisco Intersight. * `IMC` - A standalone Cisco UCS rack server (Deprecated). * `IMCM4` - A standalone Cisco UCS C-Series or S-Series M4 server. * `IMCM5` - A standalone Cisco UCS C-Series or S-Series M5 server. * `IMCRack` - A standalone Cisco UCS C-Series or S-Series M6 or newer server. * `UCSIOM` - A Cisco UCS Blade Chassis I/O Module (IOM). * `HX` - A Cisco HyperFlex (HX) cluster. * `UCSD` - A Cisco UCS Director (UCSD) instance. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance instance. * `IntersightAssist` - A Cisco Intersight Assist instance. * `PureStorageFlashArray` - A Pure Storage FlashArray that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and storage management features are supported on this device. * `NexusDevice` - A Cisco Nexus Network Switch that is managed using Cisco Intersight Assist. * `ACISwitch` - A Cisco Nexus Network Switch with the embedded Device Connector and is a part of the Cisco ACI fabric. * `NexusSwitch` - A standalone Cisco Nexus Network Switch with the embedded Device Connector. * `MDSSwitch` - A Cisco MDS Switch that is managed using the embedded Device Connector. * `MDSDevice` - A Cisco MDS Switch that is managed using Cisco Intersight Assist. * `UCSC890` - A standalone Cisco UCS C890 server managed using Cisco Intersight Assist. * `RedfishServer` - A generic target type for servers that support Redfish APIs and is managed using Cisco Intersight Assist. Support is limited to HPE and Dell Servers. * `NetAppOntap` - A Netapp ONTAP Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager (AIQUM) that is managed using Cisco Intersight Assist. * `EmcScaleIo` - An EMC ScaleIO Software Defined Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVmax` - An EMC VMAX 2 or 3 series enterprise storage array that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVplex` - An EMC VPLEX virtual storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcXtremIo` - An EMC XtremIO SSD storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `VmwareVcenter` - A VMware vCenter instance that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and Virtualization features are supported on this hypervisor. * `MicrosoftHyperV` - A Microsoft Hyper-V host that is managed using Cisco Intersight Assist. Optionally, other hosts in the cluster can be discovered through this host. Cisco Intersight Workload Optimizer features are supported on this hypervisor. * `AppDynamics` - An AppDynamics controller running in a SaaS or on-prem datacenter. On-prem AppDynamics instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this controller. * `Dynatrace` - A Dynatrace Server instance running in a SaaS or on-prem datacenter. On-prem Dynatrace instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `NewRelic` - A NewRelic user account. The NewRelic instance monitors the application infrastructure. Cisco Intersight Workload Optimizer features are supported on this server. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `Umbrella` - Umbrella cloud target that discovers and monitors an organization. It discovers entities like Datacenters, Devices, Tunnels, Networks, etc. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `MySqlServer` - A MySQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `OracleDatabaseServer` - An Oracle database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `IBMWebSphereApplicationServer` - An IBM WebSphere Application server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application server. * `OracleWebLogicServer` - Oracle WebLogic Server is a unified and extensible platform for developing, deploying and running enterprise applications, such as Java, for on-premises and in the cloud. WebLogic Server offers a robust, mature, and scalable implementation of Java Enterprise Edition (EE) and Jakarta EE. * `ApacheTomcatServer` - An Apache Tomcat server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `JavaVirtualMachine` - A JVM Application with JMX configured that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application. * `RedHatJBossApplicationServer` - JBoss Application Server is an open-source, cross-platform Java application server developed by JBoss, a division of Red Hat Inc. It is an open-source implementation of Java 2 Enterprise Edition (J2EE) that is used for implementing Java applications and other Web-based applications and software. * `Kubernetes` - A Kubernetes cluster that runs containerized applications, with Kubernetes Collector installed. Cisco Intersight Workload Optimizer features are supported on Kubernetes cluster. * `AmazonWebService` - An Amazon Web Service cloud account. Cisco Intersight Workload Optimizer and Virtualization features are supported on this cloud. * `AmazonWebServiceBilling` - An Amazon Web Service cloud billing account used to retrieve billing information stored in S3 bucket. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatform` - A Google Cloud Platform service account with access to one or more projects. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatformBilling` - A Google Cloud Platform service account used to retrieve billing information from BigQuery. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal account with access to Azure subscriptions. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement enrolment used to retrieve pricing and billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureBilling` - A Microsoft Azure Service Principal account with access to billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `DellCompellent` - A Dell EMC SC Series (Compellent) storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `HPE3Par` - A HPE 3PAR StoreServ system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis cluster that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this cluster. * `NutanixPrismCentral` - A Nutanix Prism Central cluster. Prism central is a virtual appliance for managing Nutanix clusters and services. * `HPEOneView` - A HPE OneView system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this system. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform (Hitachi VSP) that is managed using Cisco Intersight Assist. * `GenericTarget` - A generic third-party target supported only in Partner Integration Appliance. This target type is used for development purposes and will not be supported in production environment. * `IMCBlade` - A Cisco UCS blade server managed by Cisco Intersight. * `TerraformCloud` - A Terraform Cloud Business Tier account. * `TerraformAgent` - A Terraform Cloud Agent that will be deployed on Cisco Intersight Assist. The agent can be used to plan and apply Terraform runs from a Terraform Cloud workspace. * `CustomTarget` - CustomTarget is deprecated. Use HTTPEndpoint type to claim HTTP endpoints. * `AnsibleEndpoint` - An external endpoint that is added as a target which can be accessed through Ansible in Intersight Cloud Orchestrator automation workflows. * `HTTPEndpoint` - An HTTP endpoint that can be accessed in Intersight Orchestrator workflows directly or using Cisco Intersight Assist. Authentication Schemes supported are Basic and Bearer Token. * `SSHEndpoint` - An SSH endpoint that can be accessed in Intersight Orchestrator workflows using Cisco Intersight Assist. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows operating system server on which PowerShell scripts can be executed using Cisco Intersight Assist. * `CiscoDNAC` - A Cisco Digital Network Architecture (DNA) Center appliance. * `CiscoFMC` - A Cisco Secure Firewall Management Center. * `ViptelaCloud` - A Cisco Viptela SD-WAN Cloud. * `MerakiCloud` - A Cisco Meraki Organization. * `CiscoISE` - A Cisco Identity Services Engine (ISE) target.
 	PlatformType *string                         `json:"PlatformType,omitempty"`
 	Product      NullableAssetProductInformation `json:"Product,omitempty"`
 	// Purchase order number for the Cisco device. It is a unique number assigned for every purchase.
@@ -73,9 +79,9 @@ type AssetDeviceContractInformation struct {
 	// End date for the warranty that covers the Cisco device.
 	WarrantyEndDate *string `json:"WarrantyEndDate,omitempty"`
 	// Type of warranty that covers the Cisco device.
-	WarrantyType         *string                              `json:"WarrantyType,omitempty"`
-	RegisteredDevice     *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
-	Source               *MoBaseMoRelationship                `json:"Source,omitempty"`
+	WarrantyType         *string                                     `json:"WarrantyType,omitempty"`
+	RegisteredDevice     NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	Source               NullableMoBaseMoRelationship                `json:"Source,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -132,6 +138,11 @@ func (o *AssetDeviceContractInformation) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "asset.DeviceContractInformation" of the ClassId field.
+func (o *AssetDeviceContractInformation) GetDefaultClassId() interface{} {
+	return "asset.DeviceContractInformation"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *AssetDeviceContractInformation) GetObjectType() string {
 	if o == nil {
@@ -156,9 +167,14 @@ func (o *AssetDeviceContractInformation) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "asset.DeviceContractInformation" of the ObjectType field.
+func (o *AssetDeviceContractInformation) GetDefaultObjectType() interface{} {
+	return "asset.DeviceContractInformation"
+}
+
 // GetContract returns the Contract field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractInformation) GetContract() AssetContractInformation {
-	if o == nil || o.Contract.Get() == nil {
+	if o == nil || IsNil(o.Contract.Get()) {
 		var ret AssetContractInformation
 		return ret
 	}
@@ -201,7 +217,7 @@ func (o *AssetDeviceContractInformation) UnsetContract() {
 
 // GetContractStatus returns the ContractStatus field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetContractStatus() string {
-	if o == nil || o.ContractStatus == nil {
+	if o == nil || IsNil(o.ContractStatus) {
 		var ret string
 		return ret
 	}
@@ -211,7 +227,7 @@ func (o *AssetDeviceContractInformation) GetContractStatus() string {
 // GetContractStatusOk returns a tuple with the ContractStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetContractStatusOk() (*string, bool) {
-	if o == nil || o.ContractStatus == nil {
+	if o == nil || IsNil(o.ContractStatus) {
 		return nil, false
 	}
 	return o.ContractStatus, true
@@ -219,7 +235,7 @@ func (o *AssetDeviceContractInformation) GetContractStatusOk() (*string, bool) {
 
 // HasContractStatus returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasContractStatus() bool {
-	if o != nil && o.ContractStatus != nil {
+	if o != nil && !IsNil(o.ContractStatus) {
 		return true
 	}
 
@@ -233,7 +249,7 @@ func (o *AssetDeviceContractInformation) SetContractStatus(v string) {
 
 // GetContractStatusReason returns the ContractStatusReason field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetContractStatusReason() string {
-	if o == nil || o.ContractStatusReason == nil {
+	if o == nil || IsNil(o.ContractStatusReason) {
 		var ret string
 		return ret
 	}
@@ -243,7 +259,7 @@ func (o *AssetDeviceContractInformation) GetContractStatusReason() string {
 // GetContractStatusReasonOk returns a tuple with the ContractStatusReason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetContractStatusReasonOk() (*string, bool) {
-	if o == nil || o.ContractStatusReason == nil {
+	if o == nil || IsNil(o.ContractStatusReason) {
 		return nil, false
 	}
 	return o.ContractStatusReason, true
@@ -251,7 +267,7 @@ func (o *AssetDeviceContractInformation) GetContractStatusReasonOk() (*string, b
 
 // HasContractStatusReason returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasContractStatusReason() bool {
-	if o != nil && o.ContractStatusReason != nil {
+	if o != nil && !IsNil(o.ContractStatusReason) {
 		return true
 	}
 
@@ -265,7 +281,7 @@ func (o *AssetDeviceContractInformation) SetContractStatusReason(v string) {
 
 // GetContractUnavailableRetryCount returns the ContractUnavailableRetryCount field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetContractUnavailableRetryCount() int64 {
-	if o == nil || o.ContractUnavailableRetryCount == nil {
+	if o == nil || IsNil(o.ContractUnavailableRetryCount) {
 		var ret int64
 		return ret
 	}
@@ -275,7 +291,7 @@ func (o *AssetDeviceContractInformation) GetContractUnavailableRetryCount() int6
 // GetContractUnavailableRetryCountOk returns a tuple with the ContractUnavailableRetryCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetContractUnavailableRetryCountOk() (*int64, bool) {
-	if o == nil || o.ContractUnavailableRetryCount == nil {
+	if o == nil || IsNil(o.ContractUnavailableRetryCount) {
 		return nil, false
 	}
 	return o.ContractUnavailableRetryCount, true
@@ -283,7 +299,7 @@ func (o *AssetDeviceContractInformation) GetContractUnavailableRetryCountOk() (*
 
 // HasContractUnavailableRetryCount returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasContractUnavailableRetryCount() bool {
-	if o != nil && o.ContractUnavailableRetryCount != nil {
+	if o != nil && !IsNil(o.ContractUnavailableRetryCount) {
 		return true
 	}
 
@@ -297,7 +313,7 @@ func (o *AssetDeviceContractInformation) SetContractUnavailableRetryCount(v int6
 
 // GetContractUpdatedTime returns the ContractUpdatedTime field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetContractUpdatedTime() time.Time {
-	if o == nil || o.ContractUpdatedTime == nil {
+	if o == nil || IsNil(o.ContractUpdatedTime) {
 		var ret time.Time
 		return ret
 	}
@@ -307,7 +323,7 @@ func (o *AssetDeviceContractInformation) GetContractUpdatedTime() time.Time {
 // GetContractUpdatedTimeOk returns a tuple with the ContractUpdatedTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetContractUpdatedTimeOk() (*time.Time, bool) {
-	if o == nil || o.ContractUpdatedTime == nil {
+	if o == nil || IsNil(o.ContractUpdatedTime) {
 		return nil, false
 	}
 	return o.ContractUpdatedTime, true
@@ -315,7 +331,7 @@ func (o *AssetDeviceContractInformation) GetContractUpdatedTimeOk() (*time.Time,
 
 // HasContractUpdatedTime returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasContractUpdatedTime() bool {
-	if o != nil && o.ContractUpdatedTime != nil {
+	if o != nil && !IsNil(o.ContractUpdatedTime) {
 		return true
 	}
 
@@ -329,7 +345,7 @@ func (o *AssetDeviceContractInformation) SetContractUpdatedTime(v time.Time) {
 
 // GetCoveredProductLineEndDate returns the CoveredProductLineEndDate field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetCoveredProductLineEndDate() string {
-	if o == nil || o.CoveredProductLineEndDate == nil {
+	if o == nil || IsNil(o.CoveredProductLineEndDate) {
 		var ret string
 		return ret
 	}
@@ -339,7 +355,7 @@ func (o *AssetDeviceContractInformation) GetCoveredProductLineEndDate() string {
 // GetCoveredProductLineEndDateOk returns a tuple with the CoveredProductLineEndDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetCoveredProductLineEndDateOk() (*string, bool) {
-	if o == nil || o.CoveredProductLineEndDate == nil {
+	if o == nil || IsNil(o.CoveredProductLineEndDate) {
 		return nil, false
 	}
 	return o.CoveredProductLineEndDate, true
@@ -347,7 +363,7 @@ func (o *AssetDeviceContractInformation) GetCoveredProductLineEndDateOk() (*stri
 
 // HasCoveredProductLineEndDate returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasCoveredProductLineEndDate() bool {
-	if o != nil && o.CoveredProductLineEndDate != nil {
+	if o != nil && !IsNil(o.CoveredProductLineEndDate) {
 		return true
 	}
 
@@ -361,7 +377,7 @@ func (o *AssetDeviceContractInformation) SetCoveredProductLineEndDate(v string) 
 
 // GetDeviceId returns the DeviceId field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetDeviceId() string {
-	if o == nil || o.DeviceId == nil {
+	if o == nil || IsNil(o.DeviceId) {
 		var ret string
 		return ret
 	}
@@ -371,7 +387,7 @@ func (o *AssetDeviceContractInformation) GetDeviceId() string {
 // GetDeviceIdOk returns a tuple with the DeviceId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetDeviceIdOk() (*string, bool) {
-	if o == nil || o.DeviceId == nil {
+	if o == nil || IsNil(o.DeviceId) {
 		return nil, false
 	}
 	return o.DeviceId, true
@@ -379,7 +395,7 @@ func (o *AssetDeviceContractInformation) GetDeviceIdOk() (*string, bool) {
 
 // HasDeviceId returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasDeviceId() bool {
-	if o != nil && o.DeviceId != nil {
+	if o != nil && !IsNil(o.DeviceId) {
 		return true
 	}
 
@@ -393,7 +409,7 @@ func (o *AssetDeviceContractInformation) SetDeviceId(v string) {
 
 // GetDeviceType returns the DeviceType field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetDeviceType() string {
-	if o == nil || o.DeviceType == nil {
+	if o == nil || IsNil(o.DeviceType) {
 		var ret string
 		return ret
 	}
@@ -403,7 +419,7 @@ func (o *AssetDeviceContractInformation) GetDeviceType() string {
 // GetDeviceTypeOk returns a tuple with the DeviceType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetDeviceTypeOk() (*string, bool) {
-	if o == nil || o.DeviceType == nil {
+	if o == nil || IsNil(o.DeviceType) {
 		return nil, false
 	}
 	return o.DeviceType, true
@@ -411,7 +427,7 @@ func (o *AssetDeviceContractInformation) GetDeviceTypeOk() (*string, bool) {
 
 // HasDeviceType returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasDeviceType() bool {
-	if o != nil && o.DeviceType != nil {
+	if o != nil && !IsNil(o.DeviceType) {
 		return true
 	}
 
@@ -425,7 +441,7 @@ func (o *AssetDeviceContractInformation) SetDeviceType(v string) {
 
 // GetEndCustomer returns the EndCustomer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractInformation) GetEndCustomer() AssetCustomerInformation {
-	if o == nil || o.EndCustomer.Get() == nil {
+	if o == nil || IsNil(o.EndCustomer.Get()) {
 		var ret AssetCustomerInformation
 		return ret
 	}
@@ -468,7 +484,7 @@ func (o *AssetDeviceContractInformation) UnsetEndCustomer() {
 
 // GetEndUserGlobalUltimate returns the EndUserGlobalUltimate field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractInformation) GetEndUserGlobalUltimate() AssetGlobalUltimate {
-	if o == nil || o.EndUserGlobalUltimate.Get() == nil {
+	if o == nil || IsNil(o.EndUserGlobalUltimate.Get()) {
 		var ret AssetGlobalUltimate
 		return ret
 	}
@@ -511,7 +527,7 @@ func (o *AssetDeviceContractInformation) UnsetEndUserGlobalUltimate() {
 
 // GetIsValid returns the IsValid field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetIsValid() bool {
-	if o == nil || o.IsValid == nil {
+	if o == nil || IsNil(o.IsValid) {
 		var ret bool
 		return ret
 	}
@@ -521,7 +537,7 @@ func (o *AssetDeviceContractInformation) GetIsValid() bool {
 // GetIsValidOk returns a tuple with the IsValid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetIsValidOk() (*bool, bool) {
-	if o == nil || o.IsValid == nil {
+	if o == nil || IsNil(o.IsValid) {
 		return nil, false
 	}
 	return o.IsValid, true
@@ -529,7 +545,7 @@ func (o *AssetDeviceContractInformation) GetIsValidOk() (*bool, bool) {
 
 // HasIsValid returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasIsValid() bool {
-	if o != nil && o.IsValid != nil {
+	if o != nil && !IsNil(o.IsValid) {
 		return true
 	}
 
@@ -543,7 +559,7 @@ func (o *AssetDeviceContractInformation) SetIsValid(v bool) {
 
 // GetItemType returns the ItemType field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetItemType() string {
-	if o == nil || o.ItemType == nil {
+	if o == nil || IsNil(o.ItemType) {
 		var ret string
 		return ret
 	}
@@ -553,7 +569,7 @@ func (o *AssetDeviceContractInformation) GetItemType() string {
 // GetItemTypeOk returns a tuple with the ItemType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetItemTypeOk() (*string, bool) {
-	if o == nil || o.ItemType == nil {
+	if o == nil || IsNil(o.ItemType) {
 		return nil, false
 	}
 	return o.ItemType, true
@@ -561,7 +577,7 @@ func (o *AssetDeviceContractInformation) GetItemTypeOk() (*string, bool) {
 
 // HasItemType returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasItemType() bool {
-	if o != nil && o.ItemType != nil {
+	if o != nil && !IsNil(o.ItemType) {
 		return true
 	}
 
@@ -573,9 +589,41 @@ func (o *AssetDeviceContractInformation) SetItemType(v string) {
 	o.ItemType = &v
 }
 
+// GetLastDateOfSupport returns the LastDateOfSupport field value if set, zero value otherwise.
+func (o *AssetDeviceContractInformation) GetLastDateOfSupport() time.Time {
+	if o == nil || IsNil(o.LastDateOfSupport) {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastDateOfSupport
+}
+
+// GetLastDateOfSupportOk returns a tuple with the LastDateOfSupport field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AssetDeviceContractInformation) GetLastDateOfSupportOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.LastDateOfSupport) {
+		return nil, false
+	}
+	return o.LastDateOfSupport, true
+}
+
+// HasLastDateOfSupport returns a boolean if a field has been set.
+func (o *AssetDeviceContractInformation) HasLastDateOfSupport() bool {
+	if o != nil && !IsNil(o.LastDateOfSupport) {
+		return true
+	}
+
+	return false
+}
+
+// SetLastDateOfSupport gets a reference to the given time.Time and assigns it to the LastDateOfSupport field.
+func (o *AssetDeviceContractInformation) SetLastDateOfSupport(v time.Time) {
+	o.LastDateOfSupport = &v
+}
+
 // GetMaintenancePurchaseOrderNumber returns the MaintenancePurchaseOrderNumber field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetMaintenancePurchaseOrderNumber() string {
-	if o == nil || o.MaintenancePurchaseOrderNumber == nil {
+	if o == nil || IsNil(o.MaintenancePurchaseOrderNumber) {
 		var ret string
 		return ret
 	}
@@ -585,7 +633,7 @@ func (o *AssetDeviceContractInformation) GetMaintenancePurchaseOrderNumber() str
 // GetMaintenancePurchaseOrderNumberOk returns a tuple with the MaintenancePurchaseOrderNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetMaintenancePurchaseOrderNumberOk() (*string, bool) {
-	if o == nil || o.MaintenancePurchaseOrderNumber == nil {
+	if o == nil || IsNil(o.MaintenancePurchaseOrderNumber) {
 		return nil, false
 	}
 	return o.MaintenancePurchaseOrderNumber, true
@@ -593,7 +641,7 @@ func (o *AssetDeviceContractInformation) GetMaintenancePurchaseOrderNumberOk() (
 
 // HasMaintenancePurchaseOrderNumber returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasMaintenancePurchaseOrderNumber() bool {
-	if o != nil && o.MaintenancePurchaseOrderNumber != nil {
+	if o != nil && !IsNil(o.MaintenancePurchaseOrderNumber) {
 		return true
 	}
 
@@ -607,7 +655,7 @@ func (o *AssetDeviceContractInformation) SetMaintenancePurchaseOrderNumber(v str
 
 // GetMaintenanceSalesOrderNumber returns the MaintenanceSalesOrderNumber field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetMaintenanceSalesOrderNumber() string {
-	if o == nil || o.MaintenanceSalesOrderNumber == nil {
+	if o == nil || IsNil(o.MaintenanceSalesOrderNumber) {
 		var ret string
 		return ret
 	}
@@ -617,7 +665,7 @@ func (o *AssetDeviceContractInformation) GetMaintenanceSalesOrderNumber() string
 // GetMaintenanceSalesOrderNumberOk returns a tuple with the MaintenanceSalesOrderNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetMaintenanceSalesOrderNumberOk() (*string, bool) {
-	if o == nil || o.MaintenanceSalesOrderNumber == nil {
+	if o == nil || IsNil(o.MaintenanceSalesOrderNumber) {
 		return nil, false
 	}
 	return o.MaintenanceSalesOrderNumber, true
@@ -625,7 +673,7 @@ func (o *AssetDeviceContractInformation) GetMaintenanceSalesOrderNumberOk() (*st
 
 // HasMaintenanceSalesOrderNumber returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasMaintenanceSalesOrderNumber() bool {
-	if o != nil && o.MaintenanceSalesOrderNumber != nil {
+	if o != nil && !IsNil(o.MaintenanceSalesOrderNumber) {
 		return true
 	}
 
@@ -639,7 +687,7 @@ func (o *AssetDeviceContractInformation) SetMaintenanceSalesOrderNumber(v string
 
 // GetPlatformType returns the PlatformType field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetPlatformType() string {
-	if o == nil || o.PlatformType == nil {
+	if o == nil || IsNil(o.PlatformType) {
 		var ret string
 		return ret
 	}
@@ -649,7 +697,7 @@ func (o *AssetDeviceContractInformation) GetPlatformType() string {
 // GetPlatformTypeOk returns a tuple with the PlatformType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetPlatformTypeOk() (*string, bool) {
-	if o == nil || o.PlatformType == nil {
+	if o == nil || IsNil(o.PlatformType) {
 		return nil, false
 	}
 	return o.PlatformType, true
@@ -657,7 +705,7 @@ func (o *AssetDeviceContractInformation) GetPlatformTypeOk() (*string, bool) {
 
 // HasPlatformType returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasPlatformType() bool {
-	if o != nil && o.PlatformType != nil {
+	if o != nil && !IsNil(o.PlatformType) {
 		return true
 	}
 
@@ -671,7 +719,7 @@ func (o *AssetDeviceContractInformation) SetPlatformType(v string) {
 
 // GetProduct returns the Product field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractInformation) GetProduct() AssetProductInformation {
-	if o == nil || o.Product.Get() == nil {
+	if o == nil || IsNil(o.Product.Get()) {
 		var ret AssetProductInformation
 		return ret
 	}
@@ -714,7 +762,7 @@ func (o *AssetDeviceContractInformation) UnsetProduct() {
 
 // GetPurchaseOrderNumber returns the PurchaseOrderNumber field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetPurchaseOrderNumber() string {
-	if o == nil || o.PurchaseOrderNumber == nil {
+	if o == nil || IsNil(o.PurchaseOrderNumber) {
 		var ret string
 		return ret
 	}
@@ -724,7 +772,7 @@ func (o *AssetDeviceContractInformation) GetPurchaseOrderNumber() string {
 // GetPurchaseOrderNumberOk returns a tuple with the PurchaseOrderNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetPurchaseOrderNumberOk() (*string, bool) {
-	if o == nil || o.PurchaseOrderNumber == nil {
+	if o == nil || IsNil(o.PurchaseOrderNumber) {
 		return nil, false
 	}
 	return o.PurchaseOrderNumber, true
@@ -732,7 +780,7 @@ func (o *AssetDeviceContractInformation) GetPurchaseOrderNumberOk() (*string, bo
 
 // HasPurchaseOrderNumber returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasPurchaseOrderNumber() bool {
-	if o != nil && o.PurchaseOrderNumber != nil {
+	if o != nil && !IsNil(o.PurchaseOrderNumber) {
 		return true
 	}
 
@@ -746,7 +794,7 @@ func (o *AssetDeviceContractInformation) SetPurchaseOrderNumber(v string) {
 
 // GetResellerGlobalUltimate returns the ResellerGlobalUltimate field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractInformation) GetResellerGlobalUltimate() AssetGlobalUltimate {
-	if o == nil || o.ResellerGlobalUltimate.Get() == nil {
+	if o == nil || IsNil(o.ResellerGlobalUltimate.Get()) {
 		var ret AssetGlobalUltimate
 		return ret
 	}
@@ -789,7 +837,7 @@ func (o *AssetDeviceContractInformation) UnsetResellerGlobalUltimate() {
 
 // GetSalesOrderNumber returns the SalesOrderNumber field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetSalesOrderNumber() string {
-	if o == nil || o.SalesOrderNumber == nil {
+	if o == nil || IsNil(o.SalesOrderNumber) {
 		var ret string
 		return ret
 	}
@@ -799,7 +847,7 @@ func (o *AssetDeviceContractInformation) GetSalesOrderNumber() string {
 // GetSalesOrderNumberOk returns a tuple with the SalesOrderNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetSalesOrderNumberOk() (*string, bool) {
-	if o == nil || o.SalesOrderNumber == nil {
+	if o == nil || IsNil(o.SalesOrderNumber) {
 		return nil, false
 	}
 	return o.SalesOrderNumber, true
@@ -807,7 +855,7 @@ func (o *AssetDeviceContractInformation) GetSalesOrderNumberOk() (*string, bool)
 
 // HasSalesOrderNumber returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasSalesOrderNumber() bool {
-	if o != nil && o.SalesOrderNumber != nil {
+	if o != nil && !IsNil(o.SalesOrderNumber) {
 		return true
 	}
 
@@ -821,7 +869,7 @@ func (o *AssetDeviceContractInformation) SetSalesOrderNumber(v string) {
 
 // GetServiceDescription returns the ServiceDescription field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetServiceDescription() string {
-	if o == nil || o.ServiceDescription == nil {
+	if o == nil || IsNil(o.ServiceDescription) {
 		var ret string
 		return ret
 	}
@@ -831,7 +879,7 @@ func (o *AssetDeviceContractInformation) GetServiceDescription() string {
 // GetServiceDescriptionOk returns a tuple with the ServiceDescription field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetServiceDescriptionOk() (*string, bool) {
-	if o == nil || o.ServiceDescription == nil {
+	if o == nil || IsNil(o.ServiceDescription) {
 		return nil, false
 	}
 	return o.ServiceDescription, true
@@ -839,7 +887,7 @@ func (o *AssetDeviceContractInformation) GetServiceDescriptionOk() (*string, boo
 
 // HasServiceDescription returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasServiceDescription() bool {
-	if o != nil && o.ServiceDescription != nil {
+	if o != nil && !IsNil(o.ServiceDescription) {
 		return true
 	}
 
@@ -853,7 +901,7 @@ func (o *AssetDeviceContractInformation) SetServiceDescription(v string) {
 
 // GetServiceEndDate returns the ServiceEndDate field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetServiceEndDate() time.Time {
-	if o == nil || o.ServiceEndDate == nil {
+	if o == nil || IsNil(o.ServiceEndDate) {
 		var ret time.Time
 		return ret
 	}
@@ -863,7 +911,7 @@ func (o *AssetDeviceContractInformation) GetServiceEndDate() time.Time {
 // GetServiceEndDateOk returns a tuple with the ServiceEndDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetServiceEndDateOk() (*time.Time, bool) {
-	if o == nil || o.ServiceEndDate == nil {
+	if o == nil || IsNil(o.ServiceEndDate) {
 		return nil, false
 	}
 	return o.ServiceEndDate, true
@@ -871,7 +919,7 @@ func (o *AssetDeviceContractInformation) GetServiceEndDateOk() (*time.Time, bool
 
 // HasServiceEndDate returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasServiceEndDate() bool {
-	if o != nil && o.ServiceEndDate != nil {
+	if o != nil && !IsNil(o.ServiceEndDate) {
 		return true
 	}
 
@@ -885,7 +933,7 @@ func (o *AssetDeviceContractInformation) SetServiceEndDate(v time.Time) {
 
 // GetServiceLevel returns the ServiceLevel field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetServiceLevel() string {
-	if o == nil || o.ServiceLevel == nil {
+	if o == nil || IsNil(o.ServiceLevel) {
 		var ret string
 		return ret
 	}
@@ -895,7 +943,7 @@ func (o *AssetDeviceContractInformation) GetServiceLevel() string {
 // GetServiceLevelOk returns a tuple with the ServiceLevel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetServiceLevelOk() (*string, bool) {
-	if o == nil || o.ServiceLevel == nil {
+	if o == nil || IsNil(o.ServiceLevel) {
 		return nil, false
 	}
 	return o.ServiceLevel, true
@@ -903,7 +951,7 @@ func (o *AssetDeviceContractInformation) GetServiceLevelOk() (*string, bool) {
 
 // HasServiceLevel returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasServiceLevel() bool {
-	if o != nil && o.ServiceLevel != nil {
+	if o != nil && !IsNil(o.ServiceLevel) {
 		return true
 	}
 
@@ -917,7 +965,7 @@ func (o *AssetDeviceContractInformation) SetServiceLevel(v string) {
 
 // GetServiceSku returns the ServiceSku field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetServiceSku() string {
-	if o == nil || o.ServiceSku == nil {
+	if o == nil || IsNil(o.ServiceSku) {
 		var ret string
 		return ret
 	}
@@ -927,7 +975,7 @@ func (o *AssetDeviceContractInformation) GetServiceSku() string {
 // GetServiceSkuOk returns a tuple with the ServiceSku field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetServiceSkuOk() (*string, bool) {
-	if o == nil || o.ServiceSku == nil {
+	if o == nil || IsNil(o.ServiceSku) {
 		return nil, false
 	}
 	return o.ServiceSku, true
@@ -935,7 +983,7 @@ func (o *AssetDeviceContractInformation) GetServiceSkuOk() (*string, bool) {
 
 // HasServiceSku returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasServiceSku() bool {
-	if o != nil && o.ServiceSku != nil {
+	if o != nil && !IsNil(o.ServiceSku) {
 		return true
 	}
 
@@ -949,7 +997,7 @@ func (o *AssetDeviceContractInformation) SetServiceSku(v string) {
 
 // GetServiceStartDate returns the ServiceStartDate field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetServiceStartDate() time.Time {
-	if o == nil || o.ServiceStartDate == nil {
+	if o == nil || IsNil(o.ServiceStartDate) {
 		var ret time.Time
 		return ret
 	}
@@ -959,7 +1007,7 @@ func (o *AssetDeviceContractInformation) GetServiceStartDate() time.Time {
 // GetServiceStartDateOk returns a tuple with the ServiceStartDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetServiceStartDateOk() (*time.Time, bool) {
-	if o == nil || o.ServiceStartDate == nil {
+	if o == nil || IsNil(o.ServiceStartDate) {
 		return nil, false
 	}
 	return o.ServiceStartDate, true
@@ -967,7 +1015,7 @@ func (o *AssetDeviceContractInformation) GetServiceStartDateOk() (*time.Time, bo
 
 // HasServiceStartDate returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasServiceStartDate() bool {
-	if o != nil && o.ServiceStartDate != nil {
+	if o != nil && !IsNil(o.ServiceStartDate) {
 		return true
 	}
 
@@ -981,7 +1029,7 @@ func (o *AssetDeviceContractInformation) SetServiceStartDate(v time.Time) {
 
 // GetStateContract returns the StateContract field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetStateContract() string {
-	if o == nil || o.StateContract == nil {
+	if o == nil || IsNil(o.StateContract) {
 		var ret string
 		return ret
 	}
@@ -991,7 +1039,7 @@ func (o *AssetDeviceContractInformation) GetStateContract() string {
 // GetStateContractOk returns a tuple with the StateContract field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetStateContractOk() (*string, bool) {
-	if o == nil || o.StateContract == nil {
+	if o == nil || IsNil(o.StateContract) {
 		return nil, false
 	}
 	return o.StateContract, true
@@ -999,7 +1047,7 @@ func (o *AssetDeviceContractInformation) GetStateContractOk() (*string, bool) {
 
 // HasStateContract returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasStateContract() bool {
-	if o != nil && o.StateContract != nil {
+	if o != nil && !IsNil(o.StateContract) {
 		return true
 	}
 
@@ -1013,7 +1061,7 @@ func (o *AssetDeviceContractInformation) SetStateContract(v string) {
 
 // GetWarrantyEndDate returns the WarrantyEndDate field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetWarrantyEndDate() string {
-	if o == nil || o.WarrantyEndDate == nil {
+	if o == nil || IsNil(o.WarrantyEndDate) {
 		var ret string
 		return ret
 	}
@@ -1023,7 +1071,7 @@ func (o *AssetDeviceContractInformation) GetWarrantyEndDate() string {
 // GetWarrantyEndDateOk returns a tuple with the WarrantyEndDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetWarrantyEndDateOk() (*string, bool) {
-	if o == nil || o.WarrantyEndDate == nil {
+	if o == nil || IsNil(o.WarrantyEndDate) {
 		return nil, false
 	}
 	return o.WarrantyEndDate, true
@@ -1031,7 +1079,7 @@ func (o *AssetDeviceContractInformation) GetWarrantyEndDateOk() (*string, bool) 
 
 // HasWarrantyEndDate returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasWarrantyEndDate() bool {
-	if o != nil && o.WarrantyEndDate != nil {
+	if o != nil && !IsNil(o.WarrantyEndDate) {
 		return true
 	}
 
@@ -1045,7 +1093,7 @@ func (o *AssetDeviceContractInformation) SetWarrantyEndDate(v string) {
 
 // GetWarrantyType returns the WarrantyType field value if set, zero value otherwise.
 func (o *AssetDeviceContractInformation) GetWarrantyType() string {
-	if o == nil || o.WarrantyType == nil {
+	if o == nil || IsNil(o.WarrantyType) {
 		var ret string
 		return ret
 	}
@@ -1055,7 +1103,7 @@ func (o *AssetDeviceContractInformation) GetWarrantyType() string {
 // GetWarrantyTypeOk returns a tuple with the WarrantyType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractInformation) GetWarrantyTypeOk() (*string, bool) {
-	if o == nil || o.WarrantyType == nil {
+	if o == nil || IsNil(o.WarrantyType) {
 		return nil, false
 	}
 	return o.WarrantyType, true
@@ -1063,7 +1111,7 @@ func (o *AssetDeviceContractInformation) GetWarrantyTypeOk() (*string, bool) {
 
 // HasWarrantyType returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasWarrantyType() bool {
-	if o != nil && o.WarrantyType != nil {
+	if o != nil && !IsNil(o.WarrantyType) {
 		return true
 	}
 
@@ -1075,108 +1123,140 @@ func (o *AssetDeviceContractInformation) SetWarrantyType(v string) {
 	o.WarrantyType = &v
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractInformation) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceContractInformation) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *AssetDeviceContractInformation) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
 }
 
-// GetSource returns the Source field value if set, zero value otherwise.
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *AssetDeviceContractInformation) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *AssetDeviceContractInformation) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
+}
+
+// GetSource returns the Source field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractInformation) GetSource() MoBaseMoRelationship {
-	if o == nil || o.Source == nil {
+	if o == nil || IsNil(o.Source.Get()) {
 		var ret MoBaseMoRelationship
 		return ret
 	}
-	return *o.Source
+	return *o.Source.Get()
 }
 
 // GetSourceOk returns a tuple with the Source field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceContractInformation) GetSourceOk() (*MoBaseMoRelationship, bool) {
-	if o == nil || o.Source == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Source, true
+	return o.Source.Get(), o.Source.IsSet()
 }
 
 // HasSource returns a boolean if a field has been set.
 func (o *AssetDeviceContractInformation) HasSource() bool {
-	if o != nil && o.Source != nil {
+	if o != nil && o.Source.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSource gets a reference to the given MoBaseMoRelationship and assigns it to the Source field.
+// SetSource gets a reference to the given NullableMoBaseMoRelationship and assigns it to the Source field.
 func (o *AssetDeviceContractInformation) SetSource(v MoBaseMoRelationship) {
-	o.Source = &v
+	o.Source.Set(&v)
+}
+
+// SetSourceNil sets the value for Source to be an explicit nil
+func (o *AssetDeviceContractInformation) SetSourceNil() {
+	o.Source.Set(nil)
+}
+
+// UnsetSource ensures that no value is present for Source, not even an explicit nil
+func (o *AssetDeviceContractInformation) UnsetSource() {
+	o.Source.Unset()
 }
 
 func (o AssetDeviceContractInformation) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o AssetDeviceContractInformation) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.Contract.IsSet() {
 		toSerialize["Contract"] = o.Contract.Get()
 	}
-	if o.ContractStatus != nil {
+	if !IsNil(o.ContractStatus) {
 		toSerialize["ContractStatus"] = o.ContractStatus
 	}
-	if o.ContractStatusReason != nil {
+	if !IsNil(o.ContractStatusReason) {
 		toSerialize["ContractStatusReason"] = o.ContractStatusReason
 	}
-	if o.ContractUnavailableRetryCount != nil {
+	if !IsNil(o.ContractUnavailableRetryCount) {
 		toSerialize["ContractUnavailableRetryCount"] = o.ContractUnavailableRetryCount
 	}
-	if o.ContractUpdatedTime != nil {
+	if !IsNil(o.ContractUpdatedTime) {
 		toSerialize["ContractUpdatedTime"] = o.ContractUpdatedTime
 	}
-	if o.CoveredProductLineEndDate != nil {
+	if !IsNil(o.CoveredProductLineEndDate) {
 		toSerialize["CoveredProductLineEndDate"] = o.CoveredProductLineEndDate
 	}
-	if o.DeviceId != nil {
+	if !IsNil(o.DeviceId) {
 		toSerialize["DeviceId"] = o.DeviceId
 	}
-	if o.DeviceType != nil {
+	if !IsNil(o.DeviceType) {
 		toSerialize["DeviceType"] = o.DeviceType
 	}
 	if o.EndCustomer.IsSet() {
@@ -1185,72 +1265,116 @@ func (o AssetDeviceContractInformation) MarshalJSON() ([]byte, error) {
 	if o.EndUserGlobalUltimate.IsSet() {
 		toSerialize["EndUserGlobalUltimate"] = o.EndUserGlobalUltimate.Get()
 	}
-	if o.IsValid != nil {
+	if !IsNil(o.IsValid) {
 		toSerialize["IsValid"] = o.IsValid
 	}
-	if o.ItemType != nil {
+	if !IsNil(o.ItemType) {
 		toSerialize["ItemType"] = o.ItemType
 	}
-	if o.MaintenancePurchaseOrderNumber != nil {
+	if !IsNil(o.LastDateOfSupport) {
+		toSerialize["LastDateOfSupport"] = o.LastDateOfSupport
+	}
+	if !IsNil(o.MaintenancePurchaseOrderNumber) {
 		toSerialize["MaintenancePurchaseOrderNumber"] = o.MaintenancePurchaseOrderNumber
 	}
-	if o.MaintenanceSalesOrderNumber != nil {
+	if !IsNil(o.MaintenanceSalesOrderNumber) {
 		toSerialize["MaintenanceSalesOrderNumber"] = o.MaintenanceSalesOrderNumber
 	}
-	if o.PlatformType != nil {
+	if !IsNil(o.PlatformType) {
 		toSerialize["PlatformType"] = o.PlatformType
 	}
 	if o.Product.IsSet() {
 		toSerialize["Product"] = o.Product.Get()
 	}
-	if o.PurchaseOrderNumber != nil {
+	if !IsNil(o.PurchaseOrderNumber) {
 		toSerialize["PurchaseOrderNumber"] = o.PurchaseOrderNumber
 	}
 	if o.ResellerGlobalUltimate.IsSet() {
 		toSerialize["ResellerGlobalUltimate"] = o.ResellerGlobalUltimate.Get()
 	}
-	if o.SalesOrderNumber != nil {
+	if !IsNil(o.SalesOrderNumber) {
 		toSerialize["SalesOrderNumber"] = o.SalesOrderNumber
 	}
-	if o.ServiceDescription != nil {
+	if !IsNil(o.ServiceDescription) {
 		toSerialize["ServiceDescription"] = o.ServiceDescription
 	}
-	if o.ServiceEndDate != nil {
+	if !IsNil(o.ServiceEndDate) {
 		toSerialize["ServiceEndDate"] = o.ServiceEndDate
 	}
-	if o.ServiceLevel != nil {
+	if !IsNil(o.ServiceLevel) {
 		toSerialize["ServiceLevel"] = o.ServiceLevel
 	}
-	if o.ServiceSku != nil {
+	if !IsNil(o.ServiceSku) {
 		toSerialize["ServiceSku"] = o.ServiceSku
 	}
-	if o.ServiceStartDate != nil {
+	if !IsNil(o.ServiceStartDate) {
 		toSerialize["ServiceStartDate"] = o.ServiceStartDate
 	}
-	if o.StateContract != nil {
+	if !IsNil(o.StateContract) {
 		toSerialize["StateContract"] = o.StateContract
 	}
-	if o.WarrantyEndDate != nil {
+	if !IsNil(o.WarrantyEndDate) {
 		toSerialize["WarrantyEndDate"] = o.WarrantyEndDate
 	}
-	if o.WarrantyType != nil {
+	if !IsNil(o.WarrantyType) {
 		toSerialize["WarrantyType"] = o.WarrantyType
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
 	}
-	if o.Source != nil {
-		toSerialize["Source"] = o.Source
+	if o.Source.IsSet() {
+		toSerialize["Source"] = o.Source.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *AssetDeviceContractInformation) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AssetDeviceContractInformation) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type AssetDeviceContractInformationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -1277,11 +1401,13 @@ func (o *AssetDeviceContractInformation) UnmarshalJSON(bytes []byte) (err error)
 		IsValid *bool `json:"IsValid,omitempty"`
 		// Item type of this specific Cisco device. example \"Chassis\".
 		ItemType *string `json:"ItemType,omitempty"`
+		// The last date of hardware support for this device.
+		LastDateOfSupport *time.Time `json:"LastDateOfSupport,omitempty"`
 		// Maintenance purchase order number for the Cisco device.
 		MaintenancePurchaseOrderNumber *string `json:"MaintenancePurchaseOrderNumber,omitempty"`
 		// Maintenance sales order number for the Cisco device.
 		MaintenanceSalesOrderNumber *string `json:"MaintenanceSalesOrderNumber,omitempty"`
-		// The platform type of the Cisco device. * `` - The device reported an empty or unrecognized platform type. * `APIC` - An Application Policy Infrastructure Controller cluster. * `CAPIC` - A Cloud Application Policy Infrastructure Controller instance. * `DCNM` - A Data Center Network Manager instance. Data Center Network Manager (DCNM) is the network management platform for all NX-OS-enabled deployments, spanning new fabric architectures, IP Fabric for Media, and storage networking deployments for the Cisco Nexus-powered data center. * `UCSFI` - A UCS Fabric Interconnect in HA or standalone mode, which is being managed by UCS Manager (UCSM). * `UCSFIISM` - A UCS Fabric Interconnect in HA or standalone mode, managed directly by Intersight. * `IMC` - A standalone UCS Server Integrated Management Controller. * `IMCM4` - A standalone UCS M4 Server. * `IMCM5` - A standalone UCS M5 server. * `IMCRack` - A standalone UCS M6 and above server. * `UCSIOM` - An UCS Chassis IO module. * `HX` - A HyperFlex storage controller. * `HyperFlexAP` - A HyperFlex Application Platform. * `IWE` - An Intersight Workload Engine. * `UCSD` - A UCS Director virtual appliance. Cisco UCS Director automates, orchestrates, and manages Cisco and third-party hardware. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance. * `IntersightAssist` - A Cisco Intersight Assist. * `PureStorageFlashArray` - A Pure Storage FlashArray device. * `NexusDevice` - A generic platform type to support Nexus Network Device. This can also be extended to support all network devices later on. * `ACISwitch` - A platform type to support ACI Switches. * `NexusSwitch` - A platform type to support Cisco Nexus Switches. * `MDSSwitch` - A platform type to support Cisco MDS Switches. * `MDSDevice` - A platform type to support MDS devices. * `UCSC890` - A standalone Cisco UCSC890 server. * `RedfishServer` - A generic target type for servers that support Redfish. Current support is limited to managing HPE and Dell servers on Intersight. * `NetAppOntap` - A NetApp ONTAP storage system. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager. * `EmcScaleIo` - An EMC ScaleIO storage system. * `EmcVmax` - An EMC VMAX storage system. * `EmcVplex` - An EMC VPLEX storage system. * `EmcXtremIo` - An EMC XtremIO storage system. * `VmwareVcenter` - A VMware vCenter device that manages Virtual Machines. * `MicrosoftHyperV` - A Microsoft Hyper-V system that manages Virtual Machines. * `AppDynamics` - An AppDynamics controller that monitors applications. * `Dynatrace` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `NewRelic` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `ReadHatOpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server. * `MySqlServer` - An instance of either Oracle MySQL Database or the open source MariaDB. * `Kubernetes` - A Kubernetes cluster that runs containerized applications. * `AmazonWebService` - An Amazon web service target that discovers and monitors different services like EC2. It discovers entities like VMs, Volumes, regions etc. and monitors attributes like Mem, CPU, cost. * `AmazonWebServiceBilling` - An Amazon web service billing target to retrieve billing information stored in S3 bucket. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal target that discovers all the associated Azure subscriptions. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement target that discovers cost, billing and RIs. * `DellCompellent` - A Dell Compellent storage system. * `HPE3Par` - A HPE 3PAR storage system. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis system that combines servers and storage into a distributed infrastructure platform. * `HPEOneView` - A HPE Oneview management system that manages compute, storage, and networking. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform also referred to as Hitachi VSP. It includes various storage systems designed for data centers. * `IMCBlade` - An Intersight managed UCS Blade Server. * `TerraformCloud` - A Terraform Cloud account. * `TerraformAgent` - A Terraform Cloud Agent that Intersight will deploy in datacenter. The agent will execute Terraform plan for Terraform Cloud workspace configured to use the agent. * `CustomTarget` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic. * `AnsibleEndpoint` - An external endpoint added as Target that can be accessed through Ansible in Intersight Cloud Orchestrator automation workflow. * `HTTPEndpoint` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic, Bearer Token. * `SSHEndpoint` - An external endpoint added as Target that can be accessed through SSH in Intersight Cloud Orchestrator automation workflow. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows machine on which PowerShell scripts can be executed remotely.
+		// The platform type of the Cisco device. * `` - An unrecognized platform type. * `APIC` - A Cisco Application Policy Infrastructure Controller (APIC) cluster. * `CAPIC` - A Cisco Cloud Application Policy Infrastructure Controller (Cloud APIC) instance. * `DCNM` - A Cisco Data Center Network Manager (DCNM) instance. * `UCSFI` - A Cisco UCS Fabric Interconnect that is managed by Cisco UCS Manager (UCSM). * `UCSFIISM` - A Cisco UCS Fabric Interconnect that is managed by Cisco Intersight. * `IMC` - A standalone Cisco UCS rack server (Deprecated). * `IMCM4` - A standalone Cisco UCS C-Series or S-Series M4 server. * `IMCM5` - A standalone Cisco UCS C-Series or S-Series M5 server. * `IMCRack` - A standalone Cisco UCS C-Series or S-Series M6 or newer server. * `UCSIOM` - A Cisco UCS Blade Chassis I/O Module (IOM). * `HX` - A Cisco HyperFlex (HX) cluster. * `UCSD` - A Cisco UCS Director (UCSD) instance. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance instance. * `IntersightAssist` - A Cisco Intersight Assist instance. * `PureStorageFlashArray` - A Pure Storage FlashArray that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and storage management features are supported on this device. * `NexusDevice` - A Cisco Nexus Network Switch that is managed using Cisco Intersight Assist. * `ACISwitch` - A Cisco Nexus Network Switch with the embedded Device Connector and is a part of the Cisco ACI fabric. * `NexusSwitch` - A standalone Cisco Nexus Network Switch with the embedded Device Connector. * `MDSSwitch` - A Cisco MDS Switch that is managed using the embedded Device Connector. * `MDSDevice` - A Cisco MDS Switch that is managed using Cisco Intersight Assist. * `UCSC890` - A standalone Cisco UCS C890 server managed using Cisco Intersight Assist. * `RedfishServer` - A generic target type for servers that support Redfish APIs and is managed using Cisco Intersight Assist. Support is limited to HPE and Dell Servers. * `NetAppOntap` - A Netapp ONTAP Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager (AIQUM) that is managed using Cisco Intersight Assist. * `EmcScaleIo` - An EMC ScaleIO Software Defined Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVmax` - An EMC VMAX 2 or 3 series enterprise storage array that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVplex` - An EMC VPLEX virtual storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcXtremIo` - An EMC XtremIO SSD storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `VmwareVcenter` - A VMware vCenter instance that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and Virtualization features are supported on this hypervisor. * `MicrosoftHyperV` - A Microsoft Hyper-V host that is managed using Cisco Intersight Assist. Optionally, other hosts in the cluster can be discovered through this host. Cisco Intersight Workload Optimizer features are supported on this hypervisor. * `AppDynamics` - An AppDynamics controller running in a SaaS or on-prem datacenter. On-prem AppDynamics instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this controller. * `Dynatrace` - A Dynatrace Server instance running in a SaaS or on-prem datacenter. On-prem Dynatrace instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `NewRelic` - A NewRelic user account. The NewRelic instance monitors the application infrastructure. Cisco Intersight Workload Optimizer features are supported on this server. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `Umbrella` - Umbrella cloud target that discovers and monitors an organization. It discovers entities like Datacenters, Devices, Tunnels, Networks, etc. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `MySqlServer` - A MySQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `OracleDatabaseServer` - An Oracle database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `IBMWebSphereApplicationServer` - An IBM WebSphere Application server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application server. * `OracleWebLogicServer` - Oracle WebLogic Server is a unified and extensible platform for developing, deploying and running enterprise applications, such as Java, for on-premises and in the cloud. WebLogic Server offers a robust, mature, and scalable implementation of Java Enterprise Edition (EE) and Jakarta EE. * `ApacheTomcatServer` - An Apache Tomcat server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `JavaVirtualMachine` - A JVM Application with JMX configured that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application. * `RedHatJBossApplicationServer` - JBoss Application Server is an open-source, cross-platform Java application server developed by JBoss, a division of Red Hat Inc. It is an open-source implementation of Java 2 Enterprise Edition (J2EE) that is used for implementing Java applications and other Web-based applications and software. * `Kubernetes` - A Kubernetes cluster that runs containerized applications, with Kubernetes Collector installed. Cisco Intersight Workload Optimizer features are supported on Kubernetes cluster. * `AmazonWebService` - An Amazon Web Service cloud account. Cisco Intersight Workload Optimizer and Virtualization features are supported on this cloud. * `AmazonWebServiceBilling` - An Amazon Web Service cloud billing account used to retrieve billing information stored in S3 bucket. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatform` - A Google Cloud Platform service account with access to one or more projects. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatformBilling` - A Google Cloud Platform service account used to retrieve billing information from BigQuery. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal account with access to Azure subscriptions. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement enrolment used to retrieve pricing and billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureBilling` - A Microsoft Azure Service Principal account with access to billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `DellCompellent` - A Dell EMC SC Series (Compellent) storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `HPE3Par` - A HPE 3PAR StoreServ system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis cluster that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this cluster. * `NutanixPrismCentral` - A Nutanix Prism Central cluster. Prism central is a virtual appliance for managing Nutanix clusters and services. * `HPEOneView` - A HPE OneView system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this system. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform (Hitachi VSP) that is managed using Cisco Intersight Assist. * `GenericTarget` - A generic third-party target supported only in Partner Integration Appliance. This target type is used for development purposes and will not be supported in production environment. * `IMCBlade` - A Cisco UCS blade server managed by Cisco Intersight. * `TerraformCloud` - A Terraform Cloud Business Tier account. * `TerraformAgent` - A Terraform Cloud Agent that will be deployed on Cisco Intersight Assist. The agent can be used to plan and apply Terraform runs from a Terraform Cloud workspace. * `CustomTarget` - CustomTarget is deprecated. Use HTTPEndpoint type to claim HTTP endpoints. * `AnsibleEndpoint` - An external endpoint that is added as a target which can be accessed through Ansible in Intersight Cloud Orchestrator automation workflows. * `HTTPEndpoint` - An HTTP endpoint that can be accessed in Intersight Orchestrator workflows directly or using Cisco Intersight Assist. Authentication Schemes supported are Basic and Bearer Token. * `SSHEndpoint` - An SSH endpoint that can be accessed in Intersight Orchestrator workflows using Cisco Intersight Assist. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows operating system server on which PowerShell scripts can be executed using Cisco Intersight Assist. * `CiscoDNAC` - A Cisco Digital Network Architecture (DNA) Center appliance. * `CiscoFMC` - A Cisco Secure Firewall Management Center. * `ViptelaCloud` - A Cisco Viptela SD-WAN Cloud. * `MerakiCloud` - A Cisco Meraki Organization. * `CiscoISE` - A Cisco Identity Services Engine (ISE) target.
 		PlatformType *string                         `json:"PlatformType,omitempty"`
 		Product      NullableAssetProductInformation `json:"Product,omitempty"`
 		// Purchase order number for the Cisco device. It is a unique number assigned for every purchase.
@@ -1304,14 +1430,14 @@ func (o *AssetDeviceContractInformation) UnmarshalJSON(bytes []byte) (err error)
 		// End date for the warranty that covers the Cisco device.
 		WarrantyEndDate *string `json:"WarrantyEndDate,omitempty"`
 		// Type of warranty that covers the Cisco device.
-		WarrantyType     *string                              `json:"WarrantyType,omitempty"`
-		RegisteredDevice *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
-		Source           *MoBaseMoRelationship                `json:"Source,omitempty"`
+		WarrantyType     *string                                     `json:"WarrantyType,omitempty"`
+		RegisteredDevice NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		Source           NullableMoBaseMoRelationship                `json:"Source,omitempty"`
 	}
 
 	varAssetDeviceContractInformationWithoutEmbeddedStruct := AssetDeviceContractInformationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varAssetDeviceContractInformationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varAssetDeviceContractInformationWithoutEmbeddedStruct)
 	if err == nil {
 		varAssetDeviceContractInformation := _AssetDeviceContractInformation{}
 		varAssetDeviceContractInformation.ClassId = varAssetDeviceContractInformationWithoutEmbeddedStruct.ClassId
@@ -1328,6 +1454,7 @@ func (o *AssetDeviceContractInformation) UnmarshalJSON(bytes []byte) (err error)
 		varAssetDeviceContractInformation.EndUserGlobalUltimate = varAssetDeviceContractInformationWithoutEmbeddedStruct.EndUserGlobalUltimate
 		varAssetDeviceContractInformation.IsValid = varAssetDeviceContractInformationWithoutEmbeddedStruct.IsValid
 		varAssetDeviceContractInformation.ItemType = varAssetDeviceContractInformationWithoutEmbeddedStruct.ItemType
+		varAssetDeviceContractInformation.LastDateOfSupport = varAssetDeviceContractInformationWithoutEmbeddedStruct.LastDateOfSupport
 		varAssetDeviceContractInformation.MaintenancePurchaseOrderNumber = varAssetDeviceContractInformationWithoutEmbeddedStruct.MaintenancePurchaseOrderNumber
 		varAssetDeviceContractInformation.MaintenanceSalesOrderNumber = varAssetDeviceContractInformationWithoutEmbeddedStruct.MaintenanceSalesOrderNumber
 		varAssetDeviceContractInformation.PlatformType = varAssetDeviceContractInformationWithoutEmbeddedStruct.PlatformType
@@ -1352,7 +1479,7 @@ func (o *AssetDeviceContractInformation) UnmarshalJSON(bytes []byte) (err error)
 
 	varAssetDeviceContractInformation := _AssetDeviceContractInformation{}
 
-	err = json.Unmarshal(bytes, &varAssetDeviceContractInformation)
+	err = json.Unmarshal(data, &varAssetDeviceContractInformation)
 	if err == nil {
 		o.MoBaseMo = varAssetDeviceContractInformation.MoBaseMo
 	} else {
@@ -1361,7 +1488,7 @@ func (o *AssetDeviceContractInformation) UnmarshalJSON(bytes []byte) (err error)
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Contract")
@@ -1376,6 +1503,7 @@ func (o *AssetDeviceContractInformation) UnmarshalJSON(bytes []byte) (err error)
 		delete(additionalProperties, "EndUserGlobalUltimate")
 		delete(additionalProperties, "IsValid")
 		delete(additionalProperties, "ItemType")
+		delete(additionalProperties, "LastDateOfSupport")
 		delete(additionalProperties, "MaintenancePurchaseOrderNumber")
 		delete(additionalProperties, "MaintenanceSalesOrderNumber")
 		delete(additionalProperties, "PlatformType")

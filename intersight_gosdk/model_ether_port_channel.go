@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,11 +13,15 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
-// EtherPortChannel Model contains the details of the ethernet port-channels configured on the FI.
+// checks if the EtherPortChannel type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &EtherPortChannel{}
+
+// EtherPortChannel Ethernet port channels in a Fabric Interconnect are logical interfaces created by aggregating multiple physical Ethernet ports. This configuration enhances bandwidth, provides load balancing, and offers redundancy for network connections.
 type EtherPortChannel struct {
 	InventoryInterface
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
@@ -30,8 +34,24 @@ type EtherPortChannel struct {
 	AdminState *string `json:"AdminState,omitempty"`
 	// Allowed VLANs on this port-channel, on this FI.
 	AllowedVlans *string `json:"AllowedVlans,omitempty"`
+	// Bandwidth of this port-channel.
+	BandWidth *string `json:"BandWidth,omitempty"`
+	// Description of this port-channel.
+	Description *string `json:"Description,omitempty"`
+	// IP address of this port-channel.
+	IpAddress *string `json:"IpAddress,omitempty"`
+	// IP address mask of this port-channel.
+	IpAddressMask *int64 `json:"IpAddressMask,omitempty"`
+	// IPv6 subnet in CIDR notation of this port-channel. Ex. 2000::/8.
+	Ipv6SubnetCidr *string `json:"Ipv6SubnetCidr,omitempty"`
+	// MAC address of this port-channel.
+	MacAddress *string `json:"MacAddress,omitempty"`
 	// Operating mode of this port-channel.
 	Mode *string `json:"Mode,omitempty"`
+	// Maximum transmission unit of this port-channel.
+	Mtu *int64 `json:"Mtu,omitempty"`
+	// Name of the port channel.
+	Name *string `json:"Name,omitempty"`
 	// Native VLAN for this port-channel, on this FI.
 	NativeVlan *string `json:"NativeVlan,omitempty"`
 	// Operational speed of this port-channel.
@@ -44,10 +64,13 @@ type EtherPortChannel struct {
 	PortChannelId *int64 `json:"PortChannelId,omitempty"`
 	// This port-channel's configured role (uplink, server, etc.).
 	Role *string `json:"Role,omitempty"`
+	// Detailed status of this port-channel.
+	Status *string `json:"Status,omitempty"`
 	// Switch Identifier that is local to a cluster.
-	SwitchId             *string                              `json:"SwitchId,omitempty"`
-	EquipmentSwitchCard  *EquipmentSwitchCardRelationship     `json:"EquipmentSwitchCard,omitempty"`
-	RegisteredDevice     *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	SwitchId             *string                                     `json:"SwitchId,omitempty"`
+	EquipmentSwitchCard  NullableEquipmentSwitchCardRelationship     `json:"EquipmentSwitchCard,omitempty"`
+	NetworkElement       NullableNetworkElementRelationship          `json:"NetworkElement,omitempty"`
+	RegisteredDevice     NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -100,6 +123,11 @@ func (o *EtherPortChannel) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "ether.PortChannel" of the ClassId field.
+func (o *EtherPortChannel) GetDefaultClassId() interface{} {
+	return "ether.PortChannel"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *EtherPortChannel) GetObjectType() string {
 	if o == nil {
@@ -124,9 +152,14 @@ func (o *EtherPortChannel) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "ether.PortChannel" of the ObjectType field.
+func (o *EtherPortChannel) GetDefaultObjectType() interface{} {
+	return "ether.PortChannel"
+}
+
 // GetAccessVlan returns the AccessVlan field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetAccessVlan() string {
-	if o == nil || o.AccessVlan == nil {
+	if o == nil || IsNil(o.AccessVlan) {
 		var ret string
 		return ret
 	}
@@ -136,7 +169,7 @@ func (o *EtherPortChannel) GetAccessVlan() string {
 // GetAccessVlanOk returns a tuple with the AccessVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetAccessVlanOk() (*string, bool) {
-	if o == nil || o.AccessVlan == nil {
+	if o == nil || IsNil(o.AccessVlan) {
 		return nil, false
 	}
 	return o.AccessVlan, true
@@ -144,7 +177,7 @@ func (o *EtherPortChannel) GetAccessVlanOk() (*string, bool) {
 
 // HasAccessVlan returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasAccessVlan() bool {
-	if o != nil && o.AccessVlan != nil {
+	if o != nil && !IsNil(o.AccessVlan) {
 		return true
 	}
 
@@ -158,7 +191,7 @@ func (o *EtherPortChannel) SetAccessVlan(v string) {
 
 // GetAdminState returns the AdminState field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetAdminState() string {
-	if o == nil || o.AdminState == nil {
+	if o == nil || IsNil(o.AdminState) {
 		var ret string
 		return ret
 	}
@@ -168,7 +201,7 @@ func (o *EtherPortChannel) GetAdminState() string {
 // GetAdminStateOk returns a tuple with the AdminState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetAdminStateOk() (*string, bool) {
-	if o == nil || o.AdminState == nil {
+	if o == nil || IsNil(o.AdminState) {
 		return nil, false
 	}
 	return o.AdminState, true
@@ -176,7 +209,7 @@ func (o *EtherPortChannel) GetAdminStateOk() (*string, bool) {
 
 // HasAdminState returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasAdminState() bool {
-	if o != nil && o.AdminState != nil {
+	if o != nil && !IsNil(o.AdminState) {
 		return true
 	}
 
@@ -190,7 +223,7 @@ func (o *EtherPortChannel) SetAdminState(v string) {
 
 // GetAllowedVlans returns the AllowedVlans field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetAllowedVlans() string {
-	if o == nil || o.AllowedVlans == nil {
+	if o == nil || IsNil(o.AllowedVlans) {
 		var ret string
 		return ret
 	}
@@ -200,7 +233,7 @@ func (o *EtherPortChannel) GetAllowedVlans() string {
 // GetAllowedVlansOk returns a tuple with the AllowedVlans field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetAllowedVlansOk() (*string, bool) {
-	if o == nil || o.AllowedVlans == nil {
+	if o == nil || IsNil(o.AllowedVlans) {
 		return nil, false
 	}
 	return o.AllowedVlans, true
@@ -208,7 +241,7 @@ func (o *EtherPortChannel) GetAllowedVlansOk() (*string, bool) {
 
 // HasAllowedVlans returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasAllowedVlans() bool {
-	if o != nil && o.AllowedVlans != nil {
+	if o != nil && !IsNil(o.AllowedVlans) {
 		return true
 	}
 
@@ -220,9 +253,201 @@ func (o *EtherPortChannel) SetAllowedVlans(v string) {
 	o.AllowedVlans = &v
 }
 
+// GetBandWidth returns the BandWidth field value if set, zero value otherwise.
+func (o *EtherPortChannel) GetBandWidth() string {
+	if o == nil || IsNil(o.BandWidth) {
+		var ret string
+		return ret
+	}
+	return *o.BandWidth
+}
+
+// GetBandWidthOk returns a tuple with the BandWidth field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EtherPortChannel) GetBandWidthOk() (*string, bool) {
+	if o == nil || IsNil(o.BandWidth) {
+		return nil, false
+	}
+	return o.BandWidth, true
+}
+
+// HasBandWidth returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasBandWidth() bool {
+	if o != nil && !IsNil(o.BandWidth) {
+		return true
+	}
+
+	return false
+}
+
+// SetBandWidth gets a reference to the given string and assigns it to the BandWidth field.
+func (o *EtherPortChannel) SetBandWidth(v string) {
+	o.BandWidth = &v
+}
+
+// GetDescription returns the Description field value if set, zero value otherwise.
+func (o *EtherPortChannel) GetDescription() string {
+	if o == nil || IsNil(o.Description) {
+		var ret string
+		return ret
+	}
+	return *o.Description
+}
+
+// GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EtherPortChannel) GetDescriptionOk() (*string, bool) {
+	if o == nil || IsNil(o.Description) {
+		return nil, false
+	}
+	return o.Description, true
+}
+
+// HasDescription returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasDescription() bool {
+	if o != nil && !IsNil(o.Description) {
+		return true
+	}
+
+	return false
+}
+
+// SetDescription gets a reference to the given string and assigns it to the Description field.
+func (o *EtherPortChannel) SetDescription(v string) {
+	o.Description = &v
+}
+
+// GetIpAddress returns the IpAddress field value if set, zero value otherwise.
+func (o *EtherPortChannel) GetIpAddress() string {
+	if o == nil || IsNil(o.IpAddress) {
+		var ret string
+		return ret
+	}
+	return *o.IpAddress
+}
+
+// GetIpAddressOk returns a tuple with the IpAddress field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EtherPortChannel) GetIpAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.IpAddress) {
+		return nil, false
+	}
+	return o.IpAddress, true
+}
+
+// HasIpAddress returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasIpAddress() bool {
+	if o != nil && !IsNil(o.IpAddress) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpAddress gets a reference to the given string and assigns it to the IpAddress field.
+func (o *EtherPortChannel) SetIpAddress(v string) {
+	o.IpAddress = &v
+}
+
+// GetIpAddressMask returns the IpAddressMask field value if set, zero value otherwise.
+func (o *EtherPortChannel) GetIpAddressMask() int64 {
+	if o == nil || IsNil(o.IpAddressMask) {
+		var ret int64
+		return ret
+	}
+	return *o.IpAddressMask
+}
+
+// GetIpAddressMaskOk returns a tuple with the IpAddressMask field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EtherPortChannel) GetIpAddressMaskOk() (*int64, bool) {
+	if o == nil || IsNil(o.IpAddressMask) {
+		return nil, false
+	}
+	return o.IpAddressMask, true
+}
+
+// HasIpAddressMask returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasIpAddressMask() bool {
+	if o != nil && !IsNil(o.IpAddressMask) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpAddressMask gets a reference to the given int64 and assigns it to the IpAddressMask field.
+func (o *EtherPortChannel) SetIpAddressMask(v int64) {
+	o.IpAddressMask = &v
+}
+
+// GetIpv6SubnetCidr returns the Ipv6SubnetCidr field value if set, zero value otherwise.
+func (o *EtherPortChannel) GetIpv6SubnetCidr() string {
+	if o == nil || IsNil(o.Ipv6SubnetCidr) {
+		var ret string
+		return ret
+	}
+	return *o.Ipv6SubnetCidr
+}
+
+// GetIpv6SubnetCidrOk returns a tuple with the Ipv6SubnetCidr field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EtherPortChannel) GetIpv6SubnetCidrOk() (*string, bool) {
+	if o == nil || IsNil(o.Ipv6SubnetCidr) {
+		return nil, false
+	}
+	return o.Ipv6SubnetCidr, true
+}
+
+// HasIpv6SubnetCidr returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasIpv6SubnetCidr() bool {
+	if o != nil && !IsNil(o.Ipv6SubnetCidr) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpv6SubnetCidr gets a reference to the given string and assigns it to the Ipv6SubnetCidr field.
+func (o *EtherPortChannel) SetIpv6SubnetCidr(v string) {
+	o.Ipv6SubnetCidr = &v
+}
+
+// GetMacAddress returns the MacAddress field value if set, zero value otherwise.
+func (o *EtherPortChannel) GetMacAddress() string {
+	if o == nil || IsNil(o.MacAddress) {
+		var ret string
+		return ret
+	}
+	return *o.MacAddress
+}
+
+// GetMacAddressOk returns a tuple with the MacAddress field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EtherPortChannel) GetMacAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.MacAddress) {
+		return nil, false
+	}
+	return o.MacAddress, true
+}
+
+// HasMacAddress returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasMacAddress() bool {
+	if o != nil && !IsNil(o.MacAddress) {
+		return true
+	}
+
+	return false
+}
+
+// SetMacAddress gets a reference to the given string and assigns it to the MacAddress field.
+func (o *EtherPortChannel) SetMacAddress(v string) {
+	o.MacAddress = &v
+}
+
 // GetMode returns the Mode field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetMode() string {
-	if o == nil || o.Mode == nil {
+	if o == nil || IsNil(o.Mode) {
 		var ret string
 		return ret
 	}
@@ -232,7 +457,7 @@ func (o *EtherPortChannel) GetMode() string {
 // GetModeOk returns a tuple with the Mode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetModeOk() (*string, bool) {
-	if o == nil || o.Mode == nil {
+	if o == nil || IsNil(o.Mode) {
 		return nil, false
 	}
 	return o.Mode, true
@@ -240,7 +465,7 @@ func (o *EtherPortChannel) GetModeOk() (*string, bool) {
 
 // HasMode returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasMode() bool {
-	if o != nil && o.Mode != nil {
+	if o != nil && !IsNil(o.Mode) {
 		return true
 	}
 
@@ -252,9 +477,73 @@ func (o *EtherPortChannel) SetMode(v string) {
 	o.Mode = &v
 }
 
+// GetMtu returns the Mtu field value if set, zero value otherwise.
+func (o *EtherPortChannel) GetMtu() int64 {
+	if o == nil || IsNil(o.Mtu) {
+		var ret int64
+		return ret
+	}
+	return *o.Mtu
+}
+
+// GetMtuOk returns a tuple with the Mtu field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EtherPortChannel) GetMtuOk() (*int64, bool) {
+	if o == nil || IsNil(o.Mtu) {
+		return nil, false
+	}
+	return o.Mtu, true
+}
+
+// HasMtu returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasMtu() bool {
+	if o != nil && !IsNil(o.Mtu) {
+		return true
+	}
+
+	return false
+}
+
+// SetMtu gets a reference to the given int64 and assigns it to the Mtu field.
+func (o *EtherPortChannel) SetMtu(v int64) {
+	o.Mtu = &v
+}
+
+// GetName returns the Name field value if set, zero value otherwise.
+func (o *EtherPortChannel) GetName() string {
+	if o == nil || IsNil(o.Name) {
+		var ret string
+		return ret
+	}
+	return *o.Name
+}
+
+// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EtherPortChannel) GetNameOk() (*string, bool) {
+	if o == nil || IsNil(o.Name) {
+		return nil, false
+	}
+	return o.Name, true
+}
+
+// HasName returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasName() bool {
+	if o != nil && !IsNil(o.Name) {
+		return true
+	}
+
+	return false
+}
+
+// SetName gets a reference to the given string and assigns it to the Name field.
+func (o *EtherPortChannel) SetName(v string) {
+	o.Name = &v
+}
+
 // GetNativeVlan returns the NativeVlan field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetNativeVlan() string {
-	if o == nil || o.NativeVlan == nil {
+	if o == nil || IsNil(o.NativeVlan) {
 		var ret string
 		return ret
 	}
@@ -264,7 +553,7 @@ func (o *EtherPortChannel) GetNativeVlan() string {
 // GetNativeVlanOk returns a tuple with the NativeVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetNativeVlanOk() (*string, bool) {
-	if o == nil || o.NativeVlan == nil {
+	if o == nil || IsNil(o.NativeVlan) {
 		return nil, false
 	}
 	return o.NativeVlan, true
@@ -272,7 +561,7 @@ func (o *EtherPortChannel) GetNativeVlanOk() (*string, bool) {
 
 // HasNativeVlan returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasNativeVlan() bool {
-	if o != nil && o.NativeVlan != nil {
+	if o != nil && !IsNil(o.NativeVlan) {
 		return true
 	}
 
@@ -286,7 +575,7 @@ func (o *EtherPortChannel) SetNativeVlan(v string) {
 
 // GetOperSpeed returns the OperSpeed field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetOperSpeed() string {
-	if o == nil || o.OperSpeed == nil {
+	if o == nil || IsNil(o.OperSpeed) {
 		var ret string
 		return ret
 	}
@@ -296,7 +585,7 @@ func (o *EtherPortChannel) GetOperSpeed() string {
 // GetOperSpeedOk returns a tuple with the OperSpeed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetOperSpeedOk() (*string, bool) {
-	if o == nil || o.OperSpeed == nil {
+	if o == nil || IsNil(o.OperSpeed) {
 		return nil, false
 	}
 	return o.OperSpeed, true
@@ -304,7 +593,7 @@ func (o *EtherPortChannel) GetOperSpeedOk() (*string, bool) {
 
 // HasOperSpeed returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasOperSpeed() bool {
-	if o != nil && o.OperSpeed != nil {
+	if o != nil && !IsNil(o.OperSpeed) {
 		return true
 	}
 
@@ -318,7 +607,7 @@ func (o *EtherPortChannel) SetOperSpeed(v string) {
 
 // GetOperState returns the OperState field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetOperState() string {
-	if o == nil || o.OperState == nil {
+	if o == nil || IsNil(o.OperState) {
 		var ret string
 		return ret
 	}
@@ -328,7 +617,7 @@ func (o *EtherPortChannel) GetOperState() string {
 // GetOperStateOk returns a tuple with the OperState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetOperStateOk() (*string, bool) {
-	if o == nil || o.OperState == nil {
+	if o == nil || IsNil(o.OperState) {
 		return nil, false
 	}
 	return o.OperState, true
@@ -336,7 +625,7 @@ func (o *EtherPortChannel) GetOperStateOk() (*string, bool) {
 
 // HasOperState returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasOperState() bool {
-	if o != nil && o.OperState != nil {
+	if o != nil && !IsNil(o.OperState) {
 		return true
 	}
 
@@ -350,7 +639,7 @@ func (o *EtherPortChannel) SetOperState(v string) {
 
 // GetOperStateQual returns the OperStateQual field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetOperStateQual() string {
-	if o == nil || o.OperStateQual == nil {
+	if o == nil || IsNil(o.OperStateQual) {
 		var ret string
 		return ret
 	}
@@ -360,7 +649,7 @@ func (o *EtherPortChannel) GetOperStateQual() string {
 // GetOperStateQualOk returns a tuple with the OperStateQual field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetOperStateQualOk() (*string, bool) {
-	if o == nil || o.OperStateQual == nil {
+	if o == nil || IsNil(o.OperStateQual) {
 		return nil, false
 	}
 	return o.OperStateQual, true
@@ -368,7 +657,7 @@ func (o *EtherPortChannel) GetOperStateQualOk() (*string, bool) {
 
 // HasOperStateQual returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasOperStateQual() bool {
-	if o != nil && o.OperStateQual != nil {
+	if o != nil && !IsNil(o.OperStateQual) {
 		return true
 	}
 
@@ -382,7 +671,7 @@ func (o *EtherPortChannel) SetOperStateQual(v string) {
 
 // GetPortChannelId returns the PortChannelId field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetPortChannelId() int64 {
-	if o == nil || o.PortChannelId == nil {
+	if o == nil || IsNil(o.PortChannelId) {
 		var ret int64
 		return ret
 	}
@@ -392,7 +681,7 @@ func (o *EtherPortChannel) GetPortChannelId() int64 {
 // GetPortChannelIdOk returns a tuple with the PortChannelId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetPortChannelIdOk() (*int64, bool) {
-	if o == nil || o.PortChannelId == nil {
+	if o == nil || IsNil(o.PortChannelId) {
 		return nil, false
 	}
 	return o.PortChannelId, true
@@ -400,7 +689,7 @@ func (o *EtherPortChannel) GetPortChannelIdOk() (*int64, bool) {
 
 // HasPortChannelId returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasPortChannelId() bool {
-	if o != nil && o.PortChannelId != nil {
+	if o != nil && !IsNil(o.PortChannelId) {
 		return true
 	}
 
@@ -414,7 +703,7 @@ func (o *EtherPortChannel) SetPortChannelId(v int64) {
 
 // GetRole returns the Role field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetRole() string {
-	if o == nil || o.Role == nil {
+	if o == nil || IsNil(o.Role) {
 		var ret string
 		return ret
 	}
@@ -424,7 +713,7 @@ func (o *EtherPortChannel) GetRole() string {
 // GetRoleOk returns a tuple with the Role field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetRoleOk() (*string, bool) {
-	if o == nil || o.Role == nil {
+	if o == nil || IsNil(o.Role) {
 		return nil, false
 	}
 	return o.Role, true
@@ -432,7 +721,7 @@ func (o *EtherPortChannel) GetRoleOk() (*string, bool) {
 
 // HasRole returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasRole() bool {
-	if o != nil && o.Role != nil {
+	if o != nil && !IsNil(o.Role) {
 		return true
 	}
 
@@ -444,9 +733,41 @@ func (o *EtherPortChannel) SetRole(v string) {
 	o.Role = &v
 }
 
+// GetStatus returns the Status field value if set, zero value otherwise.
+func (o *EtherPortChannel) GetStatus() string {
+	if o == nil || IsNil(o.Status) {
+		var ret string
+		return ret
+	}
+	return *o.Status
+}
+
+// GetStatusOk returns a tuple with the Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *EtherPortChannel) GetStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.Status) {
+		return nil, false
+	}
+	return o.Status, true
+}
+
+// HasStatus returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasStatus() bool {
+	if o != nil && !IsNil(o.Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetStatus gets a reference to the given string and assigns it to the Status field.
+func (o *EtherPortChannel) SetStatus(v string) {
+	o.Status = &v
+}
+
 // GetSwitchId returns the SwitchId field value if set, zero value otherwise.
 func (o *EtherPortChannel) GetSwitchId() string {
-	if o == nil || o.SwitchId == nil {
+	if o == nil || IsNil(o.SwitchId) {
 		var ret string
 		return ret
 	}
@@ -456,7 +777,7 @@ func (o *EtherPortChannel) GetSwitchId() string {
 // GetSwitchIdOk returns a tuple with the SwitchId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EtherPortChannel) GetSwitchIdOk() (*string, bool) {
-	if o == nil || o.SwitchId == nil {
+	if o == nil || IsNil(o.SwitchId) {
 		return nil, false
 	}
 	return o.SwitchId, true
@@ -464,7 +785,7 @@ func (o *EtherPortChannel) GetSwitchIdOk() (*string, bool) {
 
 // HasSwitchId returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasSwitchId() bool {
-	if o != nil && o.SwitchId != nil {
+	if o != nil && !IsNil(o.SwitchId) {
 		return true
 	}
 
@@ -476,134 +797,280 @@ func (o *EtherPortChannel) SetSwitchId(v string) {
 	o.SwitchId = &v
 }
 
-// GetEquipmentSwitchCard returns the EquipmentSwitchCard field value if set, zero value otherwise.
+// GetEquipmentSwitchCard returns the EquipmentSwitchCard field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EtherPortChannel) GetEquipmentSwitchCard() EquipmentSwitchCardRelationship {
-	if o == nil || o.EquipmentSwitchCard == nil {
+	if o == nil || IsNil(o.EquipmentSwitchCard.Get()) {
 		var ret EquipmentSwitchCardRelationship
 		return ret
 	}
-	return *o.EquipmentSwitchCard
+	return *o.EquipmentSwitchCard.Get()
 }
 
 // GetEquipmentSwitchCardOk returns a tuple with the EquipmentSwitchCard field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EtherPortChannel) GetEquipmentSwitchCardOk() (*EquipmentSwitchCardRelationship, bool) {
-	if o == nil || o.EquipmentSwitchCard == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.EquipmentSwitchCard, true
+	return o.EquipmentSwitchCard.Get(), o.EquipmentSwitchCard.IsSet()
 }
 
 // HasEquipmentSwitchCard returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasEquipmentSwitchCard() bool {
-	if o != nil && o.EquipmentSwitchCard != nil {
+	if o != nil && o.EquipmentSwitchCard.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEquipmentSwitchCard gets a reference to the given EquipmentSwitchCardRelationship and assigns it to the EquipmentSwitchCard field.
+// SetEquipmentSwitchCard gets a reference to the given NullableEquipmentSwitchCardRelationship and assigns it to the EquipmentSwitchCard field.
 func (o *EtherPortChannel) SetEquipmentSwitchCard(v EquipmentSwitchCardRelationship) {
-	o.EquipmentSwitchCard = &v
+	o.EquipmentSwitchCard.Set(&v)
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// SetEquipmentSwitchCardNil sets the value for EquipmentSwitchCard to be an explicit nil
+func (o *EtherPortChannel) SetEquipmentSwitchCardNil() {
+	o.EquipmentSwitchCard.Set(nil)
+}
+
+// UnsetEquipmentSwitchCard ensures that no value is present for EquipmentSwitchCard, not even an explicit nil
+func (o *EtherPortChannel) UnsetEquipmentSwitchCard() {
+	o.EquipmentSwitchCard.Unset()
+}
+
+// GetNetworkElement returns the NetworkElement field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EtherPortChannel) GetNetworkElement() NetworkElementRelationship {
+	if o == nil || IsNil(o.NetworkElement.Get()) {
+		var ret NetworkElementRelationship
+		return ret
+	}
+	return *o.NetworkElement.Get()
+}
+
+// GetNetworkElementOk returns a tuple with the NetworkElement field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EtherPortChannel) GetNetworkElementOk() (*NetworkElementRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NetworkElement.Get(), o.NetworkElement.IsSet()
+}
+
+// HasNetworkElement returns a boolean if a field has been set.
+func (o *EtherPortChannel) HasNetworkElement() bool {
+	if o != nil && o.NetworkElement.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetNetworkElement gets a reference to the given NullableNetworkElementRelationship and assigns it to the NetworkElement field.
+func (o *EtherPortChannel) SetNetworkElement(v NetworkElementRelationship) {
+	o.NetworkElement.Set(&v)
+}
+
+// SetNetworkElementNil sets the value for NetworkElement to be an explicit nil
+func (o *EtherPortChannel) SetNetworkElementNil() {
+	o.NetworkElement.Set(nil)
+}
+
+// UnsetNetworkElement ensures that no value is present for NetworkElement, not even an explicit nil
+func (o *EtherPortChannel) UnsetNetworkElement() {
+	o.NetworkElement.Unset()
+}
+
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EtherPortChannel) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EtherPortChannel) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *EtherPortChannel) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *EtherPortChannel) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
+}
+
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *EtherPortChannel) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *EtherPortChannel) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
 }
 
 func (o EtherPortChannel) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o EtherPortChannel) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedInventoryInterface, errInventoryInterface := json.Marshal(o.InventoryInterface)
 	if errInventoryInterface != nil {
-		return []byte{}, errInventoryInterface
+		return map[string]interface{}{}, errInventoryInterface
 	}
 	errInventoryInterface = json.Unmarshal([]byte(serializedInventoryInterface), &toSerialize)
 	if errInventoryInterface != nil {
-		return []byte{}, errInventoryInterface
+		return map[string]interface{}{}, errInventoryInterface
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AccessVlan != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AccessVlan) {
 		toSerialize["AccessVlan"] = o.AccessVlan
 	}
-	if o.AdminState != nil {
+	if !IsNil(o.AdminState) {
 		toSerialize["AdminState"] = o.AdminState
 	}
-	if o.AllowedVlans != nil {
+	if !IsNil(o.AllowedVlans) {
 		toSerialize["AllowedVlans"] = o.AllowedVlans
 	}
-	if o.Mode != nil {
+	if !IsNil(o.BandWidth) {
+		toSerialize["BandWidth"] = o.BandWidth
+	}
+	if !IsNil(o.Description) {
+		toSerialize["Description"] = o.Description
+	}
+	if !IsNil(o.IpAddress) {
+		toSerialize["IpAddress"] = o.IpAddress
+	}
+	if !IsNil(o.IpAddressMask) {
+		toSerialize["IpAddressMask"] = o.IpAddressMask
+	}
+	if !IsNil(o.Ipv6SubnetCidr) {
+		toSerialize["Ipv6SubnetCidr"] = o.Ipv6SubnetCidr
+	}
+	if !IsNil(o.MacAddress) {
+		toSerialize["MacAddress"] = o.MacAddress
+	}
+	if !IsNil(o.Mode) {
 		toSerialize["Mode"] = o.Mode
 	}
-	if o.NativeVlan != nil {
+	if !IsNil(o.Mtu) {
+		toSerialize["Mtu"] = o.Mtu
+	}
+	if !IsNil(o.Name) {
+		toSerialize["Name"] = o.Name
+	}
+	if !IsNil(o.NativeVlan) {
 		toSerialize["NativeVlan"] = o.NativeVlan
 	}
-	if o.OperSpeed != nil {
+	if !IsNil(o.OperSpeed) {
 		toSerialize["OperSpeed"] = o.OperSpeed
 	}
-	if o.OperState != nil {
+	if !IsNil(o.OperState) {
 		toSerialize["OperState"] = o.OperState
 	}
-	if o.OperStateQual != nil {
+	if !IsNil(o.OperStateQual) {
 		toSerialize["OperStateQual"] = o.OperStateQual
 	}
-	if o.PortChannelId != nil {
+	if !IsNil(o.PortChannelId) {
 		toSerialize["PortChannelId"] = o.PortChannelId
 	}
-	if o.Role != nil {
+	if !IsNil(o.Role) {
 		toSerialize["Role"] = o.Role
 	}
-	if o.SwitchId != nil {
+	if !IsNil(o.Status) {
+		toSerialize["Status"] = o.Status
+	}
+	if !IsNil(o.SwitchId) {
 		toSerialize["SwitchId"] = o.SwitchId
 	}
-	if o.EquipmentSwitchCard != nil {
-		toSerialize["EquipmentSwitchCard"] = o.EquipmentSwitchCard
+	if o.EquipmentSwitchCard.IsSet() {
+		toSerialize["EquipmentSwitchCard"] = o.EquipmentSwitchCard.Get()
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.NetworkElement.IsSet() {
+		toSerialize["NetworkElement"] = o.NetworkElement.Get()
+	}
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *EtherPortChannel) UnmarshalJSON(bytes []byte) (err error) {
+func (o *EtherPortChannel) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type EtherPortChannelWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -615,8 +1082,24 @@ func (o *EtherPortChannel) UnmarshalJSON(bytes []byte) (err error) {
 		AdminState *string `json:"AdminState,omitempty"`
 		// Allowed VLANs on this port-channel, on this FI.
 		AllowedVlans *string `json:"AllowedVlans,omitempty"`
+		// Bandwidth of this port-channel.
+		BandWidth *string `json:"BandWidth,omitempty"`
+		// Description of this port-channel.
+		Description *string `json:"Description,omitempty"`
+		// IP address of this port-channel.
+		IpAddress *string `json:"IpAddress,omitempty"`
+		// IP address mask of this port-channel.
+		IpAddressMask *int64 `json:"IpAddressMask,omitempty"`
+		// IPv6 subnet in CIDR notation of this port-channel. Ex. 2000::/8.
+		Ipv6SubnetCidr *string `json:"Ipv6SubnetCidr,omitempty"`
+		// MAC address of this port-channel.
+		MacAddress *string `json:"MacAddress,omitempty"`
 		// Operating mode of this port-channel.
 		Mode *string `json:"Mode,omitempty"`
+		// Maximum transmission unit of this port-channel.
+		Mtu *int64 `json:"Mtu,omitempty"`
+		// Name of the port channel.
+		Name *string `json:"Name,omitempty"`
 		// Native VLAN for this port-channel, on this FI.
 		NativeVlan *string `json:"NativeVlan,omitempty"`
 		// Operational speed of this port-channel.
@@ -629,15 +1112,18 @@ func (o *EtherPortChannel) UnmarshalJSON(bytes []byte) (err error) {
 		PortChannelId *int64 `json:"PortChannelId,omitempty"`
 		// This port-channel's configured role (uplink, server, etc.).
 		Role *string `json:"Role,omitempty"`
+		// Detailed status of this port-channel.
+		Status *string `json:"Status,omitempty"`
 		// Switch Identifier that is local to a cluster.
-		SwitchId            *string                              `json:"SwitchId,omitempty"`
-		EquipmentSwitchCard *EquipmentSwitchCardRelationship     `json:"EquipmentSwitchCard,omitempty"`
-		RegisteredDevice    *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		SwitchId            *string                                     `json:"SwitchId,omitempty"`
+		EquipmentSwitchCard NullableEquipmentSwitchCardRelationship     `json:"EquipmentSwitchCard,omitempty"`
+		NetworkElement      NullableNetworkElementRelationship          `json:"NetworkElement,omitempty"`
+		RegisteredDevice    NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	}
 
 	varEtherPortChannelWithoutEmbeddedStruct := EtherPortChannelWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varEtherPortChannelWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varEtherPortChannelWithoutEmbeddedStruct)
 	if err == nil {
 		varEtherPortChannel := _EtherPortChannel{}
 		varEtherPortChannel.ClassId = varEtherPortChannelWithoutEmbeddedStruct.ClassId
@@ -645,15 +1131,25 @@ func (o *EtherPortChannel) UnmarshalJSON(bytes []byte) (err error) {
 		varEtherPortChannel.AccessVlan = varEtherPortChannelWithoutEmbeddedStruct.AccessVlan
 		varEtherPortChannel.AdminState = varEtherPortChannelWithoutEmbeddedStruct.AdminState
 		varEtherPortChannel.AllowedVlans = varEtherPortChannelWithoutEmbeddedStruct.AllowedVlans
+		varEtherPortChannel.BandWidth = varEtherPortChannelWithoutEmbeddedStruct.BandWidth
+		varEtherPortChannel.Description = varEtherPortChannelWithoutEmbeddedStruct.Description
+		varEtherPortChannel.IpAddress = varEtherPortChannelWithoutEmbeddedStruct.IpAddress
+		varEtherPortChannel.IpAddressMask = varEtherPortChannelWithoutEmbeddedStruct.IpAddressMask
+		varEtherPortChannel.Ipv6SubnetCidr = varEtherPortChannelWithoutEmbeddedStruct.Ipv6SubnetCidr
+		varEtherPortChannel.MacAddress = varEtherPortChannelWithoutEmbeddedStruct.MacAddress
 		varEtherPortChannel.Mode = varEtherPortChannelWithoutEmbeddedStruct.Mode
+		varEtherPortChannel.Mtu = varEtherPortChannelWithoutEmbeddedStruct.Mtu
+		varEtherPortChannel.Name = varEtherPortChannelWithoutEmbeddedStruct.Name
 		varEtherPortChannel.NativeVlan = varEtherPortChannelWithoutEmbeddedStruct.NativeVlan
 		varEtherPortChannel.OperSpeed = varEtherPortChannelWithoutEmbeddedStruct.OperSpeed
 		varEtherPortChannel.OperState = varEtherPortChannelWithoutEmbeddedStruct.OperState
 		varEtherPortChannel.OperStateQual = varEtherPortChannelWithoutEmbeddedStruct.OperStateQual
 		varEtherPortChannel.PortChannelId = varEtherPortChannelWithoutEmbeddedStruct.PortChannelId
 		varEtherPortChannel.Role = varEtherPortChannelWithoutEmbeddedStruct.Role
+		varEtherPortChannel.Status = varEtherPortChannelWithoutEmbeddedStruct.Status
 		varEtherPortChannel.SwitchId = varEtherPortChannelWithoutEmbeddedStruct.SwitchId
 		varEtherPortChannel.EquipmentSwitchCard = varEtherPortChannelWithoutEmbeddedStruct.EquipmentSwitchCard
+		varEtherPortChannel.NetworkElement = varEtherPortChannelWithoutEmbeddedStruct.NetworkElement
 		varEtherPortChannel.RegisteredDevice = varEtherPortChannelWithoutEmbeddedStruct.RegisteredDevice
 		*o = EtherPortChannel(varEtherPortChannel)
 	} else {
@@ -662,7 +1158,7 @@ func (o *EtherPortChannel) UnmarshalJSON(bytes []byte) (err error) {
 
 	varEtherPortChannel := _EtherPortChannel{}
 
-	err = json.Unmarshal(bytes, &varEtherPortChannel)
+	err = json.Unmarshal(data, &varEtherPortChannel)
 	if err == nil {
 		o.InventoryInterface = varEtherPortChannel.InventoryInterface
 	} else {
@@ -671,21 +1167,31 @@ func (o *EtherPortChannel) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AccessVlan")
 		delete(additionalProperties, "AdminState")
 		delete(additionalProperties, "AllowedVlans")
+		delete(additionalProperties, "BandWidth")
+		delete(additionalProperties, "Description")
+		delete(additionalProperties, "IpAddress")
+		delete(additionalProperties, "IpAddressMask")
+		delete(additionalProperties, "Ipv6SubnetCidr")
+		delete(additionalProperties, "MacAddress")
 		delete(additionalProperties, "Mode")
+		delete(additionalProperties, "Mtu")
+		delete(additionalProperties, "Name")
 		delete(additionalProperties, "NativeVlan")
 		delete(additionalProperties, "OperSpeed")
 		delete(additionalProperties, "OperState")
 		delete(additionalProperties, "OperStateQual")
 		delete(additionalProperties, "PortChannelId")
 		delete(additionalProperties, "Role")
+		delete(additionalProperties, "Status")
 		delete(additionalProperties, "SwitchId")
 		delete(additionalProperties, "EquipmentSwitchCard")
+		delete(additionalProperties, "NetworkElement")
 		delete(additionalProperties, "RegisteredDevice")
 
 		// remove fields from embedded structs

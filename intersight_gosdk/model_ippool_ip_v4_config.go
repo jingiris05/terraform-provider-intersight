@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the IppoolIpV4Config type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IppoolIpV4Config{}
 
 // IppoolIpV4Config Network interface configuration data for IPv4 interfaces. Netmask, Gateway and DNS settings.
 type IppoolIpV4Config struct {
@@ -25,13 +29,13 @@ type IppoolIpV4Config struct {
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
 	// IP address of the default IPv4 gateway.
-	Gateway *string `json:"Gateway,omitempty"`
+	Gateway *string `json:"Gateway,omitempty" validate:"regexp=^$|^([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	// A subnet mask is a 32-bit number that masks an IP address and divides the IP address into network address and host address.
-	Netmask *string `json:"Netmask,omitempty"`
+	Netmask *string `json:"Netmask,omitempty" validate:"regexp=^$|^(((255\\\\.){3}(255|254|252|248|240|224|192|128|0+))|((255\\\\.){2}(255|254|252|248|240|224|192|128|0+)\\\\.0)|((255\\\\.)(255|254|252|248|240|224|192|128|0+)(\\\\.0+){2})|((255|254|252|248|240|224|192|128|0+)(\\\\.0+){3}))$"`
 	// IP Address of the primary Domain Name System (DNS) server.
-	PrimaryDns *string `json:"PrimaryDns,omitempty"`
+	PrimaryDns *string `json:"PrimaryDns,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	// IP Address of the secondary Domain Name System (DNS) server.
-	SecondaryDns         *string `json:"SecondaryDns,omitempty"`
+	SecondaryDns         *string `json:"SecondaryDns,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -84,6 +88,11 @@ func (o *IppoolIpV4Config) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "ippool.IpV4Config" of the ClassId field.
+func (o *IppoolIpV4Config) GetDefaultClassId() interface{} {
+	return "ippool.IpV4Config"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IppoolIpV4Config) GetObjectType() string {
 	if o == nil {
@@ -108,9 +117,14 @@ func (o *IppoolIpV4Config) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "ippool.IpV4Config" of the ObjectType field.
+func (o *IppoolIpV4Config) GetDefaultObjectType() interface{} {
+	return "ippool.IpV4Config"
+}
+
 // GetGateway returns the Gateway field value if set, zero value otherwise.
 func (o *IppoolIpV4Config) GetGateway() string {
-	if o == nil || o.Gateway == nil {
+	if o == nil || IsNil(o.Gateway) {
 		var ret string
 		return ret
 	}
@@ -120,7 +134,7 @@ func (o *IppoolIpV4Config) GetGateway() string {
 // GetGatewayOk returns a tuple with the Gateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IppoolIpV4Config) GetGatewayOk() (*string, bool) {
-	if o == nil || o.Gateway == nil {
+	if o == nil || IsNil(o.Gateway) {
 		return nil, false
 	}
 	return o.Gateway, true
@@ -128,7 +142,7 @@ func (o *IppoolIpV4Config) GetGatewayOk() (*string, bool) {
 
 // HasGateway returns a boolean if a field has been set.
 func (o *IppoolIpV4Config) HasGateway() bool {
-	if o != nil && o.Gateway != nil {
+	if o != nil && !IsNil(o.Gateway) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *IppoolIpV4Config) SetGateway(v string) {
 
 // GetNetmask returns the Netmask field value if set, zero value otherwise.
 func (o *IppoolIpV4Config) GetNetmask() string {
-	if o == nil || o.Netmask == nil {
+	if o == nil || IsNil(o.Netmask) {
 		var ret string
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *IppoolIpV4Config) GetNetmask() string {
 // GetNetmaskOk returns a tuple with the Netmask field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IppoolIpV4Config) GetNetmaskOk() (*string, bool) {
-	if o == nil || o.Netmask == nil {
+	if o == nil || IsNil(o.Netmask) {
 		return nil, false
 	}
 	return o.Netmask, true
@@ -160,7 +174,7 @@ func (o *IppoolIpV4Config) GetNetmaskOk() (*string, bool) {
 
 // HasNetmask returns a boolean if a field has been set.
 func (o *IppoolIpV4Config) HasNetmask() bool {
-	if o != nil && o.Netmask != nil {
+	if o != nil && !IsNil(o.Netmask) {
 		return true
 	}
 
@@ -174,7 +188,7 @@ func (o *IppoolIpV4Config) SetNetmask(v string) {
 
 // GetPrimaryDns returns the PrimaryDns field value if set, zero value otherwise.
 func (o *IppoolIpV4Config) GetPrimaryDns() string {
-	if o == nil || o.PrimaryDns == nil {
+	if o == nil || IsNil(o.PrimaryDns) {
 		var ret string
 		return ret
 	}
@@ -184,7 +198,7 @@ func (o *IppoolIpV4Config) GetPrimaryDns() string {
 // GetPrimaryDnsOk returns a tuple with the PrimaryDns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IppoolIpV4Config) GetPrimaryDnsOk() (*string, bool) {
-	if o == nil || o.PrimaryDns == nil {
+	if o == nil || IsNil(o.PrimaryDns) {
 		return nil, false
 	}
 	return o.PrimaryDns, true
@@ -192,7 +206,7 @@ func (o *IppoolIpV4Config) GetPrimaryDnsOk() (*string, bool) {
 
 // HasPrimaryDns returns a boolean if a field has been set.
 func (o *IppoolIpV4Config) HasPrimaryDns() bool {
-	if o != nil && o.PrimaryDns != nil {
+	if o != nil && !IsNil(o.PrimaryDns) {
 		return true
 	}
 
@@ -206,7 +220,7 @@ func (o *IppoolIpV4Config) SetPrimaryDns(v string) {
 
 // GetSecondaryDns returns the SecondaryDns field value if set, zero value otherwise.
 func (o *IppoolIpV4Config) GetSecondaryDns() string {
-	if o == nil || o.SecondaryDns == nil {
+	if o == nil || IsNil(o.SecondaryDns) {
 		var ret string
 		return ret
 	}
@@ -216,7 +230,7 @@ func (o *IppoolIpV4Config) GetSecondaryDns() string {
 // GetSecondaryDnsOk returns a tuple with the SecondaryDns field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IppoolIpV4Config) GetSecondaryDnsOk() (*string, bool) {
-	if o == nil || o.SecondaryDns == nil {
+	if o == nil || IsNil(o.SecondaryDns) {
 		return nil, false
 	}
 	return o.SecondaryDns, true
@@ -224,7 +238,7 @@ func (o *IppoolIpV4Config) GetSecondaryDnsOk() (*string, bool) {
 
 // HasSecondaryDns returns a boolean if a field has been set.
 func (o *IppoolIpV4Config) HasSecondaryDns() bool {
-	if o != nil && o.SecondaryDns != nil {
+	if o != nil && !IsNil(o.SecondaryDns) {
 		return true
 	}
 
@@ -237,31 +251,41 @@ func (o *IppoolIpV4Config) SetSecondaryDns(v string) {
 }
 
 func (o IppoolIpV4Config) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IppoolIpV4Config) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Gateway != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Gateway) {
 		toSerialize["Gateway"] = o.Gateway
 	}
-	if o.Netmask != nil {
+	if !IsNil(o.Netmask) {
 		toSerialize["Netmask"] = o.Netmask
 	}
-	if o.PrimaryDns != nil {
+	if !IsNil(o.PrimaryDns) {
 		toSerialize["PrimaryDns"] = o.PrimaryDns
 	}
-	if o.SecondaryDns != nil {
+	if !IsNil(o.SecondaryDns) {
 		toSerialize["SecondaryDns"] = o.SecondaryDns
 	}
 
@@ -269,28 +293,69 @@ func (o IppoolIpV4Config) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IppoolIpV4Config) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IppoolIpV4Config) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IppoolIpV4ConfigWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
 		// IP address of the default IPv4 gateway.
-		Gateway *string `json:"Gateway,omitempty"`
+		Gateway *string `json:"Gateway,omitempty" validate:"regexp=^$|^([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 		// A subnet mask is a 32-bit number that masks an IP address and divides the IP address into network address and host address.
-		Netmask *string `json:"Netmask,omitempty"`
+		Netmask *string `json:"Netmask,omitempty" validate:"regexp=^$|^(((255\\\\.){3}(255|254|252|248|240|224|192|128|0+))|((255\\\\.){2}(255|254|252|248|240|224|192|128|0+)\\\\.0)|((255\\\\.)(255|254|252|248|240|224|192|128|0+)(\\\\.0+){2})|((255|254|252|248|240|224|192|128|0+)(\\\\.0+){3}))$"`
 		// IP Address of the primary Domain Name System (DNS) server.
-		PrimaryDns *string `json:"PrimaryDns,omitempty"`
+		PrimaryDns *string `json:"PrimaryDns,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 		// IP Address of the secondary Domain Name System (DNS) server.
-		SecondaryDns *string `json:"SecondaryDns,omitempty"`
+		SecondaryDns *string `json:"SecondaryDns,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	}
 
 	varIppoolIpV4ConfigWithoutEmbeddedStruct := IppoolIpV4ConfigWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIppoolIpV4ConfigWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIppoolIpV4ConfigWithoutEmbeddedStruct)
 	if err == nil {
 		varIppoolIpV4Config := _IppoolIpV4Config{}
 		varIppoolIpV4Config.ClassId = varIppoolIpV4ConfigWithoutEmbeddedStruct.ClassId
@@ -306,7 +371,7 @@ func (o *IppoolIpV4Config) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIppoolIpV4Config := _IppoolIpV4Config{}
 
-	err = json.Unmarshal(bytes, &varIppoolIpV4Config)
+	err = json.Unmarshal(data, &varIppoolIpV4Config)
 	if err == nil {
 		o.MoBaseComplexType = varIppoolIpV4Config.MoBaseComplexType
 	} else {
@@ -315,7 +380,7 @@ func (o *IppoolIpV4Config) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Gateway")

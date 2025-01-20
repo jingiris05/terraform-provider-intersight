@@ -7,21 +7,20 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "storage.NetAppStorageVm"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.NetAppStorageVm"]
 **Aggregates** | Pointer to **[]string** |  | [optional] 
-**AvgPerformanceMetrics** | Pointer to [**StorageNetAppPerformanceMetricsAverage**](StorageNetAppPerformanceMetricsAverage.md) |  | [optional] 
+**AvgPerformanceMetrics** | Pointer to [**NullableStorageBasePerformanceMetricsAverage**](StorageBasePerformanceMetricsAverage.md) | Average performance metrics data for a NetApp storage resource over a given period of time. | [optional] 
 **CifsEnabled** | Pointer to **bool** | Status for Common Internet File System protocol ( CIFS ) allowed to run on Vservers. | [optional] [readonly] 
 **DnsDomains** | Pointer to **[]string** |  | [optional] 
 **FcpEnabled** | Pointer to **bool** | Status for Fibre Channel Protocol ( FCP ) allowed to run on Vservers. | [optional] [readonly] 
 **Ipspace** | Pointer to **string** | IPspace name. IPspaces are distinct IP address spaces in which storage virtual machines (SVMs) reside. | [optional] [readonly] 
+**IsProtected** | Pointer to **string** | Specifies whether the Storage VM is a SnapMirror source Storage VM, using SnapMirror to protect its data. | [optional] [readonly] 
 **IscsiEnabled** | Pointer to **bool** | Status for iSCSI protocol allowed to run on Vservers. | [optional] [readonly] 
 **Key** | Pointer to **string** | Unique identifier of VServer across data center. | [optional] [readonly] 
 **NameServers** | Pointer to **[]string** |  | [optional] 
+**NativeFpolicyCount** | Pointer to **int64** | The number of native FPolicy engines enabled on this SVM. | [optional] [readonly] 
 **NfsEnabled** | Pointer to **bool** | Status for Network File System Protocol ( NFS ) allowed to run on  Vservers. | [optional] [readonly] 
-**NfsV3Enabled** | Pointer to **bool** | Status for Network File System Protocol ( NFSv3 ) allowed to run on  Vservers. | [optional] [readonly] 
-**NfsV41Enabled** | Pointer to **bool** | Status for Network File System Protocol ( NFSv4.1 ) allowed to run on  Vservers. | [optional] [readonly] 
-**NfsV4Enabled** | Pointer to **bool** | Status for Network File System Protocol ( NFSv4 ) allowed to run on  Vservers. | [optional] [readonly] 
 **NvmeEnabled** | Pointer to **bool** | Status for NVME protocol allowed to run on Vservers. | [optional] [readonly] 
 **Subtype** | Pointer to **string** | SVM subtype (default, dp_destination, sync_source, or sync_destination). The SVM subtype sync_destination is created automatically when an SVM of subtype sync_source is created on the source MetroCluster cluster. | [optional] [readonly] 
-**Array** | Pointer to [**StorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
+**Array** | Pointer to [**NullableStorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
 **DiskPool** | Pointer to [**[]StorageNetAppAggregateRelationship**](StorageNetAppAggregateRelationship.md) | An array of relationships to storageNetAppAggregate resources. | [optional] [readonly] 
 **Events** | Pointer to [**[]StorageNetAppSvmEventRelationship**](StorageNetAppSvmEventRelationship.md) | An array of relationships to storageNetAppSvmEvent resources. | [optional] [readonly] 
 
@@ -121,20 +120,20 @@ HasAggregates returns a boolean if a field has been set.
 UnsetAggregates ensures that no value is present for Aggregates, not even an explicit nil
 ### GetAvgPerformanceMetrics
 
-`func (o *StorageNetAppStorageVm) GetAvgPerformanceMetrics() StorageNetAppPerformanceMetricsAverage`
+`func (o *StorageNetAppStorageVm) GetAvgPerformanceMetrics() StorageBasePerformanceMetricsAverage`
 
 GetAvgPerformanceMetrics returns the AvgPerformanceMetrics field if non-nil, zero value otherwise.
 
 ### GetAvgPerformanceMetricsOk
 
-`func (o *StorageNetAppStorageVm) GetAvgPerformanceMetricsOk() (*StorageNetAppPerformanceMetricsAverage, bool)`
+`func (o *StorageNetAppStorageVm) GetAvgPerformanceMetricsOk() (*StorageBasePerformanceMetricsAverage, bool)`
 
 GetAvgPerformanceMetricsOk returns a tuple with the AvgPerformanceMetrics field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAvgPerformanceMetrics
 
-`func (o *StorageNetAppStorageVm) SetAvgPerformanceMetrics(v StorageNetAppPerformanceMetricsAverage)`
+`func (o *StorageNetAppStorageVm) SetAvgPerformanceMetrics(v StorageBasePerformanceMetricsAverage)`
 
 SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
@@ -144,6 +143,16 @@ SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
 HasAvgPerformanceMetrics returns a boolean if a field has been set.
 
+### SetAvgPerformanceMetricsNil
+
+`func (o *StorageNetAppStorageVm) SetAvgPerformanceMetricsNil(b bool)`
+
+ SetAvgPerformanceMetricsNil sets the value for AvgPerformanceMetrics to be an explicit nil
+
+### UnsetAvgPerformanceMetrics
+`func (o *StorageNetAppStorageVm) UnsetAvgPerformanceMetrics()`
+
+UnsetAvgPerformanceMetrics ensures that no value is present for AvgPerformanceMetrics, not even an explicit nil
 ### GetCifsEnabled
 
 `func (o *StorageNetAppStorageVm) GetCifsEnabled() bool`
@@ -254,6 +263,31 @@ SetIpspace sets Ipspace field to given value.
 
 HasIpspace returns a boolean if a field has been set.
 
+### GetIsProtected
+
+`func (o *StorageNetAppStorageVm) GetIsProtected() string`
+
+GetIsProtected returns the IsProtected field if non-nil, zero value otherwise.
+
+### GetIsProtectedOk
+
+`func (o *StorageNetAppStorageVm) GetIsProtectedOk() (*string, bool)`
+
+GetIsProtectedOk returns a tuple with the IsProtected field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsProtected
+
+`func (o *StorageNetAppStorageVm) SetIsProtected(v string)`
+
+SetIsProtected sets IsProtected field to given value.
+
+### HasIsProtected
+
+`func (o *StorageNetAppStorageVm) HasIsProtected() bool`
+
+HasIsProtected returns a boolean if a field has been set.
+
 ### GetIscsiEnabled
 
 `func (o *StorageNetAppStorageVm) GetIscsiEnabled() bool`
@@ -339,6 +373,31 @@ HasNameServers returns a boolean if a field has been set.
 `func (o *StorageNetAppStorageVm) UnsetNameServers()`
 
 UnsetNameServers ensures that no value is present for NameServers, not even an explicit nil
+### GetNativeFpolicyCount
+
+`func (o *StorageNetAppStorageVm) GetNativeFpolicyCount() int64`
+
+GetNativeFpolicyCount returns the NativeFpolicyCount field if non-nil, zero value otherwise.
+
+### GetNativeFpolicyCountOk
+
+`func (o *StorageNetAppStorageVm) GetNativeFpolicyCountOk() (*int64, bool)`
+
+GetNativeFpolicyCountOk returns a tuple with the NativeFpolicyCount field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNativeFpolicyCount
+
+`func (o *StorageNetAppStorageVm) SetNativeFpolicyCount(v int64)`
+
+SetNativeFpolicyCount sets NativeFpolicyCount field to given value.
+
+### HasNativeFpolicyCount
+
+`func (o *StorageNetAppStorageVm) HasNativeFpolicyCount() bool`
+
+HasNativeFpolicyCount returns a boolean if a field has been set.
+
 ### GetNfsEnabled
 
 `func (o *StorageNetAppStorageVm) GetNfsEnabled() bool`
@@ -363,81 +422,6 @@ SetNfsEnabled sets NfsEnabled field to given value.
 `func (o *StorageNetAppStorageVm) HasNfsEnabled() bool`
 
 HasNfsEnabled returns a boolean if a field has been set.
-
-### GetNfsV3Enabled
-
-`func (o *StorageNetAppStorageVm) GetNfsV3Enabled() bool`
-
-GetNfsV3Enabled returns the NfsV3Enabled field if non-nil, zero value otherwise.
-
-### GetNfsV3EnabledOk
-
-`func (o *StorageNetAppStorageVm) GetNfsV3EnabledOk() (*bool, bool)`
-
-GetNfsV3EnabledOk returns a tuple with the NfsV3Enabled field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetNfsV3Enabled
-
-`func (o *StorageNetAppStorageVm) SetNfsV3Enabled(v bool)`
-
-SetNfsV3Enabled sets NfsV3Enabled field to given value.
-
-### HasNfsV3Enabled
-
-`func (o *StorageNetAppStorageVm) HasNfsV3Enabled() bool`
-
-HasNfsV3Enabled returns a boolean if a field has been set.
-
-### GetNfsV41Enabled
-
-`func (o *StorageNetAppStorageVm) GetNfsV41Enabled() bool`
-
-GetNfsV41Enabled returns the NfsV41Enabled field if non-nil, zero value otherwise.
-
-### GetNfsV41EnabledOk
-
-`func (o *StorageNetAppStorageVm) GetNfsV41EnabledOk() (*bool, bool)`
-
-GetNfsV41EnabledOk returns a tuple with the NfsV41Enabled field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetNfsV41Enabled
-
-`func (o *StorageNetAppStorageVm) SetNfsV41Enabled(v bool)`
-
-SetNfsV41Enabled sets NfsV41Enabled field to given value.
-
-### HasNfsV41Enabled
-
-`func (o *StorageNetAppStorageVm) HasNfsV41Enabled() bool`
-
-HasNfsV41Enabled returns a boolean if a field has been set.
-
-### GetNfsV4Enabled
-
-`func (o *StorageNetAppStorageVm) GetNfsV4Enabled() bool`
-
-GetNfsV4Enabled returns the NfsV4Enabled field if non-nil, zero value otherwise.
-
-### GetNfsV4EnabledOk
-
-`func (o *StorageNetAppStorageVm) GetNfsV4EnabledOk() (*bool, bool)`
-
-GetNfsV4EnabledOk returns a tuple with the NfsV4Enabled field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetNfsV4Enabled
-
-`func (o *StorageNetAppStorageVm) SetNfsV4Enabled(v bool)`
-
-SetNfsV4Enabled sets NfsV4Enabled field to given value.
-
-### HasNfsV4Enabled
-
-`func (o *StorageNetAppStorageVm) HasNfsV4Enabled() bool`
-
-HasNfsV4Enabled returns a boolean if a field has been set.
 
 ### GetNvmeEnabled
 
@@ -514,6 +498,16 @@ SetArray sets Array field to given value.
 
 HasArray returns a boolean if a field has been set.
 
+### SetArrayNil
+
+`func (o *StorageNetAppStorageVm) SetArrayNil(b bool)`
+
+ SetArrayNil sets the value for Array to be an explicit nil
+
+### UnsetArray
+`func (o *StorageNetAppStorageVm) UnsetArray()`
+
+UnsetArray ensures that no value is present for Array, not even an explicit nil
 ### GetDiskPool
 
 `func (o *StorageNetAppStorageVm) GetDiskPool() []StorageNetAppAggregateRelationship`

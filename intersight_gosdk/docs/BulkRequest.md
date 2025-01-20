@@ -16,14 +16,14 @@ Name | Type | Description | Notes
 **Requests** | Pointer to [**[]BulkSubRequest**](BulkSubRequest.md) |  | [optional] 
 **Results** | Pointer to [**[]BulkApiResult**](BulkApiResult.md) |  | [optional] 
 **SkipDuplicates** | Pointer to **bool** | Skip the already present objects. | [optional] 
-**Status** | Pointer to **string** | The processing status of the Request. * &#x60;NotStarted&#x60; - Indicates that the request processing has not begun yet. * &#x60;ObjPresenceCheckInProgress&#x60; - Indicates that the object presence check is in progress for this request. * &#x60;ObjPresenceCheckComplete&#x60; - Indicates that the object presence check is complete. * &#x60;ExecutionInProgress&#x60; - Indicates that the request processing is in progress. * &#x60;Completed&#x60; - Indicates that the request processing has been completed successfully. * &#x60;Failed&#x60; - Indicates that the processing of this request failed. | [optional] [readonly] [default to "NotStarted"]
+**Status** | Pointer to **string** | The processing status of the Request. * &#x60;NotStarted&#x60; - Indicates that the request processing has not begun yet. * &#x60;ObjPresenceCheckInProgress&#x60; - Indicates that the object presence check is in progress for this request. * &#x60;ObjPresenceCheckComplete&#x60; - Indicates that the object presence check is complete. * &#x60;ExecutionInProgress&#x60; - Indicates that the request processing is in progress. * &#x60;Completed&#x60; - Indicates that the request processing has been completed successfully. * &#x60;CompletedWithErrors&#x60; - Indicates that the request processing has one or more failed subrequests. * &#x60;Failed&#x60; - Indicates that the processing of this request failed. * &#x60;TimedOut&#x60; - Indicates that the request processing timed out. | [optional] [readonly] [default to "NotStarted"]
 **StatusMessage** | Pointer to **string** | The status message corresponding to the status. | [optional] [readonly] 
 **Uri** | Pointer to **string** | The URI on which this bulk action is to be performed. The value will be used when there is no override in the SubRequest. | [optional] 
 **Verb** | Pointer to **string** | The type of operation to be performed. One of - Post (Create), Patch (Update) or Delete (Remove). The value will be used when there is no override in the SubRequest. * &#x60;POST&#x60; - Used to create a REST resource. * &#x60;PATCH&#x60; - Used to update a REST resource. * &#x60;DELETE&#x60; - Used to delete a REST resource. | [optional] [default to "POST"]
 **AsyncResults** | Pointer to [**[]BulkSubRequestObjRelationship**](BulkSubRequestObjRelationship.md) | An array of relationships to bulkSubRequestObj resources. | [optional] [readonly] 
 **AsyncResultsFailed** | Pointer to [**[]BulkSubRequestObjRelationship**](BulkSubRequestObjRelationship.md) | An array of relationships to bulkSubRequestObj resources. | [optional] [readonly] 
-**Organization** | Pointer to [**OrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
-**WorkflowInfo** | Pointer to [**WorkflowWorkflowInfoRelationship**](WorkflowWorkflowInfoRelationship.md) |  | [optional] 
+**Organization** | Pointer to [**NullableOrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**WorkflowInfo** | Pointer to [**NullableWorkflowWorkflowInfoRelationship**](WorkflowWorkflowInfoRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -569,6 +569,16 @@ SetOrganization sets Organization field to given value.
 
 HasOrganization returns a boolean if a field has been set.
 
+### SetOrganizationNil
+
+`func (o *BulkRequest) SetOrganizationNil(b bool)`
+
+ SetOrganizationNil sets the value for Organization to be an explicit nil
+
+### UnsetOrganization
+`func (o *BulkRequest) UnsetOrganization()`
+
+UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
 ### GetWorkflowInfo
 
 `func (o *BulkRequest) GetWorkflowInfo() WorkflowWorkflowInfoRelationship`
@@ -594,6 +604,16 @@ SetWorkflowInfo sets WorkflowInfo field to given value.
 
 HasWorkflowInfo returns a boolean if a field has been set.
 
+### SetWorkflowInfoNil
+
+`func (o *BulkRequest) SetWorkflowInfoNil(b bool)`
+
+ SetWorkflowInfoNil sets the value for WorkflowInfo to be an explicit nil
+
+### UnsetWorkflowInfo
+`func (o *BulkRequest) UnsetWorkflowInfo()`
+
+UnsetWorkflowInfo ensures that no value is present for WorkflowInfo, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

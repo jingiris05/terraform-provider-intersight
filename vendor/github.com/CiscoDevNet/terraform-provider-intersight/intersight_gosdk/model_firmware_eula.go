@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the FirmwareEula type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &FirmwareEula{}
 
 // FirmwareEula End User License Agreement (EULA) acceptance status for an account to access cisco.com and download software.
 type FirmwareEula struct {
@@ -24,11 +28,19 @@ type FirmwareEula struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// EULA acceptance status for the account.
+	// Overall acceptance status for the account, both EULA and K9.
 	Accepted *bool `json:"Accepted,omitempty"`
+	// Acceptance form content provided by cisco.com.
+	Content *string `json:"Content,omitempty"`
+	// EULA acceptance status for the account.
+	EulaAccepted *bool `json:"EulaAccepted,omitempty"`
 	// EULA acceptance form content provided by cisco.com.
-	Content              *string                 `json:"Content,omitempty"`
-	Account              *IamAccountRelationship `json:"Account,omitempty"`
+	EulaContent *string `json:"EulaContent,omitempty"`
+	// K9 acceptance status for the account.
+	K9Accepted *bool `json:"K9Accepted,omitempty"`
+	// K9 acceptance form content provided by cisco.com.
+	K9Content            *string                        `json:"K9Content,omitempty"`
+	Account              NullableIamAccountRelationship `json:"Account,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -81,6 +93,11 @@ func (o *FirmwareEula) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "firmware.Eula" of the ClassId field.
+func (o *FirmwareEula) GetDefaultClassId() interface{} {
+	return "firmware.Eula"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *FirmwareEula) GetObjectType() string {
 	if o == nil {
@@ -105,9 +122,14 @@ func (o *FirmwareEula) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "firmware.Eula" of the ObjectType field.
+func (o *FirmwareEula) GetDefaultObjectType() interface{} {
+	return "firmware.Eula"
+}
+
 // GetAccepted returns the Accepted field value if set, zero value otherwise.
 func (o *FirmwareEula) GetAccepted() bool {
-	if o == nil || o.Accepted == nil {
+	if o == nil || IsNil(o.Accepted) {
 		var ret bool
 		return ret
 	}
@@ -117,7 +139,7 @@ func (o *FirmwareEula) GetAccepted() bool {
 // GetAcceptedOk returns a tuple with the Accepted field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FirmwareEula) GetAcceptedOk() (*bool, bool) {
-	if o == nil || o.Accepted == nil {
+	if o == nil || IsNil(o.Accepted) {
 		return nil, false
 	}
 	return o.Accepted, true
@@ -125,7 +147,7 @@ func (o *FirmwareEula) GetAcceptedOk() (*bool, bool) {
 
 // HasAccepted returns a boolean if a field has been set.
 func (o *FirmwareEula) HasAccepted() bool {
-	if o != nil && o.Accepted != nil {
+	if o != nil && !IsNil(o.Accepted) {
 		return true
 	}
 
@@ -139,7 +161,7 @@ func (o *FirmwareEula) SetAccepted(v bool) {
 
 // GetContent returns the Content field value if set, zero value otherwise.
 func (o *FirmwareEula) GetContent() string {
-	if o == nil || o.Content == nil {
+	if o == nil || IsNil(o.Content) {
 		var ret string
 		return ret
 	}
@@ -149,7 +171,7 @@ func (o *FirmwareEula) GetContent() string {
 // GetContentOk returns a tuple with the Content field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *FirmwareEula) GetContentOk() (*string, bool) {
-	if o == nil || o.Content == nil {
+	if o == nil || IsNil(o.Content) {
 		return nil, false
 	}
 	return o.Content, true
@@ -157,7 +179,7 @@ func (o *FirmwareEula) GetContentOk() (*string, bool) {
 
 // HasContent returns a boolean if a field has been set.
 func (o *FirmwareEula) HasContent() bool {
-	if o != nil && o.Content != nil {
+	if o != nil && !IsNil(o.Content) {
 		return true
 	}
 
@@ -169,93 +191,307 @@ func (o *FirmwareEula) SetContent(v string) {
 	o.Content = &v
 }
 
-// GetAccount returns the Account field value if set, zero value otherwise.
-func (o *FirmwareEula) GetAccount() IamAccountRelationship {
-	if o == nil || o.Account == nil {
-		var ret IamAccountRelationship
+// GetEulaAccepted returns the EulaAccepted field value if set, zero value otherwise.
+func (o *FirmwareEula) GetEulaAccepted() bool {
+	if o == nil || IsNil(o.EulaAccepted) {
+		var ret bool
 		return ret
 	}
-	return *o.Account
+	return *o.EulaAccepted
 }
 
-// GetAccountOk returns a tuple with the Account field value if set, nil otherwise
+// GetEulaAcceptedOk returns a tuple with the EulaAccepted field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *FirmwareEula) GetAccountOk() (*IamAccountRelationship, bool) {
-	if o == nil || o.Account == nil {
+func (o *FirmwareEula) GetEulaAcceptedOk() (*bool, bool) {
+	if o == nil || IsNil(o.EulaAccepted) {
 		return nil, false
 	}
-	return o.Account, true
+	return o.EulaAccepted, true
 }
 
-// HasAccount returns a boolean if a field has been set.
-func (o *FirmwareEula) HasAccount() bool {
-	if o != nil && o.Account != nil {
+// HasEulaAccepted returns a boolean if a field has been set.
+func (o *FirmwareEula) HasEulaAccepted() bool {
+	if o != nil && !IsNil(o.EulaAccepted) {
 		return true
 	}
 
 	return false
 }
 
-// SetAccount gets a reference to the given IamAccountRelationship and assigns it to the Account field.
+// SetEulaAccepted gets a reference to the given bool and assigns it to the EulaAccepted field.
+func (o *FirmwareEula) SetEulaAccepted(v bool) {
+	o.EulaAccepted = &v
+}
+
+// GetEulaContent returns the EulaContent field value if set, zero value otherwise.
+func (o *FirmwareEula) GetEulaContent() string {
+	if o == nil || IsNil(o.EulaContent) {
+		var ret string
+		return ret
+	}
+	return *o.EulaContent
+}
+
+// GetEulaContentOk returns a tuple with the EulaContent field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FirmwareEula) GetEulaContentOk() (*string, bool) {
+	if o == nil || IsNil(o.EulaContent) {
+		return nil, false
+	}
+	return o.EulaContent, true
+}
+
+// HasEulaContent returns a boolean if a field has been set.
+func (o *FirmwareEula) HasEulaContent() bool {
+	if o != nil && !IsNil(o.EulaContent) {
+		return true
+	}
+
+	return false
+}
+
+// SetEulaContent gets a reference to the given string and assigns it to the EulaContent field.
+func (o *FirmwareEula) SetEulaContent(v string) {
+	o.EulaContent = &v
+}
+
+// GetK9Accepted returns the K9Accepted field value if set, zero value otherwise.
+func (o *FirmwareEula) GetK9Accepted() bool {
+	if o == nil || IsNil(o.K9Accepted) {
+		var ret bool
+		return ret
+	}
+	return *o.K9Accepted
+}
+
+// GetK9AcceptedOk returns a tuple with the K9Accepted field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FirmwareEula) GetK9AcceptedOk() (*bool, bool) {
+	if o == nil || IsNil(o.K9Accepted) {
+		return nil, false
+	}
+	return o.K9Accepted, true
+}
+
+// HasK9Accepted returns a boolean if a field has been set.
+func (o *FirmwareEula) HasK9Accepted() bool {
+	if o != nil && !IsNil(o.K9Accepted) {
+		return true
+	}
+
+	return false
+}
+
+// SetK9Accepted gets a reference to the given bool and assigns it to the K9Accepted field.
+func (o *FirmwareEula) SetK9Accepted(v bool) {
+	o.K9Accepted = &v
+}
+
+// GetK9Content returns the K9Content field value if set, zero value otherwise.
+func (o *FirmwareEula) GetK9Content() string {
+	if o == nil || IsNil(o.K9Content) {
+		var ret string
+		return ret
+	}
+	return *o.K9Content
+}
+
+// GetK9ContentOk returns a tuple with the K9Content field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *FirmwareEula) GetK9ContentOk() (*string, bool) {
+	if o == nil || IsNil(o.K9Content) {
+		return nil, false
+	}
+	return o.K9Content, true
+}
+
+// HasK9Content returns a boolean if a field has been set.
+func (o *FirmwareEula) HasK9Content() bool {
+	if o != nil && !IsNil(o.K9Content) {
+		return true
+	}
+
+	return false
+}
+
+// SetK9Content gets a reference to the given string and assigns it to the K9Content field.
+func (o *FirmwareEula) SetK9Content(v string) {
+	o.K9Content = &v
+}
+
+// GetAccount returns the Account field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FirmwareEula) GetAccount() IamAccountRelationship {
+	if o == nil || IsNil(o.Account.Get()) {
+		var ret IamAccountRelationship
+		return ret
+	}
+	return *o.Account.Get()
+}
+
+// GetAccountOk returns a tuple with the Account field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FirmwareEula) GetAccountOk() (*IamAccountRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Account.Get(), o.Account.IsSet()
+}
+
+// HasAccount returns a boolean if a field has been set.
+func (o *FirmwareEula) HasAccount() bool {
+	if o != nil && o.Account.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAccount gets a reference to the given NullableIamAccountRelationship and assigns it to the Account field.
 func (o *FirmwareEula) SetAccount(v IamAccountRelationship) {
-	o.Account = &v
+	o.Account.Set(&v)
+}
+
+// SetAccountNil sets the value for Account to be an explicit nil
+func (o *FirmwareEula) SetAccountNil() {
+	o.Account.Set(nil)
+}
+
+// UnsetAccount ensures that no value is present for Account, not even an explicit nil
+func (o *FirmwareEula) UnsetAccount() {
+	o.Account.Unset()
 }
 
 func (o FirmwareEula) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o FirmwareEula) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Accepted != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Accepted) {
 		toSerialize["Accepted"] = o.Accepted
 	}
-	if o.Content != nil {
+	if !IsNil(o.Content) {
 		toSerialize["Content"] = o.Content
 	}
-	if o.Account != nil {
-		toSerialize["Account"] = o.Account
+	if !IsNil(o.EulaAccepted) {
+		toSerialize["EulaAccepted"] = o.EulaAccepted
+	}
+	if !IsNil(o.EulaContent) {
+		toSerialize["EulaContent"] = o.EulaContent
+	}
+	if !IsNil(o.K9Accepted) {
+		toSerialize["K9Accepted"] = o.K9Accepted
+	}
+	if !IsNil(o.K9Content) {
+		toSerialize["K9Content"] = o.K9Content
+	}
+	if o.Account.IsSet() {
+		toSerialize["Account"] = o.Account.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *FirmwareEula) UnmarshalJSON(bytes []byte) (err error) {
+func (o *FirmwareEula) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type FirmwareEulaWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// EULA acceptance status for the account.
+		// Overall acceptance status for the account, both EULA and K9.
 		Accepted *bool `json:"Accepted,omitempty"`
+		// Acceptance form content provided by cisco.com.
+		Content *string `json:"Content,omitempty"`
+		// EULA acceptance status for the account.
+		EulaAccepted *bool `json:"EulaAccepted,omitempty"`
 		// EULA acceptance form content provided by cisco.com.
-		Content *string                 `json:"Content,omitempty"`
-		Account *IamAccountRelationship `json:"Account,omitempty"`
+		EulaContent *string `json:"EulaContent,omitempty"`
+		// K9 acceptance status for the account.
+		K9Accepted *bool `json:"K9Accepted,omitempty"`
+		// K9 acceptance form content provided by cisco.com.
+		K9Content *string                        `json:"K9Content,omitempty"`
+		Account   NullableIamAccountRelationship `json:"Account,omitempty"`
 	}
 
 	varFirmwareEulaWithoutEmbeddedStruct := FirmwareEulaWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varFirmwareEulaWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varFirmwareEulaWithoutEmbeddedStruct)
 	if err == nil {
 		varFirmwareEula := _FirmwareEula{}
 		varFirmwareEula.ClassId = varFirmwareEulaWithoutEmbeddedStruct.ClassId
 		varFirmwareEula.ObjectType = varFirmwareEulaWithoutEmbeddedStruct.ObjectType
 		varFirmwareEula.Accepted = varFirmwareEulaWithoutEmbeddedStruct.Accepted
 		varFirmwareEula.Content = varFirmwareEulaWithoutEmbeddedStruct.Content
+		varFirmwareEula.EulaAccepted = varFirmwareEulaWithoutEmbeddedStruct.EulaAccepted
+		varFirmwareEula.EulaContent = varFirmwareEulaWithoutEmbeddedStruct.EulaContent
+		varFirmwareEula.K9Accepted = varFirmwareEulaWithoutEmbeddedStruct.K9Accepted
+		varFirmwareEula.K9Content = varFirmwareEulaWithoutEmbeddedStruct.K9Content
 		varFirmwareEula.Account = varFirmwareEulaWithoutEmbeddedStruct.Account
 		*o = FirmwareEula(varFirmwareEula)
 	} else {
@@ -264,7 +500,7 @@ func (o *FirmwareEula) UnmarshalJSON(bytes []byte) (err error) {
 
 	varFirmwareEula := _FirmwareEula{}
 
-	err = json.Unmarshal(bytes, &varFirmwareEula)
+	err = json.Unmarshal(data, &varFirmwareEula)
 	if err == nil {
 		o.MoBaseMo = varFirmwareEula.MoBaseMo
 	} else {
@@ -273,11 +509,15 @@ func (o *FirmwareEula) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Accepted")
 		delete(additionalProperties, "Content")
+		delete(additionalProperties, "EulaAccepted")
+		delete(additionalProperties, "EulaContent")
+		delete(additionalProperties, "K9Accepted")
+		delete(additionalProperties, "K9Content")
 		delete(additionalProperties, "Account")
 
 		// remove fields from embedded structs

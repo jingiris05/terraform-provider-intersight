@@ -7,7 +7,8 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "macpool.IdBlock"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "macpool.IdBlock"]
 **MacBlock** | Pointer to [**MacpoolBlock**](MacpoolBlock.md) |  | [optional] 
-**Pool** | Pointer to [**MacpoolPoolRelationship**](MacpoolPoolRelationship.md) |  | [optional] 
+**Pool** | Pointer to [**NullableMacpoolPoolRelationship**](MacpoolPoolRelationship.md) |  | [optional] 
+**Reservations** | Pointer to [**[]MacpoolReservationRelationship**](MacpoolReservationRelationship.md) | An array of relationships to macpoolReservation resources. | [optional] [readonly] 
 
 ## Methods
 
@@ -118,6 +119,51 @@ SetPool sets Pool field to given value.
 
 HasPool returns a boolean if a field has been set.
 
+### SetPoolNil
+
+`func (o *MacpoolIdBlock) SetPoolNil(b bool)`
+
+ SetPoolNil sets the value for Pool to be an explicit nil
+
+### UnsetPool
+`func (o *MacpoolIdBlock) UnsetPool()`
+
+UnsetPool ensures that no value is present for Pool, not even an explicit nil
+### GetReservations
+
+`func (o *MacpoolIdBlock) GetReservations() []MacpoolReservationRelationship`
+
+GetReservations returns the Reservations field if non-nil, zero value otherwise.
+
+### GetReservationsOk
+
+`func (o *MacpoolIdBlock) GetReservationsOk() (*[]MacpoolReservationRelationship, bool)`
+
+GetReservationsOk returns a tuple with the Reservations field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReservations
+
+`func (o *MacpoolIdBlock) SetReservations(v []MacpoolReservationRelationship)`
+
+SetReservations sets Reservations field to given value.
+
+### HasReservations
+
+`func (o *MacpoolIdBlock) HasReservations() bool`
+
+HasReservations returns a boolean if a field has been set.
+
+### SetReservationsNil
+
+`func (o *MacpoolIdBlock) SetReservationsNil(b bool)`
+
+ SetReservationsNil sets the value for Reservations to be an explicit nil
+
+### UnsetReservations
+`func (o *MacpoolIdBlock) UnsetReservations()`
+
+UnsetReservations ensures that no value is present for Reservations, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

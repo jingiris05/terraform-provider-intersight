@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the TamMilestone type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &TamMilestone{}
 
 // TamMilestone Cisco recognizes that end-of-life (EOL) milestones often prompt companies to review the way in which such milestones  impact the Cisco products in their networks. With that in mind, Cisco has set out End of Product Lifecycle milestones to help manage the EOL transitions and to explain the role that Cisco can play in helping to migrate to alternative Cisco products and technology.
 type TamMilestone struct {
@@ -31,9 +35,9 @@ type TamMilestone struct {
 	Description *string `json:"Description,omitempty"`
 	// Number of days (exclusive) relative to the milestone date when the milestone is considered to be not in effect. A nagative number indicates number of days ahead of the milestone date. The default is 2147483647 (0x7FFFFFFF) which means the milestone date range's upper bound is omitted.
 	EndOffset *int32 `json:"EndOffset,omitempty"`
-	// Extra hint to the type of label to be used in display in addition to severity and effective date. How to use it is at UI's descretion. * `upcoming` - This end-of-life (EOL) milestone is upcoming. The label may be changed to more urgent type such as 'imminent' as time progress approaching effective date. * `imminent` - This end-of-life (EOL) milestone is imminent. There will be no label change before the effective date. * `past` - This end-of-life (EOL) milestone has past the effective date.
+	// Extra hint to the type of label to be used in display in addition to severity and effective date. How to use it is at UI's descretion. * `upcoming` - This end-of-life (EOL) milestone is upcoming. The label may be changed to more urgent type such as 'imminent' as time progress approaching effective date. * `imminent` - This end-of-life (EOL) milestone is imminent. There will be no label change before the effective date. * `past` - This end-of-life (EOL) milestone has past the effective date. * `info` - This end-of-life (EOL) milestone for informative purpose.
 	LabelHint *string `json:"LabelHint,omitempty"`
-	// Milestone type as defined in Cisco end-of-life (EOL) policy (https://www.cisco.com/c/en/us/products/eos-eol-policy.html) when the specified end-of-life milestone advisory is reached. * `unknown` - The type of end-of-life milestone is not defined. * `endOfSoftwareMaintenanceDate` - The last date that Cisco Engineering may release any final software maintenance releases or bug fixes. After this date, Cisco Engineering may no longer develop, repair, maintain, or test the product software and only critical security updates will be provided on this release train.  * `lastDateOfSupport` - The last date to receive service and support for the software. After this date, all support services for the software are unavailable, and the software becomes obsolete.
+	// Milestone type as defined in Cisco end-of-life (EOL) policy (https://www.cisco.com/c/en/us/products/eos-eol-policy.html) when the specified end-of-life milestone advisory is reached. * `unknown` - The type of end-of-life milestone is not defined. * `endOfSoftwareMaintenanceDate` - The last date that Cisco Engineering may release any final software maintenance releases or bug fixes. After this date, Cisco Engineering may no longer develop, repair, maintain, or test the product software and only critical security updates will be provided on this release train.  * `lastDateOfSupport` - The last date to receive service and support for the software. After this date, all support services for the software are unavailable, and the software becomes obsolete.  * `endOfLifeAnnouncementDate` - The date the document that announces the end-of-sale and end-of-life of a product is distributed to the general public.
 	MilestoneType *string `json:"MilestoneType,omitempty"`
 	// A milestone defined by an end-of-life advisory.
 	Name *string `json:"Name,omitempty"`
@@ -107,6 +111,11 @@ func (o *TamMilestone) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "tam.Milestone" of the ClassId field.
+func (o *TamMilestone) GetDefaultClassId() interface{} {
+	return "tam.Milestone"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *TamMilestone) GetObjectType() string {
 	if o == nil {
@@ -131,9 +140,14 @@ func (o *TamMilestone) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "tam.Milestone" of the ObjectType field.
+func (o *TamMilestone) GetDefaultObjectType() interface{} {
+	return "tam.Milestone"
+}
+
 // GetDate returns the Date field value if set, zero value otherwise.
 func (o *TamMilestone) GetDate() time.Time {
-	if o == nil || o.Date == nil {
+	if o == nil || IsNil(o.Date) {
 		var ret time.Time
 		return ret
 	}
@@ -143,7 +157,7 @@ func (o *TamMilestone) GetDate() time.Time {
 // GetDateOk returns a tuple with the Date field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamMilestone) GetDateOk() (*time.Time, bool) {
-	if o == nil || o.Date == nil {
+	if o == nil || IsNil(o.Date) {
 		return nil, false
 	}
 	return o.Date, true
@@ -151,7 +165,7 @@ func (o *TamMilestone) GetDateOk() (*time.Time, bool) {
 
 // HasDate returns a boolean if a field has been set.
 func (o *TamMilestone) HasDate() bool {
-	if o != nil && o.Date != nil {
+	if o != nil && !IsNil(o.Date) {
 		return true
 	}
 
@@ -165,7 +179,7 @@ func (o *TamMilestone) SetDate(v time.Time) {
 
 // GetDescription returns the Description field value if set, zero value otherwise.
 func (o *TamMilestone) GetDescription() string {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		var ret string
 		return ret
 	}
@@ -175,7 +189,7 @@ func (o *TamMilestone) GetDescription() string {
 // GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamMilestone) GetDescriptionOk() (*string, bool) {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		return nil, false
 	}
 	return o.Description, true
@@ -183,7 +197,7 @@ func (o *TamMilestone) GetDescriptionOk() (*string, bool) {
 
 // HasDescription returns a boolean if a field has been set.
 func (o *TamMilestone) HasDescription() bool {
-	if o != nil && o.Description != nil {
+	if o != nil && !IsNil(o.Description) {
 		return true
 	}
 
@@ -197,7 +211,7 @@ func (o *TamMilestone) SetDescription(v string) {
 
 // GetEndOffset returns the EndOffset field value if set, zero value otherwise.
 func (o *TamMilestone) GetEndOffset() int32 {
-	if o == nil || o.EndOffset == nil {
+	if o == nil || IsNil(o.EndOffset) {
 		var ret int32
 		return ret
 	}
@@ -207,7 +221,7 @@ func (o *TamMilestone) GetEndOffset() int32 {
 // GetEndOffsetOk returns a tuple with the EndOffset field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamMilestone) GetEndOffsetOk() (*int32, bool) {
-	if o == nil || o.EndOffset == nil {
+	if o == nil || IsNil(o.EndOffset) {
 		return nil, false
 	}
 	return o.EndOffset, true
@@ -215,7 +229,7 @@ func (o *TamMilestone) GetEndOffsetOk() (*int32, bool) {
 
 // HasEndOffset returns a boolean if a field has been set.
 func (o *TamMilestone) HasEndOffset() bool {
-	if o != nil && o.EndOffset != nil {
+	if o != nil && !IsNil(o.EndOffset) {
 		return true
 	}
 
@@ -229,7 +243,7 @@ func (o *TamMilestone) SetEndOffset(v int32) {
 
 // GetLabelHint returns the LabelHint field value if set, zero value otherwise.
 func (o *TamMilestone) GetLabelHint() string {
-	if o == nil || o.LabelHint == nil {
+	if o == nil || IsNil(o.LabelHint) {
 		var ret string
 		return ret
 	}
@@ -239,7 +253,7 @@ func (o *TamMilestone) GetLabelHint() string {
 // GetLabelHintOk returns a tuple with the LabelHint field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamMilestone) GetLabelHintOk() (*string, bool) {
-	if o == nil || o.LabelHint == nil {
+	if o == nil || IsNil(o.LabelHint) {
 		return nil, false
 	}
 	return o.LabelHint, true
@@ -247,7 +261,7 @@ func (o *TamMilestone) GetLabelHintOk() (*string, bool) {
 
 // HasLabelHint returns a boolean if a field has been set.
 func (o *TamMilestone) HasLabelHint() bool {
-	if o != nil && o.LabelHint != nil {
+	if o != nil && !IsNil(o.LabelHint) {
 		return true
 	}
 
@@ -261,7 +275,7 @@ func (o *TamMilestone) SetLabelHint(v string) {
 
 // GetMilestoneType returns the MilestoneType field value if set, zero value otherwise.
 func (o *TamMilestone) GetMilestoneType() string {
-	if o == nil || o.MilestoneType == nil {
+	if o == nil || IsNil(o.MilestoneType) {
 		var ret string
 		return ret
 	}
@@ -271,7 +285,7 @@ func (o *TamMilestone) GetMilestoneType() string {
 // GetMilestoneTypeOk returns a tuple with the MilestoneType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamMilestone) GetMilestoneTypeOk() (*string, bool) {
-	if o == nil || o.MilestoneType == nil {
+	if o == nil || IsNil(o.MilestoneType) {
 		return nil, false
 	}
 	return o.MilestoneType, true
@@ -279,7 +293,7 @@ func (o *TamMilestone) GetMilestoneTypeOk() (*string, bool) {
 
 // HasMilestoneType returns a boolean if a field has been set.
 func (o *TamMilestone) HasMilestoneType() bool {
-	if o != nil && o.MilestoneType != nil {
+	if o != nil && !IsNil(o.MilestoneType) {
 		return true
 	}
 
@@ -293,7 +307,7 @@ func (o *TamMilestone) SetMilestoneType(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *TamMilestone) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -303,7 +317,7 @@ func (o *TamMilestone) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamMilestone) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -311,7 +325,7 @@ func (o *TamMilestone) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *TamMilestone) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -325,7 +339,7 @@ func (o *TamMilestone) SetName(v string) {
 
 // GetStartOffset returns the StartOffset field value if set, zero value otherwise.
 func (o *TamMilestone) GetStartOffset() int32 {
-	if o == nil || o.StartOffset == nil {
+	if o == nil || IsNil(o.StartOffset) {
 		var ret int32
 		return ret
 	}
@@ -335,7 +349,7 @@ func (o *TamMilestone) GetStartOffset() int32 {
 // GetStartOffsetOk returns a tuple with the StartOffset field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamMilestone) GetStartOffsetOk() (*int32, bool) {
-	if o == nil || o.StartOffset == nil {
+	if o == nil || IsNil(o.StartOffset) {
 		return nil, false
 	}
 	return o.StartOffset, true
@@ -343,7 +357,7 @@ func (o *TamMilestone) GetStartOffsetOk() (*int32, bool) {
 
 // HasStartOffset returns a boolean if a field has been set.
 func (o *TamMilestone) HasStartOffset() bool {
-	if o != nil && o.StartOffset != nil {
+	if o != nil && !IsNil(o.StartOffset) {
 		return true
 	}
 
@@ -356,40 +370,50 @@ func (o *TamMilestone) SetStartOffset(v int32) {
 }
 
 func (o TamMilestone) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o TamMilestone) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Date != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Date) {
 		toSerialize["Date"] = o.Date
 	}
-	if o.Description != nil {
+	if !IsNil(o.Description) {
 		toSerialize["Description"] = o.Description
 	}
-	if o.EndOffset != nil {
+	if !IsNil(o.EndOffset) {
 		toSerialize["EndOffset"] = o.EndOffset
 	}
-	if o.LabelHint != nil {
+	if !IsNil(o.LabelHint) {
 		toSerialize["LabelHint"] = o.LabelHint
 	}
-	if o.MilestoneType != nil {
+	if !IsNil(o.MilestoneType) {
 		toSerialize["MilestoneType"] = o.MilestoneType
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.StartOffset != nil {
+	if !IsNil(o.StartOffset) {
 		toSerialize["StartOffset"] = o.StartOffset
 	}
 
@@ -397,10 +421,51 @@ func (o TamMilestone) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *TamMilestone) UnmarshalJSON(bytes []byte) (err error) {
+func (o *TamMilestone) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type TamMilestoneWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -412,9 +477,9 @@ func (o *TamMilestone) UnmarshalJSON(bytes []byte) (err error) {
 		Description *string `json:"Description,omitempty"`
 		// Number of days (exclusive) relative to the milestone date when the milestone is considered to be not in effect. A nagative number indicates number of days ahead of the milestone date. The default is 2147483647 (0x7FFFFFFF) which means the milestone date range's upper bound is omitted.
 		EndOffset *int32 `json:"EndOffset,omitempty"`
-		// Extra hint to the type of label to be used in display in addition to severity and effective date. How to use it is at UI's descretion. * `upcoming` - This end-of-life (EOL) milestone is upcoming. The label may be changed to more urgent type such as 'imminent' as time progress approaching effective date. * `imminent` - This end-of-life (EOL) milestone is imminent. There will be no label change before the effective date. * `past` - This end-of-life (EOL) milestone has past the effective date.
+		// Extra hint to the type of label to be used in display in addition to severity and effective date. How to use it is at UI's descretion. * `upcoming` - This end-of-life (EOL) milestone is upcoming. The label may be changed to more urgent type such as 'imminent' as time progress approaching effective date. * `imminent` - This end-of-life (EOL) milestone is imminent. There will be no label change before the effective date. * `past` - This end-of-life (EOL) milestone has past the effective date. * `info` - This end-of-life (EOL) milestone for informative purpose.
 		LabelHint *string `json:"LabelHint,omitempty"`
-		// Milestone type as defined in Cisco end-of-life (EOL) policy (https://www.cisco.com/c/en/us/products/eos-eol-policy.html) when the specified end-of-life milestone advisory is reached. * `unknown` - The type of end-of-life milestone is not defined. * `endOfSoftwareMaintenanceDate` - The last date that Cisco Engineering may release any final software maintenance releases or bug fixes. After this date, Cisco Engineering may no longer develop, repair, maintain, or test the product software and only critical security updates will be provided on this release train.  * `lastDateOfSupport` - The last date to receive service and support for the software. After this date, all support services for the software are unavailable, and the software becomes obsolete.
+		// Milestone type as defined in Cisco end-of-life (EOL) policy (https://www.cisco.com/c/en/us/products/eos-eol-policy.html) when the specified end-of-life milestone advisory is reached. * `unknown` - The type of end-of-life milestone is not defined. * `endOfSoftwareMaintenanceDate` - The last date that Cisco Engineering may release any final software maintenance releases or bug fixes. After this date, Cisco Engineering may no longer develop, repair, maintain, or test the product software and only critical security updates will be provided on this release train.  * `lastDateOfSupport` - The last date to receive service and support for the software. After this date, all support services for the software are unavailable, and the software becomes obsolete.  * `endOfLifeAnnouncementDate` - The date the document that announces the end-of-sale and end-of-life of a product is distributed to the general public.
 		MilestoneType *string `json:"MilestoneType,omitempty"`
 		// A milestone defined by an end-of-life advisory.
 		Name *string `json:"Name,omitempty"`
@@ -424,7 +489,7 @@ func (o *TamMilestone) UnmarshalJSON(bytes []byte) (err error) {
 
 	varTamMilestoneWithoutEmbeddedStruct := TamMilestoneWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varTamMilestoneWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varTamMilestoneWithoutEmbeddedStruct)
 	if err == nil {
 		varTamMilestone := _TamMilestone{}
 		varTamMilestone.ClassId = varTamMilestoneWithoutEmbeddedStruct.ClassId
@@ -443,7 +508,7 @@ func (o *TamMilestone) UnmarshalJSON(bytes []byte) (err error) {
 
 	varTamMilestone := _TamMilestone{}
 
-	err = json.Unmarshal(bytes, &varTamMilestone)
+	err = json.Unmarshal(data, &varTamMilestone)
 	if err == nil {
 		o.MoBaseComplexType = varTamMilestone.MoBaseComplexType
 	} else {
@@ -452,7 +517,7 @@ func (o *TamMilestone) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Date")

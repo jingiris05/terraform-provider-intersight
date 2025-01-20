@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceAdapterConfigPolicy() *schema.Resource {
 		UpdateContext: resourceAdapterConfigPolicyUpdate,
 		DeleteContext: resourceAdapterConfigPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -445,6 +447,41 @@ func resourceAdapterConfigPolicy() *schema.Resource {
 							Optional:    true,
 							Default:     "adapter.AdapterConfig",
 						},
+						"physical_nic_mode_settings": {
+							Description: "Physical NIC Mode Settings for this adapter.",
+							Type:        schema.TypeList,
+							MaxItems:    1,
+							Optional:    true,
+							ConfigMode:  schema.SchemaConfigModeAttr,
+							Computed:    true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"additional_properties": {
+										Type:             schema.TypeString,
+										Optional:         true,
+										DiffSuppressFunc: SuppressDiffAdditionProps,
+									},
+									"class_id": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "adapter.PhysicalNicModeSettings",
+									},
+									"object_type": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "adapter.PhysicalNicModeSettings",
+									},
+									"phy_nic_enabled": {
+										Description: "When Physical NIC Mode is enabled, up-link ports of the VIC are set to pass-through mode. This allows the host to transmit packets without any modification. When Physical NIC Mode is enabled, VLAN tagging of the packets will not happen.",
+										Type:        schema.TypeBool,
+										Optional:    true,
+										Default:     false,
+									},
+								},
+							},
+						},
 						"port_channel_settings": {
 							Description: "Port Channel settings for this adapter.",
 							Type:        schema.TypeList,
@@ -585,6 +622,17 @@ func resourceAdapterConfigPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -932,6 +980,44 @@ func resourceAdapterConfigPolicyCreate(c context.Context, d *schema.ResourceData
 					o.SetObjectType(x)
 				}
 			}
+			if v, ok := l["physical_nic_mode_settings"]; ok {
+				{
+					p := make([]models.AdapterPhysicalNicModeSettings, 0, 1)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						l := s[i].(map[string]interface{})
+						o := models.NewAdapterPhysicalNicModeSettingsWithDefaults()
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("adapter.PhysicalNicModeSettings")
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["phy_nic_enabled"]; ok {
+							{
+								x := (v.(bool))
+								o.SetPhyNicEnabled(x)
+							}
+						}
+						p = append(p, *o)
+					}
+					if len(p) > 0 {
+						x := p[0]
+						o.SetPhysicalNicModeSettings(x)
+					}
+				}
+			}
 			if v, ok := l["port_channel_settings"]; ok {
 				{
 					p := make([]models.AdapterPortChannelSettings, 0, 1)
@@ -1028,8 +1114,16 @@ func resourceAdapterConfigPolicyCreate(c context.Context, d *schema.ResourceData
 		}
 		return diag.Errorf("error occurred while creating AdapterConfigPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceAdapterConfigPolicyRead(c, d, meta)...)
 }
 func detachAdapterConfigPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -1057,6 +1151,9 @@ func detachAdapterConfigPolicyProfiles(d *schema.ResourceData, meta interface{})
 func resourceAdapterConfigPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.AdapterApi.GetAdapterConfigPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1423,6 +1520,44 @@ func resourceAdapterConfigPolicyUpdate(c context.Context, d *schema.ResourceData
 				{
 					x := (v.(string))
 					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["physical_nic_mode_settings"]; ok {
+				{
+					p := make([]models.AdapterPhysicalNicModeSettings, 0, 1)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						l := s[i].(map[string]interface{})
+						o := models.NewAdapterPhysicalNicModeSettingsWithDefaults()
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("adapter.PhysicalNicModeSettings")
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["phy_nic_enabled"]; ok {
+							{
+								x := (v.(bool))
+								o.SetPhyNicEnabled(x)
+							}
+						}
+						p = append(p, *o)
+					}
+					if len(p) > 0 {
+						x := p[0]
+						o.SetPhysicalNicModeSettings(x)
+					}
 				}
 			}
 			if v, ok := l["port_channel_settings"]; ok {

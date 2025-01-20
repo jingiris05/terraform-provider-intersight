@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the LicenseAccountLicenseData type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &LicenseAccountLicenseData{}
 
 // LicenseAccountLicenseData License information for an account.
 type LicenseAccountLicenseData struct {
@@ -37,13 +41,15 @@ type LicenseAccountLicenseData struct {
 	AuthNextTime *string `json:"AuthNextTime,omitempty"`
 	// Account license data category name.
 	Category *string `json:"Category,omitempty"`
-	// Default license tier set by user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+	// Default license tier set by the user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 	DefaultLicenseType *string `json:"DefaultLicenseType,omitempty"`
+	// Default license tier for newer model M7+ servers set by the user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
+	DefaultLicenseTypeNewerModels *string `json:"DefaultLicenseTypeNewerModels,omitempty"`
 	// The detailed error message when there is any error related to license sync of this account.
 	ErrorDesc *string `json:"ErrorDesc,omitempty"`
 	// Account license data group name.
 	Group *string `json:"Group,omitempty"`
-	// The highest license tier which is in compliant of this account. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+	// The highest license tier which is in compliant of this account. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 	HighestCompliantLicenseTier *string `json:"HighestCompliantLicenseTier,omitempty"`
 	// Specifies last sync time with CSSM.
 	LastCssmSync *time.Time `json:"LastCssmSync,omitempty"`
@@ -78,16 +84,20 @@ type LicenseAccountLicenseData struct {
 	// Current sync status for the account.
 	SyncStatus *string `json:"SyncStatus,omitempty"`
 	// Name of the virtual account.
-	VirtualAccount  *string                             `json:"VirtualAccount,omitempty"`
-	Account         *IamAccountRelationship             `json:"Account,omitempty"`
-	CustomerOp      *LicenseCustomerOpRelationship      `json:"CustomerOp,omitempty"`
-	IksCustomerOp   *LicenseIksCustomerOpRelationship   `json:"IksCustomerOp,omitempty"`
-	IksLicenseCount *LicenseIksLicenseCountRelationship `json:"IksLicenseCount,omitempty"`
-	IwoCustomerOp   *LicenseIwoCustomerOpRelationship   `json:"IwoCustomerOp,omitempty"`
-	IwoLicenseCount *LicenseIwoLicenseCountRelationship `json:"IwoLicenseCount,omitempty"`
+	VirtualAccount            *string                                              `json:"VirtualAccount,omitempty"`
+	Account                   NullableIamAccountRelationship                       `json:"Account,omitempty"`
+	CustomerOp                NullableLicenseCustomerOpRelationship                `json:"CustomerOp,omitempty"`
+	IksCustomerOp             NullableLicenseIksCustomerOpRelationship             `json:"IksCustomerOp,omitempty"`
+	IksLicenseCount           NullableLicenseIksLicenseCountRelationship           `json:"IksLicenseCount,omitempty"`
+	IncCustomerOp             NullableLicenseIncCustomerOpRelationship             `json:"IncCustomerOp,omitempty"`
+	IncLicenseCount           NullableLicenseIncLicenseCountRelationship           `json:"IncLicenseCount,omitempty"`
+	IwoCustomerOp             NullableLicenseIwoCustomerOpRelationship             `json:"IwoCustomerOp,omitempty"`
+	IwoLicenseCount           NullableLicenseIwoLicenseCountRelationship           `json:"IwoLicenseCount,omitempty"`
+	LicenseInfoView           NullableLicenseLicenseInfoViewRelationship           `json:"LicenseInfoView,omitempty"`
+	LicenseRegistrationStatus NullableLicenseLicenseRegistrationStatusRelationship `json:"LicenseRegistrationStatus,omitempty"`
 	// An array of relationships to licenseLicenseInfo resources.
-	Licenseinfos         []LicenseLicenseInfoRelationship      `json:"Licenseinfos,omitempty"`
-	SmartlicenseToken    *LicenseSmartlicenseTokenRelationship `json:"SmartlicenseToken,omitempty"`
+	Licenseinfos         []LicenseLicenseInfoRelationship             `json:"Licenseinfos,omitempty"`
+	SmartlicenseToken    NullableLicenseSmartlicenseTokenRelationship `json:"SmartlicenseToken,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -103,6 +113,8 @@ func NewLicenseAccountLicenseData(classId string, objectType string) *LicenseAcc
 	this.ObjectType = objectType
 	var defaultLicenseType string = "Base"
 	this.DefaultLicenseType = &defaultLicenseType
+	var defaultLicenseTypeNewerModels string = "Base"
+	this.DefaultLicenseTypeNewerModels = &defaultLicenseTypeNewerModels
 	return &this
 }
 
@@ -117,6 +129,8 @@ func NewLicenseAccountLicenseDataWithDefaults() *LicenseAccountLicenseData {
 	this.ObjectType = objectType
 	var defaultLicenseType string = "Base"
 	this.DefaultLicenseType = &defaultLicenseType
+	var defaultLicenseTypeNewerModels string = "Base"
+	this.DefaultLicenseTypeNewerModels = &defaultLicenseTypeNewerModels
 	return &this
 }
 
@@ -144,6 +158,11 @@ func (o *LicenseAccountLicenseData) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "license.AccountLicenseData" of the ClassId field.
+func (o *LicenseAccountLicenseData) GetDefaultClassId() interface{} {
+	return "license.AccountLicenseData"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *LicenseAccountLicenseData) GetObjectType() string {
 	if o == nil {
@@ -168,9 +187,14 @@ func (o *LicenseAccountLicenseData) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "license.AccountLicenseData" of the ObjectType field.
+func (o *LicenseAccountLicenseData) GetDefaultObjectType() interface{} {
+	return "license.AccountLicenseData"
+}
+
 // GetAccountId returns the AccountId field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetAccountId() string {
-	if o == nil || o.AccountId == nil {
+	if o == nil || IsNil(o.AccountId) {
 		var ret string
 		return ret
 	}
@@ -180,7 +204,7 @@ func (o *LicenseAccountLicenseData) GetAccountId() string {
 // GetAccountIdOk returns a tuple with the AccountId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetAccountIdOk() (*string, bool) {
-	if o == nil || o.AccountId == nil {
+	if o == nil || IsNil(o.AccountId) {
 		return nil, false
 	}
 	return o.AccountId, true
@@ -188,7 +212,7 @@ func (o *LicenseAccountLicenseData) GetAccountIdOk() (*string, bool) {
 
 // HasAccountId returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasAccountId() bool {
-	if o != nil && o.AccountId != nil {
+	if o != nil && !IsNil(o.AccountId) {
 		return true
 	}
 
@@ -202,7 +226,7 @@ func (o *LicenseAccountLicenseData) SetAccountId(v string) {
 
 // GetAgentData returns the AgentData field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetAgentData() string {
-	if o == nil || o.AgentData == nil {
+	if o == nil || IsNil(o.AgentData) {
 		var ret string
 		return ret
 	}
@@ -212,7 +236,7 @@ func (o *LicenseAccountLicenseData) GetAgentData() string {
 // GetAgentDataOk returns a tuple with the AgentData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetAgentDataOk() (*string, bool) {
-	if o == nil || o.AgentData == nil {
+	if o == nil || IsNil(o.AgentData) {
 		return nil, false
 	}
 	return o.AgentData, true
@@ -220,7 +244,7 @@ func (o *LicenseAccountLicenseData) GetAgentDataOk() (*string, bool) {
 
 // HasAgentData returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasAgentData() bool {
-	if o != nil && o.AgentData != nil {
+	if o != nil && !IsNil(o.AgentData) {
 		return true
 	}
 
@@ -234,7 +258,7 @@ func (o *LicenseAccountLicenseData) SetAgentData(v string) {
 
 // GetAuthExpireTime returns the AuthExpireTime field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetAuthExpireTime() string {
-	if o == nil || o.AuthExpireTime == nil {
+	if o == nil || IsNil(o.AuthExpireTime) {
 		var ret string
 		return ret
 	}
@@ -244,7 +268,7 @@ func (o *LicenseAccountLicenseData) GetAuthExpireTime() string {
 // GetAuthExpireTimeOk returns a tuple with the AuthExpireTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetAuthExpireTimeOk() (*string, bool) {
-	if o == nil || o.AuthExpireTime == nil {
+	if o == nil || IsNil(o.AuthExpireTime) {
 		return nil, false
 	}
 	return o.AuthExpireTime, true
@@ -252,7 +276,7 @@ func (o *LicenseAccountLicenseData) GetAuthExpireTimeOk() (*string, bool) {
 
 // HasAuthExpireTime returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasAuthExpireTime() bool {
-	if o != nil && o.AuthExpireTime != nil {
+	if o != nil && !IsNil(o.AuthExpireTime) {
 		return true
 	}
 
@@ -266,7 +290,7 @@ func (o *LicenseAccountLicenseData) SetAuthExpireTime(v string) {
 
 // GetAuthInitialTime returns the AuthInitialTime field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetAuthInitialTime() string {
-	if o == nil || o.AuthInitialTime == nil {
+	if o == nil || IsNil(o.AuthInitialTime) {
 		var ret string
 		return ret
 	}
@@ -276,7 +300,7 @@ func (o *LicenseAccountLicenseData) GetAuthInitialTime() string {
 // GetAuthInitialTimeOk returns a tuple with the AuthInitialTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetAuthInitialTimeOk() (*string, bool) {
-	if o == nil || o.AuthInitialTime == nil {
+	if o == nil || IsNil(o.AuthInitialTime) {
 		return nil, false
 	}
 	return o.AuthInitialTime, true
@@ -284,7 +308,7 @@ func (o *LicenseAccountLicenseData) GetAuthInitialTimeOk() (*string, bool) {
 
 // HasAuthInitialTime returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasAuthInitialTime() bool {
-	if o != nil && o.AuthInitialTime != nil {
+	if o != nil && !IsNil(o.AuthInitialTime) {
 		return true
 	}
 
@@ -298,7 +322,7 @@ func (o *LicenseAccountLicenseData) SetAuthInitialTime(v string) {
 
 // GetAuthNextTime returns the AuthNextTime field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetAuthNextTime() string {
-	if o == nil || o.AuthNextTime == nil {
+	if o == nil || IsNil(o.AuthNextTime) {
 		var ret string
 		return ret
 	}
@@ -308,7 +332,7 @@ func (o *LicenseAccountLicenseData) GetAuthNextTime() string {
 // GetAuthNextTimeOk returns a tuple with the AuthNextTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetAuthNextTimeOk() (*string, bool) {
-	if o == nil || o.AuthNextTime == nil {
+	if o == nil || IsNil(o.AuthNextTime) {
 		return nil, false
 	}
 	return o.AuthNextTime, true
@@ -316,7 +340,7 @@ func (o *LicenseAccountLicenseData) GetAuthNextTimeOk() (*string, bool) {
 
 // HasAuthNextTime returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasAuthNextTime() bool {
-	if o != nil && o.AuthNextTime != nil {
+	if o != nil && !IsNil(o.AuthNextTime) {
 		return true
 	}
 
@@ -330,7 +354,7 @@ func (o *LicenseAccountLicenseData) SetAuthNextTime(v string) {
 
 // GetCategory returns the Category field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetCategory() string {
-	if o == nil || o.Category == nil {
+	if o == nil || IsNil(o.Category) {
 		var ret string
 		return ret
 	}
@@ -340,7 +364,7 @@ func (o *LicenseAccountLicenseData) GetCategory() string {
 // GetCategoryOk returns a tuple with the Category field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetCategoryOk() (*string, bool) {
-	if o == nil || o.Category == nil {
+	if o == nil || IsNil(o.Category) {
 		return nil, false
 	}
 	return o.Category, true
@@ -348,7 +372,7 @@ func (o *LicenseAccountLicenseData) GetCategoryOk() (*string, bool) {
 
 // HasCategory returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasCategory() bool {
-	if o != nil && o.Category != nil {
+	if o != nil && !IsNil(o.Category) {
 		return true
 	}
 
@@ -362,7 +386,7 @@ func (o *LicenseAccountLicenseData) SetCategory(v string) {
 
 // GetDefaultLicenseType returns the DefaultLicenseType field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetDefaultLicenseType() string {
-	if o == nil || o.DefaultLicenseType == nil {
+	if o == nil || IsNil(o.DefaultLicenseType) {
 		var ret string
 		return ret
 	}
@@ -372,7 +396,7 @@ func (o *LicenseAccountLicenseData) GetDefaultLicenseType() string {
 // GetDefaultLicenseTypeOk returns a tuple with the DefaultLicenseType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetDefaultLicenseTypeOk() (*string, bool) {
-	if o == nil || o.DefaultLicenseType == nil {
+	if o == nil || IsNil(o.DefaultLicenseType) {
 		return nil, false
 	}
 	return o.DefaultLicenseType, true
@@ -380,7 +404,7 @@ func (o *LicenseAccountLicenseData) GetDefaultLicenseTypeOk() (*string, bool) {
 
 // HasDefaultLicenseType returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasDefaultLicenseType() bool {
-	if o != nil && o.DefaultLicenseType != nil {
+	if o != nil && !IsNil(o.DefaultLicenseType) {
 		return true
 	}
 
@@ -392,9 +416,41 @@ func (o *LicenseAccountLicenseData) SetDefaultLicenseType(v string) {
 	o.DefaultLicenseType = &v
 }
 
+// GetDefaultLicenseTypeNewerModels returns the DefaultLicenseTypeNewerModels field value if set, zero value otherwise.
+func (o *LicenseAccountLicenseData) GetDefaultLicenseTypeNewerModels() string {
+	if o == nil || IsNil(o.DefaultLicenseTypeNewerModels) {
+		var ret string
+		return ret
+	}
+	return *o.DefaultLicenseTypeNewerModels
+}
+
+// GetDefaultLicenseTypeNewerModelsOk returns a tuple with the DefaultLicenseTypeNewerModels field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LicenseAccountLicenseData) GetDefaultLicenseTypeNewerModelsOk() (*string, bool) {
+	if o == nil || IsNil(o.DefaultLicenseTypeNewerModels) {
+		return nil, false
+	}
+	return o.DefaultLicenseTypeNewerModels, true
+}
+
+// HasDefaultLicenseTypeNewerModels returns a boolean if a field has been set.
+func (o *LicenseAccountLicenseData) HasDefaultLicenseTypeNewerModels() bool {
+	if o != nil && !IsNil(o.DefaultLicenseTypeNewerModels) {
+		return true
+	}
+
+	return false
+}
+
+// SetDefaultLicenseTypeNewerModels gets a reference to the given string and assigns it to the DefaultLicenseTypeNewerModels field.
+func (o *LicenseAccountLicenseData) SetDefaultLicenseTypeNewerModels(v string) {
+	o.DefaultLicenseTypeNewerModels = &v
+}
+
 // GetErrorDesc returns the ErrorDesc field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetErrorDesc() string {
-	if o == nil || o.ErrorDesc == nil {
+	if o == nil || IsNil(o.ErrorDesc) {
 		var ret string
 		return ret
 	}
@@ -404,7 +460,7 @@ func (o *LicenseAccountLicenseData) GetErrorDesc() string {
 // GetErrorDescOk returns a tuple with the ErrorDesc field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetErrorDescOk() (*string, bool) {
-	if o == nil || o.ErrorDesc == nil {
+	if o == nil || IsNil(o.ErrorDesc) {
 		return nil, false
 	}
 	return o.ErrorDesc, true
@@ -412,7 +468,7 @@ func (o *LicenseAccountLicenseData) GetErrorDescOk() (*string, bool) {
 
 // HasErrorDesc returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasErrorDesc() bool {
-	if o != nil && o.ErrorDesc != nil {
+	if o != nil && !IsNil(o.ErrorDesc) {
 		return true
 	}
 
@@ -426,7 +482,7 @@ func (o *LicenseAccountLicenseData) SetErrorDesc(v string) {
 
 // GetGroup returns the Group field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetGroup() string {
-	if o == nil || o.Group == nil {
+	if o == nil || IsNil(o.Group) {
 		var ret string
 		return ret
 	}
@@ -436,7 +492,7 @@ func (o *LicenseAccountLicenseData) GetGroup() string {
 // GetGroupOk returns a tuple with the Group field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetGroupOk() (*string, bool) {
-	if o == nil || o.Group == nil {
+	if o == nil || IsNil(o.Group) {
 		return nil, false
 	}
 	return o.Group, true
@@ -444,7 +500,7 @@ func (o *LicenseAccountLicenseData) GetGroupOk() (*string, bool) {
 
 // HasGroup returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasGroup() bool {
-	if o != nil && o.Group != nil {
+	if o != nil && !IsNil(o.Group) {
 		return true
 	}
 
@@ -458,7 +514,7 @@ func (o *LicenseAccountLicenseData) SetGroup(v string) {
 
 // GetHighestCompliantLicenseTier returns the HighestCompliantLicenseTier field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetHighestCompliantLicenseTier() string {
-	if o == nil || o.HighestCompliantLicenseTier == nil {
+	if o == nil || IsNil(o.HighestCompliantLicenseTier) {
 		var ret string
 		return ret
 	}
@@ -468,7 +524,7 @@ func (o *LicenseAccountLicenseData) GetHighestCompliantLicenseTier() string {
 // GetHighestCompliantLicenseTierOk returns a tuple with the HighestCompliantLicenseTier field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetHighestCompliantLicenseTierOk() (*string, bool) {
-	if o == nil || o.HighestCompliantLicenseTier == nil {
+	if o == nil || IsNil(o.HighestCompliantLicenseTier) {
 		return nil, false
 	}
 	return o.HighestCompliantLicenseTier, true
@@ -476,7 +532,7 @@ func (o *LicenseAccountLicenseData) GetHighestCompliantLicenseTierOk() (*string,
 
 // HasHighestCompliantLicenseTier returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasHighestCompliantLicenseTier() bool {
-	if o != nil && o.HighestCompliantLicenseTier != nil {
+	if o != nil && !IsNil(o.HighestCompliantLicenseTier) {
 		return true
 	}
 
@@ -490,7 +546,7 @@ func (o *LicenseAccountLicenseData) SetHighestCompliantLicenseTier(v string) {
 
 // GetLastCssmSync returns the LastCssmSync field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetLastCssmSync() time.Time {
-	if o == nil || o.LastCssmSync == nil {
+	if o == nil || IsNil(o.LastCssmSync) {
 		var ret time.Time
 		return ret
 	}
@@ -500,7 +556,7 @@ func (o *LicenseAccountLicenseData) GetLastCssmSync() time.Time {
 // GetLastCssmSyncOk returns a tuple with the LastCssmSync field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetLastCssmSyncOk() (*time.Time, bool) {
-	if o == nil || o.LastCssmSync == nil {
+	if o == nil || IsNil(o.LastCssmSync) {
 		return nil, false
 	}
 	return o.LastCssmSync, true
@@ -508,7 +564,7 @@ func (o *LicenseAccountLicenseData) GetLastCssmSyncOk() (*time.Time, bool) {
 
 // HasLastCssmSync returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasLastCssmSync() bool {
-	if o != nil && o.LastCssmSync != nil {
+	if o != nil && !IsNil(o.LastCssmSync) {
 		return true
 	}
 
@@ -522,7 +578,7 @@ func (o *LicenseAccountLicenseData) SetLastCssmSync(v time.Time) {
 
 // GetLastRenew returns the LastRenew field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetLastRenew() time.Time {
-	if o == nil || o.LastRenew == nil {
+	if o == nil || IsNil(o.LastRenew) {
 		var ret time.Time
 		return ret
 	}
@@ -532,7 +588,7 @@ func (o *LicenseAccountLicenseData) GetLastRenew() time.Time {
 // GetLastRenewOk returns a tuple with the LastRenew field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetLastRenewOk() (*time.Time, bool) {
-	if o == nil || o.LastRenew == nil {
+	if o == nil || IsNil(o.LastRenew) {
 		return nil, false
 	}
 	return o.LastRenew, true
@@ -540,7 +596,7 @@ func (o *LicenseAccountLicenseData) GetLastRenewOk() (*time.Time, bool) {
 
 // HasLastRenew returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasLastRenew() bool {
-	if o != nil && o.LastRenew != nil {
+	if o != nil && !IsNil(o.LastRenew) {
 		return true
 	}
 
@@ -554,7 +610,7 @@ func (o *LicenseAccountLicenseData) SetLastRenew(v time.Time) {
 
 // GetLastSync returns the LastSync field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetLastSync() time.Time {
-	if o == nil || o.LastSync == nil {
+	if o == nil || IsNil(o.LastSync) {
 		var ret time.Time
 		return ret
 	}
@@ -564,7 +620,7 @@ func (o *LicenseAccountLicenseData) GetLastSync() time.Time {
 // GetLastSyncOk returns a tuple with the LastSync field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetLastSyncOk() (*time.Time, bool) {
-	if o == nil || o.LastSync == nil {
+	if o == nil || IsNil(o.LastSync) {
 		return nil, false
 	}
 	return o.LastSync, true
@@ -572,7 +628,7 @@ func (o *LicenseAccountLicenseData) GetLastSyncOk() (*time.Time, bool) {
 
 // HasLastSync returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasLastSync() bool {
-	if o != nil && o.LastSync != nil {
+	if o != nil && !IsNil(o.LastSync) {
 		return true
 	}
 
@@ -586,7 +642,7 @@ func (o *LicenseAccountLicenseData) SetLastSync(v time.Time) {
 
 // GetLastUpdatedTime returns the LastUpdatedTime field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetLastUpdatedTime() time.Time {
-	if o == nil || o.LastUpdatedTime == nil {
+	if o == nil || IsNil(o.LastUpdatedTime) {
 		var ret time.Time
 		return ret
 	}
@@ -596,7 +652,7 @@ func (o *LicenseAccountLicenseData) GetLastUpdatedTime() time.Time {
 // GetLastUpdatedTimeOk returns a tuple with the LastUpdatedTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetLastUpdatedTimeOk() (*time.Time, bool) {
-	if o == nil || o.LastUpdatedTime == nil {
+	if o == nil || IsNil(o.LastUpdatedTime) {
 		return nil, false
 	}
 	return o.LastUpdatedTime, true
@@ -604,7 +660,7 @@ func (o *LicenseAccountLicenseData) GetLastUpdatedTimeOk() (*time.Time, bool) {
 
 // HasLastUpdatedTime returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasLastUpdatedTime() bool {
-	if o != nil && o.LastUpdatedTime != nil {
+	if o != nil && !IsNil(o.LastUpdatedTime) {
 		return true
 	}
 
@@ -618,7 +674,7 @@ func (o *LicenseAccountLicenseData) SetLastUpdatedTime(v time.Time) {
 
 // GetLicenseState returns the LicenseState field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetLicenseState() string {
-	if o == nil || o.LicenseState == nil {
+	if o == nil || IsNil(o.LicenseState) {
 		var ret string
 		return ret
 	}
@@ -628,7 +684,7 @@ func (o *LicenseAccountLicenseData) GetLicenseState() string {
 // GetLicenseStateOk returns a tuple with the LicenseState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetLicenseStateOk() (*string, bool) {
-	if o == nil || o.LicenseState == nil {
+	if o == nil || IsNil(o.LicenseState) {
 		return nil, false
 	}
 	return o.LicenseState, true
@@ -636,7 +692,7 @@ func (o *LicenseAccountLicenseData) GetLicenseStateOk() (*string, bool) {
 
 // HasLicenseState returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasLicenseState() bool {
-	if o != nil && o.LicenseState != nil {
+	if o != nil && !IsNil(o.LicenseState) {
 		return true
 	}
 
@@ -650,7 +706,7 @@ func (o *LicenseAccountLicenseData) SetLicenseState(v string) {
 
 // GetLicenseTechSupportInfo returns the LicenseTechSupportInfo field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetLicenseTechSupportInfo() string {
-	if o == nil || o.LicenseTechSupportInfo == nil {
+	if o == nil || IsNil(o.LicenseTechSupportInfo) {
 		var ret string
 		return ret
 	}
@@ -660,7 +716,7 @@ func (o *LicenseAccountLicenseData) GetLicenseTechSupportInfo() string {
 // GetLicenseTechSupportInfoOk returns a tuple with the LicenseTechSupportInfo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetLicenseTechSupportInfoOk() (*string, bool) {
-	if o == nil || o.LicenseTechSupportInfo == nil {
+	if o == nil || IsNil(o.LicenseTechSupportInfo) {
 		return nil, false
 	}
 	return o.LicenseTechSupportInfo, true
@@ -668,7 +724,7 @@ func (o *LicenseAccountLicenseData) GetLicenseTechSupportInfoOk() (*string, bool
 
 // HasLicenseTechSupportInfo returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasLicenseTechSupportInfo() bool {
-	if o != nil && o.LicenseTechSupportInfo != nil {
+	if o != nil && !IsNil(o.LicenseTechSupportInfo) {
 		return true
 	}
 
@@ -682,7 +738,7 @@ func (o *LicenseAccountLicenseData) SetLicenseTechSupportInfo(v string) {
 
 // GetRegisterExpireTime returns the RegisterExpireTime field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetRegisterExpireTime() string {
-	if o == nil || o.RegisterExpireTime == nil {
+	if o == nil || IsNil(o.RegisterExpireTime) {
 		var ret string
 		return ret
 	}
@@ -692,7 +748,7 @@ func (o *LicenseAccountLicenseData) GetRegisterExpireTime() string {
 // GetRegisterExpireTimeOk returns a tuple with the RegisterExpireTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetRegisterExpireTimeOk() (*string, bool) {
-	if o == nil || o.RegisterExpireTime == nil {
+	if o == nil || IsNil(o.RegisterExpireTime) {
 		return nil, false
 	}
 	return o.RegisterExpireTime, true
@@ -700,7 +756,7 @@ func (o *LicenseAccountLicenseData) GetRegisterExpireTimeOk() (*string, bool) {
 
 // HasRegisterExpireTime returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasRegisterExpireTime() bool {
-	if o != nil && o.RegisterExpireTime != nil {
+	if o != nil && !IsNil(o.RegisterExpireTime) {
 		return true
 	}
 
@@ -714,7 +770,7 @@ func (o *LicenseAccountLicenseData) SetRegisterExpireTime(v string) {
 
 // GetRegisterInitialTime returns the RegisterInitialTime field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetRegisterInitialTime() string {
-	if o == nil || o.RegisterInitialTime == nil {
+	if o == nil || IsNil(o.RegisterInitialTime) {
 		var ret string
 		return ret
 	}
@@ -724,7 +780,7 @@ func (o *LicenseAccountLicenseData) GetRegisterInitialTime() string {
 // GetRegisterInitialTimeOk returns a tuple with the RegisterInitialTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetRegisterInitialTimeOk() (*string, bool) {
-	if o == nil || o.RegisterInitialTime == nil {
+	if o == nil || IsNil(o.RegisterInitialTime) {
 		return nil, false
 	}
 	return o.RegisterInitialTime, true
@@ -732,7 +788,7 @@ func (o *LicenseAccountLicenseData) GetRegisterInitialTimeOk() (*string, bool) {
 
 // HasRegisterInitialTime returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasRegisterInitialTime() bool {
-	if o != nil && o.RegisterInitialTime != nil {
+	if o != nil && !IsNil(o.RegisterInitialTime) {
 		return true
 	}
 
@@ -746,7 +802,7 @@ func (o *LicenseAccountLicenseData) SetRegisterInitialTime(v string) {
 
 // GetRegisterNextTime returns the RegisterNextTime field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetRegisterNextTime() string {
-	if o == nil || o.RegisterNextTime == nil {
+	if o == nil || IsNil(o.RegisterNextTime) {
 		var ret string
 		return ret
 	}
@@ -756,7 +812,7 @@ func (o *LicenseAccountLicenseData) GetRegisterNextTime() string {
 // GetRegisterNextTimeOk returns a tuple with the RegisterNextTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetRegisterNextTimeOk() (*string, bool) {
-	if o == nil || o.RegisterNextTime == nil {
+	if o == nil || IsNil(o.RegisterNextTime) {
 		return nil, false
 	}
 	return o.RegisterNextTime, true
@@ -764,7 +820,7 @@ func (o *LicenseAccountLicenseData) GetRegisterNextTimeOk() (*string, bool) {
 
 // HasRegisterNextTime returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasRegisterNextTime() bool {
-	if o != nil && o.RegisterNextTime != nil {
+	if o != nil && !IsNil(o.RegisterNextTime) {
 		return true
 	}
 
@@ -778,7 +834,7 @@ func (o *LicenseAccountLicenseData) SetRegisterNextTime(v string) {
 
 // GetRegistrationStatus returns the RegistrationStatus field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetRegistrationStatus() string {
-	if o == nil || o.RegistrationStatus == nil {
+	if o == nil || IsNil(o.RegistrationStatus) {
 		var ret string
 		return ret
 	}
@@ -788,7 +844,7 @@ func (o *LicenseAccountLicenseData) GetRegistrationStatus() string {
 // GetRegistrationStatusOk returns a tuple with the RegistrationStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetRegistrationStatusOk() (*string, bool) {
-	if o == nil || o.RegistrationStatus == nil {
+	if o == nil || IsNil(o.RegistrationStatus) {
 		return nil, false
 	}
 	return o.RegistrationStatus, true
@@ -796,7 +852,7 @@ func (o *LicenseAccountLicenseData) GetRegistrationStatusOk() (*string, bool) {
 
 // HasRegistrationStatus returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasRegistrationStatus() bool {
-	if o != nil && o.RegistrationStatus != nil {
+	if o != nil && !IsNil(o.RegistrationStatus) {
 		return true
 	}
 
@@ -810,7 +866,7 @@ func (o *LicenseAccountLicenseData) SetRegistrationStatus(v string) {
 
 // GetRenewFailureString returns the RenewFailureString field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetRenewFailureString() string {
-	if o == nil || o.RenewFailureString == nil {
+	if o == nil || IsNil(o.RenewFailureString) {
 		var ret string
 		return ret
 	}
@@ -820,7 +876,7 @@ func (o *LicenseAccountLicenseData) GetRenewFailureString() string {
 // GetRenewFailureStringOk returns a tuple with the RenewFailureString field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetRenewFailureStringOk() (*string, bool) {
-	if o == nil || o.RenewFailureString == nil {
+	if o == nil || IsNil(o.RenewFailureString) {
 		return nil, false
 	}
 	return o.RenewFailureString, true
@@ -828,7 +884,7 @@ func (o *LicenseAccountLicenseData) GetRenewFailureStringOk() (*string, bool) {
 
 // HasRenewFailureString returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasRenewFailureString() bool {
-	if o != nil && o.RenewFailureString != nil {
+	if o != nil && !IsNil(o.RenewFailureString) {
 		return true
 	}
 
@@ -842,7 +898,7 @@ func (o *LicenseAccountLicenseData) SetRenewFailureString(v string) {
 
 // GetSmartAccount returns the SmartAccount field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetSmartAccount() string {
-	if o == nil || o.SmartAccount == nil {
+	if o == nil || IsNil(o.SmartAccount) {
 		var ret string
 		return ret
 	}
@@ -852,7 +908,7 @@ func (o *LicenseAccountLicenseData) GetSmartAccount() string {
 // GetSmartAccountOk returns a tuple with the SmartAccount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetSmartAccountOk() (*string, bool) {
-	if o == nil || o.SmartAccount == nil {
+	if o == nil || IsNil(o.SmartAccount) {
 		return nil, false
 	}
 	return o.SmartAccount, true
@@ -860,7 +916,7 @@ func (o *LicenseAccountLicenseData) GetSmartAccountOk() (*string, bool) {
 
 // HasSmartAccount returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasSmartAccount() bool {
-	if o != nil && o.SmartAccount != nil {
+	if o != nil && !IsNil(o.SmartAccount) {
 		return true
 	}
 
@@ -874,7 +930,7 @@ func (o *LicenseAccountLicenseData) SetSmartAccount(v string) {
 
 // GetSmartAccountDomain returns the SmartAccountDomain field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetSmartAccountDomain() string {
-	if o == nil || o.SmartAccountDomain == nil {
+	if o == nil || IsNil(o.SmartAccountDomain) {
 		var ret string
 		return ret
 	}
@@ -884,7 +940,7 @@ func (o *LicenseAccountLicenseData) GetSmartAccountDomain() string {
 // GetSmartAccountDomainOk returns a tuple with the SmartAccountDomain field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetSmartAccountDomainOk() (*string, bool) {
-	if o == nil || o.SmartAccountDomain == nil {
+	if o == nil || IsNil(o.SmartAccountDomain) {
 		return nil, false
 	}
 	return o.SmartAccountDomain, true
@@ -892,7 +948,7 @@ func (o *LicenseAccountLicenseData) GetSmartAccountDomainOk() (*string, bool) {
 
 // HasSmartAccountDomain returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasSmartAccountDomain() bool {
-	if o != nil && o.SmartAccountDomain != nil {
+	if o != nil && !IsNil(o.SmartAccountDomain) {
 		return true
 	}
 
@@ -906,7 +962,7 @@ func (o *LicenseAccountLicenseData) SetSmartAccountDomain(v string) {
 
 // GetSmartApiEnabled returns the SmartApiEnabled field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetSmartApiEnabled() bool {
-	if o == nil || o.SmartApiEnabled == nil {
+	if o == nil || IsNil(o.SmartApiEnabled) {
 		var ret bool
 		return ret
 	}
@@ -916,7 +972,7 @@ func (o *LicenseAccountLicenseData) GetSmartApiEnabled() bool {
 // GetSmartApiEnabledOk returns a tuple with the SmartApiEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetSmartApiEnabledOk() (*bool, bool) {
-	if o == nil || o.SmartApiEnabled == nil {
+	if o == nil || IsNil(o.SmartApiEnabled) {
 		return nil, false
 	}
 	return o.SmartApiEnabled, true
@@ -924,7 +980,7 @@ func (o *LicenseAccountLicenseData) GetSmartApiEnabledOk() (*bool, bool) {
 
 // HasSmartApiEnabled returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasSmartApiEnabled() bool {
-	if o != nil && o.SmartApiEnabled != nil {
+	if o != nil && !IsNil(o.SmartApiEnabled) {
 		return true
 	}
 
@@ -938,7 +994,7 @@ func (o *LicenseAccountLicenseData) SetSmartApiEnabled(v bool) {
 
 // GetSmartApiSyncStatus returns the SmartApiSyncStatus field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetSmartApiSyncStatus() string {
-	if o == nil || o.SmartApiSyncStatus == nil {
+	if o == nil || IsNil(o.SmartApiSyncStatus) {
 		var ret string
 		return ret
 	}
@@ -948,7 +1004,7 @@ func (o *LicenseAccountLicenseData) GetSmartApiSyncStatus() string {
 // GetSmartApiSyncStatusOk returns a tuple with the SmartApiSyncStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetSmartApiSyncStatusOk() (*string, bool) {
-	if o == nil || o.SmartApiSyncStatus == nil {
+	if o == nil || IsNil(o.SmartApiSyncStatus) {
 		return nil, false
 	}
 	return o.SmartApiSyncStatus, true
@@ -956,7 +1012,7 @@ func (o *LicenseAccountLicenseData) GetSmartApiSyncStatusOk() (*string, bool) {
 
 // HasSmartApiSyncStatus returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasSmartApiSyncStatus() bool {
-	if o != nil && o.SmartApiSyncStatus != nil {
+	if o != nil && !IsNil(o.SmartApiSyncStatus) {
 		return true
 	}
 
@@ -970,7 +1026,7 @@ func (o *LicenseAccountLicenseData) SetSmartApiSyncStatus(v string) {
 
 // GetSyncStatus returns the SyncStatus field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetSyncStatus() string {
-	if o == nil || o.SyncStatus == nil {
+	if o == nil || IsNil(o.SyncStatus) {
 		var ret string
 		return ret
 	}
@@ -980,7 +1036,7 @@ func (o *LicenseAccountLicenseData) GetSyncStatus() string {
 // GetSyncStatusOk returns a tuple with the SyncStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetSyncStatusOk() (*string, bool) {
-	if o == nil || o.SyncStatus == nil {
+	if o == nil || IsNil(o.SyncStatus) {
 		return nil, false
 	}
 	return o.SyncStatus, true
@@ -988,7 +1044,7 @@ func (o *LicenseAccountLicenseData) GetSyncStatusOk() (*string, bool) {
 
 // HasSyncStatus returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasSyncStatus() bool {
-	if o != nil && o.SyncStatus != nil {
+	if o != nil && !IsNil(o.SyncStatus) {
 		return true
 	}
 
@@ -1002,7 +1058,7 @@ func (o *LicenseAccountLicenseData) SetSyncStatus(v string) {
 
 // GetVirtualAccount returns the VirtualAccount field value if set, zero value otherwise.
 func (o *LicenseAccountLicenseData) GetVirtualAccount() string {
-	if o == nil || o.VirtualAccount == nil {
+	if o == nil || IsNil(o.VirtualAccount) {
 		var ret string
 		return ret
 	}
@@ -1012,7 +1068,7 @@ func (o *LicenseAccountLicenseData) GetVirtualAccount() string {
 // GetVirtualAccountOk returns a tuple with the VirtualAccount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseAccountLicenseData) GetVirtualAccountOk() (*string, bool) {
-	if o == nil || o.VirtualAccount == nil {
+	if o == nil || IsNil(o.VirtualAccount) {
 		return nil, false
 	}
 	return o.VirtualAccount, true
@@ -1020,7 +1076,7 @@ func (o *LicenseAccountLicenseData) GetVirtualAccountOk() (*string, bool) {
 
 // HasVirtualAccount returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasVirtualAccount() bool {
-	if o != nil && o.VirtualAccount != nil {
+	if o != nil && !IsNil(o.VirtualAccount) {
 		return true
 	}
 
@@ -1032,196 +1088,434 @@ func (o *LicenseAccountLicenseData) SetVirtualAccount(v string) {
 	o.VirtualAccount = &v
 }
 
-// GetAccount returns the Account field value if set, zero value otherwise.
+// GetAccount returns the Account field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LicenseAccountLicenseData) GetAccount() IamAccountRelationship {
-	if o == nil || o.Account == nil {
+	if o == nil || IsNil(o.Account.Get()) {
 		var ret IamAccountRelationship
 		return ret
 	}
-	return *o.Account
+	return *o.Account.Get()
 }
 
 // GetAccountOk returns a tuple with the Account field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseAccountLicenseData) GetAccountOk() (*IamAccountRelationship, bool) {
-	if o == nil || o.Account == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Account, true
+	return o.Account.Get(), o.Account.IsSet()
 }
 
 // HasAccount returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasAccount() bool {
-	if o != nil && o.Account != nil {
+	if o != nil && o.Account.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAccount gets a reference to the given IamAccountRelationship and assigns it to the Account field.
+// SetAccount gets a reference to the given NullableIamAccountRelationship and assigns it to the Account field.
 func (o *LicenseAccountLicenseData) SetAccount(v IamAccountRelationship) {
-	o.Account = &v
+	o.Account.Set(&v)
 }
 
-// GetCustomerOp returns the CustomerOp field value if set, zero value otherwise.
+// SetAccountNil sets the value for Account to be an explicit nil
+func (o *LicenseAccountLicenseData) SetAccountNil() {
+	o.Account.Set(nil)
+}
+
+// UnsetAccount ensures that no value is present for Account, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetAccount() {
+	o.Account.Unset()
+}
+
+// GetCustomerOp returns the CustomerOp field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LicenseAccountLicenseData) GetCustomerOp() LicenseCustomerOpRelationship {
-	if o == nil || o.CustomerOp == nil {
+	if o == nil || IsNil(o.CustomerOp.Get()) {
 		var ret LicenseCustomerOpRelationship
 		return ret
 	}
-	return *o.CustomerOp
+	return *o.CustomerOp.Get()
 }
 
 // GetCustomerOpOk returns a tuple with the CustomerOp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseAccountLicenseData) GetCustomerOpOk() (*LicenseCustomerOpRelationship, bool) {
-	if o == nil || o.CustomerOp == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.CustomerOp, true
+	return o.CustomerOp.Get(), o.CustomerOp.IsSet()
 }
 
 // HasCustomerOp returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasCustomerOp() bool {
-	if o != nil && o.CustomerOp != nil {
+	if o != nil && o.CustomerOp.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCustomerOp gets a reference to the given LicenseCustomerOpRelationship and assigns it to the CustomerOp field.
+// SetCustomerOp gets a reference to the given NullableLicenseCustomerOpRelationship and assigns it to the CustomerOp field.
 func (o *LicenseAccountLicenseData) SetCustomerOp(v LicenseCustomerOpRelationship) {
-	o.CustomerOp = &v
+	o.CustomerOp.Set(&v)
 }
 
-// GetIksCustomerOp returns the IksCustomerOp field value if set, zero value otherwise.
+// SetCustomerOpNil sets the value for CustomerOp to be an explicit nil
+func (o *LicenseAccountLicenseData) SetCustomerOpNil() {
+	o.CustomerOp.Set(nil)
+}
+
+// UnsetCustomerOp ensures that no value is present for CustomerOp, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetCustomerOp() {
+	o.CustomerOp.Unset()
+}
+
+// GetIksCustomerOp returns the IksCustomerOp field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LicenseAccountLicenseData) GetIksCustomerOp() LicenseIksCustomerOpRelationship {
-	if o == nil || o.IksCustomerOp == nil {
+	if o == nil || IsNil(o.IksCustomerOp.Get()) {
 		var ret LicenseIksCustomerOpRelationship
 		return ret
 	}
-	return *o.IksCustomerOp
+	return *o.IksCustomerOp.Get()
 }
 
 // GetIksCustomerOpOk returns a tuple with the IksCustomerOp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseAccountLicenseData) GetIksCustomerOpOk() (*LicenseIksCustomerOpRelationship, bool) {
-	if o == nil || o.IksCustomerOp == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.IksCustomerOp, true
+	return o.IksCustomerOp.Get(), o.IksCustomerOp.IsSet()
 }
 
 // HasIksCustomerOp returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasIksCustomerOp() bool {
-	if o != nil && o.IksCustomerOp != nil {
+	if o != nil && o.IksCustomerOp.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetIksCustomerOp gets a reference to the given LicenseIksCustomerOpRelationship and assigns it to the IksCustomerOp field.
+// SetIksCustomerOp gets a reference to the given NullableLicenseIksCustomerOpRelationship and assigns it to the IksCustomerOp field.
 func (o *LicenseAccountLicenseData) SetIksCustomerOp(v LicenseIksCustomerOpRelationship) {
-	o.IksCustomerOp = &v
+	o.IksCustomerOp.Set(&v)
 }
 
-// GetIksLicenseCount returns the IksLicenseCount field value if set, zero value otherwise.
+// SetIksCustomerOpNil sets the value for IksCustomerOp to be an explicit nil
+func (o *LicenseAccountLicenseData) SetIksCustomerOpNil() {
+	o.IksCustomerOp.Set(nil)
+}
+
+// UnsetIksCustomerOp ensures that no value is present for IksCustomerOp, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetIksCustomerOp() {
+	o.IksCustomerOp.Unset()
+}
+
+// GetIksLicenseCount returns the IksLicenseCount field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LicenseAccountLicenseData) GetIksLicenseCount() LicenseIksLicenseCountRelationship {
-	if o == nil || o.IksLicenseCount == nil {
+	if o == nil || IsNil(o.IksLicenseCount.Get()) {
 		var ret LicenseIksLicenseCountRelationship
 		return ret
 	}
-	return *o.IksLicenseCount
+	return *o.IksLicenseCount.Get()
 }
 
 // GetIksLicenseCountOk returns a tuple with the IksLicenseCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseAccountLicenseData) GetIksLicenseCountOk() (*LicenseIksLicenseCountRelationship, bool) {
-	if o == nil || o.IksLicenseCount == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.IksLicenseCount, true
+	return o.IksLicenseCount.Get(), o.IksLicenseCount.IsSet()
 }
 
 // HasIksLicenseCount returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasIksLicenseCount() bool {
-	if o != nil && o.IksLicenseCount != nil {
+	if o != nil && o.IksLicenseCount.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetIksLicenseCount gets a reference to the given LicenseIksLicenseCountRelationship and assigns it to the IksLicenseCount field.
+// SetIksLicenseCount gets a reference to the given NullableLicenseIksLicenseCountRelationship and assigns it to the IksLicenseCount field.
 func (o *LicenseAccountLicenseData) SetIksLicenseCount(v LicenseIksLicenseCountRelationship) {
-	o.IksLicenseCount = &v
+	o.IksLicenseCount.Set(&v)
 }
 
-// GetIwoCustomerOp returns the IwoCustomerOp field value if set, zero value otherwise.
+// SetIksLicenseCountNil sets the value for IksLicenseCount to be an explicit nil
+func (o *LicenseAccountLicenseData) SetIksLicenseCountNil() {
+	o.IksLicenseCount.Set(nil)
+}
+
+// UnsetIksLicenseCount ensures that no value is present for IksLicenseCount, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetIksLicenseCount() {
+	o.IksLicenseCount.Unset()
+}
+
+// GetIncCustomerOp returns the IncCustomerOp field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LicenseAccountLicenseData) GetIncCustomerOp() LicenseIncCustomerOpRelationship {
+	if o == nil || IsNil(o.IncCustomerOp.Get()) {
+		var ret LicenseIncCustomerOpRelationship
+		return ret
+	}
+	return *o.IncCustomerOp.Get()
+}
+
+// GetIncCustomerOpOk returns a tuple with the IncCustomerOp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LicenseAccountLicenseData) GetIncCustomerOpOk() (*LicenseIncCustomerOpRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.IncCustomerOp.Get(), o.IncCustomerOp.IsSet()
+}
+
+// HasIncCustomerOp returns a boolean if a field has been set.
+func (o *LicenseAccountLicenseData) HasIncCustomerOp() bool {
+	if o != nil && o.IncCustomerOp.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetIncCustomerOp gets a reference to the given NullableLicenseIncCustomerOpRelationship and assigns it to the IncCustomerOp field.
+func (o *LicenseAccountLicenseData) SetIncCustomerOp(v LicenseIncCustomerOpRelationship) {
+	o.IncCustomerOp.Set(&v)
+}
+
+// SetIncCustomerOpNil sets the value for IncCustomerOp to be an explicit nil
+func (o *LicenseAccountLicenseData) SetIncCustomerOpNil() {
+	o.IncCustomerOp.Set(nil)
+}
+
+// UnsetIncCustomerOp ensures that no value is present for IncCustomerOp, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetIncCustomerOp() {
+	o.IncCustomerOp.Unset()
+}
+
+// GetIncLicenseCount returns the IncLicenseCount field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LicenseAccountLicenseData) GetIncLicenseCount() LicenseIncLicenseCountRelationship {
+	if o == nil || IsNil(o.IncLicenseCount.Get()) {
+		var ret LicenseIncLicenseCountRelationship
+		return ret
+	}
+	return *o.IncLicenseCount.Get()
+}
+
+// GetIncLicenseCountOk returns a tuple with the IncLicenseCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LicenseAccountLicenseData) GetIncLicenseCountOk() (*LicenseIncLicenseCountRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.IncLicenseCount.Get(), o.IncLicenseCount.IsSet()
+}
+
+// HasIncLicenseCount returns a boolean if a field has been set.
+func (o *LicenseAccountLicenseData) HasIncLicenseCount() bool {
+	if o != nil && o.IncLicenseCount.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetIncLicenseCount gets a reference to the given NullableLicenseIncLicenseCountRelationship and assigns it to the IncLicenseCount field.
+func (o *LicenseAccountLicenseData) SetIncLicenseCount(v LicenseIncLicenseCountRelationship) {
+	o.IncLicenseCount.Set(&v)
+}
+
+// SetIncLicenseCountNil sets the value for IncLicenseCount to be an explicit nil
+func (o *LicenseAccountLicenseData) SetIncLicenseCountNil() {
+	o.IncLicenseCount.Set(nil)
+}
+
+// UnsetIncLicenseCount ensures that no value is present for IncLicenseCount, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetIncLicenseCount() {
+	o.IncLicenseCount.Unset()
+}
+
+// GetIwoCustomerOp returns the IwoCustomerOp field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LicenseAccountLicenseData) GetIwoCustomerOp() LicenseIwoCustomerOpRelationship {
-	if o == nil || o.IwoCustomerOp == nil {
+	if o == nil || IsNil(o.IwoCustomerOp.Get()) {
 		var ret LicenseIwoCustomerOpRelationship
 		return ret
 	}
-	return *o.IwoCustomerOp
+	return *o.IwoCustomerOp.Get()
 }
 
 // GetIwoCustomerOpOk returns a tuple with the IwoCustomerOp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseAccountLicenseData) GetIwoCustomerOpOk() (*LicenseIwoCustomerOpRelationship, bool) {
-	if o == nil || o.IwoCustomerOp == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.IwoCustomerOp, true
+	return o.IwoCustomerOp.Get(), o.IwoCustomerOp.IsSet()
 }
 
 // HasIwoCustomerOp returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasIwoCustomerOp() bool {
-	if o != nil && o.IwoCustomerOp != nil {
+	if o != nil && o.IwoCustomerOp.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetIwoCustomerOp gets a reference to the given LicenseIwoCustomerOpRelationship and assigns it to the IwoCustomerOp field.
+// SetIwoCustomerOp gets a reference to the given NullableLicenseIwoCustomerOpRelationship and assigns it to the IwoCustomerOp field.
 func (o *LicenseAccountLicenseData) SetIwoCustomerOp(v LicenseIwoCustomerOpRelationship) {
-	o.IwoCustomerOp = &v
+	o.IwoCustomerOp.Set(&v)
 }
 
-// GetIwoLicenseCount returns the IwoLicenseCount field value if set, zero value otherwise.
+// SetIwoCustomerOpNil sets the value for IwoCustomerOp to be an explicit nil
+func (o *LicenseAccountLicenseData) SetIwoCustomerOpNil() {
+	o.IwoCustomerOp.Set(nil)
+}
+
+// UnsetIwoCustomerOp ensures that no value is present for IwoCustomerOp, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetIwoCustomerOp() {
+	o.IwoCustomerOp.Unset()
+}
+
+// GetIwoLicenseCount returns the IwoLicenseCount field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LicenseAccountLicenseData) GetIwoLicenseCount() LicenseIwoLicenseCountRelationship {
-	if o == nil || o.IwoLicenseCount == nil {
+	if o == nil || IsNil(o.IwoLicenseCount.Get()) {
 		var ret LicenseIwoLicenseCountRelationship
 		return ret
 	}
-	return *o.IwoLicenseCount
+	return *o.IwoLicenseCount.Get()
 }
 
 // GetIwoLicenseCountOk returns a tuple with the IwoLicenseCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseAccountLicenseData) GetIwoLicenseCountOk() (*LicenseIwoLicenseCountRelationship, bool) {
-	if o == nil || o.IwoLicenseCount == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.IwoLicenseCount, true
+	return o.IwoLicenseCount.Get(), o.IwoLicenseCount.IsSet()
 }
 
 // HasIwoLicenseCount returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasIwoLicenseCount() bool {
-	if o != nil && o.IwoLicenseCount != nil {
+	if o != nil && o.IwoLicenseCount.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetIwoLicenseCount gets a reference to the given LicenseIwoLicenseCountRelationship and assigns it to the IwoLicenseCount field.
+// SetIwoLicenseCount gets a reference to the given NullableLicenseIwoLicenseCountRelationship and assigns it to the IwoLicenseCount field.
 func (o *LicenseAccountLicenseData) SetIwoLicenseCount(v LicenseIwoLicenseCountRelationship) {
-	o.IwoLicenseCount = &v
+	o.IwoLicenseCount.Set(&v)
+}
+
+// SetIwoLicenseCountNil sets the value for IwoLicenseCount to be an explicit nil
+func (o *LicenseAccountLicenseData) SetIwoLicenseCountNil() {
+	o.IwoLicenseCount.Set(nil)
+}
+
+// UnsetIwoLicenseCount ensures that no value is present for IwoLicenseCount, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetIwoLicenseCount() {
+	o.IwoLicenseCount.Unset()
+}
+
+// GetLicenseInfoView returns the LicenseInfoView field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LicenseAccountLicenseData) GetLicenseInfoView() LicenseLicenseInfoViewRelationship {
+	if o == nil || IsNil(o.LicenseInfoView.Get()) {
+		var ret LicenseLicenseInfoViewRelationship
+		return ret
+	}
+	return *o.LicenseInfoView.Get()
+}
+
+// GetLicenseInfoViewOk returns a tuple with the LicenseInfoView field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LicenseAccountLicenseData) GetLicenseInfoViewOk() (*LicenseLicenseInfoViewRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LicenseInfoView.Get(), o.LicenseInfoView.IsSet()
+}
+
+// HasLicenseInfoView returns a boolean if a field has been set.
+func (o *LicenseAccountLicenseData) HasLicenseInfoView() bool {
+	if o != nil && o.LicenseInfoView.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLicenseInfoView gets a reference to the given NullableLicenseLicenseInfoViewRelationship and assigns it to the LicenseInfoView field.
+func (o *LicenseAccountLicenseData) SetLicenseInfoView(v LicenseLicenseInfoViewRelationship) {
+	o.LicenseInfoView.Set(&v)
+}
+
+// SetLicenseInfoViewNil sets the value for LicenseInfoView to be an explicit nil
+func (o *LicenseAccountLicenseData) SetLicenseInfoViewNil() {
+	o.LicenseInfoView.Set(nil)
+}
+
+// UnsetLicenseInfoView ensures that no value is present for LicenseInfoView, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetLicenseInfoView() {
+	o.LicenseInfoView.Unset()
+}
+
+// GetLicenseRegistrationStatus returns the LicenseRegistrationStatus field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *LicenseAccountLicenseData) GetLicenseRegistrationStatus() LicenseLicenseRegistrationStatusRelationship {
+	if o == nil || IsNil(o.LicenseRegistrationStatus.Get()) {
+		var ret LicenseLicenseRegistrationStatusRelationship
+		return ret
+	}
+	return *o.LicenseRegistrationStatus.Get()
+}
+
+// GetLicenseRegistrationStatusOk returns a tuple with the LicenseRegistrationStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *LicenseAccountLicenseData) GetLicenseRegistrationStatusOk() (*LicenseLicenseRegistrationStatusRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.LicenseRegistrationStatus.Get(), o.LicenseRegistrationStatus.IsSet()
+}
+
+// HasLicenseRegistrationStatus returns a boolean if a field has been set.
+func (o *LicenseAccountLicenseData) HasLicenseRegistrationStatus() bool {
+	if o != nil && o.LicenseRegistrationStatus.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetLicenseRegistrationStatus gets a reference to the given NullableLicenseLicenseRegistrationStatusRelationship and assigns it to the LicenseRegistrationStatus field.
+func (o *LicenseAccountLicenseData) SetLicenseRegistrationStatus(v LicenseLicenseRegistrationStatusRelationship) {
+	o.LicenseRegistrationStatus.Set(&v)
+}
+
+// SetLicenseRegistrationStatusNil sets the value for LicenseRegistrationStatus to be an explicit nil
+func (o *LicenseAccountLicenseData) SetLicenseRegistrationStatusNil() {
+	o.LicenseRegistrationStatus.Set(nil)
+}
+
+// UnsetLicenseRegistrationStatus ensures that no value is present for LicenseRegistrationStatus, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetLicenseRegistrationStatus() {
+	o.LicenseRegistrationStatus.Unset()
 }
 
 // GetLicenseinfos returns the Licenseinfos field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1237,7 +1531,7 @@ func (o *LicenseAccountLicenseData) GetLicenseinfos() []LicenseLicenseInfoRelati
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseAccountLicenseData) GetLicenseinfosOk() ([]LicenseLicenseInfoRelationship, bool) {
-	if o == nil || o.Licenseinfos == nil {
+	if o == nil || IsNil(o.Licenseinfos) {
 		return nil, false
 	}
 	return o.Licenseinfos, true
@@ -1245,7 +1539,7 @@ func (o *LicenseAccountLicenseData) GetLicenseinfosOk() ([]LicenseLicenseInfoRel
 
 // HasLicenseinfos returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasLicenseinfos() bool {
-	if o != nil && o.Licenseinfos != nil {
+	if o != nil && !IsNil(o.Licenseinfos) {
 		return true
 	}
 
@@ -1257,168 +1551,245 @@ func (o *LicenseAccountLicenseData) SetLicenseinfos(v []LicenseLicenseInfoRelati
 	o.Licenseinfos = v
 }
 
-// GetSmartlicenseToken returns the SmartlicenseToken field value if set, zero value otherwise.
+// GetSmartlicenseToken returns the SmartlicenseToken field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LicenseAccountLicenseData) GetSmartlicenseToken() LicenseSmartlicenseTokenRelationship {
-	if o == nil || o.SmartlicenseToken == nil {
+	if o == nil || IsNil(o.SmartlicenseToken.Get()) {
 		var ret LicenseSmartlicenseTokenRelationship
 		return ret
 	}
-	return *o.SmartlicenseToken
+	return *o.SmartlicenseToken.Get()
 }
 
 // GetSmartlicenseTokenOk returns a tuple with the SmartlicenseToken field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseAccountLicenseData) GetSmartlicenseTokenOk() (*LicenseSmartlicenseTokenRelationship, bool) {
-	if o == nil || o.SmartlicenseToken == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.SmartlicenseToken, true
+	return o.SmartlicenseToken.Get(), o.SmartlicenseToken.IsSet()
 }
 
 // HasSmartlicenseToken returns a boolean if a field has been set.
 func (o *LicenseAccountLicenseData) HasSmartlicenseToken() bool {
-	if o != nil && o.SmartlicenseToken != nil {
+	if o != nil && o.SmartlicenseToken.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSmartlicenseToken gets a reference to the given LicenseSmartlicenseTokenRelationship and assigns it to the SmartlicenseToken field.
+// SetSmartlicenseToken gets a reference to the given NullableLicenseSmartlicenseTokenRelationship and assigns it to the SmartlicenseToken field.
 func (o *LicenseAccountLicenseData) SetSmartlicenseToken(v LicenseSmartlicenseTokenRelationship) {
-	o.SmartlicenseToken = &v
+	o.SmartlicenseToken.Set(&v)
+}
+
+// SetSmartlicenseTokenNil sets the value for SmartlicenseToken to be an explicit nil
+func (o *LicenseAccountLicenseData) SetSmartlicenseTokenNil() {
+	o.SmartlicenseToken.Set(nil)
+}
+
+// UnsetSmartlicenseToken ensures that no value is present for SmartlicenseToken, not even an explicit nil
+func (o *LicenseAccountLicenseData) UnsetSmartlicenseToken() {
+	o.SmartlicenseToken.Unset()
 }
 
 func (o LicenseAccountLicenseData) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o LicenseAccountLicenseData) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AccountId != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AccountId) {
 		toSerialize["AccountId"] = o.AccountId
 	}
-	if o.AgentData != nil {
+	if !IsNil(o.AgentData) {
 		toSerialize["AgentData"] = o.AgentData
 	}
-	if o.AuthExpireTime != nil {
+	if !IsNil(o.AuthExpireTime) {
 		toSerialize["AuthExpireTime"] = o.AuthExpireTime
 	}
-	if o.AuthInitialTime != nil {
+	if !IsNil(o.AuthInitialTime) {
 		toSerialize["AuthInitialTime"] = o.AuthInitialTime
 	}
-	if o.AuthNextTime != nil {
+	if !IsNil(o.AuthNextTime) {
 		toSerialize["AuthNextTime"] = o.AuthNextTime
 	}
-	if o.Category != nil {
+	if !IsNil(o.Category) {
 		toSerialize["Category"] = o.Category
 	}
-	if o.DefaultLicenseType != nil {
+	if !IsNil(o.DefaultLicenseType) {
 		toSerialize["DefaultLicenseType"] = o.DefaultLicenseType
 	}
-	if o.ErrorDesc != nil {
+	if !IsNil(o.DefaultLicenseTypeNewerModels) {
+		toSerialize["DefaultLicenseTypeNewerModels"] = o.DefaultLicenseTypeNewerModels
+	}
+	if !IsNil(o.ErrorDesc) {
 		toSerialize["ErrorDesc"] = o.ErrorDesc
 	}
-	if o.Group != nil {
+	if !IsNil(o.Group) {
 		toSerialize["Group"] = o.Group
 	}
-	if o.HighestCompliantLicenseTier != nil {
+	if !IsNil(o.HighestCompliantLicenseTier) {
 		toSerialize["HighestCompliantLicenseTier"] = o.HighestCompliantLicenseTier
 	}
-	if o.LastCssmSync != nil {
+	if !IsNil(o.LastCssmSync) {
 		toSerialize["LastCssmSync"] = o.LastCssmSync
 	}
-	if o.LastRenew != nil {
+	if !IsNil(o.LastRenew) {
 		toSerialize["LastRenew"] = o.LastRenew
 	}
-	if o.LastSync != nil {
+	if !IsNil(o.LastSync) {
 		toSerialize["LastSync"] = o.LastSync
 	}
-	if o.LastUpdatedTime != nil {
+	if !IsNil(o.LastUpdatedTime) {
 		toSerialize["LastUpdatedTime"] = o.LastUpdatedTime
 	}
-	if o.LicenseState != nil {
+	if !IsNil(o.LicenseState) {
 		toSerialize["LicenseState"] = o.LicenseState
 	}
-	if o.LicenseTechSupportInfo != nil {
+	if !IsNil(o.LicenseTechSupportInfo) {
 		toSerialize["LicenseTechSupportInfo"] = o.LicenseTechSupportInfo
 	}
-	if o.RegisterExpireTime != nil {
+	if !IsNil(o.RegisterExpireTime) {
 		toSerialize["RegisterExpireTime"] = o.RegisterExpireTime
 	}
-	if o.RegisterInitialTime != nil {
+	if !IsNil(o.RegisterInitialTime) {
 		toSerialize["RegisterInitialTime"] = o.RegisterInitialTime
 	}
-	if o.RegisterNextTime != nil {
+	if !IsNil(o.RegisterNextTime) {
 		toSerialize["RegisterNextTime"] = o.RegisterNextTime
 	}
-	if o.RegistrationStatus != nil {
+	if !IsNil(o.RegistrationStatus) {
 		toSerialize["RegistrationStatus"] = o.RegistrationStatus
 	}
-	if o.RenewFailureString != nil {
+	if !IsNil(o.RenewFailureString) {
 		toSerialize["RenewFailureString"] = o.RenewFailureString
 	}
-	if o.SmartAccount != nil {
+	if !IsNil(o.SmartAccount) {
 		toSerialize["SmartAccount"] = o.SmartAccount
 	}
-	if o.SmartAccountDomain != nil {
+	if !IsNil(o.SmartAccountDomain) {
 		toSerialize["SmartAccountDomain"] = o.SmartAccountDomain
 	}
-	if o.SmartApiEnabled != nil {
+	if !IsNil(o.SmartApiEnabled) {
 		toSerialize["SmartApiEnabled"] = o.SmartApiEnabled
 	}
-	if o.SmartApiSyncStatus != nil {
+	if !IsNil(o.SmartApiSyncStatus) {
 		toSerialize["SmartApiSyncStatus"] = o.SmartApiSyncStatus
 	}
-	if o.SyncStatus != nil {
+	if !IsNil(o.SyncStatus) {
 		toSerialize["SyncStatus"] = o.SyncStatus
 	}
-	if o.VirtualAccount != nil {
+	if !IsNil(o.VirtualAccount) {
 		toSerialize["VirtualAccount"] = o.VirtualAccount
 	}
-	if o.Account != nil {
-		toSerialize["Account"] = o.Account
+	if o.Account.IsSet() {
+		toSerialize["Account"] = o.Account.Get()
 	}
-	if o.CustomerOp != nil {
-		toSerialize["CustomerOp"] = o.CustomerOp
+	if o.CustomerOp.IsSet() {
+		toSerialize["CustomerOp"] = o.CustomerOp.Get()
 	}
-	if o.IksCustomerOp != nil {
-		toSerialize["IksCustomerOp"] = o.IksCustomerOp
+	if o.IksCustomerOp.IsSet() {
+		toSerialize["IksCustomerOp"] = o.IksCustomerOp.Get()
 	}
-	if o.IksLicenseCount != nil {
-		toSerialize["IksLicenseCount"] = o.IksLicenseCount
+	if o.IksLicenseCount.IsSet() {
+		toSerialize["IksLicenseCount"] = o.IksLicenseCount.Get()
 	}
-	if o.IwoCustomerOp != nil {
-		toSerialize["IwoCustomerOp"] = o.IwoCustomerOp
+	if o.IncCustomerOp.IsSet() {
+		toSerialize["IncCustomerOp"] = o.IncCustomerOp.Get()
 	}
-	if o.IwoLicenseCount != nil {
-		toSerialize["IwoLicenseCount"] = o.IwoLicenseCount
+	if o.IncLicenseCount.IsSet() {
+		toSerialize["IncLicenseCount"] = o.IncLicenseCount.Get()
+	}
+	if o.IwoCustomerOp.IsSet() {
+		toSerialize["IwoCustomerOp"] = o.IwoCustomerOp.Get()
+	}
+	if o.IwoLicenseCount.IsSet() {
+		toSerialize["IwoLicenseCount"] = o.IwoLicenseCount.Get()
+	}
+	if o.LicenseInfoView.IsSet() {
+		toSerialize["LicenseInfoView"] = o.LicenseInfoView.Get()
+	}
+	if o.LicenseRegistrationStatus.IsSet() {
+		toSerialize["LicenseRegistrationStatus"] = o.LicenseRegistrationStatus.Get()
 	}
 	if o.Licenseinfos != nil {
 		toSerialize["Licenseinfos"] = o.Licenseinfos
 	}
-	if o.SmartlicenseToken != nil {
-		toSerialize["SmartlicenseToken"] = o.SmartlicenseToken
+	if o.SmartlicenseToken.IsSet() {
+		toSerialize["SmartlicenseToken"] = o.SmartlicenseToken.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *LicenseAccountLicenseData) UnmarshalJSON(bytes []byte) (err error) {
+func (o *LicenseAccountLicenseData) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type LicenseAccountLicenseDataWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -1436,13 +1807,15 @@ func (o *LicenseAccountLicenseData) UnmarshalJSON(bytes []byte) (err error) {
 		AuthNextTime *string `json:"AuthNextTime,omitempty"`
 		// Account license data category name.
 		Category *string `json:"Category,omitempty"`
-		// Default license tier set by user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+		// Default license tier set by the user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 		DefaultLicenseType *string `json:"DefaultLicenseType,omitempty"`
+		// Default license tier for newer model M7+ servers set by the user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
+		DefaultLicenseTypeNewerModels *string `json:"DefaultLicenseTypeNewerModels,omitempty"`
 		// The detailed error message when there is any error related to license sync of this account.
 		ErrorDesc *string `json:"ErrorDesc,omitempty"`
 		// Account license data group name.
 		Group *string `json:"Group,omitempty"`
-		// The highest license tier which is in compliant of this account. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+		// The highest license tier which is in compliant of this account. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 		HighestCompliantLicenseTier *string `json:"HighestCompliantLicenseTier,omitempty"`
 		// Specifies last sync time with CSSM.
 		LastCssmSync *time.Time `json:"LastCssmSync,omitempty"`
@@ -1477,21 +1850,25 @@ func (o *LicenseAccountLicenseData) UnmarshalJSON(bytes []byte) (err error) {
 		// Current sync status for the account.
 		SyncStatus *string `json:"SyncStatus,omitempty"`
 		// Name of the virtual account.
-		VirtualAccount  *string                             `json:"VirtualAccount,omitempty"`
-		Account         *IamAccountRelationship             `json:"Account,omitempty"`
-		CustomerOp      *LicenseCustomerOpRelationship      `json:"CustomerOp,omitempty"`
-		IksCustomerOp   *LicenseIksCustomerOpRelationship   `json:"IksCustomerOp,omitempty"`
-		IksLicenseCount *LicenseIksLicenseCountRelationship `json:"IksLicenseCount,omitempty"`
-		IwoCustomerOp   *LicenseIwoCustomerOpRelationship   `json:"IwoCustomerOp,omitempty"`
-		IwoLicenseCount *LicenseIwoLicenseCountRelationship `json:"IwoLicenseCount,omitempty"`
+		VirtualAccount            *string                                              `json:"VirtualAccount,omitempty"`
+		Account                   NullableIamAccountRelationship                       `json:"Account,omitempty"`
+		CustomerOp                NullableLicenseCustomerOpRelationship                `json:"CustomerOp,omitempty"`
+		IksCustomerOp             NullableLicenseIksCustomerOpRelationship             `json:"IksCustomerOp,omitempty"`
+		IksLicenseCount           NullableLicenseIksLicenseCountRelationship           `json:"IksLicenseCount,omitempty"`
+		IncCustomerOp             NullableLicenseIncCustomerOpRelationship             `json:"IncCustomerOp,omitempty"`
+		IncLicenseCount           NullableLicenseIncLicenseCountRelationship           `json:"IncLicenseCount,omitempty"`
+		IwoCustomerOp             NullableLicenseIwoCustomerOpRelationship             `json:"IwoCustomerOp,omitempty"`
+		IwoLicenseCount           NullableLicenseIwoLicenseCountRelationship           `json:"IwoLicenseCount,omitempty"`
+		LicenseInfoView           NullableLicenseLicenseInfoViewRelationship           `json:"LicenseInfoView,omitempty"`
+		LicenseRegistrationStatus NullableLicenseLicenseRegistrationStatusRelationship `json:"LicenseRegistrationStatus,omitempty"`
 		// An array of relationships to licenseLicenseInfo resources.
-		Licenseinfos      []LicenseLicenseInfoRelationship      `json:"Licenseinfos,omitempty"`
-		SmartlicenseToken *LicenseSmartlicenseTokenRelationship `json:"SmartlicenseToken,omitempty"`
+		Licenseinfos      []LicenseLicenseInfoRelationship             `json:"Licenseinfos,omitempty"`
+		SmartlicenseToken NullableLicenseSmartlicenseTokenRelationship `json:"SmartlicenseToken,omitempty"`
 	}
 
 	varLicenseAccountLicenseDataWithoutEmbeddedStruct := LicenseAccountLicenseDataWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varLicenseAccountLicenseDataWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varLicenseAccountLicenseDataWithoutEmbeddedStruct)
 	if err == nil {
 		varLicenseAccountLicenseData := _LicenseAccountLicenseData{}
 		varLicenseAccountLicenseData.ClassId = varLicenseAccountLicenseDataWithoutEmbeddedStruct.ClassId
@@ -1503,6 +1880,7 @@ func (o *LicenseAccountLicenseData) UnmarshalJSON(bytes []byte) (err error) {
 		varLicenseAccountLicenseData.AuthNextTime = varLicenseAccountLicenseDataWithoutEmbeddedStruct.AuthNextTime
 		varLicenseAccountLicenseData.Category = varLicenseAccountLicenseDataWithoutEmbeddedStruct.Category
 		varLicenseAccountLicenseData.DefaultLicenseType = varLicenseAccountLicenseDataWithoutEmbeddedStruct.DefaultLicenseType
+		varLicenseAccountLicenseData.DefaultLicenseTypeNewerModels = varLicenseAccountLicenseDataWithoutEmbeddedStruct.DefaultLicenseTypeNewerModels
 		varLicenseAccountLicenseData.ErrorDesc = varLicenseAccountLicenseDataWithoutEmbeddedStruct.ErrorDesc
 		varLicenseAccountLicenseData.Group = varLicenseAccountLicenseDataWithoutEmbeddedStruct.Group
 		varLicenseAccountLicenseData.HighestCompliantLicenseTier = varLicenseAccountLicenseDataWithoutEmbeddedStruct.HighestCompliantLicenseTier
@@ -1527,8 +1905,12 @@ func (o *LicenseAccountLicenseData) UnmarshalJSON(bytes []byte) (err error) {
 		varLicenseAccountLicenseData.CustomerOp = varLicenseAccountLicenseDataWithoutEmbeddedStruct.CustomerOp
 		varLicenseAccountLicenseData.IksCustomerOp = varLicenseAccountLicenseDataWithoutEmbeddedStruct.IksCustomerOp
 		varLicenseAccountLicenseData.IksLicenseCount = varLicenseAccountLicenseDataWithoutEmbeddedStruct.IksLicenseCount
+		varLicenseAccountLicenseData.IncCustomerOp = varLicenseAccountLicenseDataWithoutEmbeddedStruct.IncCustomerOp
+		varLicenseAccountLicenseData.IncLicenseCount = varLicenseAccountLicenseDataWithoutEmbeddedStruct.IncLicenseCount
 		varLicenseAccountLicenseData.IwoCustomerOp = varLicenseAccountLicenseDataWithoutEmbeddedStruct.IwoCustomerOp
 		varLicenseAccountLicenseData.IwoLicenseCount = varLicenseAccountLicenseDataWithoutEmbeddedStruct.IwoLicenseCount
+		varLicenseAccountLicenseData.LicenseInfoView = varLicenseAccountLicenseDataWithoutEmbeddedStruct.LicenseInfoView
+		varLicenseAccountLicenseData.LicenseRegistrationStatus = varLicenseAccountLicenseDataWithoutEmbeddedStruct.LicenseRegistrationStatus
 		varLicenseAccountLicenseData.Licenseinfos = varLicenseAccountLicenseDataWithoutEmbeddedStruct.Licenseinfos
 		varLicenseAccountLicenseData.SmartlicenseToken = varLicenseAccountLicenseDataWithoutEmbeddedStruct.SmartlicenseToken
 		*o = LicenseAccountLicenseData(varLicenseAccountLicenseData)
@@ -1538,7 +1920,7 @@ func (o *LicenseAccountLicenseData) UnmarshalJSON(bytes []byte) (err error) {
 
 	varLicenseAccountLicenseData := _LicenseAccountLicenseData{}
 
-	err = json.Unmarshal(bytes, &varLicenseAccountLicenseData)
+	err = json.Unmarshal(data, &varLicenseAccountLicenseData)
 	if err == nil {
 		o.MoBaseMo = varLicenseAccountLicenseData.MoBaseMo
 	} else {
@@ -1547,7 +1929,7 @@ func (o *LicenseAccountLicenseData) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AccountId")
@@ -1557,6 +1939,7 @@ func (o *LicenseAccountLicenseData) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "AuthNextTime")
 		delete(additionalProperties, "Category")
 		delete(additionalProperties, "DefaultLicenseType")
+		delete(additionalProperties, "DefaultLicenseTypeNewerModels")
 		delete(additionalProperties, "ErrorDesc")
 		delete(additionalProperties, "Group")
 		delete(additionalProperties, "HighestCompliantLicenseTier")
@@ -1581,8 +1964,12 @@ func (o *LicenseAccountLicenseData) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "CustomerOp")
 		delete(additionalProperties, "IksCustomerOp")
 		delete(additionalProperties, "IksLicenseCount")
+		delete(additionalProperties, "IncCustomerOp")
+		delete(additionalProperties, "IncLicenseCount")
 		delete(additionalProperties, "IwoCustomerOp")
 		delete(additionalProperties, "IwoLicenseCount")
+		delete(additionalProperties, "LicenseInfoView")
+		delete(additionalProperties, "LicenseRegistrationStatus")
 		delete(additionalProperties, "Licenseinfos")
 		delete(additionalProperties, "SmartlicenseToken")
 

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the ConvergedinfraComplianceSummary type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ConvergedinfraComplianceSummary{}
 
 // ConvergedinfraComplianceSummary The summary of compliance information based on the compliance analysis (HCL, IMT, etc.) of components.
 type ConvergedinfraComplianceSummary struct {
@@ -84,6 +88,11 @@ func (o *ConvergedinfraComplianceSummary) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "convergedinfra.ComplianceSummary" of the ClassId field.
+func (o *ConvergedinfraComplianceSummary) GetDefaultClassId() interface{} {
+	return "convergedinfra.ComplianceSummary"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ConvergedinfraComplianceSummary) GetObjectType() string {
 	if o == nil {
@@ -108,9 +117,14 @@ func (o *ConvergedinfraComplianceSummary) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "convergedinfra.ComplianceSummary" of the ObjectType field.
+func (o *ConvergedinfraComplianceSummary) GetDefaultObjectType() interface{} {
+	return "convergedinfra.ComplianceSummary"
+}
+
 // GetIncomplete returns the Incomplete field value if set, zero value otherwise.
 func (o *ConvergedinfraComplianceSummary) GetIncomplete() int64 {
-	if o == nil || o.Incomplete == nil {
+	if o == nil || IsNil(o.Incomplete) {
 		var ret int64
 		return ret
 	}
@@ -120,7 +134,7 @@ func (o *ConvergedinfraComplianceSummary) GetIncomplete() int64 {
 // GetIncompleteOk returns a tuple with the Incomplete field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConvergedinfraComplianceSummary) GetIncompleteOk() (*int64, bool) {
-	if o == nil || o.Incomplete == nil {
+	if o == nil || IsNil(o.Incomplete) {
 		return nil, false
 	}
 	return o.Incomplete, true
@@ -128,7 +142,7 @@ func (o *ConvergedinfraComplianceSummary) GetIncompleteOk() (*int64, bool) {
 
 // HasIncomplete returns a boolean if a field has been set.
 func (o *ConvergedinfraComplianceSummary) HasIncomplete() bool {
-	if o != nil && o.Incomplete != nil {
+	if o != nil && !IsNil(o.Incomplete) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *ConvergedinfraComplianceSummary) SetIncomplete(v int64) {
 
 // GetNotEvaluated returns the NotEvaluated field value if set, zero value otherwise.
 func (o *ConvergedinfraComplianceSummary) GetNotEvaluated() int64 {
-	if o == nil || o.NotEvaluated == nil {
+	if o == nil || IsNil(o.NotEvaluated) {
 		var ret int64
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *ConvergedinfraComplianceSummary) GetNotEvaluated() int64 {
 // GetNotEvaluatedOk returns a tuple with the NotEvaluated field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConvergedinfraComplianceSummary) GetNotEvaluatedOk() (*int64, bool) {
-	if o == nil || o.NotEvaluated == nil {
+	if o == nil || IsNil(o.NotEvaluated) {
 		return nil, false
 	}
 	return o.NotEvaluated, true
@@ -160,7 +174,7 @@ func (o *ConvergedinfraComplianceSummary) GetNotEvaluatedOk() (*int64, bool) {
 
 // HasNotEvaluated returns a boolean if a field has been set.
 func (o *ConvergedinfraComplianceSummary) HasNotEvaluated() bool {
-	if o != nil && o.NotEvaluated != nil {
+	if o != nil && !IsNil(o.NotEvaluated) {
 		return true
 	}
 
@@ -174,7 +188,7 @@ func (o *ConvergedinfraComplianceSummary) SetNotEvaluated(v int64) {
 
 // GetNotListed returns the NotListed field value if set, zero value otherwise.
 func (o *ConvergedinfraComplianceSummary) GetNotListed() int64 {
-	if o == nil || o.NotListed == nil {
+	if o == nil || IsNil(o.NotListed) {
 		var ret int64
 		return ret
 	}
@@ -184,7 +198,7 @@ func (o *ConvergedinfraComplianceSummary) GetNotListed() int64 {
 // GetNotListedOk returns a tuple with the NotListed field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConvergedinfraComplianceSummary) GetNotListedOk() (*int64, bool) {
-	if o == nil || o.NotListed == nil {
+	if o == nil || IsNil(o.NotListed) {
 		return nil, false
 	}
 	return o.NotListed, true
@@ -192,7 +206,7 @@ func (o *ConvergedinfraComplianceSummary) GetNotListedOk() (*int64, bool) {
 
 // HasNotListed returns a boolean if a field has been set.
 func (o *ConvergedinfraComplianceSummary) HasNotListed() bool {
-	if o != nil && o.NotListed != nil {
+	if o != nil && !IsNil(o.NotListed) {
 		return true
 	}
 
@@ -206,7 +220,7 @@ func (o *ConvergedinfraComplianceSummary) SetNotListed(v int64) {
 
 // GetValidated returns the Validated field value if set, zero value otherwise.
 func (o *ConvergedinfraComplianceSummary) GetValidated() int64 {
-	if o == nil || o.Validated == nil {
+	if o == nil || IsNil(o.Validated) {
 		var ret int64
 		return ret
 	}
@@ -216,7 +230,7 @@ func (o *ConvergedinfraComplianceSummary) GetValidated() int64 {
 // GetValidatedOk returns a tuple with the Validated field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConvergedinfraComplianceSummary) GetValidatedOk() (*int64, bool) {
-	if o == nil || o.Validated == nil {
+	if o == nil || IsNil(o.Validated) {
 		return nil, false
 	}
 	return o.Validated, true
@@ -224,7 +238,7 @@ func (o *ConvergedinfraComplianceSummary) GetValidatedOk() (*int64, bool) {
 
 // HasValidated returns a boolean if a field has been set.
 func (o *ConvergedinfraComplianceSummary) HasValidated() bool {
-	if o != nil && o.Validated != nil {
+	if o != nil && !IsNil(o.Validated) {
 		return true
 	}
 
@@ -237,31 +251,41 @@ func (o *ConvergedinfraComplianceSummary) SetValidated(v int64) {
 }
 
 func (o ConvergedinfraComplianceSummary) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ConvergedinfraComplianceSummary) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Incomplete != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Incomplete) {
 		toSerialize["Incomplete"] = o.Incomplete
 	}
-	if o.NotEvaluated != nil {
+	if !IsNil(o.NotEvaluated) {
 		toSerialize["NotEvaluated"] = o.NotEvaluated
 	}
-	if o.NotListed != nil {
+	if !IsNil(o.NotListed) {
 		toSerialize["NotListed"] = o.NotListed
 	}
-	if o.Validated != nil {
+	if !IsNil(o.Validated) {
 		toSerialize["Validated"] = o.Validated
 	}
 
@@ -269,10 +293,51 @@ func (o ConvergedinfraComplianceSummary) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ConvergedinfraComplianceSummary) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ConvergedinfraComplianceSummary) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ConvergedinfraComplianceSummaryWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -290,7 +355,7 @@ func (o *ConvergedinfraComplianceSummary) UnmarshalJSON(bytes []byte) (err error
 
 	varConvergedinfraComplianceSummaryWithoutEmbeddedStruct := ConvergedinfraComplianceSummaryWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varConvergedinfraComplianceSummaryWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varConvergedinfraComplianceSummaryWithoutEmbeddedStruct)
 	if err == nil {
 		varConvergedinfraComplianceSummary := _ConvergedinfraComplianceSummary{}
 		varConvergedinfraComplianceSummary.ClassId = varConvergedinfraComplianceSummaryWithoutEmbeddedStruct.ClassId
@@ -306,7 +371,7 @@ func (o *ConvergedinfraComplianceSummary) UnmarshalJSON(bytes []byte) (err error
 
 	varConvergedinfraComplianceSummary := _ConvergedinfraComplianceSummary{}
 
-	err = json.Unmarshal(bytes, &varConvergedinfraComplianceSummary)
+	err = json.Unmarshal(data, &varConvergedinfraComplianceSummary)
 	if err == nil {
 		o.MoBaseComplexType = varConvergedinfraComplianceSummary.MoBaseComplexType
 	} else {
@@ -315,7 +380,7 @@ func (o *ConvergedinfraComplianceSummary) UnmarshalJSON(bytes []byte) (err error
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Incomplete")

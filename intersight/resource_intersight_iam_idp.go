@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +24,7 @@ func resourceIamIdp() *schema.Resource {
 		UpdateContext: resourceIamIdpUpdate,
 		DeleteContext: resourceIamIdpDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account": {
 				Description: "A reference to a iamAccount resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
@@ -152,6 +155,17 @@ func resourceIamIdp() *schema.Resource {
 				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"), ""),
 				Optional:     true,
 			},
+			"domain_names": {
+				Type:       schema.TypeList,
+				MaxItems:   20,
+				MinItems:   0,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type:         schema.TypeString,
+					ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"), ""),
+				}},
 			"enable_single_logout": {
 				Description: "Setting that indicates whether 'Single Logout (SLO)' has been enabled for this IdP.",
 				Type:        schema.TypeBool,
@@ -458,6 +472,45 @@ func resourceIamIdp() *schema.Resource {
 					},
 				},
 			},
+			"user_settings": {
+				Description: "An array of relationships to iamUserSetting resources.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "mo.MoRef",
+						},
+						"moid": {
+							Description: "The Moid of the referenced REST resource.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the remote type referred by this relationship.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+						},
+						"selector": {
+							Description: "An OData $filter expression which describes the REST resource to be referenced. This field may\nbe set instead of 'moid' by clients.\n1. If 'moid' is set this field is ignored.\n1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of the\nresource matching the filter expression and populates it in the MoRef that is part of the object\ninstance being inserted/updated to fulfill the REST request.\nAn error is returned if the filter matches zero or more than one REST resource.\nAn example filter string is: Serial eq '3AA8B7T11'.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+					},
+				},
+			},
 			"usergroups": {
 				Description: "An array of relationships to iamUserGroup resources.",
 				Type:        schema.TypeList,
@@ -594,6 +647,17 @@ func resourceIamIdp() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -700,6 +764,19 @@ func resourceIamIdpCreate(c context.Context, d *schema.ResourceData, meta interf
 	if v, ok := d.GetOk("domain_name"); ok {
 		x := (v.(string))
 		o.SetDomainName(x)
+	}
+
+	if v, ok := d.GetOk("domain_names"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetDomainNames(x)
+		}
 	}
 
 	if v, ok := d.GetOkExists("enable_single_logout"); ok {
@@ -863,14 +940,25 @@ func resourceIamIdpCreate(c context.Context, d *schema.ResourceData, meta interf
 		}
 		return diag.Errorf("error occurred while creating IamIdp: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceIamIdpRead(c, d, meta)...)
 }
 
 func resourceIamIdpRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.IamApi.GetIamIdpByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -918,6 +1006,10 @@ func resourceIamIdpRead(c context.Context, d *schema.ResourceData, meta interfac
 
 	if err := d.Set("domain_name", (s.GetDomainName())); err != nil {
 		return diag.Errorf("error occurred while setting property DomainName in IamIdp object: %s", err.Error())
+	}
+
+	if err := d.Set("domain_names", (s.GetDomainNames())); err != nil {
+		return diag.Errorf("error occurred while setting property DomainNames in IamIdp object: %s", err.Error())
 	}
 
 	if err := d.Set("enable_single_logout", (s.GetEnableSingleLogout())); err != nil {
@@ -988,6 +1080,10 @@ func resourceIamIdpRead(c context.Context, d *schema.ResourceData, meta interfac
 		return diag.Errorf("error occurred while setting property UserPreferences in IamIdp object: %s", err.Error())
 	}
 
+	if err := d.Set("user_settings", flattenListIamUserSettingRelationship(s.GetUserSettings(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property UserSettings in IamIdp object: %s", err.Error())
+	}
+
 	if err := d.Set("usergroups", flattenListIamUserGroupRelationship(s.GetUsergroups(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Usergroups in IamIdp object: %s", err.Error())
 	}
@@ -1027,6 +1123,18 @@ func resourceIamIdpUpdate(c context.Context, d *schema.ResourceData, meta interf
 		v := d.Get("domain_name")
 		x := (v.(string))
 		o.SetDomainName(x)
+	}
+
+	if d.HasChange("domain_names") {
+		v := d.Get("domain_names")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetDomainNames(x)
 	}
 
 	if d.HasChange("enable_single_logout") {

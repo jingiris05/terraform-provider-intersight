@@ -7,8 +7,9 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "storage.NetAppInitiatorGroup"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.NetAppInitiatorGroup"]
 **Protocol** | Pointer to **string** | Initiator group protocol. * &#x60;FCP&#x60; - Fibre channel initiator type which contains WWN of an HBA on the host. * &#x60;iSCSI&#x60; - An iSCSI initiator type used by the host. * &#x60;mixed&#x60; - For systems using both FC and iSCSI connections to the same LUN, create two igroups, one for FC and one for iSCSI. Then map the LUN to both igroups. | [optional] [readonly] [default to "FCP"]
+**SvmName** | Pointer to **string** | The storage virtual machine name for the initiator group. | [optional] [readonly] 
 **Uuid** | Pointer to **string** | Universally unique identifier of the LUN. | [optional] [readonly] 
-**Tenant** | Pointer to [**StorageNetAppStorageVmRelationship**](StorageNetAppStorageVmRelationship.md) |  | [optional] 
+**Tenant** | Pointer to [**NullableStorageNetAppStorageVmRelationship**](StorageNetAppStorageVmRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -94,6 +95,31 @@ SetProtocol sets Protocol field to given value.
 
 HasProtocol returns a boolean if a field has been set.
 
+### GetSvmName
+
+`func (o *StorageNetAppInitiatorGroup) GetSvmName() string`
+
+GetSvmName returns the SvmName field if non-nil, zero value otherwise.
+
+### GetSvmNameOk
+
+`func (o *StorageNetAppInitiatorGroup) GetSvmNameOk() (*string, bool)`
+
+GetSvmNameOk returns a tuple with the SvmName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSvmName
+
+`func (o *StorageNetAppInitiatorGroup) SetSvmName(v string)`
+
+SetSvmName sets SvmName field to given value.
+
+### HasSvmName
+
+`func (o *StorageNetAppInitiatorGroup) HasSvmName() bool`
+
+HasSvmName returns a boolean if a field has been set.
+
 ### GetUuid
 
 `func (o *StorageNetAppInitiatorGroup) GetUuid() string`
@@ -144,6 +170,16 @@ SetTenant sets Tenant field to given value.
 
 HasTenant returns a boolean if a field has been set.
 
+### SetTenantNil
+
+`func (o *StorageNetAppInitiatorGroup) SetTenantNil(b bool)`
+
+ SetTenantNil sets the value for Tenant to be an explicit nil
+
+### UnsetTenant
+`func (o *StorageNetAppInitiatorGroup) UnsetTenant()`
+
+UnsetTenant ensures that no value is present for Tenant, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

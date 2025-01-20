@@ -4,12 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. The enum values provides the list of concrete types that can be instantiated from this abstract type. | [default to "certificatemanagement.Imc"]
-**ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. The enum values provides the list of concrete types that can be instantiated from this abstract type. | [default to "certificatemanagement.Imc"]
+**ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. The enum values provides the list of concrete types that can be instantiated from this abstract type. | 
+**ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. The enum values provides the list of concrete types that can be instantiated from this abstract type. | 
 **Certificate** | Pointer to [**NullableX509Certificate**](X509Certificate.md) |  | [optional] 
 **Enabled** | Pointer to **bool** | Enable/Disable the certificate in Certificate Management policy. | [optional] [default to true]
-**IsPrivatekeySet** | Pointer to **bool** | Indicates whether the value of the &#39;privatekey&#39; property has been set. | [optional] [readonly] [default to false]
-**Privatekey** | Pointer to **string** | Private Key which is used to validate the certificate. | [optional] 
 
 ## Methods
 
@@ -129,56 +127,6 @@ SetEnabled sets Enabled field to given value.
 `func (o *CertificatemanagementCertificateBase) HasEnabled() bool`
 
 HasEnabled returns a boolean if a field has been set.
-
-### GetIsPrivatekeySet
-
-`func (o *CertificatemanagementCertificateBase) GetIsPrivatekeySet() bool`
-
-GetIsPrivatekeySet returns the IsPrivatekeySet field if non-nil, zero value otherwise.
-
-### GetIsPrivatekeySetOk
-
-`func (o *CertificatemanagementCertificateBase) GetIsPrivatekeySetOk() (*bool, bool)`
-
-GetIsPrivatekeySetOk returns a tuple with the IsPrivatekeySet field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetIsPrivatekeySet
-
-`func (o *CertificatemanagementCertificateBase) SetIsPrivatekeySet(v bool)`
-
-SetIsPrivatekeySet sets IsPrivatekeySet field to given value.
-
-### HasIsPrivatekeySet
-
-`func (o *CertificatemanagementCertificateBase) HasIsPrivatekeySet() bool`
-
-HasIsPrivatekeySet returns a boolean if a field has been set.
-
-### GetPrivatekey
-
-`func (o *CertificatemanagementCertificateBase) GetPrivatekey() string`
-
-GetPrivatekey returns the Privatekey field if non-nil, zero value otherwise.
-
-### GetPrivatekeyOk
-
-`func (o *CertificatemanagementCertificateBase) GetPrivatekeyOk() (*string, bool)`
-
-GetPrivatekeyOk returns a tuple with the Privatekey field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetPrivatekey
-
-`func (o *CertificatemanagementCertificateBase) SetPrivatekey(v string)`
-
-SetPrivatekey sets Privatekey field to given value.
-
-### HasPrivatekey
-
-`func (o *CertificatemanagementCertificateBase) HasPrivatekey() bool`
-
-HasPrivatekey returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

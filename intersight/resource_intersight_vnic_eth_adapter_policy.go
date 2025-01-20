@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceVnicEthAdapterPolicy() *schema.Resource {
 		UpdateContext: resourceVnicEthAdapterPolicyUpdate,
 		DeleteContext: resourceVnicEthAdapterPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -159,16 +161,12 @@ func resourceVnicEthAdapterPolicy() *schema.Resource {
 							Default:     "vnic.CompletionQueueSettings",
 						},
 						"ring_size": {
-							Description: "The number of descriptors in each completion queue.",
-							Type:        schema.TypeInt,
-							Optional:    true,
-							Computed:    true,
-							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-								if val != nil {
-									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
-								}
-								return
-							}},
+							Description:  "The number of descriptors in each completion queue.",
+							Type:         schema.TypeInt,
+							ValidateFunc: validation.IntBetween(1, 256),
+							Optional:     true,
+							Default:      1,
+						},
 					},
 				},
 			},
@@ -200,6 +198,12 @@ func resourceVnicEthAdapterPolicy() *schema.Resource {
 					}
 					return
 				}},
+			"ether_channel_pinning_enabled": {
+				Description: "Enables EtherChannel Pinning to combine multiple physical links between two network switches into a single logical link. Transmit Queue Count should be at least 2 to enable ether channel pinning.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+			},
 			"geneve_enabled": {
 				Description: "GENEVE offload protocol allows you to create logical networks that span physical network boundaries by allowing any information to be encoded in a packet and passed between tunnel endpoints.",
 				Type:        schema.TypeBool,
@@ -572,7 +576,7 @@ func resourceVnicEthAdapterPolicy() *schema.Resource {
 								}
 								return false
 							},
-							Default: 4,
+							Default: 2,
 						},
 						"nr_version": {
 							Description:  "Configure RDMA over Converged Ethernet (RoCE) version on the virtual interface. Only RoCEv1 is supported on Cisco VIC 13xx series adapters and only RoCEv2 is supported on Cisco VIC 14xx series adapters.\n* `1` - RDMA over Converged Ethernet Protocol Version 1.\n* `2` - RDMA over Converged Ethernet Protocol Version 2.",
@@ -909,6 +913,17 @@ func resourceVnicEthAdapterPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1118,6 +1133,12 @@ func resourceVnicEthAdapterPolicyCreate(c context.Context, d *schema.ResourceDat
 					o.SetObjectType(x)
 				}
 			}
+			if v, ok := l["ring_size"]; ok {
+				{
+					x := int64(v.(int))
+					o.SetRingSize(x)
+				}
+			}
 			p = append(p, *o)
 		}
 		if len(p) > 0 {
@@ -1129,6 +1150,11 @@ func resourceVnicEthAdapterPolicyCreate(c context.Context, d *schema.ResourceDat
 	if v, ok := d.GetOk("description"); ok {
 		x := (v.(string))
 		o.SetDescription(x)
+	}
+
+	if v, ok := d.GetOkExists("ether_channel_pinning_enabled"); ok {
+		x := (v.(bool))
+		o.SetEtherChannelPinningEnabled(x)
 	}
 
 	if v, ok := d.GetOkExists("geneve_enabled"); ok {
@@ -1704,14 +1730,25 @@ func resourceVnicEthAdapterPolicyCreate(c context.Context, d *schema.ResourceDat
 		}
 		return diag.Errorf("error occurred while creating VnicEthAdapterPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceVnicEthAdapterPolicyRead(c, d, meta)...)
 }
 
 func resourceVnicEthAdapterPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.VnicApi.GetVnicEthAdapterPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1767,6 +1804,10 @@ func resourceVnicEthAdapterPolicyRead(c context.Context, d *schema.ResourceData,
 
 	if err := d.Set("domain_group_moid", (s.GetDomainGroupMoid())); err != nil {
 		return diag.Errorf("error occurred while setting property DomainGroupMoid in VnicEthAdapterPolicy object: %s", err.Error())
+	}
+
+	if err := d.Set("ether_channel_pinning_enabled", (s.GetEtherChannelPinningEnabled())); err != nil {
+		return diag.Errorf("error occurred while setting property EtherChannelPinningEnabled in VnicEthAdapterPolicy object: %s", err.Error())
 	}
 
 	if err := d.Set("geneve_enabled", (s.GetGeneveEnabled())); err != nil {
@@ -1962,6 +2003,12 @@ func resourceVnicEthAdapterPolicyUpdate(c context.Context, d *schema.ResourceDat
 					o.SetObjectType(x)
 				}
 			}
+			if v, ok := l["ring_size"]; ok {
+				{
+					x := int64(v.(int))
+					o.SetRingSize(x)
+				}
+			}
 			p = append(p, *o)
 		}
 		if len(p) > 0 {
@@ -1974,6 +2021,12 @@ func resourceVnicEthAdapterPolicyUpdate(c context.Context, d *schema.ResourceDat
 		v := d.Get("description")
 		x := (v.(string))
 		o.SetDescription(x)
+	}
+
+	if d.HasChange("ether_channel_pinning_enabled") {
+		v := d.Get("ether_channel_pinning_enabled")
+		x := (v.(bool))
+		o.SetEtherChannelPinningEnabled(x)
 	}
 
 	if d.HasChange("geneve_enabled") {

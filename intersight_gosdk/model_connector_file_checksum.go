@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,11 +13,15 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
-// ConnectorFileChecksum A checksum value of a files contents. Used to verify the integrity or equality of files on the file system.
+// checks if the ConnectorFileChecksum type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ConnectorFileChecksum{}
+
+// ConnectorFileChecksum A checksum value of a file's contents. Used to verify the integrity or equality of files on the file system.
 type ConnectorFileChecksum struct {
 	MoBaseComplexType
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
@@ -26,7 +30,7 @@ type ConnectorFileChecksum struct {
 	ObjectType string `json:"ObjectType"`
 	// The calculated hash of the contents using the algorithm.
 	Hash *string `json:"Hash,omitempty"`
-	// The hash algorithm used to calculate the checksum. * `crc` - A CRC hash as definded by RFC 3385. Generated with the IEEE polynomial. * `sha256` - A SHA256 hash as defined by RFC 4634.
+	// The hash algorithm used to calculate the checksum. * `crc` - A CRC hash as definded by RFC 3385. Generated with the IEEE polynomial. * `sha256` - An SHA256 hash as defined by RFC 4634.
 	HashAlgorithm        *string `json:"HashAlgorithm,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -84,6 +88,11 @@ func (o *ConnectorFileChecksum) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "connector.FileChecksum" of the ClassId field.
+func (o *ConnectorFileChecksum) GetDefaultClassId() interface{} {
+	return "connector.FileChecksum"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ConnectorFileChecksum) GetObjectType() string {
 	if o == nil {
@@ -108,9 +117,14 @@ func (o *ConnectorFileChecksum) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "connector.FileChecksum" of the ObjectType field.
+func (o *ConnectorFileChecksum) GetDefaultObjectType() interface{} {
+	return "connector.FileChecksum"
+}
+
 // GetHash returns the Hash field value if set, zero value otherwise.
 func (o *ConnectorFileChecksum) GetHash() string {
-	if o == nil || o.Hash == nil {
+	if o == nil || IsNil(o.Hash) {
 		var ret string
 		return ret
 	}
@@ -120,7 +134,7 @@ func (o *ConnectorFileChecksum) GetHash() string {
 // GetHashOk returns a tuple with the Hash field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorFileChecksum) GetHashOk() (*string, bool) {
-	if o == nil || o.Hash == nil {
+	if o == nil || IsNil(o.Hash) {
 		return nil, false
 	}
 	return o.Hash, true
@@ -128,7 +142,7 @@ func (o *ConnectorFileChecksum) GetHashOk() (*string, bool) {
 
 // HasHash returns a boolean if a field has been set.
 func (o *ConnectorFileChecksum) HasHash() bool {
-	if o != nil && o.Hash != nil {
+	if o != nil && !IsNil(o.Hash) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *ConnectorFileChecksum) SetHash(v string) {
 
 // GetHashAlgorithm returns the HashAlgorithm field value if set, zero value otherwise.
 func (o *ConnectorFileChecksum) GetHashAlgorithm() string {
-	if o == nil || o.HashAlgorithm == nil {
+	if o == nil || IsNil(o.HashAlgorithm) {
 		var ret string
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *ConnectorFileChecksum) GetHashAlgorithm() string {
 // GetHashAlgorithmOk returns a tuple with the HashAlgorithm field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorFileChecksum) GetHashAlgorithmOk() (*string, bool) {
-	if o == nil || o.HashAlgorithm == nil {
+	if o == nil || IsNil(o.HashAlgorithm) {
 		return nil, false
 	}
 	return o.HashAlgorithm, true
@@ -160,7 +174,7 @@ func (o *ConnectorFileChecksum) GetHashAlgorithmOk() (*string, bool) {
 
 // HasHashAlgorithm returns a boolean if a field has been set.
 func (o *ConnectorFileChecksum) HasHashAlgorithm() bool {
-	if o != nil && o.HashAlgorithm != nil {
+	if o != nil && !IsNil(o.HashAlgorithm) {
 		return true
 	}
 
@@ -173,25 +187,35 @@ func (o *ConnectorFileChecksum) SetHashAlgorithm(v string) {
 }
 
 func (o ConnectorFileChecksum) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ConnectorFileChecksum) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Hash != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Hash) {
 		toSerialize["Hash"] = o.Hash
 	}
-	if o.HashAlgorithm != nil {
+	if !IsNil(o.HashAlgorithm) {
 		toSerialize["HashAlgorithm"] = o.HashAlgorithm
 	}
 
@@ -199,10 +223,51 @@ func (o ConnectorFileChecksum) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ConnectorFileChecksum) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ConnectorFileChecksum) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ConnectorFileChecksumWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -210,13 +275,13 @@ func (o *ConnectorFileChecksum) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// The calculated hash of the contents using the algorithm.
 		Hash *string `json:"Hash,omitempty"`
-		// The hash algorithm used to calculate the checksum. * `crc` - A CRC hash as definded by RFC 3385. Generated with the IEEE polynomial. * `sha256` - A SHA256 hash as defined by RFC 4634.
+		// The hash algorithm used to calculate the checksum. * `crc` - A CRC hash as definded by RFC 3385. Generated with the IEEE polynomial. * `sha256` - An SHA256 hash as defined by RFC 4634.
 		HashAlgorithm *string `json:"HashAlgorithm,omitempty"`
 	}
 
 	varConnectorFileChecksumWithoutEmbeddedStruct := ConnectorFileChecksumWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varConnectorFileChecksumWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varConnectorFileChecksumWithoutEmbeddedStruct)
 	if err == nil {
 		varConnectorFileChecksum := _ConnectorFileChecksum{}
 		varConnectorFileChecksum.ClassId = varConnectorFileChecksumWithoutEmbeddedStruct.ClassId
@@ -230,7 +295,7 @@ func (o *ConnectorFileChecksum) UnmarshalJSON(bytes []byte) (err error) {
 
 	varConnectorFileChecksum := _ConnectorFileChecksum{}
 
-	err = json.Unmarshal(bytes, &varConnectorFileChecksum)
+	err = json.Unmarshal(data, &varConnectorFileChecksum)
 	if err == nil {
 		o.MoBaseComplexType = varConnectorFileChecksum.MoBaseComplexType
 	} else {
@@ -239,7 +304,7 @@ func (o *ConnectorFileChecksum) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Hash")

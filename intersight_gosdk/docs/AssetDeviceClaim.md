@@ -6,12 +6,12 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "asset.DeviceClaim"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "asset.DeviceClaim"]
-**DeviceUpdates** | Pointer to [**[]AssetConnectionControlMessage**](AssetConnectionControlMessage.md) |  | [optional] 
 **SecurityToken** | Pointer to **string** | Obtained from the device connector management UI or API (REST endpoint &#39;/connector/SecurityTokens&#39;). | [optional] 
 **SerialNumber** | Pointer to **string** | Obtained from the device connector management UI or API (REST endpoint &#39;/connector/DeviceIdentifiers&#39;). | [optional] 
-**Account** | Pointer to [**IamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
-**Device** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
-**Reservation** | Pointer to [**ResourceReservationRelationship**](ResourceReservationRelationship.md) |  | [optional] 
+**Account** | Pointer to [**NullableIamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
+**CustomPermissionResources** | Pointer to [**[]MoBaseMoRelationship**](MoBaseMoRelationship.md) | An array of relationships to moBaseMo resources. | [optional] [readonly] 
+**Device** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**Reservation** | Pointer to [**NullableResourceReservationRelationship**](ResourceReservationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -72,41 +72,6 @@ and a boolean to check if the value has been set.
 SetObjectType sets ObjectType field to given value.
 
 
-### GetDeviceUpdates
-
-`func (o *AssetDeviceClaim) GetDeviceUpdates() []AssetConnectionControlMessage`
-
-GetDeviceUpdates returns the DeviceUpdates field if non-nil, zero value otherwise.
-
-### GetDeviceUpdatesOk
-
-`func (o *AssetDeviceClaim) GetDeviceUpdatesOk() (*[]AssetConnectionControlMessage, bool)`
-
-GetDeviceUpdatesOk returns a tuple with the DeviceUpdates field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetDeviceUpdates
-
-`func (o *AssetDeviceClaim) SetDeviceUpdates(v []AssetConnectionControlMessage)`
-
-SetDeviceUpdates sets DeviceUpdates field to given value.
-
-### HasDeviceUpdates
-
-`func (o *AssetDeviceClaim) HasDeviceUpdates() bool`
-
-HasDeviceUpdates returns a boolean if a field has been set.
-
-### SetDeviceUpdatesNil
-
-`func (o *AssetDeviceClaim) SetDeviceUpdatesNil(b bool)`
-
- SetDeviceUpdatesNil sets the value for DeviceUpdates to be an explicit nil
-
-### UnsetDeviceUpdates
-`func (o *AssetDeviceClaim) UnsetDeviceUpdates()`
-
-UnsetDeviceUpdates ensures that no value is present for DeviceUpdates, not even an explicit nil
 ### GetSecurityToken
 
 `func (o *AssetDeviceClaim) GetSecurityToken() string`
@@ -182,6 +147,51 @@ SetAccount sets Account field to given value.
 
 HasAccount returns a boolean if a field has been set.
 
+### SetAccountNil
+
+`func (o *AssetDeviceClaim) SetAccountNil(b bool)`
+
+ SetAccountNil sets the value for Account to be an explicit nil
+
+### UnsetAccount
+`func (o *AssetDeviceClaim) UnsetAccount()`
+
+UnsetAccount ensures that no value is present for Account, not even an explicit nil
+### GetCustomPermissionResources
+
+`func (o *AssetDeviceClaim) GetCustomPermissionResources() []MoBaseMoRelationship`
+
+GetCustomPermissionResources returns the CustomPermissionResources field if non-nil, zero value otherwise.
+
+### GetCustomPermissionResourcesOk
+
+`func (o *AssetDeviceClaim) GetCustomPermissionResourcesOk() (*[]MoBaseMoRelationship, bool)`
+
+GetCustomPermissionResourcesOk returns a tuple with the CustomPermissionResources field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCustomPermissionResources
+
+`func (o *AssetDeviceClaim) SetCustomPermissionResources(v []MoBaseMoRelationship)`
+
+SetCustomPermissionResources sets CustomPermissionResources field to given value.
+
+### HasCustomPermissionResources
+
+`func (o *AssetDeviceClaim) HasCustomPermissionResources() bool`
+
+HasCustomPermissionResources returns a boolean if a field has been set.
+
+### SetCustomPermissionResourcesNil
+
+`func (o *AssetDeviceClaim) SetCustomPermissionResourcesNil(b bool)`
+
+ SetCustomPermissionResourcesNil sets the value for CustomPermissionResources to be an explicit nil
+
+### UnsetCustomPermissionResources
+`func (o *AssetDeviceClaim) UnsetCustomPermissionResources()`
+
+UnsetCustomPermissionResources ensures that no value is present for CustomPermissionResources, not even an explicit nil
 ### GetDevice
 
 `func (o *AssetDeviceClaim) GetDevice() AssetDeviceRegistrationRelationship`
@@ -207,6 +217,16 @@ SetDevice sets Device field to given value.
 
 HasDevice returns a boolean if a field has been set.
 
+### SetDeviceNil
+
+`func (o *AssetDeviceClaim) SetDeviceNil(b bool)`
+
+ SetDeviceNil sets the value for Device to be an explicit nil
+
+### UnsetDevice
+`func (o *AssetDeviceClaim) UnsetDevice()`
+
+UnsetDevice ensures that no value is present for Device, not even an explicit nil
 ### GetReservation
 
 `func (o *AssetDeviceClaim) GetReservation() ResourceReservationRelationship`
@@ -232,6 +252,16 @@ SetReservation sets Reservation field to given value.
 
 HasReservation returns a boolean if a field has been set.
 
+### SetReservationNil
+
+`func (o *AssetDeviceClaim) SetReservationNil(b bool)`
+
+ SetReservationNil sets the value for Reservation to be an explicit nil
+
+### UnsetReservation
+`func (o *AssetDeviceClaim) UnsetReservation()`
+
+UnsetReservation ensures that no value is present for Reservation, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

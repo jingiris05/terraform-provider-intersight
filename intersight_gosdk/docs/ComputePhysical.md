@@ -11,11 +11,15 @@ Name | Type | Description | Notes
 **AssetTag** | Pointer to **string** | The user defined asset tag assigned to the server. | [optional] [readonly] 
 **AvailableMemory** | Pointer to **int64** | The amount of memory available on the server. | [optional] [readonly] 
 **BiosPostComplete** | Pointer to **bool** | The BIOS POST completion status of the server. | [optional] 
+**CpuCapacity** | Pointer to **float32** | Total processing capacity of the server. | [optional] [readonly] 
+**DimmBlocklisting** | Pointer to **string** | The DIMM Blocklisting setting configured on the server. * &#x60;Unknown&#x60; - The configured state is unknown. * &#x60;Enabled&#x60; - The configured state is enabled. * &#x60;Disabled&#x60; - The configured state is disabled. | [optional] [readonly] [default to "Unknown"]
 **FaultSummary** | Pointer to **int64** | The fault summary for the server. | [optional] 
+**FrontPanelLockState** | Pointer to **string** | The actual front panel state of the server. * &#x60;None&#x60; - Front Panel of the server is set to None state. It is required so that the next frontPanelLockState operation can be triggered. * &#x60;Lock&#x60; - Front Panel of the server is set to Locked state. * &#x60;Unlock&#x60; - Front Panel of the server is set to Unlocked state. | [optional] [default to "None"]
 **HardwareUuid** | Pointer to **string** | The universally unique hardware identity of the server provided by the manufacturer. | [optional] 
 **KvmIpAddresses** | Pointer to [**[]ComputeIpAddress**](ComputeIpAddress.md) |  | [optional] 
 **KvmServerStateEnabled** | Pointer to **bool** | The KVM server state of the server. | [optional] [readonly] 
 **KvmVendor** | Pointer to **string** | The KVM Vendor for the server. | [optional] [readonly] 
+**Lifecycle** | Pointer to **string** | The lifecycle state of the server. This will map to the discovery lifecycle as represented in the server Identity object. * &#x60;None&#x60; - Default state of an equipment. This should be an initial state when no state is defined for an equipment. * &#x60;Active&#x60; - Default Lifecycle State for a physical entity. * &#x60;Decommissioned&#x60; - Decommission Lifecycle state. * &#x60;DiscoveryInProgress&#x60; - DiscoveryInProgress Lifecycle state. * &#x60;DiscoveryFailed&#x60; - DiscoveryFailed Lifecycle state. * &#x60;FirmwareUpgradeInProgress&#x60; - Firmware upgrade is in progress on given physical entity. * &#x60;SecureEraseInProgress&#x60; - Secure Erase is in progress on given physical entity. * &#x60;ScrubInProgress&#x60; - Scrub is in progress on given physical entity. * &#x60;BladeMigrationInProgress&#x60; - Server slot migration is in progress on given physical entity. * &#x60;SlotMismatch&#x60; - The blade server is detected in a different chassis/slot than it was previously. * &#x60;Removed&#x60; - The blade server has been removed from its discovered slot, and not detected anywhere else. Blade inventory can be cleaned up by performing a software remove operation on the physically removed blade. * &#x60;Moved&#x60; - The blade server has been moved from its discovered location to a new location. Blade inventory can be updated by performing a rediscover operation on the moved blade. * &#x60;Replaced&#x60; - The blade server has been removed from its discovered location and another blade has been inserted in that location. Blade inventory can be cleaned up and updated by doing a software remove operation on the physically removed blade. * &#x60;MovedAndReplaced&#x60; - The blade server has been moved from its discovered location to a new location and another blade has been inserted into the old discovered location. Blade inventory can be updated by performing a rediscover operation on the moved blade. | [optional] [readonly] [default to "None"]
 **ManagementMode** | Pointer to **string** | The management mode of the server. * &#x60;IntersightStandalone&#x60; - Intersight Standalone mode of operation. * &#x60;UCSM&#x60; - Unified Computing System Manager mode of operation. * &#x60;Intersight&#x60; - Intersight managed mode of operation. | [optional] [default to "IntersightStandalone"]
 **MemorySpeed** | Pointer to **string** | The maximum memory speed in MHz available on the server. | [optional] [readonly] 
 **MgmtIpAddress** | Pointer to **string** | Management address of the server. | [optional] 
@@ -38,7 +42,7 @@ Name | Type | Description | Notes
 **UserLabel** | Pointer to **string** | The user defined label assigned to the server. | [optional] [readonly] 
 **Uuid** | Pointer to **string** | The universally unique identity of the server. | [optional] [readonly] 
 **BootCddDevices** | Pointer to [**[]BootCddDeviceRelationship**](BootCddDeviceRelationship.md) | An array of relationships to bootCddDevice resources. | [optional] 
-**BootDeviceBootSecurity** | Pointer to [**BootDeviceBootSecurityRelationship**](BootDeviceBootSecurityRelationship.md) |  | [optional] 
+**BootDeviceBootSecurity** | Pointer to [**NullableBootDeviceBootSecurityRelationship**](BootDeviceBootSecurityRelationship.md) |  | [optional] 
 **BootHddDevices** | Pointer to [**[]BootHddDeviceRelationship**](BootHddDeviceRelationship.md) | An array of relationships to bootHddDevice resources. | [optional] 
 **BootIscsiDevices** | Pointer to [**[]BootIscsiDeviceRelationship**](BootIscsiDeviceRelationship.md) | An array of relationships to bootIscsiDevice resources. | [optional] 
 **BootNvmeDevices** | Pointer to [**[]BootNvmeDeviceRelationship**](BootNvmeDeviceRelationship.md) | An array of relationships to bootNvmeDevice resources. | [optional] 
@@ -49,8 +53,8 @@ Name | Type | Description | Notes
 **BootUefiShellDevices** | Pointer to [**[]BootUefiShellDeviceRelationship**](BootUefiShellDeviceRelationship.md) | An array of relationships to bootUefiShellDevice resources. | [optional] 
 **BootUsbDevices** | Pointer to [**[]BootUsbDeviceRelationship**](BootUsbDeviceRelationship.md) | An array of relationships to bootUsbDevice resources. | [optional] 
 **BootVmediaDevices** | Pointer to [**[]BootVmediaDeviceRelationship**](BootVmediaDeviceRelationship.md) | An array of relationships to bootVmediaDevice resources. | [optional] 
-**MgmtIdentity** | Pointer to [**EquipmentPhysicalIdentityRelationship**](EquipmentPhysicalIdentityRelationship.md) |  | [optional] 
-**Vmedia** | Pointer to [**ComputeVmediaRelationship**](ComputeVmediaRelationship.md) |  | [optional] 
+**MgmtIdentity** | Pointer to [**NullableEquipmentPhysicalIdentityRelationship**](EquipmentPhysicalIdentityRelationship.md) |  | [optional] 
+**Vmedia** | Pointer to [**NullableComputeVmediaRelationship**](ComputeVmediaRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -246,6 +250,56 @@ SetBiosPostComplete sets BiosPostComplete field to given value.
 
 HasBiosPostComplete returns a boolean if a field has been set.
 
+### GetCpuCapacity
+
+`func (o *ComputePhysical) GetCpuCapacity() float32`
+
+GetCpuCapacity returns the CpuCapacity field if non-nil, zero value otherwise.
+
+### GetCpuCapacityOk
+
+`func (o *ComputePhysical) GetCpuCapacityOk() (*float32, bool)`
+
+GetCpuCapacityOk returns a tuple with the CpuCapacity field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCpuCapacity
+
+`func (o *ComputePhysical) SetCpuCapacity(v float32)`
+
+SetCpuCapacity sets CpuCapacity field to given value.
+
+### HasCpuCapacity
+
+`func (o *ComputePhysical) HasCpuCapacity() bool`
+
+HasCpuCapacity returns a boolean if a field has been set.
+
+### GetDimmBlocklisting
+
+`func (o *ComputePhysical) GetDimmBlocklisting() string`
+
+GetDimmBlocklisting returns the DimmBlocklisting field if non-nil, zero value otherwise.
+
+### GetDimmBlocklistingOk
+
+`func (o *ComputePhysical) GetDimmBlocklistingOk() (*string, bool)`
+
+GetDimmBlocklistingOk returns a tuple with the DimmBlocklisting field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDimmBlocklisting
+
+`func (o *ComputePhysical) SetDimmBlocklisting(v string)`
+
+SetDimmBlocklisting sets DimmBlocklisting field to given value.
+
+### HasDimmBlocklisting
+
+`func (o *ComputePhysical) HasDimmBlocklisting() bool`
+
+HasDimmBlocklisting returns a boolean if a field has been set.
+
 ### GetFaultSummary
 
 `func (o *ComputePhysical) GetFaultSummary() int64`
@@ -270,6 +324,31 @@ SetFaultSummary sets FaultSummary field to given value.
 `func (o *ComputePhysical) HasFaultSummary() bool`
 
 HasFaultSummary returns a boolean if a field has been set.
+
+### GetFrontPanelLockState
+
+`func (o *ComputePhysical) GetFrontPanelLockState() string`
+
+GetFrontPanelLockState returns the FrontPanelLockState field if non-nil, zero value otherwise.
+
+### GetFrontPanelLockStateOk
+
+`func (o *ComputePhysical) GetFrontPanelLockStateOk() (*string, bool)`
+
+GetFrontPanelLockStateOk returns a tuple with the FrontPanelLockState field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFrontPanelLockState
+
+`func (o *ComputePhysical) SetFrontPanelLockState(v string)`
+
+SetFrontPanelLockState sets FrontPanelLockState field to given value.
+
+### HasFrontPanelLockState
+
+`func (o *ComputePhysical) HasFrontPanelLockState() bool`
+
+HasFrontPanelLockState returns a boolean if a field has been set.
 
 ### GetHardwareUuid
 
@@ -380,6 +459,31 @@ SetKvmVendor sets KvmVendor field to given value.
 `func (o *ComputePhysical) HasKvmVendor() bool`
 
 HasKvmVendor returns a boolean if a field has been set.
+
+### GetLifecycle
+
+`func (o *ComputePhysical) GetLifecycle() string`
+
+GetLifecycle returns the Lifecycle field if non-nil, zero value otherwise.
+
+### GetLifecycleOk
+
+`func (o *ComputePhysical) GetLifecycleOk() (*string, bool)`
+
+GetLifecycleOk returns a tuple with the Lifecycle field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLifecycle
+
+`func (o *ComputePhysical) SetLifecycle(v string)`
+
+SetLifecycle sets Lifecycle field to given value.
+
+### HasLifecycle
+
+`func (o *ComputePhysical) HasLifecycle() bool`
+
+HasLifecycle returns a boolean if a field has been set.
 
 ### GetManagementMode
 
@@ -976,6 +1080,16 @@ SetBootDeviceBootSecurity sets BootDeviceBootSecurity field to given value.
 
 HasBootDeviceBootSecurity returns a boolean if a field has been set.
 
+### SetBootDeviceBootSecurityNil
+
+`func (o *ComputePhysical) SetBootDeviceBootSecurityNil(b bool)`
+
+ SetBootDeviceBootSecurityNil sets the value for BootDeviceBootSecurity to be an explicit nil
+
+### UnsetBootDeviceBootSecurity
+`func (o *ComputePhysical) UnsetBootDeviceBootSecurity()`
+
+UnsetBootDeviceBootSecurity ensures that no value is present for BootDeviceBootSecurity, not even an explicit nil
 ### GetBootHddDevices
 
 `func (o *ComputePhysical) GetBootHddDevices() []BootHddDeviceRelationship`
@@ -1351,6 +1465,16 @@ SetMgmtIdentity sets MgmtIdentity field to given value.
 
 HasMgmtIdentity returns a boolean if a field has been set.
 
+### SetMgmtIdentityNil
+
+`func (o *ComputePhysical) SetMgmtIdentityNil(b bool)`
+
+ SetMgmtIdentityNil sets the value for MgmtIdentity to be an explicit nil
+
+### UnsetMgmtIdentity
+`func (o *ComputePhysical) UnsetMgmtIdentity()`
+
+UnsetMgmtIdentity ensures that no value is present for MgmtIdentity, not even an explicit nil
 ### GetVmedia
 
 `func (o *ComputePhysical) GetVmedia() ComputeVmediaRelationship`
@@ -1376,6 +1500,16 @@ SetVmedia sets Vmedia field to given value.
 
 HasVmedia returns a boolean if a field has been set.
 
+### SetVmediaNil
+
+`func (o *ComputePhysical) SetVmediaNil(b bool)`
+
+ SetVmediaNil sets the value for Vmedia to be an explicit nil
+
+### UnsetVmedia
+`func (o *ComputePhysical) UnsetVmedia()`
+
+UnsetVmedia ensures that no value is present for Vmedia, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

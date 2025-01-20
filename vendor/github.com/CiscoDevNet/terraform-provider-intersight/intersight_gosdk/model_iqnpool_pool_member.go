@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,23 +13,34 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
+// checks if the IqnpoolPoolMember type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IqnpoolPoolMember{}
+
 // IqnpoolPoolMember PoolMember represents a single IQN address that is part of a pool.
 type IqnpoolPoolMember struct {
-	PoolAbstractPoolMember
+	PoolAbstractIdPoolMember
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// IQN Address of this pool member.
-	IqnAddress           *string                   `json:"IqnAddress,omitempty"`
-	AssignedToEntity     *MoBaseMoRelationship     `json:"AssignedToEntity,omitempty"`
-	BlockHead            *IqnpoolBlockRelationship `json:"BlockHead,omitempty"`
-	Peer                 *IqnpoolLeaseRelationship `json:"Peer,omitempty"`
-	Pool                 *IqnpoolPoolRelationship  `json:"Pool,omitempty"`
+	// IQN Address of this pool member. It is constructed as <prefix>:<suffix>:<number>.
+	IqnAddress *string `json:"IqnAddress,omitempty"`
+	// Number of the IQN address. IQN Address is constructed as <prefix>:<suffix>:<number>.
+	IqnNumber *int64 `json:"IqnNumber,omitempty"`
+	// Prefix of the IQN address. IQN Address is constructed as <prefix>:<suffix>:<number>.
+	IqnPrefix *string `json:"IqnPrefix,omitempty"`
+	// Suffix of the IQN address. IQN Address is constructed as <prefix>:<suffix>:<number>.
+	IqnSuffix            *string                                `json:"IqnSuffix,omitempty"`
+	AssignedToEntity     NullableMoBaseMoRelationship           `json:"AssignedToEntity,omitempty"`
+	BlockHead            NullableIqnpoolBlockRelationship       `json:"BlockHead,omitempty"`
+	Peer                 NullableIqnpoolLeaseRelationship       `json:"Peer,omitempty"`
+	Pool                 NullableIqnpoolPoolRelationship        `json:"Pool,omitempty"`
+	Reservation          NullableIqnpoolReservationRelationship `json:"Reservation,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -45,6 +56,10 @@ func NewIqnpoolPoolMember(classId string, objectType string) *IqnpoolPoolMember 
 	this.ObjectType = objectType
 	var assigned bool = false
 	this.Assigned = &assigned
+	var assignedByAnother bool = false
+	this.AssignedByAnother = &assignedByAnother
+	var reserved bool = false
+	this.Reserved = &reserved
 	return &this
 }
 
@@ -84,6 +99,11 @@ func (o *IqnpoolPoolMember) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "iqnpool.PoolMember" of the ClassId field.
+func (o *IqnpoolPoolMember) GetDefaultClassId() interface{} {
+	return "iqnpool.PoolMember"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IqnpoolPoolMember) GetObjectType() string {
 	if o == nil {
@@ -108,9 +128,14 @@ func (o *IqnpoolPoolMember) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "iqnpool.PoolMember" of the ObjectType field.
+func (o *IqnpoolPoolMember) GetDefaultObjectType() interface{} {
+	return "iqnpool.PoolMember"
+}
+
 // GetIqnAddress returns the IqnAddress field value if set, zero value otherwise.
 func (o *IqnpoolPoolMember) GetIqnAddress() string {
-	if o == nil || o.IqnAddress == nil {
+	if o == nil || IsNil(o.IqnAddress) {
 		var ret string
 		return ret
 	}
@@ -120,7 +145,7 @@ func (o *IqnpoolPoolMember) GetIqnAddress() string {
 // GetIqnAddressOk returns a tuple with the IqnAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IqnpoolPoolMember) GetIqnAddressOk() (*string, bool) {
-	if o == nil || o.IqnAddress == nil {
+	if o == nil || IsNil(o.IqnAddress) {
 		return nil, false
 	}
 	return o.IqnAddress, true
@@ -128,7 +153,7 @@ func (o *IqnpoolPoolMember) GetIqnAddressOk() (*string, bool) {
 
 // HasIqnAddress returns a boolean if a field has been set.
 func (o *IqnpoolPoolMember) HasIqnAddress() bool {
-	if o != nil && o.IqnAddress != nil {
+	if o != nil && !IsNil(o.IqnAddress) {
 		return true
 	}
 
@@ -140,199 +165,456 @@ func (o *IqnpoolPoolMember) SetIqnAddress(v string) {
 	o.IqnAddress = &v
 }
 
-// GetAssignedToEntity returns the AssignedToEntity field value if set, zero value otherwise.
+// GetIqnNumber returns the IqnNumber field value if set, zero value otherwise.
+func (o *IqnpoolPoolMember) GetIqnNumber() int64 {
+	if o == nil || IsNil(o.IqnNumber) {
+		var ret int64
+		return ret
+	}
+	return *o.IqnNumber
+}
+
+// GetIqnNumberOk returns a tuple with the IqnNumber field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IqnpoolPoolMember) GetIqnNumberOk() (*int64, bool) {
+	if o == nil || IsNil(o.IqnNumber) {
+		return nil, false
+	}
+	return o.IqnNumber, true
+}
+
+// HasIqnNumber returns a boolean if a field has been set.
+func (o *IqnpoolPoolMember) HasIqnNumber() bool {
+	if o != nil && !IsNil(o.IqnNumber) {
+		return true
+	}
+
+	return false
+}
+
+// SetIqnNumber gets a reference to the given int64 and assigns it to the IqnNumber field.
+func (o *IqnpoolPoolMember) SetIqnNumber(v int64) {
+	o.IqnNumber = &v
+}
+
+// GetIqnPrefix returns the IqnPrefix field value if set, zero value otherwise.
+func (o *IqnpoolPoolMember) GetIqnPrefix() string {
+	if o == nil || IsNil(o.IqnPrefix) {
+		var ret string
+		return ret
+	}
+	return *o.IqnPrefix
+}
+
+// GetIqnPrefixOk returns a tuple with the IqnPrefix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IqnpoolPoolMember) GetIqnPrefixOk() (*string, bool) {
+	if o == nil || IsNil(o.IqnPrefix) {
+		return nil, false
+	}
+	return o.IqnPrefix, true
+}
+
+// HasIqnPrefix returns a boolean if a field has been set.
+func (o *IqnpoolPoolMember) HasIqnPrefix() bool {
+	if o != nil && !IsNil(o.IqnPrefix) {
+		return true
+	}
+
+	return false
+}
+
+// SetIqnPrefix gets a reference to the given string and assigns it to the IqnPrefix field.
+func (o *IqnpoolPoolMember) SetIqnPrefix(v string) {
+	o.IqnPrefix = &v
+}
+
+// GetIqnSuffix returns the IqnSuffix field value if set, zero value otherwise.
+func (o *IqnpoolPoolMember) GetIqnSuffix() string {
+	if o == nil || IsNil(o.IqnSuffix) {
+		var ret string
+		return ret
+	}
+	return *o.IqnSuffix
+}
+
+// GetIqnSuffixOk returns a tuple with the IqnSuffix field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IqnpoolPoolMember) GetIqnSuffixOk() (*string, bool) {
+	if o == nil || IsNil(o.IqnSuffix) {
+		return nil, false
+	}
+	return o.IqnSuffix, true
+}
+
+// HasIqnSuffix returns a boolean if a field has been set.
+func (o *IqnpoolPoolMember) HasIqnSuffix() bool {
+	if o != nil && !IsNil(o.IqnSuffix) {
+		return true
+	}
+
+	return false
+}
+
+// SetIqnSuffix gets a reference to the given string and assigns it to the IqnSuffix field.
+func (o *IqnpoolPoolMember) SetIqnSuffix(v string) {
+	o.IqnSuffix = &v
+}
+
+// GetAssignedToEntity returns the AssignedToEntity field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IqnpoolPoolMember) GetAssignedToEntity() MoBaseMoRelationship {
-	if o == nil || o.AssignedToEntity == nil {
+	if o == nil || IsNil(o.AssignedToEntity.Get()) {
 		var ret MoBaseMoRelationship
 		return ret
 	}
-	return *o.AssignedToEntity
+	return *o.AssignedToEntity.Get()
 }
 
 // GetAssignedToEntityOk returns a tuple with the AssignedToEntity field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IqnpoolPoolMember) GetAssignedToEntityOk() (*MoBaseMoRelationship, bool) {
-	if o == nil || o.AssignedToEntity == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.AssignedToEntity, true
+	return o.AssignedToEntity.Get(), o.AssignedToEntity.IsSet()
 }
 
 // HasAssignedToEntity returns a boolean if a field has been set.
 func (o *IqnpoolPoolMember) HasAssignedToEntity() bool {
-	if o != nil && o.AssignedToEntity != nil {
+	if o != nil && o.AssignedToEntity.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAssignedToEntity gets a reference to the given MoBaseMoRelationship and assigns it to the AssignedToEntity field.
+// SetAssignedToEntity gets a reference to the given NullableMoBaseMoRelationship and assigns it to the AssignedToEntity field.
 func (o *IqnpoolPoolMember) SetAssignedToEntity(v MoBaseMoRelationship) {
-	o.AssignedToEntity = &v
+	o.AssignedToEntity.Set(&v)
 }
 
-// GetBlockHead returns the BlockHead field value if set, zero value otherwise.
+// SetAssignedToEntityNil sets the value for AssignedToEntity to be an explicit nil
+func (o *IqnpoolPoolMember) SetAssignedToEntityNil() {
+	o.AssignedToEntity.Set(nil)
+}
+
+// UnsetAssignedToEntity ensures that no value is present for AssignedToEntity, not even an explicit nil
+func (o *IqnpoolPoolMember) UnsetAssignedToEntity() {
+	o.AssignedToEntity.Unset()
+}
+
+// GetBlockHead returns the BlockHead field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IqnpoolPoolMember) GetBlockHead() IqnpoolBlockRelationship {
-	if o == nil || o.BlockHead == nil {
+	if o == nil || IsNil(o.BlockHead.Get()) {
 		var ret IqnpoolBlockRelationship
 		return ret
 	}
-	return *o.BlockHead
+	return *o.BlockHead.Get()
 }
 
 // GetBlockHeadOk returns a tuple with the BlockHead field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IqnpoolPoolMember) GetBlockHeadOk() (*IqnpoolBlockRelationship, bool) {
-	if o == nil || o.BlockHead == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.BlockHead, true
+	return o.BlockHead.Get(), o.BlockHead.IsSet()
 }
 
 // HasBlockHead returns a boolean if a field has been set.
 func (o *IqnpoolPoolMember) HasBlockHead() bool {
-	if o != nil && o.BlockHead != nil {
+	if o != nil && o.BlockHead.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetBlockHead gets a reference to the given IqnpoolBlockRelationship and assigns it to the BlockHead field.
+// SetBlockHead gets a reference to the given NullableIqnpoolBlockRelationship and assigns it to the BlockHead field.
 func (o *IqnpoolPoolMember) SetBlockHead(v IqnpoolBlockRelationship) {
-	o.BlockHead = &v
+	o.BlockHead.Set(&v)
 }
 
-// GetPeer returns the Peer field value if set, zero value otherwise.
+// SetBlockHeadNil sets the value for BlockHead to be an explicit nil
+func (o *IqnpoolPoolMember) SetBlockHeadNil() {
+	o.BlockHead.Set(nil)
+}
+
+// UnsetBlockHead ensures that no value is present for BlockHead, not even an explicit nil
+func (o *IqnpoolPoolMember) UnsetBlockHead() {
+	o.BlockHead.Unset()
+}
+
+// GetPeer returns the Peer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IqnpoolPoolMember) GetPeer() IqnpoolLeaseRelationship {
-	if o == nil || o.Peer == nil {
+	if o == nil || IsNil(o.Peer.Get()) {
 		var ret IqnpoolLeaseRelationship
 		return ret
 	}
-	return *o.Peer
+	return *o.Peer.Get()
 }
 
 // GetPeerOk returns a tuple with the Peer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IqnpoolPoolMember) GetPeerOk() (*IqnpoolLeaseRelationship, bool) {
-	if o == nil || o.Peer == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Peer, true
+	return o.Peer.Get(), o.Peer.IsSet()
 }
 
 // HasPeer returns a boolean if a field has been set.
 func (o *IqnpoolPoolMember) HasPeer() bool {
-	if o != nil && o.Peer != nil {
+	if o != nil && o.Peer.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPeer gets a reference to the given IqnpoolLeaseRelationship and assigns it to the Peer field.
+// SetPeer gets a reference to the given NullableIqnpoolLeaseRelationship and assigns it to the Peer field.
 func (o *IqnpoolPoolMember) SetPeer(v IqnpoolLeaseRelationship) {
-	o.Peer = &v
+	o.Peer.Set(&v)
 }
 
-// GetPool returns the Pool field value if set, zero value otherwise.
+// SetPeerNil sets the value for Peer to be an explicit nil
+func (o *IqnpoolPoolMember) SetPeerNil() {
+	o.Peer.Set(nil)
+}
+
+// UnsetPeer ensures that no value is present for Peer, not even an explicit nil
+func (o *IqnpoolPoolMember) UnsetPeer() {
+	o.Peer.Unset()
+}
+
+// GetPool returns the Pool field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IqnpoolPoolMember) GetPool() IqnpoolPoolRelationship {
-	if o == nil || o.Pool == nil {
+	if o == nil || IsNil(o.Pool.Get()) {
 		var ret IqnpoolPoolRelationship
 		return ret
 	}
-	return *o.Pool
+	return *o.Pool.Get()
 }
 
 // GetPoolOk returns a tuple with the Pool field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IqnpoolPoolMember) GetPoolOk() (*IqnpoolPoolRelationship, bool) {
-	if o == nil || o.Pool == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Pool, true
+	return o.Pool.Get(), o.Pool.IsSet()
 }
 
 // HasPool returns a boolean if a field has been set.
 func (o *IqnpoolPoolMember) HasPool() bool {
-	if o != nil && o.Pool != nil {
+	if o != nil && o.Pool.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPool gets a reference to the given IqnpoolPoolRelationship and assigns it to the Pool field.
+// SetPool gets a reference to the given NullableIqnpoolPoolRelationship and assigns it to the Pool field.
 func (o *IqnpoolPoolMember) SetPool(v IqnpoolPoolRelationship) {
-	o.Pool = &v
+	o.Pool.Set(&v)
+}
+
+// SetPoolNil sets the value for Pool to be an explicit nil
+func (o *IqnpoolPoolMember) SetPoolNil() {
+	o.Pool.Set(nil)
+}
+
+// UnsetPool ensures that no value is present for Pool, not even an explicit nil
+func (o *IqnpoolPoolMember) UnsetPool() {
+	o.Pool.Unset()
+}
+
+// GetReservation returns the Reservation field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *IqnpoolPoolMember) GetReservation() IqnpoolReservationRelationship {
+	if o == nil || IsNil(o.Reservation.Get()) {
+		var ret IqnpoolReservationRelationship
+		return ret
+	}
+	return *o.Reservation.Get()
+}
+
+// GetReservationOk returns a tuple with the Reservation field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *IqnpoolPoolMember) GetReservationOk() (*IqnpoolReservationRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Reservation.Get(), o.Reservation.IsSet()
+}
+
+// HasReservation returns a boolean if a field has been set.
+func (o *IqnpoolPoolMember) HasReservation() bool {
+	if o != nil && o.Reservation.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetReservation gets a reference to the given NullableIqnpoolReservationRelationship and assigns it to the Reservation field.
+func (o *IqnpoolPoolMember) SetReservation(v IqnpoolReservationRelationship) {
+	o.Reservation.Set(&v)
+}
+
+// SetReservationNil sets the value for Reservation to be an explicit nil
+func (o *IqnpoolPoolMember) SetReservationNil() {
+	o.Reservation.Set(nil)
+}
+
+// UnsetReservation ensures that no value is present for Reservation, not even an explicit nil
+func (o *IqnpoolPoolMember) UnsetReservation() {
+	o.Reservation.Unset()
 }
 
 func (o IqnpoolPoolMember) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IqnpoolPoolMember) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedPoolAbstractPoolMember, errPoolAbstractPoolMember := json.Marshal(o.PoolAbstractPoolMember)
-	if errPoolAbstractPoolMember != nil {
-		return []byte{}, errPoolAbstractPoolMember
+	serializedPoolAbstractIdPoolMember, errPoolAbstractIdPoolMember := json.Marshal(o.PoolAbstractIdPoolMember)
+	if errPoolAbstractIdPoolMember != nil {
+		return map[string]interface{}{}, errPoolAbstractIdPoolMember
 	}
-	errPoolAbstractPoolMember = json.Unmarshal([]byte(serializedPoolAbstractPoolMember), &toSerialize)
-	if errPoolAbstractPoolMember != nil {
-		return []byte{}, errPoolAbstractPoolMember
+	errPoolAbstractIdPoolMember = json.Unmarshal([]byte(serializedPoolAbstractIdPoolMember), &toSerialize)
+	if errPoolAbstractIdPoolMember != nil {
+		return map[string]interface{}{}, errPoolAbstractIdPoolMember
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.IqnAddress != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.IqnAddress) {
 		toSerialize["IqnAddress"] = o.IqnAddress
 	}
-	if o.AssignedToEntity != nil {
-		toSerialize["AssignedToEntity"] = o.AssignedToEntity
+	if !IsNil(o.IqnNumber) {
+		toSerialize["IqnNumber"] = o.IqnNumber
 	}
-	if o.BlockHead != nil {
-		toSerialize["BlockHead"] = o.BlockHead
+	if !IsNil(o.IqnPrefix) {
+		toSerialize["IqnPrefix"] = o.IqnPrefix
 	}
-	if o.Peer != nil {
-		toSerialize["Peer"] = o.Peer
+	if !IsNil(o.IqnSuffix) {
+		toSerialize["IqnSuffix"] = o.IqnSuffix
 	}
-	if o.Pool != nil {
-		toSerialize["Pool"] = o.Pool
+	if o.AssignedToEntity.IsSet() {
+		toSerialize["AssignedToEntity"] = o.AssignedToEntity.Get()
+	}
+	if o.BlockHead.IsSet() {
+		toSerialize["BlockHead"] = o.BlockHead.Get()
+	}
+	if o.Peer.IsSet() {
+		toSerialize["Peer"] = o.Peer.Get()
+	}
+	if o.Pool.IsSet() {
+		toSerialize["Pool"] = o.Pool.Get()
+	}
+	if o.Reservation.IsSet() {
+		toSerialize["Reservation"] = o.Reservation.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IqnpoolPoolMember) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IqnpoolPoolMember) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IqnpoolPoolMemberWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// IQN Address of this pool member.
-		IqnAddress       *string                   `json:"IqnAddress,omitempty"`
-		AssignedToEntity *MoBaseMoRelationship     `json:"AssignedToEntity,omitempty"`
-		BlockHead        *IqnpoolBlockRelationship `json:"BlockHead,omitempty"`
-		Peer             *IqnpoolLeaseRelationship `json:"Peer,omitempty"`
-		Pool             *IqnpoolPoolRelationship  `json:"Pool,omitempty"`
+		// IQN Address of this pool member. It is constructed as <prefix>:<suffix>:<number>.
+		IqnAddress *string `json:"IqnAddress,omitempty"`
+		// Number of the IQN address. IQN Address is constructed as <prefix>:<suffix>:<number>.
+		IqnNumber *int64 `json:"IqnNumber,omitempty"`
+		// Prefix of the IQN address. IQN Address is constructed as <prefix>:<suffix>:<number>.
+		IqnPrefix *string `json:"IqnPrefix,omitempty"`
+		// Suffix of the IQN address. IQN Address is constructed as <prefix>:<suffix>:<number>.
+		IqnSuffix        *string                                `json:"IqnSuffix,omitempty"`
+		AssignedToEntity NullableMoBaseMoRelationship           `json:"AssignedToEntity,omitempty"`
+		BlockHead        NullableIqnpoolBlockRelationship       `json:"BlockHead,omitempty"`
+		Peer             NullableIqnpoolLeaseRelationship       `json:"Peer,omitempty"`
+		Pool             NullableIqnpoolPoolRelationship        `json:"Pool,omitempty"`
+		Reservation      NullableIqnpoolReservationRelationship `json:"Reservation,omitempty"`
 	}
 
 	varIqnpoolPoolMemberWithoutEmbeddedStruct := IqnpoolPoolMemberWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIqnpoolPoolMemberWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIqnpoolPoolMemberWithoutEmbeddedStruct)
 	if err == nil {
 		varIqnpoolPoolMember := _IqnpoolPoolMember{}
 		varIqnpoolPoolMember.ClassId = varIqnpoolPoolMemberWithoutEmbeddedStruct.ClassId
 		varIqnpoolPoolMember.ObjectType = varIqnpoolPoolMemberWithoutEmbeddedStruct.ObjectType
 		varIqnpoolPoolMember.IqnAddress = varIqnpoolPoolMemberWithoutEmbeddedStruct.IqnAddress
+		varIqnpoolPoolMember.IqnNumber = varIqnpoolPoolMemberWithoutEmbeddedStruct.IqnNumber
+		varIqnpoolPoolMember.IqnPrefix = varIqnpoolPoolMemberWithoutEmbeddedStruct.IqnPrefix
+		varIqnpoolPoolMember.IqnSuffix = varIqnpoolPoolMemberWithoutEmbeddedStruct.IqnSuffix
 		varIqnpoolPoolMember.AssignedToEntity = varIqnpoolPoolMemberWithoutEmbeddedStruct.AssignedToEntity
 		varIqnpoolPoolMember.BlockHead = varIqnpoolPoolMemberWithoutEmbeddedStruct.BlockHead
 		varIqnpoolPoolMember.Peer = varIqnpoolPoolMemberWithoutEmbeddedStruct.Peer
 		varIqnpoolPoolMember.Pool = varIqnpoolPoolMemberWithoutEmbeddedStruct.Pool
+		varIqnpoolPoolMember.Reservation = varIqnpoolPoolMemberWithoutEmbeddedStruct.Reservation
 		*o = IqnpoolPoolMember(varIqnpoolPoolMember)
 	} else {
 		return err
@@ -340,28 +622,32 @@ func (o *IqnpoolPoolMember) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIqnpoolPoolMember := _IqnpoolPoolMember{}
 
-	err = json.Unmarshal(bytes, &varIqnpoolPoolMember)
+	err = json.Unmarshal(data, &varIqnpoolPoolMember)
 	if err == nil {
-		o.PoolAbstractPoolMember = varIqnpoolPoolMember.PoolAbstractPoolMember
+		o.PoolAbstractIdPoolMember = varIqnpoolPoolMember.PoolAbstractIdPoolMember
 	} else {
 		return err
 	}
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "IqnAddress")
+		delete(additionalProperties, "IqnNumber")
+		delete(additionalProperties, "IqnPrefix")
+		delete(additionalProperties, "IqnSuffix")
 		delete(additionalProperties, "AssignedToEntity")
 		delete(additionalProperties, "BlockHead")
 		delete(additionalProperties, "Peer")
 		delete(additionalProperties, "Pool")
+		delete(additionalProperties, "Reservation")
 
 		// remove fields from embedded structs
-		reflectPoolAbstractPoolMember := reflect.ValueOf(o.PoolAbstractPoolMember)
-		for i := 0; i < reflectPoolAbstractPoolMember.Type().NumField(); i++ {
-			t := reflectPoolAbstractPoolMember.Type().Field(i)
+		reflectPoolAbstractIdPoolMember := reflect.ValueOf(o.PoolAbstractIdPoolMember)
+		for i := 0; i < reflectPoolAbstractIdPoolMember.Type().NumField(); i++ {
+			t := reflectPoolAbstractIdPoolMember.Type().Field(i)
 
 			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
 				fieldName := ""

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the HyperflexHealthCheckExecution type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexHealthCheckExecution{}
 
 // HyperflexHealthCheckExecution Health check execution result for a health check definition on a HyperFlex device.
 type HyperflexHealthCheckExecution struct {
@@ -43,15 +47,18 @@ type HyperflexHealthCheckExecution struct {
 	HealthCheckResult *string `json:"HealthCheckResult,omitempty"`
 	// A brief summary of health check results.
 	HealthCheckSummary *string `json:"HealthCheckSummary,omitempty"`
+	// IP Address of the vCenter.
+	HealthCheckVcenterIp *string `json:"HealthCheckVcenterIp,omitempty"`
 	// HyperFlex Device Name where the healthcheck is executed.
-	HxDeviceName *string `json:"HxDeviceName,omitempty"`
+	HxDeviceName  *string                             `json:"HxDeviceName,omitempty"`
+	NodeLevelInfo []HyperflexHealthCheckNodeLevelInfo `json:"NodeLevelInfo,omitempty"`
 	// Information detailing a suggested resolution for the healthcheck failure, if the check fails.
 	SuggestedResolution *string `json:"SuggestedResolution,omitempty"`
 	// UUID of an instance of health check execution.
-	Uuid                  *string                                     `json:"Uuid,omitempty"`
-	HealthCheckDefinition *HyperflexHealthCheckDefinitionRelationship `json:"HealthCheckDefinition,omitempty"`
-	HxCluster             *HyperflexClusterRelationship               `json:"HxCluster,omitempty"`
-	RegisteredDevice      *AssetDeviceRegistrationRelationship        `json:"RegisteredDevice,omitempty"`
+	Uuid                  *string                                            `json:"Uuid,omitempty"`
+	HealthCheckDefinition NullableHyperflexHealthCheckDefinitionRelationship `json:"HealthCheckDefinition,omitempty"`
+	HxCluster             NullableHyperflexClusterRelationship               `json:"HxCluster,omitempty"`
+	RegisteredDevice      NullableAssetDeviceRegistrationRelationship        `json:"RegisteredDevice,omitempty"`
 	AdditionalProperties  map[string]interface{}
 }
 
@@ -104,6 +111,11 @@ func (o *HyperflexHealthCheckExecution) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.HealthCheckExecution" of the ClassId field.
+func (o *HyperflexHealthCheckExecution) GetDefaultClassId() interface{} {
+	return "hyperflex.HealthCheckExecution"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexHealthCheckExecution) GetObjectType() string {
 	if o == nil {
@@ -128,9 +140,14 @@ func (o *HyperflexHealthCheckExecution) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.HealthCheckExecution" of the ObjectType field.
+func (o *HyperflexHealthCheckExecution) GetDefaultObjectType() interface{} {
+	return "hyperflex.HealthCheckExecution"
+}
+
 // GetCategory returns the Category field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetCategory() string {
-	if o == nil || o.Category == nil {
+	if o == nil || IsNil(o.Category) {
 		var ret string
 		return ret
 	}
@@ -140,7 +157,7 @@ func (o *HyperflexHealthCheckExecution) GetCategory() string {
 // GetCategoryOk returns a tuple with the Category field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetCategoryOk() (*string, bool) {
-	if o == nil || o.Category == nil {
+	if o == nil || IsNil(o.Category) {
 		return nil, false
 	}
 	return o.Category, true
@@ -148,7 +165,7 @@ func (o *HyperflexHealthCheckExecution) GetCategoryOk() (*string, bool) {
 
 // HasCategory returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasCategory() bool {
-	if o != nil && o.Category != nil {
+	if o != nil && !IsNil(o.Category) {
 		return true
 	}
 
@@ -162,7 +179,7 @@ func (o *HyperflexHealthCheckExecution) SetCategory(v string) {
 
 // GetCause returns the Cause field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetCause() string {
-	if o == nil || o.Cause == nil {
+	if o == nil || IsNil(o.Cause) {
 		var ret string
 		return ret
 	}
@@ -172,7 +189,7 @@ func (o *HyperflexHealthCheckExecution) GetCause() string {
 // GetCauseOk returns a tuple with the Cause field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetCauseOk() (*string, bool) {
-	if o == nil || o.Cause == nil {
+	if o == nil || IsNil(o.Cause) {
 		return nil, false
 	}
 	return o.Cause, true
@@ -180,7 +197,7 @@ func (o *HyperflexHealthCheckExecution) GetCauseOk() (*string, bool) {
 
 // HasCause returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasCause() bool {
-	if o != nil && o.Cause != nil {
+	if o != nil && !IsNil(o.Cause) {
 		return true
 	}
 
@@ -194,7 +211,7 @@ func (o *HyperflexHealthCheckExecution) SetCause(v string) {
 
 // GetCompletionTime returns the CompletionTime field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetCompletionTime() time.Time {
-	if o == nil || o.CompletionTime == nil {
+	if o == nil || IsNil(o.CompletionTime) {
 		var ret time.Time
 		return ret
 	}
@@ -204,7 +221,7 @@ func (o *HyperflexHealthCheckExecution) GetCompletionTime() time.Time {
 // GetCompletionTimeOk returns a tuple with the CompletionTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetCompletionTimeOk() (*time.Time, bool) {
-	if o == nil || o.CompletionTime == nil {
+	if o == nil || IsNil(o.CompletionTime) {
 		return nil, false
 	}
 	return o.CompletionTime, true
@@ -212,7 +229,7 @@ func (o *HyperflexHealthCheckExecution) GetCompletionTimeOk() (*time.Time, bool)
 
 // HasCompletionTime returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasCompletionTime() bool {
-	if o != nil && o.CompletionTime != nil {
+	if o != nil && !IsNil(o.CompletionTime) {
 		return true
 	}
 
@@ -226,7 +243,7 @@ func (o *HyperflexHealthCheckExecution) SetCompletionTime(v time.Time) {
 
 // GetHealthCheckDetails returns the HealthCheckDetails field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckDetails() string {
-	if o == nil || o.HealthCheckDetails == nil {
+	if o == nil || IsNil(o.HealthCheckDetails) {
 		var ret string
 		return ret
 	}
@@ -236,7 +253,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckDetails() string {
 // GetHealthCheckDetailsOk returns a tuple with the HealthCheckDetails field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckDetailsOk() (*string, bool) {
-	if o == nil || o.HealthCheckDetails == nil {
+	if o == nil || IsNil(o.HealthCheckDetails) {
 		return nil, false
 	}
 	return o.HealthCheckDetails, true
@@ -244,7 +261,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckDetailsOk() (*string, bool
 
 // HasHealthCheckDetails returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasHealthCheckDetails() bool {
-	if o != nil && o.HealthCheckDetails != nil {
+	if o != nil && !IsNil(o.HealthCheckDetails) {
 		return true
 	}
 
@@ -258,7 +275,7 @@ func (o *HyperflexHealthCheckExecution) SetHealthCheckDetails(v string) {
 
 // GetHealthCheckExecutionErrorDetails returns the HealthCheckExecutionErrorDetails field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionErrorDetails() string {
-	if o == nil || o.HealthCheckExecutionErrorDetails == nil {
+	if o == nil || IsNil(o.HealthCheckExecutionErrorDetails) {
 		var ret string
 		return ret
 	}
@@ -268,7 +285,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionErrorDetails() st
 // GetHealthCheckExecutionErrorDetailsOk returns a tuple with the HealthCheckExecutionErrorDetails field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionErrorDetailsOk() (*string, bool) {
-	if o == nil || o.HealthCheckExecutionErrorDetails == nil {
+	if o == nil || IsNil(o.HealthCheckExecutionErrorDetails) {
 		return nil, false
 	}
 	return o.HealthCheckExecutionErrorDetails, true
@@ -276,7 +293,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionErrorDetailsOk() 
 
 // HasHealthCheckExecutionErrorDetails returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasHealthCheckExecutionErrorDetails() bool {
-	if o != nil && o.HealthCheckExecutionErrorDetails != nil {
+	if o != nil && !IsNil(o.HealthCheckExecutionErrorDetails) {
 		return true
 	}
 
@@ -290,7 +307,7 @@ func (o *HyperflexHealthCheckExecution) SetHealthCheckExecutionErrorDetails(v st
 
 // GetHealthCheckExecutionErrorSummary returns the HealthCheckExecutionErrorSummary field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionErrorSummary() string {
-	if o == nil || o.HealthCheckExecutionErrorSummary == nil {
+	if o == nil || IsNil(o.HealthCheckExecutionErrorSummary) {
 		var ret string
 		return ret
 	}
@@ -300,7 +317,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionErrorSummary() st
 // GetHealthCheckExecutionErrorSummaryOk returns a tuple with the HealthCheckExecutionErrorSummary field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionErrorSummaryOk() (*string, bool) {
-	if o == nil || o.HealthCheckExecutionErrorSummary == nil {
+	if o == nil || IsNil(o.HealthCheckExecutionErrorSummary) {
 		return nil, false
 	}
 	return o.HealthCheckExecutionErrorSummary, true
@@ -308,7 +325,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionErrorSummaryOk() 
 
 // HasHealthCheckExecutionErrorSummary returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasHealthCheckExecutionErrorSummary() bool {
-	if o != nil && o.HealthCheckExecutionErrorSummary != nil {
+	if o != nil && !IsNil(o.HealthCheckExecutionErrorSummary) {
 		return true
 	}
 
@@ -322,7 +339,7 @@ func (o *HyperflexHealthCheckExecution) SetHealthCheckExecutionErrorSummary(v st
 
 // GetHealthCheckExecutionStatus returns the HealthCheckExecutionStatus field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionStatus() string {
-	if o == nil || o.HealthCheckExecutionStatus == nil {
+	if o == nil || IsNil(o.HealthCheckExecutionStatus) {
 		var ret string
 		return ret
 	}
@@ -332,7 +349,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionStatus() string {
 // GetHealthCheckExecutionStatusOk returns a tuple with the HealthCheckExecutionStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionStatusOk() (*string, bool) {
-	if o == nil || o.HealthCheckExecutionStatus == nil {
+	if o == nil || IsNil(o.HealthCheckExecutionStatus) {
 		return nil, false
 	}
 	return o.HealthCheckExecutionStatus, true
@@ -340,7 +357,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckExecutionStatusOk() (*stri
 
 // HasHealthCheckExecutionStatus returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasHealthCheckExecutionStatus() bool {
-	if o != nil && o.HealthCheckExecutionStatus != nil {
+	if o != nil && !IsNil(o.HealthCheckExecutionStatus) {
 		return true
 	}
 
@@ -354,7 +371,7 @@ func (o *HyperflexHealthCheckExecution) SetHealthCheckExecutionStatus(v string) 
 
 // GetHealthCheckResult returns the HealthCheckResult field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckResult() string {
-	if o == nil || o.HealthCheckResult == nil {
+	if o == nil || IsNil(o.HealthCheckResult) {
 		var ret string
 		return ret
 	}
@@ -364,7 +381,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckResult() string {
 // GetHealthCheckResultOk returns a tuple with the HealthCheckResult field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckResultOk() (*string, bool) {
-	if o == nil || o.HealthCheckResult == nil {
+	if o == nil || IsNil(o.HealthCheckResult) {
 		return nil, false
 	}
 	return o.HealthCheckResult, true
@@ -372,7 +389,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckResultOk() (*string, bool)
 
 // HasHealthCheckResult returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasHealthCheckResult() bool {
-	if o != nil && o.HealthCheckResult != nil {
+	if o != nil && !IsNil(o.HealthCheckResult) {
 		return true
 	}
 
@@ -386,7 +403,7 @@ func (o *HyperflexHealthCheckExecution) SetHealthCheckResult(v string) {
 
 // GetHealthCheckSummary returns the HealthCheckSummary field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckSummary() string {
-	if o == nil || o.HealthCheckSummary == nil {
+	if o == nil || IsNil(o.HealthCheckSummary) {
 		var ret string
 		return ret
 	}
@@ -396,7 +413,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckSummary() string {
 // GetHealthCheckSummaryOk returns a tuple with the HealthCheckSummary field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetHealthCheckSummaryOk() (*string, bool) {
-	if o == nil || o.HealthCheckSummary == nil {
+	if o == nil || IsNil(o.HealthCheckSummary) {
 		return nil, false
 	}
 	return o.HealthCheckSummary, true
@@ -404,7 +421,7 @@ func (o *HyperflexHealthCheckExecution) GetHealthCheckSummaryOk() (*string, bool
 
 // HasHealthCheckSummary returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasHealthCheckSummary() bool {
-	if o != nil && o.HealthCheckSummary != nil {
+	if o != nil && !IsNil(o.HealthCheckSummary) {
 		return true
 	}
 
@@ -416,9 +433,41 @@ func (o *HyperflexHealthCheckExecution) SetHealthCheckSummary(v string) {
 	o.HealthCheckSummary = &v
 }
 
+// GetHealthCheckVcenterIp returns the HealthCheckVcenterIp field value if set, zero value otherwise.
+func (o *HyperflexHealthCheckExecution) GetHealthCheckVcenterIp() string {
+	if o == nil || IsNil(o.HealthCheckVcenterIp) {
+		var ret string
+		return ret
+	}
+	return *o.HealthCheckVcenterIp
+}
+
+// GetHealthCheckVcenterIpOk returns a tuple with the HealthCheckVcenterIp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HyperflexHealthCheckExecution) GetHealthCheckVcenterIpOk() (*string, bool) {
+	if o == nil || IsNil(o.HealthCheckVcenterIp) {
+		return nil, false
+	}
+	return o.HealthCheckVcenterIp, true
+}
+
+// HasHealthCheckVcenterIp returns a boolean if a field has been set.
+func (o *HyperflexHealthCheckExecution) HasHealthCheckVcenterIp() bool {
+	if o != nil && !IsNil(o.HealthCheckVcenterIp) {
+		return true
+	}
+
+	return false
+}
+
+// SetHealthCheckVcenterIp gets a reference to the given string and assigns it to the HealthCheckVcenterIp field.
+func (o *HyperflexHealthCheckExecution) SetHealthCheckVcenterIp(v string) {
+	o.HealthCheckVcenterIp = &v
+}
+
 // GetHxDeviceName returns the HxDeviceName field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetHxDeviceName() string {
-	if o == nil || o.HxDeviceName == nil {
+	if o == nil || IsNil(o.HxDeviceName) {
 		var ret string
 		return ret
 	}
@@ -428,7 +477,7 @@ func (o *HyperflexHealthCheckExecution) GetHxDeviceName() string {
 // GetHxDeviceNameOk returns a tuple with the HxDeviceName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetHxDeviceNameOk() (*string, bool) {
-	if o == nil || o.HxDeviceName == nil {
+	if o == nil || IsNil(o.HxDeviceName) {
 		return nil, false
 	}
 	return o.HxDeviceName, true
@@ -436,7 +485,7 @@ func (o *HyperflexHealthCheckExecution) GetHxDeviceNameOk() (*string, bool) {
 
 // HasHxDeviceName returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasHxDeviceName() bool {
-	if o != nil && o.HxDeviceName != nil {
+	if o != nil && !IsNil(o.HxDeviceName) {
 		return true
 	}
 
@@ -448,9 +497,42 @@ func (o *HyperflexHealthCheckExecution) SetHxDeviceName(v string) {
 	o.HxDeviceName = &v
 }
 
+// GetNodeLevelInfo returns the NodeLevelInfo field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *HyperflexHealthCheckExecution) GetNodeLevelInfo() []HyperflexHealthCheckNodeLevelInfo {
+	if o == nil {
+		var ret []HyperflexHealthCheckNodeLevelInfo
+		return ret
+	}
+	return o.NodeLevelInfo
+}
+
+// GetNodeLevelInfoOk returns a tuple with the NodeLevelInfo field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *HyperflexHealthCheckExecution) GetNodeLevelInfoOk() ([]HyperflexHealthCheckNodeLevelInfo, bool) {
+	if o == nil || IsNil(o.NodeLevelInfo) {
+		return nil, false
+	}
+	return o.NodeLevelInfo, true
+}
+
+// HasNodeLevelInfo returns a boolean if a field has been set.
+func (o *HyperflexHealthCheckExecution) HasNodeLevelInfo() bool {
+	if o != nil && !IsNil(o.NodeLevelInfo) {
+		return true
+	}
+
+	return false
+}
+
+// SetNodeLevelInfo gets a reference to the given []HyperflexHealthCheckNodeLevelInfo and assigns it to the NodeLevelInfo field.
+func (o *HyperflexHealthCheckExecution) SetNodeLevelInfo(v []HyperflexHealthCheckNodeLevelInfo) {
+	o.NodeLevelInfo = v
+}
+
 // GetSuggestedResolution returns the SuggestedResolution field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetSuggestedResolution() string {
-	if o == nil || o.SuggestedResolution == nil {
+	if o == nil || IsNil(o.SuggestedResolution) {
 		var ret string
 		return ret
 	}
@@ -460,7 +542,7 @@ func (o *HyperflexHealthCheckExecution) GetSuggestedResolution() string {
 // GetSuggestedResolutionOk returns a tuple with the SuggestedResolution field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetSuggestedResolutionOk() (*string, bool) {
-	if o == nil || o.SuggestedResolution == nil {
+	if o == nil || IsNil(o.SuggestedResolution) {
 		return nil, false
 	}
 	return o.SuggestedResolution, true
@@ -468,7 +550,7 @@ func (o *HyperflexHealthCheckExecution) GetSuggestedResolutionOk() (*string, boo
 
 // HasSuggestedResolution returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasSuggestedResolution() bool {
-	if o != nil && o.SuggestedResolution != nil {
+	if o != nil && !IsNil(o.SuggestedResolution) {
 		return true
 	}
 
@@ -482,7 +564,7 @@ func (o *HyperflexHealthCheckExecution) SetSuggestedResolution(v string) {
 
 // GetUuid returns the Uuid field value if set, zero value otherwise.
 func (o *HyperflexHealthCheckExecution) GetUuid() string {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		var ret string
 		return ret
 	}
@@ -492,7 +574,7 @@ func (o *HyperflexHealthCheckExecution) GetUuid() string {
 // GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexHealthCheckExecution) GetUuidOk() (*string, bool) {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		return nil, false
 	}
 	return o.Uuid, true
@@ -500,7 +582,7 @@ func (o *HyperflexHealthCheckExecution) GetUuidOk() (*string, bool) {
 
 // HasUuid returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasUuid() bool {
-	if o != nil && o.Uuid != nil {
+	if o != nil && !IsNil(o.Uuid) {
 		return true
 	}
 
@@ -512,172 +594,262 @@ func (o *HyperflexHealthCheckExecution) SetUuid(v string) {
 	o.Uuid = &v
 }
 
-// GetHealthCheckDefinition returns the HealthCheckDefinition field value if set, zero value otherwise.
+// GetHealthCheckDefinition returns the HealthCheckDefinition field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexHealthCheckExecution) GetHealthCheckDefinition() HyperflexHealthCheckDefinitionRelationship {
-	if o == nil || o.HealthCheckDefinition == nil {
+	if o == nil || IsNil(o.HealthCheckDefinition.Get()) {
 		var ret HyperflexHealthCheckDefinitionRelationship
 		return ret
 	}
-	return *o.HealthCheckDefinition
+	return *o.HealthCheckDefinition.Get()
 }
 
 // GetHealthCheckDefinitionOk returns a tuple with the HealthCheckDefinition field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexHealthCheckExecution) GetHealthCheckDefinitionOk() (*HyperflexHealthCheckDefinitionRelationship, bool) {
-	if o == nil || o.HealthCheckDefinition == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.HealthCheckDefinition, true
+	return o.HealthCheckDefinition.Get(), o.HealthCheckDefinition.IsSet()
 }
 
 // HasHealthCheckDefinition returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasHealthCheckDefinition() bool {
-	if o != nil && o.HealthCheckDefinition != nil {
+	if o != nil && o.HealthCheckDefinition.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetHealthCheckDefinition gets a reference to the given HyperflexHealthCheckDefinitionRelationship and assigns it to the HealthCheckDefinition field.
+// SetHealthCheckDefinition gets a reference to the given NullableHyperflexHealthCheckDefinitionRelationship and assigns it to the HealthCheckDefinition field.
 func (o *HyperflexHealthCheckExecution) SetHealthCheckDefinition(v HyperflexHealthCheckDefinitionRelationship) {
-	o.HealthCheckDefinition = &v
+	o.HealthCheckDefinition.Set(&v)
 }
 
-// GetHxCluster returns the HxCluster field value if set, zero value otherwise.
+// SetHealthCheckDefinitionNil sets the value for HealthCheckDefinition to be an explicit nil
+func (o *HyperflexHealthCheckExecution) SetHealthCheckDefinitionNil() {
+	o.HealthCheckDefinition.Set(nil)
+}
+
+// UnsetHealthCheckDefinition ensures that no value is present for HealthCheckDefinition, not even an explicit nil
+func (o *HyperflexHealthCheckExecution) UnsetHealthCheckDefinition() {
+	o.HealthCheckDefinition.Unset()
+}
+
+// GetHxCluster returns the HxCluster field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexHealthCheckExecution) GetHxCluster() HyperflexClusterRelationship {
-	if o == nil || o.HxCluster == nil {
+	if o == nil || IsNil(o.HxCluster.Get()) {
 		var ret HyperflexClusterRelationship
 		return ret
 	}
-	return *o.HxCluster
+	return *o.HxCluster.Get()
 }
 
 // GetHxClusterOk returns a tuple with the HxCluster field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexHealthCheckExecution) GetHxClusterOk() (*HyperflexClusterRelationship, bool) {
-	if o == nil || o.HxCluster == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.HxCluster, true
+	return o.HxCluster.Get(), o.HxCluster.IsSet()
 }
 
 // HasHxCluster returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasHxCluster() bool {
-	if o != nil && o.HxCluster != nil {
+	if o != nil && o.HxCluster.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetHxCluster gets a reference to the given HyperflexClusterRelationship and assigns it to the HxCluster field.
+// SetHxCluster gets a reference to the given NullableHyperflexClusterRelationship and assigns it to the HxCluster field.
 func (o *HyperflexHealthCheckExecution) SetHxCluster(v HyperflexClusterRelationship) {
-	o.HxCluster = &v
+	o.HxCluster.Set(&v)
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// SetHxClusterNil sets the value for HxCluster to be an explicit nil
+func (o *HyperflexHealthCheckExecution) SetHxClusterNil() {
+	o.HxCluster.Set(nil)
+}
+
+// UnsetHxCluster ensures that no value is present for HxCluster, not even an explicit nil
+func (o *HyperflexHealthCheckExecution) UnsetHxCluster() {
+	o.HxCluster.Unset()
+}
+
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexHealthCheckExecution) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexHealthCheckExecution) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *HyperflexHealthCheckExecution) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *HyperflexHealthCheckExecution) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
+}
+
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *HyperflexHealthCheckExecution) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *HyperflexHealthCheckExecution) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
 }
 
 func (o HyperflexHealthCheckExecution) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexHealthCheckExecution) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Category != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Category) {
 		toSerialize["Category"] = o.Category
 	}
-	if o.Cause != nil {
+	if !IsNil(o.Cause) {
 		toSerialize["Cause"] = o.Cause
 	}
-	if o.CompletionTime != nil {
+	if !IsNil(o.CompletionTime) {
 		toSerialize["CompletionTime"] = o.CompletionTime
 	}
-	if o.HealthCheckDetails != nil {
+	if !IsNil(o.HealthCheckDetails) {
 		toSerialize["HealthCheckDetails"] = o.HealthCheckDetails
 	}
-	if o.HealthCheckExecutionErrorDetails != nil {
+	if !IsNil(o.HealthCheckExecutionErrorDetails) {
 		toSerialize["HealthCheckExecutionErrorDetails"] = o.HealthCheckExecutionErrorDetails
 	}
-	if o.HealthCheckExecutionErrorSummary != nil {
+	if !IsNil(o.HealthCheckExecutionErrorSummary) {
 		toSerialize["HealthCheckExecutionErrorSummary"] = o.HealthCheckExecutionErrorSummary
 	}
-	if o.HealthCheckExecutionStatus != nil {
+	if !IsNil(o.HealthCheckExecutionStatus) {
 		toSerialize["HealthCheckExecutionStatus"] = o.HealthCheckExecutionStatus
 	}
-	if o.HealthCheckResult != nil {
+	if !IsNil(o.HealthCheckResult) {
 		toSerialize["HealthCheckResult"] = o.HealthCheckResult
 	}
-	if o.HealthCheckSummary != nil {
+	if !IsNil(o.HealthCheckSummary) {
 		toSerialize["HealthCheckSummary"] = o.HealthCheckSummary
 	}
-	if o.HxDeviceName != nil {
+	if !IsNil(o.HealthCheckVcenterIp) {
+		toSerialize["HealthCheckVcenterIp"] = o.HealthCheckVcenterIp
+	}
+	if !IsNil(o.HxDeviceName) {
 		toSerialize["HxDeviceName"] = o.HxDeviceName
 	}
-	if o.SuggestedResolution != nil {
+	if o.NodeLevelInfo != nil {
+		toSerialize["NodeLevelInfo"] = o.NodeLevelInfo
+	}
+	if !IsNil(o.SuggestedResolution) {
 		toSerialize["SuggestedResolution"] = o.SuggestedResolution
 	}
-	if o.Uuid != nil {
+	if !IsNil(o.Uuid) {
 		toSerialize["Uuid"] = o.Uuid
 	}
-	if o.HealthCheckDefinition != nil {
-		toSerialize["HealthCheckDefinition"] = o.HealthCheckDefinition
+	if o.HealthCheckDefinition.IsSet() {
+		toSerialize["HealthCheckDefinition"] = o.HealthCheckDefinition.Get()
 	}
-	if o.HxCluster != nil {
-		toSerialize["HxCluster"] = o.HxCluster
+	if o.HxCluster.IsSet() {
+		toSerialize["HxCluster"] = o.HxCluster.Get()
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexHealthCheckExecution) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexHealthCheckExecution) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexHealthCheckExecutionWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -701,20 +873,23 @@ func (o *HyperflexHealthCheckExecution) UnmarshalJSON(bytes []byte) (err error) 
 		HealthCheckResult *string `json:"HealthCheckResult,omitempty"`
 		// A brief summary of health check results.
 		HealthCheckSummary *string `json:"HealthCheckSummary,omitempty"`
+		// IP Address of the vCenter.
+		HealthCheckVcenterIp *string `json:"HealthCheckVcenterIp,omitempty"`
 		// HyperFlex Device Name where the healthcheck is executed.
-		HxDeviceName *string `json:"HxDeviceName,omitempty"`
+		HxDeviceName  *string                             `json:"HxDeviceName,omitempty"`
+		NodeLevelInfo []HyperflexHealthCheckNodeLevelInfo `json:"NodeLevelInfo,omitempty"`
 		// Information detailing a suggested resolution for the healthcheck failure, if the check fails.
 		SuggestedResolution *string `json:"SuggestedResolution,omitempty"`
 		// UUID of an instance of health check execution.
-		Uuid                  *string                                     `json:"Uuid,omitempty"`
-		HealthCheckDefinition *HyperflexHealthCheckDefinitionRelationship `json:"HealthCheckDefinition,omitempty"`
-		HxCluster             *HyperflexClusterRelationship               `json:"HxCluster,omitempty"`
-		RegisteredDevice      *AssetDeviceRegistrationRelationship        `json:"RegisteredDevice,omitempty"`
+		Uuid                  *string                                            `json:"Uuid,omitempty"`
+		HealthCheckDefinition NullableHyperflexHealthCheckDefinitionRelationship `json:"HealthCheckDefinition,omitempty"`
+		HxCluster             NullableHyperflexClusterRelationship               `json:"HxCluster,omitempty"`
+		RegisteredDevice      NullableAssetDeviceRegistrationRelationship        `json:"RegisteredDevice,omitempty"`
 	}
 
 	varHyperflexHealthCheckExecutionWithoutEmbeddedStruct := HyperflexHealthCheckExecutionWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexHealthCheckExecutionWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexHealthCheckExecutionWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexHealthCheckExecution := _HyperflexHealthCheckExecution{}
 		varHyperflexHealthCheckExecution.ClassId = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.ClassId
@@ -728,7 +903,9 @@ func (o *HyperflexHealthCheckExecution) UnmarshalJSON(bytes []byte) (err error) 
 		varHyperflexHealthCheckExecution.HealthCheckExecutionStatus = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.HealthCheckExecutionStatus
 		varHyperflexHealthCheckExecution.HealthCheckResult = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.HealthCheckResult
 		varHyperflexHealthCheckExecution.HealthCheckSummary = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.HealthCheckSummary
+		varHyperflexHealthCheckExecution.HealthCheckVcenterIp = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.HealthCheckVcenterIp
 		varHyperflexHealthCheckExecution.HxDeviceName = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.HxDeviceName
+		varHyperflexHealthCheckExecution.NodeLevelInfo = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.NodeLevelInfo
 		varHyperflexHealthCheckExecution.SuggestedResolution = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.SuggestedResolution
 		varHyperflexHealthCheckExecution.Uuid = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.Uuid
 		varHyperflexHealthCheckExecution.HealthCheckDefinition = varHyperflexHealthCheckExecutionWithoutEmbeddedStruct.HealthCheckDefinition
@@ -741,7 +918,7 @@ func (o *HyperflexHealthCheckExecution) UnmarshalJSON(bytes []byte) (err error) 
 
 	varHyperflexHealthCheckExecution := _HyperflexHealthCheckExecution{}
 
-	err = json.Unmarshal(bytes, &varHyperflexHealthCheckExecution)
+	err = json.Unmarshal(data, &varHyperflexHealthCheckExecution)
 	if err == nil {
 		o.MoBaseMo = varHyperflexHealthCheckExecution.MoBaseMo
 	} else {
@@ -750,7 +927,7 @@ func (o *HyperflexHealthCheckExecution) UnmarshalJSON(bytes []byte) (err error) 
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Category")
@@ -762,7 +939,9 @@ func (o *HyperflexHealthCheckExecution) UnmarshalJSON(bytes []byte) (err error) 
 		delete(additionalProperties, "HealthCheckExecutionStatus")
 		delete(additionalProperties, "HealthCheckResult")
 		delete(additionalProperties, "HealthCheckSummary")
+		delete(additionalProperties, "HealthCheckVcenterIp")
 		delete(additionalProperties, "HxDeviceName")
+		delete(additionalProperties, "NodeLevelInfo")
 		delete(additionalProperties, "SuggestedResolution")
 		delete(additionalProperties, "Uuid")
 		delete(additionalProperties, "HealthCheckDefinition")

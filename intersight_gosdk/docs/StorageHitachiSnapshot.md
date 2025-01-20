@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **ConcordanceRate** | Pointer to **int64** | Concordance rate for pairs. | [optional] [readonly] 
 **IsConsistencyGroup** | Pointer to **bool** | Whether the pair was created in the consistency group mode (CTG mode). | [optional] [readonly] 
 **IsMultistageable** | Pointer to **bool** | Whether the pair can be a multistage pair. | [optional] [readonly] 
+**IsRedirectOnWrite** | Pointer to **bool** | Returns whether it is a Thin Image Advanced pair. | [optional] [readonly] 
 **MuNumber** | Pointer to **int64** | MU number of the primary volume. | [optional] [readonly] 
 **Name** | Pointer to **string** | Object ID of the pair for snapshot data. | [optional] [readonly] 
 **PvolLdevId** | Pointer to **int64** | LDEV number of the primary volume. | [optional] [readonly] 
@@ -17,8 +18,8 @@ Name | Type | Description | Notes
 **SplitTime** | Pointer to **string** | Time when snapshot data was created. | [optional] [readonly] 
 **Status** | Pointer to **string** | Pair status. Pair status changes according to the pair operation. | [optional] [readonly] 
 **SvolLdevId** | Pointer to **int64** | LDEV number of the secondary volume. | [optional] [readonly] 
-**Array** | Pointer to [**StorageHitachiArrayRelationship**](StorageHitachiArrayRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**Array** | Pointer to [**NullableStorageHitachiArrayRelationship**](StorageHitachiArrayRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -153,6 +154,31 @@ SetIsMultistageable sets IsMultistageable field to given value.
 `func (o *StorageHitachiSnapshot) HasIsMultistageable() bool`
 
 HasIsMultistageable returns a boolean if a field has been set.
+
+### GetIsRedirectOnWrite
+
+`func (o *StorageHitachiSnapshot) GetIsRedirectOnWrite() bool`
+
+GetIsRedirectOnWrite returns the IsRedirectOnWrite field if non-nil, zero value otherwise.
+
+### GetIsRedirectOnWriteOk
+
+`func (o *StorageHitachiSnapshot) GetIsRedirectOnWriteOk() (*bool, bool)`
+
+GetIsRedirectOnWriteOk returns a tuple with the IsRedirectOnWrite field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsRedirectOnWrite
+
+`func (o *StorageHitachiSnapshot) SetIsRedirectOnWrite(v bool)`
+
+SetIsRedirectOnWrite sets IsRedirectOnWrite field to given value.
+
+### HasIsRedirectOnWrite
+
+`func (o *StorageHitachiSnapshot) HasIsRedirectOnWrite() bool`
+
+HasIsRedirectOnWrite returns a boolean if a field has been set.
 
 ### GetMuNumber
 
@@ -379,6 +405,16 @@ SetArray sets Array field to given value.
 
 HasArray returns a boolean if a field has been set.
 
+### SetArrayNil
+
+`func (o *StorageHitachiSnapshot) SetArrayNil(b bool)`
+
+ SetArrayNil sets the value for Array to be an explicit nil
+
+### UnsetArray
+`func (o *StorageHitachiSnapshot) UnsetArray()`
+
+UnsetArray ensures that no value is present for Array, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *StorageHitachiSnapshot) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -404,6 +440,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *StorageHitachiSnapshot) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *StorageHitachiSnapshot) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

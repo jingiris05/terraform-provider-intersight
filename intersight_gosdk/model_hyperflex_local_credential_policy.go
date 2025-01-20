@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HyperflexLocalCredentialPolicy type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexLocalCredentialPolicy{}
 
 // HyperflexLocalCredentialPolicy A policy specifying credentials for HyperFlex cluster such as controller VM password, hypervisor username, and password.
 type HyperflexLocalCredentialPolicy struct {
@@ -26,12 +30,12 @@ type HyperflexLocalCredentialPolicy struct {
 	ObjectType string `json:"ObjectType"`
 	// Indicates if Hypervisor password is the factory set default password. For HyperFlex Data Platform versions 3.0 or higher, enable this if the default password was not changed on the Hypervisor. It is required to supply a new custom Hypervisor password that will be applied to the Hypervisor during deployment. For HyperFlex Data Platform versions prior to 3.0 release, this setting has no effect and the default password will be used for initial install. The Hypervisor password should be changed after deployment.
 	FactoryHypervisorPassword *bool `json:"FactoryHypervisorPassword,omitempty"`
-	// HyperFlex storage controller VM password must contain a minimum of 10 characters, with at least 1 lowercase, 1 uppercase, 1 numeric, and 1 of these -_@#$%^&*! special characters.
-	HxdpRootPwd *string `json:"HxdpRootPwd,omitempty"`
+	// HyperFlex storage controller VM password must contain a minimum of 10 characters, with at least 1 lowercase, 1 uppercase, 1 numeric, and 1 of these -._@#$%^&*! special characters.
+	HxdpRootPwd *string `json:"HxdpRootPwd,omitempty" validate:"regexp=^[a-zA-Z0-9!@#$%^&*_.-]{10,}$"`
 	// Hypervisor administrator username must contain only alphanumeric characters.
-	HypervisorAdmin *string `json:"HypervisorAdmin,omitempty"`
+	HypervisorAdmin *string `json:"HypervisorAdmin,omitempty" validate:"regexp=^[a-zA-Z0-9]{1,}$"`
 	// The Hypervisor root password. For HyperFlex Data Platform 3.0 or later, if the factory default password was not manually changed, you must set a new custom password. If the password was manually changed, you must not enable the factory default password property and provide the current hypervisor password. Note - All HyperFlex nodes require the same hypervisor password for installation. For HyperFlex Data Platform prior to 3.0, use the default password \"Cisco123\" for newly manufactured HyperFlex servers. A custom password should only be entered if hypervisor credentials were manually changed prior to deployment.
-	HypervisorAdminPwd *string `json:"HypervisorAdminPwd,omitempty"`
+	HypervisorAdminPwd *string `json:"HypervisorAdminPwd,omitempty" validate:"regexp=^.{7,40}$"`
 	// Indicates whether the value of the 'deploymentPrivateKey' property has been set.
 	IsDeploymentPrivateKeySet *bool `json:"IsDeploymentPrivateKeySet,omitempty"`
 	// Indicates whether the value of the 'hxdpRootPwd' property has been set.
@@ -39,8 +43,8 @@ type HyperflexLocalCredentialPolicy struct {
 	// Indicates whether the value of the 'hypervisorAdminPwd' property has been set.
 	IsHypervisorAdminPwdSet *bool `json:"IsHypervisorAdminPwdSet,omitempty"`
 	// An array of relationships to hyperflexClusterProfile resources.
-	ClusterProfiles      []HyperflexClusterProfileRelationship `json:"ClusterProfiles,omitempty"`
-	Organization         *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	ClusterProfiles      []HyperflexClusterProfileRelationship        `json:"ClusterProfiles,omitempty"`
+	Organization         NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -97,6 +101,11 @@ func (o *HyperflexLocalCredentialPolicy) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.LocalCredentialPolicy" of the ClassId field.
+func (o *HyperflexLocalCredentialPolicy) GetDefaultClassId() interface{} {
+	return "hyperflex.LocalCredentialPolicy"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexLocalCredentialPolicy) GetObjectType() string {
 	if o == nil {
@@ -121,9 +130,14 @@ func (o *HyperflexLocalCredentialPolicy) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.LocalCredentialPolicy" of the ObjectType field.
+func (o *HyperflexLocalCredentialPolicy) GetDefaultObjectType() interface{} {
+	return "hyperflex.LocalCredentialPolicy"
+}
+
 // GetFactoryHypervisorPassword returns the FactoryHypervisorPassword field value if set, zero value otherwise.
 func (o *HyperflexLocalCredentialPolicy) GetFactoryHypervisorPassword() bool {
-	if o == nil || o.FactoryHypervisorPassword == nil {
+	if o == nil || IsNil(o.FactoryHypervisorPassword) {
 		var ret bool
 		return ret
 	}
@@ -133,7 +147,7 @@ func (o *HyperflexLocalCredentialPolicy) GetFactoryHypervisorPassword() bool {
 // GetFactoryHypervisorPasswordOk returns a tuple with the FactoryHypervisorPassword field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexLocalCredentialPolicy) GetFactoryHypervisorPasswordOk() (*bool, bool) {
-	if o == nil || o.FactoryHypervisorPassword == nil {
+	if o == nil || IsNil(o.FactoryHypervisorPassword) {
 		return nil, false
 	}
 	return o.FactoryHypervisorPassword, true
@@ -141,7 +155,7 @@ func (o *HyperflexLocalCredentialPolicy) GetFactoryHypervisorPasswordOk() (*bool
 
 // HasFactoryHypervisorPassword returns a boolean if a field has been set.
 func (o *HyperflexLocalCredentialPolicy) HasFactoryHypervisorPassword() bool {
-	if o != nil && o.FactoryHypervisorPassword != nil {
+	if o != nil && !IsNil(o.FactoryHypervisorPassword) {
 		return true
 	}
 
@@ -155,7 +169,7 @@ func (o *HyperflexLocalCredentialPolicy) SetFactoryHypervisorPassword(v bool) {
 
 // GetHxdpRootPwd returns the HxdpRootPwd field value if set, zero value otherwise.
 func (o *HyperflexLocalCredentialPolicy) GetHxdpRootPwd() string {
-	if o == nil || o.HxdpRootPwd == nil {
+	if o == nil || IsNil(o.HxdpRootPwd) {
 		var ret string
 		return ret
 	}
@@ -165,7 +179,7 @@ func (o *HyperflexLocalCredentialPolicy) GetHxdpRootPwd() string {
 // GetHxdpRootPwdOk returns a tuple with the HxdpRootPwd field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexLocalCredentialPolicy) GetHxdpRootPwdOk() (*string, bool) {
-	if o == nil || o.HxdpRootPwd == nil {
+	if o == nil || IsNil(o.HxdpRootPwd) {
 		return nil, false
 	}
 	return o.HxdpRootPwd, true
@@ -173,7 +187,7 @@ func (o *HyperflexLocalCredentialPolicy) GetHxdpRootPwdOk() (*string, bool) {
 
 // HasHxdpRootPwd returns a boolean if a field has been set.
 func (o *HyperflexLocalCredentialPolicy) HasHxdpRootPwd() bool {
-	if o != nil && o.HxdpRootPwd != nil {
+	if o != nil && !IsNil(o.HxdpRootPwd) {
 		return true
 	}
 
@@ -187,7 +201,7 @@ func (o *HyperflexLocalCredentialPolicy) SetHxdpRootPwd(v string) {
 
 // GetHypervisorAdmin returns the HypervisorAdmin field value if set, zero value otherwise.
 func (o *HyperflexLocalCredentialPolicy) GetHypervisorAdmin() string {
-	if o == nil || o.HypervisorAdmin == nil {
+	if o == nil || IsNil(o.HypervisorAdmin) {
 		var ret string
 		return ret
 	}
@@ -197,7 +211,7 @@ func (o *HyperflexLocalCredentialPolicy) GetHypervisorAdmin() string {
 // GetHypervisorAdminOk returns a tuple with the HypervisorAdmin field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexLocalCredentialPolicy) GetHypervisorAdminOk() (*string, bool) {
-	if o == nil || o.HypervisorAdmin == nil {
+	if o == nil || IsNil(o.HypervisorAdmin) {
 		return nil, false
 	}
 	return o.HypervisorAdmin, true
@@ -205,7 +219,7 @@ func (o *HyperflexLocalCredentialPolicy) GetHypervisorAdminOk() (*string, bool) 
 
 // HasHypervisorAdmin returns a boolean if a field has been set.
 func (o *HyperflexLocalCredentialPolicy) HasHypervisorAdmin() bool {
-	if o != nil && o.HypervisorAdmin != nil {
+	if o != nil && !IsNil(o.HypervisorAdmin) {
 		return true
 	}
 
@@ -219,7 +233,7 @@ func (o *HyperflexLocalCredentialPolicy) SetHypervisorAdmin(v string) {
 
 // GetHypervisorAdminPwd returns the HypervisorAdminPwd field value if set, zero value otherwise.
 func (o *HyperflexLocalCredentialPolicy) GetHypervisorAdminPwd() string {
-	if o == nil || o.HypervisorAdminPwd == nil {
+	if o == nil || IsNil(o.HypervisorAdminPwd) {
 		var ret string
 		return ret
 	}
@@ -229,7 +243,7 @@ func (o *HyperflexLocalCredentialPolicy) GetHypervisorAdminPwd() string {
 // GetHypervisorAdminPwdOk returns a tuple with the HypervisorAdminPwd field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexLocalCredentialPolicy) GetHypervisorAdminPwdOk() (*string, bool) {
-	if o == nil || o.HypervisorAdminPwd == nil {
+	if o == nil || IsNil(o.HypervisorAdminPwd) {
 		return nil, false
 	}
 	return o.HypervisorAdminPwd, true
@@ -237,7 +251,7 @@ func (o *HyperflexLocalCredentialPolicy) GetHypervisorAdminPwdOk() (*string, boo
 
 // HasHypervisorAdminPwd returns a boolean if a field has been set.
 func (o *HyperflexLocalCredentialPolicy) HasHypervisorAdminPwd() bool {
-	if o != nil && o.HypervisorAdminPwd != nil {
+	if o != nil && !IsNil(o.HypervisorAdminPwd) {
 		return true
 	}
 
@@ -251,7 +265,7 @@ func (o *HyperflexLocalCredentialPolicy) SetHypervisorAdminPwd(v string) {
 
 // GetIsDeploymentPrivateKeySet returns the IsDeploymentPrivateKeySet field value if set, zero value otherwise.
 func (o *HyperflexLocalCredentialPolicy) GetIsDeploymentPrivateKeySet() bool {
-	if o == nil || o.IsDeploymentPrivateKeySet == nil {
+	if o == nil || IsNil(o.IsDeploymentPrivateKeySet) {
 		var ret bool
 		return ret
 	}
@@ -261,7 +275,7 @@ func (o *HyperflexLocalCredentialPolicy) GetIsDeploymentPrivateKeySet() bool {
 // GetIsDeploymentPrivateKeySetOk returns a tuple with the IsDeploymentPrivateKeySet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexLocalCredentialPolicy) GetIsDeploymentPrivateKeySetOk() (*bool, bool) {
-	if o == nil || o.IsDeploymentPrivateKeySet == nil {
+	if o == nil || IsNil(o.IsDeploymentPrivateKeySet) {
 		return nil, false
 	}
 	return o.IsDeploymentPrivateKeySet, true
@@ -269,7 +283,7 @@ func (o *HyperflexLocalCredentialPolicy) GetIsDeploymentPrivateKeySetOk() (*bool
 
 // HasIsDeploymentPrivateKeySet returns a boolean if a field has been set.
 func (o *HyperflexLocalCredentialPolicy) HasIsDeploymentPrivateKeySet() bool {
-	if o != nil && o.IsDeploymentPrivateKeySet != nil {
+	if o != nil && !IsNil(o.IsDeploymentPrivateKeySet) {
 		return true
 	}
 
@@ -283,7 +297,7 @@ func (o *HyperflexLocalCredentialPolicy) SetIsDeploymentPrivateKeySet(v bool) {
 
 // GetIsHxdpRootPwdSet returns the IsHxdpRootPwdSet field value if set, zero value otherwise.
 func (o *HyperflexLocalCredentialPolicy) GetIsHxdpRootPwdSet() bool {
-	if o == nil || o.IsHxdpRootPwdSet == nil {
+	if o == nil || IsNil(o.IsHxdpRootPwdSet) {
 		var ret bool
 		return ret
 	}
@@ -293,7 +307,7 @@ func (o *HyperflexLocalCredentialPolicy) GetIsHxdpRootPwdSet() bool {
 // GetIsHxdpRootPwdSetOk returns a tuple with the IsHxdpRootPwdSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexLocalCredentialPolicy) GetIsHxdpRootPwdSetOk() (*bool, bool) {
-	if o == nil || o.IsHxdpRootPwdSet == nil {
+	if o == nil || IsNil(o.IsHxdpRootPwdSet) {
 		return nil, false
 	}
 	return o.IsHxdpRootPwdSet, true
@@ -301,7 +315,7 @@ func (o *HyperflexLocalCredentialPolicy) GetIsHxdpRootPwdSetOk() (*bool, bool) {
 
 // HasIsHxdpRootPwdSet returns a boolean if a field has been set.
 func (o *HyperflexLocalCredentialPolicy) HasIsHxdpRootPwdSet() bool {
-	if o != nil && o.IsHxdpRootPwdSet != nil {
+	if o != nil && !IsNil(o.IsHxdpRootPwdSet) {
 		return true
 	}
 
@@ -315,7 +329,7 @@ func (o *HyperflexLocalCredentialPolicy) SetIsHxdpRootPwdSet(v bool) {
 
 // GetIsHypervisorAdminPwdSet returns the IsHypervisorAdminPwdSet field value if set, zero value otherwise.
 func (o *HyperflexLocalCredentialPolicy) GetIsHypervisorAdminPwdSet() bool {
-	if o == nil || o.IsHypervisorAdminPwdSet == nil {
+	if o == nil || IsNil(o.IsHypervisorAdminPwdSet) {
 		var ret bool
 		return ret
 	}
@@ -325,7 +339,7 @@ func (o *HyperflexLocalCredentialPolicy) GetIsHypervisorAdminPwdSet() bool {
 // GetIsHypervisorAdminPwdSetOk returns a tuple with the IsHypervisorAdminPwdSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexLocalCredentialPolicy) GetIsHypervisorAdminPwdSetOk() (*bool, bool) {
-	if o == nil || o.IsHypervisorAdminPwdSet == nil {
+	if o == nil || IsNil(o.IsHypervisorAdminPwdSet) {
 		return nil, false
 	}
 	return o.IsHypervisorAdminPwdSet, true
@@ -333,7 +347,7 @@ func (o *HyperflexLocalCredentialPolicy) GetIsHypervisorAdminPwdSetOk() (*bool, 
 
 // HasIsHypervisorAdminPwdSet returns a boolean if a field has been set.
 func (o *HyperflexLocalCredentialPolicy) HasIsHypervisorAdminPwdSet() bool {
-	if o != nil && o.IsHypervisorAdminPwdSet != nil {
+	if o != nil && !IsNil(o.IsHypervisorAdminPwdSet) {
 		return true
 	}
 
@@ -358,7 +372,7 @@ func (o *HyperflexLocalCredentialPolicy) GetClusterProfiles() []HyperflexCluster
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexLocalCredentialPolicy) GetClusterProfilesOk() ([]HyperflexClusterProfileRelationship, bool) {
-	if o == nil || o.ClusterProfiles == nil {
+	if o == nil || IsNil(o.ClusterProfiles) {
 		return nil, false
 	}
 	return o.ClusterProfiles, true
@@ -366,7 +380,7 @@ func (o *HyperflexLocalCredentialPolicy) GetClusterProfilesOk() ([]HyperflexClus
 
 // HasClusterProfiles returns a boolean if a field has been set.
 func (o *HyperflexLocalCredentialPolicy) HasClusterProfiles() bool {
-	if o != nil && o.ClusterProfiles != nil {
+	if o != nil && !IsNil(o.ClusterProfiles) {
 		return true
 	}
 
@@ -378,90 +392,152 @@ func (o *HyperflexLocalCredentialPolicy) SetClusterProfiles(v []HyperflexCluster
 	o.ClusterProfiles = v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexLocalCredentialPolicy) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexLocalCredentialPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *HyperflexLocalCredentialPolicy) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *HyperflexLocalCredentialPolicy) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *HyperflexLocalCredentialPolicy) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *HyperflexLocalCredentialPolicy) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 func (o HyperflexLocalCredentialPolicy) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexLocalCredentialPolicy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicy, errPolicyAbstractPolicy := json.Marshal(o.PolicyAbstractPolicy)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
 	errPolicyAbstractPolicy = json.Unmarshal([]byte(serializedPolicyAbstractPolicy), &toSerialize)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.FactoryHypervisorPassword != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.FactoryHypervisorPassword) {
 		toSerialize["FactoryHypervisorPassword"] = o.FactoryHypervisorPassword
 	}
-	if o.HxdpRootPwd != nil {
+	if !IsNil(o.HxdpRootPwd) {
 		toSerialize["HxdpRootPwd"] = o.HxdpRootPwd
 	}
-	if o.HypervisorAdmin != nil {
+	if !IsNil(o.HypervisorAdmin) {
 		toSerialize["HypervisorAdmin"] = o.HypervisorAdmin
 	}
-	if o.HypervisorAdminPwd != nil {
+	if !IsNil(o.HypervisorAdminPwd) {
 		toSerialize["HypervisorAdminPwd"] = o.HypervisorAdminPwd
 	}
-	if o.IsDeploymentPrivateKeySet != nil {
+	if !IsNil(o.IsDeploymentPrivateKeySet) {
 		toSerialize["IsDeploymentPrivateKeySet"] = o.IsDeploymentPrivateKeySet
 	}
-	if o.IsHxdpRootPwdSet != nil {
+	if !IsNil(o.IsHxdpRootPwdSet) {
 		toSerialize["IsHxdpRootPwdSet"] = o.IsHxdpRootPwdSet
 	}
-	if o.IsHypervisorAdminPwdSet != nil {
+	if !IsNil(o.IsHypervisorAdminPwdSet) {
 		toSerialize["IsHypervisorAdminPwdSet"] = o.IsHypervisorAdminPwdSet
 	}
 	if o.ClusterProfiles != nil {
 		toSerialize["ClusterProfiles"] = o.ClusterProfiles
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexLocalCredentialPolicy) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexLocalCredentialPolicy) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexLocalCredentialPolicyWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -469,12 +545,12 @@ func (o *HyperflexLocalCredentialPolicy) UnmarshalJSON(bytes []byte) (err error)
 		ObjectType string `json:"ObjectType"`
 		// Indicates if Hypervisor password is the factory set default password. For HyperFlex Data Platform versions 3.0 or higher, enable this if the default password was not changed on the Hypervisor. It is required to supply a new custom Hypervisor password that will be applied to the Hypervisor during deployment. For HyperFlex Data Platform versions prior to 3.0 release, this setting has no effect and the default password will be used for initial install. The Hypervisor password should be changed after deployment.
 		FactoryHypervisorPassword *bool `json:"FactoryHypervisorPassword,omitempty"`
-		// HyperFlex storage controller VM password must contain a minimum of 10 characters, with at least 1 lowercase, 1 uppercase, 1 numeric, and 1 of these -_@#$%^&*! special characters.
-		HxdpRootPwd *string `json:"HxdpRootPwd,omitempty"`
+		// HyperFlex storage controller VM password must contain a minimum of 10 characters, with at least 1 lowercase, 1 uppercase, 1 numeric, and 1 of these -._@#$%^&*! special characters.
+		HxdpRootPwd *string `json:"HxdpRootPwd,omitempty" validate:"regexp=^[a-zA-Z0-9!@#$%^&*_.-]{10,}$"`
 		// Hypervisor administrator username must contain only alphanumeric characters.
-		HypervisorAdmin *string `json:"HypervisorAdmin,omitempty"`
+		HypervisorAdmin *string `json:"HypervisorAdmin,omitempty" validate:"regexp=^[a-zA-Z0-9]{1,}$"`
 		// The Hypervisor root password. For HyperFlex Data Platform 3.0 or later, if the factory default password was not manually changed, you must set a new custom password. If the password was manually changed, you must not enable the factory default password property and provide the current hypervisor password. Note - All HyperFlex nodes require the same hypervisor password for installation. For HyperFlex Data Platform prior to 3.0, use the default password \"Cisco123\" for newly manufactured HyperFlex servers. A custom password should only be entered if hypervisor credentials were manually changed prior to deployment.
-		HypervisorAdminPwd *string `json:"HypervisorAdminPwd,omitempty"`
+		HypervisorAdminPwd *string `json:"HypervisorAdminPwd,omitempty" validate:"regexp=^.{7,40}$"`
 		// Indicates whether the value of the 'deploymentPrivateKey' property has been set.
 		IsDeploymentPrivateKeySet *bool `json:"IsDeploymentPrivateKeySet,omitempty"`
 		// Indicates whether the value of the 'hxdpRootPwd' property has been set.
@@ -482,13 +558,13 @@ func (o *HyperflexLocalCredentialPolicy) UnmarshalJSON(bytes []byte) (err error)
 		// Indicates whether the value of the 'hypervisorAdminPwd' property has been set.
 		IsHypervisorAdminPwdSet *bool `json:"IsHypervisorAdminPwdSet,omitempty"`
 		// An array of relationships to hyperflexClusterProfile resources.
-		ClusterProfiles []HyperflexClusterProfileRelationship `json:"ClusterProfiles,omitempty"`
-		Organization    *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		ClusterProfiles []HyperflexClusterProfileRelationship        `json:"ClusterProfiles,omitempty"`
+		Organization    NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	}
 
 	varHyperflexLocalCredentialPolicyWithoutEmbeddedStruct := HyperflexLocalCredentialPolicyWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexLocalCredentialPolicyWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexLocalCredentialPolicyWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexLocalCredentialPolicy := _HyperflexLocalCredentialPolicy{}
 		varHyperflexLocalCredentialPolicy.ClassId = varHyperflexLocalCredentialPolicyWithoutEmbeddedStruct.ClassId
@@ -509,7 +585,7 @@ func (o *HyperflexLocalCredentialPolicy) UnmarshalJSON(bytes []byte) (err error)
 
 	varHyperflexLocalCredentialPolicy := _HyperflexLocalCredentialPolicy{}
 
-	err = json.Unmarshal(bytes, &varHyperflexLocalCredentialPolicy)
+	err = json.Unmarshal(data, &varHyperflexLocalCredentialPolicy)
 	if err == nil {
 		o.PolicyAbstractPolicy = varHyperflexLocalCredentialPolicy.PolicyAbstractPolicy
 	} else {
@@ -518,7 +594,7 @@ func (o *HyperflexLocalCredentialPolicy) UnmarshalJSON(bytes []byte) (err error)
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "FactoryHypervisorPassword")

@@ -6,10 +6,12 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "ether.HostPort"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "ether.HostPort"]
-**ModuleId** | Pointer to **int64** | Fabric extender identifier for this port. | [optional] 
+**AdminState** | Pointer to **string** | Administratively configured state (enabled/disabled) for this port. | [optional] [readonly] 
+**AggregatePortId** | Pointer to **int64** | Breakout port member in the fabric extender. | [optional] [readonly] 
+**ModuleId** | Pointer to **int64** | Fabric extender identifier for this port. | [optional] [readonly] 
 **Speed** | Pointer to **string** | Host Port Speed of IO card or fabric extender. | [optional] [readonly] 
-**EquipmentIoCardBase** | Pointer to [**EquipmentIoCardBaseRelationship**](EquipmentIoCardBaseRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**EquipmentIoCardBase** | Pointer to [**NullableEquipmentIoCardBaseRelationship**](EquipmentIoCardBaseRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -69,6 +71,56 @@ and a boolean to check if the value has been set.
 
 SetObjectType sets ObjectType field to given value.
 
+
+### GetAdminState
+
+`func (o *EtherHostPort) GetAdminState() string`
+
+GetAdminState returns the AdminState field if non-nil, zero value otherwise.
+
+### GetAdminStateOk
+
+`func (o *EtherHostPort) GetAdminStateOk() (*string, bool)`
+
+GetAdminStateOk returns a tuple with the AdminState field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAdminState
+
+`func (o *EtherHostPort) SetAdminState(v string)`
+
+SetAdminState sets AdminState field to given value.
+
+### HasAdminState
+
+`func (o *EtherHostPort) HasAdminState() bool`
+
+HasAdminState returns a boolean if a field has been set.
+
+### GetAggregatePortId
+
+`func (o *EtherHostPort) GetAggregatePortId() int64`
+
+GetAggregatePortId returns the AggregatePortId field if non-nil, zero value otherwise.
+
+### GetAggregatePortIdOk
+
+`func (o *EtherHostPort) GetAggregatePortIdOk() (*int64, bool)`
+
+GetAggregatePortIdOk returns a tuple with the AggregatePortId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAggregatePortId
+
+`func (o *EtherHostPort) SetAggregatePortId(v int64)`
+
+SetAggregatePortId sets AggregatePortId field to given value.
+
+### HasAggregatePortId
+
+`func (o *EtherHostPort) HasAggregatePortId() bool`
+
+HasAggregatePortId returns a boolean if a field has been set.
 
 ### GetModuleId
 
@@ -145,6 +197,16 @@ SetEquipmentIoCardBase sets EquipmentIoCardBase field to given value.
 
 HasEquipmentIoCardBase returns a boolean if a field has been set.
 
+### SetEquipmentIoCardBaseNil
+
+`func (o *EtherHostPort) SetEquipmentIoCardBaseNil(b bool)`
+
+ SetEquipmentIoCardBaseNil sets the value for EquipmentIoCardBase to be an explicit nil
+
+### UnsetEquipmentIoCardBase
+`func (o *EtherHostPort) UnsetEquipmentIoCardBase()`
+
+UnsetEquipmentIoCardBase ensures that no value is present for EquipmentIoCardBase, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *EtherHostPort) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -170,6 +232,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *EtherHostPort) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *EtherHostPort) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

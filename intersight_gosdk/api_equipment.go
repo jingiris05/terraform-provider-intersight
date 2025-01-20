@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -36,9 +36,9 @@ func (r ApiGetEquipmentChassisByMoidRequest) Execute() (*EquipmentChassis, *http
 /*
 GetEquipmentChassisByMoid Read a 'equipment.Chassis' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentChassisByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentChassisByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentChassisByMoid(ctx context.Context, moid string) ApiGetEquipmentChassisByMoidRequest {
 	return ApiGetEquipmentChassisByMoidRequest{
@@ -49,7 +49,8 @@ func (a *EquipmentApiService) GetEquipmentChassisByMoid(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return EquipmentChassis
+//
+//	@return EquipmentChassis
 func (a *EquipmentApiService) GetEquipmentChassisByMoidExecute(r ApiGetEquipmentChassisByMoidRequest) (*EquipmentChassis, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -64,7 +65,7 @@ func (a *EquipmentApiService) GetEquipmentChassisByMoidExecute(r ApiGetEquipment
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Chasses/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -97,9 +98,9 @@ func (a *EquipmentApiService) GetEquipmentChassisByMoidExecute(r ApiGetEquipment
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -116,6 +117,7 @@ func (a *EquipmentApiService) GetEquipmentChassisByMoidExecute(r ApiGetEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -126,6 +128,7 @@ func (a *EquipmentApiService) GetEquipmentChassisByMoidExecute(r ApiGetEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -136,6 +139,7 @@ func (a *EquipmentApiService) GetEquipmentChassisByMoidExecute(r ApiGetEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -146,6 +150,7 @@ func (a *EquipmentApiService) GetEquipmentChassisByMoidExecute(r ApiGetEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -155,6 +160,7 @@ func (a *EquipmentApiService) GetEquipmentChassisByMoidExecute(r ApiGetEquipment
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -184,9 +190,9 @@ func (r ApiGetEquipmentChassisIdPoolByMoidRequest) Execute() (*EquipmentChassisI
 /*
 GetEquipmentChassisIdPoolByMoid Read a 'equipment.ChassisIdPool' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentChassisIdPoolByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentChassisIdPoolByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoid(ctx context.Context, moid string) ApiGetEquipmentChassisIdPoolByMoidRequest {
 	return ApiGetEquipmentChassisIdPoolByMoidRequest{
@@ -197,7 +203,8 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return EquipmentChassisIdPool
+//
+//	@return EquipmentChassisIdPool
 func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoidExecute(r ApiGetEquipmentChassisIdPoolByMoidRequest) (*EquipmentChassisIdPool, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -212,7 +219,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoidExecute(r ApiGetEqu
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ChassisIdPools/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -245,9 +252,9 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoidExecute(r ApiGetEqu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -264,6 +271,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -274,6 +282,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -284,6 +293,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -294,6 +304,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -303,6 +314,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolByMoidExecute(r ApiGetEqu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -371,7 +383,7 @@ func (r ApiGetEquipmentChassisIdPoolListRequest) Expand(expand string) ApiGetEqu
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentChassisIdPoolListRequest) Apply(apply string) ApiGetEquipmentChassisIdPoolListRequest {
 	r.apply = &apply
 	return r
@@ -408,8 +420,8 @@ func (r ApiGetEquipmentChassisIdPoolListRequest) Execute() (*EquipmentChassisIdP
 /*
 GetEquipmentChassisIdPoolList Read a 'equipment.ChassisIdPool' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentChassisIdPoolListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentChassisIdPoolListRequest
 */
 func (a *EquipmentApiService) GetEquipmentChassisIdPoolList(ctx context.Context) ApiGetEquipmentChassisIdPoolListRequest {
 	return ApiGetEquipmentChassisIdPoolListRequest{
@@ -419,7 +431,8 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return EquipmentChassisIdPoolResponse
+//
+//	@return EquipmentChassisIdPoolResponse
 func (a *EquipmentApiService) GetEquipmentChassisIdPoolListExecute(r ApiGetEquipmentChassisIdPoolListRequest) (*EquipmentChassisIdPoolResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -440,37 +453,52 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolListExecute(r ApiGetEquip
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -499,9 +527,9 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolListExecute(r ApiGetEquip
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -518,6 +546,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -528,6 +557,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -538,6 +568,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -548,6 +579,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -557,6 +589,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdPoolListExecute(r ApiGetEquip
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -586,9 +619,9 @@ func (r ApiGetEquipmentChassisIdentityByMoidRequest) Execute() (*EquipmentChassi
 /*
 GetEquipmentChassisIdentityByMoid Read a 'equipment.ChassisIdentity' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentChassisIdentityByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentChassisIdentityByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoid(ctx context.Context, moid string) ApiGetEquipmentChassisIdentityByMoidRequest {
 	return ApiGetEquipmentChassisIdentityByMoidRequest{
@@ -599,7 +632,8 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return EquipmentChassisIdentity
+//
+//	@return EquipmentChassisIdentity
 func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoidExecute(r ApiGetEquipmentChassisIdentityByMoidRequest) (*EquipmentChassisIdentity, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -614,7 +648,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoidExecute(r ApiGetE
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ChassisIdentities/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -647,9 +681,9 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoidExecute(r ApiGetE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -666,6 +700,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -676,6 +711,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -686,6 +722,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -696,6 +733,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -705,6 +743,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityByMoidExecute(r ApiGetE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -773,7 +812,7 @@ func (r ApiGetEquipmentChassisIdentityListRequest) Expand(expand string) ApiGetE
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentChassisIdentityListRequest) Apply(apply string) ApiGetEquipmentChassisIdentityListRequest {
 	r.apply = &apply
 	return r
@@ -810,8 +849,8 @@ func (r ApiGetEquipmentChassisIdentityListRequest) Execute() (*EquipmentChassisI
 /*
 GetEquipmentChassisIdentityList Read a 'equipment.ChassisIdentity' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentChassisIdentityListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentChassisIdentityListRequest
 */
 func (a *EquipmentApiService) GetEquipmentChassisIdentityList(ctx context.Context) ApiGetEquipmentChassisIdentityListRequest {
 	return ApiGetEquipmentChassisIdentityListRequest{
@@ -821,7 +860,8 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return EquipmentChassisIdentityResponse
+//
+//	@return EquipmentChassisIdentityResponse
 func (a *EquipmentApiService) GetEquipmentChassisIdentityListExecute(r ApiGetEquipmentChassisIdentityListRequest) (*EquipmentChassisIdentityResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -842,37 +882,52 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityListExecute(r ApiGetEqu
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -901,9 +956,9 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityListExecute(r ApiGetEqu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -920,6 +975,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -930,6 +986,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -940,6 +997,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -950,6 +1008,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -959,6 +1018,7 @@ func (a *EquipmentApiService) GetEquipmentChassisIdentityListExecute(r ApiGetEqu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1027,7 +1087,7 @@ func (r ApiGetEquipmentChassisListRequest) Expand(expand string) ApiGetEquipment
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentChassisListRequest) Apply(apply string) ApiGetEquipmentChassisListRequest {
 	r.apply = &apply
 	return r
@@ -1064,8 +1124,8 @@ func (r ApiGetEquipmentChassisListRequest) Execute() (*EquipmentChassisResponse,
 /*
 GetEquipmentChassisList Read a 'equipment.Chassis' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentChassisListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentChassisListRequest
 */
 func (a *EquipmentApiService) GetEquipmentChassisList(ctx context.Context) ApiGetEquipmentChassisListRequest {
 	return ApiGetEquipmentChassisListRequest{
@@ -1075,7 +1135,8 @@ func (a *EquipmentApiService) GetEquipmentChassisList(ctx context.Context) ApiGe
 }
 
 // Execute executes the request
-//  @return EquipmentChassisResponse
+//
+//	@return EquipmentChassisResponse
 func (a *EquipmentApiService) GetEquipmentChassisListExecute(r ApiGetEquipmentChassisListRequest) (*EquipmentChassisResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1096,37 +1157,52 @@ func (a *EquipmentApiService) GetEquipmentChassisListExecute(r ApiGetEquipmentCh
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1155,9 +1231,9 @@ func (a *EquipmentApiService) GetEquipmentChassisListExecute(r ApiGetEquipmentCh
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1174,6 +1250,7 @@ func (a *EquipmentApiService) GetEquipmentChassisListExecute(r ApiGetEquipmentCh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1184,6 +1261,7 @@ func (a *EquipmentApiService) GetEquipmentChassisListExecute(r ApiGetEquipmentCh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1194,6 +1272,7 @@ func (a *EquipmentApiService) GetEquipmentChassisListExecute(r ApiGetEquipmentCh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1204,6 +1283,7 @@ func (a *EquipmentApiService) GetEquipmentChassisListExecute(r ApiGetEquipmentCh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1213,6 +1293,7 @@ func (a *EquipmentApiService) GetEquipmentChassisListExecute(r ApiGetEquipmentCh
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1242,9 +1323,9 @@ func (r ApiGetEquipmentChassisOperationByMoidRequest) Execute() (*EquipmentChass
 /*
 GetEquipmentChassisOperationByMoid Read a 'equipment.ChassisOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentChassisOperationByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentChassisOperationByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentChassisOperationByMoid(ctx context.Context, moid string) ApiGetEquipmentChassisOperationByMoidRequest {
 	return ApiGetEquipmentChassisOperationByMoidRequest{
@@ -1255,7 +1336,8 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationByMoid(ctx context.Con
 }
 
 // Execute executes the request
-//  @return EquipmentChassisOperation
+//
+//	@return EquipmentChassisOperation
 func (a *EquipmentApiService) GetEquipmentChassisOperationByMoidExecute(r ApiGetEquipmentChassisOperationByMoidRequest) (*EquipmentChassisOperation, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1270,7 +1352,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationByMoidExecute(r ApiGet
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ChassisOperations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1303,9 +1385,9 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationByMoidExecute(r ApiGet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1322,6 +1404,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1332,6 +1415,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1342,6 +1426,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1352,6 +1437,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1361,6 +1447,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationByMoidExecute(r ApiGet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1429,7 +1516,7 @@ func (r ApiGetEquipmentChassisOperationListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentChassisOperationListRequest) Apply(apply string) ApiGetEquipmentChassisOperationListRequest {
 	r.apply = &apply
 	return r
@@ -1466,8 +1553,8 @@ func (r ApiGetEquipmentChassisOperationListRequest) Execute() (*EquipmentChassis
 /*
 GetEquipmentChassisOperationList Read a 'equipment.ChassisOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentChassisOperationListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentChassisOperationListRequest
 */
 func (a *EquipmentApiService) GetEquipmentChassisOperationList(ctx context.Context) ApiGetEquipmentChassisOperationListRequest {
 	return ApiGetEquipmentChassisOperationListRequest{
@@ -1477,7 +1564,8 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationList(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return EquipmentChassisOperationResponse
+//
+//	@return EquipmentChassisOperationResponse
 func (a *EquipmentApiService) GetEquipmentChassisOperationListExecute(r ApiGetEquipmentChassisOperationListRequest) (*EquipmentChassisOperationResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1498,37 +1586,52 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationListExecute(r ApiGetEq
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1557,9 +1660,9 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationListExecute(r ApiGetEq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1576,6 +1679,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationListExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1586,6 +1690,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationListExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1596,6 +1701,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationListExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1606,6 +1712,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationListExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1615,6 +1722,7 @@ func (a *EquipmentApiService) GetEquipmentChassisOperationListExecute(r ApiGetEq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1644,9 +1752,9 @@ func (r ApiGetEquipmentDeviceSummaryByMoidRequest) Execute() (*EquipmentDeviceSu
 /*
 GetEquipmentDeviceSummaryByMoid Read a 'equipment.DeviceSummary' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentDeviceSummaryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentDeviceSummaryByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoid(ctx context.Context, moid string) ApiGetEquipmentDeviceSummaryByMoidRequest {
 	return ApiGetEquipmentDeviceSummaryByMoidRequest{
@@ -1657,7 +1765,8 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return EquipmentDeviceSummary
+//
+//	@return EquipmentDeviceSummary
 func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoidExecute(r ApiGetEquipmentDeviceSummaryByMoidRequest) (*EquipmentDeviceSummary, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1672,7 +1781,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoidExecute(r ApiGetEqu
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/DeviceSummaries/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1705,9 +1814,9 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoidExecute(r ApiGetEqu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1724,6 +1833,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1734,6 +1844,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1744,6 +1855,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1754,6 +1866,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1763,6 +1876,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryByMoidExecute(r ApiGetEqu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1831,7 +1945,7 @@ func (r ApiGetEquipmentDeviceSummaryListRequest) Expand(expand string) ApiGetEqu
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentDeviceSummaryListRequest) Apply(apply string) ApiGetEquipmentDeviceSummaryListRequest {
 	r.apply = &apply
 	return r
@@ -1868,8 +1982,8 @@ func (r ApiGetEquipmentDeviceSummaryListRequest) Execute() (*EquipmentDeviceSumm
 /*
 GetEquipmentDeviceSummaryList Read a 'equipment.DeviceSummary' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentDeviceSummaryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentDeviceSummaryListRequest
 */
 func (a *EquipmentApiService) GetEquipmentDeviceSummaryList(ctx context.Context) ApiGetEquipmentDeviceSummaryListRequest {
 	return ApiGetEquipmentDeviceSummaryListRequest{
@@ -1879,7 +1993,8 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return EquipmentDeviceSummaryResponse
+//
+//	@return EquipmentDeviceSummaryResponse
 func (a *EquipmentApiService) GetEquipmentDeviceSummaryListExecute(r ApiGetEquipmentDeviceSummaryListRequest) (*EquipmentDeviceSummaryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1900,37 +2015,52 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryListExecute(r ApiGetEquip
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1959,9 +2089,9 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryListExecute(r ApiGetEquip
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1978,6 +2108,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1988,6 +2119,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1998,6 +2130,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2008,6 +2141,7 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2017,6 +2151,436 @@ func (a *EquipmentApiService) GetEquipmentDeviceSummaryListExecute(r ApiGetEquip
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEquipmentEndPointLogByMoidRequest struct {
+	ctx        context.Context
+	ApiService *EquipmentApiService
+	moid       string
+}
+
+func (r ApiGetEquipmentEndPointLogByMoidRequest) Execute() (*EquipmentEndPointLog, *http.Response, error) {
+	return r.ApiService.GetEquipmentEndPointLogByMoidExecute(r)
+}
+
+/*
+GetEquipmentEndPointLogByMoid Read a 'equipment.EndPointLog' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentEndPointLogByMoidRequest
+*/
+func (a *EquipmentApiService) GetEquipmentEndPointLogByMoid(ctx context.Context, moid string) ApiGetEquipmentEndPointLogByMoidRequest {
+	return ApiGetEquipmentEndPointLogByMoidRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentEndPointLog
+func (a *EquipmentApiService) GetEquipmentEndPointLogByMoidExecute(r ApiGetEquipmentEndPointLogByMoidRequest) (*EquipmentEndPointLog, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentEndPointLog
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentEndPointLogByMoid")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/EndPointLogs/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEquipmentEndPointLogListRequest struct {
+	ctx         context.Context
+	ApiService  *EquipmentApiService
+	filter      *string
+	orderby     *string
+	top         *int32
+	skip        *int32
+	select_     *string
+	expand      *string
+	apply       *string
+	count       *bool
+	inlinecount *string
+	at          *string
+	tags        *string
+}
+
+// Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
+func (r ApiGetEquipmentEndPointLogListRequest) Filter(filter string) ApiGetEquipmentEndPointLogListRequest {
+	r.filter = &filter
+	return r
+}
+
+// Determines what properties are used to sort the collection of resources.
+func (r ApiGetEquipmentEndPointLogListRequest) Orderby(orderby string) ApiGetEquipmentEndPointLogListRequest {
+	r.orderby = &orderby
+	return r
+}
+
+// Specifies the maximum number of resources to return in the response.
+func (r ApiGetEquipmentEndPointLogListRequest) Top(top int32) ApiGetEquipmentEndPointLogListRequest {
+	r.top = &top
+	return r
+}
+
+// Specifies the number of resources to skip in the response.
+func (r ApiGetEquipmentEndPointLogListRequest) Skip(skip int32) ApiGetEquipmentEndPointLogListRequest {
+	r.skip = &skip
+	return r
+}
+
+// Specifies a subset of properties to return.
+func (r ApiGetEquipmentEndPointLogListRequest) Select_(select_ string) ApiGetEquipmentEndPointLogListRequest {
+	r.select_ = &select_
+	return r
+}
+
+// Specify additional attributes or related resources to return in addition to the primary resources.
+func (r ApiGetEquipmentEndPointLogListRequest) Expand(expand string) ApiGetEquipmentEndPointLogListRequest {
+	r.expand = &expand
+	return r
+}
+
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetEquipmentEndPointLogListRequest) Apply(apply string) ApiGetEquipmentEndPointLogListRequest {
+	r.apply = &apply
+	return r
+}
+
+// The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
+func (r ApiGetEquipmentEndPointLogListRequest) Count(count bool) ApiGetEquipmentEndPointLogListRequest {
+	r.count = &count
+	return r
+}
+
+// The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+func (r ApiGetEquipmentEndPointLogListRequest) Inlinecount(inlinecount string) ApiGetEquipmentEndPointLogListRequest {
+	r.inlinecount = &inlinecount
+	return r
+}
+
+// Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
+func (r ApiGetEquipmentEndPointLogListRequest) At(at string) ApiGetEquipmentEndPointLogListRequest {
+	r.at = &at
+	return r
+}
+
+// The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
+func (r ApiGetEquipmentEndPointLogListRequest) Tags(tags string) ApiGetEquipmentEndPointLogListRequest {
+	r.tags = &tags
+	return r
+}
+
+func (r ApiGetEquipmentEndPointLogListRequest) Execute() (*EquipmentEndPointLogResponse, *http.Response, error) {
+	return r.ApiService.GetEquipmentEndPointLogListExecute(r)
+}
+
+/*
+GetEquipmentEndPointLogList Read a 'equipment.EndPointLog' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentEndPointLogListRequest
+*/
+func (a *EquipmentApiService) GetEquipmentEndPointLogList(ctx context.Context) ApiGetEquipmentEndPointLogListRequest {
+	return ApiGetEquipmentEndPointLogListRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentEndPointLogResponse
+func (a *EquipmentApiService) GetEquipmentEndPointLogListExecute(r ApiGetEquipmentEndPointLogListRequest) (*EquipmentEndPointLogResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentEndPointLogResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentEndPointLogList")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/EndPointLogs"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.filter != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
+	}
+	if r.orderby != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
+	}
+	if r.top != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
+	}
+	if r.select_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
+	}
+	if r.expand != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
+	}
+	if r.apply != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
+	}
+	if r.inlinecount != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
+	}
+	if r.at != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2046,9 +2610,9 @@ func (r ApiGetEquipmentExpanderModuleByMoidRequest) Execute() (*EquipmentExpande
 /*
 GetEquipmentExpanderModuleByMoid Read a 'equipment.ExpanderModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentExpanderModuleByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentExpanderModuleByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoid(ctx context.Context, moid string) ApiGetEquipmentExpanderModuleByMoidRequest {
 	return ApiGetEquipmentExpanderModuleByMoidRequest{
@@ -2059,7 +2623,8 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoid(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return EquipmentExpanderModule
+//
+//	@return EquipmentExpanderModule
 func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoidExecute(r ApiGetEquipmentExpanderModuleByMoidRequest) (*EquipmentExpanderModule, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2074,7 +2639,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoidExecute(r ApiGetEq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ExpanderModules/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2107,9 +2672,9 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoidExecute(r ApiGetEq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2126,6 +2691,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoidExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2136,6 +2702,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoidExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2146,6 +2713,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoidExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2156,6 +2724,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoidExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2165,6 +2734,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleByMoidExecute(r ApiGetEq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2233,7 +2803,7 @@ func (r ApiGetEquipmentExpanderModuleListRequest) Expand(expand string) ApiGetEq
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentExpanderModuleListRequest) Apply(apply string) ApiGetEquipmentExpanderModuleListRequest {
 	r.apply = &apply
 	return r
@@ -2270,8 +2840,8 @@ func (r ApiGetEquipmentExpanderModuleListRequest) Execute() (*EquipmentExpanderM
 /*
 GetEquipmentExpanderModuleList Read a 'equipment.ExpanderModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentExpanderModuleListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentExpanderModuleListRequest
 */
 func (a *EquipmentApiService) GetEquipmentExpanderModuleList(ctx context.Context) ApiGetEquipmentExpanderModuleListRequest {
 	return ApiGetEquipmentExpanderModuleListRequest{
@@ -2281,7 +2851,8 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleList(ctx context.Context
 }
 
 // Execute executes the request
-//  @return EquipmentExpanderModuleResponse
+//
+//	@return EquipmentExpanderModuleResponse
 func (a *EquipmentApiService) GetEquipmentExpanderModuleListExecute(r ApiGetEquipmentExpanderModuleListRequest) (*EquipmentExpanderModuleResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2302,37 +2873,52 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleListExecute(r ApiGetEqui
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2361,9 +2947,9 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleListExecute(r ApiGetEqui
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2380,6 +2966,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleListExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2390,6 +2977,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleListExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2400,6 +2988,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleListExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2410,6 +2999,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleListExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2419,6 +3009,7 @@ func (a *EquipmentApiService) GetEquipmentExpanderModuleListExecute(r ApiGetEqui
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2448,9 +3039,9 @@ func (r ApiGetEquipmentFanByMoidRequest) Execute() (*EquipmentFan, *http.Respons
 /*
 GetEquipmentFanByMoid Read a 'equipment.Fan' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentFanByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentFanByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentFanByMoid(ctx context.Context, moid string) ApiGetEquipmentFanByMoidRequest {
 	return ApiGetEquipmentFanByMoidRequest{
@@ -2461,7 +3052,8 @@ func (a *EquipmentApiService) GetEquipmentFanByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return EquipmentFan
+//
+//	@return EquipmentFan
 func (a *EquipmentApiService) GetEquipmentFanByMoidExecute(r ApiGetEquipmentFanByMoidRequest) (*EquipmentFan, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2476,7 +3068,7 @@ func (a *EquipmentApiService) GetEquipmentFanByMoidExecute(r ApiGetEquipmentFanB
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Fans/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2509,9 +3101,9 @@ func (a *EquipmentApiService) GetEquipmentFanByMoidExecute(r ApiGetEquipmentFanB
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2528,6 +3120,7 @@ func (a *EquipmentApiService) GetEquipmentFanByMoidExecute(r ApiGetEquipmentFanB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2538,6 +3131,7 @@ func (a *EquipmentApiService) GetEquipmentFanByMoidExecute(r ApiGetEquipmentFanB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2548,6 +3142,7 @@ func (a *EquipmentApiService) GetEquipmentFanByMoidExecute(r ApiGetEquipmentFanB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2558,6 +3153,7 @@ func (a *EquipmentApiService) GetEquipmentFanByMoidExecute(r ApiGetEquipmentFanB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2567,6 +3163,7 @@ func (a *EquipmentApiService) GetEquipmentFanByMoidExecute(r ApiGetEquipmentFanB
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2596,9 +3193,9 @@ func (r ApiGetEquipmentFanControlByMoidRequest) Execute() (*EquipmentFanControl,
 /*
 GetEquipmentFanControlByMoid Read a 'equipment.FanControl' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentFanControlByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentFanControlByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentFanControlByMoid(ctx context.Context, moid string) ApiGetEquipmentFanControlByMoidRequest {
 	return ApiGetEquipmentFanControlByMoidRequest{
@@ -2609,7 +3206,8 @@ func (a *EquipmentApiService) GetEquipmentFanControlByMoid(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return EquipmentFanControl
+//
+//	@return EquipmentFanControl
 func (a *EquipmentApiService) GetEquipmentFanControlByMoidExecute(r ApiGetEquipmentFanControlByMoidRequest) (*EquipmentFanControl, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2624,7 +3222,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlByMoidExecute(r ApiGetEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FanControls/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2657,9 +3255,9 @@ func (a *EquipmentApiService) GetEquipmentFanControlByMoidExecute(r ApiGetEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2676,6 +3274,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2686,6 +3285,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2696,6 +3296,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2706,6 +3307,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2715,6 +3317,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlByMoidExecute(r ApiGetEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2783,7 +3386,7 @@ func (r ApiGetEquipmentFanControlListRequest) Expand(expand string) ApiGetEquipm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentFanControlListRequest) Apply(apply string) ApiGetEquipmentFanControlListRequest {
 	r.apply = &apply
 	return r
@@ -2820,8 +3423,8 @@ func (r ApiGetEquipmentFanControlListRequest) Execute() (*EquipmentFanControlRes
 /*
 GetEquipmentFanControlList Read a 'equipment.FanControl' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentFanControlListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentFanControlListRequest
 */
 func (a *EquipmentApiService) GetEquipmentFanControlList(ctx context.Context) ApiGetEquipmentFanControlListRequest {
 	return ApiGetEquipmentFanControlListRequest{
@@ -2831,7 +3434,8 @@ func (a *EquipmentApiService) GetEquipmentFanControlList(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return EquipmentFanControlResponse
+//
+//	@return EquipmentFanControlResponse
 func (a *EquipmentApiService) GetEquipmentFanControlListExecute(r ApiGetEquipmentFanControlListRequest) (*EquipmentFanControlResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -2852,37 +3456,52 @@ func (a *EquipmentApiService) GetEquipmentFanControlListExecute(r ApiGetEquipmen
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -2911,9 +3530,9 @@ func (a *EquipmentApiService) GetEquipmentFanControlListExecute(r ApiGetEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2930,6 +3549,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2940,6 +3560,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2950,6 +3571,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2960,6 +3582,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2969,6 +3592,7 @@ func (a *EquipmentApiService) GetEquipmentFanControlListExecute(r ApiGetEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3037,7 +3661,7 @@ func (r ApiGetEquipmentFanListRequest) Expand(expand string) ApiGetEquipmentFanL
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentFanListRequest) Apply(apply string) ApiGetEquipmentFanListRequest {
 	r.apply = &apply
 	return r
@@ -3074,8 +3698,8 @@ func (r ApiGetEquipmentFanListRequest) Execute() (*EquipmentFanResponse, *http.R
 /*
 GetEquipmentFanList Read a 'equipment.Fan' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentFanListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentFanListRequest
 */
 func (a *EquipmentApiService) GetEquipmentFanList(ctx context.Context) ApiGetEquipmentFanListRequest {
 	return ApiGetEquipmentFanListRequest{
@@ -3085,7 +3709,8 @@ func (a *EquipmentApiService) GetEquipmentFanList(ctx context.Context) ApiGetEqu
 }
 
 // Execute executes the request
-//  @return EquipmentFanResponse
+//
+//	@return EquipmentFanResponse
 func (a *EquipmentApiService) GetEquipmentFanListExecute(r ApiGetEquipmentFanListRequest) (*EquipmentFanResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3106,37 +3731,52 @@ func (a *EquipmentApiService) GetEquipmentFanListExecute(r ApiGetEquipmentFanLis
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3165,9 +3805,9 @@ func (a *EquipmentApiService) GetEquipmentFanListExecute(r ApiGetEquipmentFanLis
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3184,6 +3824,7 @@ func (a *EquipmentApiService) GetEquipmentFanListExecute(r ApiGetEquipmentFanLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3194,6 +3835,7 @@ func (a *EquipmentApiService) GetEquipmentFanListExecute(r ApiGetEquipmentFanLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3204,6 +3846,7 @@ func (a *EquipmentApiService) GetEquipmentFanListExecute(r ApiGetEquipmentFanLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3214,6 +3857,7 @@ func (a *EquipmentApiService) GetEquipmentFanListExecute(r ApiGetEquipmentFanLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3223,6 +3867,7 @@ func (a *EquipmentApiService) GetEquipmentFanListExecute(r ApiGetEquipmentFanLis
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3252,9 +3897,9 @@ func (r ApiGetEquipmentFanModuleByMoidRequest) Execute() (*EquipmentFanModule, *
 /*
 GetEquipmentFanModuleByMoid Read a 'equipment.FanModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentFanModuleByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentFanModuleByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentFanModuleByMoid(ctx context.Context, moid string) ApiGetEquipmentFanModuleByMoidRequest {
 	return ApiGetEquipmentFanModuleByMoidRequest{
@@ -3265,7 +3910,8 @@ func (a *EquipmentApiService) GetEquipmentFanModuleByMoid(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return EquipmentFanModule
+//
+//	@return EquipmentFanModule
 func (a *EquipmentApiService) GetEquipmentFanModuleByMoidExecute(r ApiGetEquipmentFanModuleByMoidRequest) (*EquipmentFanModule, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3280,7 +3926,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleByMoidExecute(r ApiGetEquipme
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FanModules/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3313,9 +3959,9 @@ func (a *EquipmentApiService) GetEquipmentFanModuleByMoidExecute(r ApiGetEquipme
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3332,6 +3978,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleByMoidExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3342,6 +3989,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleByMoidExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3352,6 +4000,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleByMoidExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3362,6 +4011,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleByMoidExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3371,6 +4021,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleByMoidExecute(r ApiGetEquipme
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3439,7 +4090,7 @@ func (r ApiGetEquipmentFanModuleListRequest) Expand(expand string) ApiGetEquipme
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentFanModuleListRequest) Apply(apply string) ApiGetEquipmentFanModuleListRequest {
 	r.apply = &apply
 	return r
@@ -3476,8 +4127,8 @@ func (r ApiGetEquipmentFanModuleListRequest) Execute() (*EquipmentFanModuleRespo
 /*
 GetEquipmentFanModuleList Read a 'equipment.FanModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentFanModuleListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentFanModuleListRequest
 */
 func (a *EquipmentApiService) GetEquipmentFanModuleList(ctx context.Context) ApiGetEquipmentFanModuleListRequest {
 	return ApiGetEquipmentFanModuleListRequest{
@@ -3487,7 +4138,8 @@ func (a *EquipmentApiService) GetEquipmentFanModuleList(ctx context.Context) Api
 }
 
 // Execute executes the request
-//  @return EquipmentFanModuleResponse
+//
+//	@return EquipmentFanModuleResponse
 func (a *EquipmentApiService) GetEquipmentFanModuleListExecute(r ApiGetEquipmentFanModuleListRequest) (*EquipmentFanModuleResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3508,37 +4160,52 @@ func (a *EquipmentApiService) GetEquipmentFanModuleListExecute(r ApiGetEquipment
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -3567,9 +4234,9 @@ func (a *EquipmentApiService) GetEquipmentFanModuleListExecute(r ApiGetEquipment
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3586,6 +4253,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleListExecute(r ApiGetEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3596,6 +4264,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleListExecute(r ApiGetEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3606,6 +4275,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleListExecute(r ApiGetEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3616,6 +4286,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleListExecute(r ApiGetEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3625,6 +4296,7 @@ func (a *EquipmentApiService) GetEquipmentFanModuleListExecute(r ApiGetEquipment
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3654,9 +4326,9 @@ func (r ApiGetEquipmentFexByMoidRequest) Execute() (*EquipmentFex, *http.Respons
 /*
 GetEquipmentFexByMoid Read a 'equipment.Fex' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentFexByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentFexByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentFexByMoid(ctx context.Context, moid string) ApiGetEquipmentFexByMoidRequest {
 	return ApiGetEquipmentFexByMoidRequest{
@@ -3667,7 +4339,8 @@ func (a *EquipmentApiService) GetEquipmentFexByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return EquipmentFex
+//
+//	@return EquipmentFex
 func (a *EquipmentApiService) GetEquipmentFexByMoidExecute(r ApiGetEquipmentFexByMoidRequest) (*EquipmentFex, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3682,7 +4355,7 @@ func (a *EquipmentApiService) GetEquipmentFexByMoidExecute(r ApiGetEquipmentFexB
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Fexes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3715,9 +4388,9 @@ func (a *EquipmentApiService) GetEquipmentFexByMoidExecute(r ApiGetEquipmentFexB
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3734,6 +4407,7 @@ func (a *EquipmentApiService) GetEquipmentFexByMoidExecute(r ApiGetEquipmentFexB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3744,6 +4418,7 @@ func (a *EquipmentApiService) GetEquipmentFexByMoidExecute(r ApiGetEquipmentFexB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3754,6 +4429,7 @@ func (a *EquipmentApiService) GetEquipmentFexByMoidExecute(r ApiGetEquipmentFexB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3764,6 +4440,7 @@ func (a *EquipmentApiService) GetEquipmentFexByMoidExecute(r ApiGetEquipmentFexB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3773,6 +4450,7 @@ func (a *EquipmentApiService) GetEquipmentFexByMoidExecute(r ApiGetEquipmentFexB
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3802,9 +4480,9 @@ func (r ApiGetEquipmentFexIdentityByMoidRequest) Execute() (*EquipmentFexIdentit
 /*
 GetEquipmentFexIdentityByMoid Read a 'equipment.FexIdentity' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentFexIdentityByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentFexIdentityByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentFexIdentityByMoid(ctx context.Context, moid string) ApiGetEquipmentFexIdentityByMoidRequest {
 	return ApiGetEquipmentFexIdentityByMoidRequest{
@@ -3815,7 +4493,8 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return EquipmentFexIdentity
+//
+//	@return EquipmentFexIdentity
 func (a *EquipmentApiService) GetEquipmentFexIdentityByMoidExecute(r ApiGetEquipmentFexIdentityByMoidRequest) (*EquipmentFexIdentity, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -3830,7 +4509,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityByMoidExecute(r ApiGetEquip
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FexIdentities/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3863,9 +4542,9 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityByMoidExecute(r ApiGetEquip
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3882,6 +4561,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityByMoidExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3892,6 +4572,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityByMoidExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3902,6 +4583,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityByMoidExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3912,6 +4594,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityByMoidExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3921,6 +4604,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityByMoidExecute(r ApiGetEquip
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3989,7 +4673,7 @@ func (r ApiGetEquipmentFexIdentityListRequest) Expand(expand string) ApiGetEquip
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentFexIdentityListRequest) Apply(apply string) ApiGetEquipmentFexIdentityListRequest {
 	r.apply = &apply
 	return r
@@ -4026,8 +4710,8 @@ func (r ApiGetEquipmentFexIdentityListRequest) Execute() (*EquipmentFexIdentityR
 /*
 GetEquipmentFexIdentityList Read a 'equipment.FexIdentity' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentFexIdentityListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentFexIdentityListRequest
 */
 func (a *EquipmentApiService) GetEquipmentFexIdentityList(ctx context.Context) ApiGetEquipmentFexIdentityListRequest {
 	return ApiGetEquipmentFexIdentityListRequest{
@@ -4037,7 +4721,8 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return EquipmentFexIdentityResponse
+//
+//	@return EquipmentFexIdentityResponse
 func (a *EquipmentApiService) GetEquipmentFexIdentityListExecute(r ApiGetEquipmentFexIdentityListRequest) (*EquipmentFexIdentityResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4058,37 +4743,52 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityListExecute(r ApiGetEquipme
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4117,9 +4817,9 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityListExecute(r ApiGetEquipme
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4136,6 +4836,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityListExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4146,6 +4847,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityListExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4156,6 +4858,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityListExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4166,6 +4869,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityListExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4175,6 +4879,7 @@ func (a *EquipmentApiService) GetEquipmentFexIdentityListExecute(r ApiGetEquipme
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4243,7 +4948,7 @@ func (r ApiGetEquipmentFexListRequest) Expand(expand string) ApiGetEquipmentFexL
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentFexListRequest) Apply(apply string) ApiGetEquipmentFexListRequest {
 	r.apply = &apply
 	return r
@@ -4280,8 +4985,8 @@ func (r ApiGetEquipmentFexListRequest) Execute() (*EquipmentFexResponse, *http.R
 /*
 GetEquipmentFexList Read a 'equipment.Fex' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentFexListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentFexListRequest
 */
 func (a *EquipmentApiService) GetEquipmentFexList(ctx context.Context) ApiGetEquipmentFexListRequest {
 	return ApiGetEquipmentFexListRequest{
@@ -4291,7 +4996,8 @@ func (a *EquipmentApiService) GetEquipmentFexList(ctx context.Context) ApiGetEqu
 }
 
 // Execute executes the request
-//  @return EquipmentFexResponse
+//
+//	@return EquipmentFexResponse
 func (a *EquipmentApiService) GetEquipmentFexListExecute(r ApiGetEquipmentFexListRequest) (*EquipmentFexResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4312,37 +5018,52 @@ func (a *EquipmentApiService) GetEquipmentFexListExecute(r ApiGetEquipmentFexLis
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4371,9 +5092,9 @@ func (a *EquipmentApiService) GetEquipmentFexListExecute(r ApiGetEquipmentFexLis
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4390,6 +5111,7 @@ func (a *EquipmentApiService) GetEquipmentFexListExecute(r ApiGetEquipmentFexLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4400,6 +5122,7 @@ func (a *EquipmentApiService) GetEquipmentFexListExecute(r ApiGetEquipmentFexLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4410,6 +5133,7 @@ func (a *EquipmentApiService) GetEquipmentFexListExecute(r ApiGetEquipmentFexLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4420,6 +5144,7 @@ func (a *EquipmentApiService) GetEquipmentFexListExecute(r ApiGetEquipmentFexLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4429,6 +5154,7 @@ func (a *EquipmentApiService) GetEquipmentFexListExecute(r ApiGetEquipmentFexLis
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4458,9 +5184,9 @@ func (r ApiGetEquipmentFexOperationByMoidRequest) Execute() (*EquipmentFexOperat
 /*
 GetEquipmentFexOperationByMoid Read a 'equipment.FexOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentFexOperationByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentFexOperationByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentFexOperationByMoid(ctx context.Context, moid string) ApiGetEquipmentFexOperationByMoidRequest {
 	return ApiGetEquipmentFexOperationByMoidRequest{
@@ -4471,7 +5197,8 @@ func (a *EquipmentApiService) GetEquipmentFexOperationByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return EquipmentFexOperation
+//
+//	@return EquipmentFexOperation
 func (a *EquipmentApiService) GetEquipmentFexOperationByMoidExecute(r ApiGetEquipmentFexOperationByMoidRequest) (*EquipmentFexOperation, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4486,7 +5213,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationByMoidExecute(r ApiGetEqui
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FexOperations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4519,9 +5246,9 @@ func (a *EquipmentApiService) GetEquipmentFexOperationByMoidExecute(r ApiGetEqui
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4538,6 +5265,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationByMoidExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4548,6 +5276,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationByMoidExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4558,6 +5287,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationByMoidExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4568,6 +5298,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationByMoidExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4577,6 +5308,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationByMoidExecute(r ApiGetEqui
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4645,7 +5377,7 @@ func (r ApiGetEquipmentFexOperationListRequest) Expand(expand string) ApiGetEqui
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentFexOperationListRequest) Apply(apply string) ApiGetEquipmentFexOperationListRequest {
 	r.apply = &apply
 	return r
@@ -4682,8 +5414,8 @@ func (r ApiGetEquipmentFexOperationListRequest) Execute() (*EquipmentFexOperatio
 /*
 GetEquipmentFexOperationList Read a 'equipment.FexOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentFexOperationListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentFexOperationListRequest
 */
 func (a *EquipmentApiService) GetEquipmentFexOperationList(ctx context.Context) ApiGetEquipmentFexOperationListRequest {
 	return ApiGetEquipmentFexOperationListRequest{
@@ -4693,7 +5425,8 @@ func (a *EquipmentApiService) GetEquipmentFexOperationList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return EquipmentFexOperationResponse
+//
+//	@return EquipmentFexOperationResponse
 func (a *EquipmentApiService) GetEquipmentFexOperationListExecute(r ApiGetEquipmentFexOperationListRequest) (*EquipmentFexOperationResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4714,37 +5447,52 @@ func (a *EquipmentApiService) GetEquipmentFexOperationListExecute(r ApiGetEquipm
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4773,9 +5521,9 @@ func (a *EquipmentApiService) GetEquipmentFexOperationListExecute(r ApiGetEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4792,6 +5540,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationListExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4802,6 +5551,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationListExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4812,6 +5562,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationListExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4822,6 +5573,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationListExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4831,6 +5583,7 @@ func (a *EquipmentApiService) GetEquipmentFexOperationListExecute(r ApiGetEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4860,9 +5613,9 @@ func (r ApiGetEquipmentFruByMoidRequest) Execute() (*EquipmentFru, *http.Respons
 /*
 GetEquipmentFruByMoid Read a 'equipment.Fru' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentFruByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentFruByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentFruByMoid(ctx context.Context, moid string) ApiGetEquipmentFruByMoidRequest {
 	return ApiGetEquipmentFruByMoidRequest{
@@ -4873,7 +5626,8 @@ func (a *EquipmentApiService) GetEquipmentFruByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return EquipmentFru
+//
+//	@return EquipmentFru
 func (a *EquipmentApiService) GetEquipmentFruByMoidExecute(r ApiGetEquipmentFruByMoidRequest) (*EquipmentFru, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4888,7 +5642,7 @@ func (a *EquipmentApiService) GetEquipmentFruByMoidExecute(r ApiGetEquipmentFruB
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Frus/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4921,9 +5675,9 @@ func (a *EquipmentApiService) GetEquipmentFruByMoidExecute(r ApiGetEquipmentFruB
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4940,6 +5694,7 @@ func (a *EquipmentApiService) GetEquipmentFruByMoidExecute(r ApiGetEquipmentFruB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4950,6 +5705,7 @@ func (a *EquipmentApiService) GetEquipmentFruByMoidExecute(r ApiGetEquipmentFruB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4960,6 +5716,7 @@ func (a *EquipmentApiService) GetEquipmentFruByMoidExecute(r ApiGetEquipmentFruB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4970,6 +5727,7 @@ func (a *EquipmentApiService) GetEquipmentFruByMoidExecute(r ApiGetEquipmentFruB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4979,6 +5737,7 @@ func (a *EquipmentApiService) GetEquipmentFruByMoidExecute(r ApiGetEquipmentFruB
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5047,7 +5806,7 @@ func (r ApiGetEquipmentFruListRequest) Expand(expand string) ApiGetEquipmentFruL
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentFruListRequest) Apply(apply string) ApiGetEquipmentFruListRequest {
 	r.apply = &apply
 	return r
@@ -5084,8 +5843,8 @@ func (r ApiGetEquipmentFruListRequest) Execute() (*EquipmentFruResponse, *http.R
 /*
 GetEquipmentFruList Read a 'equipment.Fru' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentFruListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentFruListRequest
 */
 func (a *EquipmentApiService) GetEquipmentFruList(ctx context.Context) ApiGetEquipmentFruListRequest {
 	return ApiGetEquipmentFruListRequest{
@@ -5095,7 +5854,8 @@ func (a *EquipmentApiService) GetEquipmentFruList(ctx context.Context) ApiGetEqu
 }
 
 // Execute executes the request
-//  @return EquipmentFruResponse
+//
+//	@return EquipmentFruResponse
 func (a *EquipmentApiService) GetEquipmentFruListExecute(r ApiGetEquipmentFruListRequest) (*EquipmentFruResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5116,37 +5876,52 @@ func (a *EquipmentApiService) GetEquipmentFruListExecute(r ApiGetEquipmentFruLis
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5175,9 +5950,9 @@ func (a *EquipmentApiService) GetEquipmentFruListExecute(r ApiGetEquipmentFruLis
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5194,6 +5969,7 @@ func (a *EquipmentApiService) GetEquipmentFruListExecute(r ApiGetEquipmentFruLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5204,6 +5980,7 @@ func (a *EquipmentApiService) GetEquipmentFruListExecute(r ApiGetEquipmentFruLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5214,6 +5991,7 @@ func (a *EquipmentApiService) GetEquipmentFruListExecute(r ApiGetEquipmentFruLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5224,6 +6002,7 @@ func (a *EquipmentApiService) GetEquipmentFruListExecute(r ApiGetEquipmentFruLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5233,6 +6012,7 @@ func (a *EquipmentApiService) GetEquipmentFruListExecute(r ApiGetEquipmentFruLis
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5249,27 +6029,25 @@ func (a *EquipmentApiService) GetEquipmentFruListExecute(r ApiGetEquipmentFruLis
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiGetEquipmentIdentitySummaryByMoidRequest struct {
+type ApiGetEquipmentHybridDriveSlotByMoidRequest struct {
 	ctx        context.Context
 	ApiService *EquipmentApiService
 	moid       string
 }
 
-func (r ApiGetEquipmentIdentitySummaryByMoidRequest) Execute() (*EquipmentIdentitySummary, *http.Response, error) {
-	return r.ApiService.GetEquipmentIdentitySummaryByMoidExecute(r)
+func (r ApiGetEquipmentHybridDriveSlotByMoidRequest) Execute() (*EquipmentHybridDriveSlot, *http.Response, error) {
+	return r.ApiService.GetEquipmentHybridDriveSlotByMoidExecute(r)
 }
 
 /*
-GetEquipmentIdentitySummaryByMoid Read a 'equipment.IdentitySummary' resource.
+GetEquipmentHybridDriveSlotByMoid Read a 'equipment.HybridDriveSlot' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentIdentitySummaryByMoidRequest
-
-Deprecated
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentHybridDriveSlotByMoidRequest
 */
-func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoid(ctx context.Context, moid string) ApiGetEquipmentIdentitySummaryByMoidRequest {
-	return ApiGetEquipmentIdentitySummaryByMoidRequest{
+func (a *EquipmentApiService) GetEquipmentHybridDriveSlotByMoid(ctx context.Context, moid string) ApiGetEquipmentHybridDriveSlotByMoidRequest {
+	return ApiGetEquipmentHybridDriveSlotByMoidRequest{
 		ApiService: a,
 		ctx:        ctx,
 		moid:       moid,
@@ -5277,23 +6055,23 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return EquipmentIdentitySummary
-// Deprecated
-func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoidExecute(r ApiGetEquipmentIdentitySummaryByMoidRequest) (*EquipmentIdentitySummary, *http.Response, error) {
+//
+//	@return EquipmentHybridDriveSlot
+func (a *EquipmentApiService) GetEquipmentHybridDriveSlotByMoidExecute(r ApiGetEquipmentHybridDriveSlotByMoidRequest) (*EquipmentHybridDriveSlot, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *EquipmentIdentitySummary
+		localVarReturnValue *EquipmentHybridDriveSlot
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentIdentitySummaryByMoid")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentHybridDriveSlotByMoid")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/equipment/IdentitySummaries/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath := localBasePath + "/api/v1/equipment/HybridDriveSlots/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5326,9 +6104,9 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoidExecute(r ApiGetE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5345,6 +6123,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5355,6 +6134,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5365,6 +6145,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5375,6 +6156,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5384,6 +6166,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoidExecute(r ApiGetE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5400,7 +6183,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryByMoidExecute(r ApiGetE
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
-type ApiGetEquipmentIdentitySummaryListRequest struct {
+type ApiGetEquipmentHybridDriveSlotListRequest struct {
 	ctx         context.Context
 	ApiService  *EquipmentApiService
 	filter      *string
@@ -5417,144 +6200,157 @@ type ApiGetEquipmentIdentitySummaryListRequest struct {
 }
 
 // Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
-func (r ApiGetEquipmentIdentitySummaryListRequest) Filter(filter string) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Filter(filter string) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.filter = &filter
 	return r
 }
 
 // Determines what properties are used to sort the collection of resources.
-func (r ApiGetEquipmentIdentitySummaryListRequest) Orderby(orderby string) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Orderby(orderby string) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.orderby = &orderby
 	return r
 }
 
 // Specifies the maximum number of resources to return in the response.
-func (r ApiGetEquipmentIdentitySummaryListRequest) Top(top int32) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Top(top int32) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.top = &top
 	return r
 }
 
 // Specifies the number of resources to skip in the response.
-func (r ApiGetEquipmentIdentitySummaryListRequest) Skip(skip int32) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Skip(skip int32) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.skip = &skip
 	return r
 }
 
 // Specifies a subset of properties to return.
-func (r ApiGetEquipmentIdentitySummaryListRequest) Select_(select_ string) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Select_(select_ string) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.select_ = &select_
 	return r
 }
 
 // Specify additional attributes or related resources to return in addition to the primary resources.
-func (r ApiGetEquipmentIdentitySummaryListRequest) Expand(expand string) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Expand(expand string) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.expand = &expand
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
-func (r ApiGetEquipmentIdentitySummaryListRequest) Apply(apply string) ApiGetEquipmentIdentitySummaryListRequest {
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Apply(apply string) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.apply = &apply
 	return r
 }
 
 // The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
-func (r ApiGetEquipmentIdentitySummaryListRequest) Count(count bool) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Count(count bool) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.count = &count
 	return r
 }
 
 // The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
-func (r ApiGetEquipmentIdentitySummaryListRequest) Inlinecount(inlinecount string) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Inlinecount(inlinecount string) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.inlinecount = &inlinecount
 	return r
 }
 
 // Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
-func (r ApiGetEquipmentIdentitySummaryListRequest) At(at string) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) At(at string) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.at = &at
 	return r
 }
 
 // The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
-func (r ApiGetEquipmentIdentitySummaryListRequest) Tags(tags string) ApiGetEquipmentIdentitySummaryListRequest {
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Tags(tags string) ApiGetEquipmentHybridDriveSlotListRequest {
 	r.tags = &tags
 	return r
 }
 
-func (r ApiGetEquipmentIdentitySummaryListRequest) Execute() (*EquipmentIdentitySummaryResponse, *http.Response, error) {
-	return r.ApiService.GetEquipmentIdentitySummaryListExecute(r)
+func (r ApiGetEquipmentHybridDriveSlotListRequest) Execute() (*EquipmentHybridDriveSlotResponse, *http.Response, error) {
+	return r.ApiService.GetEquipmentHybridDriveSlotListExecute(r)
 }
 
 /*
-GetEquipmentIdentitySummaryList Read a 'equipment.IdentitySummary' resource.
+GetEquipmentHybridDriveSlotList Read a 'equipment.HybridDriveSlot' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentIdentitySummaryListRequest
-
-Deprecated
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentHybridDriveSlotListRequest
 */
-func (a *EquipmentApiService) GetEquipmentIdentitySummaryList(ctx context.Context) ApiGetEquipmentIdentitySummaryListRequest {
-	return ApiGetEquipmentIdentitySummaryListRequest{
+func (a *EquipmentApiService) GetEquipmentHybridDriveSlotList(ctx context.Context) ApiGetEquipmentHybridDriveSlotListRequest {
+	return ApiGetEquipmentHybridDriveSlotListRequest{
 		ApiService: a,
 		ctx:        ctx,
 	}
 }
 
 // Execute executes the request
-//  @return EquipmentIdentitySummaryResponse
-// Deprecated
-func (a *EquipmentApiService) GetEquipmentIdentitySummaryListExecute(r ApiGetEquipmentIdentitySummaryListRequest) (*EquipmentIdentitySummaryResponse, *http.Response, error) {
+//
+//	@return EquipmentHybridDriveSlotResponse
+func (a *EquipmentApiService) GetEquipmentHybridDriveSlotListExecute(r ApiGetEquipmentHybridDriveSlotListRequest) (*EquipmentHybridDriveSlotResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
 		localVarPostBody    interface{}
 		formFiles           []formFile
-		localVarReturnValue *EquipmentIdentitySummaryResponse
+		localVarReturnValue *EquipmentHybridDriveSlotResponse
 	)
 
-	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentIdentitySummaryList")
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentHybridDriveSlotList")
 	if err != nil {
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/api/v1/equipment/IdentitySummaries"
+	localVarPath := localBasePath + "/api/v1/equipment/HybridDriveSlots"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5583,9 +6379,9 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryListExecute(r ApiGetEqu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5602,6 +6398,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5612,6 +6409,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5622,6 +6420,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5632,6 +6431,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5641,6 +6441,7 @@ func (a *EquipmentApiService) GetEquipmentIdentitySummaryListExecute(r ApiGetEqu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5670,9 +6471,9 @@ func (r ApiGetEquipmentIoCardByMoidRequest) Execute() (*EquipmentIoCard, *http.R
 /*
 GetEquipmentIoCardByMoid Read a 'equipment.IoCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentIoCardByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentIoCardByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentIoCardByMoid(ctx context.Context, moid string) ApiGetEquipmentIoCardByMoidRequest {
 	return ApiGetEquipmentIoCardByMoidRequest{
@@ -5683,7 +6484,8 @@ func (a *EquipmentApiService) GetEquipmentIoCardByMoid(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return EquipmentIoCard
+//
+//	@return EquipmentIoCard
 func (a *EquipmentApiService) GetEquipmentIoCardByMoidExecute(r ApiGetEquipmentIoCardByMoidRequest) (*EquipmentIoCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5698,7 +6500,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardByMoidExecute(r ApiGetEquipmentI
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/IoCards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5731,9 +6533,9 @@ func (a *EquipmentApiService) GetEquipmentIoCardByMoidExecute(r ApiGetEquipmentI
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5750,6 +6552,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardByMoidExecute(r ApiGetEquipmentI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5760,6 +6563,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardByMoidExecute(r ApiGetEquipmentI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5770,6 +6574,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardByMoidExecute(r ApiGetEquipmentI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5780,6 +6585,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardByMoidExecute(r ApiGetEquipmentI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5789,6 +6595,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardByMoidExecute(r ApiGetEquipmentI
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5857,7 +6664,7 @@ func (r ApiGetEquipmentIoCardListRequest) Expand(expand string) ApiGetEquipmentI
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentIoCardListRequest) Apply(apply string) ApiGetEquipmentIoCardListRequest {
 	r.apply = &apply
 	return r
@@ -5894,8 +6701,8 @@ func (r ApiGetEquipmentIoCardListRequest) Execute() (*EquipmentIoCardResponse, *
 /*
 GetEquipmentIoCardList Read a 'equipment.IoCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentIoCardListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentIoCardListRequest
 */
 func (a *EquipmentApiService) GetEquipmentIoCardList(ctx context.Context) ApiGetEquipmentIoCardListRequest {
 	return ApiGetEquipmentIoCardListRequest{
@@ -5905,7 +6712,8 @@ func (a *EquipmentApiService) GetEquipmentIoCardList(ctx context.Context) ApiGet
 }
 
 // Execute executes the request
-//  @return EquipmentIoCardResponse
+//
+//	@return EquipmentIoCardResponse
 func (a *EquipmentApiService) GetEquipmentIoCardListExecute(r ApiGetEquipmentIoCardListRequest) (*EquipmentIoCardResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5926,37 +6734,52 @@ func (a *EquipmentApiService) GetEquipmentIoCardListExecute(r ApiGetEquipmentIoC
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5985,9 +6808,9 @@ func (a *EquipmentApiService) GetEquipmentIoCardListExecute(r ApiGetEquipmentIoC
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6004,6 +6827,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardListExecute(r ApiGetEquipmentIoC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6014,6 +6838,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardListExecute(r ApiGetEquipmentIoC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6024,6 +6849,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardListExecute(r ApiGetEquipmentIoC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6034,6 +6860,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardListExecute(r ApiGetEquipmentIoC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6043,6 +6870,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardListExecute(r ApiGetEquipmentIoC
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6072,9 +6900,9 @@ func (r ApiGetEquipmentIoCardOperationByMoidRequest) Execute() (*EquipmentIoCard
 /*
 GetEquipmentIoCardOperationByMoid Read a 'equipment.IoCardOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentIoCardOperationByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentIoCardOperationByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoid(ctx context.Context, moid string) ApiGetEquipmentIoCardOperationByMoidRequest {
 	return ApiGetEquipmentIoCardOperationByMoidRequest{
@@ -6085,7 +6913,8 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return EquipmentIoCardOperation
+//
+//	@return EquipmentIoCardOperation
 func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoidExecute(r ApiGetEquipmentIoCardOperationByMoidRequest) (*EquipmentIoCardOperation, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6100,7 +6929,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoidExecute(r ApiGetE
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/IoCardOperations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6133,9 +6962,9 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoidExecute(r ApiGetE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6152,6 +6981,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6162,6 +6992,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6172,6 +7003,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6182,6 +7014,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoidExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6191,6 +7024,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationByMoidExecute(r ApiGetE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6259,7 +7093,7 @@ func (r ApiGetEquipmentIoCardOperationListRequest) Expand(expand string) ApiGetE
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentIoCardOperationListRequest) Apply(apply string) ApiGetEquipmentIoCardOperationListRequest {
 	r.apply = &apply
 	return r
@@ -6296,8 +7130,8 @@ func (r ApiGetEquipmentIoCardOperationListRequest) Execute() (*EquipmentIoCardOp
 /*
 GetEquipmentIoCardOperationList Read a 'equipment.IoCardOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentIoCardOperationListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentIoCardOperationListRequest
 */
 func (a *EquipmentApiService) GetEquipmentIoCardOperationList(ctx context.Context) ApiGetEquipmentIoCardOperationListRequest {
 	return ApiGetEquipmentIoCardOperationListRequest{
@@ -6307,7 +7141,8 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return EquipmentIoCardOperationResponse
+//
+//	@return EquipmentIoCardOperationResponse
 func (a *EquipmentApiService) GetEquipmentIoCardOperationListExecute(r ApiGetEquipmentIoCardOperationListRequest) (*EquipmentIoCardOperationResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6328,37 +7163,52 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationListExecute(r ApiGetEqu
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -6387,9 +7237,9 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationListExecute(r ApiGetEqu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6406,6 +7256,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6416,6 +7267,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6426,6 +7278,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6436,6 +7289,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationListExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6445,6 +7299,7 @@ func (a *EquipmentApiService) GetEquipmentIoCardOperationListExecute(r ApiGetEqu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6474,9 +7329,9 @@ func (r ApiGetEquipmentIoExpanderByMoidRequest) Execute() (*EquipmentIoExpander,
 /*
 GetEquipmentIoExpanderByMoid Read a 'equipment.IoExpander' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentIoExpanderByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentIoExpanderByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentIoExpanderByMoid(ctx context.Context, moid string) ApiGetEquipmentIoExpanderByMoidRequest {
 	return ApiGetEquipmentIoExpanderByMoidRequest{
@@ -6487,7 +7342,8 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderByMoid(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return EquipmentIoExpander
+//
+//	@return EquipmentIoExpander
 func (a *EquipmentApiService) GetEquipmentIoExpanderByMoidExecute(r ApiGetEquipmentIoExpanderByMoidRequest) (*EquipmentIoExpander, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6502,7 +7358,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderByMoidExecute(r ApiGetEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/IoExpanders/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6535,9 +7391,9 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderByMoidExecute(r ApiGetEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6554,6 +7410,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6564,6 +7421,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6574,6 +7432,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6584,6 +7443,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6593,6 +7453,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderByMoidExecute(r ApiGetEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6661,7 +7522,7 @@ func (r ApiGetEquipmentIoExpanderListRequest) Expand(expand string) ApiGetEquipm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentIoExpanderListRequest) Apply(apply string) ApiGetEquipmentIoExpanderListRequest {
 	r.apply = &apply
 	return r
@@ -6698,8 +7559,8 @@ func (r ApiGetEquipmentIoExpanderListRequest) Execute() (*EquipmentIoExpanderRes
 /*
 GetEquipmentIoExpanderList Read a 'equipment.IoExpander' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentIoExpanderListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentIoExpanderListRequest
 */
 func (a *EquipmentApiService) GetEquipmentIoExpanderList(ctx context.Context) ApiGetEquipmentIoExpanderListRequest {
 	return ApiGetEquipmentIoExpanderListRequest{
@@ -6709,7 +7570,8 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderList(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return EquipmentIoExpanderResponse
+//
+//	@return EquipmentIoExpanderResponse
 func (a *EquipmentApiService) GetEquipmentIoExpanderListExecute(r ApiGetEquipmentIoExpanderListRequest) (*EquipmentIoExpanderResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6730,37 +7592,52 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderListExecute(r ApiGetEquipmen
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -6789,9 +7666,9 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderListExecute(r ApiGetEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6808,6 +7685,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6818,6 +7696,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6828,6 +7707,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6838,6 +7718,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6847,6 +7728,7 @@ func (a *EquipmentApiService) GetEquipmentIoExpanderListExecute(r ApiGetEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6876,9 +7758,9 @@ func (r ApiGetEquipmentLocatorLedByMoidRequest) Execute() (*EquipmentLocatorLed,
 /*
 GetEquipmentLocatorLedByMoid Read a 'equipment.LocatorLed' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentLocatorLedByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentLocatorLedByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentLocatorLedByMoid(ctx context.Context, moid string) ApiGetEquipmentLocatorLedByMoidRequest {
 	return ApiGetEquipmentLocatorLedByMoidRequest{
@@ -6889,7 +7771,8 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedByMoid(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return EquipmentLocatorLed
+//
+//	@return EquipmentLocatorLed
 func (a *EquipmentApiService) GetEquipmentLocatorLedByMoidExecute(r ApiGetEquipmentLocatorLedByMoidRequest) (*EquipmentLocatorLed, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6904,7 +7787,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedByMoidExecute(r ApiGetEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/LocatorLeds/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6937,9 +7820,9 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedByMoidExecute(r ApiGetEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6956,6 +7839,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6966,6 +7850,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6976,6 +7861,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6986,6 +7872,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6995,6 +7882,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedByMoidExecute(r ApiGetEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7063,7 +7951,7 @@ func (r ApiGetEquipmentLocatorLedListRequest) Expand(expand string) ApiGetEquipm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentLocatorLedListRequest) Apply(apply string) ApiGetEquipmentLocatorLedListRequest {
 	r.apply = &apply
 	return r
@@ -7100,8 +7988,8 @@ func (r ApiGetEquipmentLocatorLedListRequest) Execute() (*EquipmentLocatorLedRes
 /*
 GetEquipmentLocatorLedList Read a 'equipment.LocatorLed' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentLocatorLedListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentLocatorLedListRequest
 */
 func (a *EquipmentApiService) GetEquipmentLocatorLedList(ctx context.Context) ApiGetEquipmentLocatorLedListRequest {
 	return ApiGetEquipmentLocatorLedListRequest{
@@ -7111,7 +7999,8 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedList(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return EquipmentLocatorLedResponse
+//
+//	@return EquipmentLocatorLedResponse
 func (a *EquipmentApiService) GetEquipmentLocatorLedListExecute(r ApiGetEquipmentLocatorLedListRequest) (*EquipmentLocatorLedResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7132,37 +8021,52 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedListExecute(r ApiGetEquipmen
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -7191,9 +8095,9 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedListExecute(r ApiGetEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7210,6 +8114,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7220,6 +8125,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7230,6 +8136,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7240,6 +8147,7 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7249,6 +8157,436 @@ func (a *EquipmentApiService) GetEquipmentLocatorLedListExecute(r ApiGetEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEquipmentLogDownloadByMoidRequest struct {
+	ctx        context.Context
+	ApiService *EquipmentApiService
+	moid       string
+}
+
+func (r ApiGetEquipmentLogDownloadByMoidRequest) Execute() (*EquipmentLogDownload, *http.Response, error) {
+	return r.ApiService.GetEquipmentLogDownloadByMoidExecute(r)
+}
+
+/*
+GetEquipmentLogDownloadByMoid Read a 'equipment.LogDownload' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentLogDownloadByMoidRequest
+*/
+func (a *EquipmentApiService) GetEquipmentLogDownloadByMoid(ctx context.Context, moid string) ApiGetEquipmentLogDownloadByMoidRequest {
+	return ApiGetEquipmentLogDownloadByMoidRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentLogDownload
+func (a *EquipmentApiService) GetEquipmentLogDownloadByMoidExecute(r ApiGetEquipmentLogDownloadByMoidRequest) (*EquipmentLogDownload, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentLogDownload
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentLogDownloadByMoid")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/LogDownloads/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEquipmentLogDownloadListRequest struct {
+	ctx         context.Context
+	ApiService  *EquipmentApiService
+	filter      *string
+	orderby     *string
+	top         *int32
+	skip        *int32
+	select_     *string
+	expand      *string
+	apply       *string
+	count       *bool
+	inlinecount *string
+	at          *string
+	tags        *string
+}
+
+// Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
+func (r ApiGetEquipmentLogDownloadListRequest) Filter(filter string) ApiGetEquipmentLogDownloadListRequest {
+	r.filter = &filter
+	return r
+}
+
+// Determines what properties are used to sort the collection of resources.
+func (r ApiGetEquipmentLogDownloadListRequest) Orderby(orderby string) ApiGetEquipmentLogDownloadListRequest {
+	r.orderby = &orderby
+	return r
+}
+
+// Specifies the maximum number of resources to return in the response.
+func (r ApiGetEquipmentLogDownloadListRequest) Top(top int32) ApiGetEquipmentLogDownloadListRequest {
+	r.top = &top
+	return r
+}
+
+// Specifies the number of resources to skip in the response.
+func (r ApiGetEquipmentLogDownloadListRequest) Skip(skip int32) ApiGetEquipmentLogDownloadListRequest {
+	r.skip = &skip
+	return r
+}
+
+// Specifies a subset of properties to return.
+func (r ApiGetEquipmentLogDownloadListRequest) Select_(select_ string) ApiGetEquipmentLogDownloadListRequest {
+	r.select_ = &select_
+	return r
+}
+
+// Specify additional attributes or related resources to return in addition to the primary resources.
+func (r ApiGetEquipmentLogDownloadListRequest) Expand(expand string) ApiGetEquipmentLogDownloadListRequest {
+	r.expand = &expand
+	return r
+}
+
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetEquipmentLogDownloadListRequest) Apply(apply string) ApiGetEquipmentLogDownloadListRequest {
+	r.apply = &apply
+	return r
+}
+
+// The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
+func (r ApiGetEquipmentLogDownloadListRequest) Count(count bool) ApiGetEquipmentLogDownloadListRequest {
+	r.count = &count
+	return r
+}
+
+// The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+func (r ApiGetEquipmentLogDownloadListRequest) Inlinecount(inlinecount string) ApiGetEquipmentLogDownloadListRequest {
+	r.inlinecount = &inlinecount
+	return r
+}
+
+// Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
+func (r ApiGetEquipmentLogDownloadListRequest) At(at string) ApiGetEquipmentLogDownloadListRequest {
+	r.at = &at
+	return r
+}
+
+// The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
+func (r ApiGetEquipmentLogDownloadListRequest) Tags(tags string) ApiGetEquipmentLogDownloadListRequest {
+	r.tags = &tags
+	return r
+}
+
+func (r ApiGetEquipmentLogDownloadListRequest) Execute() (*EquipmentLogDownloadResponse, *http.Response, error) {
+	return r.ApiService.GetEquipmentLogDownloadListExecute(r)
+}
+
+/*
+GetEquipmentLogDownloadList Read a 'equipment.LogDownload' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentLogDownloadListRequest
+*/
+func (a *EquipmentApiService) GetEquipmentLogDownloadList(ctx context.Context) ApiGetEquipmentLogDownloadListRequest {
+	return ApiGetEquipmentLogDownloadListRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentLogDownloadResponse
+func (a *EquipmentApiService) GetEquipmentLogDownloadListExecute(r ApiGetEquipmentLogDownloadListRequest) (*EquipmentLogDownloadResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentLogDownloadResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentLogDownloadList")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/LogDownloads"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.filter != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
+	}
+	if r.orderby != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
+	}
+	if r.top != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
+	}
+	if r.select_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
+	}
+	if r.expand != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
+	}
+	if r.apply != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
+	}
+	if r.inlinecount != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
+	}
+	if r.at != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7278,9 +8616,9 @@ func (r ApiGetEquipmentPsuByMoidRequest) Execute() (*EquipmentPsu, *http.Respons
 /*
 GetEquipmentPsuByMoid Read a 'equipment.Psu' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentPsuByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentPsuByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentPsuByMoid(ctx context.Context, moid string) ApiGetEquipmentPsuByMoidRequest {
 	return ApiGetEquipmentPsuByMoidRequest{
@@ -7291,7 +8629,8 @@ func (a *EquipmentApiService) GetEquipmentPsuByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return EquipmentPsu
+//
+//	@return EquipmentPsu
 func (a *EquipmentApiService) GetEquipmentPsuByMoidExecute(r ApiGetEquipmentPsuByMoidRequest) (*EquipmentPsu, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7306,7 +8645,7 @@ func (a *EquipmentApiService) GetEquipmentPsuByMoidExecute(r ApiGetEquipmentPsuB
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Psus/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7339,9 +8678,9 @@ func (a *EquipmentApiService) GetEquipmentPsuByMoidExecute(r ApiGetEquipmentPsuB
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7358,6 +8697,7 @@ func (a *EquipmentApiService) GetEquipmentPsuByMoidExecute(r ApiGetEquipmentPsuB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7368,6 +8708,7 @@ func (a *EquipmentApiService) GetEquipmentPsuByMoidExecute(r ApiGetEquipmentPsuB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7378,6 +8719,7 @@ func (a *EquipmentApiService) GetEquipmentPsuByMoidExecute(r ApiGetEquipmentPsuB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7388,6 +8730,7 @@ func (a *EquipmentApiService) GetEquipmentPsuByMoidExecute(r ApiGetEquipmentPsuB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7397,6 +8740,7 @@ func (a *EquipmentApiService) GetEquipmentPsuByMoidExecute(r ApiGetEquipmentPsuB
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7426,9 +8770,9 @@ func (r ApiGetEquipmentPsuControlByMoidRequest) Execute() (*EquipmentPsuControl,
 /*
 GetEquipmentPsuControlByMoid Read a 'equipment.PsuControl' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentPsuControlByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentPsuControlByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentPsuControlByMoid(ctx context.Context, moid string) ApiGetEquipmentPsuControlByMoidRequest {
 	return ApiGetEquipmentPsuControlByMoidRequest{
@@ -7439,7 +8783,8 @@ func (a *EquipmentApiService) GetEquipmentPsuControlByMoid(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return EquipmentPsuControl
+//
+//	@return EquipmentPsuControl
 func (a *EquipmentApiService) GetEquipmentPsuControlByMoidExecute(r ApiGetEquipmentPsuControlByMoidRequest) (*EquipmentPsuControl, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7454,7 +8799,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlByMoidExecute(r ApiGetEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/PsuControls/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7487,9 +8832,9 @@ func (a *EquipmentApiService) GetEquipmentPsuControlByMoidExecute(r ApiGetEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7506,6 +8851,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7516,6 +8862,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7526,6 +8873,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7536,6 +8884,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7545,6 +8894,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlByMoidExecute(r ApiGetEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7613,7 +8963,7 @@ func (r ApiGetEquipmentPsuControlListRequest) Expand(expand string) ApiGetEquipm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentPsuControlListRequest) Apply(apply string) ApiGetEquipmentPsuControlListRequest {
 	r.apply = &apply
 	return r
@@ -7650,8 +9000,8 @@ func (r ApiGetEquipmentPsuControlListRequest) Execute() (*EquipmentPsuControlRes
 /*
 GetEquipmentPsuControlList Read a 'equipment.PsuControl' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentPsuControlListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentPsuControlListRequest
 */
 func (a *EquipmentApiService) GetEquipmentPsuControlList(ctx context.Context) ApiGetEquipmentPsuControlListRequest {
 	return ApiGetEquipmentPsuControlListRequest{
@@ -7661,7 +9011,8 @@ func (a *EquipmentApiService) GetEquipmentPsuControlList(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return EquipmentPsuControlResponse
+//
+//	@return EquipmentPsuControlResponse
 func (a *EquipmentApiService) GetEquipmentPsuControlListExecute(r ApiGetEquipmentPsuControlListRequest) (*EquipmentPsuControlResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7682,37 +9033,52 @@ func (a *EquipmentApiService) GetEquipmentPsuControlListExecute(r ApiGetEquipmen
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -7741,9 +9107,9 @@ func (a *EquipmentApiService) GetEquipmentPsuControlListExecute(r ApiGetEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7760,6 +9126,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7770,6 +9137,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7780,6 +9148,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7790,6 +9159,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7799,6 +9169,7 @@ func (a *EquipmentApiService) GetEquipmentPsuControlListExecute(r ApiGetEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7867,7 +9238,7 @@ func (r ApiGetEquipmentPsuListRequest) Expand(expand string) ApiGetEquipmentPsuL
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentPsuListRequest) Apply(apply string) ApiGetEquipmentPsuListRequest {
 	r.apply = &apply
 	return r
@@ -7904,8 +9275,8 @@ func (r ApiGetEquipmentPsuListRequest) Execute() (*EquipmentPsuResponse, *http.R
 /*
 GetEquipmentPsuList Read a 'equipment.Psu' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentPsuListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentPsuListRequest
 */
 func (a *EquipmentApiService) GetEquipmentPsuList(ctx context.Context) ApiGetEquipmentPsuListRequest {
 	return ApiGetEquipmentPsuListRequest{
@@ -7915,7 +9286,8 @@ func (a *EquipmentApiService) GetEquipmentPsuList(ctx context.Context) ApiGetEqu
 }
 
 // Execute executes the request
-//  @return EquipmentPsuResponse
+//
+//	@return EquipmentPsuResponse
 func (a *EquipmentApiService) GetEquipmentPsuListExecute(r ApiGetEquipmentPsuListRequest) (*EquipmentPsuResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7936,37 +9308,52 @@ func (a *EquipmentApiService) GetEquipmentPsuListExecute(r ApiGetEquipmentPsuLis
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -7995,9 +9382,9 @@ func (a *EquipmentApiService) GetEquipmentPsuListExecute(r ApiGetEquipmentPsuLis
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8014,6 +9401,7 @@ func (a *EquipmentApiService) GetEquipmentPsuListExecute(r ApiGetEquipmentPsuLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8024,6 +9412,7 @@ func (a *EquipmentApiService) GetEquipmentPsuListExecute(r ApiGetEquipmentPsuLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8034,6 +9423,7 @@ func (a *EquipmentApiService) GetEquipmentPsuListExecute(r ApiGetEquipmentPsuLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8044,6 +9434,7 @@ func (a *EquipmentApiService) GetEquipmentPsuListExecute(r ApiGetEquipmentPsuLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8053,6 +9444,7 @@ func (a *EquipmentApiService) GetEquipmentPsuListExecute(r ApiGetEquipmentPsuLis
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8082,9 +9474,9 @@ func (r ApiGetEquipmentRackEnclosureByMoidRequest) Execute() (*EquipmentRackEncl
 /*
 GetEquipmentRackEnclosureByMoid Read a 'equipment.RackEnclosure' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentRackEnclosureByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentRackEnclosureByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoid(ctx context.Context, moid string) ApiGetEquipmentRackEnclosureByMoidRequest {
 	return ApiGetEquipmentRackEnclosureByMoidRequest{
@@ -8095,7 +9487,8 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return EquipmentRackEnclosure
+//
+//	@return EquipmentRackEnclosure
 func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoidExecute(r ApiGetEquipmentRackEnclosureByMoidRequest) (*EquipmentRackEnclosure, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8110,7 +9503,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoidExecute(r ApiGetEqu
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/RackEnclosures/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8143,9 +9536,9 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoidExecute(r ApiGetEqu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8162,6 +9555,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8172,6 +9566,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8182,6 +9577,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8192,6 +9588,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoidExecute(r ApiGetEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8201,6 +9598,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureByMoidExecute(r ApiGetEqu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8269,7 +9667,7 @@ func (r ApiGetEquipmentRackEnclosureListRequest) Expand(expand string) ApiGetEqu
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentRackEnclosureListRequest) Apply(apply string) ApiGetEquipmentRackEnclosureListRequest {
 	r.apply = &apply
 	return r
@@ -8306,8 +9704,8 @@ func (r ApiGetEquipmentRackEnclosureListRequest) Execute() (*EquipmentRackEnclos
 /*
 GetEquipmentRackEnclosureList Read a 'equipment.RackEnclosure' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentRackEnclosureListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentRackEnclosureListRequest
 */
 func (a *EquipmentApiService) GetEquipmentRackEnclosureList(ctx context.Context) ApiGetEquipmentRackEnclosureListRequest {
 	return ApiGetEquipmentRackEnclosureListRequest{
@@ -8317,7 +9715,8 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return EquipmentRackEnclosureResponse
+//
+//	@return EquipmentRackEnclosureResponse
 func (a *EquipmentApiService) GetEquipmentRackEnclosureListExecute(r ApiGetEquipmentRackEnclosureListRequest) (*EquipmentRackEnclosureResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8338,37 +9737,52 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureListExecute(r ApiGetEquip
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8397,9 +9811,9 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureListExecute(r ApiGetEquip
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8416,6 +9830,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8426,6 +9841,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8436,6 +9852,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8446,6 +9863,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureListExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8455,6 +9873,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureListExecute(r ApiGetEquip
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8484,9 +9903,9 @@ func (r ApiGetEquipmentRackEnclosureSlotByMoidRequest) Execute() (*EquipmentRack
 /*
 GetEquipmentRackEnclosureSlotByMoid Read a 'equipment.RackEnclosureSlot' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentRackEnclosureSlotByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentRackEnclosureSlotByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoid(ctx context.Context, moid string) ApiGetEquipmentRackEnclosureSlotByMoidRequest {
 	return ApiGetEquipmentRackEnclosureSlotByMoidRequest{
@@ -8497,7 +9916,8 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoid(ctx context.Co
 }
 
 // Execute executes the request
-//  @return EquipmentRackEnclosureSlot
+//
+//	@return EquipmentRackEnclosureSlot
 func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoidExecute(r ApiGetEquipmentRackEnclosureSlotByMoidRequest) (*EquipmentRackEnclosureSlot, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8512,7 +9932,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoidExecute(r ApiGe
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/RackEnclosureSlots/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8545,9 +9965,9 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoidExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8564,6 +9984,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8574,6 +9995,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8584,6 +10006,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8594,6 +10017,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8603,6 +10027,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotByMoidExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8671,7 +10096,7 @@ func (r ApiGetEquipmentRackEnclosureSlotListRequest) Expand(expand string) ApiGe
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentRackEnclosureSlotListRequest) Apply(apply string) ApiGetEquipmentRackEnclosureSlotListRequest {
 	r.apply = &apply
 	return r
@@ -8708,8 +10133,8 @@ func (r ApiGetEquipmentRackEnclosureSlotListRequest) Execute() (*EquipmentRackEn
 /*
 GetEquipmentRackEnclosureSlotList Read a 'equipment.RackEnclosureSlot' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentRackEnclosureSlotListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentRackEnclosureSlotListRequest
 */
 func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotList(ctx context.Context) ApiGetEquipmentRackEnclosureSlotListRequest {
 	return ApiGetEquipmentRackEnclosureSlotListRequest{
@@ -8719,7 +10144,8 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotList(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return EquipmentRackEnclosureSlotResponse
+//
+//	@return EquipmentRackEnclosureSlotResponse
 func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotListExecute(r ApiGetEquipmentRackEnclosureSlotListRequest) (*EquipmentRackEnclosureSlotResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8740,37 +10166,52 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotListExecute(r ApiGetE
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8799,9 +10240,9 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotListExecute(r ApiGetE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8818,6 +10259,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotListExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8828,6 +10270,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotListExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8838,6 +10281,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotListExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8848,6 +10292,7 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotListExecute(r ApiGetE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8857,6 +10302,436 @@ func (a *EquipmentApiService) GetEquipmentRackEnclosureSlotListExecute(r ApiGetE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEquipmentSensorByMoidRequest struct {
+	ctx        context.Context
+	ApiService *EquipmentApiService
+	moid       string
+}
+
+func (r ApiGetEquipmentSensorByMoidRequest) Execute() (*EquipmentSensor, *http.Response, error) {
+	return r.ApiService.GetEquipmentSensorByMoidExecute(r)
+}
+
+/*
+GetEquipmentSensorByMoid Read a 'equipment.Sensor' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentSensorByMoidRequest
+*/
+func (a *EquipmentApiService) GetEquipmentSensorByMoid(ctx context.Context, moid string) ApiGetEquipmentSensorByMoidRequest {
+	return ApiGetEquipmentSensorByMoidRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentSensor
+func (a *EquipmentApiService) GetEquipmentSensorByMoidExecute(r ApiGetEquipmentSensorByMoidRequest) (*EquipmentSensor, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentSensor
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentSensorByMoid")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/Sensors/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEquipmentSensorListRequest struct {
+	ctx         context.Context
+	ApiService  *EquipmentApiService
+	filter      *string
+	orderby     *string
+	top         *int32
+	skip        *int32
+	select_     *string
+	expand      *string
+	apply       *string
+	count       *bool
+	inlinecount *string
+	at          *string
+	tags        *string
+}
+
+// Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
+func (r ApiGetEquipmentSensorListRequest) Filter(filter string) ApiGetEquipmentSensorListRequest {
+	r.filter = &filter
+	return r
+}
+
+// Determines what properties are used to sort the collection of resources.
+func (r ApiGetEquipmentSensorListRequest) Orderby(orderby string) ApiGetEquipmentSensorListRequest {
+	r.orderby = &orderby
+	return r
+}
+
+// Specifies the maximum number of resources to return in the response.
+func (r ApiGetEquipmentSensorListRequest) Top(top int32) ApiGetEquipmentSensorListRequest {
+	r.top = &top
+	return r
+}
+
+// Specifies the number of resources to skip in the response.
+func (r ApiGetEquipmentSensorListRequest) Skip(skip int32) ApiGetEquipmentSensorListRequest {
+	r.skip = &skip
+	return r
+}
+
+// Specifies a subset of properties to return.
+func (r ApiGetEquipmentSensorListRequest) Select_(select_ string) ApiGetEquipmentSensorListRequest {
+	r.select_ = &select_
+	return r
+}
+
+// Specify additional attributes or related resources to return in addition to the primary resources.
+func (r ApiGetEquipmentSensorListRequest) Expand(expand string) ApiGetEquipmentSensorListRequest {
+	r.expand = &expand
+	return r
+}
+
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetEquipmentSensorListRequest) Apply(apply string) ApiGetEquipmentSensorListRequest {
+	r.apply = &apply
+	return r
+}
+
+// The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
+func (r ApiGetEquipmentSensorListRequest) Count(count bool) ApiGetEquipmentSensorListRequest {
+	r.count = &count
+	return r
+}
+
+// The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+func (r ApiGetEquipmentSensorListRequest) Inlinecount(inlinecount string) ApiGetEquipmentSensorListRequest {
+	r.inlinecount = &inlinecount
+	return r
+}
+
+// Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
+func (r ApiGetEquipmentSensorListRequest) At(at string) ApiGetEquipmentSensorListRequest {
+	r.at = &at
+	return r
+}
+
+// The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
+func (r ApiGetEquipmentSensorListRequest) Tags(tags string) ApiGetEquipmentSensorListRequest {
+	r.tags = &tags
+	return r
+}
+
+func (r ApiGetEquipmentSensorListRequest) Execute() (*EquipmentSensorResponse, *http.Response, error) {
+	return r.ApiService.GetEquipmentSensorListExecute(r)
+}
+
+/*
+GetEquipmentSensorList Read a 'equipment.Sensor' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentSensorListRequest
+*/
+func (a *EquipmentApiService) GetEquipmentSensorList(ctx context.Context) ApiGetEquipmentSensorListRequest {
+	return ApiGetEquipmentSensorListRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentSensorResponse
+func (a *EquipmentApiService) GetEquipmentSensorListExecute(r ApiGetEquipmentSensorListRequest) (*EquipmentSensorResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentSensorResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentSensorList")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/Sensors"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.filter != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
+	}
+	if r.orderby != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
+	}
+	if r.top != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
+	}
+	if r.select_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
+	}
+	if r.expand != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
+	}
+	if r.apply != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
+	}
+	if r.inlinecount != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
+	}
+	if r.at != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8886,9 +10761,9 @@ func (r ApiGetEquipmentSharedIoModuleByMoidRequest) Execute() (*EquipmentSharedI
 /*
 GetEquipmentSharedIoModuleByMoid Read a 'equipment.SharedIoModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentSharedIoModuleByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentSharedIoModuleByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoid(ctx context.Context, moid string) ApiGetEquipmentSharedIoModuleByMoidRequest {
 	return ApiGetEquipmentSharedIoModuleByMoidRequest{
@@ -8899,7 +10774,8 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoid(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return EquipmentSharedIoModule
+//
+//	@return EquipmentSharedIoModule
 func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoidExecute(r ApiGetEquipmentSharedIoModuleByMoidRequest) (*EquipmentSharedIoModule, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8914,7 +10790,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoidExecute(r ApiGetEq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/SharedIoModules/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8947,9 +10823,9 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoidExecute(r ApiGetEq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8966,6 +10842,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoidExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8976,6 +10853,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoidExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8986,6 +10864,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoidExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8996,6 +10875,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoidExecute(r ApiGetEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9005,6 +10885,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleByMoidExecute(r ApiGetEq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9073,7 +10954,7 @@ func (r ApiGetEquipmentSharedIoModuleListRequest) Expand(expand string) ApiGetEq
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentSharedIoModuleListRequest) Apply(apply string) ApiGetEquipmentSharedIoModuleListRequest {
 	r.apply = &apply
 	return r
@@ -9110,8 +10991,8 @@ func (r ApiGetEquipmentSharedIoModuleListRequest) Execute() (*EquipmentSharedIoM
 /*
 GetEquipmentSharedIoModuleList Read a 'equipment.SharedIoModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentSharedIoModuleListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentSharedIoModuleListRequest
 */
 func (a *EquipmentApiService) GetEquipmentSharedIoModuleList(ctx context.Context) ApiGetEquipmentSharedIoModuleListRequest {
 	return ApiGetEquipmentSharedIoModuleListRequest{
@@ -9121,7 +11002,8 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleList(ctx context.Context
 }
 
 // Execute executes the request
-//  @return EquipmentSharedIoModuleResponse
+//
+//	@return EquipmentSharedIoModuleResponse
 func (a *EquipmentApiService) GetEquipmentSharedIoModuleListExecute(r ApiGetEquipmentSharedIoModuleListRequest) (*EquipmentSharedIoModuleResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9142,37 +11024,52 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleListExecute(r ApiGetEqui
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9201,9 +11098,9 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleListExecute(r ApiGetEqui
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9220,6 +11117,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleListExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9230,6 +11128,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleListExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9240,6 +11139,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleListExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9250,6 +11150,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleListExecute(r ApiGetEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9259,6 +11160,7 @@ func (a *EquipmentApiService) GetEquipmentSharedIoModuleListExecute(r ApiGetEqui
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9288,9 +11190,9 @@ func (r ApiGetEquipmentSwitchCardByMoidRequest) Execute() (*EquipmentSwitchCard,
 /*
 GetEquipmentSwitchCardByMoid Read a 'equipment.SwitchCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentSwitchCardByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentSwitchCardByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentSwitchCardByMoid(ctx context.Context, moid string) ApiGetEquipmentSwitchCardByMoidRequest {
 	return ApiGetEquipmentSwitchCardByMoidRequest{
@@ -9301,7 +11203,8 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardByMoid(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return EquipmentSwitchCard
+//
+//	@return EquipmentSwitchCard
 func (a *EquipmentApiService) GetEquipmentSwitchCardByMoidExecute(r ApiGetEquipmentSwitchCardByMoidRequest) (*EquipmentSwitchCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9316,7 +11219,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardByMoidExecute(r ApiGetEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/SwitchCards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9349,9 +11252,9 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardByMoidExecute(r ApiGetEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9368,6 +11271,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9378,6 +11282,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9388,6 +11293,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9398,6 +11304,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardByMoidExecute(r ApiGetEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9407,6 +11314,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardByMoidExecute(r ApiGetEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9475,7 +11383,7 @@ func (r ApiGetEquipmentSwitchCardListRequest) Expand(expand string) ApiGetEquipm
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentSwitchCardListRequest) Apply(apply string) ApiGetEquipmentSwitchCardListRequest {
 	r.apply = &apply
 	return r
@@ -9512,8 +11420,8 @@ func (r ApiGetEquipmentSwitchCardListRequest) Execute() (*EquipmentSwitchCardRes
 /*
 GetEquipmentSwitchCardList Read a 'equipment.SwitchCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentSwitchCardListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentSwitchCardListRequest
 */
 func (a *EquipmentApiService) GetEquipmentSwitchCardList(ctx context.Context) ApiGetEquipmentSwitchCardListRequest {
 	return ApiGetEquipmentSwitchCardListRequest{
@@ -9523,7 +11431,8 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardList(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return EquipmentSwitchCardResponse
+//
+//	@return EquipmentSwitchCardResponse
 func (a *EquipmentApiService) GetEquipmentSwitchCardListExecute(r ApiGetEquipmentSwitchCardListRequest) (*EquipmentSwitchCardResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9544,37 +11453,52 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardListExecute(r ApiGetEquipmen
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9603,9 +11527,9 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardListExecute(r ApiGetEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9622,6 +11546,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9632,6 +11557,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9642,6 +11568,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9652,6 +11579,7 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardListExecute(r ApiGetEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9661,6 +11589,436 @@ func (a *EquipmentApiService) GetEquipmentSwitchCardListExecute(r ApiGetEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEquipmentSwitchOperationByMoidRequest struct {
+	ctx        context.Context
+	ApiService *EquipmentApiService
+	moid       string
+}
+
+func (r ApiGetEquipmentSwitchOperationByMoidRequest) Execute() (*EquipmentSwitchOperation, *http.Response, error) {
+	return r.ApiService.GetEquipmentSwitchOperationByMoidExecute(r)
+}
+
+/*
+GetEquipmentSwitchOperationByMoid Read a 'equipment.SwitchOperation' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentSwitchOperationByMoidRequest
+*/
+func (a *EquipmentApiService) GetEquipmentSwitchOperationByMoid(ctx context.Context, moid string) ApiGetEquipmentSwitchOperationByMoidRequest {
+	return ApiGetEquipmentSwitchOperationByMoidRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentSwitchOperation
+func (a *EquipmentApiService) GetEquipmentSwitchOperationByMoidExecute(r ApiGetEquipmentSwitchOperationByMoidRequest) (*EquipmentSwitchOperation, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentSwitchOperation
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentSwitchOperationByMoid")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/SwitchOperations/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetEquipmentSwitchOperationListRequest struct {
+	ctx         context.Context
+	ApiService  *EquipmentApiService
+	filter      *string
+	orderby     *string
+	top         *int32
+	skip        *int32
+	select_     *string
+	expand      *string
+	apply       *string
+	count       *bool
+	inlinecount *string
+	at          *string
+	tags        *string
+}
+
+// Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
+func (r ApiGetEquipmentSwitchOperationListRequest) Filter(filter string) ApiGetEquipmentSwitchOperationListRequest {
+	r.filter = &filter
+	return r
+}
+
+// Determines what properties are used to sort the collection of resources.
+func (r ApiGetEquipmentSwitchOperationListRequest) Orderby(orderby string) ApiGetEquipmentSwitchOperationListRequest {
+	r.orderby = &orderby
+	return r
+}
+
+// Specifies the maximum number of resources to return in the response.
+func (r ApiGetEquipmentSwitchOperationListRequest) Top(top int32) ApiGetEquipmentSwitchOperationListRequest {
+	r.top = &top
+	return r
+}
+
+// Specifies the number of resources to skip in the response.
+func (r ApiGetEquipmentSwitchOperationListRequest) Skip(skip int32) ApiGetEquipmentSwitchOperationListRequest {
+	r.skip = &skip
+	return r
+}
+
+// Specifies a subset of properties to return.
+func (r ApiGetEquipmentSwitchOperationListRequest) Select_(select_ string) ApiGetEquipmentSwitchOperationListRequest {
+	r.select_ = &select_
+	return r
+}
+
+// Specify additional attributes or related resources to return in addition to the primary resources.
+func (r ApiGetEquipmentSwitchOperationListRequest) Expand(expand string) ApiGetEquipmentSwitchOperationListRequest {
+	r.expand = &expand
+	return r
+}
+
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetEquipmentSwitchOperationListRequest) Apply(apply string) ApiGetEquipmentSwitchOperationListRequest {
+	r.apply = &apply
+	return r
+}
+
+// The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
+func (r ApiGetEquipmentSwitchOperationListRequest) Count(count bool) ApiGetEquipmentSwitchOperationListRequest {
+	r.count = &count
+	return r
+}
+
+// The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+func (r ApiGetEquipmentSwitchOperationListRequest) Inlinecount(inlinecount string) ApiGetEquipmentSwitchOperationListRequest {
+	r.inlinecount = &inlinecount
+	return r
+}
+
+// Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
+func (r ApiGetEquipmentSwitchOperationListRequest) At(at string) ApiGetEquipmentSwitchOperationListRequest {
+	r.at = &at
+	return r
+}
+
+// The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
+func (r ApiGetEquipmentSwitchOperationListRequest) Tags(tags string) ApiGetEquipmentSwitchOperationListRequest {
+	r.tags = &tags
+	return r
+}
+
+func (r ApiGetEquipmentSwitchOperationListRequest) Execute() (*EquipmentSwitchOperationResponse, *http.Response, error) {
+	return r.ApiService.GetEquipmentSwitchOperationListExecute(r)
+}
+
+/*
+GetEquipmentSwitchOperationList Read a 'equipment.SwitchOperation' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentSwitchOperationListRequest
+*/
+func (a *EquipmentApiService) GetEquipmentSwitchOperationList(ctx context.Context) ApiGetEquipmentSwitchOperationListRequest {
+	return ApiGetEquipmentSwitchOperationListRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentSwitchOperationResponse
+func (a *EquipmentApiService) GetEquipmentSwitchOperationListExecute(r ApiGetEquipmentSwitchOperationListRequest) (*EquipmentSwitchOperationResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentSwitchOperationResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.GetEquipmentSwitchOperationList")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/SwitchOperations"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.filter != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
+	}
+	if r.orderby != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
+	}
+	if r.top != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
+	}
+	if r.select_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
+	}
+	if r.expand != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
+	}
+	if r.apply != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
+	}
+	if r.inlinecount != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
+	}
+	if r.at != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9690,9 +12048,9 @@ func (r ApiGetEquipmentSystemIoControllerByMoidRequest) Execute() (*EquipmentSys
 /*
 GetEquipmentSystemIoControllerByMoid Read a 'equipment.SystemIoController' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentSystemIoControllerByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentSystemIoControllerByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoid(ctx context.Context, moid string) ApiGetEquipmentSystemIoControllerByMoidRequest {
 	return ApiGetEquipmentSystemIoControllerByMoidRequest{
@@ -9703,7 +12061,8 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoid(ctx context.C
 }
 
 // Execute executes the request
-//  @return EquipmentSystemIoController
+//
+//	@return EquipmentSystemIoController
 func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoidExecute(r ApiGetEquipmentSystemIoControllerByMoidRequest) (*EquipmentSystemIoController, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9718,7 +12077,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoidExecute(r ApiG
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/SystemIoControllers/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9751,9 +12110,9 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoidExecute(r ApiG
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9770,6 +12129,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9780,6 +12140,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9790,6 +12151,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9800,6 +12162,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9809,6 +12172,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerByMoidExecute(r ApiG
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9877,7 +12241,7 @@ func (r ApiGetEquipmentSystemIoControllerListRequest) Expand(expand string) ApiG
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentSystemIoControllerListRequest) Apply(apply string) ApiGetEquipmentSystemIoControllerListRequest {
 	r.apply = &apply
 	return r
@@ -9914,8 +12278,8 @@ func (r ApiGetEquipmentSystemIoControllerListRequest) Execute() (*EquipmentSyste
 /*
 GetEquipmentSystemIoControllerList Read a 'equipment.SystemIoController' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentSystemIoControllerListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentSystemIoControllerListRequest
 */
 func (a *EquipmentApiService) GetEquipmentSystemIoControllerList(ctx context.Context) ApiGetEquipmentSystemIoControllerListRequest {
 	return ApiGetEquipmentSystemIoControllerListRequest{
@@ -9925,7 +12289,8 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerList(ctx context.Con
 }
 
 // Execute executes the request
-//  @return EquipmentSystemIoControllerResponse
+//
+//	@return EquipmentSystemIoControllerResponse
 func (a *EquipmentApiService) GetEquipmentSystemIoControllerListExecute(r ApiGetEquipmentSystemIoControllerListRequest) (*EquipmentSystemIoControllerResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9946,37 +12311,52 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerListExecute(r ApiGet
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10005,9 +12385,9 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerListExecute(r ApiGet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10024,6 +12404,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10034,6 +12415,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10044,6 +12426,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10054,6 +12437,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10063,6 +12447,7 @@ func (a *EquipmentApiService) GetEquipmentSystemIoControllerListExecute(r ApiGet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10092,9 +12477,9 @@ func (r ApiGetEquipmentTpmByMoidRequest) Execute() (*EquipmentTpm, *http.Respons
 /*
 GetEquipmentTpmByMoid Read a 'equipment.Tpm' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentTpmByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentTpmByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentTpmByMoid(ctx context.Context, moid string) ApiGetEquipmentTpmByMoidRequest {
 	return ApiGetEquipmentTpmByMoidRequest{
@@ -10105,7 +12490,8 @@ func (a *EquipmentApiService) GetEquipmentTpmByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return EquipmentTpm
+//
+//	@return EquipmentTpm
 func (a *EquipmentApiService) GetEquipmentTpmByMoidExecute(r ApiGetEquipmentTpmByMoidRequest) (*EquipmentTpm, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10120,7 +12506,7 @@ func (a *EquipmentApiService) GetEquipmentTpmByMoidExecute(r ApiGetEquipmentTpmB
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Tpms/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10153,9 +12539,9 @@ func (a *EquipmentApiService) GetEquipmentTpmByMoidExecute(r ApiGetEquipmentTpmB
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10172,6 +12558,7 @@ func (a *EquipmentApiService) GetEquipmentTpmByMoidExecute(r ApiGetEquipmentTpmB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10182,6 +12569,7 @@ func (a *EquipmentApiService) GetEquipmentTpmByMoidExecute(r ApiGetEquipmentTpmB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10192,6 +12580,7 @@ func (a *EquipmentApiService) GetEquipmentTpmByMoidExecute(r ApiGetEquipmentTpmB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10202,6 +12591,7 @@ func (a *EquipmentApiService) GetEquipmentTpmByMoidExecute(r ApiGetEquipmentTpmB
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10211,6 +12601,7 @@ func (a *EquipmentApiService) GetEquipmentTpmByMoidExecute(r ApiGetEquipmentTpmB
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10279,7 +12670,7 @@ func (r ApiGetEquipmentTpmListRequest) Expand(expand string) ApiGetEquipmentTpmL
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentTpmListRequest) Apply(apply string) ApiGetEquipmentTpmListRequest {
 	r.apply = &apply
 	return r
@@ -10316,8 +12707,8 @@ func (r ApiGetEquipmentTpmListRequest) Execute() (*EquipmentTpmResponse, *http.R
 /*
 GetEquipmentTpmList Read a 'equipment.Tpm' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentTpmListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentTpmListRequest
 */
 func (a *EquipmentApiService) GetEquipmentTpmList(ctx context.Context) ApiGetEquipmentTpmListRequest {
 	return ApiGetEquipmentTpmListRequest{
@@ -10327,7 +12718,8 @@ func (a *EquipmentApiService) GetEquipmentTpmList(ctx context.Context) ApiGetEqu
 }
 
 // Execute executes the request
-//  @return EquipmentTpmResponse
+//
+//	@return EquipmentTpmResponse
 func (a *EquipmentApiService) GetEquipmentTpmListExecute(r ApiGetEquipmentTpmListRequest) (*EquipmentTpmResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10348,37 +12740,52 @@ func (a *EquipmentApiService) GetEquipmentTpmListExecute(r ApiGetEquipmentTpmLis
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10407,9 +12814,9 @@ func (a *EquipmentApiService) GetEquipmentTpmListExecute(r ApiGetEquipmentTpmLis
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10426,6 +12833,7 @@ func (a *EquipmentApiService) GetEquipmentTpmListExecute(r ApiGetEquipmentTpmLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10436,6 +12844,7 @@ func (a *EquipmentApiService) GetEquipmentTpmListExecute(r ApiGetEquipmentTpmLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10446,6 +12855,7 @@ func (a *EquipmentApiService) GetEquipmentTpmListExecute(r ApiGetEquipmentTpmLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10456,6 +12866,7 @@ func (a *EquipmentApiService) GetEquipmentTpmListExecute(r ApiGetEquipmentTpmLis
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10465,6 +12876,7 @@ func (a *EquipmentApiService) GetEquipmentTpmListExecute(r ApiGetEquipmentTpmLis
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10494,9 +12906,9 @@ func (r ApiGetEquipmentTransceiverByMoidRequest) Execute() (*EquipmentTransceive
 /*
 GetEquipmentTransceiverByMoid Read a 'equipment.Transceiver' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEquipmentTransceiverByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEquipmentTransceiverByMoidRequest
 */
 func (a *EquipmentApiService) GetEquipmentTransceiverByMoid(ctx context.Context, moid string) ApiGetEquipmentTransceiverByMoidRequest {
 	return ApiGetEquipmentTransceiverByMoidRequest{
@@ -10507,7 +12919,8 @@ func (a *EquipmentApiService) GetEquipmentTransceiverByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return EquipmentTransceiver
+//
+//	@return EquipmentTransceiver
 func (a *EquipmentApiService) GetEquipmentTransceiverByMoidExecute(r ApiGetEquipmentTransceiverByMoidRequest) (*EquipmentTransceiver, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10522,7 +12935,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverByMoidExecute(r ApiGetEquip
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Transceivers/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10555,9 +12968,9 @@ func (a *EquipmentApiService) GetEquipmentTransceiverByMoidExecute(r ApiGetEquip
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10574,6 +12987,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverByMoidExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10584,6 +12998,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverByMoidExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10594,6 +13009,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverByMoidExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10604,6 +13020,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverByMoidExecute(r ApiGetEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10613,6 +13030,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverByMoidExecute(r ApiGetEquip
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10681,7 +13099,7 @@ func (r ApiGetEquipmentTransceiverListRequest) Expand(expand string) ApiGetEquip
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEquipmentTransceiverListRequest) Apply(apply string) ApiGetEquipmentTransceiverListRequest {
 	r.apply = &apply
 	return r
@@ -10718,8 +13136,8 @@ func (r ApiGetEquipmentTransceiverListRequest) Execute() (*EquipmentTransceiverR
 /*
 GetEquipmentTransceiverList Read a 'equipment.Transceiver' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEquipmentTransceiverListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEquipmentTransceiverListRequest
 */
 func (a *EquipmentApiService) GetEquipmentTransceiverList(ctx context.Context) ApiGetEquipmentTransceiverListRequest {
 	return ApiGetEquipmentTransceiverListRequest{
@@ -10729,7 +13147,8 @@ func (a *EquipmentApiService) GetEquipmentTransceiverList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return EquipmentTransceiverResponse
+//
+//	@return EquipmentTransceiverResponse
 func (a *EquipmentApiService) GetEquipmentTransceiverListExecute(r ApiGetEquipmentTransceiverListRequest) (*EquipmentTransceiverResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10750,37 +13169,52 @@ func (a *EquipmentApiService) GetEquipmentTransceiverListExecute(r ApiGetEquipme
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10809,9 +13243,9 @@ func (a *EquipmentApiService) GetEquipmentTransceiverListExecute(r ApiGetEquipme
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10828,6 +13262,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverListExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10838,6 +13273,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverListExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10848,6 +13284,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverListExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10858,6 +13295,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverListExecute(r ApiGetEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10867,6 +13305,7 @@ func (a *EquipmentApiService) GetEquipmentTransceiverListExecute(r ApiGetEquipme
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10910,9 +13349,9 @@ func (r ApiPatchEquipmentChassisRequest) Execute() (*EquipmentChassis, *http.Res
 /*
 PatchEquipmentChassis Update a 'equipment.Chassis' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentChassisRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentChassisRequest
 */
 func (a *EquipmentApiService) PatchEquipmentChassis(ctx context.Context, moid string) ApiPatchEquipmentChassisRequest {
 	return ApiPatchEquipmentChassisRequest{
@@ -10923,7 +13362,8 @@ func (a *EquipmentApiService) PatchEquipmentChassis(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return EquipmentChassis
+//
+//	@return EquipmentChassis
 func (a *EquipmentApiService) PatchEquipmentChassisExecute(r ApiPatchEquipmentChassisRequest) (*EquipmentChassis, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -10938,7 +13378,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisExecute(r ApiPatchEquipmentCh
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Chasses/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10965,7 +13405,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisExecute(r ApiPatchEquipmentCh
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentChassis
@@ -10979,9 +13419,9 @@ func (a *EquipmentApiService) PatchEquipmentChassisExecute(r ApiPatchEquipmentCh
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10998,6 +13438,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisExecute(r ApiPatchEquipmentCh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11008,6 +13449,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisExecute(r ApiPatchEquipmentCh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11018,6 +13460,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisExecute(r ApiPatchEquipmentCh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11028,6 +13471,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisExecute(r ApiPatchEquipmentCh
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11037,6 +13481,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisExecute(r ApiPatchEquipmentCh
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11080,9 +13525,9 @@ func (r ApiPatchEquipmentChassisIdentityRequest) Execute() (*EquipmentChassisIde
 /*
 PatchEquipmentChassisIdentity Update a 'equipment.ChassisIdentity' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentChassisIdentityRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentChassisIdentityRequest
 */
 func (a *EquipmentApiService) PatchEquipmentChassisIdentity(ctx context.Context, moid string) ApiPatchEquipmentChassisIdentityRequest {
 	return ApiPatchEquipmentChassisIdentityRequest{
@@ -11093,7 +13538,8 @@ func (a *EquipmentApiService) PatchEquipmentChassisIdentity(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return EquipmentChassisIdentity
+//
+//	@return EquipmentChassisIdentity
 func (a *EquipmentApiService) PatchEquipmentChassisIdentityExecute(r ApiPatchEquipmentChassisIdentityRequest) (*EquipmentChassisIdentity, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -11108,7 +13554,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisIdentityExecute(r ApiPatchEqu
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ChassisIdentities/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11135,7 +13581,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisIdentityExecute(r ApiPatchEqu
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentChassisIdentity
@@ -11149,9 +13595,9 @@ func (a *EquipmentApiService) PatchEquipmentChassisIdentityExecute(r ApiPatchEqu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11168,6 +13614,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisIdentityExecute(r ApiPatchEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11178,6 +13625,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisIdentityExecute(r ApiPatchEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11188,6 +13636,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisIdentityExecute(r ApiPatchEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11198,6 +13647,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisIdentityExecute(r ApiPatchEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11207,6 +13657,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisIdentityExecute(r ApiPatchEqu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11250,9 +13701,9 @@ func (r ApiPatchEquipmentChassisOperationRequest) Execute() (*EquipmentChassisOp
 /*
 PatchEquipmentChassisOperation Update a 'equipment.ChassisOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentChassisOperationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentChassisOperationRequest
 */
 func (a *EquipmentApiService) PatchEquipmentChassisOperation(ctx context.Context, moid string) ApiPatchEquipmentChassisOperationRequest {
 	return ApiPatchEquipmentChassisOperationRequest{
@@ -11263,7 +13714,8 @@ func (a *EquipmentApiService) PatchEquipmentChassisOperation(ctx context.Context
 }
 
 // Execute executes the request
-//  @return EquipmentChassisOperation
+//
+//	@return EquipmentChassisOperation
 func (a *EquipmentApiService) PatchEquipmentChassisOperationExecute(r ApiPatchEquipmentChassisOperationRequest) (*EquipmentChassisOperation, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -11278,7 +13730,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisOperationExecute(r ApiPatchEq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ChassisOperations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11305,7 +13757,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisOperationExecute(r ApiPatchEq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentChassisOperation
@@ -11319,9 +13771,9 @@ func (a *EquipmentApiService) PatchEquipmentChassisOperationExecute(r ApiPatchEq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11338,6 +13790,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisOperationExecute(r ApiPatchEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11348,6 +13801,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisOperationExecute(r ApiPatchEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11358,6 +13812,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisOperationExecute(r ApiPatchEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11368,6 +13823,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisOperationExecute(r ApiPatchEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11377,6 +13833,7 @@ func (a *EquipmentApiService) PatchEquipmentChassisOperationExecute(r ApiPatchEq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11420,9 +13877,9 @@ func (r ApiPatchEquipmentExpanderModuleRequest) Execute() (*EquipmentExpanderMod
 /*
 PatchEquipmentExpanderModule Update a 'equipment.ExpanderModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentExpanderModuleRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentExpanderModuleRequest
 */
 func (a *EquipmentApiService) PatchEquipmentExpanderModule(ctx context.Context, moid string) ApiPatchEquipmentExpanderModuleRequest {
 	return ApiPatchEquipmentExpanderModuleRequest{
@@ -11433,7 +13890,8 @@ func (a *EquipmentApiService) PatchEquipmentExpanderModule(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return EquipmentExpanderModule
+//
+//	@return EquipmentExpanderModule
 func (a *EquipmentApiService) PatchEquipmentExpanderModuleExecute(r ApiPatchEquipmentExpanderModuleRequest) (*EquipmentExpanderModule, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -11448,7 +13906,7 @@ func (a *EquipmentApiService) PatchEquipmentExpanderModuleExecute(r ApiPatchEqui
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ExpanderModules/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11475,7 +13933,7 @@ func (a *EquipmentApiService) PatchEquipmentExpanderModuleExecute(r ApiPatchEqui
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentExpanderModule
@@ -11489,9 +13947,9 @@ func (a *EquipmentApiService) PatchEquipmentExpanderModuleExecute(r ApiPatchEqui
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11508,6 +13966,7 @@ func (a *EquipmentApiService) PatchEquipmentExpanderModuleExecute(r ApiPatchEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11518,6 +13977,7 @@ func (a *EquipmentApiService) PatchEquipmentExpanderModuleExecute(r ApiPatchEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11528,6 +13988,7 @@ func (a *EquipmentApiService) PatchEquipmentExpanderModuleExecute(r ApiPatchEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11538,6 +13999,7 @@ func (a *EquipmentApiService) PatchEquipmentExpanderModuleExecute(r ApiPatchEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11547,6 +14009,7 @@ func (a *EquipmentApiService) PatchEquipmentExpanderModuleExecute(r ApiPatchEqui
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11590,9 +14053,9 @@ func (r ApiPatchEquipmentFanRequest) Execute() (*EquipmentFan, *http.Response, e
 /*
 PatchEquipmentFan Update a 'equipment.Fan' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentFanRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentFanRequest
 */
 func (a *EquipmentApiService) PatchEquipmentFan(ctx context.Context, moid string) ApiPatchEquipmentFanRequest {
 	return ApiPatchEquipmentFanRequest{
@@ -11603,7 +14066,8 @@ func (a *EquipmentApiService) PatchEquipmentFan(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return EquipmentFan
+//
+//	@return EquipmentFan
 func (a *EquipmentApiService) PatchEquipmentFanExecute(r ApiPatchEquipmentFanRequest) (*EquipmentFan, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -11618,7 +14082,7 @@ func (a *EquipmentApiService) PatchEquipmentFanExecute(r ApiPatchEquipmentFanReq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Fans/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11645,7 +14109,7 @@ func (a *EquipmentApiService) PatchEquipmentFanExecute(r ApiPatchEquipmentFanReq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFan
@@ -11659,9 +14123,9 @@ func (a *EquipmentApiService) PatchEquipmentFanExecute(r ApiPatchEquipmentFanReq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11678,6 +14142,7 @@ func (a *EquipmentApiService) PatchEquipmentFanExecute(r ApiPatchEquipmentFanReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11688,6 +14153,7 @@ func (a *EquipmentApiService) PatchEquipmentFanExecute(r ApiPatchEquipmentFanReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11698,6 +14164,7 @@ func (a *EquipmentApiService) PatchEquipmentFanExecute(r ApiPatchEquipmentFanReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11708,6 +14175,7 @@ func (a *EquipmentApiService) PatchEquipmentFanExecute(r ApiPatchEquipmentFanReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11717,6 +14185,7 @@ func (a *EquipmentApiService) PatchEquipmentFanExecute(r ApiPatchEquipmentFanReq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11760,9 +14229,9 @@ func (r ApiPatchEquipmentFanControlRequest) Execute() (*EquipmentFanControl, *ht
 /*
 PatchEquipmentFanControl Update a 'equipment.FanControl' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentFanControlRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentFanControlRequest
 */
 func (a *EquipmentApiService) PatchEquipmentFanControl(ctx context.Context, moid string) ApiPatchEquipmentFanControlRequest {
 	return ApiPatchEquipmentFanControlRequest{
@@ -11773,7 +14242,8 @@ func (a *EquipmentApiService) PatchEquipmentFanControl(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return EquipmentFanControl
+//
+//	@return EquipmentFanControl
 func (a *EquipmentApiService) PatchEquipmentFanControlExecute(r ApiPatchEquipmentFanControlRequest) (*EquipmentFanControl, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -11788,7 +14258,7 @@ func (a *EquipmentApiService) PatchEquipmentFanControlExecute(r ApiPatchEquipmen
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FanControls/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11815,7 +14285,7 @@ func (a *EquipmentApiService) PatchEquipmentFanControlExecute(r ApiPatchEquipmen
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFanControl
@@ -11829,9 +14299,9 @@ func (a *EquipmentApiService) PatchEquipmentFanControlExecute(r ApiPatchEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11848,6 +14318,7 @@ func (a *EquipmentApiService) PatchEquipmentFanControlExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11858,6 +14329,7 @@ func (a *EquipmentApiService) PatchEquipmentFanControlExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11868,6 +14340,7 @@ func (a *EquipmentApiService) PatchEquipmentFanControlExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11878,6 +14351,7 @@ func (a *EquipmentApiService) PatchEquipmentFanControlExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11887,6 +14361,7 @@ func (a *EquipmentApiService) PatchEquipmentFanControlExecute(r ApiPatchEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11930,9 +14405,9 @@ func (r ApiPatchEquipmentFanModuleRequest) Execute() (*EquipmentFanModule, *http
 /*
 PatchEquipmentFanModule Update a 'equipment.FanModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentFanModuleRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentFanModuleRequest
 */
 func (a *EquipmentApiService) PatchEquipmentFanModule(ctx context.Context, moid string) ApiPatchEquipmentFanModuleRequest {
 	return ApiPatchEquipmentFanModuleRequest{
@@ -11943,7 +14418,8 @@ func (a *EquipmentApiService) PatchEquipmentFanModule(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return EquipmentFanModule
+//
+//	@return EquipmentFanModule
 func (a *EquipmentApiService) PatchEquipmentFanModuleExecute(r ApiPatchEquipmentFanModuleRequest) (*EquipmentFanModule, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -11958,7 +14434,7 @@ func (a *EquipmentApiService) PatchEquipmentFanModuleExecute(r ApiPatchEquipment
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FanModules/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11985,7 +14461,7 @@ func (a *EquipmentApiService) PatchEquipmentFanModuleExecute(r ApiPatchEquipment
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFanModule
@@ -11999,9 +14475,9 @@ func (a *EquipmentApiService) PatchEquipmentFanModuleExecute(r ApiPatchEquipment
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12018,6 +14494,7 @@ func (a *EquipmentApiService) PatchEquipmentFanModuleExecute(r ApiPatchEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12028,6 +14505,7 @@ func (a *EquipmentApiService) PatchEquipmentFanModuleExecute(r ApiPatchEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12038,6 +14516,7 @@ func (a *EquipmentApiService) PatchEquipmentFanModuleExecute(r ApiPatchEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12048,6 +14527,7 @@ func (a *EquipmentApiService) PatchEquipmentFanModuleExecute(r ApiPatchEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12057,6 +14537,7 @@ func (a *EquipmentApiService) PatchEquipmentFanModuleExecute(r ApiPatchEquipment
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12100,9 +14581,9 @@ func (r ApiPatchEquipmentFexRequest) Execute() (*EquipmentFex, *http.Response, e
 /*
 PatchEquipmentFex Update a 'equipment.Fex' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentFexRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentFexRequest
 */
 func (a *EquipmentApiService) PatchEquipmentFex(ctx context.Context, moid string) ApiPatchEquipmentFexRequest {
 	return ApiPatchEquipmentFexRequest{
@@ -12113,7 +14594,8 @@ func (a *EquipmentApiService) PatchEquipmentFex(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return EquipmentFex
+//
+//	@return EquipmentFex
 func (a *EquipmentApiService) PatchEquipmentFexExecute(r ApiPatchEquipmentFexRequest) (*EquipmentFex, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -12128,7 +14610,7 @@ func (a *EquipmentApiService) PatchEquipmentFexExecute(r ApiPatchEquipmentFexReq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Fexes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12155,7 +14637,7 @@ func (a *EquipmentApiService) PatchEquipmentFexExecute(r ApiPatchEquipmentFexReq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFex
@@ -12169,9 +14651,9 @@ func (a *EquipmentApiService) PatchEquipmentFexExecute(r ApiPatchEquipmentFexReq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12188,6 +14670,7 @@ func (a *EquipmentApiService) PatchEquipmentFexExecute(r ApiPatchEquipmentFexReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12198,6 +14681,7 @@ func (a *EquipmentApiService) PatchEquipmentFexExecute(r ApiPatchEquipmentFexReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12208,6 +14692,7 @@ func (a *EquipmentApiService) PatchEquipmentFexExecute(r ApiPatchEquipmentFexReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12218,6 +14703,7 @@ func (a *EquipmentApiService) PatchEquipmentFexExecute(r ApiPatchEquipmentFexReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12227,6 +14713,7 @@ func (a *EquipmentApiService) PatchEquipmentFexExecute(r ApiPatchEquipmentFexReq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12270,9 +14757,9 @@ func (r ApiPatchEquipmentFexIdentityRequest) Execute() (*EquipmentFexIdentity, *
 /*
 PatchEquipmentFexIdentity Update a 'equipment.FexIdentity' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentFexIdentityRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentFexIdentityRequest
 */
 func (a *EquipmentApiService) PatchEquipmentFexIdentity(ctx context.Context, moid string) ApiPatchEquipmentFexIdentityRequest {
 	return ApiPatchEquipmentFexIdentityRequest{
@@ -12283,7 +14770,8 @@ func (a *EquipmentApiService) PatchEquipmentFexIdentity(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return EquipmentFexIdentity
+//
+//	@return EquipmentFexIdentity
 func (a *EquipmentApiService) PatchEquipmentFexIdentityExecute(r ApiPatchEquipmentFexIdentityRequest) (*EquipmentFexIdentity, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -12298,7 +14786,7 @@ func (a *EquipmentApiService) PatchEquipmentFexIdentityExecute(r ApiPatchEquipme
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FexIdentities/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12325,7 +14813,7 @@ func (a *EquipmentApiService) PatchEquipmentFexIdentityExecute(r ApiPatchEquipme
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFexIdentity
@@ -12339,9 +14827,9 @@ func (a *EquipmentApiService) PatchEquipmentFexIdentityExecute(r ApiPatchEquipme
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12358,6 +14846,7 @@ func (a *EquipmentApiService) PatchEquipmentFexIdentityExecute(r ApiPatchEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12368,6 +14857,7 @@ func (a *EquipmentApiService) PatchEquipmentFexIdentityExecute(r ApiPatchEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12378,6 +14868,7 @@ func (a *EquipmentApiService) PatchEquipmentFexIdentityExecute(r ApiPatchEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12388,6 +14879,7 @@ func (a *EquipmentApiService) PatchEquipmentFexIdentityExecute(r ApiPatchEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12397,6 +14889,7 @@ func (a *EquipmentApiService) PatchEquipmentFexIdentityExecute(r ApiPatchEquipme
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12440,9 +14933,9 @@ func (r ApiPatchEquipmentFexOperationRequest) Execute() (*EquipmentFexOperation,
 /*
 PatchEquipmentFexOperation Update a 'equipment.FexOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentFexOperationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentFexOperationRequest
 */
 func (a *EquipmentApiService) PatchEquipmentFexOperation(ctx context.Context, moid string) ApiPatchEquipmentFexOperationRequest {
 	return ApiPatchEquipmentFexOperationRequest{
@@ -12453,7 +14946,8 @@ func (a *EquipmentApiService) PatchEquipmentFexOperation(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return EquipmentFexOperation
+//
+//	@return EquipmentFexOperation
 func (a *EquipmentApiService) PatchEquipmentFexOperationExecute(r ApiPatchEquipmentFexOperationRequest) (*EquipmentFexOperation, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -12468,7 +14962,7 @@ func (a *EquipmentApiService) PatchEquipmentFexOperationExecute(r ApiPatchEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FexOperations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12495,7 +14989,7 @@ func (a *EquipmentApiService) PatchEquipmentFexOperationExecute(r ApiPatchEquipm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFexOperation
@@ -12509,9 +15003,9 @@ func (a *EquipmentApiService) PatchEquipmentFexOperationExecute(r ApiPatchEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12528,6 +15022,7 @@ func (a *EquipmentApiService) PatchEquipmentFexOperationExecute(r ApiPatchEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12538,6 +15033,7 @@ func (a *EquipmentApiService) PatchEquipmentFexOperationExecute(r ApiPatchEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12548,6 +15044,7 @@ func (a *EquipmentApiService) PatchEquipmentFexOperationExecute(r ApiPatchEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12558,6 +15055,7 @@ func (a *EquipmentApiService) PatchEquipmentFexOperationExecute(r ApiPatchEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12567,6 +15065,7 @@ func (a *EquipmentApiService) PatchEquipmentFexOperationExecute(r ApiPatchEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12610,9 +15109,9 @@ func (r ApiPatchEquipmentFruRequest) Execute() (*EquipmentFru, *http.Response, e
 /*
 PatchEquipmentFru Update a 'equipment.Fru' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentFruRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentFruRequest
 */
 func (a *EquipmentApiService) PatchEquipmentFru(ctx context.Context, moid string) ApiPatchEquipmentFruRequest {
 	return ApiPatchEquipmentFruRequest{
@@ -12623,7 +15122,8 @@ func (a *EquipmentApiService) PatchEquipmentFru(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return EquipmentFru
+//
+//	@return EquipmentFru
 func (a *EquipmentApiService) PatchEquipmentFruExecute(r ApiPatchEquipmentFruRequest) (*EquipmentFru, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -12638,7 +15138,7 @@ func (a *EquipmentApiService) PatchEquipmentFruExecute(r ApiPatchEquipmentFruReq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Frus/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12665,7 +15165,7 @@ func (a *EquipmentApiService) PatchEquipmentFruExecute(r ApiPatchEquipmentFruReq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFru
@@ -12679,9 +15179,9 @@ func (a *EquipmentApiService) PatchEquipmentFruExecute(r ApiPatchEquipmentFruReq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12698,6 +15198,7 @@ func (a *EquipmentApiService) PatchEquipmentFruExecute(r ApiPatchEquipmentFruReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12708,6 +15209,7 @@ func (a *EquipmentApiService) PatchEquipmentFruExecute(r ApiPatchEquipmentFruReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12718,6 +15220,7 @@ func (a *EquipmentApiService) PatchEquipmentFruExecute(r ApiPatchEquipmentFruReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12728,6 +15231,7 @@ func (a *EquipmentApiService) PatchEquipmentFruExecute(r ApiPatchEquipmentFruReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12737,6 +15241,7 @@ func (a *EquipmentApiService) PatchEquipmentFruExecute(r ApiPatchEquipmentFruReq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12780,9 +15285,9 @@ func (r ApiPatchEquipmentIoCardRequest) Execute() (*EquipmentIoCard, *http.Respo
 /*
 PatchEquipmentIoCard Update a 'equipment.IoCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentIoCardRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentIoCardRequest
 */
 func (a *EquipmentApiService) PatchEquipmentIoCard(ctx context.Context, moid string) ApiPatchEquipmentIoCardRequest {
 	return ApiPatchEquipmentIoCardRequest{
@@ -12793,7 +15298,8 @@ func (a *EquipmentApiService) PatchEquipmentIoCard(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return EquipmentIoCard
+//
+//	@return EquipmentIoCard
 func (a *EquipmentApiService) PatchEquipmentIoCardExecute(r ApiPatchEquipmentIoCardRequest) (*EquipmentIoCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -12808,7 +15314,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardExecute(r ApiPatchEquipmentIoC
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/IoCards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12835,7 +15341,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardExecute(r ApiPatchEquipmentIoC
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentIoCard
@@ -12849,9 +15355,9 @@ func (a *EquipmentApiService) PatchEquipmentIoCardExecute(r ApiPatchEquipmentIoC
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12868,6 +15374,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardExecute(r ApiPatchEquipmentIoC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12878,6 +15385,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardExecute(r ApiPatchEquipmentIoC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12888,6 +15396,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardExecute(r ApiPatchEquipmentIoC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12898,6 +15407,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardExecute(r ApiPatchEquipmentIoC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12907,6 +15417,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardExecute(r ApiPatchEquipmentIoC
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12950,9 +15461,9 @@ func (r ApiPatchEquipmentIoCardOperationRequest) Execute() (*EquipmentIoCardOper
 /*
 PatchEquipmentIoCardOperation Update a 'equipment.IoCardOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentIoCardOperationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentIoCardOperationRequest
 */
 func (a *EquipmentApiService) PatchEquipmentIoCardOperation(ctx context.Context, moid string) ApiPatchEquipmentIoCardOperationRequest {
 	return ApiPatchEquipmentIoCardOperationRequest{
@@ -12963,7 +15474,8 @@ func (a *EquipmentApiService) PatchEquipmentIoCardOperation(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return EquipmentIoCardOperation
+//
+//	@return EquipmentIoCardOperation
 func (a *EquipmentApiService) PatchEquipmentIoCardOperationExecute(r ApiPatchEquipmentIoCardOperationRequest) (*EquipmentIoCardOperation, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -12978,7 +15490,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardOperationExecute(r ApiPatchEqu
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/IoCardOperations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13005,7 +15517,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardOperationExecute(r ApiPatchEqu
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentIoCardOperation
@@ -13019,9 +15531,9 @@ func (a *EquipmentApiService) PatchEquipmentIoCardOperationExecute(r ApiPatchEqu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13038,6 +15550,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardOperationExecute(r ApiPatchEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13048,6 +15561,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardOperationExecute(r ApiPatchEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13058,6 +15572,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardOperationExecute(r ApiPatchEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13068,6 +15583,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardOperationExecute(r ApiPatchEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13077,6 +15593,7 @@ func (a *EquipmentApiService) PatchEquipmentIoCardOperationExecute(r ApiPatchEqu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13120,9 +15637,9 @@ func (r ApiPatchEquipmentIoExpanderRequest) Execute() (*EquipmentIoExpander, *ht
 /*
 PatchEquipmentIoExpander Update a 'equipment.IoExpander' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentIoExpanderRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentIoExpanderRequest
 */
 func (a *EquipmentApiService) PatchEquipmentIoExpander(ctx context.Context, moid string) ApiPatchEquipmentIoExpanderRequest {
 	return ApiPatchEquipmentIoExpanderRequest{
@@ -13133,7 +15650,8 @@ func (a *EquipmentApiService) PatchEquipmentIoExpander(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return EquipmentIoExpander
+//
+//	@return EquipmentIoExpander
 func (a *EquipmentApiService) PatchEquipmentIoExpanderExecute(r ApiPatchEquipmentIoExpanderRequest) (*EquipmentIoExpander, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -13148,7 +15666,7 @@ func (a *EquipmentApiService) PatchEquipmentIoExpanderExecute(r ApiPatchEquipmen
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/IoExpanders/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13175,7 +15693,7 @@ func (a *EquipmentApiService) PatchEquipmentIoExpanderExecute(r ApiPatchEquipmen
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentIoExpander
@@ -13189,9 +15707,9 @@ func (a *EquipmentApiService) PatchEquipmentIoExpanderExecute(r ApiPatchEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13208,6 +15726,7 @@ func (a *EquipmentApiService) PatchEquipmentIoExpanderExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13218,6 +15737,7 @@ func (a *EquipmentApiService) PatchEquipmentIoExpanderExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13228,6 +15748,7 @@ func (a *EquipmentApiService) PatchEquipmentIoExpanderExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13238,6 +15759,7 @@ func (a *EquipmentApiService) PatchEquipmentIoExpanderExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13247,6 +15769,7 @@ func (a *EquipmentApiService) PatchEquipmentIoExpanderExecute(r ApiPatchEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13290,9 +15813,9 @@ func (r ApiPatchEquipmentLocatorLedRequest) Execute() (*EquipmentLocatorLed, *ht
 /*
 PatchEquipmentLocatorLed Update a 'equipment.LocatorLed' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentLocatorLedRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentLocatorLedRequest
 */
 func (a *EquipmentApiService) PatchEquipmentLocatorLed(ctx context.Context, moid string) ApiPatchEquipmentLocatorLedRequest {
 	return ApiPatchEquipmentLocatorLedRequest{
@@ -13303,7 +15826,8 @@ func (a *EquipmentApiService) PatchEquipmentLocatorLed(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return EquipmentLocatorLed
+//
+//	@return EquipmentLocatorLed
 func (a *EquipmentApiService) PatchEquipmentLocatorLedExecute(r ApiPatchEquipmentLocatorLedRequest) (*EquipmentLocatorLed, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -13318,7 +15842,7 @@ func (a *EquipmentApiService) PatchEquipmentLocatorLedExecute(r ApiPatchEquipmen
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/LocatorLeds/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13345,7 +15869,7 @@ func (a *EquipmentApiService) PatchEquipmentLocatorLedExecute(r ApiPatchEquipmen
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentLocatorLed
@@ -13359,9 +15883,9 @@ func (a *EquipmentApiService) PatchEquipmentLocatorLedExecute(r ApiPatchEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13378,6 +15902,7 @@ func (a *EquipmentApiService) PatchEquipmentLocatorLedExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13388,6 +15913,7 @@ func (a *EquipmentApiService) PatchEquipmentLocatorLedExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13398,6 +15924,7 @@ func (a *EquipmentApiService) PatchEquipmentLocatorLedExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13408,6 +15935,7 @@ func (a *EquipmentApiService) PatchEquipmentLocatorLedExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13417,6 +15945,7 @@ func (a *EquipmentApiService) PatchEquipmentLocatorLedExecute(r ApiPatchEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13460,9 +15989,9 @@ func (r ApiPatchEquipmentPsuRequest) Execute() (*EquipmentPsu, *http.Response, e
 /*
 PatchEquipmentPsu Update a 'equipment.Psu' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentPsuRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentPsuRequest
 */
 func (a *EquipmentApiService) PatchEquipmentPsu(ctx context.Context, moid string) ApiPatchEquipmentPsuRequest {
 	return ApiPatchEquipmentPsuRequest{
@@ -13473,7 +16002,8 @@ func (a *EquipmentApiService) PatchEquipmentPsu(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return EquipmentPsu
+//
+//	@return EquipmentPsu
 func (a *EquipmentApiService) PatchEquipmentPsuExecute(r ApiPatchEquipmentPsuRequest) (*EquipmentPsu, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -13488,7 +16018,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuExecute(r ApiPatchEquipmentPsuReq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Psus/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13515,7 +16045,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuExecute(r ApiPatchEquipmentPsuReq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentPsu
@@ -13529,9 +16059,9 @@ func (a *EquipmentApiService) PatchEquipmentPsuExecute(r ApiPatchEquipmentPsuReq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13548,6 +16078,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuExecute(r ApiPatchEquipmentPsuReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13558,6 +16089,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuExecute(r ApiPatchEquipmentPsuReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13568,6 +16100,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuExecute(r ApiPatchEquipmentPsuReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13578,6 +16111,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuExecute(r ApiPatchEquipmentPsuReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13587,6 +16121,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuExecute(r ApiPatchEquipmentPsuReq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13630,9 +16165,9 @@ func (r ApiPatchEquipmentPsuControlRequest) Execute() (*EquipmentPsuControl, *ht
 /*
 PatchEquipmentPsuControl Update a 'equipment.PsuControl' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentPsuControlRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentPsuControlRequest
 */
 func (a *EquipmentApiService) PatchEquipmentPsuControl(ctx context.Context, moid string) ApiPatchEquipmentPsuControlRequest {
 	return ApiPatchEquipmentPsuControlRequest{
@@ -13643,7 +16178,8 @@ func (a *EquipmentApiService) PatchEquipmentPsuControl(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return EquipmentPsuControl
+//
+//	@return EquipmentPsuControl
 func (a *EquipmentApiService) PatchEquipmentPsuControlExecute(r ApiPatchEquipmentPsuControlRequest) (*EquipmentPsuControl, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -13658,7 +16194,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuControlExecute(r ApiPatchEquipmen
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/PsuControls/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13685,7 +16221,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuControlExecute(r ApiPatchEquipmen
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentPsuControl
@@ -13699,9 +16235,9 @@ func (a *EquipmentApiService) PatchEquipmentPsuControlExecute(r ApiPatchEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13718,6 +16254,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuControlExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13728,6 +16265,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuControlExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13738,6 +16276,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuControlExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13748,6 +16287,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuControlExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13757,6 +16297,7 @@ func (a *EquipmentApiService) PatchEquipmentPsuControlExecute(r ApiPatchEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13800,9 +16341,9 @@ func (r ApiPatchEquipmentRackEnclosureRequest) Execute() (*EquipmentRackEnclosur
 /*
 PatchEquipmentRackEnclosure Update a 'equipment.RackEnclosure' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentRackEnclosureRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentRackEnclosureRequest
 */
 func (a *EquipmentApiService) PatchEquipmentRackEnclosure(ctx context.Context, moid string) ApiPatchEquipmentRackEnclosureRequest {
 	return ApiPatchEquipmentRackEnclosureRequest{
@@ -13813,7 +16354,8 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosure(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return EquipmentRackEnclosure
+//
+//	@return EquipmentRackEnclosure
 func (a *EquipmentApiService) PatchEquipmentRackEnclosureExecute(r ApiPatchEquipmentRackEnclosureRequest) (*EquipmentRackEnclosure, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -13828,7 +16370,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureExecute(r ApiPatchEquip
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/RackEnclosures/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13855,7 +16397,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureExecute(r ApiPatchEquip
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentRackEnclosure
@@ -13869,9 +16411,9 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureExecute(r ApiPatchEquip
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13888,6 +16430,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureExecute(r ApiPatchEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13898,6 +16441,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureExecute(r ApiPatchEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13908,6 +16452,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureExecute(r ApiPatchEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13918,6 +16463,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureExecute(r ApiPatchEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13927,6 +16473,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureExecute(r ApiPatchEquip
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13970,9 +16517,9 @@ func (r ApiPatchEquipmentRackEnclosureSlotRequest) Execute() (*EquipmentRackEncl
 /*
 PatchEquipmentRackEnclosureSlot Update a 'equipment.RackEnclosureSlot' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentRackEnclosureSlotRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentRackEnclosureSlotRequest
 */
 func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlot(ctx context.Context, moid string) ApiPatchEquipmentRackEnclosureSlotRequest {
 	return ApiPatchEquipmentRackEnclosureSlotRequest{
@@ -13983,7 +16530,8 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlot(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return EquipmentRackEnclosureSlot
+//
+//	@return EquipmentRackEnclosureSlot
 func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlotExecute(r ApiPatchEquipmentRackEnclosureSlotRequest) (*EquipmentRackEnclosureSlot, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -13998,7 +16546,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlotExecute(r ApiPatchE
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/RackEnclosureSlots/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14025,7 +16573,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlotExecute(r ApiPatchE
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentRackEnclosureSlot
@@ -14039,9 +16587,9 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlotExecute(r ApiPatchE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14058,6 +16606,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlotExecute(r ApiPatchE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14068,6 +16617,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlotExecute(r ApiPatchE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14078,6 +16628,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlotExecute(r ApiPatchE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14088,6 +16639,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlotExecute(r ApiPatchE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14097,6 +16649,7 @@ func (a *EquipmentApiService) PatchEquipmentRackEnclosureSlotExecute(r ApiPatchE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14140,9 +16693,9 @@ func (r ApiPatchEquipmentSharedIoModuleRequest) Execute() (*EquipmentSharedIoMod
 /*
 PatchEquipmentSharedIoModule Update a 'equipment.SharedIoModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentSharedIoModuleRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentSharedIoModuleRequest
 */
 func (a *EquipmentApiService) PatchEquipmentSharedIoModule(ctx context.Context, moid string) ApiPatchEquipmentSharedIoModuleRequest {
 	return ApiPatchEquipmentSharedIoModuleRequest{
@@ -14153,7 +16706,8 @@ func (a *EquipmentApiService) PatchEquipmentSharedIoModule(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return EquipmentSharedIoModule
+//
+//	@return EquipmentSharedIoModule
 func (a *EquipmentApiService) PatchEquipmentSharedIoModuleExecute(r ApiPatchEquipmentSharedIoModuleRequest) (*EquipmentSharedIoModule, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -14168,7 +16722,7 @@ func (a *EquipmentApiService) PatchEquipmentSharedIoModuleExecute(r ApiPatchEqui
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/SharedIoModules/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14195,7 +16749,7 @@ func (a *EquipmentApiService) PatchEquipmentSharedIoModuleExecute(r ApiPatchEqui
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentSharedIoModule
@@ -14209,9 +16763,9 @@ func (a *EquipmentApiService) PatchEquipmentSharedIoModuleExecute(r ApiPatchEqui
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14228,6 +16782,7 @@ func (a *EquipmentApiService) PatchEquipmentSharedIoModuleExecute(r ApiPatchEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14238,6 +16793,7 @@ func (a *EquipmentApiService) PatchEquipmentSharedIoModuleExecute(r ApiPatchEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14248,6 +16804,7 @@ func (a *EquipmentApiService) PatchEquipmentSharedIoModuleExecute(r ApiPatchEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14258,6 +16815,7 @@ func (a *EquipmentApiService) PatchEquipmentSharedIoModuleExecute(r ApiPatchEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14267,6 +16825,7 @@ func (a *EquipmentApiService) PatchEquipmentSharedIoModuleExecute(r ApiPatchEqui
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14310,9 +16869,9 @@ func (r ApiPatchEquipmentSwitchCardRequest) Execute() (*EquipmentSwitchCard, *ht
 /*
 PatchEquipmentSwitchCard Update a 'equipment.SwitchCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentSwitchCardRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentSwitchCardRequest
 */
 func (a *EquipmentApiService) PatchEquipmentSwitchCard(ctx context.Context, moid string) ApiPatchEquipmentSwitchCardRequest {
 	return ApiPatchEquipmentSwitchCardRequest{
@@ -14323,7 +16882,8 @@ func (a *EquipmentApiService) PatchEquipmentSwitchCard(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return EquipmentSwitchCard
+//
+//	@return EquipmentSwitchCard
 func (a *EquipmentApiService) PatchEquipmentSwitchCardExecute(r ApiPatchEquipmentSwitchCardRequest) (*EquipmentSwitchCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -14338,7 +16898,7 @@ func (a *EquipmentApiService) PatchEquipmentSwitchCardExecute(r ApiPatchEquipmen
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/SwitchCards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14365,7 +16925,7 @@ func (a *EquipmentApiService) PatchEquipmentSwitchCardExecute(r ApiPatchEquipmen
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentSwitchCard
@@ -14379,9 +16939,9 @@ func (a *EquipmentApiService) PatchEquipmentSwitchCardExecute(r ApiPatchEquipmen
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14398,6 +16958,7 @@ func (a *EquipmentApiService) PatchEquipmentSwitchCardExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14408,6 +16969,7 @@ func (a *EquipmentApiService) PatchEquipmentSwitchCardExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14418,6 +16980,7 @@ func (a *EquipmentApiService) PatchEquipmentSwitchCardExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14428,6 +16991,7 @@ func (a *EquipmentApiService) PatchEquipmentSwitchCardExecute(r ApiPatchEquipmen
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14437,6 +17001,183 @@ func (a *EquipmentApiService) PatchEquipmentSwitchCardExecute(r ApiPatchEquipmen
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiPatchEquipmentSwitchOperationRequest struct {
+	ctx                      context.Context
+	ApiService               *EquipmentApiService
+	moid                     string
+	equipmentSwitchOperation *EquipmentSwitchOperation
+	ifMatch                  *string
+}
+
+// The &#39;equipment.SwitchOperation&#39; resource to update.
+func (r ApiPatchEquipmentSwitchOperationRequest) EquipmentSwitchOperation(equipmentSwitchOperation EquipmentSwitchOperation) ApiPatchEquipmentSwitchOperationRequest {
+	r.equipmentSwitchOperation = &equipmentSwitchOperation
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiPatchEquipmentSwitchOperationRequest) IfMatch(ifMatch string) ApiPatchEquipmentSwitchOperationRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiPatchEquipmentSwitchOperationRequest) Execute() (*EquipmentSwitchOperation, *http.Response, error) {
+	return r.ApiService.PatchEquipmentSwitchOperationExecute(r)
+}
+
+/*
+PatchEquipmentSwitchOperation Update a 'equipment.SwitchOperation' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentSwitchOperationRequest
+*/
+func (a *EquipmentApiService) PatchEquipmentSwitchOperation(ctx context.Context, moid string) ApiPatchEquipmentSwitchOperationRequest {
+	return ApiPatchEquipmentSwitchOperationRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentSwitchOperation
+func (a *EquipmentApiService) PatchEquipmentSwitchOperationExecute(r ApiPatchEquipmentSwitchOperationRequest) (*EquipmentSwitchOperation, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentSwitchOperation
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.PatchEquipmentSwitchOperation")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/SwitchOperations/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.equipmentSwitchOperation == nil {
+		return localVarReturnValue, nil, reportError("equipmentSwitchOperation is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.equipmentSwitchOperation
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14480,9 +17221,9 @@ func (r ApiPatchEquipmentSystemIoControllerRequest) Execute() (*EquipmentSystemI
 /*
 PatchEquipmentSystemIoController Update a 'equipment.SystemIoController' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentSystemIoControllerRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentSystemIoControllerRequest
 */
 func (a *EquipmentApiService) PatchEquipmentSystemIoController(ctx context.Context, moid string) ApiPatchEquipmentSystemIoControllerRequest {
 	return ApiPatchEquipmentSystemIoControllerRequest{
@@ -14493,7 +17234,8 @@ func (a *EquipmentApiService) PatchEquipmentSystemIoController(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return EquipmentSystemIoController
+//
+//	@return EquipmentSystemIoController
 func (a *EquipmentApiService) PatchEquipmentSystemIoControllerExecute(r ApiPatchEquipmentSystemIoControllerRequest) (*EquipmentSystemIoController, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -14508,7 +17250,7 @@ func (a *EquipmentApiService) PatchEquipmentSystemIoControllerExecute(r ApiPatch
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/SystemIoControllers/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14535,7 +17277,7 @@ func (a *EquipmentApiService) PatchEquipmentSystemIoControllerExecute(r ApiPatch
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentSystemIoController
@@ -14549,9 +17291,9 @@ func (a *EquipmentApiService) PatchEquipmentSystemIoControllerExecute(r ApiPatch
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14568,6 +17310,7 @@ func (a *EquipmentApiService) PatchEquipmentSystemIoControllerExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14578,6 +17321,7 @@ func (a *EquipmentApiService) PatchEquipmentSystemIoControllerExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14588,6 +17332,7 @@ func (a *EquipmentApiService) PatchEquipmentSystemIoControllerExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14598,6 +17343,7 @@ func (a *EquipmentApiService) PatchEquipmentSystemIoControllerExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14607,6 +17353,7 @@ func (a *EquipmentApiService) PatchEquipmentSystemIoControllerExecute(r ApiPatch
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14650,9 +17397,9 @@ func (r ApiPatchEquipmentTpmRequest) Execute() (*EquipmentTpm, *http.Response, e
 /*
 PatchEquipmentTpm Update a 'equipment.Tpm' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentTpmRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentTpmRequest
 */
 func (a *EquipmentApiService) PatchEquipmentTpm(ctx context.Context, moid string) ApiPatchEquipmentTpmRequest {
 	return ApiPatchEquipmentTpmRequest{
@@ -14663,7 +17410,8 @@ func (a *EquipmentApiService) PatchEquipmentTpm(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return EquipmentTpm
+//
+//	@return EquipmentTpm
 func (a *EquipmentApiService) PatchEquipmentTpmExecute(r ApiPatchEquipmentTpmRequest) (*EquipmentTpm, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -14678,7 +17426,7 @@ func (a *EquipmentApiService) PatchEquipmentTpmExecute(r ApiPatchEquipmentTpmReq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Tpms/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14705,7 +17453,7 @@ func (a *EquipmentApiService) PatchEquipmentTpmExecute(r ApiPatchEquipmentTpmReq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentTpm
@@ -14719,9 +17467,9 @@ func (a *EquipmentApiService) PatchEquipmentTpmExecute(r ApiPatchEquipmentTpmReq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14738,6 +17486,7 @@ func (a *EquipmentApiService) PatchEquipmentTpmExecute(r ApiPatchEquipmentTpmReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14748,6 +17497,7 @@ func (a *EquipmentApiService) PatchEquipmentTpmExecute(r ApiPatchEquipmentTpmReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14758,6 +17508,7 @@ func (a *EquipmentApiService) PatchEquipmentTpmExecute(r ApiPatchEquipmentTpmReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14768,6 +17519,7 @@ func (a *EquipmentApiService) PatchEquipmentTpmExecute(r ApiPatchEquipmentTpmReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14777,6 +17529,7 @@ func (a *EquipmentApiService) PatchEquipmentTpmExecute(r ApiPatchEquipmentTpmReq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14820,9 +17573,9 @@ func (r ApiPatchEquipmentTransceiverRequest) Execute() (*EquipmentTransceiver, *
 /*
 PatchEquipmentTransceiver Update a 'equipment.Transceiver' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEquipmentTransceiverRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEquipmentTransceiverRequest
 */
 func (a *EquipmentApiService) PatchEquipmentTransceiver(ctx context.Context, moid string) ApiPatchEquipmentTransceiverRequest {
 	return ApiPatchEquipmentTransceiverRequest{
@@ -14833,7 +17586,8 @@ func (a *EquipmentApiService) PatchEquipmentTransceiver(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return EquipmentTransceiver
+//
+//	@return EquipmentTransceiver
 func (a *EquipmentApiService) PatchEquipmentTransceiverExecute(r ApiPatchEquipmentTransceiverRequest) (*EquipmentTransceiver, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -14848,7 +17602,7 @@ func (a *EquipmentApiService) PatchEquipmentTransceiverExecute(r ApiPatchEquipme
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Transceivers/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14875,7 +17629,7 @@ func (a *EquipmentApiService) PatchEquipmentTransceiverExecute(r ApiPatchEquipme
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentTransceiver
@@ -14889,9 +17643,9 @@ func (a *EquipmentApiService) PatchEquipmentTransceiverExecute(r ApiPatchEquipme
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14908,6 +17662,7 @@ func (a *EquipmentApiService) PatchEquipmentTransceiverExecute(r ApiPatchEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14918,6 +17673,7 @@ func (a *EquipmentApiService) PatchEquipmentTransceiverExecute(r ApiPatchEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14928,6 +17684,7 @@ func (a *EquipmentApiService) PatchEquipmentTransceiverExecute(r ApiPatchEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14938,6 +17695,7 @@ func (a *EquipmentApiService) PatchEquipmentTransceiverExecute(r ApiPatchEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14947,6 +17705,7 @@ func (a *EquipmentApiService) PatchEquipmentTransceiverExecute(r ApiPatchEquipme
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14990,9 +17749,9 @@ func (r ApiUpdateEquipmentChassisRequest) Execute() (*EquipmentChassis, *http.Re
 /*
 UpdateEquipmentChassis Update a 'equipment.Chassis' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentChassisRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentChassisRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentChassis(ctx context.Context, moid string) ApiUpdateEquipmentChassisRequest {
 	return ApiUpdateEquipmentChassisRequest{
@@ -15003,7 +17762,8 @@ func (a *EquipmentApiService) UpdateEquipmentChassis(ctx context.Context, moid s
 }
 
 // Execute executes the request
-//  @return EquipmentChassis
+//
+//	@return EquipmentChassis
 func (a *EquipmentApiService) UpdateEquipmentChassisExecute(r ApiUpdateEquipmentChassisRequest) (*EquipmentChassis, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -15018,7 +17778,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisExecute(r ApiUpdateEquipment
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Chasses/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15045,7 +17805,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisExecute(r ApiUpdateEquipment
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentChassis
@@ -15059,9 +17819,9 @@ func (a *EquipmentApiService) UpdateEquipmentChassisExecute(r ApiUpdateEquipment
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15078,6 +17838,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisExecute(r ApiUpdateEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15088,6 +17849,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisExecute(r ApiUpdateEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15098,6 +17860,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisExecute(r ApiUpdateEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15108,6 +17871,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisExecute(r ApiUpdateEquipment
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15117,6 +17881,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisExecute(r ApiUpdateEquipment
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15160,9 +17925,9 @@ func (r ApiUpdateEquipmentChassisIdentityRequest) Execute() (*EquipmentChassisId
 /*
 UpdateEquipmentChassisIdentity Update a 'equipment.ChassisIdentity' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentChassisIdentityRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentChassisIdentityRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentChassisIdentity(ctx context.Context, moid string) ApiUpdateEquipmentChassisIdentityRequest {
 	return ApiUpdateEquipmentChassisIdentityRequest{
@@ -15173,7 +17938,8 @@ func (a *EquipmentApiService) UpdateEquipmentChassisIdentity(ctx context.Context
 }
 
 // Execute executes the request
-//  @return EquipmentChassisIdentity
+//
+//	@return EquipmentChassisIdentity
 func (a *EquipmentApiService) UpdateEquipmentChassisIdentityExecute(r ApiUpdateEquipmentChassisIdentityRequest) (*EquipmentChassisIdentity, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -15188,7 +17954,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisIdentityExecute(r ApiUpdateE
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ChassisIdentities/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15215,7 +17981,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisIdentityExecute(r ApiUpdateE
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentChassisIdentity
@@ -15229,9 +17995,9 @@ func (a *EquipmentApiService) UpdateEquipmentChassisIdentityExecute(r ApiUpdateE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15248,6 +18014,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisIdentityExecute(r ApiUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15258,6 +18025,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisIdentityExecute(r ApiUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15268,6 +18036,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisIdentityExecute(r ApiUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15278,6 +18047,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisIdentityExecute(r ApiUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15287,6 +18057,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisIdentityExecute(r ApiUpdateE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15330,9 +18101,9 @@ func (r ApiUpdateEquipmentChassisOperationRequest) Execute() (*EquipmentChassisO
 /*
 UpdateEquipmentChassisOperation Update a 'equipment.ChassisOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentChassisOperationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentChassisOperationRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentChassisOperation(ctx context.Context, moid string) ApiUpdateEquipmentChassisOperationRequest {
 	return ApiUpdateEquipmentChassisOperationRequest{
@@ -15343,7 +18114,8 @@ func (a *EquipmentApiService) UpdateEquipmentChassisOperation(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return EquipmentChassisOperation
+//
+//	@return EquipmentChassisOperation
 func (a *EquipmentApiService) UpdateEquipmentChassisOperationExecute(r ApiUpdateEquipmentChassisOperationRequest) (*EquipmentChassisOperation, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -15358,7 +18130,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisOperationExecute(r ApiUpdate
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ChassisOperations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15385,7 +18157,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisOperationExecute(r ApiUpdate
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentChassisOperation
@@ -15399,9 +18171,9 @@ func (a *EquipmentApiService) UpdateEquipmentChassisOperationExecute(r ApiUpdate
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15418,6 +18190,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisOperationExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15428,6 +18201,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisOperationExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15438,6 +18212,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisOperationExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15448,6 +18223,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisOperationExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15457,6 +18233,7 @@ func (a *EquipmentApiService) UpdateEquipmentChassisOperationExecute(r ApiUpdate
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15500,9 +18277,9 @@ func (r ApiUpdateEquipmentExpanderModuleRequest) Execute() (*EquipmentExpanderMo
 /*
 UpdateEquipmentExpanderModule Update a 'equipment.ExpanderModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentExpanderModuleRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentExpanderModuleRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentExpanderModule(ctx context.Context, moid string) ApiUpdateEquipmentExpanderModuleRequest {
 	return ApiUpdateEquipmentExpanderModuleRequest{
@@ -15513,7 +18290,8 @@ func (a *EquipmentApiService) UpdateEquipmentExpanderModule(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return EquipmentExpanderModule
+//
+//	@return EquipmentExpanderModule
 func (a *EquipmentApiService) UpdateEquipmentExpanderModuleExecute(r ApiUpdateEquipmentExpanderModuleRequest) (*EquipmentExpanderModule, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -15528,7 +18306,7 @@ func (a *EquipmentApiService) UpdateEquipmentExpanderModuleExecute(r ApiUpdateEq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/ExpanderModules/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15555,7 +18333,7 @@ func (a *EquipmentApiService) UpdateEquipmentExpanderModuleExecute(r ApiUpdateEq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentExpanderModule
@@ -15569,9 +18347,9 @@ func (a *EquipmentApiService) UpdateEquipmentExpanderModuleExecute(r ApiUpdateEq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15588,6 +18366,7 @@ func (a *EquipmentApiService) UpdateEquipmentExpanderModuleExecute(r ApiUpdateEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15598,6 +18377,7 @@ func (a *EquipmentApiService) UpdateEquipmentExpanderModuleExecute(r ApiUpdateEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15608,6 +18388,7 @@ func (a *EquipmentApiService) UpdateEquipmentExpanderModuleExecute(r ApiUpdateEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15618,6 +18399,7 @@ func (a *EquipmentApiService) UpdateEquipmentExpanderModuleExecute(r ApiUpdateEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15627,6 +18409,7 @@ func (a *EquipmentApiService) UpdateEquipmentExpanderModuleExecute(r ApiUpdateEq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15670,9 +18453,9 @@ func (r ApiUpdateEquipmentFanRequest) Execute() (*EquipmentFan, *http.Response, 
 /*
 UpdateEquipmentFan Update a 'equipment.Fan' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentFanRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentFanRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentFan(ctx context.Context, moid string) ApiUpdateEquipmentFanRequest {
 	return ApiUpdateEquipmentFanRequest{
@@ -15683,7 +18466,8 @@ func (a *EquipmentApiService) UpdateEquipmentFan(ctx context.Context, moid strin
 }
 
 // Execute executes the request
-//  @return EquipmentFan
+//
+//	@return EquipmentFan
 func (a *EquipmentApiService) UpdateEquipmentFanExecute(r ApiUpdateEquipmentFanRequest) (*EquipmentFan, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -15698,7 +18482,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanExecute(r ApiUpdateEquipmentFanR
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Fans/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15725,7 +18509,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanExecute(r ApiUpdateEquipmentFanR
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFan
@@ -15739,9 +18523,9 @@ func (a *EquipmentApiService) UpdateEquipmentFanExecute(r ApiUpdateEquipmentFanR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15758,6 +18542,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanExecute(r ApiUpdateEquipmentFanR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15768,6 +18553,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanExecute(r ApiUpdateEquipmentFanR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15778,6 +18564,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanExecute(r ApiUpdateEquipmentFanR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15788,6 +18575,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanExecute(r ApiUpdateEquipmentFanR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15797,6 +18585,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanExecute(r ApiUpdateEquipmentFanR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15840,9 +18629,9 @@ func (r ApiUpdateEquipmentFanControlRequest) Execute() (*EquipmentFanControl, *h
 /*
 UpdateEquipmentFanControl Update a 'equipment.FanControl' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentFanControlRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentFanControlRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentFanControl(ctx context.Context, moid string) ApiUpdateEquipmentFanControlRequest {
 	return ApiUpdateEquipmentFanControlRequest{
@@ -15853,7 +18642,8 @@ func (a *EquipmentApiService) UpdateEquipmentFanControl(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return EquipmentFanControl
+//
+//	@return EquipmentFanControl
 func (a *EquipmentApiService) UpdateEquipmentFanControlExecute(r ApiUpdateEquipmentFanControlRequest) (*EquipmentFanControl, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -15868,7 +18658,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanControlExecute(r ApiUpdateEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FanControls/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15895,7 +18685,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanControlExecute(r ApiUpdateEquipm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFanControl
@@ -15909,9 +18699,9 @@ func (a *EquipmentApiService) UpdateEquipmentFanControlExecute(r ApiUpdateEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15928,6 +18718,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanControlExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15938,6 +18729,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanControlExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15948,6 +18740,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanControlExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15958,6 +18751,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanControlExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15967,6 +18761,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanControlExecute(r ApiUpdateEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16010,9 +18805,9 @@ func (r ApiUpdateEquipmentFanModuleRequest) Execute() (*EquipmentFanModule, *htt
 /*
 UpdateEquipmentFanModule Update a 'equipment.FanModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentFanModuleRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentFanModuleRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentFanModule(ctx context.Context, moid string) ApiUpdateEquipmentFanModuleRequest {
 	return ApiUpdateEquipmentFanModuleRequest{
@@ -16023,7 +18818,8 @@ func (a *EquipmentApiService) UpdateEquipmentFanModule(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return EquipmentFanModule
+//
+//	@return EquipmentFanModule
 func (a *EquipmentApiService) UpdateEquipmentFanModuleExecute(r ApiUpdateEquipmentFanModuleRequest) (*EquipmentFanModule, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -16038,7 +18834,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanModuleExecute(r ApiUpdateEquipme
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FanModules/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16065,7 +18861,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanModuleExecute(r ApiUpdateEquipme
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFanModule
@@ -16079,9 +18875,9 @@ func (a *EquipmentApiService) UpdateEquipmentFanModuleExecute(r ApiUpdateEquipme
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16098,6 +18894,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanModuleExecute(r ApiUpdateEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16108,6 +18905,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanModuleExecute(r ApiUpdateEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16118,6 +18916,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanModuleExecute(r ApiUpdateEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16128,6 +18927,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanModuleExecute(r ApiUpdateEquipme
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16137,6 +18937,7 @@ func (a *EquipmentApiService) UpdateEquipmentFanModuleExecute(r ApiUpdateEquipme
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16180,9 +18981,9 @@ func (r ApiUpdateEquipmentFexRequest) Execute() (*EquipmentFex, *http.Response, 
 /*
 UpdateEquipmentFex Update a 'equipment.Fex' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentFexRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentFexRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentFex(ctx context.Context, moid string) ApiUpdateEquipmentFexRequest {
 	return ApiUpdateEquipmentFexRequest{
@@ -16193,7 +18994,8 @@ func (a *EquipmentApiService) UpdateEquipmentFex(ctx context.Context, moid strin
 }
 
 // Execute executes the request
-//  @return EquipmentFex
+//
+//	@return EquipmentFex
 func (a *EquipmentApiService) UpdateEquipmentFexExecute(r ApiUpdateEquipmentFexRequest) (*EquipmentFex, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -16208,7 +19010,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexExecute(r ApiUpdateEquipmentFexR
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Fexes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16235,7 +19037,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexExecute(r ApiUpdateEquipmentFexR
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFex
@@ -16249,9 +19051,9 @@ func (a *EquipmentApiService) UpdateEquipmentFexExecute(r ApiUpdateEquipmentFexR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16268,6 +19070,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexExecute(r ApiUpdateEquipmentFexR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16278,6 +19081,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexExecute(r ApiUpdateEquipmentFexR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16288,6 +19092,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexExecute(r ApiUpdateEquipmentFexR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16298,6 +19103,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexExecute(r ApiUpdateEquipmentFexR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16307,6 +19113,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexExecute(r ApiUpdateEquipmentFexR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16350,9 +19157,9 @@ func (r ApiUpdateEquipmentFexIdentityRequest) Execute() (*EquipmentFexIdentity, 
 /*
 UpdateEquipmentFexIdentity Update a 'equipment.FexIdentity' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentFexIdentityRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentFexIdentityRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentFexIdentity(ctx context.Context, moid string) ApiUpdateEquipmentFexIdentityRequest {
 	return ApiUpdateEquipmentFexIdentityRequest{
@@ -16363,7 +19170,8 @@ func (a *EquipmentApiService) UpdateEquipmentFexIdentity(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return EquipmentFexIdentity
+//
+//	@return EquipmentFexIdentity
 func (a *EquipmentApiService) UpdateEquipmentFexIdentityExecute(r ApiUpdateEquipmentFexIdentityRequest) (*EquipmentFexIdentity, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -16378,7 +19186,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexIdentityExecute(r ApiUpdateEquip
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FexIdentities/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16405,7 +19213,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexIdentityExecute(r ApiUpdateEquip
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFexIdentity
@@ -16419,9 +19227,9 @@ func (a *EquipmentApiService) UpdateEquipmentFexIdentityExecute(r ApiUpdateEquip
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16438,6 +19246,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexIdentityExecute(r ApiUpdateEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16448,6 +19257,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexIdentityExecute(r ApiUpdateEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16458,6 +19268,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexIdentityExecute(r ApiUpdateEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16468,6 +19279,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexIdentityExecute(r ApiUpdateEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16477,6 +19289,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexIdentityExecute(r ApiUpdateEquip
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16520,9 +19333,9 @@ func (r ApiUpdateEquipmentFexOperationRequest) Execute() (*EquipmentFexOperation
 /*
 UpdateEquipmentFexOperation Update a 'equipment.FexOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentFexOperationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentFexOperationRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentFexOperation(ctx context.Context, moid string) ApiUpdateEquipmentFexOperationRequest {
 	return ApiUpdateEquipmentFexOperationRequest{
@@ -16533,7 +19346,8 @@ func (a *EquipmentApiService) UpdateEquipmentFexOperation(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return EquipmentFexOperation
+//
+//	@return EquipmentFexOperation
 func (a *EquipmentApiService) UpdateEquipmentFexOperationExecute(r ApiUpdateEquipmentFexOperationRequest) (*EquipmentFexOperation, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -16548,7 +19362,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexOperationExecute(r ApiUpdateEqui
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/FexOperations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16575,7 +19389,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexOperationExecute(r ApiUpdateEqui
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFexOperation
@@ -16589,9 +19403,9 @@ func (a *EquipmentApiService) UpdateEquipmentFexOperationExecute(r ApiUpdateEqui
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16608,6 +19422,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexOperationExecute(r ApiUpdateEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16618,6 +19433,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexOperationExecute(r ApiUpdateEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16628,6 +19444,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexOperationExecute(r ApiUpdateEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16638,6 +19455,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexOperationExecute(r ApiUpdateEqui
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16647,6 +19465,7 @@ func (a *EquipmentApiService) UpdateEquipmentFexOperationExecute(r ApiUpdateEqui
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16690,9 +19509,9 @@ func (r ApiUpdateEquipmentFruRequest) Execute() (*EquipmentFru, *http.Response, 
 /*
 UpdateEquipmentFru Update a 'equipment.Fru' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentFruRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentFruRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentFru(ctx context.Context, moid string) ApiUpdateEquipmentFruRequest {
 	return ApiUpdateEquipmentFruRequest{
@@ -16703,7 +19522,8 @@ func (a *EquipmentApiService) UpdateEquipmentFru(ctx context.Context, moid strin
 }
 
 // Execute executes the request
-//  @return EquipmentFru
+//
+//	@return EquipmentFru
 func (a *EquipmentApiService) UpdateEquipmentFruExecute(r ApiUpdateEquipmentFruRequest) (*EquipmentFru, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -16718,7 +19538,7 @@ func (a *EquipmentApiService) UpdateEquipmentFruExecute(r ApiUpdateEquipmentFruR
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Frus/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16745,7 +19565,7 @@ func (a *EquipmentApiService) UpdateEquipmentFruExecute(r ApiUpdateEquipmentFruR
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentFru
@@ -16759,9 +19579,9 @@ func (a *EquipmentApiService) UpdateEquipmentFruExecute(r ApiUpdateEquipmentFruR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16778,6 +19598,7 @@ func (a *EquipmentApiService) UpdateEquipmentFruExecute(r ApiUpdateEquipmentFruR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16788,6 +19609,7 @@ func (a *EquipmentApiService) UpdateEquipmentFruExecute(r ApiUpdateEquipmentFruR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16798,6 +19620,7 @@ func (a *EquipmentApiService) UpdateEquipmentFruExecute(r ApiUpdateEquipmentFruR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16808,6 +19631,7 @@ func (a *EquipmentApiService) UpdateEquipmentFruExecute(r ApiUpdateEquipmentFruR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16817,6 +19641,7 @@ func (a *EquipmentApiService) UpdateEquipmentFruExecute(r ApiUpdateEquipmentFruR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16860,9 +19685,9 @@ func (r ApiUpdateEquipmentIoCardRequest) Execute() (*EquipmentIoCard, *http.Resp
 /*
 UpdateEquipmentIoCard Update a 'equipment.IoCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentIoCardRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentIoCardRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentIoCard(ctx context.Context, moid string) ApiUpdateEquipmentIoCardRequest {
 	return ApiUpdateEquipmentIoCardRequest{
@@ -16873,7 +19698,8 @@ func (a *EquipmentApiService) UpdateEquipmentIoCard(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return EquipmentIoCard
+//
+//	@return EquipmentIoCard
 func (a *EquipmentApiService) UpdateEquipmentIoCardExecute(r ApiUpdateEquipmentIoCardRequest) (*EquipmentIoCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -16888,7 +19714,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardExecute(r ApiUpdateEquipmentI
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/IoCards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16915,7 +19741,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardExecute(r ApiUpdateEquipmentI
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentIoCard
@@ -16929,9 +19755,9 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardExecute(r ApiUpdateEquipmentI
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16948,6 +19774,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardExecute(r ApiUpdateEquipmentI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16958,6 +19785,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardExecute(r ApiUpdateEquipmentI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16968,6 +19796,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardExecute(r ApiUpdateEquipmentI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16978,6 +19807,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardExecute(r ApiUpdateEquipmentI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16987,6 +19817,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardExecute(r ApiUpdateEquipmentI
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17030,9 +19861,9 @@ func (r ApiUpdateEquipmentIoCardOperationRequest) Execute() (*EquipmentIoCardOpe
 /*
 UpdateEquipmentIoCardOperation Update a 'equipment.IoCardOperation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentIoCardOperationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentIoCardOperationRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentIoCardOperation(ctx context.Context, moid string) ApiUpdateEquipmentIoCardOperationRequest {
 	return ApiUpdateEquipmentIoCardOperationRequest{
@@ -17043,7 +19874,8 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardOperation(ctx context.Context
 }
 
 // Execute executes the request
-//  @return EquipmentIoCardOperation
+//
+//	@return EquipmentIoCardOperation
 func (a *EquipmentApiService) UpdateEquipmentIoCardOperationExecute(r ApiUpdateEquipmentIoCardOperationRequest) (*EquipmentIoCardOperation, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -17058,7 +19890,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardOperationExecute(r ApiUpdateE
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/IoCardOperations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17085,7 +19917,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardOperationExecute(r ApiUpdateE
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentIoCardOperation
@@ -17099,9 +19931,9 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardOperationExecute(r ApiUpdateE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17118,6 +19950,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardOperationExecute(r ApiUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17128,6 +19961,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardOperationExecute(r ApiUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17138,6 +19972,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardOperationExecute(r ApiUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17148,6 +19983,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardOperationExecute(r ApiUpdateE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17157,6 +19993,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoCardOperationExecute(r ApiUpdateE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17200,9 +20037,9 @@ func (r ApiUpdateEquipmentIoExpanderRequest) Execute() (*EquipmentIoExpander, *h
 /*
 UpdateEquipmentIoExpander Update a 'equipment.IoExpander' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentIoExpanderRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentIoExpanderRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentIoExpander(ctx context.Context, moid string) ApiUpdateEquipmentIoExpanderRequest {
 	return ApiUpdateEquipmentIoExpanderRequest{
@@ -17213,7 +20050,8 @@ func (a *EquipmentApiService) UpdateEquipmentIoExpander(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return EquipmentIoExpander
+//
+//	@return EquipmentIoExpander
 func (a *EquipmentApiService) UpdateEquipmentIoExpanderExecute(r ApiUpdateEquipmentIoExpanderRequest) (*EquipmentIoExpander, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -17228,7 +20066,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoExpanderExecute(r ApiUpdateEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/IoExpanders/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17255,7 +20093,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoExpanderExecute(r ApiUpdateEquipm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentIoExpander
@@ -17269,9 +20107,9 @@ func (a *EquipmentApiService) UpdateEquipmentIoExpanderExecute(r ApiUpdateEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17288,6 +20126,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoExpanderExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17298,6 +20137,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoExpanderExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17308,6 +20148,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoExpanderExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17318,6 +20159,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoExpanderExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17327,6 +20169,7 @@ func (a *EquipmentApiService) UpdateEquipmentIoExpanderExecute(r ApiUpdateEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17370,9 +20213,9 @@ func (r ApiUpdateEquipmentLocatorLedRequest) Execute() (*EquipmentLocatorLed, *h
 /*
 UpdateEquipmentLocatorLed Update a 'equipment.LocatorLed' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentLocatorLedRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentLocatorLedRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentLocatorLed(ctx context.Context, moid string) ApiUpdateEquipmentLocatorLedRequest {
 	return ApiUpdateEquipmentLocatorLedRequest{
@@ -17383,7 +20226,8 @@ func (a *EquipmentApiService) UpdateEquipmentLocatorLed(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return EquipmentLocatorLed
+//
+//	@return EquipmentLocatorLed
 func (a *EquipmentApiService) UpdateEquipmentLocatorLedExecute(r ApiUpdateEquipmentLocatorLedRequest) (*EquipmentLocatorLed, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -17398,7 +20242,7 @@ func (a *EquipmentApiService) UpdateEquipmentLocatorLedExecute(r ApiUpdateEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/LocatorLeds/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17425,7 +20269,7 @@ func (a *EquipmentApiService) UpdateEquipmentLocatorLedExecute(r ApiUpdateEquipm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentLocatorLed
@@ -17439,9 +20283,9 @@ func (a *EquipmentApiService) UpdateEquipmentLocatorLedExecute(r ApiUpdateEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17458,6 +20302,7 @@ func (a *EquipmentApiService) UpdateEquipmentLocatorLedExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17468,6 +20313,7 @@ func (a *EquipmentApiService) UpdateEquipmentLocatorLedExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17478,6 +20324,7 @@ func (a *EquipmentApiService) UpdateEquipmentLocatorLedExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17488,6 +20335,7 @@ func (a *EquipmentApiService) UpdateEquipmentLocatorLedExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17497,6 +20345,7 @@ func (a *EquipmentApiService) UpdateEquipmentLocatorLedExecute(r ApiUpdateEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17540,9 +20389,9 @@ func (r ApiUpdateEquipmentPsuRequest) Execute() (*EquipmentPsu, *http.Response, 
 /*
 UpdateEquipmentPsu Update a 'equipment.Psu' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentPsuRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentPsuRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentPsu(ctx context.Context, moid string) ApiUpdateEquipmentPsuRequest {
 	return ApiUpdateEquipmentPsuRequest{
@@ -17553,7 +20402,8 @@ func (a *EquipmentApiService) UpdateEquipmentPsu(ctx context.Context, moid strin
 }
 
 // Execute executes the request
-//  @return EquipmentPsu
+//
+//	@return EquipmentPsu
 func (a *EquipmentApiService) UpdateEquipmentPsuExecute(r ApiUpdateEquipmentPsuRequest) (*EquipmentPsu, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -17568,7 +20418,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuExecute(r ApiUpdateEquipmentPsuR
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Psus/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17595,7 +20445,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuExecute(r ApiUpdateEquipmentPsuR
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentPsu
@@ -17609,9 +20459,9 @@ func (a *EquipmentApiService) UpdateEquipmentPsuExecute(r ApiUpdateEquipmentPsuR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17628,6 +20478,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuExecute(r ApiUpdateEquipmentPsuR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17638,6 +20489,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuExecute(r ApiUpdateEquipmentPsuR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17648,6 +20500,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuExecute(r ApiUpdateEquipmentPsuR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17658,6 +20511,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuExecute(r ApiUpdateEquipmentPsuR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17667,6 +20521,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuExecute(r ApiUpdateEquipmentPsuR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17710,9 +20565,9 @@ func (r ApiUpdateEquipmentPsuControlRequest) Execute() (*EquipmentPsuControl, *h
 /*
 UpdateEquipmentPsuControl Update a 'equipment.PsuControl' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentPsuControlRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentPsuControlRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentPsuControl(ctx context.Context, moid string) ApiUpdateEquipmentPsuControlRequest {
 	return ApiUpdateEquipmentPsuControlRequest{
@@ -17723,7 +20578,8 @@ func (a *EquipmentApiService) UpdateEquipmentPsuControl(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return EquipmentPsuControl
+//
+//	@return EquipmentPsuControl
 func (a *EquipmentApiService) UpdateEquipmentPsuControlExecute(r ApiUpdateEquipmentPsuControlRequest) (*EquipmentPsuControl, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -17738,7 +20594,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuControlExecute(r ApiUpdateEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/PsuControls/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17765,7 +20621,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuControlExecute(r ApiUpdateEquipm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentPsuControl
@@ -17779,9 +20635,9 @@ func (a *EquipmentApiService) UpdateEquipmentPsuControlExecute(r ApiUpdateEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17798,6 +20654,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuControlExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17808,6 +20665,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuControlExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17818,6 +20676,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuControlExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17828,6 +20687,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuControlExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17837,6 +20697,7 @@ func (a *EquipmentApiService) UpdateEquipmentPsuControlExecute(r ApiUpdateEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17880,9 +20741,9 @@ func (r ApiUpdateEquipmentRackEnclosureRequest) Execute() (*EquipmentRackEnclosu
 /*
 UpdateEquipmentRackEnclosure Update a 'equipment.RackEnclosure' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentRackEnclosureRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentRackEnclosureRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentRackEnclosure(ctx context.Context, moid string) ApiUpdateEquipmentRackEnclosureRequest {
 	return ApiUpdateEquipmentRackEnclosureRequest{
@@ -17893,7 +20754,8 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosure(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return EquipmentRackEnclosure
+//
+//	@return EquipmentRackEnclosure
 func (a *EquipmentApiService) UpdateEquipmentRackEnclosureExecute(r ApiUpdateEquipmentRackEnclosureRequest) (*EquipmentRackEnclosure, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -17908,7 +20770,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureExecute(r ApiUpdateEqu
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/RackEnclosures/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17935,7 +20797,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureExecute(r ApiUpdateEqu
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentRackEnclosure
@@ -17949,9 +20811,9 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureExecute(r ApiUpdateEqu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17968,6 +20830,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureExecute(r ApiUpdateEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17978,6 +20841,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureExecute(r ApiUpdateEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17988,6 +20852,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureExecute(r ApiUpdateEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17998,6 +20863,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureExecute(r ApiUpdateEqu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18007,6 +20873,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureExecute(r ApiUpdateEqu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18050,9 +20917,9 @@ func (r ApiUpdateEquipmentRackEnclosureSlotRequest) Execute() (*EquipmentRackEnc
 /*
 UpdateEquipmentRackEnclosureSlot Update a 'equipment.RackEnclosureSlot' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentRackEnclosureSlotRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentRackEnclosureSlotRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlot(ctx context.Context, moid string) ApiUpdateEquipmentRackEnclosureSlotRequest {
 	return ApiUpdateEquipmentRackEnclosureSlotRequest{
@@ -18063,7 +20930,8 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlot(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return EquipmentRackEnclosureSlot
+//
+//	@return EquipmentRackEnclosureSlot
 func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlotExecute(r ApiUpdateEquipmentRackEnclosureSlotRequest) (*EquipmentRackEnclosureSlot, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -18078,7 +20946,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlotExecute(r ApiUpdat
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/RackEnclosureSlots/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18105,7 +20973,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlotExecute(r ApiUpdat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentRackEnclosureSlot
@@ -18119,9 +20987,9 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlotExecute(r ApiUpdat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18138,6 +21006,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlotExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18148,6 +21017,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlotExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18158,6 +21028,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlotExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18168,6 +21039,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlotExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18177,6 +21049,7 @@ func (a *EquipmentApiService) UpdateEquipmentRackEnclosureSlotExecute(r ApiUpdat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18220,9 +21093,9 @@ func (r ApiUpdateEquipmentSharedIoModuleRequest) Execute() (*EquipmentSharedIoMo
 /*
 UpdateEquipmentSharedIoModule Update a 'equipment.SharedIoModule' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentSharedIoModuleRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentSharedIoModuleRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentSharedIoModule(ctx context.Context, moid string) ApiUpdateEquipmentSharedIoModuleRequest {
 	return ApiUpdateEquipmentSharedIoModuleRequest{
@@ -18233,7 +21106,8 @@ func (a *EquipmentApiService) UpdateEquipmentSharedIoModule(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return EquipmentSharedIoModule
+//
+//	@return EquipmentSharedIoModule
 func (a *EquipmentApiService) UpdateEquipmentSharedIoModuleExecute(r ApiUpdateEquipmentSharedIoModuleRequest) (*EquipmentSharedIoModule, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -18248,7 +21122,7 @@ func (a *EquipmentApiService) UpdateEquipmentSharedIoModuleExecute(r ApiUpdateEq
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/SharedIoModules/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18275,7 +21149,7 @@ func (a *EquipmentApiService) UpdateEquipmentSharedIoModuleExecute(r ApiUpdateEq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentSharedIoModule
@@ -18289,9 +21163,9 @@ func (a *EquipmentApiService) UpdateEquipmentSharedIoModuleExecute(r ApiUpdateEq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18308,6 +21182,7 @@ func (a *EquipmentApiService) UpdateEquipmentSharedIoModuleExecute(r ApiUpdateEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18318,6 +21193,7 @@ func (a *EquipmentApiService) UpdateEquipmentSharedIoModuleExecute(r ApiUpdateEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18328,6 +21204,7 @@ func (a *EquipmentApiService) UpdateEquipmentSharedIoModuleExecute(r ApiUpdateEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18338,6 +21215,7 @@ func (a *EquipmentApiService) UpdateEquipmentSharedIoModuleExecute(r ApiUpdateEq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18347,6 +21225,7 @@ func (a *EquipmentApiService) UpdateEquipmentSharedIoModuleExecute(r ApiUpdateEq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18390,9 +21269,9 @@ func (r ApiUpdateEquipmentSwitchCardRequest) Execute() (*EquipmentSwitchCard, *h
 /*
 UpdateEquipmentSwitchCard Update a 'equipment.SwitchCard' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentSwitchCardRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentSwitchCardRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentSwitchCard(ctx context.Context, moid string) ApiUpdateEquipmentSwitchCardRequest {
 	return ApiUpdateEquipmentSwitchCardRequest{
@@ -18403,7 +21282,8 @@ func (a *EquipmentApiService) UpdateEquipmentSwitchCard(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return EquipmentSwitchCard
+//
+//	@return EquipmentSwitchCard
 func (a *EquipmentApiService) UpdateEquipmentSwitchCardExecute(r ApiUpdateEquipmentSwitchCardRequest) (*EquipmentSwitchCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -18418,7 +21298,7 @@ func (a *EquipmentApiService) UpdateEquipmentSwitchCardExecute(r ApiUpdateEquipm
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/SwitchCards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18445,7 +21325,7 @@ func (a *EquipmentApiService) UpdateEquipmentSwitchCardExecute(r ApiUpdateEquipm
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentSwitchCard
@@ -18459,9 +21339,9 @@ func (a *EquipmentApiService) UpdateEquipmentSwitchCardExecute(r ApiUpdateEquipm
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18478,6 +21358,7 @@ func (a *EquipmentApiService) UpdateEquipmentSwitchCardExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18488,6 +21369,7 @@ func (a *EquipmentApiService) UpdateEquipmentSwitchCardExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18498,6 +21380,7 @@ func (a *EquipmentApiService) UpdateEquipmentSwitchCardExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18508,6 +21391,7 @@ func (a *EquipmentApiService) UpdateEquipmentSwitchCardExecute(r ApiUpdateEquipm
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18517,6 +21401,183 @@ func (a *EquipmentApiService) UpdateEquipmentSwitchCardExecute(r ApiUpdateEquipm
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateEquipmentSwitchOperationRequest struct {
+	ctx                      context.Context
+	ApiService               *EquipmentApiService
+	moid                     string
+	equipmentSwitchOperation *EquipmentSwitchOperation
+	ifMatch                  *string
+}
+
+// The &#39;equipment.SwitchOperation&#39; resource to update.
+func (r ApiUpdateEquipmentSwitchOperationRequest) EquipmentSwitchOperation(equipmentSwitchOperation EquipmentSwitchOperation) ApiUpdateEquipmentSwitchOperationRequest {
+	r.equipmentSwitchOperation = &equipmentSwitchOperation
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiUpdateEquipmentSwitchOperationRequest) IfMatch(ifMatch string) ApiUpdateEquipmentSwitchOperationRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiUpdateEquipmentSwitchOperationRequest) Execute() (*EquipmentSwitchOperation, *http.Response, error) {
+	return r.ApiService.UpdateEquipmentSwitchOperationExecute(r)
+}
+
+/*
+UpdateEquipmentSwitchOperation Update a 'equipment.SwitchOperation' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentSwitchOperationRequest
+*/
+func (a *EquipmentApiService) UpdateEquipmentSwitchOperation(ctx context.Context, moid string) ApiUpdateEquipmentSwitchOperationRequest {
+	return ApiUpdateEquipmentSwitchOperationRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return EquipmentSwitchOperation
+func (a *EquipmentApiService) UpdateEquipmentSwitchOperationExecute(r ApiUpdateEquipmentSwitchOperationRequest) (*EquipmentSwitchOperation, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *EquipmentSwitchOperation
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EquipmentApiService.UpdateEquipmentSwitchOperation")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/equipment/SwitchOperations/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.equipmentSwitchOperation == nil {
+		return localVarReturnValue, nil, reportError("equipmentSwitchOperation is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.equipmentSwitchOperation
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18560,9 +21621,9 @@ func (r ApiUpdateEquipmentSystemIoControllerRequest) Execute() (*EquipmentSystem
 /*
 UpdateEquipmentSystemIoController Update a 'equipment.SystemIoController' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentSystemIoControllerRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentSystemIoControllerRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentSystemIoController(ctx context.Context, moid string) ApiUpdateEquipmentSystemIoControllerRequest {
 	return ApiUpdateEquipmentSystemIoControllerRequest{
@@ -18573,7 +21634,8 @@ func (a *EquipmentApiService) UpdateEquipmentSystemIoController(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return EquipmentSystemIoController
+//
+//	@return EquipmentSystemIoController
 func (a *EquipmentApiService) UpdateEquipmentSystemIoControllerExecute(r ApiUpdateEquipmentSystemIoControllerRequest) (*EquipmentSystemIoController, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -18588,7 +21650,7 @@ func (a *EquipmentApiService) UpdateEquipmentSystemIoControllerExecute(r ApiUpda
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/SystemIoControllers/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18615,7 +21677,7 @@ func (a *EquipmentApiService) UpdateEquipmentSystemIoControllerExecute(r ApiUpda
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentSystemIoController
@@ -18629,9 +21691,9 @@ func (a *EquipmentApiService) UpdateEquipmentSystemIoControllerExecute(r ApiUpda
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18648,6 +21710,7 @@ func (a *EquipmentApiService) UpdateEquipmentSystemIoControllerExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18658,6 +21721,7 @@ func (a *EquipmentApiService) UpdateEquipmentSystemIoControllerExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18668,6 +21732,7 @@ func (a *EquipmentApiService) UpdateEquipmentSystemIoControllerExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18678,6 +21743,7 @@ func (a *EquipmentApiService) UpdateEquipmentSystemIoControllerExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18687,6 +21753,7 @@ func (a *EquipmentApiService) UpdateEquipmentSystemIoControllerExecute(r ApiUpda
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18730,9 +21797,9 @@ func (r ApiUpdateEquipmentTpmRequest) Execute() (*EquipmentTpm, *http.Response, 
 /*
 UpdateEquipmentTpm Update a 'equipment.Tpm' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentTpmRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentTpmRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentTpm(ctx context.Context, moid string) ApiUpdateEquipmentTpmRequest {
 	return ApiUpdateEquipmentTpmRequest{
@@ -18743,7 +21810,8 @@ func (a *EquipmentApiService) UpdateEquipmentTpm(ctx context.Context, moid strin
 }
 
 // Execute executes the request
-//  @return EquipmentTpm
+//
+//	@return EquipmentTpm
 func (a *EquipmentApiService) UpdateEquipmentTpmExecute(r ApiUpdateEquipmentTpmRequest) (*EquipmentTpm, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -18758,7 +21826,7 @@ func (a *EquipmentApiService) UpdateEquipmentTpmExecute(r ApiUpdateEquipmentTpmR
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Tpms/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18785,7 +21853,7 @@ func (a *EquipmentApiService) UpdateEquipmentTpmExecute(r ApiUpdateEquipmentTpmR
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentTpm
@@ -18799,9 +21867,9 @@ func (a *EquipmentApiService) UpdateEquipmentTpmExecute(r ApiUpdateEquipmentTpmR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18818,6 +21886,7 @@ func (a *EquipmentApiService) UpdateEquipmentTpmExecute(r ApiUpdateEquipmentTpmR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18828,6 +21897,7 @@ func (a *EquipmentApiService) UpdateEquipmentTpmExecute(r ApiUpdateEquipmentTpmR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18838,6 +21908,7 @@ func (a *EquipmentApiService) UpdateEquipmentTpmExecute(r ApiUpdateEquipmentTpmR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18848,6 +21919,7 @@ func (a *EquipmentApiService) UpdateEquipmentTpmExecute(r ApiUpdateEquipmentTpmR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18857,6 +21929,7 @@ func (a *EquipmentApiService) UpdateEquipmentTpmExecute(r ApiUpdateEquipmentTpmR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18900,9 +21973,9 @@ func (r ApiUpdateEquipmentTransceiverRequest) Execute() (*EquipmentTransceiver, 
 /*
 UpdateEquipmentTransceiver Update a 'equipment.Transceiver' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEquipmentTransceiverRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEquipmentTransceiverRequest
 */
 func (a *EquipmentApiService) UpdateEquipmentTransceiver(ctx context.Context, moid string) ApiUpdateEquipmentTransceiverRequest {
 	return ApiUpdateEquipmentTransceiverRequest{
@@ -18913,7 +21986,8 @@ func (a *EquipmentApiService) UpdateEquipmentTransceiver(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return EquipmentTransceiver
+//
+//	@return EquipmentTransceiver
 func (a *EquipmentApiService) UpdateEquipmentTransceiverExecute(r ApiUpdateEquipmentTransceiverRequest) (*EquipmentTransceiver, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -18928,7 +22002,7 @@ func (a *EquipmentApiService) UpdateEquipmentTransceiverExecute(r ApiUpdateEquip
 	}
 
 	localVarPath := localBasePath + "/api/v1/equipment/Transceivers/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18955,7 +22029,7 @@ func (a *EquipmentApiService) UpdateEquipmentTransceiverExecute(r ApiUpdateEquip
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.equipmentTransceiver
@@ -18969,9 +22043,9 @@ func (a *EquipmentApiService) UpdateEquipmentTransceiverExecute(r ApiUpdateEquip
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18988,6 +22062,7 @@ func (a *EquipmentApiService) UpdateEquipmentTransceiverExecute(r ApiUpdateEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18998,6 +22073,7 @@ func (a *EquipmentApiService) UpdateEquipmentTransceiverExecute(r ApiUpdateEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19008,6 +22084,7 @@ func (a *EquipmentApiService) UpdateEquipmentTransceiverExecute(r ApiUpdateEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19018,6 +22095,7 @@ func (a *EquipmentApiService) UpdateEquipmentTransceiverExecute(r ApiUpdateEquip
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19027,6 +22105,7 @@ func (a *EquipmentApiService) UpdateEquipmentTransceiverExecute(r ApiUpdateEquip
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

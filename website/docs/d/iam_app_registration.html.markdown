@@ -39,6 +39,7 @@ All objects matching the filter criteria are fetched through pagination.
 To access the ith object of the results obtained, use `data.intersight_iam_app_registration.<custom_name>.results[i].<propertyname>`.
 The following arguments can be used to get data of already created objects in Intersight appliance:
 * `account_moid`:(string) The Account ID for this managed object. 
+* `admin_status`:(string) Used to trigger the enable or disable action on the App Registration. These actions change the status of an App Registration.* `enable` - Used to enable a disabled API key/App Registration. If the API key/App Registration is already expired, this action has no effect.* `disable` - Used to disable an active API key/App Registration. If the API key/App Registration is already expired, this action has no effect. 
 * `client_id`:(string) A unique identifier for the OAuth2 client application.The client ID is auto-generated when the AppRegistration object is created. 
 * `client_name`:(string) App Registration name specified by user. 
 * `client_secret`:(string) The OAuth2 client secret.The value of this property is generated when grantType includes 'client-credentials'.Otherwise, no client-secret is generated. 
@@ -46,11 +47,17 @@ The following arguments can be used to get data of already created objects in In
 * `create_time`:(string) The time when this managed object was created. 
 * `description`:(string) Description of the application. 
 * `domain_group_moid`:(string) The DomainGroup ID for this managed object. 
+* `expiry_date_time`:(string) The expiration date of the App Registration which is set at the time of its creation. Its value can only be assigned a date that falls within the range determined by the maximum expiration time configured at the account level. The expiry date can be edited to be earlier or later, provided it stays within the designated expiry period. This period is determined by adding the 'startTime' property of the App Registration to the maximum expiry time configured at the account level. 
+* `is_never_expiring`:(bool) Used to mark the App Registration as a never-expiring App Registration. 
+* `last_used_ip`:(string) The ip address from which the App Registration was last used. 
+* `last_used_time`:(string) The time at which the App Registration was last used. It is updated every 24 hours. 
 * `mod_time`:(string) The time when this managed object was last modified. 
 * `moid`:(string) The unique identifier of this Managed Object instance. 
+* `oper_status`:(string) The current status of the App Registration that dictates the validity of the app.* `enabled` - An API key/App Registration having enabled status can be used for API invocation.* `disabled` - An API key/App Registration having disabled status cannot be used for API invocation.* `expired` - An API key/App Registration having expired status cannot be used for API invocation as the expiration date has passed. 
 * `renew_client_secret`:(bool) Set value to true to renew the client-secret. Applicable to client_credentials grant type. 
 * `revocation_timestamp`:(string) Used to perform revocation for tokens of AppRegistration.Updated only internally is case Revoke property come from UI with value true.On each request with OAuth2 access token the CreationTime of the OAuth2 token will be compared to RevokationTimestamp of thecorresponding App Registration. 
 * `revoke`:(bool) Used to trigger update the revocationTimestamp value.If UI sent updating request with the Revoke value is true, then update RevocationTimestamp. 
 * `shared_scope`:(string) Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.Objects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs. 
 * `show_consent_screen`:(bool) Set to true if consent screen needs to be shown during the OAuth login process.Applicable only for public AppRegistrations, means only 'authorization_code' grantType.Note that consent screen will be shown on each login. 
+* `start_time`:(string) The timestamp at which an expiry date was first set on this app registration. For expiring App Registrations, this field is same as the create time of the App Registration.For never-expiring App Registrations, this field is set initially to zero time value. If a never-expiry App Registration is later changed to have an expiration, the timestamp marking the start of this transition is recorded in this field. 
  

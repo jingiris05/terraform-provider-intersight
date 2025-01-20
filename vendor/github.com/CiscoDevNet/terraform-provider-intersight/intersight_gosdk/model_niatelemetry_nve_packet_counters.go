@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the NiatelemetryNvePacketCounters type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &NiatelemetryNvePacketCounters{}
 
 // NiatelemetryNvePacketCounters Stores the packet count per switch.
 type NiatelemetryNvePacketCounters struct {
@@ -84,6 +88,11 @@ func (o *NiatelemetryNvePacketCounters) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "niatelemetry.NvePacketCounters" of the ClassId field.
+func (o *NiatelemetryNvePacketCounters) GetDefaultClassId() interface{} {
+	return "niatelemetry.NvePacketCounters"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *NiatelemetryNvePacketCounters) GetObjectType() string {
 	if o == nil {
@@ -108,9 +117,14 @@ func (o *NiatelemetryNvePacketCounters) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "niatelemetry.NvePacketCounters" of the ObjectType field.
+func (o *NiatelemetryNvePacketCounters) GetDefaultObjectType() interface{} {
+	return "niatelemetry.NvePacketCounters"
+}
+
 // GetMcastInpkts returns the McastInpkts field value if set, zero value otherwise.
 func (o *NiatelemetryNvePacketCounters) GetMcastInpkts() int64 {
-	if o == nil || o.McastInpkts == nil {
+	if o == nil || IsNil(o.McastInpkts) {
 		var ret int64
 		return ret
 	}
@@ -120,7 +134,7 @@ func (o *NiatelemetryNvePacketCounters) GetMcastInpkts() int64 {
 // GetMcastInpktsOk returns a tuple with the McastInpkts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryNvePacketCounters) GetMcastInpktsOk() (*int64, bool) {
-	if o == nil || o.McastInpkts == nil {
+	if o == nil || IsNil(o.McastInpkts) {
 		return nil, false
 	}
 	return o.McastInpkts, true
@@ -128,7 +142,7 @@ func (o *NiatelemetryNvePacketCounters) GetMcastInpktsOk() (*int64, bool) {
 
 // HasMcastInpkts returns a boolean if a field has been set.
 func (o *NiatelemetryNvePacketCounters) HasMcastInpkts() bool {
-	if o != nil && o.McastInpkts != nil {
+	if o != nil && !IsNil(o.McastInpkts) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *NiatelemetryNvePacketCounters) SetMcastInpkts(v int64) {
 
 // GetMcastOutbytes returns the McastOutbytes field value if set, zero value otherwise.
 func (o *NiatelemetryNvePacketCounters) GetMcastOutbytes() int64 {
-	if o == nil || o.McastOutbytes == nil {
+	if o == nil || IsNil(o.McastOutbytes) {
 		var ret int64
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *NiatelemetryNvePacketCounters) GetMcastOutbytes() int64 {
 // GetMcastOutbytesOk returns a tuple with the McastOutbytes field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryNvePacketCounters) GetMcastOutbytesOk() (*int64, bool) {
-	if o == nil || o.McastOutbytes == nil {
+	if o == nil || IsNil(o.McastOutbytes) {
 		return nil, false
 	}
 	return o.McastOutbytes, true
@@ -160,7 +174,7 @@ func (o *NiatelemetryNvePacketCounters) GetMcastOutbytesOk() (*int64, bool) {
 
 // HasMcastOutbytes returns a boolean if a field has been set.
 func (o *NiatelemetryNvePacketCounters) HasMcastOutbytes() bool {
-	if o != nil && o.McastOutbytes != nil {
+	if o != nil && !IsNil(o.McastOutbytes) {
 		return true
 	}
 
@@ -174,7 +188,7 @@ func (o *NiatelemetryNvePacketCounters) SetMcastOutbytes(v int64) {
 
 // GetUcastInpkts returns the UcastInpkts field value if set, zero value otherwise.
 func (o *NiatelemetryNvePacketCounters) GetUcastInpkts() int64 {
-	if o == nil || o.UcastInpkts == nil {
+	if o == nil || IsNil(o.UcastInpkts) {
 		var ret int64
 		return ret
 	}
@@ -184,7 +198,7 @@ func (o *NiatelemetryNvePacketCounters) GetUcastInpkts() int64 {
 // GetUcastInpktsOk returns a tuple with the UcastInpkts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryNvePacketCounters) GetUcastInpktsOk() (*int64, bool) {
-	if o == nil || o.UcastInpkts == nil {
+	if o == nil || IsNil(o.UcastInpkts) {
 		return nil, false
 	}
 	return o.UcastInpkts, true
@@ -192,7 +206,7 @@ func (o *NiatelemetryNvePacketCounters) GetUcastInpktsOk() (*int64, bool) {
 
 // HasUcastInpkts returns a boolean if a field has been set.
 func (o *NiatelemetryNvePacketCounters) HasUcastInpkts() bool {
-	if o != nil && o.UcastInpkts != nil {
+	if o != nil && !IsNil(o.UcastInpkts) {
 		return true
 	}
 
@@ -206,7 +220,7 @@ func (o *NiatelemetryNvePacketCounters) SetUcastInpkts(v int64) {
 
 // GetUcastOutpkts returns the UcastOutpkts field value if set, zero value otherwise.
 func (o *NiatelemetryNvePacketCounters) GetUcastOutpkts() int64 {
-	if o == nil || o.UcastOutpkts == nil {
+	if o == nil || IsNil(o.UcastOutpkts) {
 		var ret int64
 		return ret
 	}
@@ -216,7 +230,7 @@ func (o *NiatelemetryNvePacketCounters) GetUcastOutpkts() int64 {
 // GetUcastOutpktsOk returns a tuple with the UcastOutpkts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NiatelemetryNvePacketCounters) GetUcastOutpktsOk() (*int64, bool) {
-	if o == nil || o.UcastOutpkts == nil {
+	if o == nil || IsNil(o.UcastOutpkts) {
 		return nil, false
 	}
 	return o.UcastOutpkts, true
@@ -224,7 +238,7 @@ func (o *NiatelemetryNvePacketCounters) GetUcastOutpktsOk() (*int64, bool) {
 
 // HasUcastOutpkts returns a boolean if a field has been set.
 func (o *NiatelemetryNvePacketCounters) HasUcastOutpkts() bool {
-	if o != nil && o.UcastOutpkts != nil {
+	if o != nil && !IsNil(o.UcastOutpkts) {
 		return true
 	}
 
@@ -237,31 +251,41 @@ func (o *NiatelemetryNvePacketCounters) SetUcastOutpkts(v int64) {
 }
 
 func (o NiatelemetryNvePacketCounters) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o NiatelemetryNvePacketCounters) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.McastInpkts != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.McastInpkts) {
 		toSerialize["McastInpkts"] = o.McastInpkts
 	}
-	if o.McastOutbytes != nil {
+	if !IsNil(o.McastOutbytes) {
 		toSerialize["McastOutbytes"] = o.McastOutbytes
 	}
-	if o.UcastInpkts != nil {
+	if !IsNil(o.UcastInpkts) {
 		toSerialize["UcastInpkts"] = o.UcastInpkts
 	}
-	if o.UcastOutpkts != nil {
+	if !IsNil(o.UcastOutpkts) {
 		toSerialize["UcastOutpkts"] = o.UcastOutpkts
 	}
 
@@ -269,10 +293,51 @@ func (o NiatelemetryNvePacketCounters) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *NiatelemetryNvePacketCounters) UnmarshalJSON(bytes []byte) (err error) {
+func (o *NiatelemetryNvePacketCounters) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type NiatelemetryNvePacketCountersWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -290,7 +355,7 @@ func (o *NiatelemetryNvePacketCounters) UnmarshalJSON(bytes []byte) (err error) 
 
 	varNiatelemetryNvePacketCountersWithoutEmbeddedStruct := NiatelemetryNvePacketCountersWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varNiatelemetryNvePacketCountersWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varNiatelemetryNvePacketCountersWithoutEmbeddedStruct)
 	if err == nil {
 		varNiatelemetryNvePacketCounters := _NiatelemetryNvePacketCounters{}
 		varNiatelemetryNvePacketCounters.ClassId = varNiatelemetryNvePacketCountersWithoutEmbeddedStruct.ClassId
@@ -306,7 +371,7 @@ func (o *NiatelemetryNvePacketCounters) UnmarshalJSON(bytes []byte) (err error) 
 
 	varNiatelemetryNvePacketCounters := _NiatelemetryNvePacketCounters{}
 
-	err = json.Unmarshal(bytes, &varNiatelemetryNvePacketCounters)
+	err = json.Unmarshal(data, &varNiatelemetryNvePacketCounters)
 	if err == nil {
 		o.MoBaseComplexType = varNiatelemetryNvePacketCounters.MoBaseComplexType
 	} else {
@@ -315,7 +380,7 @@ func (o *NiatelemetryNvePacketCounters) UnmarshalJSON(bytes []byte) (err error) 
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "McastInpkts")

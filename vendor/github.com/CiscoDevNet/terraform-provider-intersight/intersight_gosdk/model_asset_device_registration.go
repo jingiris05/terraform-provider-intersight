@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the AssetDeviceRegistration type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AssetDeviceRegistration{}
 
 // AssetDeviceRegistration DeviceRegistration represents a device connector enabled endpoint which has registered with Intersight.
 type AssetDeviceRegistration struct {
@@ -37,24 +41,29 @@ type AssetDeviceRegistration struct {
 	ExecutionMode   *string                     `json:"ExecutionMode,omitempty"`
 	ParentSignature NullableAssetClaimSignature `json:"ParentSignature,omitempty"`
 	Pid             []string                    `json:"Pid,omitempty"`
-	// The platform type on which device connector is executing. * `` - The device reported an empty or unrecognized platform type. * `APIC` - An Application Policy Infrastructure Controller cluster. * `CAPIC` - A Cloud Application Policy Infrastructure Controller instance. * `DCNM` - A Data Center Network Manager instance. Data Center Network Manager (DCNM) is the network management platform for all NX-OS-enabled deployments, spanning new fabric architectures, IP Fabric for Media, and storage networking deployments for the Cisco Nexus-powered data center. * `UCSFI` - A UCS Fabric Interconnect in HA or standalone mode, which is being managed by UCS Manager (UCSM). * `UCSFIISM` - A UCS Fabric Interconnect in HA or standalone mode, managed directly by Intersight. * `IMC` - A standalone UCS Server Integrated Management Controller. * `IMCM4` - A standalone UCS M4 Server. * `IMCM5` - A standalone UCS M5 server. * `IMCRack` - A standalone UCS M6 and above server. * `UCSIOM` - An UCS Chassis IO module. * `HX` - A HyperFlex storage controller. * `HyperFlexAP` - A HyperFlex Application Platform. * `IWE` - An Intersight Workload Engine. * `UCSD` - A UCS Director virtual appliance. Cisco UCS Director automates, orchestrates, and manages Cisco and third-party hardware. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance. * `IntersightAssist` - A Cisco Intersight Assist. * `PureStorageFlashArray` - A Pure Storage FlashArray device. * `NexusDevice` - A generic platform type to support Nexus Network Device. This can also be extended to support all network devices later on. * `ACISwitch` - A platform type to support ACI Switches. * `NexusSwitch` - A platform type to support Cisco Nexus Switches. * `MDSSwitch` - A platform type to support Cisco MDS Switches. * `MDSDevice` - A platform type to support MDS devices. * `UCSC890` - A standalone Cisco UCSC890 server. * `RedfishServer` - A generic target type for servers that support Redfish. Current support is limited to managing HPE and Dell servers on Intersight. * `NetAppOntap` - A NetApp ONTAP storage system. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager. * `EmcScaleIo` - An EMC ScaleIO storage system. * `EmcVmax` - An EMC VMAX storage system. * `EmcVplex` - An EMC VPLEX storage system. * `EmcXtremIo` - An EMC XtremIO storage system. * `VmwareVcenter` - A VMware vCenter device that manages Virtual Machines. * `MicrosoftHyperV` - A Microsoft Hyper-V system that manages Virtual Machines. * `AppDynamics` - An AppDynamics controller that monitors applications. * `Dynatrace` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `NewRelic` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `ReadHatOpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server. * `MySqlServer` - An instance of either Oracle MySQL Database or the open source MariaDB. * `Kubernetes` - A Kubernetes cluster that runs containerized applications. * `AmazonWebService` - An Amazon web service target that discovers and monitors different services like EC2. It discovers entities like VMs, Volumes, regions etc. and monitors attributes like Mem, CPU, cost. * `AmazonWebServiceBilling` - An Amazon web service billing target to retrieve billing information stored in S3 bucket. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal target that discovers all the associated Azure subscriptions. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement target that discovers cost, billing and RIs. * `DellCompellent` - A Dell Compellent storage system. * `HPE3Par` - A HPE 3PAR storage system. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis system that combines servers and storage into a distributed infrastructure platform. * `HPEOneView` - A HPE Oneview management system that manages compute, storage, and networking. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform also referred to as Hitachi VSP. It includes various storage systems designed for data centers. * `IMCBlade` - An Intersight managed UCS Blade Server. * `TerraformCloud` - A Terraform Cloud account. * `TerraformAgent` - A Terraform Cloud Agent that Intersight will deploy in datacenter. The agent will execute Terraform plan for Terraform Cloud workspace configured to use the agent. * `CustomTarget` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic. * `AnsibleEndpoint` - An external endpoint added as Target that can be accessed through Ansible in Intersight Cloud Orchestrator automation workflow. * `HTTPEndpoint` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic, Bearer Token. * `SSHEndpoint` - An external endpoint added as Target that can be accessed through SSH in Intersight Cloud Orchestrator automation workflow. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows machine on which PowerShell scripts can be executed remotely.
+	// The platform type on which device connector is executing. * `` - An unrecognized platform type. * `APIC` - A Cisco Application Policy Infrastructure Controller (APIC) cluster. * `CAPIC` - A Cisco Cloud Application Policy Infrastructure Controller (Cloud APIC) instance. * `DCNM` - A Cisco Data Center Network Manager (DCNM) instance. * `UCSFI` - A Cisco UCS Fabric Interconnect that is managed by Cisco UCS Manager (UCSM). * `UCSFIISM` - A Cisco UCS Fabric Interconnect that is managed by Cisco Intersight. * `IMC` - A standalone Cisco UCS rack server (Deprecated). * `IMCM4` - A standalone Cisco UCS C-Series or S-Series M4 server. * `IMCM5` - A standalone Cisco UCS C-Series or S-Series M5 server. * `IMCRack` - A standalone Cisco UCS C-Series or S-Series M6 or newer server. * `UCSIOM` - A Cisco UCS Blade Chassis I/O Module (IOM). * `HX` - A Cisco HyperFlex (HX) cluster. * `UCSD` - A Cisco UCS Director (UCSD) instance. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance instance. * `IntersightAssist` - A Cisco Intersight Assist instance. * `PureStorageFlashArray` - A Pure Storage FlashArray that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and storage management features are supported on this device. * `NexusDevice` - A Cisco Nexus Network Switch that is managed using Cisco Intersight Assist. * `ACISwitch` - A Cisco Nexus Network Switch with the embedded Device Connector and is a part of the Cisco ACI fabric. * `NexusSwitch` - A standalone Cisco Nexus Network Switch with the embedded Device Connector. * `MDSSwitch` - A Cisco MDS Switch that is managed using the embedded Device Connector. * `MDSDevice` - A Cisco MDS Switch that is managed using Cisco Intersight Assist. * `UCSC890` - A standalone Cisco UCS C890 server managed using Cisco Intersight Assist. * `RedfishServer` - A generic target type for servers that support Redfish APIs and is managed using Cisco Intersight Assist. Support is limited to HPE and Dell Servers. * `NetAppOntap` - A Netapp ONTAP Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager (AIQUM) that is managed using Cisco Intersight Assist. * `EmcScaleIo` - An EMC ScaleIO Software Defined Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVmax` - An EMC VMAX 2 or 3 series enterprise storage array that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVplex` - An EMC VPLEX virtual storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcXtremIo` - An EMC XtremIO SSD storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `VmwareVcenter` - A VMware vCenter instance that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and Virtualization features are supported on this hypervisor. * `MicrosoftHyperV` - A Microsoft Hyper-V host that is managed using Cisco Intersight Assist. Optionally, other hosts in the cluster can be discovered through this host. Cisco Intersight Workload Optimizer features are supported on this hypervisor. * `AppDynamics` - An AppDynamics controller running in a SaaS or on-prem datacenter. On-prem AppDynamics instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this controller. * `Dynatrace` - A Dynatrace Server instance running in a SaaS or on-prem datacenter. On-prem Dynatrace instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `NewRelic` - A NewRelic user account. The NewRelic instance monitors the application infrastructure. Cisco Intersight Workload Optimizer features are supported on this server. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `Umbrella` - Umbrella cloud target that discovers and monitors an organization. It discovers entities like Datacenters, Devices, Tunnels, Networks, etc. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `MySqlServer` - A MySQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `OracleDatabaseServer` - An Oracle database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `IBMWebSphereApplicationServer` - An IBM WebSphere Application server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application server. * `OracleWebLogicServer` - Oracle WebLogic Server is a unified and extensible platform for developing, deploying and running enterprise applications, such as Java, for on-premises and in the cloud. WebLogic Server offers a robust, mature, and scalable implementation of Java Enterprise Edition (EE) and Jakarta EE. * `ApacheTomcatServer` - An Apache Tomcat server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `JavaVirtualMachine` - A JVM Application with JMX configured that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application. * `RedHatJBossApplicationServer` - JBoss Application Server is an open-source, cross-platform Java application server developed by JBoss, a division of Red Hat Inc. It is an open-source implementation of Java 2 Enterprise Edition (J2EE) that is used for implementing Java applications and other Web-based applications and software. * `Kubernetes` - A Kubernetes cluster that runs containerized applications, with Kubernetes Collector installed. Cisco Intersight Workload Optimizer features are supported on Kubernetes cluster. * `AmazonWebService` - An Amazon Web Service cloud account. Cisco Intersight Workload Optimizer and Virtualization features are supported on this cloud. * `AmazonWebServiceBilling` - An Amazon Web Service cloud billing account used to retrieve billing information stored in S3 bucket. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatform` - A Google Cloud Platform service account with access to one or more projects. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatformBilling` - A Google Cloud Platform service account used to retrieve billing information from BigQuery. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal account with access to Azure subscriptions. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement enrolment used to retrieve pricing and billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureBilling` - A Microsoft Azure Service Principal account with access to billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `DellCompellent` - A Dell EMC SC Series (Compellent) storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `HPE3Par` - A HPE 3PAR StoreServ system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis cluster that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this cluster. * `NutanixPrismCentral` - A Nutanix Prism Central cluster. Prism central is a virtual appliance for managing Nutanix clusters and services. * `HPEOneView` - A HPE OneView system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this system. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform (Hitachi VSP) that is managed using Cisco Intersight Assist. * `GenericTarget` - A generic third-party target supported only in Partner Integration Appliance. This target type is used for development purposes and will not be supported in production environment. * `IMCBlade` - A Cisco UCS blade server managed by Cisco Intersight. * `TerraformCloud` - A Terraform Cloud Business Tier account. * `TerraformAgent` - A Terraform Cloud Agent that will be deployed on Cisco Intersight Assist. The agent can be used to plan and apply Terraform runs from a Terraform Cloud workspace. * `CustomTarget` - CustomTarget is deprecated. Use HTTPEndpoint type to claim HTTP endpoints. * `AnsibleEndpoint` - An external endpoint that is added as a target which can be accessed through Ansible in Intersight Cloud Orchestrator automation workflows. * `HTTPEndpoint` - An HTTP endpoint that can be accessed in Intersight Orchestrator workflows directly or using Cisco Intersight Assist. Authentication Schemes supported are Basic and Bearer Token. * `SSHEndpoint` - An SSH endpoint that can be accessed in Intersight Orchestrator workflows using Cisco Intersight Assist. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows operating system server on which PowerShell scripts can be executed using Cisco Intersight Assist. * `CiscoDNAC` - A Cisco Digital Network Architecture (DNA) Center appliance. * `CiscoFMC` - A Cisco Secure Firewall Management Center. * `ViptelaCloud` - A Cisco Viptela SD-WAN Cloud. * `MerakiCloud` - A Cisco Meraki Organization. * `CiscoISE` - A Cisco Identity Services Engine (ISE) target.
 	PlatformType *string `json:"PlatformType,omitempty"`
-	// The device connector's public key used by Intersight to authenticate a connection from the device connector. The public key is used to verify that the signature a device connector sends on connect has been signed by the connector's private key stored on the device's filesystem. Must be a PEM encoded RSA public key string.
+	// The device connector's public key used by Intersight to authenticate a connection from the device connector. The public key is used to verify that the signature a device connector sends on connect has been signed by the connector's private key stored on the device's filesystem. Must be a PEM encoded RSA or Ed22519 public key string.
 	PublicAccessKey *string `json:"PublicAccessKey,omitempty"`
+	// The device connector public key used by Intersight for encryption. The public key is used to encrypt ephemeral aes keys to be used for decrypting sensitive data from Intersight. Must be a PEM encoded RSA public key string.
+	PublicEncryptionKey *string `json:"PublicEncryptionKey,omitempty"`
 	// Flag reported by devices to indicate an administrator of the device has disabled management operations of the device connector and only monitoring is permitted.
 	ReadOnly *bool    `json:"ReadOnly,omitempty"`
 	Serial   []string `json:"Serial,omitempty"`
 	// The vendor of the managed device.
-	Vendor        *string                 `json:"Vendor,omitempty"`
-	Account       *IamAccountRelationship `json:"Account,omitempty"`
-	ClaimedByUser *IamUserRelationship    `json:"ClaimedByUser,omitempty"`
+	Vendor        *string                        `json:"Vendor,omitempty"`
+	Account       NullableIamAccountRelationship `json:"Account,omitempty"`
+	ClaimedByUser NullableIamUserRelationship    `json:"ClaimedByUser,omitempty"`
 	// An array of relationships to assetClusterMember resources.
-	ClusterMembers       []AssetClusterMemberRelationship      `json:"ClusterMembers,omitempty"`
-	DeviceClaim          *AssetDeviceClaimRelationship         `json:"DeviceClaim,omitempty"`
-	DeviceConfiguration  *AssetDeviceConfigurationRelationship `json:"DeviceConfiguration,omitempty"`
-	DomainGroup          *IamDomainGroupRelationship           `json:"DomainGroup,omitempty"`
-	ParentConnection     *AssetDeviceRegistrationRelationship  `json:"ParentConnection,omitempty"`
-	AdditionalProperties map[string]interface{}
+	ClusterMembers []AssetClusterMemberRelationship `json:"ClusterMembers,omitempty"`
+	// An array of relationships to moBaseMo resources.
+	CustomPermissionResources []MoBaseMoRelationship                       `json:"CustomPermissionResources,omitempty"`
+	DeviceClaim               NullableAssetDeviceClaimRelationship         `json:"DeviceClaim,omitempty"`
+	DeviceConfiguration       NullableAssetDeviceConfigurationRelationship `json:"DeviceConfiguration,omitempty"`
+	DomainGroup               NullableIamDomainGroupRelationship           `json:"DomainGroup,omitempty"`
+	ParentConnection          NullableAssetDeviceRegistrationRelationship  `json:"ParentConnection,omitempty"`
+	Target                    NullableAssetTargetRelationship              `json:"Target,omitempty"`
+	AdditionalProperties      map[string]interface{}
 }
 
 type _AssetDeviceRegistration AssetDeviceRegistration
@@ -114,6 +123,11 @@ func (o *AssetDeviceRegistration) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "asset.DeviceRegistration" of the ClassId field.
+func (o *AssetDeviceRegistration) GetDefaultClassId() interface{} {
+	return "asset.DeviceRegistration"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *AssetDeviceRegistration) GetObjectType() string {
 	if o == nil {
@@ -138,9 +152,14 @@ func (o *AssetDeviceRegistration) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "asset.DeviceRegistration" of the ObjectType field.
+func (o *AssetDeviceRegistration) GetDefaultObjectType() interface{} {
+	return "asset.DeviceRegistration"
+}
+
 // GetAccessKeyId returns the AccessKeyId field value if set, zero value otherwise.
 func (o *AssetDeviceRegistration) GetAccessKeyId() string {
-	if o == nil || o.AccessKeyId == nil {
+	if o == nil || IsNil(o.AccessKeyId) {
 		var ret string
 		return ret
 	}
@@ -150,7 +169,7 @@ func (o *AssetDeviceRegistration) GetAccessKeyId() string {
 // GetAccessKeyIdOk returns a tuple with the AccessKeyId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceRegistration) GetAccessKeyIdOk() (*string, bool) {
-	if o == nil || o.AccessKeyId == nil {
+	if o == nil || IsNil(o.AccessKeyId) {
 		return nil, false
 	}
 	return o.AccessKeyId, true
@@ -158,7 +177,7 @@ func (o *AssetDeviceRegistration) GetAccessKeyIdOk() (*string, bool) {
 
 // HasAccessKeyId returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasAccessKeyId() bool {
-	if o != nil && o.AccessKeyId != nil {
+	if o != nil && !IsNil(o.AccessKeyId) {
 		return true
 	}
 
@@ -172,7 +191,7 @@ func (o *AssetDeviceRegistration) SetAccessKeyId(v string) {
 
 // GetClaimedByUserName returns the ClaimedByUserName field value if set, zero value otherwise.
 func (o *AssetDeviceRegistration) GetClaimedByUserName() string {
-	if o == nil || o.ClaimedByUserName == nil {
+	if o == nil || IsNil(o.ClaimedByUserName) {
 		var ret string
 		return ret
 	}
@@ -182,7 +201,7 @@ func (o *AssetDeviceRegistration) GetClaimedByUserName() string {
 // GetClaimedByUserNameOk returns a tuple with the ClaimedByUserName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceRegistration) GetClaimedByUserNameOk() (*string, bool) {
-	if o == nil || o.ClaimedByUserName == nil {
+	if o == nil || IsNil(o.ClaimedByUserName) {
 		return nil, false
 	}
 	return o.ClaimedByUserName, true
@@ -190,7 +209,7 @@ func (o *AssetDeviceRegistration) GetClaimedByUserNameOk() (*string, bool) {
 
 // HasClaimedByUserName returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasClaimedByUserName() bool {
-	if o != nil && o.ClaimedByUserName != nil {
+	if o != nil && !IsNil(o.ClaimedByUserName) {
 		return true
 	}
 
@@ -204,7 +223,7 @@ func (o *AssetDeviceRegistration) SetClaimedByUserName(v string) {
 
 // GetClaimedTime returns the ClaimedTime field value if set, zero value otherwise.
 func (o *AssetDeviceRegistration) GetClaimedTime() time.Time {
-	if o == nil || o.ClaimedTime == nil {
+	if o == nil || IsNil(o.ClaimedTime) {
 		var ret time.Time
 		return ret
 	}
@@ -214,7 +233,7 @@ func (o *AssetDeviceRegistration) GetClaimedTime() time.Time {
 // GetClaimedTimeOk returns a tuple with the ClaimedTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceRegistration) GetClaimedTimeOk() (*time.Time, bool) {
-	if o == nil || o.ClaimedTime == nil {
+	if o == nil || IsNil(o.ClaimedTime) {
 		return nil, false
 	}
 	return o.ClaimedTime, true
@@ -222,7 +241,7 @@ func (o *AssetDeviceRegistration) GetClaimedTimeOk() (*time.Time, bool) {
 
 // HasClaimedTime returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasClaimedTime() bool {
-	if o != nil && o.ClaimedTime != nil {
+	if o != nil && !IsNil(o.ClaimedTime) {
 		return true
 	}
 
@@ -247,7 +266,7 @@ func (o *AssetDeviceRegistration) GetDeviceHostname() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetDeviceHostnameOk() ([]string, bool) {
-	if o == nil || o.DeviceHostname == nil {
+	if o == nil || IsNil(o.DeviceHostname) {
 		return nil, false
 	}
 	return o.DeviceHostname, true
@@ -255,7 +274,7 @@ func (o *AssetDeviceRegistration) GetDeviceHostnameOk() ([]string, bool) {
 
 // HasDeviceHostname returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasDeviceHostname() bool {
-	if o != nil && o.DeviceHostname != nil {
+	if o != nil && !IsNil(o.DeviceHostname) {
 		return true
 	}
 
@@ -280,7 +299,7 @@ func (o *AssetDeviceRegistration) GetDeviceIpAddress() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetDeviceIpAddressOk() ([]string, bool) {
-	if o == nil || o.DeviceIpAddress == nil {
+	if o == nil || IsNil(o.DeviceIpAddress) {
 		return nil, false
 	}
 	return o.DeviceIpAddress, true
@@ -288,7 +307,7 @@ func (o *AssetDeviceRegistration) GetDeviceIpAddressOk() ([]string, bool) {
 
 // HasDeviceIpAddress returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasDeviceIpAddress() bool {
-	if o != nil && o.DeviceIpAddress != nil {
+	if o != nil && !IsNil(o.DeviceIpAddress) {
 		return true
 	}
 
@@ -302,7 +321,7 @@ func (o *AssetDeviceRegistration) SetDeviceIpAddress(v []string) {
 
 // GetExecutionMode returns the ExecutionMode field value if set, zero value otherwise.
 func (o *AssetDeviceRegistration) GetExecutionMode() string {
-	if o == nil || o.ExecutionMode == nil {
+	if o == nil || IsNil(o.ExecutionMode) {
 		var ret string
 		return ret
 	}
@@ -312,7 +331,7 @@ func (o *AssetDeviceRegistration) GetExecutionMode() string {
 // GetExecutionModeOk returns a tuple with the ExecutionMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceRegistration) GetExecutionModeOk() (*string, bool) {
-	if o == nil || o.ExecutionMode == nil {
+	if o == nil || IsNil(o.ExecutionMode) {
 		return nil, false
 	}
 	return o.ExecutionMode, true
@@ -320,7 +339,7 @@ func (o *AssetDeviceRegistration) GetExecutionModeOk() (*string, bool) {
 
 // HasExecutionMode returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasExecutionMode() bool {
-	if o != nil && o.ExecutionMode != nil {
+	if o != nil && !IsNil(o.ExecutionMode) {
 		return true
 	}
 
@@ -334,7 +353,7 @@ func (o *AssetDeviceRegistration) SetExecutionMode(v string) {
 
 // GetParentSignature returns the ParentSignature field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceRegistration) GetParentSignature() AssetClaimSignature {
-	if o == nil || o.ParentSignature.Get() == nil {
+	if o == nil || IsNil(o.ParentSignature.Get()) {
 		var ret AssetClaimSignature
 		return ret
 	}
@@ -388,7 +407,7 @@ func (o *AssetDeviceRegistration) GetPid() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetPidOk() ([]string, bool) {
-	if o == nil || o.Pid == nil {
+	if o == nil || IsNil(o.Pid) {
 		return nil, false
 	}
 	return o.Pid, true
@@ -396,7 +415,7 @@ func (o *AssetDeviceRegistration) GetPidOk() ([]string, bool) {
 
 // HasPid returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasPid() bool {
-	if o != nil && o.Pid != nil {
+	if o != nil && !IsNil(o.Pid) {
 		return true
 	}
 
@@ -410,7 +429,7 @@ func (o *AssetDeviceRegistration) SetPid(v []string) {
 
 // GetPlatformType returns the PlatformType field value if set, zero value otherwise.
 func (o *AssetDeviceRegistration) GetPlatformType() string {
-	if o == nil || o.PlatformType == nil {
+	if o == nil || IsNil(o.PlatformType) {
 		var ret string
 		return ret
 	}
@@ -420,7 +439,7 @@ func (o *AssetDeviceRegistration) GetPlatformType() string {
 // GetPlatformTypeOk returns a tuple with the PlatformType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceRegistration) GetPlatformTypeOk() (*string, bool) {
-	if o == nil || o.PlatformType == nil {
+	if o == nil || IsNil(o.PlatformType) {
 		return nil, false
 	}
 	return o.PlatformType, true
@@ -428,7 +447,7 @@ func (o *AssetDeviceRegistration) GetPlatformTypeOk() (*string, bool) {
 
 // HasPlatformType returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasPlatformType() bool {
-	if o != nil && o.PlatformType != nil {
+	if o != nil && !IsNil(o.PlatformType) {
 		return true
 	}
 
@@ -442,7 +461,7 @@ func (o *AssetDeviceRegistration) SetPlatformType(v string) {
 
 // GetPublicAccessKey returns the PublicAccessKey field value if set, zero value otherwise.
 func (o *AssetDeviceRegistration) GetPublicAccessKey() string {
-	if o == nil || o.PublicAccessKey == nil {
+	if o == nil || IsNil(o.PublicAccessKey) {
 		var ret string
 		return ret
 	}
@@ -452,7 +471,7 @@ func (o *AssetDeviceRegistration) GetPublicAccessKey() string {
 // GetPublicAccessKeyOk returns a tuple with the PublicAccessKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceRegistration) GetPublicAccessKeyOk() (*string, bool) {
-	if o == nil || o.PublicAccessKey == nil {
+	if o == nil || IsNil(o.PublicAccessKey) {
 		return nil, false
 	}
 	return o.PublicAccessKey, true
@@ -460,7 +479,7 @@ func (o *AssetDeviceRegistration) GetPublicAccessKeyOk() (*string, bool) {
 
 // HasPublicAccessKey returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasPublicAccessKey() bool {
-	if o != nil && o.PublicAccessKey != nil {
+	if o != nil && !IsNil(o.PublicAccessKey) {
 		return true
 	}
 
@@ -472,9 +491,41 @@ func (o *AssetDeviceRegistration) SetPublicAccessKey(v string) {
 	o.PublicAccessKey = &v
 }
 
+// GetPublicEncryptionKey returns the PublicEncryptionKey field value if set, zero value otherwise.
+func (o *AssetDeviceRegistration) GetPublicEncryptionKey() string {
+	if o == nil || IsNil(o.PublicEncryptionKey) {
+		var ret string
+		return ret
+	}
+	return *o.PublicEncryptionKey
+}
+
+// GetPublicEncryptionKeyOk returns a tuple with the PublicEncryptionKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AssetDeviceRegistration) GetPublicEncryptionKeyOk() (*string, bool) {
+	if o == nil || IsNil(o.PublicEncryptionKey) {
+		return nil, false
+	}
+	return o.PublicEncryptionKey, true
+}
+
+// HasPublicEncryptionKey returns a boolean if a field has been set.
+func (o *AssetDeviceRegistration) HasPublicEncryptionKey() bool {
+	if o != nil && !IsNil(o.PublicEncryptionKey) {
+		return true
+	}
+
+	return false
+}
+
+// SetPublicEncryptionKey gets a reference to the given string and assigns it to the PublicEncryptionKey field.
+func (o *AssetDeviceRegistration) SetPublicEncryptionKey(v string) {
+	o.PublicEncryptionKey = &v
+}
+
 // GetReadOnly returns the ReadOnly field value if set, zero value otherwise.
 func (o *AssetDeviceRegistration) GetReadOnly() bool {
-	if o == nil || o.ReadOnly == nil {
+	if o == nil || IsNil(o.ReadOnly) {
 		var ret bool
 		return ret
 	}
@@ -484,7 +535,7 @@ func (o *AssetDeviceRegistration) GetReadOnly() bool {
 // GetReadOnlyOk returns a tuple with the ReadOnly field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceRegistration) GetReadOnlyOk() (*bool, bool) {
-	if o == nil || o.ReadOnly == nil {
+	if o == nil || IsNil(o.ReadOnly) {
 		return nil, false
 	}
 	return o.ReadOnly, true
@@ -492,7 +543,7 @@ func (o *AssetDeviceRegistration) GetReadOnlyOk() (*bool, bool) {
 
 // HasReadOnly returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasReadOnly() bool {
-	if o != nil && o.ReadOnly != nil {
+	if o != nil && !IsNil(o.ReadOnly) {
 		return true
 	}
 
@@ -517,7 +568,7 @@ func (o *AssetDeviceRegistration) GetSerial() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetSerialOk() ([]string, bool) {
-	if o == nil || o.Serial == nil {
+	if o == nil || IsNil(o.Serial) {
 		return nil, false
 	}
 	return o.Serial, true
@@ -525,7 +576,7 @@ func (o *AssetDeviceRegistration) GetSerialOk() ([]string, bool) {
 
 // HasSerial returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasSerial() bool {
-	if o != nil && o.Serial != nil {
+	if o != nil && !IsNil(o.Serial) {
 		return true
 	}
 
@@ -539,7 +590,7 @@ func (o *AssetDeviceRegistration) SetSerial(v []string) {
 
 // GetVendor returns the Vendor field value if set, zero value otherwise.
 func (o *AssetDeviceRegistration) GetVendor() string {
-	if o == nil || o.Vendor == nil {
+	if o == nil || IsNil(o.Vendor) {
 		var ret string
 		return ret
 	}
@@ -549,7 +600,7 @@ func (o *AssetDeviceRegistration) GetVendor() string {
 // GetVendorOk returns a tuple with the Vendor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceRegistration) GetVendorOk() (*string, bool) {
-	if o == nil || o.Vendor == nil {
+	if o == nil || IsNil(o.Vendor) {
 		return nil, false
 	}
 	return o.Vendor, true
@@ -557,7 +608,7 @@ func (o *AssetDeviceRegistration) GetVendorOk() (*string, bool) {
 
 // HasVendor returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasVendor() bool {
-	if o != nil && o.Vendor != nil {
+	if o != nil && !IsNil(o.Vendor) {
 		return true
 	}
 
@@ -569,68 +620,90 @@ func (o *AssetDeviceRegistration) SetVendor(v string) {
 	o.Vendor = &v
 }
 
-// GetAccount returns the Account field value if set, zero value otherwise.
+// GetAccount returns the Account field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceRegistration) GetAccount() IamAccountRelationship {
-	if o == nil || o.Account == nil {
+	if o == nil || IsNil(o.Account.Get()) {
 		var ret IamAccountRelationship
 		return ret
 	}
-	return *o.Account
+	return *o.Account.Get()
 }
 
 // GetAccountOk returns a tuple with the Account field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetAccountOk() (*IamAccountRelationship, bool) {
-	if o == nil || o.Account == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Account, true
+	return o.Account.Get(), o.Account.IsSet()
 }
 
 // HasAccount returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasAccount() bool {
-	if o != nil && o.Account != nil {
+	if o != nil && o.Account.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAccount gets a reference to the given IamAccountRelationship and assigns it to the Account field.
+// SetAccount gets a reference to the given NullableIamAccountRelationship and assigns it to the Account field.
 func (o *AssetDeviceRegistration) SetAccount(v IamAccountRelationship) {
-	o.Account = &v
+	o.Account.Set(&v)
 }
 
-// GetClaimedByUser returns the ClaimedByUser field value if set, zero value otherwise.
+// SetAccountNil sets the value for Account to be an explicit nil
+func (o *AssetDeviceRegistration) SetAccountNil() {
+	o.Account.Set(nil)
+}
+
+// UnsetAccount ensures that no value is present for Account, not even an explicit nil
+func (o *AssetDeviceRegistration) UnsetAccount() {
+	o.Account.Unset()
+}
+
+// GetClaimedByUser returns the ClaimedByUser field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceRegistration) GetClaimedByUser() IamUserRelationship {
-	if o == nil || o.ClaimedByUser == nil {
+	if o == nil || IsNil(o.ClaimedByUser.Get()) {
 		var ret IamUserRelationship
 		return ret
 	}
-	return *o.ClaimedByUser
+	return *o.ClaimedByUser.Get()
 }
 
 // GetClaimedByUserOk returns a tuple with the ClaimedByUser field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetClaimedByUserOk() (*IamUserRelationship, bool) {
-	if o == nil || o.ClaimedByUser == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ClaimedByUser, true
+	return o.ClaimedByUser.Get(), o.ClaimedByUser.IsSet()
 }
 
 // HasClaimedByUser returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasClaimedByUser() bool {
-	if o != nil && o.ClaimedByUser != nil {
+	if o != nil && o.ClaimedByUser.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetClaimedByUser gets a reference to the given IamUserRelationship and assigns it to the ClaimedByUser field.
+// SetClaimedByUser gets a reference to the given NullableIamUserRelationship and assigns it to the ClaimedByUser field.
 func (o *AssetDeviceRegistration) SetClaimedByUser(v IamUserRelationship) {
-	o.ClaimedByUser = &v
+	o.ClaimedByUser.Set(&v)
+}
+
+// SetClaimedByUserNil sets the value for ClaimedByUser to be an explicit nil
+func (o *AssetDeviceRegistration) SetClaimedByUserNil() {
+	o.ClaimedByUser.Set(nil)
+}
+
+// UnsetClaimedByUser ensures that no value is present for ClaimedByUser, not even an explicit nil
+func (o *AssetDeviceRegistration) UnsetClaimedByUser() {
+	o.ClaimedByUser.Unset()
 }
 
 // GetClusterMembers returns the ClusterMembers field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -646,7 +719,7 @@ func (o *AssetDeviceRegistration) GetClusterMembers() []AssetClusterMemberRelati
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetClusterMembersOk() ([]AssetClusterMemberRelationship, bool) {
-	if o == nil || o.ClusterMembers == nil {
+	if o == nil || IsNil(o.ClusterMembers) {
 		return nil, false
 	}
 	return o.ClusterMembers, true
@@ -654,7 +727,7 @@ func (o *AssetDeviceRegistration) GetClusterMembersOk() ([]AssetClusterMemberRel
 
 // HasClusterMembers returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasClusterMembers() bool {
-	if o != nil && o.ClusterMembers != nil {
+	if o != nil && !IsNil(o.ClusterMembers) {
 		return true
 	}
 
@@ -666,157 +739,287 @@ func (o *AssetDeviceRegistration) SetClusterMembers(v []AssetClusterMemberRelati
 	o.ClusterMembers = v
 }
 
-// GetDeviceClaim returns the DeviceClaim field value if set, zero value otherwise.
+// GetCustomPermissionResources returns the CustomPermissionResources field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AssetDeviceRegistration) GetCustomPermissionResources() []MoBaseMoRelationship {
+	if o == nil {
+		var ret []MoBaseMoRelationship
+		return ret
+	}
+	return o.CustomPermissionResources
+}
+
+// GetCustomPermissionResourcesOk returns a tuple with the CustomPermissionResources field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AssetDeviceRegistration) GetCustomPermissionResourcesOk() ([]MoBaseMoRelationship, bool) {
+	if o == nil || IsNil(o.CustomPermissionResources) {
+		return nil, false
+	}
+	return o.CustomPermissionResources, true
+}
+
+// HasCustomPermissionResources returns a boolean if a field has been set.
+func (o *AssetDeviceRegistration) HasCustomPermissionResources() bool {
+	if o != nil && !IsNil(o.CustomPermissionResources) {
+		return true
+	}
+
+	return false
+}
+
+// SetCustomPermissionResources gets a reference to the given []MoBaseMoRelationship and assigns it to the CustomPermissionResources field.
+func (o *AssetDeviceRegistration) SetCustomPermissionResources(v []MoBaseMoRelationship) {
+	o.CustomPermissionResources = v
+}
+
+// GetDeviceClaim returns the DeviceClaim field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceRegistration) GetDeviceClaim() AssetDeviceClaimRelationship {
-	if o == nil || o.DeviceClaim == nil {
+	if o == nil || IsNil(o.DeviceClaim.Get()) {
 		var ret AssetDeviceClaimRelationship
 		return ret
 	}
-	return *o.DeviceClaim
+	return *o.DeviceClaim.Get()
 }
 
 // GetDeviceClaimOk returns a tuple with the DeviceClaim field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetDeviceClaimOk() (*AssetDeviceClaimRelationship, bool) {
-	if o == nil || o.DeviceClaim == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.DeviceClaim, true
+	return o.DeviceClaim.Get(), o.DeviceClaim.IsSet()
 }
 
 // HasDeviceClaim returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasDeviceClaim() bool {
-	if o != nil && o.DeviceClaim != nil {
+	if o != nil && o.DeviceClaim.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetDeviceClaim gets a reference to the given AssetDeviceClaimRelationship and assigns it to the DeviceClaim field.
+// SetDeviceClaim gets a reference to the given NullableAssetDeviceClaimRelationship and assigns it to the DeviceClaim field.
 func (o *AssetDeviceRegistration) SetDeviceClaim(v AssetDeviceClaimRelationship) {
-	o.DeviceClaim = &v
+	o.DeviceClaim.Set(&v)
 }
 
-// GetDeviceConfiguration returns the DeviceConfiguration field value if set, zero value otherwise.
+// SetDeviceClaimNil sets the value for DeviceClaim to be an explicit nil
+func (o *AssetDeviceRegistration) SetDeviceClaimNil() {
+	o.DeviceClaim.Set(nil)
+}
+
+// UnsetDeviceClaim ensures that no value is present for DeviceClaim, not even an explicit nil
+func (o *AssetDeviceRegistration) UnsetDeviceClaim() {
+	o.DeviceClaim.Unset()
+}
+
+// GetDeviceConfiguration returns the DeviceConfiguration field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceRegistration) GetDeviceConfiguration() AssetDeviceConfigurationRelationship {
-	if o == nil || o.DeviceConfiguration == nil {
+	if o == nil || IsNil(o.DeviceConfiguration.Get()) {
 		var ret AssetDeviceConfigurationRelationship
 		return ret
 	}
-	return *o.DeviceConfiguration
+	return *o.DeviceConfiguration.Get()
 }
 
 // GetDeviceConfigurationOk returns a tuple with the DeviceConfiguration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetDeviceConfigurationOk() (*AssetDeviceConfigurationRelationship, bool) {
-	if o == nil || o.DeviceConfiguration == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.DeviceConfiguration, true
+	return o.DeviceConfiguration.Get(), o.DeviceConfiguration.IsSet()
 }
 
 // HasDeviceConfiguration returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasDeviceConfiguration() bool {
-	if o != nil && o.DeviceConfiguration != nil {
+	if o != nil && o.DeviceConfiguration.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetDeviceConfiguration gets a reference to the given AssetDeviceConfigurationRelationship and assigns it to the DeviceConfiguration field.
+// SetDeviceConfiguration gets a reference to the given NullableAssetDeviceConfigurationRelationship and assigns it to the DeviceConfiguration field.
 func (o *AssetDeviceRegistration) SetDeviceConfiguration(v AssetDeviceConfigurationRelationship) {
-	o.DeviceConfiguration = &v
+	o.DeviceConfiguration.Set(&v)
 }
 
-// GetDomainGroup returns the DomainGroup field value if set, zero value otherwise.
+// SetDeviceConfigurationNil sets the value for DeviceConfiguration to be an explicit nil
+func (o *AssetDeviceRegistration) SetDeviceConfigurationNil() {
+	o.DeviceConfiguration.Set(nil)
+}
+
+// UnsetDeviceConfiguration ensures that no value is present for DeviceConfiguration, not even an explicit nil
+func (o *AssetDeviceRegistration) UnsetDeviceConfiguration() {
+	o.DeviceConfiguration.Unset()
+}
+
+// GetDomainGroup returns the DomainGroup field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceRegistration) GetDomainGroup() IamDomainGroupRelationship {
-	if o == nil || o.DomainGroup == nil {
+	if o == nil || IsNil(o.DomainGroup.Get()) {
 		var ret IamDomainGroupRelationship
 		return ret
 	}
-	return *o.DomainGroup
+	return *o.DomainGroup.Get()
 }
 
 // GetDomainGroupOk returns a tuple with the DomainGroup field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetDomainGroupOk() (*IamDomainGroupRelationship, bool) {
-	if o == nil || o.DomainGroup == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.DomainGroup, true
+	return o.DomainGroup.Get(), o.DomainGroup.IsSet()
 }
 
 // HasDomainGroup returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasDomainGroup() bool {
-	if o != nil && o.DomainGroup != nil {
+	if o != nil && o.DomainGroup.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetDomainGroup gets a reference to the given IamDomainGroupRelationship and assigns it to the DomainGroup field.
+// SetDomainGroup gets a reference to the given NullableIamDomainGroupRelationship and assigns it to the DomainGroup field.
 func (o *AssetDeviceRegistration) SetDomainGroup(v IamDomainGroupRelationship) {
-	o.DomainGroup = &v
+	o.DomainGroup.Set(&v)
 }
 
-// GetParentConnection returns the ParentConnection field value if set, zero value otherwise.
+// SetDomainGroupNil sets the value for DomainGroup to be an explicit nil
+func (o *AssetDeviceRegistration) SetDomainGroupNil() {
+	o.DomainGroup.Set(nil)
+}
+
+// UnsetDomainGroup ensures that no value is present for DomainGroup, not even an explicit nil
+func (o *AssetDeviceRegistration) UnsetDomainGroup() {
+	o.DomainGroup.Unset()
+}
+
+// GetParentConnection returns the ParentConnection field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceRegistration) GetParentConnection() AssetDeviceRegistrationRelationship {
-	if o == nil || o.ParentConnection == nil {
+	if o == nil || IsNil(o.ParentConnection.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.ParentConnection
+	return *o.ParentConnection.Get()
 }
 
 // GetParentConnectionOk returns a tuple with the ParentConnection field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceRegistration) GetParentConnectionOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.ParentConnection == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ParentConnection, true
+	return o.ParentConnection.Get(), o.ParentConnection.IsSet()
 }
 
 // HasParentConnection returns a boolean if a field has been set.
 func (o *AssetDeviceRegistration) HasParentConnection() bool {
-	if o != nil && o.ParentConnection != nil {
+	if o != nil && o.ParentConnection.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetParentConnection gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the ParentConnection field.
+// SetParentConnection gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the ParentConnection field.
 func (o *AssetDeviceRegistration) SetParentConnection(v AssetDeviceRegistrationRelationship) {
-	o.ParentConnection = &v
+	o.ParentConnection.Set(&v)
+}
+
+// SetParentConnectionNil sets the value for ParentConnection to be an explicit nil
+func (o *AssetDeviceRegistration) SetParentConnectionNil() {
+	o.ParentConnection.Set(nil)
+}
+
+// UnsetParentConnection ensures that no value is present for ParentConnection, not even an explicit nil
+func (o *AssetDeviceRegistration) UnsetParentConnection() {
+	o.ParentConnection.Unset()
+}
+
+// GetTarget returns the Target field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *AssetDeviceRegistration) GetTarget() AssetTargetRelationship {
+	if o == nil || IsNil(o.Target.Get()) {
+		var ret AssetTargetRelationship
+		return ret
+	}
+	return *o.Target.Get()
+}
+
+// GetTargetOk returns a tuple with the Target field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *AssetDeviceRegistration) GetTargetOk() (*AssetTargetRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Target.Get(), o.Target.IsSet()
+}
+
+// HasTarget returns a boolean if a field has been set.
+func (o *AssetDeviceRegistration) HasTarget() bool {
+	if o != nil && o.Target.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTarget gets a reference to the given NullableAssetTargetRelationship and assigns it to the Target field.
+func (o *AssetDeviceRegistration) SetTarget(v AssetTargetRelationship) {
+	o.Target.Set(&v)
+}
+
+// SetTargetNil sets the value for Target to be an explicit nil
+func (o *AssetDeviceRegistration) SetTargetNil() {
+	o.Target.Set(nil)
+}
+
+// UnsetTarget ensures that no value is present for Target, not even an explicit nil
+func (o *AssetDeviceRegistration) UnsetTarget() {
+	o.Target.Unset()
 }
 
 func (o AssetDeviceRegistration) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o AssetDeviceRegistration) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedAssetDeviceConnection, errAssetDeviceConnection := json.Marshal(o.AssetDeviceConnection)
 	if errAssetDeviceConnection != nil {
-		return []byte{}, errAssetDeviceConnection
+		return map[string]interface{}{}, errAssetDeviceConnection
 	}
 	errAssetDeviceConnection = json.Unmarshal([]byte(serializedAssetDeviceConnection), &toSerialize)
 	if errAssetDeviceConnection != nil {
-		return []byte{}, errAssetDeviceConnection
+		return map[string]interface{}{}, errAssetDeviceConnection
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AccessKeyId != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AccessKeyId) {
 		toSerialize["AccessKeyId"] = o.AccessKeyId
 	}
-	if o.ClaimedByUserName != nil {
+	if !IsNil(o.ClaimedByUserName) {
 		toSerialize["ClaimedByUserName"] = o.ClaimedByUserName
 	}
-	if o.ClaimedTime != nil {
+	if !IsNil(o.ClaimedTime) {
 		toSerialize["ClaimedTime"] = o.ClaimedTime
 	}
 	if o.DeviceHostname != nil {
@@ -825,7 +1028,7 @@ func (o AssetDeviceRegistration) MarshalJSON() ([]byte, error) {
 	if o.DeviceIpAddress != nil {
 		toSerialize["DeviceIpAddress"] = o.DeviceIpAddress
 	}
-	if o.ExecutionMode != nil {
+	if !IsNil(o.ExecutionMode) {
 		toSerialize["ExecutionMode"] = o.ExecutionMode
 	}
 	if o.ParentSignature.IsSet() {
@@ -834,51 +1037,101 @@ func (o AssetDeviceRegistration) MarshalJSON() ([]byte, error) {
 	if o.Pid != nil {
 		toSerialize["Pid"] = o.Pid
 	}
-	if o.PlatformType != nil {
+	if !IsNil(o.PlatformType) {
 		toSerialize["PlatformType"] = o.PlatformType
 	}
-	if o.PublicAccessKey != nil {
+	if !IsNil(o.PublicAccessKey) {
 		toSerialize["PublicAccessKey"] = o.PublicAccessKey
 	}
-	if o.ReadOnly != nil {
+	if !IsNil(o.PublicEncryptionKey) {
+		toSerialize["PublicEncryptionKey"] = o.PublicEncryptionKey
+	}
+	if !IsNil(o.ReadOnly) {
 		toSerialize["ReadOnly"] = o.ReadOnly
 	}
 	if o.Serial != nil {
 		toSerialize["Serial"] = o.Serial
 	}
-	if o.Vendor != nil {
+	if !IsNil(o.Vendor) {
 		toSerialize["Vendor"] = o.Vendor
 	}
-	if o.Account != nil {
-		toSerialize["Account"] = o.Account
+	if o.Account.IsSet() {
+		toSerialize["Account"] = o.Account.Get()
 	}
-	if o.ClaimedByUser != nil {
-		toSerialize["ClaimedByUser"] = o.ClaimedByUser
+	if o.ClaimedByUser.IsSet() {
+		toSerialize["ClaimedByUser"] = o.ClaimedByUser.Get()
 	}
 	if o.ClusterMembers != nil {
 		toSerialize["ClusterMembers"] = o.ClusterMembers
 	}
-	if o.DeviceClaim != nil {
-		toSerialize["DeviceClaim"] = o.DeviceClaim
+	if o.CustomPermissionResources != nil {
+		toSerialize["CustomPermissionResources"] = o.CustomPermissionResources
 	}
-	if o.DeviceConfiguration != nil {
-		toSerialize["DeviceConfiguration"] = o.DeviceConfiguration
+	if o.DeviceClaim.IsSet() {
+		toSerialize["DeviceClaim"] = o.DeviceClaim.Get()
 	}
-	if o.DomainGroup != nil {
-		toSerialize["DomainGroup"] = o.DomainGroup
+	if o.DeviceConfiguration.IsSet() {
+		toSerialize["DeviceConfiguration"] = o.DeviceConfiguration.Get()
 	}
-	if o.ParentConnection != nil {
-		toSerialize["ParentConnection"] = o.ParentConnection
+	if o.DomainGroup.IsSet() {
+		toSerialize["DomainGroup"] = o.DomainGroup.Get()
+	}
+	if o.ParentConnection.IsSet() {
+		toSerialize["ParentConnection"] = o.ParentConnection.Get()
+	}
+	if o.Target.IsSet() {
+		toSerialize["Target"] = o.Target.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *AssetDeviceRegistration) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AssetDeviceRegistration) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type AssetDeviceRegistrationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -896,28 +1149,33 @@ func (o *AssetDeviceRegistration) UnmarshalJSON(bytes []byte) (err error) {
 		ExecutionMode   *string                     `json:"ExecutionMode,omitempty"`
 		ParentSignature NullableAssetClaimSignature `json:"ParentSignature,omitempty"`
 		Pid             []string                    `json:"Pid,omitempty"`
-		// The platform type on which device connector is executing. * `` - The device reported an empty or unrecognized platform type. * `APIC` - An Application Policy Infrastructure Controller cluster. * `CAPIC` - A Cloud Application Policy Infrastructure Controller instance. * `DCNM` - A Data Center Network Manager instance. Data Center Network Manager (DCNM) is the network management platform for all NX-OS-enabled deployments, spanning new fabric architectures, IP Fabric for Media, and storage networking deployments for the Cisco Nexus-powered data center. * `UCSFI` - A UCS Fabric Interconnect in HA or standalone mode, which is being managed by UCS Manager (UCSM). * `UCSFIISM` - A UCS Fabric Interconnect in HA or standalone mode, managed directly by Intersight. * `IMC` - A standalone UCS Server Integrated Management Controller. * `IMCM4` - A standalone UCS M4 Server. * `IMCM5` - A standalone UCS M5 server. * `IMCRack` - A standalone UCS M6 and above server. * `UCSIOM` - An UCS Chassis IO module. * `HX` - A HyperFlex storage controller. * `HyperFlexAP` - A HyperFlex Application Platform. * `IWE` - An Intersight Workload Engine. * `UCSD` - A UCS Director virtual appliance. Cisco UCS Director automates, orchestrates, and manages Cisco and third-party hardware. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance. * `IntersightAssist` - A Cisco Intersight Assist. * `PureStorageFlashArray` - A Pure Storage FlashArray device. * `NexusDevice` - A generic platform type to support Nexus Network Device. This can also be extended to support all network devices later on. * `ACISwitch` - A platform type to support ACI Switches. * `NexusSwitch` - A platform type to support Cisco Nexus Switches. * `MDSSwitch` - A platform type to support Cisco MDS Switches. * `MDSDevice` - A platform type to support MDS devices. * `UCSC890` - A standalone Cisco UCSC890 server. * `RedfishServer` - A generic target type for servers that support Redfish. Current support is limited to managing HPE and Dell servers on Intersight. * `NetAppOntap` - A NetApp ONTAP storage system. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager. * `EmcScaleIo` - An EMC ScaleIO storage system. * `EmcVmax` - An EMC VMAX storage system. * `EmcVplex` - An EMC VPLEX storage system. * `EmcXtremIo` - An EMC XtremIO storage system. * `VmwareVcenter` - A VMware vCenter device that manages Virtual Machines. * `MicrosoftHyperV` - A Microsoft Hyper-V system that manages Virtual Machines. * `AppDynamics` - An AppDynamics controller that monitors applications. * `Dynatrace` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `NewRelic` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `ReadHatOpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server. * `MySqlServer` - An instance of either Oracle MySQL Database or the open source MariaDB. * `Kubernetes` - A Kubernetes cluster that runs containerized applications. * `AmazonWebService` - An Amazon web service target that discovers and monitors different services like EC2. It discovers entities like VMs, Volumes, regions etc. and monitors attributes like Mem, CPU, cost. * `AmazonWebServiceBilling` - An Amazon web service billing target to retrieve billing information stored in S3 bucket. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal target that discovers all the associated Azure subscriptions. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement target that discovers cost, billing and RIs. * `DellCompellent` - A Dell Compellent storage system. * `HPE3Par` - A HPE 3PAR storage system. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis system that combines servers and storage into a distributed infrastructure platform. * `HPEOneView` - A HPE Oneview management system that manages compute, storage, and networking. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform also referred to as Hitachi VSP. It includes various storage systems designed for data centers. * `IMCBlade` - An Intersight managed UCS Blade Server. * `TerraformCloud` - A Terraform Cloud account. * `TerraformAgent` - A Terraform Cloud Agent that Intersight will deploy in datacenter. The agent will execute Terraform plan for Terraform Cloud workspace configured to use the agent. * `CustomTarget` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic. * `AnsibleEndpoint` - An external endpoint added as Target that can be accessed through Ansible in Intersight Cloud Orchestrator automation workflow. * `HTTPEndpoint` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic, Bearer Token. * `SSHEndpoint` - An external endpoint added as Target that can be accessed through SSH in Intersight Cloud Orchestrator automation workflow. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows machine on which PowerShell scripts can be executed remotely.
+		// The platform type on which device connector is executing. * `` - An unrecognized platform type. * `APIC` - A Cisco Application Policy Infrastructure Controller (APIC) cluster. * `CAPIC` - A Cisco Cloud Application Policy Infrastructure Controller (Cloud APIC) instance. * `DCNM` - A Cisco Data Center Network Manager (DCNM) instance. * `UCSFI` - A Cisco UCS Fabric Interconnect that is managed by Cisco UCS Manager (UCSM). * `UCSFIISM` - A Cisco UCS Fabric Interconnect that is managed by Cisco Intersight. * `IMC` - A standalone Cisco UCS rack server (Deprecated). * `IMCM4` - A standalone Cisco UCS C-Series or S-Series M4 server. * `IMCM5` - A standalone Cisco UCS C-Series or S-Series M5 server. * `IMCRack` - A standalone Cisco UCS C-Series or S-Series M6 or newer server. * `UCSIOM` - A Cisco UCS Blade Chassis I/O Module (IOM). * `HX` - A Cisco HyperFlex (HX) cluster. * `UCSD` - A Cisco UCS Director (UCSD) instance. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance instance. * `IntersightAssist` - A Cisco Intersight Assist instance. * `PureStorageFlashArray` - A Pure Storage FlashArray that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and storage management features are supported on this device. * `NexusDevice` - A Cisco Nexus Network Switch that is managed using Cisco Intersight Assist. * `ACISwitch` - A Cisco Nexus Network Switch with the embedded Device Connector and is a part of the Cisco ACI fabric. * `NexusSwitch` - A standalone Cisco Nexus Network Switch with the embedded Device Connector. * `MDSSwitch` - A Cisco MDS Switch that is managed using the embedded Device Connector. * `MDSDevice` - A Cisco MDS Switch that is managed using Cisco Intersight Assist. * `UCSC890` - A standalone Cisco UCS C890 server managed using Cisco Intersight Assist. * `RedfishServer` - A generic target type for servers that support Redfish APIs and is managed using Cisco Intersight Assist. Support is limited to HPE and Dell Servers. * `NetAppOntap` - A Netapp ONTAP Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager (AIQUM) that is managed using Cisco Intersight Assist. * `EmcScaleIo` - An EMC ScaleIO Software Defined Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVmax` - An EMC VMAX 2 or 3 series enterprise storage array that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVplex` - An EMC VPLEX virtual storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcXtremIo` - An EMC XtremIO SSD storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `VmwareVcenter` - A VMware vCenter instance that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and Virtualization features are supported on this hypervisor. * `MicrosoftHyperV` - A Microsoft Hyper-V host that is managed using Cisco Intersight Assist. Optionally, other hosts in the cluster can be discovered through this host. Cisco Intersight Workload Optimizer features are supported on this hypervisor. * `AppDynamics` - An AppDynamics controller running in a SaaS or on-prem datacenter. On-prem AppDynamics instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this controller. * `Dynatrace` - A Dynatrace Server instance running in a SaaS or on-prem datacenter. On-prem Dynatrace instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `NewRelic` - A NewRelic user account. The NewRelic instance monitors the application infrastructure. Cisco Intersight Workload Optimizer features are supported on this server. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `Umbrella` - Umbrella cloud target that discovers and monitors an organization. It discovers entities like Datacenters, Devices, Tunnels, Networks, etc. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `MySqlServer` - A MySQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `OracleDatabaseServer` - An Oracle database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `IBMWebSphereApplicationServer` - An IBM WebSphere Application server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application server. * `OracleWebLogicServer` - Oracle WebLogic Server is a unified and extensible platform for developing, deploying and running enterprise applications, such as Java, for on-premises and in the cloud. WebLogic Server offers a robust, mature, and scalable implementation of Java Enterprise Edition (EE) and Jakarta EE. * `ApacheTomcatServer` - An Apache Tomcat server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `JavaVirtualMachine` - A JVM Application with JMX configured that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application. * `RedHatJBossApplicationServer` - JBoss Application Server is an open-source, cross-platform Java application server developed by JBoss, a division of Red Hat Inc. It is an open-source implementation of Java 2 Enterprise Edition (J2EE) that is used for implementing Java applications and other Web-based applications and software. * `Kubernetes` - A Kubernetes cluster that runs containerized applications, with Kubernetes Collector installed. Cisco Intersight Workload Optimizer features are supported on Kubernetes cluster. * `AmazonWebService` - An Amazon Web Service cloud account. Cisco Intersight Workload Optimizer and Virtualization features are supported on this cloud. * `AmazonWebServiceBilling` - An Amazon Web Service cloud billing account used to retrieve billing information stored in S3 bucket. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatform` - A Google Cloud Platform service account with access to one or more projects. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatformBilling` - A Google Cloud Platform service account used to retrieve billing information from BigQuery. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal account with access to Azure subscriptions. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement enrolment used to retrieve pricing and billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureBilling` - A Microsoft Azure Service Principal account with access to billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `DellCompellent` - A Dell EMC SC Series (Compellent) storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `HPE3Par` - A HPE 3PAR StoreServ system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis cluster that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this cluster. * `NutanixPrismCentral` - A Nutanix Prism Central cluster. Prism central is a virtual appliance for managing Nutanix clusters and services. * `HPEOneView` - A HPE OneView system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this system. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform (Hitachi VSP) that is managed using Cisco Intersight Assist. * `GenericTarget` - A generic third-party target supported only in Partner Integration Appliance. This target type is used for development purposes and will not be supported in production environment. * `IMCBlade` - A Cisco UCS blade server managed by Cisco Intersight. * `TerraformCloud` - A Terraform Cloud Business Tier account. * `TerraformAgent` - A Terraform Cloud Agent that will be deployed on Cisco Intersight Assist. The agent can be used to plan and apply Terraform runs from a Terraform Cloud workspace. * `CustomTarget` - CustomTarget is deprecated. Use HTTPEndpoint type to claim HTTP endpoints. * `AnsibleEndpoint` - An external endpoint that is added as a target which can be accessed through Ansible in Intersight Cloud Orchestrator automation workflows. * `HTTPEndpoint` - An HTTP endpoint that can be accessed in Intersight Orchestrator workflows directly or using Cisco Intersight Assist. Authentication Schemes supported are Basic and Bearer Token. * `SSHEndpoint` - An SSH endpoint that can be accessed in Intersight Orchestrator workflows using Cisco Intersight Assist. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows operating system server on which PowerShell scripts can be executed using Cisco Intersight Assist. * `CiscoDNAC` - A Cisco Digital Network Architecture (DNA) Center appliance. * `CiscoFMC` - A Cisco Secure Firewall Management Center. * `ViptelaCloud` - A Cisco Viptela SD-WAN Cloud. * `MerakiCloud` - A Cisco Meraki Organization. * `CiscoISE` - A Cisco Identity Services Engine (ISE) target.
 		PlatformType *string `json:"PlatformType,omitempty"`
-		// The device connector's public key used by Intersight to authenticate a connection from the device connector. The public key is used to verify that the signature a device connector sends on connect has been signed by the connector's private key stored on the device's filesystem. Must be a PEM encoded RSA public key string.
+		// The device connector's public key used by Intersight to authenticate a connection from the device connector. The public key is used to verify that the signature a device connector sends on connect has been signed by the connector's private key stored on the device's filesystem. Must be a PEM encoded RSA or Ed22519 public key string.
 		PublicAccessKey *string `json:"PublicAccessKey,omitempty"`
+		// The device connector public key used by Intersight for encryption. The public key is used to encrypt ephemeral aes keys to be used for decrypting sensitive data from Intersight. Must be a PEM encoded RSA public key string.
+		PublicEncryptionKey *string `json:"PublicEncryptionKey,omitempty"`
 		// Flag reported by devices to indicate an administrator of the device has disabled management operations of the device connector and only monitoring is permitted.
 		ReadOnly *bool    `json:"ReadOnly,omitempty"`
 		Serial   []string `json:"Serial,omitempty"`
 		// The vendor of the managed device.
-		Vendor        *string                 `json:"Vendor,omitempty"`
-		Account       *IamAccountRelationship `json:"Account,omitempty"`
-		ClaimedByUser *IamUserRelationship    `json:"ClaimedByUser,omitempty"`
+		Vendor        *string                        `json:"Vendor,omitempty"`
+		Account       NullableIamAccountRelationship `json:"Account,omitempty"`
+		ClaimedByUser NullableIamUserRelationship    `json:"ClaimedByUser,omitempty"`
 		// An array of relationships to assetClusterMember resources.
-		ClusterMembers      []AssetClusterMemberRelationship      `json:"ClusterMembers,omitempty"`
-		DeviceClaim         *AssetDeviceClaimRelationship         `json:"DeviceClaim,omitempty"`
-		DeviceConfiguration *AssetDeviceConfigurationRelationship `json:"DeviceConfiguration,omitempty"`
-		DomainGroup         *IamDomainGroupRelationship           `json:"DomainGroup,omitempty"`
-		ParentConnection    *AssetDeviceRegistrationRelationship  `json:"ParentConnection,omitempty"`
+		ClusterMembers []AssetClusterMemberRelationship `json:"ClusterMembers,omitempty"`
+		// An array of relationships to moBaseMo resources.
+		CustomPermissionResources []MoBaseMoRelationship                       `json:"CustomPermissionResources,omitempty"`
+		DeviceClaim               NullableAssetDeviceClaimRelationship         `json:"DeviceClaim,omitempty"`
+		DeviceConfiguration       NullableAssetDeviceConfigurationRelationship `json:"DeviceConfiguration,omitempty"`
+		DomainGroup               NullableIamDomainGroupRelationship           `json:"DomainGroup,omitempty"`
+		ParentConnection          NullableAssetDeviceRegistrationRelationship  `json:"ParentConnection,omitempty"`
+		Target                    NullableAssetTargetRelationship              `json:"Target,omitempty"`
 	}
 
 	varAssetDeviceRegistrationWithoutEmbeddedStruct := AssetDeviceRegistrationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varAssetDeviceRegistrationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varAssetDeviceRegistrationWithoutEmbeddedStruct)
 	if err == nil {
 		varAssetDeviceRegistration := _AssetDeviceRegistration{}
 		varAssetDeviceRegistration.ClassId = varAssetDeviceRegistrationWithoutEmbeddedStruct.ClassId
@@ -932,16 +1190,19 @@ func (o *AssetDeviceRegistration) UnmarshalJSON(bytes []byte) (err error) {
 		varAssetDeviceRegistration.Pid = varAssetDeviceRegistrationWithoutEmbeddedStruct.Pid
 		varAssetDeviceRegistration.PlatformType = varAssetDeviceRegistrationWithoutEmbeddedStruct.PlatformType
 		varAssetDeviceRegistration.PublicAccessKey = varAssetDeviceRegistrationWithoutEmbeddedStruct.PublicAccessKey
+		varAssetDeviceRegistration.PublicEncryptionKey = varAssetDeviceRegistrationWithoutEmbeddedStruct.PublicEncryptionKey
 		varAssetDeviceRegistration.ReadOnly = varAssetDeviceRegistrationWithoutEmbeddedStruct.ReadOnly
 		varAssetDeviceRegistration.Serial = varAssetDeviceRegistrationWithoutEmbeddedStruct.Serial
 		varAssetDeviceRegistration.Vendor = varAssetDeviceRegistrationWithoutEmbeddedStruct.Vendor
 		varAssetDeviceRegistration.Account = varAssetDeviceRegistrationWithoutEmbeddedStruct.Account
 		varAssetDeviceRegistration.ClaimedByUser = varAssetDeviceRegistrationWithoutEmbeddedStruct.ClaimedByUser
 		varAssetDeviceRegistration.ClusterMembers = varAssetDeviceRegistrationWithoutEmbeddedStruct.ClusterMembers
+		varAssetDeviceRegistration.CustomPermissionResources = varAssetDeviceRegistrationWithoutEmbeddedStruct.CustomPermissionResources
 		varAssetDeviceRegistration.DeviceClaim = varAssetDeviceRegistrationWithoutEmbeddedStruct.DeviceClaim
 		varAssetDeviceRegistration.DeviceConfiguration = varAssetDeviceRegistrationWithoutEmbeddedStruct.DeviceConfiguration
 		varAssetDeviceRegistration.DomainGroup = varAssetDeviceRegistrationWithoutEmbeddedStruct.DomainGroup
 		varAssetDeviceRegistration.ParentConnection = varAssetDeviceRegistrationWithoutEmbeddedStruct.ParentConnection
+		varAssetDeviceRegistration.Target = varAssetDeviceRegistrationWithoutEmbeddedStruct.Target
 		*o = AssetDeviceRegistration(varAssetDeviceRegistration)
 	} else {
 		return err
@@ -949,7 +1210,7 @@ func (o *AssetDeviceRegistration) UnmarshalJSON(bytes []byte) (err error) {
 
 	varAssetDeviceRegistration := _AssetDeviceRegistration{}
 
-	err = json.Unmarshal(bytes, &varAssetDeviceRegistration)
+	err = json.Unmarshal(data, &varAssetDeviceRegistration)
 	if err == nil {
 		o.AssetDeviceConnection = varAssetDeviceRegistration.AssetDeviceConnection
 	} else {
@@ -958,7 +1219,7 @@ func (o *AssetDeviceRegistration) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AccessKeyId")
@@ -971,16 +1232,19 @@ func (o *AssetDeviceRegistration) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "Pid")
 		delete(additionalProperties, "PlatformType")
 		delete(additionalProperties, "PublicAccessKey")
+		delete(additionalProperties, "PublicEncryptionKey")
 		delete(additionalProperties, "ReadOnly")
 		delete(additionalProperties, "Serial")
 		delete(additionalProperties, "Vendor")
 		delete(additionalProperties, "Account")
 		delete(additionalProperties, "ClaimedByUser")
 		delete(additionalProperties, "ClusterMembers")
+		delete(additionalProperties, "CustomPermissionResources")
 		delete(additionalProperties, "DeviceClaim")
 		delete(additionalProperties, "DeviceConfiguration")
 		delete(additionalProperties, "DomainGroup")
 		delete(additionalProperties, "ParentConnection")
+		delete(additionalProperties, "Target")
 
 		// remove fields from embedded structs
 		reflectAssetDeviceConnection := reflect.ValueOf(o.AssetDeviceConnection)

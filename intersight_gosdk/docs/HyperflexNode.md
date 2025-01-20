@@ -19,16 +19,17 @@ Name | Type | Description | Notes
 **Lockdown** | Pointer to **bool** | The admin state of lockdown mode on the host. If &#39;true&#39;, lockdown mode is enabled. | [optional] [readonly] 
 **ModelNumber** | Pointer to **string** | The model of the host server. | [optional] [readonly] 
 **NodeMaintenanceMode** | Pointer to **string** | The status of maintenance mode on the HyperFlex node. * &#x60;Unknown&#x60; - The maintenance mode status could not be determined. * &#x60;InMaintenanceMode&#x60; - The node has maintenance mode enabled. The node has been temporarily been relinquished from the cluster to allow for maintenance operations. * &#x60;NotInMaintenanceMode&#x60; - The node does not have maintenance mode enabled. | [optional] [readonly] [default to "Unknown"]
-**NodeStatus** | Pointer to **string** | The operational status of the HyperFlex node. * &#x60;Unknown&#x60; - The default operational status of a HyperFlex node. * &#x60;Invalid&#x60; - The status of the node cannot be determined by the storage platform. * &#x60;Ready&#x60; - The platform node has been acknowledged by the cluster. * &#x60;Unpublished&#x60; - The node is not yet added to the storage cluster. * &#x60;Deleted&#x60; - The node has been removed from the cluster. * &#x60;Blocked&#x60; - The node is blocked from being added to the cluster. * &#x60;Blacklisted&#x60; - The deprecated value for &#39;Blocked&#39;. It is included to maintain backwards compatibility with clusters running a HyperFlex Data Platform version older than 5.0(1a). * &#x60;Allowed&#x60; - The node is allowd to be added to the cluster. * &#x60;Whitelisted&#x60; - The deprecated value for &#39;Allowed&#39;. It is included to maintain backwards compatibility with clusters running a HyperFlex Data Platform version older than 5.0(1a). * &#x60;InMaintenance&#x60; - The node is in maintenance mode. It has been temporarily relinquished from the cluster to allow for maintenance operations such as software upgrades. * &#x60;Online&#x60; - The node is participating in the storage cluster and is available for storage operations. * &#x60;Offline&#x60; - The node is part of the storage cluster, but is not available for storage operations. | [optional] [readonly] [default to "Unknown"]
+**NodeStatus** | Pointer to **string** | The operational status of the HyperFlex node. * &#x60;Unknown&#x60; - The default operational status of a HyperFlex node. * &#x60;Invalid&#x60; - The status of the node cannot be determined by the storage platform. * &#x60;Ready&#x60; - The platform node has been acknowledged by the cluster. * &#x60;Unpublished&#x60; - The node is not yet added to the storage cluster. * &#x60;Deleted&#x60; - The node has been removed from the cluster. * &#x60;Blocked&#x60; - The node is blocked from being added to the cluster. * &#x60;Blacklisted&#x60; - The deprecated value for &#39;Blocked&#39;. It is included to maintain backwards compatibility with clusters running a HyperFlex Data Platform version older than 5.0(1a). * &#x60;Allowed&#x60; - The node is allowed to be added to the cluster. * &#x60;Whitelisted&#x60; - The deprecated value for &#39;Allowed&#39;. It is included to maintain backwards compatibility with clusters running a HyperFlex Data Platform version older than 5.0(1a). * &#x60;InMaintenance&#x60; - The node is in maintenance mode. It has been temporarily relinquished from the cluster to allow for maintenance operations such as software upgrades. * &#x60;Online&#x60; - The node is participating in the storage cluster and is available for storage operations. * &#x60;Offline&#x60; - The node is part of the storage cluster, but is not available for storage operations. | [optional] [readonly] [default to "Unknown"]
 **NodeUuid** | Pointer to **string** | The unique identifier of the HyperFlex node. | [optional] [readonly] 
 **Role** | Pointer to **string** | The role of the host in the HyperFlex cluster. Specifies whether this host is used for compute or for both compute and storage. * &#x60;UNKNOWN&#x60; - The role of the HyperFlex cluster node is not known. * &#x60;STORAGE&#x60; - The HyperFlex cluster node provides both storage and compute resources for the cluster. * &#x60;COMPUTE&#x60; - The HyperFlex cluster node provides compute resources for the cluster. | [optional] [readonly] [default to "UNKNOWN"]
 **SerialNumber** | Pointer to **string** | The serial of the host server. | [optional] [readonly] 
+**SiteInfo** | Pointer to [**NullableHyperflexSiteDetails**](HyperflexSiteDetails.md) |  | [optional] 
 **Status** | Pointer to **string** | The status of the host. Indicates whether the hypervisor is online. * &#x60;UNKNOWN&#x60; - The host status cannot be determined. * &#x60;ONLINE&#x60; - The host is online and operational. * &#x60;OFFLINE&#x60; - The host is offline and is currently not participating in the HyperFlex cluster. * &#x60;INMAINTENANCE&#x60; - The host is not participating in the HyperFlex cluster because of a maintenance operation, such as firmware or data platform upgrade. * &#x60;DEGRADED&#x60; - The host is degraded and may not be performing in its full operational capacity. | [optional] [readonly] [default to "UNKNOWN"]
 **Version** | Pointer to **string** | The version of the hypervisor running on the host. | [optional] [readonly] 
-**Cluster** | Pointer to [**HyperflexClusterRelationship**](HyperflexClusterRelationship.md) |  | [optional] 
-**ClusterMember** | Pointer to [**AssetClusterMemberRelationship**](AssetClusterMemberRelationship.md) |  | [optional] 
+**Cluster** | Pointer to [**NullableHyperflexClusterRelationship**](HyperflexClusterRelationship.md) |  | [optional] 
+**ClusterMember** | Pointer to [**NullableAssetClusterMemberRelationship**](AssetClusterMemberRelationship.md) |  | [optional] 
 **Drives** | Pointer to [**[]HyperflexDriveRelationship**](HyperflexDriveRelationship.md) | An array of relationships to hyperflexDrive resources. | [optional] [readonly] 
-**PhysicalServer** | Pointer to [**ComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
+**PhysicalServer** | Pointer to [**NullableComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -574,6 +575,41 @@ SetSerialNumber sets SerialNumber field to given value.
 
 HasSerialNumber returns a boolean if a field has been set.
 
+### GetSiteInfo
+
+`func (o *HyperflexNode) GetSiteInfo() HyperflexSiteDetails`
+
+GetSiteInfo returns the SiteInfo field if non-nil, zero value otherwise.
+
+### GetSiteInfoOk
+
+`func (o *HyperflexNode) GetSiteInfoOk() (*HyperflexSiteDetails, bool)`
+
+GetSiteInfoOk returns a tuple with the SiteInfo field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSiteInfo
+
+`func (o *HyperflexNode) SetSiteInfo(v HyperflexSiteDetails)`
+
+SetSiteInfo sets SiteInfo field to given value.
+
+### HasSiteInfo
+
+`func (o *HyperflexNode) HasSiteInfo() bool`
+
+HasSiteInfo returns a boolean if a field has been set.
+
+### SetSiteInfoNil
+
+`func (o *HyperflexNode) SetSiteInfoNil(b bool)`
+
+ SetSiteInfoNil sets the value for SiteInfo to be an explicit nil
+
+### UnsetSiteInfo
+`func (o *HyperflexNode) UnsetSiteInfo()`
+
+UnsetSiteInfo ensures that no value is present for SiteInfo, not even an explicit nil
 ### GetStatus
 
 `func (o *HyperflexNode) GetStatus() string`
@@ -649,6 +685,16 @@ SetCluster sets Cluster field to given value.
 
 HasCluster returns a boolean if a field has been set.
 
+### SetClusterNil
+
+`func (o *HyperflexNode) SetClusterNil(b bool)`
+
+ SetClusterNil sets the value for Cluster to be an explicit nil
+
+### UnsetCluster
+`func (o *HyperflexNode) UnsetCluster()`
+
+UnsetCluster ensures that no value is present for Cluster, not even an explicit nil
 ### GetClusterMember
 
 `func (o *HyperflexNode) GetClusterMember() AssetClusterMemberRelationship`
@@ -674,6 +720,16 @@ SetClusterMember sets ClusterMember field to given value.
 
 HasClusterMember returns a boolean if a field has been set.
 
+### SetClusterMemberNil
+
+`func (o *HyperflexNode) SetClusterMemberNil(b bool)`
+
+ SetClusterMemberNil sets the value for ClusterMember to be an explicit nil
+
+### UnsetClusterMember
+`func (o *HyperflexNode) UnsetClusterMember()`
+
+UnsetClusterMember ensures that no value is present for ClusterMember, not even an explicit nil
 ### GetDrives
 
 `func (o *HyperflexNode) GetDrives() []HyperflexDriveRelationship`
@@ -734,6 +790,16 @@ SetPhysicalServer sets PhysicalServer field to given value.
 
 HasPhysicalServer returns a boolean if a field has been set.
 
+### SetPhysicalServerNil
+
+`func (o *HyperflexNode) SetPhysicalServerNil(b bool)`
+
+ SetPhysicalServerNil sets the value for PhysicalServer to be an explicit nil
+
+### UnsetPhysicalServer
+`func (o *HyperflexNode) UnsetPhysicalServer()`
+
+UnsetPhysicalServer ensures that no value is present for PhysicalServer, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

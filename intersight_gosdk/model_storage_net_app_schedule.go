@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the StorageNetAppSchedule type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &StorageNetAppSchedule{}
 
 // StorageNetAppSchedule NetApp schedule is a configurable entity on which various tasks (for instance, volume Snapshot copies and mirror replications) are run.
 type StorageNetAppSchedule struct {
@@ -26,9 +30,11 @@ type StorageNetAppSchedule struct {
 	ObjectType string `json:"ObjectType"`
 	// The name of the schedule.
 	Name *string `json:"Name,omitempty"`
+	// The type of the schedule (cron or interval).
+	Type *string `json:"Type,omitempty"`
 	// Universally unique identifier of the schedule.
-	Uuid                 *string                           `json:"Uuid,omitempty"`
-	Array                *StorageNetAppClusterRelationship `json:"Array,omitempty"`
+	Uuid                 *string                                  `json:"Uuid,omitempty" validate:"regexp=^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+	Array                NullableStorageNetAppClusterRelationship `json:"Array,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -81,6 +87,11 @@ func (o *StorageNetAppSchedule) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "storage.NetAppSchedule" of the ClassId field.
+func (o *StorageNetAppSchedule) GetDefaultClassId() interface{} {
+	return "storage.NetAppSchedule"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *StorageNetAppSchedule) GetObjectType() string {
 	if o == nil {
@@ -105,9 +116,14 @@ func (o *StorageNetAppSchedule) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "storage.NetAppSchedule" of the ObjectType field.
+func (o *StorageNetAppSchedule) GetDefaultObjectType() interface{} {
+	return "storage.NetAppSchedule"
+}
+
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *StorageNetAppSchedule) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -117,7 +133,7 @@ func (o *StorageNetAppSchedule) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppSchedule) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -125,7 +141,7 @@ func (o *StorageNetAppSchedule) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *StorageNetAppSchedule) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -137,9 +153,41 @@ func (o *StorageNetAppSchedule) SetName(v string) {
 	o.Name = &v
 }
 
+// GetType returns the Type field value if set, zero value otherwise.
+func (o *StorageNetAppSchedule) GetType() string {
+	if o == nil || IsNil(o.Type) {
+		var ret string
+		return ret
+	}
+	return *o.Type
+}
+
+// GetTypeOk returns a tuple with the Type field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppSchedule) GetTypeOk() (*string, bool) {
+	if o == nil || IsNil(o.Type) {
+		return nil, false
+	}
+	return o.Type, true
+}
+
+// HasType returns a boolean if a field has been set.
+func (o *StorageNetAppSchedule) HasType() bool {
+	if o != nil && !IsNil(o.Type) {
+		return true
+	}
+
+	return false
+}
+
+// SetType gets a reference to the given string and assigns it to the Type field.
+func (o *StorageNetAppSchedule) SetType(v string) {
+	o.Type = &v
+}
+
 // GetUuid returns the Uuid field value if set, zero value otherwise.
 func (o *StorageNetAppSchedule) GetUuid() string {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		var ret string
 		return ret
 	}
@@ -149,7 +197,7 @@ func (o *StorageNetAppSchedule) GetUuid() string {
 // GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppSchedule) GetUuidOk() (*string, bool) {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		return nil, false
 	}
 	return o.Uuid, true
@@ -157,7 +205,7 @@ func (o *StorageNetAppSchedule) GetUuidOk() (*string, bool) {
 
 // HasUuid returns a boolean if a field has been set.
 func (o *StorageNetAppSchedule) HasUuid() bool {
-	if o != nil && o.Uuid != nil {
+	if o != nil && !IsNil(o.Uuid) {
 		return true
 	}
 
@@ -169,72 +217,137 @@ func (o *StorageNetAppSchedule) SetUuid(v string) {
 	o.Uuid = &v
 }
 
-// GetArray returns the Array field value if set, zero value otherwise.
+// GetArray returns the Array field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorageNetAppSchedule) GetArray() StorageNetAppClusterRelationship {
-	if o == nil || o.Array == nil {
+	if o == nil || IsNil(o.Array.Get()) {
 		var ret StorageNetAppClusterRelationship
 		return ret
 	}
-	return *o.Array
+	return *o.Array.Get()
 }
 
 // GetArrayOk returns a tuple with the Array field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppSchedule) GetArrayOk() (*StorageNetAppClusterRelationship, bool) {
-	if o == nil || o.Array == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Array, true
+	return o.Array.Get(), o.Array.IsSet()
 }
 
 // HasArray returns a boolean if a field has been set.
 func (o *StorageNetAppSchedule) HasArray() bool {
-	if o != nil && o.Array != nil {
+	if o != nil && o.Array.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetArray gets a reference to the given StorageNetAppClusterRelationship and assigns it to the Array field.
+// SetArray gets a reference to the given NullableStorageNetAppClusterRelationship and assigns it to the Array field.
 func (o *StorageNetAppSchedule) SetArray(v StorageNetAppClusterRelationship) {
-	o.Array = &v
+	o.Array.Set(&v)
+}
+
+// SetArrayNil sets the value for Array to be an explicit nil
+func (o *StorageNetAppSchedule) SetArrayNil() {
+	o.Array.Set(nil)
+}
+
+// UnsetArray ensures that no value is present for Array, not even an explicit nil
+func (o *StorageNetAppSchedule) UnsetArray() {
+	o.Array.Unset()
 }
 
 func (o StorageNetAppSchedule) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o StorageNetAppSchedule) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Name != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.Uuid != nil {
+	if !IsNil(o.Type) {
+		toSerialize["Type"] = o.Type
+	}
+	if !IsNil(o.Uuid) {
 		toSerialize["Uuid"] = o.Uuid
 	}
-	if o.Array != nil {
-		toSerialize["Array"] = o.Array
+	if o.Array.IsSet() {
+		toSerialize["Array"] = o.Array.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *StorageNetAppSchedule) UnmarshalJSON(bytes []byte) (err error) {
+func (o *StorageNetAppSchedule) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type StorageNetAppScheduleWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -242,19 +355,22 @@ func (o *StorageNetAppSchedule) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// The name of the schedule.
 		Name *string `json:"Name,omitempty"`
+		// The type of the schedule (cron or interval).
+		Type *string `json:"Type,omitempty"`
 		// Universally unique identifier of the schedule.
-		Uuid  *string                           `json:"Uuid,omitempty"`
-		Array *StorageNetAppClusterRelationship `json:"Array,omitempty"`
+		Uuid  *string                                  `json:"Uuid,omitempty" validate:"regexp=^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+		Array NullableStorageNetAppClusterRelationship `json:"Array,omitempty"`
 	}
 
 	varStorageNetAppScheduleWithoutEmbeddedStruct := StorageNetAppScheduleWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppScheduleWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varStorageNetAppScheduleWithoutEmbeddedStruct)
 	if err == nil {
 		varStorageNetAppSchedule := _StorageNetAppSchedule{}
 		varStorageNetAppSchedule.ClassId = varStorageNetAppScheduleWithoutEmbeddedStruct.ClassId
 		varStorageNetAppSchedule.ObjectType = varStorageNetAppScheduleWithoutEmbeddedStruct.ObjectType
 		varStorageNetAppSchedule.Name = varStorageNetAppScheduleWithoutEmbeddedStruct.Name
+		varStorageNetAppSchedule.Type = varStorageNetAppScheduleWithoutEmbeddedStruct.Type
 		varStorageNetAppSchedule.Uuid = varStorageNetAppScheduleWithoutEmbeddedStruct.Uuid
 		varStorageNetAppSchedule.Array = varStorageNetAppScheduleWithoutEmbeddedStruct.Array
 		*o = StorageNetAppSchedule(varStorageNetAppSchedule)
@@ -264,7 +380,7 @@ func (o *StorageNetAppSchedule) UnmarshalJSON(bytes []byte) (err error) {
 
 	varStorageNetAppSchedule := _StorageNetAppSchedule{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppSchedule)
+	err = json.Unmarshal(data, &varStorageNetAppSchedule)
 	if err == nil {
 		o.MoBaseMo = varStorageNetAppSchedule.MoBaseMo
 	} else {
@@ -273,10 +389,11 @@ func (o *StorageNetAppSchedule) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Name")
+		delete(additionalProperties, "Type")
 		delete(additionalProperties, "Uuid")
 		delete(additionalProperties, "Array")
 

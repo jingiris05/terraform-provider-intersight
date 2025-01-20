@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,24 +13,29 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
-// PolicyPolicyStatus The status descriptor for any policy attach/detach to/from a profile/template. It contains the policy details like moid and type and the status progress like validating, ok or errored. In case of an error, the error message is populated in reason.
+// checks if the PolicyPolicyStatus type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &PolicyPolicyStatus{}
+
+// PolicyPolicyStatus The status descriptor for any policy association or validation related to a profile/template. It contains the policy details like moid and type and the status progress like validating, ok or errored. In case of one or more errors, the error details are populated in errorMessages.
 type PolicyPolicyStatus struct {
 	MoBaseComplexType
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-	ObjectType string `json:"ObjectType"`
-	// The object id of the policy being attached.
+	ObjectType    string              `json:"ObjectType"`
+	ErrorMessages []PolicyPolicyError `json:"ErrorMessages,omitempty"`
+	// The object identifier of the policy.
 	Moid *string `json:"Moid,omitempty"`
 	// The reason for the status - it will be empty if status is ok or validating. If error, it will have the appropriate message indicating the reason for failure.
 	Reason *string `json:"Reason,omitempty"`
-	// Indicates if the policy attach/detach was successful or not. Values  -- ok, errored, validating. * `ok` - The policy attach/detach is successful. * `error` - The policy cannot be attached/detached due to an error. * `validating` - The policy preconfig validation is in progress.
+	// Indicates if the policy association or validation was successful or not. Values  -- ok, errored, validating. * `ok` - The policy association or validation is successful. * `error` - The policy association or validation has failed. * `validating` - The policy association or validation is in progress.
 	Status *string `json:"Status,omitempty"`
-	// The object type of the policy being attached.
+	// The object type of the policy.
 	Type                 *string `json:"Type,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -45,8 +50,6 @@ func NewPolicyPolicyStatus(classId string, objectType string) *PolicyPolicyStatu
 	this := PolicyPolicyStatus{}
 	this.ClassId = classId
 	this.ObjectType = objectType
-	var status string = "ok"
-	this.Status = &status
 	return &this
 }
 
@@ -59,8 +62,6 @@ func NewPolicyPolicyStatusWithDefaults() *PolicyPolicyStatus {
 	this.ClassId = classId
 	var objectType string = "policy.PolicyStatus"
 	this.ObjectType = objectType
-	var status string = "ok"
-	this.Status = &status
 	return &this
 }
 
@@ -88,6 +89,11 @@ func (o *PolicyPolicyStatus) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "policy.PolicyStatus" of the ClassId field.
+func (o *PolicyPolicyStatus) GetDefaultClassId() interface{} {
+	return "policy.PolicyStatus"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *PolicyPolicyStatus) GetObjectType() string {
 	if o == nil {
@@ -112,9 +118,47 @@ func (o *PolicyPolicyStatus) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "policy.PolicyStatus" of the ObjectType field.
+func (o *PolicyPolicyStatus) GetDefaultObjectType() interface{} {
+	return "policy.PolicyStatus"
+}
+
+// GetErrorMessages returns the ErrorMessages field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *PolicyPolicyStatus) GetErrorMessages() []PolicyPolicyError {
+	if o == nil {
+		var ret []PolicyPolicyError
+		return ret
+	}
+	return o.ErrorMessages
+}
+
+// GetErrorMessagesOk returns a tuple with the ErrorMessages field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *PolicyPolicyStatus) GetErrorMessagesOk() ([]PolicyPolicyError, bool) {
+	if o == nil || IsNil(o.ErrorMessages) {
+		return nil, false
+	}
+	return o.ErrorMessages, true
+}
+
+// HasErrorMessages returns a boolean if a field has been set.
+func (o *PolicyPolicyStatus) HasErrorMessages() bool {
+	if o != nil && !IsNil(o.ErrorMessages) {
+		return true
+	}
+
+	return false
+}
+
+// SetErrorMessages gets a reference to the given []PolicyPolicyError and assigns it to the ErrorMessages field.
+func (o *PolicyPolicyStatus) SetErrorMessages(v []PolicyPolicyError) {
+	o.ErrorMessages = v
+}
+
 // GetMoid returns the Moid field value if set, zero value otherwise.
 func (o *PolicyPolicyStatus) GetMoid() string {
-	if o == nil || o.Moid == nil {
+	if o == nil || IsNil(o.Moid) {
 		var ret string
 		return ret
 	}
@@ -124,7 +168,7 @@ func (o *PolicyPolicyStatus) GetMoid() string {
 // GetMoidOk returns a tuple with the Moid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PolicyPolicyStatus) GetMoidOk() (*string, bool) {
-	if o == nil || o.Moid == nil {
+	if o == nil || IsNil(o.Moid) {
 		return nil, false
 	}
 	return o.Moid, true
@@ -132,7 +176,7 @@ func (o *PolicyPolicyStatus) GetMoidOk() (*string, bool) {
 
 // HasMoid returns a boolean if a field has been set.
 func (o *PolicyPolicyStatus) HasMoid() bool {
-	if o != nil && o.Moid != nil {
+	if o != nil && !IsNil(o.Moid) {
 		return true
 	}
 
@@ -146,7 +190,7 @@ func (o *PolicyPolicyStatus) SetMoid(v string) {
 
 // GetReason returns the Reason field value if set, zero value otherwise.
 func (o *PolicyPolicyStatus) GetReason() string {
-	if o == nil || o.Reason == nil {
+	if o == nil || IsNil(o.Reason) {
 		var ret string
 		return ret
 	}
@@ -156,7 +200,7 @@ func (o *PolicyPolicyStatus) GetReason() string {
 // GetReasonOk returns a tuple with the Reason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PolicyPolicyStatus) GetReasonOk() (*string, bool) {
-	if o == nil || o.Reason == nil {
+	if o == nil || IsNil(o.Reason) {
 		return nil, false
 	}
 	return o.Reason, true
@@ -164,7 +208,7 @@ func (o *PolicyPolicyStatus) GetReasonOk() (*string, bool) {
 
 // HasReason returns a boolean if a field has been set.
 func (o *PolicyPolicyStatus) HasReason() bool {
-	if o != nil && o.Reason != nil {
+	if o != nil && !IsNil(o.Reason) {
 		return true
 	}
 
@@ -178,7 +222,7 @@ func (o *PolicyPolicyStatus) SetReason(v string) {
 
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *PolicyPolicyStatus) GetStatus() string {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
@@ -188,7 +232,7 @@ func (o *PolicyPolicyStatus) GetStatus() string {
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PolicyPolicyStatus) GetStatusOk() (*string, bool) {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
 	return o.Status, true
@@ -196,7 +240,7 @@ func (o *PolicyPolicyStatus) GetStatusOk() (*string, bool) {
 
 // HasStatus returns a boolean if a field has been set.
 func (o *PolicyPolicyStatus) HasStatus() bool {
-	if o != nil && o.Status != nil {
+	if o != nil && !IsNil(o.Status) {
 		return true
 	}
 
@@ -210,7 +254,7 @@ func (o *PolicyPolicyStatus) SetStatus(v string) {
 
 // GetType returns the Type field value if set, zero value otherwise.
 func (o *PolicyPolicyStatus) GetType() string {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		var ret string
 		return ret
 	}
@@ -220,7 +264,7 @@ func (o *PolicyPolicyStatus) GetType() string {
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *PolicyPolicyStatus) GetTypeOk() (*string, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		return nil, false
 	}
 	return o.Type, true
@@ -228,7 +272,7 @@ func (o *PolicyPolicyStatus) GetTypeOk() (*string, bool) {
 
 // HasType returns a boolean if a field has been set.
 func (o *PolicyPolicyStatus) HasType() bool {
-	if o != nil && o.Type != nil {
+	if o != nil && !IsNil(o.Type) {
 		return true
 	}
 
@@ -241,31 +285,44 @@ func (o *PolicyPolicyStatus) SetType(v string) {
 }
 
 func (o PolicyPolicyStatus) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o PolicyPolicyStatus) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Moid != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if o.ErrorMessages != nil {
+		toSerialize["ErrorMessages"] = o.ErrorMessages
+	}
+	if !IsNil(o.Moid) {
 		toSerialize["Moid"] = o.Moid
 	}
-	if o.Reason != nil {
+	if !IsNil(o.Reason) {
 		toSerialize["Reason"] = o.Reason
 	}
-	if o.Status != nil {
+	if !IsNil(o.Status) {
 		toSerialize["Status"] = o.Status
 	}
-	if o.Type != nil {
+	if !IsNil(o.Type) {
 		toSerialize["Type"] = o.Type
 	}
 
@@ -273,32 +330,75 @@ func (o PolicyPolicyStatus) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *PolicyPolicyStatus) UnmarshalJSON(bytes []byte) (err error) {
+func (o *PolicyPolicyStatus) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type PolicyPolicyStatusWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-		ObjectType string `json:"ObjectType"`
-		// The object id of the policy being attached.
+		ObjectType    string              `json:"ObjectType"`
+		ErrorMessages []PolicyPolicyError `json:"ErrorMessages,omitempty"`
+		// The object identifier of the policy.
 		Moid *string `json:"Moid,omitempty"`
 		// The reason for the status - it will be empty if status is ok or validating. If error, it will have the appropriate message indicating the reason for failure.
 		Reason *string `json:"Reason,omitempty"`
-		// Indicates if the policy attach/detach was successful or not. Values  -- ok, errored, validating. * `ok` - The policy attach/detach is successful. * `error` - The policy cannot be attached/detached due to an error. * `validating` - The policy preconfig validation is in progress.
+		// Indicates if the policy association or validation was successful or not. Values  -- ok, errored, validating. * `ok` - The policy association or validation is successful. * `error` - The policy association or validation has failed. * `validating` - The policy association or validation is in progress.
 		Status *string `json:"Status,omitempty"`
-		// The object type of the policy being attached.
+		// The object type of the policy.
 		Type *string `json:"Type,omitempty"`
 	}
 
 	varPolicyPolicyStatusWithoutEmbeddedStruct := PolicyPolicyStatusWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varPolicyPolicyStatusWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varPolicyPolicyStatusWithoutEmbeddedStruct)
 	if err == nil {
 		varPolicyPolicyStatus := _PolicyPolicyStatus{}
 		varPolicyPolicyStatus.ClassId = varPolicyPolicyStatusWithoutEmbeddedStruct.ClassId
 		varPolicyPolicyStatus.ObjectType = varPolicyPolicyStatusWithoutEmbeddedStruct.ObjectType
+		varPolicyPolicyStatus.ErrorMessages = varPolicyPolicyStatusWithoutEmbeddedStruct.ErrorMessages
 		varPolicyPolicyStatus.Moid = varPolicyPolicyStatusWithoutEmbeddedStruct.Moid
 		varPolicyPolicyStatus.Reason = varPolicyPolicyStatusWithoutEmbeddedStruct.Reason
 		varPolicyPolicyStatus.Status = varPolicyPolicyStatusWithoutEmbeddedStruct.Status
@@ -310,7 +410,7 @@ func (o *PolicyPolicyStatus) UnmarshalJSON(bytes []byte) (err error) {
 
 	varPolicyPolicyStatus := _PolicyPolicyStatus{}
 
-	err = json.Unmarshal(bytes, &varPolicyPolicyStatus)
+	err = json.Unmarshal(data, &varPolicyPolicyStatus)
 	if err == nil {
 		o.MoBaseComplexType = varPolicyPolicyStatus.MoBaseComplexType
 	} else {
@@ -319,9 +419,10 @@ func (o *PolicyPolicyStatus) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "ErrorMessages")
 		delete(additionalProperties, "Moid")
 		delete(additionalProperties, "Reason")
 		delete(additionalProperties, "Status")

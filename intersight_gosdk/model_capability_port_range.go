@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the CapabilityPortRange type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &CapabilityPortRange{}
 
 // CapabilityPortRange Type to represent ranges of ports supporting certain speeds or features on a switch.
 type CapabilityPortRange struct {
@@ -84,6 +88,11 @@ func (o *CapabilityPortRange) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "capability.PortRange" of the ClassId field.
+func (o *CapabilityPortRange) GetDefaultClassId() interface{} {
+	return "capability.PortRange"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *CapabilityPortRange) GetObjectType() string {
 	if o == nil {
@@ -108,9 +117,14 @@ func (o *CapabilityPortRange) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "capability.PortRange" of the ObjectType field.
+func (o *CapabilityPortRange) GetDefaultObjectType() interface{} {
+	return "capability.PortRange"
+}
+
 // GetEndPortId returns the EndPortId field value if set, zero value otherwise.
 func (o *CapabilityPortRange) GetEndPortId() int64 {
-	if o == nil || o.EndPortId == nil {
+	if o == nil || IsNil(o.EndPortId) {
 		var ret int64
 		return ret
 	}
@@ -120,7 +134,7 @@ func (o *CapabilityPortRange) GetEndPortId() int64 {
 // GetEndPortIdOk returns a tuple with the EndPortId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CapabilityPortRange) GetEndPortIdOk() (*int64, bool) {
-	if o == nil || o.EndPortId == nil {
+	if o == nil || IsNil(o.EndPortId) {
 		return nil, false
 	}
 	return o.EndPortId, true
@@ -128,7 +142,7 @@ func (o *CapabilityPortRange) GetEndPortIdOk() (*int64, bool) {
 
 // HasEndPortId returns a boolean if a field has been set.
 func (o *CapabilityPortRange) HasEndPortId() bool {
-	if o != nil && o.EndPortId != nil {
+	if o != nil && !IsNil(o.EndPortId) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *CapabilityPortRange) SetEndPortId(v int64) {
 
 // GetEndSlotId returns the EndSlotId field value if set, zero value otherwise.
 func (o *CapabilityPortRange) GetEndSlotId() int64 {
-	if o == nil || o.EndSlotId == nil {
+	if o == nil || IsNil(o.EndSlotId) {
 		var ret int64
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *CapabilityPortRange) GetEndSlotId() int64 {
 // GetEndSlotIdOk returns a tuple with the EndSlotId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CapabilityPortRange) GetEndSlotIdOk() (*int64, bool) {
-	if o == nil || o.EndSlotId == nil {
+	if o == nil || IsNil(o.EndSlotId) {
 		return nil, false
 	}
 	return o.EndSlotId, true
@@ -160,7 +174,7 @@ func (o *CapabilityPortRange) GetEndSlotIdOk() (*int64, bool) {
 
 // HasEndSlotId returns a boolean if a field has been set.
 func (o *CapabilityPortRange) HasEndSlotId() bool {
-	if o != nil && o.EndSlotId != nil {
+	if o != nil && !IsNil(o.EndSlotId) {
 		return true
 	}
 
@@ -174,7 +188,7 @@ func (o *CapabilityPortRange) SetEndSlotId(v int64) {
 
 // GetStartPortId returns the StartPortId field value if set, zero value otherwise.
 func (o *CapabilityPortRange) GetStartPortId() int64 {
-	if o == nil || o.StartPortId == nil {
+	if o == nil || IsNil(o.StartPortId) {
 		var ret int64
 		return ret
 	}
@@ -184,7 +198,7 @@ func (o *CapabilityPortRange) GetStartPortId() int64 {
 // GetStartPortIdOk returns a tuple with the StartPortId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CapabilityPortRange) GetStartPortIdOk() (*int64, bool) {
-	if o == nil || o.StartPortId == nil {
+	if o == nil || IsNil(o.StartPortId) {
 		return nil, false
 	}
 	return o.StartPortId, true
@@ -192,7 +206,7 @@ func (o *CapabilityPortRange) GetStartPortIdOk() (*int64, bool) {
 
 // HasStartPortId returns a boolean if a field has been set.
 func (o *CapabilityPortRange) HasStartPortId() bool {
-	if o != nil && o.StartPortId != nil {
+	if o != nil && !IsNil(o.StartPortId) {
 		return true
 	}
 
@@ -206,7 +220,7 @@ func (o *CapabilityPortRange) SetStartPortId(v int64) {
 
 // GetStartSlotId returns the StartSlotId field value if set, zero value otherwise.
 func (o *CapabilityPortRange) GetStartSlotId() int64 {
-	if o == nil || o.StartSlotId == nil {
+	if o == nil || IsNil(o.StartSlotId) {
 		var ret int64
 		return ret
 	}
@@ -216,7 +230,7 @@ func (o *CapabilityPortRange) GetStartSlotId() int64 {
 // GetStartSlotIdOk returns a tuple with the StartSlotId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CapabilityPortRange) GetStartSlotIdOk() (*int64, bool) {
-	if o == nil || o.StartSlotId == nil {
+	if o == nil || IsNil(o.StartSlotId) {
 		return nil, false
 	}
 	return o.StartSlotId, true
@@ -224,7 +238,7 @@ func (o *CapabilityPortRange) GetStartSlotIdOk() (*int64, bool) {
 
 // HasStartSlotId returns a boolean if a field has been set.
 func (o *CapabilityPortRange) HasStartSlotId() bool {
-	if o != nil && o.StartSlotId != nil {
+	if o != nil && !IsNil(o.StartSlotId) {
 		return true
 	}
 
@@ -237,31 +251,41 @@ func (o *CapabilityPortRange) SetStartSlotId(v int64) {
 }
 
 func (o CapabilityPortRange) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o CapabilityPortRange) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.EndPortId != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.EndPortId) {
 		toSerialize["EndPortId"] = o.EndPortId
 	}
-	if o.EndSlotId != nil {
+	if !IsNil(o.EndSlotId) {
 		toSerialize["EndSlotId"] = o.EndSlotId
 	}
-	if o.StartPortId != nil {
+	if !IsNil(o.StartPortId) {
 		toSerialize["StartPortId"] = o.StartPortId
 	}
-	if o.StartSlotId != nil {
+	if !IsNil(o.StartSlotId) {
 		toSerialize["StartSlotId"] = o.StartSlotId
 	}
 
@@ -269,10 +293,51 @@ func (o CapabilityPortRange) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *CapabilityPortRange) UnmarshalJSON(bytes []byte) (err error) {
+func (o *CapabilityPortRange) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type CapabilityPortRangeWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -290,7 +355,7 @@ func (o *CapabilityPortRange) UnmarshalJSON(bytes []byte) (err error) {
 
 	varCapabilityPortRangeWithoutEmbeddedStruct := CapabilityPortRangeWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varCapabilityPortRangeWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varCapabilityPortRangeWithoutEmbeddedStruct)
 	if err == nil {
 		varCapabilityPortRange := _CapabilityPortRange{}
 		varCapabilityPortRange.ClassId = varCapabilityPortRangeWithoutEmbeddedStruct.ClassId
@@ -306,7 +371,7 @@ func (o *CapabilityPortRange) UnmarshalJSON(bytes []byte) (err error) {
 
 	varCapabilityPortRange := _CapabilityPortRange{}
 
-	err = json.Unmarshal(bytes, &varCapabilityPortRange)
+	err = json.Unmarshal(data, &varCapabilityPortRange)
 	if err == nil {
 		o.MoBaseComplexType = varCapabilityPortRange.MoBaseComplexType
 	} else {
@@ -315,7 +380,7 @@ func (o *CapabilityPortRange) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "EndPortId")

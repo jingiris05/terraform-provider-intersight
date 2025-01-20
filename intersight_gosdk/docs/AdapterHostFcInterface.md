@@ -17,12 +17,15 @@ Name | Type | Description | Notes
 **OriginalWwpn** | Pointer to **string** | The uniquely distinguishable factory default World Wide Port Name of the Host Fibre Channel Interface. | [optional] [readonly] 
 **PeerDn** | Pointer to **string** | PeerPort Dn of Host Fibre Channel Interface. | [optional] [readonly] 
 **PinGroupName** | Pointer to **string** | Name given for San PinGroup. | [optional] 
+**VfcAction** | Pointer to **string** | Denotes the action to be performed on the vfc corresponding to the vHBA. * &#x60;None&#x60; - Default value for vif operation. * &#x60;ResetConnectivity&#x60; - Resets connectivity on both active and passive vif. * &#x60;ResetConnectivityActive&#x60; - Resets connectivity on the active vif. * &#x60;ResetConnectivityPassive&#x60; - Resets connectivity on the passive vif. * &#x60;Enable&#x60; - Enables the vif on both the FIs. * &#x60;Disable&#x60; - Disables the vif on both the FIs. * &#x60;EnableActive&#x60; - Enables the corresponding active vif. * &#x60;EnablePassive&#x60; - Enables the corresponding standby vif. * &#x60;DisableActive&#x60; - Disables the corresponding active vif. * &#x60;DisablePassive&#x60; - Disables the corresponding standby vif. | [optional] [default to "None"]
+**VifId** | Pointer to **int64** | Identifier of the virtual fibre channel (Vfc) interface on the networking component (e.g., Fabric Interconnect) for the corresponding Host Fibre Channel Interface. | [optional] [readonly] 
 **Wwnn** | Pointer to **string** | The uniquely distinguishable user configured World Wide Node Name of the Host. | [optional] [readonly] 
 **Wwpn** | Pointer to **string** | The uniquely distinguishable user configured World Wide Port Name of the Host Fibre Channel Interface. | [optional] [readonly] 
-**AdapterUnit** | Pointer to [**AdapterUnitRelationship**](AdapterUnitRelationship.md) |  | [optional] 
-**InventoryDeviceInfo** | Pointer to [**InventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
-**PinnedInterface** | Pointer to [**InventoryInterfaceRelationship**](InventoryInterfaceRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**AdapterUnit** | Pointer to [**NullableAdapterUnitRelationship**](AdapterUnitRelationship.md) |  | [optional] 
+**InventoryDeviceInfo** | Pointer to [**NullableInventoryDeviceInfoRelationship**](InventoryDeviceInfoRelationship.md) |  | [optional] 
+**PinnedInterface** | Pointer to [**NullableInventoryInterfaceRelationship**](InventoryInterfaceRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**Vfc** | Pointer to [**NullableNetworkVfcRelationship**](NetworkVfcRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -368,6 +371,56 @@ SetPinGroupName sets PinGroupName field to given value.
 
 HasPinGroupName returns a boolean if a field has been set.
 
+### GetVfcAction
+
+`func (o *AdapterHostFcInterface) GetVfcAction() string`
+
+GetVfcAction returns the VfcAction field if non-nil, zero value otherwise.
+
+### GetVfcActionOk
+
+`func (o *AdapterHostFcInterface) GetVfcActionOk() (*string, bool)`
+
+GetVfcActionOk returns a tuple with the VfcAction field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVfcAction
+
+`func (o *AdapterHostFcInterface) SetVfcAction(v string)`
+
+SetVfcAction sets VfcAction field to given value.
+
+### HasVfcAction
+
+`func (o *AdapterHostFcInterface) HasVfcAction() bool`
+
+HasVfcAction returns a boolean if a field has been set.
+
+### GetVifId
+
+`func (o *AdapterHostFcInterface) GetVifId() int64`
+
+GetVifId returns the VifId field if non-nil, zero value otherwise.
+
+### GetVifIdOk
+
+`func (o *AdapterHostFcInterface) GetVifIdOk() (*int64, bool)`
+
+GetVifIdOk returns a tuple with the VifId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVifId
+
+`func (o *AdapterHostFcInterface) SetVifId(v int64)`
+
+SetVifId sets VifId field to given value.
+
+### HasVifId
+
+`func (o *AdapterHostFcInterface) HasVifId() bool`
+
+HasVifId returns a boolean if a field has been set.
+
 ### GetWwnn
 
 `func (o *AdapterHostFcInterface) GetWwnn() string`
@@ -443,6 +496,16 @@ SetAdapterUnit sets AdapterUnit field to given value.
 
 HasAdapterUnit returns a boolean if a field has been set.
 
+### SetAdapterUnitNil
+
+`func (o *AdapterHostFcInterface) SetAdapterUnitNil(b bool)`
+
+ SetAdapterUnitNil sets the value for AdapterUnit to be an explicit nil
+
+### UnsetAdapterUnit
+`func (o *AdapterHostFcInterface) UnsetAdapterUnit()`
+
+UnsetAdapterUnit ensures that no value is present for AdapterUnit, not even an explicit nil
 ### GetInventoryDeviceInfo
 
 `func (o *AdapterHostFcInterface) GetInventoryDeviceInfo() InventoryDeviceInfoRelationship`
@@ -468,6 +531,16 @@ SetInventoryDeviceInfo sets InventoryDeviceInfo field to given value.
 
 HasInventoryDeviceInfo returns a boolean if a field has been set.
 
+### SetInventoryDeviceInfoNil
+
+`func (o *AdapterHostFcInterface) SetInventoryDeviceInfoNil(b bool)`
+
+ SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+
+### UnsetInventoryDeviceInfo
+`func (o *AdapterHostFcInterface) UnsetInventoryDeviceInfo()`
+
+UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
 ### GetPinnedInterface
 
 `func (o *AdapterHostFcInterface) GetPinnedInterface() InventoryInterfaceRelationship`
@@ -493,6 +566,16 @@ SetPinnedInterface sets PinnedInterface field to given value.
 
 HasPinnedInterface returns a boolean if a field has been set.
 
+### SetPinnedInterfaceNil
+
+`func (o *AdapterHostFcInterface) SetPinnedInterfaceNil(b bool)`
+
+ SetPinnedInterfaceNil sets the value for PinnedInterface to be an explicit nil
+
+### UnsetPinnedInterface
+`func (o *AdapterHostFcInterface) UnsetPinnedInterface()`
+
+UnsetPinnedInterface ensures that no value is present for PinnedInterface, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *AdapterHostFcInterface) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -518,6 +601,51 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *AdapterHostFcInterface) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *AdapterHostFcInterface) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+### GetVfc
+
+`func (o *AdapterHostFcInterface) GetVfc() NetworkVfcRelationship`
+
+GetVfc returns the Vfc field if non-nil, zero value otherwise.
+
+### GetVfcOk
+
+`func (o *AdapterHostFcInterface) GetVfcOk() (*NetworkVfcRelationship, bool)`
+
+GetVfcOk returns a tuple with the Vfc field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVfc
+
+`func (o *AdapterHostFcInterface) SetVfc(v NetworkVfcRelationship)`
+
+SetVfc sets Vfc field to given value.
+
+### HasVfc
+
+`func (o *AdapterHostFcInterface) HasVfc() bool`
+
+HasVfc returns a boolean if a field has been set.
+
+### SetVfcNil
+
+`func (o *AdapterHostFcInterface) SetVfcNil(b bool)`
+
+ SetVfcNil sets the value for Vfc to be an explicit nil
+
+### UnsetVfc
+`func (o *AdapterHostFcInterface) UnsetVfc()`
+
+UnsetVfc ensures that no value is present for Vfc, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

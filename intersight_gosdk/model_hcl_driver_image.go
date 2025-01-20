@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HclDriverImage type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HclDriverImage{}
 
 // HclDriverImage Collection used to store the driver ISO urls for each server based on how it is managed.
 type HclDriverImage struct {
@@ -86,6 +90,11 @@ func (o *HclDriverImage) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hcl.DriverImage" of the ClassId field.
+func (o *HclDriverImage) GetDefaultClassId() interface{} {
+	return "hcl.DriverImage"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HclDriverImage) GetObjectType() string {
 	if o == nil {
@@ -110,9 +119,14 @@ func (o *HclDriverImage) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hcl.DriverImage" of the ObjectType field.
+func (o *HclDriverImage) GetDefaultObjectType() interface{} {
+	return "hcl.DriverImage"
+}
+
 // GetDriverIsoUrl returns the DriverIsoUrl field value if set, zero value otherwise.
 func (o *HclDriverImage) GetDriverIsoUrl() string {
-	if o == nil || o.DriverIsoUrl == nil {
+	if o == nil || IsNil(o.DriverIsoUrl) {
 		var ret string
 		return ret
 	}
@@ -122,7 +136,7 @@ func (o *HclDriverImage) GetDriverIsoUrl() string {
 // GetDriverIsoUrlOk returns a tuple with the DriverIsoUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclDriverImage) GetDriverIsoUrlOk() (*string, bool) {
-	if o == nil || o.DriverIsoUrl == nil {
+	if o == nil || IsNil(o.DriverIsoUrl) {
 		return nil, false
 	}
 	return o.DriverIsoUrl, true
@@ -130,7 +144,7 @@ func (o *HclDriverImage) GetDriverIsoUrlOk() (*string, bool) {
 
 // HasDriverIsoUrl returns a boolean if a field has been set.
 func (o *HclDriverImage) HasDriverIsoUrl() bool {
-	if o != nil && o.DriverIsoUrl != nil {
+	if o != nil && !IsNil(o.DriverIsoUrl) {
 		return true
 	}
 
@@ -144,7 +158,7 @@ func (o *HclDriverImage) SetDriverIsoUrl(v string) {
 
 // GetManagementType returns the ManagementType field value if set, zero value otherwise.
 func (o *HclDriverImage) GetManagementType() string {
-	if o == nil || o.ManagementType == nil {
+	if o == nil || IsNil(o.ManagementType) {
 		var ret string
 		return ret
 	}
@@ -154,7 +168,7 @@ func (o *HclDriverImage) GetManagementType() string {
 // GetManagementTypeOk returns a tuple with the ManagementType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclDriverImage) GetManagementTypeOk() (*string, bool) {
-	if o == nil || o.ManagementType == nil {
+	if o == nil || IsNil(o.ManagementType) {
 		return nil, false
 	}
 	return o.ManagementType, true
@@ -162,7 +176,7 @@ func (o *HclDriverImage) GetManagementTypeOk() (*string, bool) {
 
 // HasManagementType returns a boolean if a field has been set.
 func (o *HclDriverImage) HasManagementType() bool {
-	if o != nil && o.ManagementType != nil {
+	if o != nil && !IsNil(o.ManagementType) {
 		return true
 	}
 
@@ -176,7 +190,7 @@ func (o *HclDriverImage) SetManagementType(v string) {
 
 // GetServerPid returns the ServerPid field value if set, zero value otherwise.
 func (o *HclDriverImage) GetServerPid() string {
-	if o == nil || o.ServerPid == nil {
+	if o == nil || IsNil(o.ServerPid) {
 		var ret string
 		return ret
 	}
@@ -186,7 +200,7 @@ func (o *HclDriverImage) GetServerPid() string {
 // GetServerPidOk returns a tuple with the ServerPid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HclDriverImage) GetServerPidOk() (*string, bool) {
-	if o == nil || o.ServerPid == nil {
+	if o == nil || IsNil(o.ServerPid) {
 		return nil, false
 	}
 	return o.ServerPid, true
@@ -194,7 +208,7 @@ func (o *HclDriverImage) GetServerPidOk() (*string, bool) {
 
 // HasServerPid returns a boolean if a field has been set.
 func (o *HclDriverImage) HasServerPid() bool {
-	if o != nil && o.ServerPid != nil {
+	if o != nil && !IsNil(o.ServerPid) {
 		return true
 	}
 
@@ -207,28 +221,38 @@ func (o *HclDriverImage) SetServerPid(v string) {
 }
 
 func (o HclDriverImage) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HclDriverImage) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.DriverIsoUrl != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.DriverIsoUrl) {
 		toSerialize["DriverIsoUrl"] = o.DriverIsoUrl
 	}
-	if o.ManagementType != nil {
+	if !IsNil(o.ManagementType) {
 		toSerialize["ManagementType"] = o.ManagementType
 	}
-	if o.ServerPid != nil {
+	if !IsNil(o.ServerPid) {
 		toSerialize["ServerPid"] = o.ServerPid
 	}
 
@@ -236,10 +260,51 @@ func (o HclDriverImage) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HclDriverImage) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HclDriverImage) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HclDriverImageWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -255,7 +320,7 @@ func (o *HclDriverImage) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHclDriverImageWithoutEmbeddedStruct := HclDriverImageWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHclDriverImageWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHclDriverImageWithoutEmbeddedStruct)
 	if err == nil {
 		varHclDriverImage := _HclDriverImage{}
 		varHclDriverImage.ClassId = varHclDriverImageWithoutEmbeddedStruct.ClassId
@@ -270,7 +335,7 @@ func (o *HclDriverImage) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHclDriverImage := _HclDriverImage{}
 
-	err = json.Unmarshal(bytes, &varHclDriverImage)
+	err = json.Unmarshal(data, &varHclDriverImage)
 	if err == nil {
 		o.MoBaseMo = varHclDriverImage.MoBaseMo
 	} else {
@@ -279,7 +344,7 @@ func (o *HclDriverImage) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "DriverIsoUrl")

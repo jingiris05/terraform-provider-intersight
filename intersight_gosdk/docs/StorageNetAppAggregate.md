@@ -7,13 +7,16 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "storage.NetAppAggregate"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.NetAppAggregate"]
 **AggregateType** | Pointer to **string** | Storage disk type for NetApp aggregate. * &#x60;HDD&#x60; - Hard Disk Drive disk type. * &#x60;Hybrid&#x60; - Solid State Hard Disk Drive. * &#x60;Hybrid (Flash Pool)&#x60; - SSHD in a flash pool disk type. * &#x60;SSD&#x60; - Solid State Disk disk type. * &#x60;SSD (FabricPool)&#x60; - SSD in a flash pool disk type. * &#x60;VMDisk (SDS)&#x60; - Storage disk with Hard disk drive. * &#x60;VMDisk (FabricPool)&#x60; - Storage disk with Non-volatile random-access memory drives. * &#x60;LUN (FlexArray)&#x60; - LUN (FlexArray) disk type. * &#x60;Not Mapped&#x60; - Storage disk is not mapped. | [optional] [readonly] [default to "HDD"]
-**AvgPerformanceMetrics** | Pointer to [**StorageNetAppPerformanceMetricsAverage**](StorageNetAppPerformanceMetricsAverage.md) |  | [optional] 
+**AvgPerformanceMetrics** | Pointer to [**NullableStorageBasePerformanceMetricsAverage**](StorageBasePerformanceMetricsAverage.md) | Average performance metrics data for a NetApp storage resource over a given period of time. | [optional] 
+**CloudStorage** | Pointer to **[]string** |  | [optional] 
+**EfficiencyRatio** | Pointer to **float32** | Data reduction ratio (logical_used / used). | [optional] [readonly] 
 **Key** | Pointer to **string** | Unique identifier of NetApp Aggregate across data center. | [optional] [readonly] 
+**NodeName** | Pointer to **string** | The node name for the aggregate. | [optional] [readonly] 
 **RaidSize** | Pointer to **int64** | Size of the RAID group represented by number of disks in the group. | [optional] [readonly] 
 **RaidType** | Pointer to **string** | The RAID configuration type. * &#x60;Unknown&#x60; - Default unknown RAID type. * &#x60;RAID0&#x60; - RAID0 splits (\&quot;stripes\&quot;) data evenly across two or more disks, without parity information. * &#x60;RAID1&#x60; - RAID1 requires a minimum of two disks to work, and provides data redundancy and failover. * &#x60;RAID4&#x60; - RAID4 stripes block level data and dedicates a disk to parity. * &#x60;RAID5&#x60; - RAID5  distributes striping and parity at a block level. * &#x60;RAID6&#x60; - RAID6 level operates like RAID5 with distributed parity and striping. * &#x60;RAID10&#x60; - RAID10 requires a minimum of four disks in the array. It stripes across disks for higher performance, and mirrors for redundancy. * &#x60;RAIDDP&#x60; - RAIDDP uses up to two spare disks to replace and reconstruct the data from up to two simultaneously failed disks within the RAID group. * &#x60;RAIDTEC&#x60; - With RAIDTEC protection, use up to three spare disks to replace and reconstruct the data from up to three simultaneously failed disks within the RAID group. | [optional] [readonly] [default to "Unknown"]
 **State** | Pointer to **string** | Current state of the NetApp aggregate. * &#x60;Unknown&#x60; - Specifies that the aggregate is discovered, but the aggregate information is not yet retrieved by the Unified Manager server. * &#x60;Online&#x60; - Aggregate is ready and available. * &#x60;Onlining&#x60; - The state is transitioning online. * &#x60;Offline&#x60; - Aggregate is unavailable. * &#x60;Offlining&#x60; - The state is transitioning offline. * &#x60;Relocating&#x60; - The aggregate is being relocated. * &#x60;Restricted&#x60; - Limited operations (e.g., parity reconstruction) are allowed, but data access is not allowed. * &#x60;Failed&#x60; - The aggregate cannot be brought online. * &#x60;Inconsistent&#x60; - The aggregate has been marked corrupted; contact technical support. * &#x60;Unmounted&#x60; - The aggregate is not mounted. | [optional] [readonly] [default to "Unknown"]
-**Uuid** | Pointer to **string** | Uuid of  NetApp Aggregate. | [optional] [readonly] 
-**ArrayController** | Pointer to [**StorageNetAppNodeRelationship**](StorageNetAppNodeRelationship.md) |  | [optional] 
+**Uuid** | Pointer to **string** | Uuid of NetApp Aggregate. | [optional] [readonly] 
+**ArrayController** | Pointer to [**NullableStorageNetAppNodeRelationship**](StorageNetAppNodeRelationship.md) |  | [optional] 
 **Events** | Pointer to [**[]StorageNetAppAggregateEventRelationship**](StorageNetAppAggregateEventRelationship.md) | An array of relationships to storageNetAppAggregateEvent resources. | [optional] [readonly] 
 
 ## Methods
@@ -102,20 +105,20 @@ HasAggregateType returns a boolean if a field has been set.
 
 ### GetAvgPerformanceMetrics
 
-`func (o *StorageNetAppAggregate) GetAvgPerformanceMetrics() StorageNetAppPerformanceMetricsAverage`
+`func (o *StorageNetAppAggregate) GetAvgPerformanceMetrics() StorageBasePerformanceMetricsAverage`
 
 GetAvgPerformanceMetrics returns the AvgPerformanceMetrics field if non-nil, zero value otherwise.
 
 ### GetAvgPerformanceMetricsOk
 
-`func (o *StorageNetAppAggregate) GetAvgPerformanceMetricsOk() (*StorageNetAppPerformanceMetricsAverage, bool)`
+`func (o *StorageNetAppAggregate) GetAvgPerformanceMetricsOk() (*StorageBasePerformanceMetricsAverage, bool)`
 
 GetAvgPerformanceMetricsOk returns a tuple with the AvgPerformanceMetrics field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAvgPerformanceMetrics
 
-`func (o *StorageNetAppAggregate) SetAvgPerformanceMetrics(v StorageNetAppPerformanceMetricsAverage)`
+`func (o *StorageNetAppAggregate) SetAvgPerformanceMetrics(v StorageBasePerformanceMetricsAverage)`
 
 SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
@@ -124,6 +127,76 @@ SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 `func (o *StorageNetAppAggregate) HasAvgPerformanceMetrics() bool`
 
 HasAvgPerformanceMetrics returns a boolean if a field has been set.
+
+### SetAvgPerformanceMetricsNil
+
+`func (o *StorageNetAppAggregate) SetAvgPerformanceMetricsNil(b bool)`
+
+ SetAvgPerformanceMetricsNil sets the value for AvgPerformanceMetrics to be an explicit nil
+
+### UnsetAvgPerformanceMetrics
+`func (o *StorageNetAppAggregate) UnsetAvgPerformanceMetrics()`
+
+UnsetAvgPerformanceMetrics ensures that no value is present for AvgPerformanceMetrics, not even an explicit nil
+### GetCloudStorage
+
+`func (o *StorageNetAppAggregate) GetCloudStorage() []string`
+
+GetCloudStorage returns the CloudStorage field if non-nil, zero value otherwise.
+
+### GetCloudStorageOk
+
+`func (o *StorageNetAppAggregate) GetCloudStorageOk() (*[]string, bool)`
+
+GetCloudStorageOk returns a tuple with the CloudStorage field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCloudStorage
+
+`func (o *StorageNetAppAggregate) SetCloudStorage(v []string)`
+
+SetCloudStorage sets CloudStorage field to given value.
+
+### HasCloudStorage
+
+`func (o *StorageNetAppAggregate) HasCloudStorage() bool`
+
+HasCloudStorage returns a boolean if a field has been set.
+
+### SetCloudStorageNil
+
+`func (o *StorageNetAppAggregate) SetCloudStorageNil(b bool)`
+
+ SetCloudStorageNil sets the value for CloudStorage to be an explicit nil
+
+### UnsetCloudStorage
+`func (o *StorageNetAppAggregate) UnsetCloudStorage()`
+
+UnsetCloudStorage ensures that no value is present for CloudStorage, not even an explicit nil
+### GetEfficiencyRatio
+
+`func (o *StorageNetAppAggregate) GetEfficiencyRatio() float32`
+
+GetEfficiencyRatio returns the EfficiencyRatio field if non-nil, zero value otherwise.
+
+### GetEfficiencyRatioOk
+
+`func (o *StorageNetAppAggregate) GetEfficiencyRatioOk() (*float32, bool)`
+
+GetEfficiencyRatioOk returns a tuple with the EfficiencyRatio field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEfficiencyRatio
+
+`func (o *StorageNetAppAggregate) SetEfficiencyRatio(v float32)`
+
+SetEfficiencyRatio sets EfficiencyRatio field to given value.
+
+### HasEfficiencyRatio
+
+`func (o *StorageNetAppAggregate) HasEfficiencyRatio() bool`
+
+HasEfficiencyRatio returns a boolean if a field has been set.
 
 ### GetKey
 
@@ -149,6 +222,31 @@ SetKey sets Key field to given value.
 `func (o *StorageNetAppAggregate) HasKey() bool`
 
 HasKey returns a boolean if a field has been set.
+
+### GetNodeName
+
+`func (o *StorageNetAppAggregate) GetNodeName() string`
+
+GetNodeName returns the NodeName field if non-nil, zero value otherwise.
+
+### GetNodeNameOk
+
+`func (o *StorageNetAppAggregate) GetNodeNameOk() (*string, bool)`
+
+GetNodeNameOk returns a tuple with the NodeName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNodeName
+
+`func (o *StorageNetAppAggregate) SetNodeName(v string)`
+
+SetNodeName sets NodeName field to given value.
+
+### HasNodeName
+
+`func (o *StorageNetAppAggregate) HasNodeName() bool`
+
+HasNodeName returns a boolean if a field has been set.
 
 ### GetRaidSize
 
@@ -275,6 +373,16 @@ SetArrayController sets ArrayController field to given value.
 
 HasArrayController returns a boolean if a field has been set.
 
+### SetArrayControllerNil
+
+`func (o *StorageNetAppAggregate) SetArrayControllerNil(b bool)`
+
+ SetArrayControllerNil sets the value for ArrayController to be an explicit nil
+
+### UnsetArrayController
+`func (o *StorageNetAppAggregate) UnsetArrayController()`
+
+UnsetArrayController ensures that no value is present for ArrayController, not even an explicit nil
 ### GetEvents
 
 `func (o *StorageNetAppAggregate) GetEvents() []StorageNetAppAggregateEventRelationship`

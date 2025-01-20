@@ -11,14 +11,14 @@ Name | Type | Description | Notes
 **FlogiSettings** | Pointer to [**NullableVnicFlogiSettings**](VnicFlogiSettings.md) |  | [optional] 
 **InterruptSettings** | Pointer to [**NullableVnicFcInterruptSettings**](VnicFcInterruptSettings.md) |  | [optional] 
 **IoThrottleCount** | Pointer to **int64** | The maximum number of data or control I/O operations that can be pending for the virtual interface at one time. If this value is exceeded, the additional I/O operations wait in the queue until the number of pending I/O operations decreases and the additional operations can be processed. | [optional] [default to 512]
-**LunCount** | Pointer to **int64** | The maximum number of LUNs that the Fibre Channel driver will export or show. The maximum number of LUNs is usually controlled by the operating system running on the server. | [optional] [default to 1024]
+**LunCount** | Pointer to **int64** | The maximum number of LUNs that the Fibre Channel driver will export or show. The maximum number of LUNs is usually controlled by the operating system running on the server. Lun Count value can exceed 1024 only for vHBA of type &#39;FC Initiator&#39; and on servers having supported firmware version. | [optional] [default to 1024]
 **LunQueueDepth** | Pointer to **int64** | The number of commands that the HBA can send and receive in a single transmission per LUN. | [optional] [default to 20]
 **PlogiSettings** | Pointer to [**NullableVnicPlogiSettings**](VnicPlogiSettings.md) |  | [optional] 
 **ResourceAllocationTimeout** | Pointer to **int64** | Resource Allocation Timeout, also referred to as RATOV, is the number of milliseconds to wait before the system assumes that a resource cannot be properly allocated. | [optional] [default to 10000]
 **RxQueueSettings** | Pointer to [**NullableVnicFcQueueSettings**](VnicFcQueueSettings.md) |  | [optional] 
 **ScsiQueueSettings** | Pointer to [**NullableVnicScsiQueueSettings**](VnicScsiQueueSettings.md) |  | [optional] 
 **TxQueueSettings** | Pointer to [**NullableVnicFcQueueSettings**](VnicFcQueueSettings.md) |  | [optional] 
-**Organization** | Pointer to [**OrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**Organization** | Pointer to [**NullableOrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -474,6 +474,16 @@ SetOrganization sets Organization field to given value.
 
 HasOrganization returns a boolean if a field has been set.
 
+### SetOrganizationNil
+
+`func (o *VnicFcAdapterPolicy) SetOrganizationNil(b bool)`
+
+ SetOrganizationNil sets the value for Organization to be an explicit nil
+
+### UnsetOrganization
+`func (o *VnicFcAdapterPolicy) UnsetOrganization()`
+
+UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -7,7 +7,9 @@ import (
 	"log"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -22,7 +24,7 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 		UpdateContext: resourceWorkflowWorkflowDefinitionUpdate,
 		DeleteContext: resourceWorkflowWorkflowDefinitionDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -177,6 +179,17 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 					}
 					return
 				}},
+			"create_user": {
+				Description: "The user identifier who created or cloned the workflow definition.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"default_version": {
 				Description: "When true this will be the workflow version that is used when a specific workflow definition version is not specified. The default version is used when user executes a workflow without specifying a version or when workflow is included in another workflow without a specific version. The very first workflow definition created with a name will be set as the default version, after that user can explicitly set any version of the workflow definition as the default version.",
 				Type:        schema.TypeBool,
@@ -319,9 +332,9 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 							Optional:    true,
 						},
 						"label": {
-							Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ) or an underscore (_). The first and last character in label must be an alphanumeric character.",
+							Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ), forward slash (/) or an underscore (_). The first and last character in label must be an alphanumeric character.",
 							Type:         schema.TypeString,
-							ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
+							ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:/-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
 							Optional:     true,
 						},
 						"name": {
@@ -406,11 +419,11 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 			"label": {
 				Description:  "A user friendly short name to identify the workflow. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), period (.), colon (:), space ( ), forward slash (/), or an underscore (_).",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_./:-]{1,92}$"), ""),
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]{1}[\\sa-zA-Z0-9_./:-]{0,91}$"), ""),
 				Optional:     true,
 			},
 			"license_entitlement": {
-				Description: "License entitlement required to run this workflow. It is calculated based on the highest license requirement of all its tasks.\n* `Base` - Base as a License type. It is default license type.\n* `Essential` - Essential as a License type.\n* `Standard` - Standard as a License type.\n* `Advantage` - Advantage as a License type.\n* `Premier` - Premier as a License type.\n* `IWO-Essential` - IWO-Essential as a License type.\n* `IWO-Advantage` - IWO-Advantage as a License type.\n* `IWO-Premier` - IWO-Premier as a License type.\n* `IKS-Advantage` - IKS-Advantage as a License type.",
+				Description: "License entitlement required to run this workflow. It is calculated based on the highest license requirement of all its tasks.\n* `Base` - Base as a License type. It is default license type.\n* `Essential` - Essential as a License type.\n* `Standard` - Standard as a License type.\n* `Advantage` - Advantage as a License type.\n* `Premier` - Premier as a License type.\n* `IWO-Essential` - IWO-Essential as a License type.\n* `IWO-Advantage` - IWO-Advantage as a License type.\n* `IWO-Premier` - IWO-Premier as a License type.\n* `IKS-Advantage` - IKS-Advantage as a License type.\n* `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud.\n* `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud.\n* `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud.\n* `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud.\n* `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud.\n* `ERP-Advantage` - Advantage license tier for ERP workflows.\n* `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers.\n* `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers.\n* `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers.\n* `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -453,6 +466,17 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 					}
 					return
 				}},
+			"mod_user": {
+				Description: "The user identifier who last updated the workflow definition.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"moid": {
 				Description: "The unique identifier of this Managed Object instance.",
 				Type:        schema.TypeString,
@@ -463,7 +487,7 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 			"name": {
 				Description:  "The name for this workflow. You can have multiple versions of the workflow with the same name. Name can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), period (.) or an underscore (_).",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9_.-]{1,64}$"), ""),
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]{1}[a-zA-Z0-9_.-]{0,63}$"), ""),
 				Optional:     true,
 				ForceNew:     true,
 			},
@@ -594,9 +618,9 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 							Optional:    true,
 						},
 						"label": {
-							Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ) or an underscore (_). The first and last character in label must be an alphanumeric character.",
+							Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ), forward slash (/) or an underscore (_). The first and last character in label must be an alphanumeric character.",
 							Type:         schema.TypeString,
-							ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
+							ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:/-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
 							Optional:     true,
 						},
 						"name": {
@@ -620,7 +644,7 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 				},
 			},
 			"output_parameters": {
-				Description: "The output mappings for the workflow. The outputs for workflows will generally be task output variables that we want to export out at the end of the workflow. The format to specify the mapping is '${Source.output.JsonPath}', where 'Source' is the name of the task within the workflow. Any task output can be mapped to a workflow output as long as the types are compatible. It's followed by a JSON path expression to extract JSON fragment from source's output.",
+				Description: "The output mappings for the workflow. The schema for outputs of a workflow is defined using OutputDefinition. The outputs for workflows that we want to export out at the end of the workflow can be mapped from task outputs, workflow inputs, or workflow variables. Any task output, workflow input, or workflow variable can be mapped to a workflow output as long as the types are compatible. The format to specify the mapping is '${ 'workflow | <taskName>'. 'output |input | variable'.<name>[.<JsonPath>]}'. First, either the keyword 'workflow' or the name of the task in the workflow must be given. If a task name is used, then it must be followed by the keyword 'output', if the keyword workflow was used, then it must be followed by the keyword 'input' or 'variable'. Following this '<name>' must be the name of either input, output, or variable that must be mapped as workflow output. The last part of the mapping can be an optional <JsonPath> to extract specific fields on the data.",
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
@@ -748,26 +772,44 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 							Optional:    true,
 							Default:     false,
 						},
-						"external_meta": {
-							Description: "When set to false the workflow is owned by the system and used for internal services. Such workflows cannot be directly used by external entities.",
+						"enable_publish_status": {
+							Description: "This flag determines if this workflow publish status is enforced or not.",
 							Type:        schema.TypeBool,
 							Optional:    true,
 							Default:     false,
 						},
+						"external_meta": {
+							Description: "When set to false the workflow is owned by the system and used for internal services. Such workflows cannot be directly used by external entities.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
 							Optional:    true,
 							Default:     "workflow.WorkflowProperties",
 						},
+						"publish_status": {
+							Description:  "The workflow publish status (Draft, Published, Archived), this property is relevant only when enablePublishStatus is set to true.\n* `Draft` - The enum specifies the option as Draft which means the meta definition is being designed and tested.\n* `Published` - The enum specifies the option as Published which means the meta definition is ready for consumption.\n* `Archived` - The enum specifies the option as Archived which means the meta definition is archived and can no longer be consumed.",
+							Type:         schema.TypeString,
+							ValidateFunc: validation.StringInSlice([]string{"Draft", "Published", "Archived"}, false),
+							Optional:     true,
+							Default:      "Draft",
+						},
 						"retryable": {
-							Description: "When true, this workflow can be retried if has not been modified for more than a period of 2 weeks.",
+							Description: "When set to true, the failed workflow executions from this workflow definition can be retried for up to 2 weeks since the last modification time. After two weeks of inactivity on the workflow execution, the option to retry the failed workflow will be disabled.",
 							Type:        schema.TypeBool,
 							Optional:    true,
 							Default:     false,
 						},
 						"rollback_on_cancel": {
-							Description: "When set to true, the changes are automatically rolled back if the workflow execution is cancelled.",
+							Description: "When set to true, the changes are automatically rolled back if the workflow execution is canceled.",
 							Type:        schema.TypeBool,
 							Optional:    true,
 							Default:     false,
@@ -898,7 +940,7 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 								Type: schema.TypeString,
 							}},
 						"name": {
-							Description:  "Name for the input definition to which this filter applies. Name can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-) or an underscore (_). The first and last character in name must be an alphanumeric character. When defining the cascade filter for a sub property, use a period (.) to seperate each section of the name like \"StorageConfig.Volume\" where 'StorageConfig' is an input name and 'Volume' is a sub property defined through custom data type definition.",
+							Description:  "Name for the input definition to which this filter applies. Name can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-) or an underscore (_). The first and last character in name must be an alphanumeric character. When defining the cascade filter for a sub property, use a period (.) to separate each section of the name like \"StorageConfig.Volume\" where 'StorageConfig' is an input name and 'Volume' is a sub property defined through custom data type definition.",
 							Type:         schema.TypeString,
 							ValidateFunc: validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+([a-zA-Z0-9-_.]*[a-zA-Z0-9])*$"), ""),
 							Optional:     true,
@@ -942,6 +984,17 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 							Optional:    true,
 							Default:     "workflow.ValidationInformation",
 						},
+						"engine_state": {
+							Description: "The state of workflow definition metadata in the workflow engine. The workflow definition must be successfully updated in the engine before workflows can be executed.\n* `NotUpdated` - The workflow and task definition metadata is not yet updated in the workflow engine.\n* `Updating` - The workflow and task definition metadata is in the processing of being updated in the workflow engine.\n* `UpdateFailed` - The workflow and task definition metadata failed to be updated in the workflow engine.\n* `Updated` - The workflow and task definition metadata was updated successfully in the workflow engine.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1154,9 +1207,9 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 							Optional:    true,
 						},
 						"label": {
-							Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ) or an underscore (_). The first and last character in label must be an alphanumeric character.",
+							Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ), forward slash (/) or an underscore (_). The first and last character in label must be an alphanumeric character.",
 							Type:         schema.TypeString,
-							ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
+							ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:/-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
 							Optional:     true,
 						},
 						"name": {
@@ -1245,6 +1298,17 @@ func resourceWorkflowWorkflowDefinition() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1875,16 +1939,22 @@ func resourceWorkflowWorkflowDefinitionCreate(c context.Context, d *schema.Resou
 					o.SetEnableDebug(x)
 				}
 			}
-			if v, ok := l["external_meta"]; ok {
+			if v, ok := l["enable_publish_status"]; ok {
 				{
 					x := (v.(bool))
-					o.SetExternalMeta(x)
+					o.SetEnablePublishStatus(x)
 				}
 			}
 			if v, ok := l["object_type"]; ok {
 				{
 					x := (v.(string))
 					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["publish_status"]; ok {
+				{
+					x := (v.(string))
+					o.SetPublishStatus(x)
 				}
 			}
 			if v, ok := l["retryable"]; ok {
@@ -2284,14 +2354,25 @@ func resourceWorkflowWorkflowDefinitionCreate(c context.Context, d *schema.Resou
 		}
 		return diag.Errorf("error occurred while creating WorkflowWorkflowDefinition: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceWorkflowWorkflowDefinitionRead(c, d, meta)...)
 }
 
 func resourceWorkflowWorkflowDefinitionRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.WorkflowApi.GetWorkflowWorkflowDefinitionByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -2337,6 +2418,10 @@ func resourceWorkflowWorkflowDefinitionRead(c context.Context, d *schema.Resourc
 		return diag.Errorf("error occurred while setting property CreateTime in WorkflowWorkflowDefinition object: %s", err.Error())
 	}
 
+	if err := d.Set("create_user", (s.GetCreateUser())); err != nil {
+		return diag.Errorf("error occurred while setting property CreateUser in WorkflowWorkflowDefinition object: %s", err.Error())
+	}
+
 	if err := d.Set("default_version", (s.GetDefaultVersion())); err != nil {
 		return diag.Errorf("error occurred while setting property DefaultVersion in WorkflowWorkflowDefinition object: %s", err.Error())
 	}
@@ -2375,6 +2460,10 @@ func resourceWorkflowWorkflowDefinitionRead(c context.Context, d *schema.Resourc
 
 	if err := d.Set("mod_time", (s.GetModTime()).String()); err != nil {
 		return diag.Errorf("error occurred while setting property ModTime in WorkflowWorkflowDefinition object: %s", err.Error())
+	}
+
+	if err := d.Set("mod_user", (s.GetModUser())); err != nil {
+		return diag.Errorf("error occurred while setting property ModUser in WorkflowWorkflowDefinition object: %s", err.Error())
 	}
 
 	if err := d.Set("moid", (s.GetMoid())); err != nil {
@@ -2968,16 +3057,22 @@ func resourceWorkflowWorkflowDefinitionUpdate(c context.Context, d *schema.Resou
 					o.SetEnableDebug(x)
 				}
 			}
-			if v, ok := l["external_meta"]; ok {
+			if v, ok := l["enable_publish_status"]; ok {
 				{
 					x := (v.(bool))
-					o.SetExternalMeta(x)
+					o.SetEnablePublishStatus(x)
 				}
 			}
 			if v, ok := l["object_type"]; ok {
 				{
 					x := (v.(string))
 					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["publish_status"]; ok {
+				{
+					x := (v.(string))
+					o.SetPublishStatus(x)
 				}
 			}
 			if v, ok := l["retryable"]; ok {

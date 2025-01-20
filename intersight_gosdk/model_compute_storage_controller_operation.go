@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the ComputeStorageControllerOperation type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ComputeStorageControllerOperation{}
 
 // ComputeStorageControllerOperation The operation that can be performed on the Storage Controller on the servers.
 type ComputeStorageControllerOperation struct {
@@ -24,10 +28,14 @@ type ComputeStorageControllerOperation struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// Administrative actions that can be performed on the Storage Controller. * `None` - No action on the selected Storage Controller. * `Import` - Import Foreign config action on the selected Storage Controller. * `Clear` - Clear Foreign config action on the selected Storage Controller. * `ClearConfig` - Clear Config action on the selected Storage Controller.
+	// Administrative actions that can be performed on the Storage Controller. * `None` - No action on the selected Storage Controller. * `Import` - Import Foreign config action on the selected Storage Controller. * `Clear` - Clear Foreign config action on the selected Storage Controller. * `ClearConfig` - Clear Config action on the selected Storage Controller. * `ModifySecurity` - Modify Security on the selected Storage Controller. * `DisableSecurity` - Disable Security on the selected Storage Controller. * `UnlockDrives` - Set Unlock action state on the selected Storage Controller.
 	AdminAction *string `json:"AdminAction,omitempty"`
 	// Storage Controller Id of the server.
-	ControllerId         *string `json:"ControllerId,omitempty"`
+	ControllerId *string `json:"ControllerId,omitempty"`
+	// EncryptionKey of the Storage Controller.
+	EncryptionKey *string `json:"EncryptionKey,omitempty"`
+	// RemoteMode on the Storage Controller.
+	RemoteMode           *bool `json:"RemoteMode,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -84,6 +92,11 @@ func (o *ComputeStorageControllerOperation) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "compute.StorageControllerOperation" of the ClassId field.
+func (o *ComputeStorageControllerOperation) GetDefaultClassId() interface{} {
+	return "compute.StorageControllerOperation"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ComputeStorageControllerOperation) GetObjectType() string {
 	if o == nil {
@@ -108,9 +121,14 @@ func (o *ComputeStorageControllerOperation) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "compute.StorageControllerOperation" of the ObjectType field.
+func (o *ComputeStorageControllerOperation) GetDefaultObjectType() interface{} {
+	return "compute.StorageControllerOperation"
+}
+
 // GetAdminAction returns the AdminAction field value if set, zero value otherwise.
 func (o *ComputeStorageControllerOperation) GetAdminAction() string {
-	if o == nil || o.AdminAction == nil {
+	if o == nil || IsNil(o.AdminAction) {
 		var ret string
 		return ret
 	}
@@ -120,7 +138,7 @@ func (o *ComputeStorageControllerOperation) GetAdminAction() string {
 // GetAdminActionOk returns a tuple with the AdminAction field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputeStorageControllerOperation) GetAdminActionOk() (*string, bool) {
-	if o == nil || o.AdminAction == nil {
+	if o == nil || IsNil(o.AdminAction) {
 		return nil, false
 	}
 	return o.AdminAction, true
@@ -128,7 +146,7 @@ func (o *ComputeStorageControllerOperation) GetAdminActionOk() (*string, bool) {
 
 // HasAdminAction returns a boolean if a field has been set.
 func (o *ComputeStorageControllerOperation) HasAdminAction() bool {
-	if o != nil && o.AdminAction != nil {
+	if o != nil && !IsNil(o.AdminAction) {
 		return true
 	}
 
@@ -142,7 +160,7 @@ func (o *ComputeStorageControllerOperation) SetAdminAction(v string) {
 
 // GetControllerId returns the ControllerId field value if set, zero value otherwise.
 func (o *ComputeStorageControllerOperation) GetControllerId() string {
-	if o == nil || o.ControllerId == nil {
+	if o == nil || IsNil(o.ControllerId) {
 		var ret string
 		return ret
 	}
@@ -152,7 +170,7 @@ func (o *ComputeStorageControllerOperation) GetControllerId() string {
 // GetControllerIdOk returns a tuple with the ControllerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ComputeStorageControllerOperation) GetControllerIdOk() (*string, bool) {
-	if o == nil || o.ControllerId == nil {
+	if o == nil || IsNil(o.ControllerId) {
 		return nil, false
 	}
 	return o.ControllerId, true
@@ -160,7 +178,7 @@ func (o *ComputeStorageControllerOperation) GetControllerIdOk() (*string, bool) 
 
 // HasControllerId returns a boolean if a field has been set.
 func (o *ComputeStorageControllerOperation) HasControllerId() bool {
-	if o != nil && o.ControllerId != nil {
+	if o != nil && !IsNil(o.ControllerId) {
 		return true
 	}
 
@@ -172,57 +190,184 @@ func (o *ComputeStorageControllerOperation) SetControllerId(v string) {
 	o.ControllerId = &v
 }
 
+// GetEncryptionKey returns the EncryptionKey field value if set, zero value otherwise.
+func (o *ComputeStorageControllerOperation) GetEncryptionKey() string {
+	if o == nil || IsNil(o.EncryptionKey) {
+		var ret string
+		return ret
+	}
+	return *o.EncryptionKey
+}
+
+// GetEncryptionKeyOk returns a tuple with the EncryptionKey field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ComputeStorageControllerOperation) GetEncryptionKeyOk() (*string, bool) {
+	if o == nil || IsNil(o.EncryptionKey) {
+		return nil, false
+	}
+	return o.EncryptionKey, true
+}
+
+// HasEncryptionKey returns a boolean if a field has been set.
+func (o *ComputeStorageControllerOperation) HasEncryptionKey() bool {
+	if o != nil && !IsNil(o.EncryptionKey) {
+		return true
+	}
+
+	return false
+}
+
+// SetEncryptionKey gets a reference to the given string and assigns it to the EncryptionKey field.
+func (o *ComputeStorageControllerOperation) SetEncryptionKey(v string) {
+	o.EncryptionKey = &v
+}
+
+// GetRemoteMode returns the RemoteMode field value if set, zero value otherwise.
+func (o *ComputeStorageControllerOperation) GetRemoteMode() bool {
+	if o == nil || IsNil(o.RemoteMode) {
+		var ret bool
+		return ret
+	}
+	return *o.RemoteMode
+}
+
+// GetRemoteModeOk returns a tuple with the RemoteMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ComputeStorageControllerOperation) GetRemoteModeOk() (*bool, bool) {
+	if o == nil || IsNil(o.RemoteMode) {
+		return nil, false
+	}
+	return o.RemoteMode, true
+}
+
+// HasRemoteMode returns a boolean if a field has been set.
+func (o *ComputeStorageControllerOperation) HasRemoteMode() bool {
+	if o != nil && !IsNil(o.RemoteMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetRemoteMode gets a reference to the given bool and assigns it to the RemoteMode field.
+func (o *ComputeStorageControllerOperation) SetRemoteMode(v bool) {
+	o.RemoteMode = &v
+}
+
 func (o ComputeStorageControllerOperation) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ComputeStorageControllerOperation) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AdminAction != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AdminAction) {
 		toSerialize["AdminAction"] = o.AdminAction
 	}
-	if o.ControllerId != nil {
+	if !IsNil(o.ControllerId) {
 		toSerialize["ControllerId"] = o.ControllerId
+	}
+	if !IsNil(o.EncryptionKey) {
+		toSerialize["EncryptionKey"] = o.EncryptionKey
+	}
+	if !IsNil(o.RemoteMode) {
+		toSerialize["RemoteMode"] = o.RemoteMode
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ComputeStorageControllerOperation) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ComputeStorageControllerOperation) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ComputeStorageControllerOperationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// Administrative actions that can be performed on the Storage Controller. * `None` - No action on the selected Storage Controller. * `Import` - Import Foreign config action on the selected Storage Controller. * `Clear` - Clear Foreign config action on the selected Storage Controller. * `ClearConfig` - Clear Config action on the selected Storage Controller.
+		// Administrative actions that can be performed on the Storage Controller. * `None` - No action on the selected Storage Controller. * `Import` - Import Foreign config action on the selected Storage Controller. * `Clear` - Clear Foreign config action on the selected Storage Controller. * `ClearConfig` - Clear Config action on the selected Storage Controller. * `ModifySecurity` - Modify Security on the selected Storage Controller. * `DisableSecurity` - Disable Security on the selected Storage Controller. * `UnlockDrives` - Set Unlock action state on the selected Storage Controller.
 		AdminAction *string `json:"AdminAction,omitempty"`
 		// Storage Controller Id of the server.
 		ControllerId *string `json:"ControllerId,omitempty"`
+		// EncryptionKey of the Storage Controller.
+		EncryptionKey *string `json:"EncryptionKey,omitempty"`
+		// RemoteMode on the Storage Controller.
+		RemoteMode *bool `json:"RemoteMode,omitempty"`
 	}
 
 	varComputeStorageControllerOperationWithoutEmbeddedStruct := ComputeStorageControllerOperationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varComputeStorageControllerOperationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varComputeStorageControllerOperationWithoutEmbeddedStruct)
 	if err == nil {
 		varComputeStorageControllerOperation := _ComputeStorageControllerOperation{}
 		varComputeStorageControllerOperation.ClassId = varComputeStorageControllerOperationWithoutEmbeddedStruct.ClassId
 		varComputeStorageControllerOperation.ObjectType = varComputeStorageControllerOperationWithoutEmbeddedStruct.ObjectType
 		varComputeStorageControllerOperation.AdminAction = varComputeStorageControllerOperationWithoutEmbeddedStruct.AdminAction
 		varComputeStorageControllerOperation.ControllerId = varComputeStorageControllerOperationWithoutEmbeddedStruct.ControllerId
+		varComputeStorageControllerOperation.EncryptionKey = varComputeStorageControllerOperationWithoutEmbeddedStruct.EncryptionKey
+		varComputeStorageControllerOperation.RemoteMode = varComputeStorageControllerOperationWithoutEmbeddedStruct.RemoteMode
 		*o = ComputeStorageControllerOperation(varComputeStorageControllerOperation)
 	} else {
 		return err
@@ -230,7 +375,7 @@ func (o *ComputeStorageControllerOperation) UnmarshalJSON(bytes []byte) (err err
 
 	varComputeStorageControllerOperation := _ComputeStorageControllerOperation{}
 
-	err = json.Unmarshal(bytes, &varComputeStorageControllerOperation)
+	err = json.Unmarshal(data, &varComputeStorageControllerOperation)
 	if err == nil {
 		o.MoBaseComplexType = varComputeStorageControllerOperation.MoBaseComplexType
 	} else {
@@ -239,11 +384,13 @@ func (o *ComputeStorageControllerOperation) UnmarshalJSON(bytes []byte) (err err
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AdminAction")
 		delete(additionalProperties, "ControllerId")
+		delete(additionalProperties, "EncryptionKey")
+		delete(additionalProperties, "RemoteMode")
 
 		// remove fields from embedded structs
 		reflectMoBaseComplexType := reflect.ValueOf(o.MoBaseComplexType)

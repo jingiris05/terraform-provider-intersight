@@ -6,14 +6,14 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "recommendation.CapacityRunway"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "recommendation.CapacityRunway"]
-**AdditionalCapacity** | Pointer to **int64** | Additional capacity is the capacity which is needed more after exhausing all hardware on current cluster. | [optional] [readonly] 
+**AdditionalCapacity** | Pointer to **int64** | Additional capacity is the capacity which is needed more after exhausting all hardware on current cluster. | [optional] [readonly] 
 **Period** | Pointer to **int64** | Number of months in future for which recommendation is provided for. | [optional] [readonly] 
 **Runway** | Pointer to **int64** | This represents the new runway, that is the number of days remaining before the cluster&#39;s storage utilization reaches the recommended capacity limit after the recommended hardware is added. | [optional] [readonly] 
 **TotalCapacity** | Pointer to **int64** | Total capacity of the cluster after the recommended hardware is added. | [optional] [readonly] 
-**Unit** | Pointer to **string** | Unit for the new capacity. * &#x60;TB&#x60; - The Enum value TB represents that the measurement unit is in terabytes. * &#x60;MB&#x60; - The Enum value MB represents that the measurement unit is in megabytes. | [optional] [readonly] [default to "TB"]
-**ForecastInstance** | Pointer to [**ForecastInstanceRelationship**](ForecastInstanceRelationship.md) |  | [optional] 
+**Unit** | Pointer to **string** | Unit for the new capacity. * &#x60;TB&#x60; - The Enum value TB represents that the measurement unit is in terabytes. * &#x60;MB&#x60; - The Enum value MB represents that the measurement unit is in megabytes. * &#x60;GB&#x60; - The Enum value GB represents that the measurement unit is in gigabytes. * &#x60;MHz&#x60; - The Enum value MHz represents that the measurement unit is in megahertz. * &#x60;GHz&#x60; - The Enum value GHz represents that the measurement unit is in gigahertz. * &#x60;Percentage&#x60; - The Enum value Percentage represents that the expansion request is in the percentage of resource increase. For example, a 20% increase in CPU capacity. | [optional] [readonly] [default to "TB"]
+**ForecastInstance** | Pointer to [**NullableForecastInstanceRelationship**](ForecastInstanceRelationship.md) |  | [optional] 
 **PhysicalItem** | Pointer to [**[]RecommendationPhysicalItemRelationship**](RecommendationPhysicalItemRelationship.md) | An array of relationships to recommendationPhysicalItem resources. | [optional] [readonly] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -224,6 +224,16 @@ SetForecastInstance sets ForecastInstance field to given value.
 
 HasForecastInstance returns a boolean if a field has been set.
 
+### SetForecastInstanceNil
+
+`func (o *RecommendationCapacityRunway) SetForecastInstanceNil(b bool)`
+
+ SetForecastInstanceNil sets the value for ForecastInstance to be an explicit nil
+
+### UnsetForecastInstance
+`func (o *RecommendationCapacityRunway) UnsetForecastInstance()`
+
+UnsetForecastInstance ensures that no value is present for ForecastInstance, not even an explicit nil
 ### GetPhysicalItem
 
 `func (o *RecommendationCapacityRunway) GetPhysicalItem() []RecommendationPhysicalItemRelationship`
@@ -284,6 +294,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *RecommendationCapacityRunway) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *RecommendationCapacityRunway) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

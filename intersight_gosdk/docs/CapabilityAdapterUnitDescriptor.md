@@ -14,12 +14,15 @@ Name | Type | Description | Notes
 **FibreChannelScsiIoqLimit** | Pointer to **int64** | The number of SCSI I/O Queue resources to allocate. | [optional] 
 **IsAzureQosSupported** | Pointer to **bool** | Indicates that the Azure Stack Host QoS feature is supported by this adapter. | [optional] [default to true]
 **IsGeneveSupported** | Pointer to **bool** | Indicates that the GENEVE offload feature is supported by this adapter. | [optional] [default to true]
+**IsSecureBootSupported** | Pointer to **bool** | Indicates support for secure boot. | [optional] [default to false]
 **MaxEthRxRingSize** | Pointer to **int64** | Maximum Ring Size value for vNIC Receive Queue. | [optional] [default to 4096]
 **MaxEthTxRingSize** | Pointer to **int64** | Maximum Ring Size value for vNIC Transmit Queue. | [optional] [default to 4096]
 **MaxRocev2Interfaces** | Pointer to **int64** | Maximum number of vNIC interfaces that can be RoCEv2 enabled. | [optional] [default to 2]
 **NumDcePorts** | Pointer to **int64** | Number of Dce Ports for the adapter. | [optional] 
+**NumberOfPciLinks** | Pointer to **int64** | Indicates number of PCI Links of the adapter. | [optional] [default to 1]
 **PciLink** | Pointer to **int64** | Indicates PCI Link status of adapter. | [optional] [default to 0]
 **PromCardType** | Pointer to **string** | Prom card type for the adapter. | [optional] 
+**VicId** | Pointer to **string** | Vic Id assigned for the adapter. | [optional] 
 
 ## Methods
 
@@ -290,6 +293,31 @@ SetIsGeneveSupported sets IsGeneveSupported field to given value.
 
 HasIsGeneveSupported returns a boolean if a field has been set.
 
+### GetIsSecureBootSupported
+
+`func (o *CapabilityAdapterUnitDescriptor) GetIsSecureBootSupported() bool`
+
+GetIsSecureBootSupported returns the IsSecureBootSupported field if non-nil, zero value otherwise.
+
+### GetIsSecureBootSupportedOk
+
+`func (o *CapabilityAdapterUnitDescriptor) GetIsSecureBootSupportedOk() (*bool, bool)`
+
+GetIsSecureBootSupportedOk returns a tuple with the IsSecureBootSupported field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsSecureBootSupported
+
+`func (o *CapabilityAdapterUnitDescriptor) SetIsSecureBootSupported(v bool)`
+
+SetIsSecureBootSupported sets IsSecureBootSupported field to given value.
+
+### HasIsSecureBootSupported
+
+`func (o *CapabilityAdapterUnitDescriptor) HasIsSecureBootSupported() bool`
+
+HasIsSecureBootSupported returns a boolean if a field has been set.
+
 ### GetMaxEthRxRingSize
 
 `func (o *CapabilityAdapterUnitDescriptor) GetMaxEthRxRingSize() int64`
@@ -390,6 +418,31 @@ SetNumDcePorts sets NumDcePorts field to given value.
 
 HasNumDcePorts returns a boolean if a field has been set.
 
+### GetNumberOfPciLinks
+
+`func (o *CapabilityAdapterUnitDescriptor) GetNumberOfPciLinks() int64`
+
+GetNumberOfPciLinks returns the NumberOfPciLinks field if non-nil, zero value otherwise.
+
+### GetNumberOfPciLinksOk
+
+`func (o *CapabilityAdapterUnitDescriptor) GetNumberOfPciLinksOk() (*int64, bool)`
+
+GetNumberOfPciLinksOk returns a tuple with the NumberOfPciLinks field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNumberOfPciLinks
+
+`func (o *CapabilityAdapterUnitDescriptor) SetNumberOfPciLinks(v int64)`
+
+SetNumberOfPciLinks sets NumberOfPciLinks field to given value.
+
+### HasNumberOfPciLinks
+
+`func (o *CapabilityAdapterUnitDescriptor) HasNumberOfPciLinks() bool`
+
+HasNumberOfPciLinks returns a boolean if a field has been set.
+
 ### GetPciLink
 
 `func (o *CapabilityAdapterUnitDescriptor) GetPciLink() int64`
@@ -439,6 +492,31 @@ SetPromCardType sets PromCardType field to given value.
 `func (o *CapabilityAdapterUnitDescriptor) HasPromCardType() bool`
 
 HasPromCardType returns a boolean if a field has been set.
+
+### GetVicId
+
+`func (o *CapabilityAdapterUnitDescriptor) GetVicId() string`
+
+GetVicId returns the VicId field if non-nil, zero value otherwise.
+
+### GetVicIdOk
+
+`func (o *CapabilityAdapterUnitDescriptor) GetVicIdOk() (*string, bool)`
+
+GetVicIdOk returns a tuple with the VicId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVicId
+
+`func (o *CapabilityAdapterUnitDescriptor) SetVicId(v string)`
+
+SetVicId sets VicId field to given value.
+
+### HasVicId
+
+`func (o *CapabilityAdapterUnitDescriptor) HasVicId() bool`
+
+HasVicId returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,26 +13,30 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
+// checks if the FabricSwitchProfile type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &FabricSwitchProfile{}
+
 // FabricSwitchProfile This specifies configuration policies for a managed network switch.
 type FabricSwitchProfile struct {
-	PolicyAbstractConfigProfile
+	FabricBaseSwitchProfile
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-	ObjectType       string                      `json:"ObjectType"`
-	ConfigChanges    NullablePolicyConfigChange  `json:"ConfigChanges,omitempty"`
-	AssignedSwitch   *NetworkElementRelationship `json:"AssignedSwitch,omitempty"`
-	AssociatedSwitch *NetworkElementRelationship `json:"AssociatedSwitch,omitempty"`
+	ObjectType          string                             `json:"ObjectType"`
+	ConfigChangeContext NullablePolicyConfigChangeContext  `json:"ConfigChangeContext,omitempty"`
+	ConfigChanges       NullablePolicyConfigChange         `json:"ConfigChanges,omitempty"`
+	AssignedSwitch      NullableNetworkElementRelationship `json:"AssignedSwitch,omitempty"`
+	AssociatedSwitch    NullableNetworkElementRelationship `json:"AssociatedSwitch,omitempty"`
 	// An array of relationships to fabricConfigChangeDetail resources.
 	ConfigChangeDetails []FabricConfigChangeDetailRelationship `json:"ConfigChangeDetails,omitempty"`
-	ConfigResult        *FabricConfigResultRelationship        `json:"ConfigResult,omitempty"`
 	// An array of relationships to workflowWorkflowInfo resources.
-	RunningWorkflows     []WorkflowWorkflowInfoRelationship      `json:"RunningWorkflows,omitempty"`
-	SwitchClusterProfile *FabricSwitchClusterProfileRelationship `json:"SwitchClusterProfile,omitempty"`
+	RunningWorkflows     []WorkflowWorkflowInfoRelationship             `json:"RunningWorkflows,omitempty"`
+	SwitchClusterProfile NullableFabricSwitchClusterProfileRelationship `json:"SwitchClusterProfile,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -50,6 +54,8 @@ func NewFabricSwitchProfile(classId string, objectType string) *FabricSwitchProf
 	this.Type = &type_
 	var action string = "No-op"
 	this.Action = &action
+	var switchId string = "None"
+	this.SwitchId = &switchId
 	return &this
 }
 
@@ -89,6 +95,11 @@ func (o *FabricSwitchProfile) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "fabric.SwitchProfile" of the ClassId field.
+func (o *FabricSwitchProfile) GetDefaultClassId() interface{} {
+	return "fabric.SwitchProfile"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *FabricSwitchProfile) GetObjectType() string {
 	if o == nil {
@@ -113,9 +124,57 @@ func (o *FabricSwitchProfile) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "fabric.SwitchProfile" of the ObjectType field.
+func (o *FabricSwitchProfile) GetDefaultObjectType() interface{} {
+	return "fabric.SwitchProfile"
+}
+
+// GetConfigChangeContext returns the ConfigChangeContext field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *FabricSwitchProfile) GetConfigChangeContext() PolicyConfigChangeContext {
+	if o == nil || IsNil(o.ConfigChangeContext.Get()) {
+		var ret PolicyConfigChangeContext
+		return ret
+	}
+	return *o.ConfigChangeContext.Get()
+}
+
+// GetConfigChangeContextOk returns a tuple with the ConfigChangeContext field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *FabricSwitchProfile) GetConfigChangeContextOk() (*PolicyConfigChangeContext, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.ConfigChangeContext.Get(), o.ConfigChangeContext.IsSet()
+}
+
+// HasConfigChangeContext returns a boolean if a field has been set.
+func (o *FabricSwitchProfile) HasConfigChangeContext() bool {
+	if o != nil && o.ConfigChangeContext.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetConfigChangeContext gets a reference to the given NullablePolicyConfigChangeContext and assigns it to the ConfigChangeContext field.
+func (o *FabricSwitchProfile) SetConfigChangeContext(v PolicyConfigChangeContext) {
+	o.ConfigChangeContext.Set(&v)
+}
+
+// SetConfigChangeContextNil sets the value for ConfigChangeContext to be an explicit nil
+func (o *FabricSwitchProfile) SetConfigChangeContextNil() {
+	o.ConfigChangeContext.Set(nil)
+}
+
+// UnsetConfigChangeContext ensures that no value is present for ConfigChangeContext, not even an explicit nil
+func (o *FabricSwitchProfile) UnsetConfigChangeContext() {
+	o.ConfigChangeContext.Unset()
+}
+
 // GetConfigChanges returns the ConfigChanges field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricSwitchProfile) GetConfigChanges() PolicyConfigChange {
-	if o == nil || o.ConfigChanges.Get() == nil {
+	if o == nil || IsNil(o.ConfigChanges.Get()) {
 		var ret PolicyConfigChange
 		return ret
 	}
@@ -156,68 +215,90 @@ func (o *FabricSwitchProfile) UnsetConfigChanges() {
 	o.ConfigChanges.Unset()
 }
 
-// GetAssignedSwitch returns the AssignedSwitch field value if set, zero value otherwise.
+// GetAssignedSwitch returns the AssignedSwitch field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricSwitchProfile) GetAssignedSwitch() NetworkElementRelationship {
-	if o == nil || o.AssignedSwitch == nil {
+	if o == nil || IsNil(o.AssignedSwitch.Get()) {
 		var ret NetworkElementRelationship
 		return ret
 	}
-	return *o.AssignedSwitch
+	return *o.AssignedSwitch.Get()
 }
 
 // GetAssignedSwitchOk returns a tuple with the AssignedSwitch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricSwitchProfile) GetAssignedSwitchOk() (*NetworkElementRelationship, bool) {
-	if o == nil || o.AssignedSwitch == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.AssignedSwitch, true
+	return o.AssignedSwitch.Get(), o.AssignedSwitch.IsSet()
 }
 
 // HasAssignedSwitch returns a boolean if a field has been set.
 func (o *FabricSwitchProfile) HasAssignedSwitch() bool {
-	if o != nil && o.AssignedSwitch != nil {
+	if o != nil && o.AssignedSwitch.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAssignedSwitch gets a reference to the given NetworkElementRelationship and assigns it to the AssignedSwitch field.
+// SetAssignedSwitch gets a reference to the given NullableNetworkElementRelationship and assigns it to the AssignedSwitch field.
 func (o *FabricSwitchProfile) SetAssignedSwitch(v NetworkElementRelationship) {
-	o.AssignedSwitch = &v
+	o.AssignedSwitch.Set(&v)
 }
 
-// GetAssociatedSwitch returns the AssociatedSwitch field value if set, zero value otherwise.
+// SetAssignedSwitchNil sets the value for AssignedSwitch to be an explicit nil
+func (o *FabricSwitchProfile) SetAssignedSwitchNil() {
+	o.AssignedSwitch.Set(nil)
+}
+
+// UnsetAssignedSwitch ensures that no value is present for AssignedSwitch, not even an explicit nil
+func (o *FabricSwitchProfile) UnsetAssignedSwitch() {
+	o.AssignedSwitch.Unset()
+}
+
+// GetAssociatedSwitch returns the AssociatedSwitch field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricSwitchProfile) GetAssociatedSwitch() NetworkElementRelationship {
-	if o == nil || o.AssociatedSwitch == nil {
+	if o == nil || IsNil(o.AssociatedSwitch.Get()) {
 		var ret NetworkElementRelationship
 		return ret
 	}
-	return *o.AssociatedSwitch
+	return *o.AssociatedSwitch.Get()
 }
 
 // GetAssociatedSwitchOk returns a tuple with the AssociatedSwitch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricSwitchProfile) GetAssociatedSwitchOk() (*NetworkElementRelationship, bool) {
-	if o == nil || o.AssociatedSwitch == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.AssociatedSwitch, true
+	return o.AssociatedSwitch.Get(), o.AssociatedSwitch.IsSet()
 }
 
 // HasAssociatedSwitch returns a boolean if a field has been set.
 func (o *FabricSwitchProfile) HasAssociatedSwitch() bool {
-	if o != nil && o.AssociatedSwitch != nil {
+	if o != nil && o.AssociatedSwitch.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAssociatedSwitch gets a reference to the given NetworkElementRelationship and assigns it to the AssociatedSwitch field.
+// SetAssociatedSwitch gets a reference to the given NullableNetworkElementRelationship and assigns it to the AssociatedSwitch field.
 func (o *FabricSwitchProfile) SetAssociatedSwitch(v NetworkElementRelationship) {
-	o.AssociatedSwitch = &v
+	o.AssociatedSwitch.Set(&v)
+}
+
+// SetAssociatedSwitchNil sets the value for AssociatedSwitch to be an explicit nil
+func (o *FabricSwitchProfile) SetAssociatedSwitchNil() {
+	o.AssociatedSwitch.Set(nil)
+}
+
+// UnsetAssociatedSwitch ensures that no value is present for AssociatedSwitch, not even an explicit nil
+func (o *FabricSwitchProfile) UnsetAssociatedSwitch() {
+	o.AssociatedSwitch.Unset()
 }
 
 // GetConfigChangeDetails returns the ConfigChangeDetails field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -233,7 +314,7 @@ func (o *FabricSwitchProfile) GetConfigChangeDetails() []FabricConfigChangeDetai
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricSwitchProfile) GetConfigChangeDetailsOk() ([]FabricConfigChangeDetailRelationship, bool) {
-	if o == nil || o.ConfigChangeDetails == nil {
+	if o == nil || IsNil(o.ConfigChangeDetails) {
 		return nil, false
 	}
 	return o.ConfigChangeDetails, true
@@ -241,7 +322,7 @@ func (o *FabricSwitchProfile) GetConfigChangeDetailsOk() ([]FabricConfigChangeDe
 
 // HasConfigChangeDetails returns a boolean if a field has been set.
 func (o *FabricSwitchProfile) HasConfigChangeDetails() bool {
-	if o != nil && o.ConfigChangeDetails != nil {
+	if o != nil && !IsNil(o.ConfigChangeDetails) {
 		return true
 	}
 
@@ -251,38 +332,6 @@ func (o *FabricSwitchProfile) HasConfigChangeDetails() bool {
 // SetConfigChangeDetails gets a reference to the given []FabricConfigChangeDetailRelationship and assigns it to the ConfigChangeDetails field.
 func (o *FabricSwitchProfile) SetConfigChangeDetails(v []FabricConfigChangeDetailRelationship) {
 	o.ConfigChangeDetails = v
-}
-
-// GetConfigResult returns the ConfigResult field value if set, zero value otherwise.
-func (o *FabricSwitchProfile) GetConfigResult() FabricConfigResultRelationship {
-	if o == nil || o.ConfigResult == nil {
-		var ret FabricConfigResultRelationship
-		return ret
-	}
-	return *o.ConfigResult
-}
-
-// GetConfigResultOk returns a tuple with the ConfigResult field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *FabricSwitchProfile) GetConfigResultOk() (*FabricConfigResultRelationship, bool) {
-	if o == nil || o.ConfigResult == nil {
-		return nil, false
-	}
-	return o.ConfigResult, true
-}
-
-// HasConfigResult returns a boolean if a field has been set.
-func (o *FabricSwitchProfile) HasConfigResult() bool {
-	if o != nil && o.ConfigResult != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetConfigResult gets a reference to the given FabricConfigResultRelationship and assigns it to the ConfigResult field.
-func (o *FabricSwitchProfile) SetConfigResult(v FabricConfigResultRelationship) {
-	o.ConfigResult = &v
 }
 
 // GetRunningWorkflows returns the RunningWorkflows field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -298,7 +347,7 @@ func (o *FabricSwitchProfile) GetRunningWorkflows() []WorkflowWorkflowInfoRelati
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricSwitchProfile) GetRunningWorkflowsOk() ([]WorkflowWorkflowInfoRelationship, bool) {
-	if o == nil || o.RunningWorkflows == nil {
+	if o == nil || IsNil(o.RunningWorkflows) {
 		return nil, false
 	}
 	return o.RunningWorkflows, true
@@ -306,7 +355,7 @@ func (o *FabricSwitchProfile) GetRunningWorkflowsOk() ([]WorkflowWorkflowInfoRel
 
 // HasRunningWorkflows returns a boolean if a field has been set.
 func (o *FabricSwitchProfile) HasRunningWorkflows() bool {
-	if o != nil && o.RunningWorkflows != nil {
+	if o != nil && !IsNil(o.RunningWorkflows) {
 		return true
 	}
 
@@ -318,112 +367,174 @@ func (o *FabricSwitchProfile) SetRunningWorkflows(v []WorkflowWorkflowInfoRelati
 	o.RunningWorkflows = v
 }
 
-// GetSwitchClusterProfile returns the SwitchClusterProfile field value if set, zero value otherwise.
+// GetSwitchClusterProfile returns the SwitchClusterProfile field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *FabricSwitchProfile) GetSwitchClusterProfile() FabricSwitchClusterProfileRelationship {
-	if o == nil || o.SwitchClusterProfile == nil {
+	if o == nil || IsNil(o.SwitchClusterProfile.Get()) {
 		var ret FabricSwitchClusterProfileRelationship
 		return ret
 	}
-	return *o.SwitchClusterProfile
+	return *o.SwitchClusterProfile.Get()
 }
 
 // GetSwitchClusterProfileOk returns a tuple with the SwitchClusterProfile field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *FabricSwitchProfile) GetSwitchClusterProfileOk() (*FabricSwitchClusterProfileRelationship, bool) {
-	if o == nil || o.SwitchClusterProfile == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.SwitchClusterProfile, true
+	return o.SwitchClusterProfile.Get(), o.SwitchClusterProfile.IsSet()
 }
 
 // HasSwitchClusterProfile returns a boolean if a field has been set.
 func (o *FabricSwitchProfile) HasSwitchClusterProfile() bool {
-	if o != nil && o.SwitchClusterProfile != nil {
+	if o != nil && o.SwitchClusterProfile.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetSwitchClusterProfile gets a reference to the given FabricSwitchClusterProfileRelationship and assigns it to the SwitchClusterProfile field.
+// SetSwitchClusterProfile gets a reference to the given NullableFabricSwitchClusterProfileRelationship and assigns it to the SwitchClusterProfile field.
 func (o *FabricSwitchProfile) SetSwitchClusterProfile(v FabricSwitchClusterProfileRelationship) {
-	o.SwitchClusterProfile = &v
+	o.SwitchClusterProfile.Set(&v)
+}
+
+// SetSwitchClusterProfileNil sets the value for SwitchClusterProfile to be an explicit nil
+func (o *FabricSwitchProfile) SetSwitchClusterProfileNil() {
+	o.SwitchClusterProfile.Set(nil)
+}
+
+// UnsetSwitchClusterProfile ensures that no value is present for SwitchClusterProfile, not even an explicit nil
+func (o *FabricSwitchProfile) UnsetSwitchClusterProfile() {
+	o.SwitchClusterProfile.Unset()
 }
 
 func (o FabricSwitchProfile) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o FabricSwitchProfile) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedPolicyAbstractConfigProfile, errPolicyAbstractConfigProfile := json.Marshal(o.PolicyAbstractConfigProfile)
-	if errPolicyAbstractConfigProfile != nil {
-		return []byte{}, errPolicyAbstractConfigProfile
+	serializedFabricBaseSwitchProfile, errFabricBaseSwitchProfile := json.Marshal(o.FabricBaseSwitchProfile)
+	if errFabricBaseSwitchProfile != nil {
+		return map[string]interface{}{}, errFabricBaseSwitchProfile
 	}
-	errPolicyAbstractConfigProfile = json.Unmarshal([]byte(serializedPolicyAbstractConfigProfile), &toSerialize)
-	if errPolicyAbstractConfigProfile != nil {
-		return []byte{}, errPolicyAbstractConfigProfile
+	errFabricBaseSwitchProfile = json.Unmarshal([]byte(serializedFabricBaseSwitchProfile), &toSerialize)
+	if errFabricBaseSwitchProfile != nil {
+		return map[string]interface{}{}, errFabricBaseSwitchProfile
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
+	}
+	toSerialize["ObjectType"] = o.ObjectType
+	if o.ConfigChangeContext.IsSet() {
+		toSerialize["ConfigChangeContext"] = o.ConfigChangeContext.Get()
 	}
 	if o.ConfigChanges.IsSet() {
 		toSerialize["ConfigChanges"] = o.ConfigChanges.Get()
 	}
-	if o.AssignedSwitch != nil {
-		toSerialize["AssignedSwitch"] = o.AssignedSwitch
+	if o.AssignedSwitch.IsSet() {
+		toSerialize["AssignedSwitch"] = o.AssignedSwitch.Get()
 	}
-	if o.AssociatedSwitch != nil {
-		toSerialize["AssociatedSwitch"] = o.AssociatedSwitch
+	if o.AssociatedSwitch.IsSet() {
+		toSerialize["AssociatedSwitch"] = o.AssociatedSwitch.Get()
 	}
 	if o.ConfigChangeDetails != nil {
 		toSerialize["ConfigChangeDetails"] = o.ConfigChangeDetails
 	}
-	if o.ConfigResult != nil {
-		toSerialize["ConfigResult"] = o.ConfigResult
-	}
 	if o.RunningWorkflows != nil {
 		toSerialize["RunningWorkflows"] = o.RunningWorkflows
 	}
-	if o.SwitchClusterProfile != nil {
-		toSerialize["SwitchClusterProfile"] = o.SwitchClusterProfile
+	if o.SwitchClusterProfile.IsSet() {
+		toSerialize["SwitchClusterProfile"] = o.SwitchClusterProfile.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *FabricSwitchProfile) UnmarshalJSON(bytes []byte) (err error) {
+func (o *FabricSwitchProfile) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type FabricSwitchProfileWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-		ObjectType       string                      `json:"ObjectType"`
-		ConfigChanges    NullablePolicyConfigChange  `json:"ConfigChanges,omitempty"`
-		AssignedSwitch   *NetworkElementRelationship `json:"AssignedSwitch,omitempty"`
-		AssociatedSwitch *NetworkElementRelationship `json:"AssociatedSwitch,omitempty"`
+		ObjectType          string                             `json:"ObjectType"`
+		ConfigChangeContext NullablePolicyConfigChangeContext  `json:"ConfigChangeContext,omitempty"`
+		ConfigChanges       NullablePolicyConfigChange         `json:"ConfigChanges,omitempty"`
+		AssignedSwitch      NullableNetworkElementRelationship `json:"AssignedSwitch,omitempty"`
+		AssociatedSwitch    NullableNetworkElementRelationship `json:"AssociatedSwitch,omitempty"`
 		// An array of relationships to fabricConfigChangeDetail resources.
 		ConfigChangeDetails []FabricConfigChangeDetailRelationship `json:"ConfigChangeDetails,omitempty"`
-		ConfigResult        *FabricConfigResultRelationship        `json:"ConfigResult,omitempty"`
 		// An array of relationships to workflowWorkflowInfo resources.
-		RunningWorkflows     []WorkflowWorkflowInfoRelationship      `json:"RunningWorkflows,omitempty"`
-		SwitchClusterProfile *FabricSwitchClusterProfileRelationship `json:"SwitchClusterProfile,omitempty"`
+		RunningWorkflows     []WorkflowWorkflowInfoRelationship             `json:"RunningWorkflows,omitempty"`
+		SwitchClusterProfile NullableFabricSwitchClusterProfileRelationship `json:"SwitchClusterProfile,omitempty"`
 	}
 
 	varFabricSwitchProfileWithoutEmbeddedStruct := FabricSwitchProfileWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varFabricSwitchProfileWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varFabricSwitchProfileWithoutEmbeddedStruct)
 	if err == nil {
 		varFabricSwitchProfile := _FabricSwitchProfile{}
 		varFabricSwitchProfile.ClassId = varFabricSwitchProfileWithoutEmbeddedStruct.ClassId
 		varFabricSwitchProfile.ObjectType = varFabricSwitchProfileWithoutEmbeddedStruct.ObjectType
+		varFabricSwitchProfile.ConfigChangeContext = varFabricSwitchProfileWithoutEmbeddedStruct.ConfigChangeContext
 		varFabricSwitchProfile.ConfigChanges = varFabricSwitchProfileWithoutEmbeddedStruct.ConfigChanges
 		varFabricSwitchProfile.AssignedSwitch = varFabricSwitchProfileWithoutEmbeddedStruct.AssignedSwitch
 		varFabricSwitchProfile.AssociatedSwitch = varFabricSwitchProfileWithoutEmbeddedStruct.AssociatedSwitch
 		varFabricSwitchProfile.ConfigChangeDetails = varFabricSwitchProfileWithoutEmbeddedStruct.ConfigChangeDetails
-		varFabricSwitchProfile.ConfigResult = varFabricSwitchProfileWithoutEmbeddedStruct.ConfigResult
 		varFabricSwitchProfile.RunningWorkflows = varFabricSwitchProfileWithoutEmbeddedStruct.RunningWorkflows
 		varFabricSwitchProfile.SwitchClusterProfile = varFabricSwitchProfileWithoutEmbeddedStruct.SwitchClusterProfile
 		*o = FabricSwitchProfile(varFabricSwitchProfile)
@@ -433,30 +544,30 @@ func (o *FabricSwitchProfile) UnmarshalJSON(bytes []byte) (err error) {
 
 	varFabricSwitchProfile := _FabricSwitchProfile{}
 
-	err = json.Unmarshal(bytes, &varFabricSwitchProfile)
+	err = json.Unmarshal(data, &varFabricSwitchProfile)
 	if err == nil {
-		o.PolicyAbstractConfigProfile = varFabricSwitchProfile.PolicyAbstractConfigProfile
+		o.FabricBaseSwitchProfile = varFabricSwitchProfile.FabricBaseSwitchProfile
 	} else {
 		return err
 	}
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "ConfigChangeContext")
 		delete(additionalProperties, "ConfigChanges")
 		delete(additionalProperties, "AssignedSwitch")
 		delete(additionalProperties, "AssociatedSwitch")
 		delete(additionalProperties, "ConfigChangeDetails")
-		delete(additionalProperties, "ConfigResult")
 		delete(additionalProperties, "RunningWorkflows")
 		delete(additionalProperties, "SwitchClusterProfile")
 
 		// remove fields from embedded structs
-		reflectPolicyAbstractConfigProfile := reflect.ValueOf(o.PolicyAbstractConfigProfile)
-		for i := 0; i < reflectPolicyAbstractConfigProfile.Type().NumField(); i++ {
-			t := reflectPolicyAbstractConfigProfile.Type().Field(i)
+		reflectFabricBaseSwitchProfile := reflect.ValueOf(o.FabricBaseSwitchProfile)
+		for i := 0; i < reflectFabricBaseSwitchProfile.Type().NumField(); i++ {
+			t := reflectFabricBaseSwitchProfile.Type().Field(i)
 
 			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
 				fieldName := ""

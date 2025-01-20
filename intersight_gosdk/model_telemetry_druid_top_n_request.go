@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,7 +13,11 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 )
+
+// checks if the TelemetryDruidTopNRequest type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &TelemetryDruidTopNRequest{}
 
 // TelemetryDruidTopNRequest TopN queries return a sorted set of results for the values in a given dimension according to some criteria. Conceptually, they can be thought of as an approximate GroupByQuery over a single dimension with an Ordering spec. TopNs are much faster and resource efficient than GroupBys for this use case. These types of queries take a topN query object and return an array of JSON objects where each object represents a value asked for by the topN query. TopNs are approximate in that each data process will rank their top K results and only return those top K results to the Broker. K, by default in Druid, is max(1000, threshold). In practice, this means that if you ask for the top 1000 items ordered, the correctness of the first ~900 items will be 100%, and the ordering of the results after that is not guaranteed. TopNs can be made more accurate by increasing the threshold.
 type TelemetryDruidTopNRequest struct {
@@ -27,8 +31,10 @@ type TelemetryDruidTopNRequest struct {
 	Aggregations []TelemetryDruidAggregator `json:"aggregations,omitempty"`
 	// Post-aggregations are specifications of processing that should happen on aggregated values as they come out of Apache Druid. If you include a post aggregation as part of a query, make sure to include all aggregators the post-aggregator requires.
 	PostAggregations []TelemetryDruidPostAggregator `json:"postAggregations,omitempty"`
-	Dimension        TelemetryDruidDimensionSpec    `json:"dimension"`
-	// An integer defining the N in the topN (i.e. how many results you want in the top list).
+	// Virtual columns are columns that are computed on the fly during query execution. It can potentially draw from multiple underlying columns, although a virtual column always presents itself as a single column. Virtual columns can be referenced by their output names to be used as dimensions or as inputs to filters and aggregators.
+	VirtualColumns []TelemetryDruidVirtualColumn `json:"virtualColumns,omitempty"`
+	Dimension      TelemetryDruidDimensionSpec   `json:"dimension"`
+	// An integer defining the N in the topN (i.e., how many results you want in the top list).
 	Threshold            int32                        `json:"threshold"`
 	Metric               TelemetryDruidTopNMetricSpec `json:"metric"`
 	Context              *TelemetryDruidQueryContext  `json:"context,omitempty"`
@@ -159,7 +165,7 @@ func (o *TelemetryDruidTopNRequest) SetGranularity(v TelemetryDruidGranularity) 
 
 // GetFilter returns the Filter field value if set, zero value otherwise.
 func (o *TelemetryDruidTopNRequest) GetFilter() TelemetryDruidFilter {
-	if o == nil || o.Filter == nil {
+	if o == nil || IsNil(o.Filter) {
 		var ret TelemetryDruidFilter
 		return ret
 	}
@@ -169,7 +175,7 @@ func (o *TelemetryDruidTopNRequest) GetFilter() TelemetryDruidFilter {
 // GetFilterOk returns a tuple with the Filter field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TelemetryDruidTopNRequest) GetFilterOk() (*TelemetryDruidFilter, bool) {
-	if o == nil || o.Filter == nil {
+	if o == nil || IsNil(o.Filter) {
 		return nil, false
 	}
 	return o.Filter, true
@@ -177,7 +183,7 @@ func (o *TelemetryDruidTopNRequest) GetFilterOk() (*TelemetryDruidFilter, bool) 
 
 // HasFilter returns a boolean if a field has been set.
 func (o *TelemetryDruidTopNRequest) HasFilter() bool {
-	if o != nil && o.Filter != nil {
+	if o != nil && !IsNil(o.Filter) {
 		return true
 	}
 
@@ -191,7 +197,7 @@ func (o *TelemetryDruidTopNRequest) SetFilter(v TelemetryDruidFilter) {
 
 // GetAggregations returns the Aggregations field value if set, zero value otherwise.
 func (o *TelemetryDruidTopNRequest) GetAggregations() []TelemetryDruidAggregator {
-	if o == nil || o.Aggregations == nil {
+	if o == nil || IsNil(o.Aggregations) {
 		var ret []TelemetryDruidAggregator
 		return ret
 	}
@@ -201,7 +207,7 @@ func (o *TelemetryDruidTopNRequest) GetAggregations() []TelemetryDruidAggregator
 // GetAggregationsOk returns a tuple with the Aggregations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TelemetryDruidTopNRequest) GetAggregationsOk() ([]TelemetryDruidAggregator, bool) {
-	if o == nil || o.Aggregations == nil {
+	if o == nil || IsNil(o.Aggregations) {
 		return nil, false
 	}
 	return o.Aggregations, true
@@ -209,7 +215,7 @@ func (o *TelemetryDruidTopNRequest) GetAggregationsOk() ([]TelemetryDruidAggrega
 
 // HasAggregations returns a boolean if a field has been set.
 func (o *TelemetryDruidTopNRequest) HasAggregations() bool {
-	if o != nil && o.Aggregations != nil {
+	if o != nil && !IsNil(o.Aggregations) {
 		return true
 	}
 
@@ -223,7 +229,7 @@ func (o *TelemetryDruidTopNRequest) SetAggregations(v []TelemetryDruidAggregator
 
 // GetPostAggregations returns the PostAggregations field value if set, zero value otherwise.
 func (o *TelemetryDruidTopNRequest) GetPostAggregations() []TelemetryDruidPostAggregator {
-	if o == nil || o.PostAggregations == nil {
+	if o == nil || IsNil(o.PostAggregations) {
 		var ret []TelemetryDruidPostAggregator
 		return ret
 	}
@@ -233,7 +239,7 @@ func (o *TelemetryDruidTopNRequest) GetPostAggregations() []TelemetryDruidPostAg
 // GetPostAggregationsOk returns a tuple with the PostAggregations field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TelemetryDruidTopNRequest) GetPostAggregationsOk() ([]TelemetryDruidPostAggregator, bool) {
-	if o == nil || o.PostAggregations == nil {
+	if o == nil || IsNil(o.PostAggregations) {
 		return nil, false
 	}
 	return o.PostAggregations, true
@@ -241,7 +247,7 @@ func (o *TelemetryDruidTopNRequest) GetPostAggregationsOk() ([]TelemetryDruidPos
 
 // HasPostAggregations returns a boolean if a field has been set.
 func (o *TelemetryDruidTopNRequest) HasPostAggregations() bool {
-	if o != nil && o.PostAggregations != nil {
+	if o != nil && !IsNil(o.PostAggregations) {
 		return true
 	}
 
@@ -251,6 +257,38 @@ func (o *TelemetryDruidTopNRequest) HasPostAggregations() bool {
 // SetPostAggregations gets a reference to the given []TelemetryDruidPostAggregator and assigns it to the PostAggregations field.
 func (o *TelemetryDruidTopNRequest) SetPostAggregations(v []TelemetryDruidPostAggregator) {
 	o.PostAggregations = v
+}
+
+// GetVirtualColumns returns the VirtualColumns field value if set, zero value otherwise.
+func (o *TelemetryDruidTopNRequest) GetVirtualColumns() []TelemetryDruidVirtualColumn {
+	if o == nil || IsNil(o.VirtualColumns) {
+		var ret []TelemetryDruidVirtualColumn
+		return ret
+	}
+	return o.VirtualColumns
+}
+
+// GetVirtualColumnsOk returns a tuple with the VirtualColumns field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TelemetryDruidTopNRequest) GetVirtualColumnsOk() ([]TelemetryDruidVirtualColumn, bool) {
+	if o == nil || IsNil(o.VirtualColumns) {
+		return nil, false
+	}
+	return o.VirtualColumns, true
+}
+
+// HasVirtualColumns returns a boolean if a field has been set.
+func (o *TelemetryDruidTopNRequest) HasVirtualColumns() bool {
+	if o != nil && !IsNil(o.VirtualColumns) {
+		return true
+	}
+
+	return false
+}
+
+// SetVirtualColumns gets a reference to the given []TelemetryDruidVirtualColumn and assigns it to the VirtualColumns field.
+func (o *TelemetryDruidTopNRequest) SetVirtualColumns(v []TelemetryDruidVirtualColumn) {
+	o.VirtualColumns = v
 }
 
 // GetDimension returns the Dimension field value
@@ -327,7 +365,7 @@ func (o *TelemetryDruidTopNRequest) SetMetric(v TelemetryDruidTopNMetricSpec) {
 
 // GetContext returns the Context field value if set, zero value otherwise.
 func (o *TelemetryDruidTopNRequest) GetContext() TelemetryDruidQueryContext {
-	if o == nil || o.Context == nil {
+	if o == nil || IsNil(o.Context) {
 		var ret TelemetryDruidQueryContext
 		return ret
 	}
@@ -337,7 +375,7 @@ func (o *TelemetryDruidTopNRequest) GetContext() TelemetryDruidQueryContext {
 // GetContextOk returns a tuple with the Context field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TelemetryDruidTopNRequest) GetContextOk() (*TelemetryDruidQueryContext, bool) {
-	if o == nil || o.Context == nil {
+	if o == nil || IsNil(o.Context) {
 		return nil, false
 	}
 	return o.Context, true
@@ -345,7 +383,7 @@ func (o *TelemetryDruidTopNRequest) GetContextOk() (*TelemetryDruidQueryContext,
 
 // HasContext returns a boolean if a field has been set.
 func (o *TelemetryDruidTopNRequest) HasContext() bool {
-	if o != nil && o.Context != nil {
+	if o != nil && !IsNil(o.Context) {
 		return true
 	}
 
@@ -358,38 +396,35 @@ func (o *TelemetryDruidTopNRequest) SetContext(v TelemetryDruidQueryContext) {
 }
 
 func (o TelemetryDruidTopNRequest) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o TelemetryDruidTopNRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
-		toSerialize["queryType"] = o.QueryType
-	}
-	if true {
-		toSerialize["dataSource"] = o.DataSource
-	}
-	if true {
-		toSerialize["intervals"] = o.Intervals
-	}
-	if true {
-		toSerialize["granularity"] = o.Granularity
-	}
-	if o.Filter != nil {
+	toSerialize["queryType"] = o.QueryType
+	toSerialize["dataSource"] = o.DataSource
+	toSerialize["intervals"] = o.Intervals
+	toSerialize["granularity"] = o.Granularity
+	if !IsNil(o.Filter) {
 		toSerialize["filter"] = o.Filter
 	}
-	if o.Aggregations != nil {
+	if !IsNil(o.Aggregations) {
 		toSerialize["aggregations"] = o.Aggregations
 	}
-	if o.PostAggregations != nil {
+	if !IsNil(o.PostAggregations) {
 		toSerialize["postAggregations"] = o.PostAggregations
 	}
-	if true {
-		toSerialize["dimension"] = o.Dimension
+	if !IsNil(o.VirtualColumns) {
+		toSerialize["virtualColumns"] = o.VirtualColumns
 	}
-	if true {
-		toSerialize["threshold"] = o.Threshold
-	}
-	if true {
-		toSerialize["metric"] = o.Metric
-	}
-	if o.Context != nil {
+	toSerialize["dimension"] = o.Dimension
+	toSerialize["threshold"] = o.Threshold
+	toSerialize["metric"] = o.Metric
+	if !IsNil(o.Context) {
 		toSerialize["context"] = o.Context
 	}
 
@@ -397,19 +432,66 @@ func (o TelemetryDruidTopNRequest) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *TelemetryDruidTopNRequest) UnmarshalJSON(bytes []byte) (err error) {
+func (o *TelemetryDruidTopNRequest) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"queryType",
+		"dataSource",
+		"intervals",
+		"granularity",
+		"dimension",
+		"threshold",
+		"metric",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	varTelemetryDruidTopNRequest := _TelemetryDruidTopNRequest{}
 
-	if err = json.Unmarshal(bytes, &varTelemetryDruidTopNRequest); err == nil {
-		*o = TelemetryDruidTopNRequest(varTelemetryDruidTopNRequest)
+	err = json.Unmarshal(data, &varTelemetryDruidTopNRequest)
+
+	if err != nil {
+		return err
 	}
+
+	*o = TelemetryDruidTopNRequest(varTelemetryDruidTopNRequest)
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "queryType")
 		delete(additionalProperties, "dataSource")
 		delete(additionalProperties, "intervals")
@@ -417,6 +499,7 @@ func (o *TelemetryDruidTopNRequest) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "filter")
 		delete(additionalProperties, "aggregations")
 		delete(additionalProperties, "postAggregations")
+		delete(additionalProperties, "virtualColumns")
 		delete(additionalProperties, "dimension")
 		delete(additionalProperties, "threshold")
 		delete(additionalProperties, "metric")

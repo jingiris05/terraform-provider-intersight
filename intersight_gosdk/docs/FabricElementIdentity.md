@@ -7,10 +7,12 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "fabric.ElementIdentity"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "fabric.ElementIdentity"]
 **Domain** | Pointer to **string** | Name of the Fabric Interconnect domain. | [optional] [readonly] 
+**PartialDeploymentStatus** | Pointer to **string** | Determines if there is partial configuration that has to be deployed on any of the server profiles associated with the server connected to the Fabric Interconnect in cases where one or more server profiles  was deployed when the Fabric Interconnect was down. * &#x60;None&#x60; - No configuration which is yet to be deployed.The default state of a fabric interconnect which does not have any pending deployment. * &#x60;Pending&#x60; - There is pending configuration which is yet to be deployed on the fabric interconnect. * &#x60;Deploying&#x60; - Pending configuration is being deployed on the fabric interconnect. | [optional] [readonly] [default to "None"]
+**PostDeployAction** | Pointer to **[]string** |  | [optional] 
 **ReplacementType** | Pointer to **string** | Replacement type specifies whether it is single FI or domain replacement. * &#x60;None&#x60; - The default action is none. * &#x60;Individual&#x60; - Replacement of single network element. * &#x60;Domain&#x60; - Domain indicates the replacement of Fabric Interconnect domain. | [optional] [default to "None"]
 **SwitchId** | Pointer to **string** | Switch Identifier that uniquely represents the fabric object. * &#x60;A&#x60; - Switch Identifier of Fabric Interconnect A. * &#x60;B&#x60; - Switch Identifier of Fabric Interconnect B. | [optional] [readonly] [default to "A"]
-**NetworkElement** | Pointer to [**NetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
-**ReplacementTarget** | Pointer to [**NetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
+**NetworkElement** | Pointer to [**NullableNetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
+**ReplacementTarget** | Pointer to [**NullableNetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -96,6 +98,66 @@ SetDomain sets Domain field to given value.
 
 HasDomain returns a boolean if a field has been set.
 
+### GetPartialDeploymentStatus
+
+`func (o *FabricElementIdentity) GetPartialDeploymentStatus() string`
+
+GetPartialDeploymentStatus returns the PartialDeploymentStatus field if non-nil, zero value otherwise.
+
+### GetPartialDeploymentStatusOk
+
+`func (o *FabricElementIdentity) GetPartialDeploymentStatusOk() (*string, bool)`
+
+GetPartialDeploymentStatusOk returns a tuple with the PartialDeploymentStatus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPartialDeploymentStatus
+
+`func (o *FabricElementIdentity) SetPartialDeploymentStatus(v string)`
+
+SetPartialDeploymentStatus sets PartialDeploymentStatus field to given value.
+
+### HasPartialDeploymentStatus
+
+`func (o *FabricElementIdentity) HasPartialDeploymentStatus() bool`
+
+HasPartialDeploymentStatus returns a boolean if a field has been set.
+
+### GetPostDeployAction
+
+`func (o *FabricElementIdentity) GetPostDeployAction() []string`
+
+GetPostDeployAction returns the PostDeployAction field if non-nil, zero value otherwise.
+
+### GetPostDeployActionOk
+
+`func (o *FabricElementIdentity) GetPostDeployActionOk() (*[]string, bool)`
+
+GetPostDeployActionOk returns a tuple with the PostDeployAction field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPostDeployAction
+
+`func (o *FabricElementIdentity) SetPostDeployAction(v []string)`
+
+SetPostDeployAction sets PostDeployAction field to given value.
+
+### HasPostDeployAction
+
+`func (o *FabricElementIdentity) HasPostDeployAction() bool`
+
+HasPostDeployAction returns a boolean if a field has been set.
+
+### SetPostDeployActionNil
+
+`func (o *FabricElementIdentity) SetPostDeployActionNil(b bool)`
+
+ SetPostDeployActionNil sets the value for PostDeployAction to be an explicit nil
+
+### UnsetPostDeployAction
+`func (o *FabricElementIdentity) UnsetPostDeployAction()`
+
+UnsetPostDeployAction ensures that no value is present for PostDeployAction, not even an explicit nil
 ### GetReplacementType
 
 `func (o *FabricElementIdentity) GetReplacementType() string`
@@ -171,6 +233,16 @@ SetNetworkElement sets NetworkElement field to given value.
 
 HasNetworkElement returns a boolean if a field has been set.
 
+### SetNetworkElementNil
+
+`func (o *FabricElementIdentity) SetNetworkElementNil(b bool)`
+
+ SetNetworkElementNil sets the value for NetworkElement to be an explicit nil
+
+### UnsetNetworkElement
+`func (o *FabricElementIdentity) UnsetNetworkElement()`
+
+UnsetNetworkElement ensures that no value is present for NetworkElement, not even an explicit nil
 ### GetReplacementTarget
 
 `func (o *FabricElementIdentity) GetReplacementTarget() NetworkElementRelationship`
@@ -196,6 +268,16 @@ SetReplacementTarget sets ReplacementTarget field to given value.
 
 HasReplacementTarget returns a boolean if a field has been set.
 
+### SetReplacementTargetNil
+
+`func (o *FabricElementIdentity) SetReplacementTargetNil(b bool)`
+
+ SetReplacementTargetNil sets the value for ReplacementTarget to be an explicit nil
+
+### UnsetReplacementTarget
+`func (o *FabricElementIdentity) UnsetReplacementTarget()`
+
+UnsetReplacementTarget ensures that no value is present for ReplacementTarget, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

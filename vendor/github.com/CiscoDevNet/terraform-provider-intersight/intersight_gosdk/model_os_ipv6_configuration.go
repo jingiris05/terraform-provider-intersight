@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the OsIpv6Configuration type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &OsIpv6Configuration{}
 
 // OsIpv6Configuration In case of static IPv6 configuration, IP address, netmask and gateway details are provided.
 type OsIpv6Configuration struct {
@@ -77,6 +81,11 @@ func (o *OsIpv6Configuration) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "os.Ipv6Configuration" of the ClassId field.
+func (o *OsIpv6Configuration) GetDefaultClassId() interface{} {
+	return "os.Ipv6Configuration"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *OsIpv6Configuration) GetObjectType() string {
 	if o == nil {
@@ -101,9 +110,14 @@ func (o *OsIpv6Configuration) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "os.Ipv6Configuration" of the ObjectType field.
+func (o *OsIpv6Configuration) GetDefaultObjectType() interface{} {
+	return "os.Ipv6Configuration"
+}
+
 // GetIpV6Config returns the IpV6Config field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *OsIpv6Configuration) GetIpV6Config() CommIpV6Interface {
-	if o == nil || o.IpV6Config.Get() == nil {
+	if o == nil || IsNil(o.IpV6Config.Get()) {
 		var ret CommIpV6Interface
 		return ret
 	}
@@ -145,21 +159,31 @@ func (o *OsIpv6Configuration) UnsetIpV6Config() {
 }
 
 func (o OsIpv6Configuration) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o OsIpv6Configuration) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedOsIpConfiguration, errOsIpConfiguration := json.Marshal(o.OsIpConfiguration)
 	if errOsIpConfiguration != nil {
-		return []byte{}, errOsIpConfiguration
+		return map[string]interface{}{}, errOsIpConfiguration
 	}
 	errOsIpConfiguration = json.Unmarshal([]byte(serializedOsIpConfiguration), &toSerialize)
 	if errOsIpConfiguration != nil {
-		return []byte{}, errOsIpConfiguration
+		return map[string]interface{}{}, errOsIpConfiguration
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.IpV6Config.IsSet() {
 		toSerialize["IpV6Config"] = o.IpV6Config.Get()
 	}
@@ -168,10 +192,51 @@ func (o OsIpv6Configuration) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *OsIpv6Configuration) UnmarshalJSON(bytes []byte) (err error) {
+func (o *OsIpv6Configuration) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type OsIpv6ConfigurationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -182,7 +247,7 @@ func (o *OsIpv6Configuration) UnmarshalJSON(bytes []byte) (err error) {
 
 	varOsIpv6ConfigurationWithoutEmbeddedStruct := OsIpv6ConfigurationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varOsIpv6ConfigurationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varOsIpv6ConfigurationWithoutEmbeddedStruct)
 	if err == nil {
 		varOsIpv6Configuration := _OsIpv6Configuration{}
 		varOsIpv6Configuration.ClassId = varOsIpv6ConfigurationWithoutEmbeddedStruct.ClassId
@@ -195,7 +260,7 @@ func (o *OsIpv6Configuration) UnmarshalJSON(bytes []byte) (err error) {
 
 	varOsIpv6Configuration := _OsIpv6Configuration{}
 
-	err = json.Unmarshal(bytes, &varOsIpv6Configuration)
+	err = json.Unmarshal(data, &varOsIpv6Configuration)
 	if err == nil {
 		o.OsIpConfiguration = varOsIpv6Configuration.OsIpConfiguration
 	} else {
@@ -204,7 +269,7 @@ func (o *OsIpv6Configuration) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "IpV6Config")

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the IamAppRegistration type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IamAppRegistration{}
 
 // IamAppRegistration AppRegistration encapsulates the meta-data values of a registered OAuth2 client application, as described in https://tools.ietf.org/html/rfc7591#section-2. Registered client applications have a set of metadata values associated with their client identifier at the Intersight authorization server, including the list of valid redirection URIs or a display name. The meta-data is used to specify how a client application can retrieve a OAuth2 Access Token and subsequently invoke Intersight API on behalf of this AppRegistration. To register an OAuth2 application, the following information must be provided. 1) Application name 2) An icon for the application 3) URL to the application's home page 4) A short description of the application 5) A list of redirect URLs When an AppRegistration is created, a unique OAuth2 clientId is generated and returned in the HTTP response.
 type IamAppRegistration struct {
@@ -25,6 +29,8 @@ type IamAppRegistration struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
+	// Used to trigger the enable or disable action on the App Registration. These actions change the status of an App Registration. * `enable` - Used to enable a disabled API key/App Registration. If the API key/App Registration is already expired, this action has no effect. * `disable` - Used to disable an active API key/App Registration. If the API key/App Registration is already expired, this action has no effect.
+	AdminStatus *string `json:"AdminStatus,omitempty"`
 	// A unique identifier for the OAuth2 client application. The client ID is auto-generated when the AppRegistration object is created.
 	ClientId *string `json:"ClientId,omitempty"`
 	// App Registration name specified by user.
@@ -34,8 +40,18 @@ type IamAppRegistration struct {
 	// The type of the OAuth2 client (public or confidential), as specified in https://tools.ietf.org/html/rfc6749#section-2.1. * `public` - Clients incapable of maintaining the confidentiality of their credentials.This includes clients executing on the device used by the resource owner,such as mobile applications, installed native application or a webbrowser-based application. * `confidential` - Clients capable of maintaining the confidentiality of their credentials.For example, this could be a client implemented on a secure server withrestricted access to the client credentials.To maintain the confidentiality of the OAuth2 credentials, two use cases areconsidered.1) The application is running as a service within Intersight. The application automatically   obtains the OAuth2 credentials when the application starts and the credentials are not   exposed to the end-user.   Because end-users (even account administrators) do not have access the OAuth2 credentials,   they cannot take the credentials with them when they leave their organization.2) The application is under the control of a \"trusted\" end-user. For example,   the end-user may create a native application running outside Intersight. The application   uses OAuth2 credentials to interact with the Intersight API. In that case, the Intersight   account administrator may generate OAuth2 credentials with a registered application   using \"client_credentials\" grant type.   In that case, the end-user is responsible for maintaining the confidentiality of the   OAuth2 credentials. If the end-user leaves the organization, you should revoke the   credentials and issue new Oauth2 credentials.Here is a possible workflow for handling OAuth2 tokens.1) User Alice (Intersight Account Administrator) logins to Intersight and deploys an Intersight   application that requires an OAuth2 token.2) Intersight automatically deploys the application. The application is assigned a OAuth2 token,   possibly linked to Alice. The application must NOT expose the OAuth2 secret to Alice, otherwise   Alice would be able to use the token after she leaves the company.3) The application can make API calls to Intersight using its assigned OAuth2 token. For example,   the application could make weekly scheduled API calls to Intersight.4) Separately, Alice may also get OAuth2 tokens that she can use to make API calls from the   Intersight SDK through the northbound API. In that case, Alice will get the associated OAuth2   secrets, but not the one assigned in step #2.5) Alice leaves the organization. The OAuth2 tokens assigned in step #2 must retain their validity   even after Alice has left the organization. Because the OAuth2 secrets were never shared with   Alice, there is no risk Alice can reuse the OAuth2 secrets.   On the other hand, the OAuth2 tokens assigned in step #4 must be invalidated because Alice had   the OAuth2 tokens in her possession.
 	ClientType *string `json:"ClientType,omitempty"`
 	// Description of the application.
-	Description  *string  `json:"Description,omitempty"`
-	GrantTypes   []string `json:"GrantTypes,omitempty"`
+	Description *string `json:"Description,omitempty"`
+	// The expiration date of the App Registration which is set at the time of its creation. Its value can only be assigned a date that falls within the range determined by the maximum expiration time configured at the account level. The expiry date can be edited to be earlier or later, provided it stays within the designated expiry period. This period is determined by adding the 'startTime' property of the App Registration to the maximum expiry time configured at the account level.
+	ExpiryDateTime *time.Time `json:"ExpiryDateTime,omitempty"`
+	GrantTypes     []string   `json:"GrantTypes,omitempty"`
+	// Used to mark the App Registration as a never-expiring App Registration.
+	IsNeverExpiring *bool `json:"IsNeverExpiring,omitempty"`
+	// The ip address from which the App Registration was last used.
+	LastUsedIp *string `json:"LastUsedIp,omitempty"`
+	// The time at which the App Registration was last used. It is updated every 24 hours.
+	LastUsedTime *time.Time `json:"LastUsedTime,omitempty"`
+	// The current status of the App Registration that dictates the validity of the app. * `enabled` - An API key/App Registration having enabled status can be used for API invocation. * `disabled` - An API key/App Registration having disabled status cannot be used for API invocation. * `expired` - An API key/App Registration having expired status cannot be used for API invocation as the expiration date has passed.
+	OperStatus   *string  `json:"OperStatus,omitempty"`
 	RedirectUris []string `json:"RedirectUris,omitempty"`
 	// Set value to true to renew the client-secret. Applicable to client_credentials grant type.
 	RenewClientSecret *bool    `json:"RenewClientSecret,omitempty"`
@@ -43,17 +59,20 @@ type IamAppRegistration struct {
 	// Used to perform revocation for tokens of AppRegistration. Updated only internally is case Revoke property come from UI with value true. On each request with OAuth2 access token the CreationTime of the OAuth2 token will be compared to RevokationTimestamp of the corresponding App Registration.
 	RevocationTimestamp *time.Time `json:"RevocationTimestamp,omitempty"`
 	// Used to trigger update the revocationTimestamp value. If UI sent updating request with the Revoke value is true, then update RevocationTimestamp.
-	Revoke *bool `json:"Revoke,omitempty"`
+	Revoke *bool                             `json:"Revoke,omitempty"`
+	Scope  NullableIamSwitchScopePermissions `json:"Scope,omitempty"`
 	// Set to true if consent screen needs to be shown during the OAuth login process. Applicable only for public AppRegistrations, means only 'authorization_code' grantType. Note that consent screen will be shown on each login.
-	ShowConsentScreen *bool                   `json:"ShowConsentScreen,omitempty"`
-	Account           *IamAccountRelationship `json:"Account,omitempty"`
+	ShowConsentScreen *bool `json:"ShowConsentScreen,omitempty"`
+	// The timestamp at which an expiry date was first set on this app registration.  For expiring App Registrations, this field is same as the create time of the App Registration. For never-expiring App Registrations, this field is set initially to zero time value. If a never-expiry App Registration is later changed to have an expiration, the timestamp marking the start of this transition is recorded in this field.
+	StartTime *time.Time                     `json:"StartTime,omitempty"`
+	Account   NullableIamAccountRelationship `json:"Account,omitempty"`
 	// An array of relationships to iamOAuthToken resources.
-	OauthTokens []IamOAuthTokenRelationship `json:"OauthTokens,omitempty"`
-	Permission  *IamPermissionRelationship  `json:"Permission,omitempty"`
+	OauthTokens []IamOAuthTokenRelationship       `json:"OauthTokens,omitempty"`
+	Permission  NullableIamPermissionRelationship `json:"Permission,omitempty"`
 	// An array of relationships to iamRole resources.
 	// Deprecated
-	Roles                []IamRoleRelationship `json:"Roles,omitempty"`
-	User                 *IamUserRelationship  `json:"User,omitempty"`
+	Roles                []IamRoleRelationship       `json:"Roles,omitempty"`
+	User                 NullableIamUserRelationship `json:"User,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -67,8 +86,12 @@ func NewIamAppRegistration(classId string, objectType string) *IamAppRegistratio
 	this := IamAppRegistration{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var adminStatus string = "enable"
+	this.AdminStatus = &adminStatus
 	var clientType string = "public"
 	this.ClientType = &clientType
+	var isNeverExpiring bool = false
+	this.IsNeverExpiring = &isNeverExpiring
 	var renewClientSecret bool = false
 	this.RenewClientSecret = &renewClientSecret
 	var revoke bool = false
@@ -87,8 +110,12 @@ func NewIamAppRegistrationWithDefaults() *IamAppRegistration {
 	this.ClassId = classId
 	var objectType string = "iam.AppRegistration"
 	this.ObjectType = objectType
+	var adminStatus string = "enable"
+	this.AdminStatus = &adminStatus
 	var clientType string = "public"
 	this.ClientType = &clientType
+	var isNeverExpiring bool = false
+	this.IsNeverExpiring = &isNeverExpiring
 	var renewClientSecret bool = false
 	this.RenewClientSecret = &renewClientSecret
 	var revoke bool = false
@@ -122,6 +149,11 @@ func (o *IamAppRegistration) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "iam.AppRegistration" of the ClassId field.
+func (o *IamAppRegistration) GetDefaultClassId() interface{} {
+	return "iam.AppRegistration"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IamAppRegistration) GetObjectType() string {
 	if o == nil {
@@ -146,9 +178,46 @@ func (o *IamAppRegistration) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "iam.AppRegistration" of the ObjectType field.
+func (o *IamAppRegistration) GetDefaultObjectType() interface{} {
+	return "iam.AppRegistration"
+}
+
+// GetAdminStatus returns the AdminStatus field value if set, zero value otherwise.
+func (o *IamAppRegistration) GetAdminStatus() string {
+	if o == nil || IsNil(o.AdminStatus) {
+		var ret string
+		return ret
+	}
+	return *o.AdminStatus
+}
+
+// GetAdminStatusOk returns a tuple with the AdminStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IamAppRegistration) GetAdminStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.AdminStatus) {
+		return nil, false
+	}
+	return o.AdminStatus, true
+}
+
+// HasAdminStatus returns a boolean if a field has been set.
+func (o *IamAppRegistration) HasAdminStatus() bool {
+	if o != nil && !IsNil(o.AdminStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetAdminStatus gets a reference to the given string and assigns it to the AdminStatus field.
+func (o *IamAppRegistration) SetAdminStatus(v string) {
+	o.AdminStatus = &v
+}
+
 // GetClientId returns the ClientId field value if set, zero value otherwise.
 func (o *IamAppRegistration) GetClientId() string {
-	if o == nil || o.ClientId == nil {
+	if o == nil || IsNil(o.ClientId) {
 		var ret string
 		return ret
 	}
@@ -158,7 +227,7 @@ func (o *IamAppRegistration) GetClientId() string {
 // GetClientIdOk returns a tuple with the ClientId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamAppRegistration) GetClientIdOk() (*string, bool) {
-	if o == nil || o.ClientId == nil {
+	if o == nil || IsNil(o.ClientId) {
 		return nil, false
 	}
 	return o.ClientId, true
@@ -166,7 +235,7 @@ func (o *IamAppRegistration) GetClientIdOk() (*string, bool) {
 
 // HasClientId returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasClientId() bool {
-	if o != nil && o.ClientId != nil {
+	if o != nil && !IsNil(o.ClientId) {
 		return true
 	}
 
@@ -180,7 +249,7 @@ func (o *IamAppRegistration) SetClientId(v string) {
 
 // GetClientName returns the ClientName field value if set, zero value otherwise.
 func (o *IamAppRegistration) GetClientName() string {
-	if o == nil || o.ClientName == nil {
+	if o == nil || IsNil(o.ClientName) {
 		var ret string
 		return ret
 	}
@@ -190,7 +259,7 @@ func (o *IamAppRegistration) GetClientName() string {
 // GetClientNameOk returns a tuple with the ClientName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamAppRegistration) GetClientNameOk() (*string, bool) {
-	if o == nil || o.ClientName == nil {
+	if o == nil || IsNil(o.ClientName) {
 		return nil, false
 	}
 	return o.ClientName, true
@@ -198,7 +267,7 @@ func (o *IamAppRegistration) GetClientNameOk() (*string, bool) {
 
 // HasClientName returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasClientName() bool {
-	if o != nil && o.ClientName != nil {
+	if o != nil && !IsNil(o.ClientName) {
 		return true
 	}
 
@@ -212,7 +281,7 @@ func (o *IamAppRegistration) SetClientName(v string) {
 
 // GetClientSecret returns the ClientSecret field value if set, zero value otherwise.
 func (o *IamAppRegistration) GetClientSecret() string {
-	if o == nil || o.ClientSecret == nil {
+	if o == nil || IsNil(o.ClientSecret) {
 		var ret string
 		return ret
 	}
@@ -222,7 +291,7 @@ func (o *IamAppRegistration) GetClientSecret() string {
 // GetClientSecretOk returns a tuple with the ClientSecret field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamAppRegistration) GetClientSecretOk() (*string, bool) {
-	if o == nil || o.ClientSecret == nil {
+	if o == nil || IsNil(o.ClientSecret) {
 		return nil, false
 	}
 	return o.ClientSecret, true
@@ -230,7 +299,7 @@ func (o *IamAppRegistration) GetClientSecretOk() (*string, bool) {
 
 // HasClientSecret returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasClientSecret() bool {
-	if o != nil && o.ClientSecret != nil {
+	if o != nil && !IsNil(o.ClientSecret) {
 		return true
 	}
 
@@ -244,7 +313,7 @@ func (o *IamAppRegistration) SetClientSecret(v string) {
 
 // GetClientType returns the ClientType field value if set, zero value otherwise.
 func (o *IamAppRegistration) GetClientType() string {
-	if o == nil || o.ClientType == nil {
+	if o == nil || IsNil(o.ClientType) {
 		var ret string
 		return ret
 	}
@@ -254,7 +323,7 @@ func (o *IamAppRegistration) GetClientType() string {
 // GetClientTypeOk returns a tuple with the ClientType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamAppRegistration) GetClientTypeOk() (*string, bool) {
-	if o == nil || o.ClientType == nil {
+	if o == nil || IsNil(o.ClientType) {
 		return nil, false
 	}
 	return o.ClientType, true
@@ -262,7 +331,7 @@ func (o *IamAppRegistration) GetClientTypeOk() (*string, bool) {
 
 // HasClientType returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasClientType() bool {
-	if o != nil && o.ClientType != nil {
+	if o != nil && !IsNil(o.ClientType) {
 		return true
 	}
 
@@ -276,7 +345,7 @@ func (o *IamAppRegistration) SetClientType(v string) {
 
 // GetDescription returns the Description field value if set, zero value otherwise.
 func (o *IamAppRegistration) GetDescription() string {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		var ret string
 		return ret
 	}
@@ -286,7 +355,7 @@ func (o *IamAppRegistration) GetDescription() string {
 // GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamAppRegistration) GetDescriptionOk() (*string, bool) {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		return nil, false
 	}
 	return o.Description, true
@@ -294,7 +363,7 @@ func (o *IamAppRegistration) GetDescriptionOk() (*string, bool) {
 
 // HasDescription returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasDescription() bool {
-	if o != nil && o.Description != nil {
+	if o != nil && !IsNil(o.Description) {
 		return true
 	}
 
@@ -304,6 +373,38 @@ func (o *IamAppRegistration) HasDescription() bool {
 // SetDescription gets a reference to the given string and assigns it to the Description field.
 func (o *IamAppRegistration) SetDescription(v string) {
 	o.Description = &v
+}
+
+// GetExpiryDateTime returns the ExpiryDateTime field value if set, zero value otherwise.
+func (o *IamAppRegistration) GetExpiryDateTime() time.Time {
+	if o == nil || IsNil(o.ExpiryDateTime) {
+		var ret time.Time
+		return ret
+	}
+	return *o.ExpiryDateTime
+}
+
+// GetExpiryDateTimeOk returns a tuple with the ExpiryDateTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IamAppRegistration) GetExpiryDateTimeOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.ExpiryDateTime) {
+		return nil, false
+	}
+	return o.ExpiryDateTime, true
+}
+
+// HasExpiryDateTime returns a boolean if a field has been set.
+func (o *IamAppRegistration) HasExpiryDateTime() bool {
+	if o != nil && !IsNil(o.ExpiryDateTime) {
+		return true
+	}
+
+	return false
+}
+
+// SetExpiryDateTime gets a reference to the given time.Time and assigns it to the ExpiryDateTime field.
+func (o *IamAppRegistration) SetExpiryDateTime(v time.Time) {
+	o.ExpiryDateTime = &v
 }
 
 // GetGrantTypes returns the GrantTypes field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -319,7 +420,7 @@ func (o *IamAppRegistration) GetGrantTypes() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamAppRegistration) GetGrantTypesOk() ([]string, bool) {
-	if o == nil || o.GrantTypes == nil {
+	if o == nil || IsNil(o.GrantTypes) {
 		return nil, false
 	}
 	return o.GrantTypes, true
@@ -327,7 +428,7 @@ func (o *IamAppRegistration) GetGrantTypesOk() ([]string, bool) {
 
 // HasGrantTypes returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasGrantTypes() bool {
-	if o != nil && o.GrantTypes != nil {
+	if o != nil && !IsNil(o.GrantTypes) {
 		return true
 	}
 
@@ -337,6 +438,134 @@ func (o *IamAppRegistration) HasGrantTypes() bool {
 // SetGrantTypes gets a reference to the given []string and assigns it to the GrantTypes field.
 func (o *IamAppRegistration) SetGrantTypes(v []string) {
 	o.GrantTypes = v
+}
+
+// GetIsNeverExpiring returns the IsNeverExpiring field value if set, zero value otherwise.
+func (o *IamAppRegistration) GetIsNeverExpiring() bool {
+	if o == nil || IsNil(o.IsNeverExpiring) {
+		var ret bool
+		return ret
+	}
+	return *o.IsNeverExpiring
+}
+
+// GetIsNeverExpiringOk returns a tuple with the IsNeverExpiring field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IamAppRegistration) GetIsNeverExpiringOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsNeverExpiring) {
+		return nil, false
+	}
+	return o.IsNeverExpiring, true
+}
+
+// HasIsNeverExpiring returns a boolean if a field has been set.
+func (o *IamAppRegistration) HasIsNeverExpiring() bool {
+	if o != nil && !IsNil(o.IsNeverExpiring) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsNeverExpiring gets a reference to the given bool and assigns it to the IsNeverExpiring field.
+func (o *IamAppRegistration) SetIsNeverExpiring(v bool) {
+	o.IsNeverExpiring = &v
+}
+
+// GetLastUsedIp returns the LastUsedIp field value if set, zero value otherwise.
+func (o *IamAppRegistration) GetLastUsedIp() string {
+	if o == nil || IsNil(o.LastUsedIp) {
+		var ret string
+		return ret
+	}
+	return *o.LastUsedIp
+}
+
+// GetLastUsedIpOk returns a tuple with the LastUsedIp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IamAppRegistration) GetLastUsedIpOk() (*string, bool) {
+	if o == nil || IsNil(o.LastUsedIp) {
+		return nil, false
+	}
+	return o.LastUsedIp, true
+}
+
+// HasLastUsedIp returns a boolean if a field has been set.
+func (o *IamAppRegistration) HasLastUsedIp() bool {
+	if o != nil && !IsNil(o.LastUsedIp) {
+		return true
+	}
+
+	return false
+}
+
+// SetLastUsedIp gets a reference to the given string and assigns it to the LastUsedIp field.
+func (o *IamAppRegistration) SetLastUsedIp(v string) {
+	o.LastUsedIp = &v
+}
+
+// GetLastUsedTime returns the LastUsedTime field value if set, zero value otherwise.
+func (o *IamAppRegistration) GetLastUsedTime() time.Time {
+	if o == nil || IsNil(o.LastUsedTime) {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastUsedTime
+}
+
+// GetLastUsedTimeOk returns a tuple with the LastUsedTime field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IamAppRegistration) GetLastUsedTimeOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.LastUsedTime) {
+		return nil, false
+	}
+	return o.LastUsedTime, true
+}
+
+// HasLastUsedTime returns a boolean if a field has been set.
+func (o *IamAppRegistration) HasLastUsedTime() bool {
+	if o != nil && !IsNil(o.LastUsedTime) {
+		return true
+	}
+
+	return false
+}
+
+// SetLastUsedTime gets a reference to the given time.Time and assigns it to the LastUsedTime field.
+func (o *IamAppRegistration) SetLastUsedTime(v time.Time) {
+	o.LastUsedTime = &v
+}
+
+// GetOperStatus returns the OperStatus field value if set, zero value otherwise.
+func (o *IamAppRegistration) GetOperStatus() string {
+	if o == nil || IsNil(o.OperStatus) {
+		var ret string
+		return ret
+	}
+	return *o.OperStatus
+}
+
+// GetOperStatusOk returns a tuple with the OperStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IamAppRegistration) GetOperStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.OperStatus) {
+		return nil, false
+	}
+	return o.OperStatus, true
+}
+
+// HasOperStatus returns a boolean if a field has been set.
+func (o *IamAppRegistration) HasOperStatus() bool {
+	if o != nil && !IsNil(o.OperStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetOperStatus gets a reference to the given string and assigns it to the OperStatus field.
+func (o *IamAppRegistration) SetOperStatus(v string) {
+	o.OperStatus = &v
 }
 
 // GetRedirectUris returns the RedirectUris field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -352,7 +581,7 @@ func (o *IamAppRegistration) GetRedirectUris() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamAppRegistration) GetRedirectUrisOk() ([]string, bool) {
-	if o == nil || o.RedirectUris == nil {
+	if o == nil || IsNil(o.RedirectUris) {
 		return nil, false
 	}
 	return o.RedirectUris, true
@@ -360,7 +589,7 @@ func (o *IamAppRegistration) GetRedirectUrisOk() ([]string, bool) {
 
 // HasRedirectUris returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasRedirectUris() bool {
-	if o != nil && o.RedirectUris != nil {
+	if o != nil && !IsNil(o.RedirectUris) {
 		return true
 	}
 
@@ -374,7 +603,7 @@ func (o *IamAppRegistration) SetRedirectUris(v []string) {
 
 // GetRenewClientSecret returns the RenewClientSecret field value if set, zero value otherwise.
 func (o *IamAppRegistration) GetRenewClientSecret() bool {
-	if o == nil || o.RenewClientSecret == nil {
+	if o == nil || IsNil(o.RenewClientSecret) {
 		var ret bool
 		return ret
 	}
@@ -384,7 +613,7 @@ func (o *IamAppRegistration) GetRenewClientSecret() bool {
 // GetRenewClientSecretOk returns a tuple with the RenewClientSecret field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamAppRegistration) GetRenewClientSecretOk() (*bool, bool) {
-	if o == nil || o.RenewClientSecret == nil {
+	if o == nil || IsNil(o.RenewClientSecret) {
 		return nil, false
 	}
 	return o.RenewClientSecret, true
@@ -392,7 +621,7 @@ func (o *IamAppRegistration) GetRenewClientSecretOk() (*bool, bool) {
 
 // HasRenewClientSecret returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasRenewClientSecret() bool {
-	if o != nil && o.RenewClientSecret != nil {
+	if o != nil && !IsNil(o.RenewClientSecret) {
 		return true
 	}
 
@@ -417,7 +646,7 @@ func (o *IamAppRegistration) GetResponseTypes() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamAppRegistration) GetResponseTypesOk() ([]string, bool) {
-	if o == nil || o.ResponseTypes == nil {
+	if o == nil || IsNil(o.ResponseTypes) {
 		return nil, false
 	}
 	return o.ResponseTypes, true
@@ -425,7 +654,7 @@ func (o *IamAppRegistration) GetResponseTypesOk() ([]string, bool) {
 
 // HasResponseTypes returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasResponseTypes() bool {
-	if o != nil && o.ResponseTypes != nil {
+	if o != nil && !IsNil(o.ResponseTypes) {
 		return true
 	}
 
@@ -439,7 +668,7 @@ func (o *IamAppRegistration) SetResponseTypes(v []string) {
 
 // GetRevocationTimestamp returns the RevocationTimestamp field value if set, zero value otherwise.
 func (o *IamAppRegistration) GetRevocationTimestamp() time.Time {
-	if o == nil || o.RevocationTimestamp == nil {
+	if o == nil || IsNil(o.RevocationTimestamp) {
 		var ret time.Time
 		return ret
 	}
@@ -449,7 +678,7 @@ func (o *IamAppRegistration) GetRevocationTimestamp() time.Time {
 // GetRevocationTimestampOk returns a tuple with the RevocationTimestamp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamAppRegistration) GetRevocationTimestampOk() (*time.Time, bool) {
-	if o == nil || o.RevocationTimestamp == nil {
+	if o == nil || IsNil(o.RevocationTimestamp) {
 		return nil, false
 	}
 	return o.RevocationTimestamp, true
@@ -457,7 +686,7 @@ func (o *IamAppRegistration) GetRevocationTimestampOk() (*time.Time, bool) {
 
 // HasRevocationTimestamp returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasRevocationTimestamp() bool {
-	if o != nil && o.RevocationTimestamp != nil {
+	if o != nil && !IsNil(o.RevocationTimestamp) {
 		return true
 	}
 
@@ -471,7 +700,7 @@ func (o *IamAppRegistration) SetRevocationTimestamp(v time.Time) {
 
 // GetRevoke returns the Revoke field value if set, zero value otherwise.
 func (o *IamAppRegistration) GetRevoke() bool {
-	if o == nil || o.Revoke == nil {
+	if o == nil || IsNil(o.Revoke) {
 		var ret bool
 		return ret
 	}
@@ -481,7 +710,7 @@ func (o *IamAppRegistration) GetRevoke() bool {
 // GetRevokeOk returns a tuple with the Revoke field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamAppRegistration) GetRevokeOk() (*bool, bool) {
-	if o == nil || o.Revoke == nil {
+	if o == nil || IsNil(o.Revoke) {
 		return nil, false
 	}
 	return o.Revoke, true
@@ -489,7 +718,7 @@ func (o *IamAppRegistration) GetRevokeOk() (*bool, bool) {
 
 // HasRevoke returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasRevoke() bool {
-	if o != nil && o.Revoke != nil {
+	if o != nil && !IsNil(o.Revoke) {
 		return true
 	}
 
@@ -501,9 +730,52 @@ func (o *IamAppRegistration) SetRevoke(v bool) {
 	o.Revoke = &v
 }
 
+// GetScope returns the Scope field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *IamAppRegistration) GetScope() IamSwitchScopePermissions {
+	if o == nil || IsNil(o.Scope.Get()) {
+		var ret IamSwitchScopePermissions
+		return ret
+	}
+	return *o.Scope.Get()
+}
+
+// GetScopeOk returns a tuple with the Scope field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *IamAppRegistration) GetScopeOk() (*IamSwitchScopePermissions, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Scope.Get(), o.Scope.IsSet()
+}
+
+// HasScope returns a boolean if a field has been set.
+func (o *IamAppRegistration) HasScope() bool {
+	if o != nil && o.Scope.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetScope gets a reference to the given NullableIamSwitchScopePermissions and assigns it to the Scope field.
+func (o *IamAppRegistration) SetScope(v IamSwitchScopePermissions) {
+	o.Scope.Set(&v)
+}
+
+// SetScopeNil sets the value for Scope to be an explicit nil
+func (o *IamAppRegistration) SetScopeNil() {
+	o.Scope.Set(nil)
+}
+
+// UnsetScope ensures that no value is present for Scope, not even an explicit nil
+func (o *IamAppRegistration) UnsetScope() {
+	o.Scope.Unset()
+}
+
 // GetShowConsentScreen returns the ShowConsentScreen field value if set, zero value otherwise.
 func (o *IamAppRegistration) GetShowConsentScreen() bool {
-	if o == nil || o.ShowConsentScreen == nil {
+	if o == nil || IsNil(o.ShowConsentScreen) {
 		var ret bool
 		return ret
 	}
@@ -513,7 +785,7 @@ func (o *IamAppRegistration) GetShowConsentScreen() bool {
 // GetShowConsentScreenOk returns a tuple with the ShowConsentScreen field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamAppRegistration) GetShowConsentScreenOk() (*bool, bool) {
-	if o == nil || o.ShowConsentScreen == nil {
+	if o == nil || IsNil(o.ShowConsentScreen) {
 		return nil, false
 	}
 	return o.ShowConsentScreen, true
@@ -521,7 +793,7 @@ func (o *IamAppRegistration) GetShowConsentScreenOk() (*bool, bool) {
 
 // HasShowConsentScreen returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasShowConsentScreen() bool {
-	if o != nil && o.ShowConsentScreen != nil {
+	if o != nil && !IsNil(o.ShowConsentScreen) {
 		return true
 	}
 
@@ -533,36 +805,79 @@ func (o *IamAppRegistration) SetShowConsentScreen(v bool) {
 	o.ShowConsentScreen = &v
 }
 
-// GetAccount returns the Account field value if set, zero value otherwise.
-func (o *IamAppRegistration) GetAccount() IamAccountRelationship {
-	if o == nil || o.Account == nil {
-		var ret IamAccountRelationship
+// GetStartTime returns the StartTime field value if set, zero value otherwise.
+func (o *IamAppRegistration) GetStartTime() time.Time {
+	if o == nil || IsNil(o.StartTime) {
+		var ret time.Time
 		return ret
 	}
-	return *o.Account
+	return *o.StartTime
 }
 
-// GetAccountOk returns a tuple with the Account field value if set, nil otherwise
+// GetStartTimeOk returns a tuple with the StartTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *IamAppRegistration) GetAccountOk() (*IamAccountRelationship, bool) {
-	if o == nil || o.Account == nil {
+func (o *IamAppRegistration) GetStartTimeOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.StartTime) {
 		return nil, false
 	}
-	return o.Account, true
+	return o.StartTime, true
 }
 
-// HasAccount returns a boolean if a field has been set.
-func (o *IamAppRegistration) HasAccount() bool {
-	if o != nil && o.Account != nil {
+// HasStartTime returns a boolean if a field has been set.
+func (o *IamAppRegistration) HasStartTime() bool {
+	if o != nil && !IsNil(o.StartTime) {
 		return true
 	}
 
 	return false
 }
 
-// SetAccount gets a reference to the given IamAccountRelationship and assigns it to the Account field.
+// SetStartTime gets a reference to the given time.Time and assigns it to the StartTime field.
+func (o *IamAppRegistration) SetStartTime(v time.Time) {
+	o.StartTime = &v
+}
+
+// GetAccount returns the Account field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *IamAppRegistration) GetAccount() IamAccountRelationship {
+	if o == nil || IsNil(o.Account.Get()) {
+		var ret IamAccountRelationship
+		return ret
+	}
+	return *o.Account.Get()
+}
+
+// GetAccountOk returns a tuple with the Account field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *IamAppRegistration) GetAccountOk() (*IamAccountRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Account.Get(), o.Account.IsSet()
+}
+
+// HasAccount returns a boolean if a field has been set.
+func (o *IamAppRegistration) HasAccount() bool {
+	if o != nil && o.Account.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAccount gets a reference to the given NullableIamAccountRelationship and assigns it to the Account field.
 func (o *IamAppRegistration) SetAccount(v IamAccountRelationship) {
-	o.Account = &v
+	o.Account.Set(&v)
+}
+
+// SetAccountNil sets the value for Account to be an explicit nil
+func (o *IamAppRegistration) SetAccountNil() {
+	o.Account.Set(nil)
+}
+
+// UnsetAccount ensures that no value is present for Account, not even an explicit nil
+func (o *IamAppRegistration) UnsetAccount() {
+	o.Account.Unset()
 }
 
 // GetOauthTokens returns the OauthTokens field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -578,7 +893,7 @@ func (o *IamAppRegistration) GetOauthTokens() []IamOAuthTokenRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamAppRegistration) GetOauthTokensOk() ([]IamOAuthTokenRelationship, bool) {
-	if o == nil || o.OauthTokens == nil {
+	if o == nil || IsNil(o.OauthTokens) {
 		return nil, false
 	}
 	return o.OauthTokens, true
@@ -586,7 +901,7 @@ func (o *IamAppRegistration) GetOauthTokensOk() ([]IamOAuthTokenRelationship, bo
 
 // HasOauthTokens returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasOauthTokens() bool {
-	if o != nil && o.OauthTokens != nil {
+	if o != nil && !IsNil(o.OauthTokens) {
 		return true
 	}
 
@@ -598,36 +913,47 @@ func (o *IamAppRegistration) SetOauthTokens(v []IamOAuthTokenRelationship) {
 	o.OauthTokens = v
 }
 
-// GetPermission returns the Permission field value if set, zero value otherwise.
+// GetPermission returns the Permission field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamAppRegistration) GetPermission() IamPermissionRelationship {
-	if o == nil || o.Permission == nil {
+	if o == nil || IsNil(o.Permission.Get()) {
 		var ret IamPermissionRelationship
 		return ret
 	}
-	return *o.Permission
+	return *o.Permission.Get()
 }
 
 // GetPermissionOk returns a tuple with the Permission field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamAppRegistration) GetPermissionOk() (*IamPermissionRelationship, bool) {
-	if o == nil || o.Permission == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Permission, true
+	return o.Permission.Get(), o.Permission.IsSet()
 }
 
 // HasPermission returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasPermission() bool {
-	if o != nil && o.Permission != nil {
+	if o != nil && o.Permission.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPermission gets a reference to the given IamPermissionRelationship and assigns it to the Permission field.
+// SetPermission gets a reference to the given NullableIamPermissionRelationship and assigns it to the Permission field.
 func (o *IamAppRegistration) SetPermission(v IamPermissionRelationship) {
-	o.Permission = &v
+	o.Permission.Set(&v)
+}
+
+// SetPermissionNil sets the value for Permission to be an explicit nil
+func (o *IamAppRegistration) SetPermissionNil() {
+	o.Permission.Set(nil)
+}
+
+// UnsetPermission ensures that no value is present for Permission, not even an explicit nil
+func (o *IamAppRegistration) UnsetPermission() {
+	o.Permission.Unset()
 }
 
 // GetRoles returns the Roles field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -645,7 +971,7 @@ func (o *IamAppRegistration) GetRoles() []IamRoleRelationship {
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 // Deprecated
 func (o *IamAppRegistration) GetRolesOk() ([]IamRoleRelationship, bool) {
-	if o == nil || o.Roles == nil {
+	if o == nil || IsNil(o.Roles) {
 		return nil, false
 	}
 	return o.Roles, true
@@ -653,7 +979,7 @@ func (o *IamAppRegistration) GetRolesOk() ([]IamRoleRelationship, bool) {
 
 // HasRoles returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasRoles() bool {
-	if o != nil && o.Roles != nil {
+	if o != nil && !IsNil(o.Roles) {
 		return true
 	}
 
@@ -666,119 +992,207 @@ func (o *IamAppRegistration) SetRoles(v []IamRoleRelationship) {
 	o.Roles = v
 }
 
-// GetUser returns the User field value if set, zero value otherwise.
+// GetUser returns the User field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamAppRegistration) GetUser() IamUserRelationship {
-	if o == nil || o.User == nil {
+	if o == nil || IsNil(o.User.Get()) {
 		var ret IamUserRelationship
 		return ret
 	}
-	return *o.User
+	return *o.User.Get()
 }
 
 // GetUserOk returns a tuple with the User field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamAppRegistration) GetUserOk() (*IamUserRelationship, bool) {
-	if o == nil || o.User == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.User, true
+	return o.User.Get(), o.User.IsSet()
 }
 
 // HasUser returns a boolean if a field has been set.
 func (o *IamAppRegistration) HasUser() bool {
-	if o != nil && o.User != nil {
+	if o != nil && o.User.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetUser gets a reference to the given IamUserRelationship and assigns it to the User field.
+// SetUser gets a reference to the given NullableIamUserRelationship and assigns it to the User field.
 func (o *IamAppRegistration) SetUser(v IamUserRelationship) {
-	o.User = &v
+	o.User.Set(&v)
+}
+
+// SetUserNil sets the value for User to be an explicit nil
+func (o *IamAppRegistration) SetUserNil() {
+	o.User.Set(nil)
+}
+
+// UnsetUser ensures that no value is present for User, not even an explicit nil
+func (o *IamAppRegistration) UnsetUser() {
+	o.User.Unset()
 }
 
 func (o IamAppRegistration) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IamAppRegistration) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ClientId != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AdminStatus) {
+		toSerialize["AdminStatus"] = o.AdminStatus
+	}
+	if !IsNil(o.ClientId) {
 		toSerialize["ClientId"] = o.ClientId
 	}
-	if o.ClientName != nil {
+	if !IsNil(o.ClientName) {
 		toSerialize["ClientName"] = o.ClientName
 	}
-	if o.ClientSecret != nil {
+	if !IsNil(o.ClientSecret) {
 		toSerialize["ClientSecret"] = o.ClientSecret
 	}
-	if o.ClientType != nil {
+	if !IsNil(o.ClientType) {
 		toSerialize["ClientType"] = o.ClientType
 	}
-	if o.Description != nil {
+	if !IsNil(o.Description) {
 		toSerialize["Description"] = o.Description
+	}
+	if !IsNil(o.ExpiryDateTime) {
+		toSerialize["ExpiryDateTime"] = o.ExpiryDateTime
 	}
 	if o.GrantTypes != nil {
 		toSerialize["GrantTypes"] = o.GrantTypes
 	}
+	if !IsNil(o.IsNeverExpiring) {
+		toSerialize["IsNeverExpiring"] = o.IsNeverExpiring
+	}
+	if !IsNil(o.LastUsedIp) {
+		toSerialize["LastUsedIp"] = o.LastUsedIp
+	}
+	if !IsNil(o.LastUsedTime) {
+		toSerialize["LastUsedTime"] = o.LastUsedTime
+	}
+	if !IsNil(o.OperStatus) {
+		toSerialize["OperStatus"] = o.OperStatus
+	}
 	if o.RedirectUris != nil {
 		toSerialize["RedirectUris"] = o.RedirectUris
 	}
-	if o.RenewClientSecret != nil {
+	if !IsNil(o.RenewClientSecret) {
 		toSerialize["RenewClientSecret"] = o.RenewClientSecret
 	}
 	if o.ResponseTypes != nil {
 		toSerialize["ResponseTypes"] = o.ResponseTypes
 	}
-	if o.RevocationTimestamp != nil {
+	if !IsNil(o.RevocationTimestamp) {
 		toSerialize["RevocationTimestamp"] = o.RevocationTimestamp
 	}
-	if o.Revoke != nil {
+	if !IsNil(o.Revoke) {
 		toSerialize["Revoke"] = o.Revoke
 	}
-	if o.ShowConsentScreen != nil {
+	if o.Scope.IsSet() {
+		toSerialize["Scope"] = o.Scope.Get()
+	}
+	if !IsNil(o.ShowConsentScreen) {
 		toSerialize["ShowConsentScreen"] = o.ShowConsentScreen
 	}
-	if o.Account != nil {
-		toSerialize["Account"] = o.Account
+	if !IsNil(o.StartTime) {
+		toSerialize["StartTime"] = o.StartTime
+	}
+	if o.Account.IsSet() {
+		toSerialize["Account"] = o.Account.Get()
 	}
 	if o.OauthTokens != nil {
 		toSerialize["OauthTokens"] = o.OauthTokens
 	}
-	if o.Permission != nil {
-		toSerialize["Permission"] = o.Permission
+	if o.Permission.IsSet() {
+		toSerialize["Permission"] = o.Permission.Get()
 	}
 	if o.Roles != nil {
 		toSerialize["Roles"] = o.Roles
 	}
-	if o.User != nil {
-		toSerialize["User"] = o.User
+	if o.User.IsSet() {
+		toSerialize["User"] = o.User.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IamAppRegistration) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IamAppRegistration) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IamAppRegistrationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
+		// Used to trigger the enable or disable action on the App Registration. These actions change the status of an App Registration. * `enable` - Used to enable a disabled API key/App Registration. If the API key/App Registration is already expired, this action has no effect. * `disable` - Used to disable an active API key/App Registration. If the API key/App Registration is already expired, this action has no effect.
+		AdminStatus *string `json:"AdminStatus,omitempty"`
 		// A unique identifier for the OAuth2 client application. The client ID is auto-generated when the AppRegistration object is created.
 		ClientId *string `json:"ClientId,omitempty"`
 		// App Registration name specified by user.
@@ -788,8 +1202,18 @@ func (o *IamAppRegistration) UnmarshalJSON(bytes []byte) (err error) {
 		// The type of the OAuth2 client (public or confidential), as specified in https://tools.ietf.org/html/rfc6749#section-2.1. * `public` - Clients incapable of maintaining the confidentiality of their credentials.This includes clients executing on the device used by the resource owner,such as mobile applications, installed native application or a webbrowser-based application. * `confidential` - Clients capable of maintaining the confidentiality of their credentials.For example, this could be a client implemented on a secure server withrestricted access to the client credentials.To maintain the confidentiality of the OAuth2 credentials, two use cases areconsidered.1) The application is running as a service within Intersight. The application automatically   obtains the OAuth2 credentials when the application starts and the credentials are not   exposed to the end-user.   Because end-users (even account administrators) do not have access the OAuth2 credentials,   they cannot take the credentials with them when they leave their organization.2) The application is under the control of a \"trusted\" end-user. For example,   the end-user may create a native application running outside Intersight. The application   uses OAuth2 credentials to interact with the Intersight API. In that case, the Intersight   account administrator may generate OAuth2 credentials with a registered application   using \"client_credentials\" grant type.   In that case, the end-user is responsible for maintaining the confidentiality of the   OAuth2 credentials. If the end-user leaves the organization, you should revoke the   credentials and issue new Oauth2 credentials.Here is a possible workflow for handling OAuth2 tokens.1) User Alice (Intersight Account Administrator) logins to Intersight and deploys an Intersight   application that requires an OAuth2 token.2) Intersight automatically deploys the application. The application is assigned a OAuth2 token,   possibly linked to Alice. The application must NOT expose the OAuth2 secret to Alice, otherwise   Alice would be able to use the token after she leaves the company.3) The application can make API calls to Intersight using its assigned OAuth2 token. For example,   the application could make weekly scheduled API calls to Intersight.4) Separately, Alice may also get OAuth2 tokens that she can use to make API calls from the   Intersight SDK through the northbound API. In that case, Alice will get the associated OAuth2   secrets, but not the one assigned in step #2.5) Alice leaves the organization. The OAuth2 tokens assigned in step #2 must retain their validity   even after Alice has left the organization. Because the OAuth2 secrets were never shared with   Alice, there is no risk Alice can reuse the OAuth2 secrets.   On the other hand, the OAuth2 tokens assigned in step #4 must be invalidated because Alice had   the OAuth2 tokens in her possession.
 		ClientType *string `json:"ClientType,omitempty"`
 		// Description of the application.
-		Description  *string  `json:"Description,omitempty"`
-		GrantTypes   []string `json:"GrantTypes,omitempty"`
+		Description *string `json:"Description,omitempty"`
+		// The expiration date of the App Registration which is set at the time of its creation. Its value can only be assigned a date that falls within the range determined by the maximum expiration time configured at the account level. The expiry date can be edited to be earlier or later, provided it stays within the designated expiry period. This period is determined by adding the 'startTime' property of the App Registration to the maximum expiry time configured at the account level.
+		ExpiryDateTime *time.Time `json:"ExpiryDateTime,omitempty"`
+		GrantTypes     []string   `json:"GrantTypes,omitempty"`
+		// Used to mark the App Registration as a never-expiring App Registration.
+		IsNeverExpiring *bool `json:"IsNeverExpiring,omitempty"`
+		// The ip address from which the App Registration was last used.
+		LastUsedIp *string `json:"LastUsedIp,omitempty"`
+		// The time at which the App Registration was last used. It is updated every 24 hours.
+		LastUsedTime *time.Time `json:"LastUsedTime,omitempty"`
+		// The current status of the App Registration that dictates the validity of the app. * `enabled` - An API key/App Registration having enabled status can be used for API invocation. * `disabled` - An API key/App Registration having disabled status cannot be used for API invocation. * `expired` - An API key/App Registration having expired status cannot be used for API invocation as the expiration date has passed.
+		OperStatus   *string  `json:"OperStatus,omitempty"`
 		RedirectUris []string `json:"RedirectUris,omitempty"`
 		// Set value to true to renew the client-secret. Applicable to client_credentials grant type.
 		RenewClientSecret *bool    `json:"RenewClientSecret,omitempty"`
@@ -797,38 +1221,49 @@ func (o *IamAppRegistration) UnmarshalJSON(bytes []byte) (err error) {
 		// Used to perform revocation for tokens of AppRegistration. Updated only internally is case Revoke property come from UI with value true. On each request with OAuth2 access token the CreationTime of the OAuth2 token will be compared to RevokationTimestamp of the corresponding App Registration.
 		RevocationTimestamp *time.Time `json:"RevocationTimestamp,omitempty"`
 		// Used to trigger update the revocationTimestamp value. If UI sent updating request with the Revoke value is true, then update RevocationTimestamp.
-		Revoke *bool `json:"Revoke,omitempty"`
+		Revoke *bool                             `json:"Revoke,omitempty"`
+		Scope  NullableIamSwitchScopePermissions `json:"Scope,omitempty"`
 		// Set to true if consent screen needs to be shown during the OAuth login process. Applicable only for public AppRegistrations, means only 'authorization_code' grantType. Note that consent screen will be shown on each login.
-		ShowConsentScreen *bool                   `json:"ShowConsentScreen,omitempty"`
-		Account           *IamAccountRelationship `json:"Account,omitempty"`
+		ShowConsentScreen *bool `json:"ShowConsentScreen,omitempty"`
+		// The timestamp at which an expiry date was first set on this app registration.  For expiring App Registrations, this field is same as the create time of the App Registration. For never-expiring App Registrations, this field is set initially to zero time value. If a never-expiry App Registration is later changed to have an expiration, the timestamp marking the start of this transition is recorded in this field.
+		StartTime *time.Time                     `json:"StartTime,omitempty"`
+		Account   NullableIamAccountRelationship `json:"Account,omitempty"`
 		// An array of relationships to iamOAuthToken resources.
-		OauthTokens []IamOAuthTokenRelationship `json:"OauthTokens,omitempty"`
-		Permission  *IamPermissionRelationship  `json:"Permission,omitempty"`
+		OauthTokens []IamOAuthTokenRelationship       `json:"OauthTokens,omitempty"`
+		Permission  NullableIamPermissionRelationship `json:"Permission,omitempty"`
 		// An array of relationships to iamRole resources.
 		// Deprecated
-		Roles []IamRoleRelationship `json:"Roles,omitempty"`
-		User  *IamUserRelationship  `json:"User,omitempty"`
+		Roles []IamRoleRelationship       `json:"Roles,omitempty"`
+		User  NullableIamUserRelationship `json:"User,omitempty"`
 	}
 
 	varIamAppRegistrationWithoutEmbeddedStruct := IamAppRegistrationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIamAppRegistrationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIamAppRegistrationWithoutEmbeddedStruct)
 	if err == nil {
 		varIamAppRegistration := _IamAppRegistration{}
 		varIamAppRegistration.ClassId = varIamAppRegistrationWithoutEmbeddedStruct.ClassId
 		varIamAppRegistration.ObjectType = varIamAppRegistrationWithoutEmbeddedStruct.ObjectType
+		varIamAppRegistration.AdminStatus = varIamAppRegistrationWithoutEmbeddedStruct.AdminStatus
 		varIamAppRegistration.ClientId = varIamAppRegistrationWithoutEmbeddedStruct.ClientId
 		varIamAppRegistration.ClientName = varIamAppRegistrationWithoutEmbeddedStruct.ClientName
 		varIamAppRegistration.ClientSecret = varIamAppRegistrationWithoutEmbeddedStruct.ClientSecret
 		varIamAppRegistration.ClientType = varIamAppRegistrationWithoutEmbeddedStruct.ClientType
 		varIamAppRegistration.Description = varIamAppRegistrationWithoutEmbeddedStruct.Description
+		varIamAppRegistration.ExpiryDateTime = varIamAppRegistrationWithoutEmbeddedStruct.ExpiryDateTime
 		varIamAppRegistration.GrantTypes = varIamAppRegistrationWithoutEmbeddedStruct.GrantTypes
+		varIamAppRegistration.IsNeverExpiring = varIamAppRegistrationWithoutEmbeddedStruct.IsNeverExpiring
+		varIamAppRegistration.LastUsedIp = varIamAppRegistrationWithoutEmbeddedStruct.LastUsedIp
+		varIamAppRegistration.LastUsedTime = varIamAppRegistrationWithoutEmbeddedStruct.LastUsedTime
+		varIamAppRegistration.OperStatus = varIamAppRegistrationWithoutEmbeddedStruct.OperStatus
 		varIamAppRegistration.RedirectUris = varIamAppRegistrationWithoutEmbeddedStruct.RedirectUris
 		varIamAppRegistration.RenewClientSecret = varIamAppRegistrationWithoutEmbeddedStruct.RenewClientSecret
 		varIamAppRegistration.ResponseTypes = varIamAppRegistrationWithoutEmbeddedStruct.ResponseTypes
 		varIamAppRegistration.RevocationTimestamp = varIamAppRegistrationWithoutEmbeddedStruct.RevocationTimestamp
 		varIamAppRegistration.Revoke = varIamAppRegistrationWithoutEmbeddedStruct.Revoke
+		varIamAppRegistration.Scope = varIamAppRegistrationWithoutEmbeddedStruct.Scope
 		varIamAppRegistration.ShowConsentScreen = varIamAppRegistrationWithoutEmbeddedStruct.ShowConsentScreen
+		varIamAppRegistration.StartTime = varIamAppRegistrationWithoutEmbeddedStruct.StartTime
 		varIamAppRegistration.Account = varIamAppRegistrationWithoutEmbeddedStruct.Account
 		varIamAppRegistration.OauthTokens = varIamAppRegistrationWithoutEmbeddedStruct.OauthTokens
 		varIamAppRegistration.Permission = varIamAppRegistrationWithoutEmbeddedStruct.Permission
@@ -841,7 +1276,7 @@ func (o *IamAppRegistration) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIamAppRegistration := _IamAppRegistration{}
 
-	err = json.Unmarshal(bytes, &varIamAppRegistration)
+	err = json.Unmarshal(data, &varIamAppRegistration)
 	if err == nil {
 		o.MoBaseMo = varIamAppRegistration.MoBaseMo
 	} else {
@@ -850,21 +1285,29 @@ func (o *IamAppRegistration) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "AdminStatus")
 		delete(additionalProperties, "ClientId")
 		delete(additionalProperties, "ClientName")
 		delete(additionalProperties, "ClientSecret")
 		delete(additionalProperties, "ClientType")
 		delete(additionalProperties, "Description")
+		delete(additionalProperties, "ExpiryDateTime")
 		delete(additionalProperties, "GrantTypes")
+		delete(additionalProperties, "IsNeverExpiring")
+		delete(additionalProperties, "LastUsedIp")
+		delete(additionalProperties, "LastUsedTime")
+		delete(additionalProperties, "OperStatus")
 		delete(additionalProperties, "RedirectUris")
 		delete(additionalProperties, "RenewClientSecret")
 		delete(additionalProperties, "ResponseTypes")
 		delete(additionalProperties, "RevocationTimestamp")
 		delete(additionalProperties, "Revoke")
+		delete(additionalProperties, "Scope")
 		delete(additionalProperties, "ShowConsentScreen")
+		delete(additionalProperties, "StartTime")
 		delete(additionalProperties, "Account")
 		delete(additionalProperties, "OauthTokens")
 		delete(additionalProperties, "Permission")

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the WorkflowWorkflowDefinition type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &WorkflowWorkflowDefinition{}
 
 // WorkflowWorkflowDefinition Workflow definition is a collection of tasks that are sequenced in a certain way using control tasks. The tasks in the workflow definition is represented as a directed acyclic graph where each node in the graph is a task and the edges in the graph are transitions from one task to another.
 type WorkflowWorkflowDefinition struct {
@@ -24,6 +28,8 @@ type WorkflowWorkflowDefinition struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
+	// The user identifier who created or cloned the workflow definition.
+	CreateUser *string `json:"CreateUser,omitempty"`
 	// When true this will be the workflow version that is used when a specific workflow definition version is not specified. The default version is used when user executes a workflow without specifying a version or when workflow is included in another workflow without a specific version. The very first workflow definition created with a name will be set as the default version, after that user can explicitly set any version of the workflow definition as the default version.
 	DefaultVersion *bool `json:"DefaultVersion,omitempty"`
 	// The description for this workflow.
@@ -31,17 +37,19 @@ type WorkflowWorkflowDefinition struct {
 	InputDefinition   []WorkflowBaseDataType `json:"InputDefinition,omitempty"`
 	InputParameterSet []WorkflowParameterSet `json:"InputParameterSet,omitempty"`
 	// A user friendly short name to identify the workflow. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), period (.), colon (:), space ( ), forward slash (/), or an underscore (_).
-	Label *string `json:"Label,omitempty"`
-	// License entitlement required to run this workflow. It is calculated based on the highest license requirement of all its tasks. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+	Label *string `json:"Label,omitempty" validate:"regexp=^[a-zA-Z0-9]{1}[\\\\sa-zA-Z0-9_.\\/:-]{0,91}$"`
+	// License entitlement required to run this workflow. It is calculated based on the highest license requirement of all its tasks. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 	LicenseEntitlement *string `json:"LicenseEntitlement,omitempty"`
 	// The maximum number of tasks that can be executed on this workflow.
 	MaxTaskCount *int64 `json:"MaxTaskCount,omitempty"`
 	// The maximum number of external (worker) tasks that can be executed on this workflow.
 	MaxWorkerTaskCount *int64 `json:"MaxWorkerTaskCount,omitempty"`
+	// The user identifier who last updated the workflow definition.
+	ModUser *string `json:"ModUser,omitempty"`
 	// The name for this workflow. You can have multiple versions of the workflow with the same name. Name can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), period (.) or an underscore (_).
-	Name             *string                `json:"Name,omitempty"`
+	Name             *string                `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9]{1}[a-zA-Z0-9_.-]{0,63}$"`
 	OutputDefinition []WorkflowBaseDataType `json:"OutputDefinition,omitempty"`
-	// The output mappings for the workflow. The outputs for workflows will generally be task output variables that we want to export out at the end of the workflow. The format to specify the mapping is '${Source.output.JsonPath}', where 'Source' is the name of the task within the workflow. Any task output can be mapped to a workflow output as long as the types are compatible. It's followed by a JSON path expression to extract JSON fragment from source's output.
+	// The output mappings for the workflow. The schema for outputs of a workflow is defined using OutputDefinition. The outputs for workflows that we want to export out at the end of the workflow can be mapped from task outputs, workflow inputs, or workflow variables. Any task output, workflow input, or workflow variable can be mapped to a workflow output as long as the types are compatible. The format to specify the mapping is '${ 'workflow | <taskName>'. 'output |input | variable'.<name>[.<JsonPath>]}'. First, either the keyword 'workflow' or the name of the task in the workflow must be given. If a task name is used, then it must be followed by the keyword 'output', if the keyword workflow was used, then it must be followed by the keyword 'input' or 'variable'. Following this '<name>' must be the name of either input, output, or variable that must be mapped as workflow output. The last part of the mapping can be an optional <JsonPath> to extract specific fields on the data.
 	OutputParameters interface{}                        `json:"OutputParameters,omitempty"`
 	Properties       NullableWorkflowWorkflowProperties `json:"Properties,omitempty"`
 	Tasks            []WorkflowWorkflowTask             `json:"Tasks,omitempty"`
@@ -51,10 +59,10 @@ type WorkflowWorkflowDefinition struct {
 	ValidationInformation NullableWorkflowValidationInformation `json:"ValidationInformation,omitempty"`
 	VariableDefinition    []WorkflowBaseDataType                `json:"VariableDefinition,omitempty"`
 	// The version of the workflow to support multiple versions.
-	Version              *int64                                  `json:"Version,omitempty"`
-	Catalog              *WorkflowCatalogRelationship            `json:"Catalog,omitempty"`
-	ClonedFrom           *WorkflowWorkflowDefinitionRelationship `json:"ClonedFrom,omitempty"`
-	WorkflowMetadata     *WorkflowWorkflowMetadataRelationship   `json:"WorkflowMetadata,omitempty"`
+	Version              *int64                                         `json:"Version,omitempty"`
+	Catalog              NullableWorkflowCatalogRelationship            `json:"Catalog,omitempty"`
+	ClonedFrom           NullableWorkflowWorkflowDefinitionRelationship `json:"ClonedFrom,omitempty"`
+	WorkflowMetadata     NullableWorkflowWorkflowMetadataRelationship   `json:"WorkflowMetadata,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -111,6 +119,11 @@ func (o *WorkflowWorkflowDefinition) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "workflow.WorkflowDefinition" of the ClassId field.
+func (o *WorkflowWorkflowDefinition) GetDefaultClassId() interface{} {
+	return "workflow.WorkflowDefinition"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *WorkflowWorkflowDefinition) GetObjectType() string {
 	if o == nil {
@@ -135,9 +148,46 @@ func (o *WorkflowWorkflowDefinition) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "workflow.WorkflowDefinition" of the ObjectType field.
+func (o *WorkflowWorkflowDefinition) GetDefaultObjectType() interface{} {
+	return "workflow.WorkflowDefinition"
+}
+
+// GetCreateUser returns the CreateUser field value if set, zero value otherwise.
+func (o *WorkflowWorkflowDefinition) GetCreateUser() string {
+	if o == nil || IsNil(o.CreateUser) {
+		var ret string
+		return ret
+	}
+	return *o.CreateUser
+}
+
+// GetCreateUserOk returns a tuple with the CreateUser field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WorkflowWorkflowDefinition) GetCreateUserOk() (*string, bool) {
+	if o == nil || IsNil(o.CreateUser) {
+		return nil, false
+	}
+	return o.CreateUser, true
+}
+
+// HasCreateUser returns a boolean if a field has been set.
+func (o *WorkflowWorkflowDefinition) HasCreateUser() bool {
+	if o != nil && !IsNil(o.CreateUser) {
+		return true
+	}
+
+	return false
+}
+
+// SetCreateUser gets a reference to the given string and assigns it to the CreateUser field.
+func (o *WorkflowWorkflowDefinition) SetCreateUser(v string) {
+	o.CreateUser = &v
+}
+
 // GetDefaultVersion returns the DefaultVersion field value if set, zero value otherwise.
 func (o *WorkflowWorkflowDefinition) GetDefaultVersion() bool {
-	if o == nil || o.DefaultVersion == nil {
+	if o == nil || IsNil(o.DefaultVersion) {
 		var ret bool
 		return ret
 	}
@@ -147,7 +197,7 @@ func (o *WorkflowWorkflowDefinition) GetDefaultVersion() bool {
 // GetDefaultVersionOk returns a tuple with the DefaultVersion field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowDefinition) GetDefaultVersionOk() (*bool, bool) {
-	if o == nil || o.DefaultVersion == nil {
+	if o == nil || IsNil(o.DefaultVersion) {
 		return nil, false
 	}
 	return o.DefaultVersion, true
@@ -155,7 +205,7 @@ func (o *WorkflowWorkflowDefinition) GetDefaultVersionOk() (*bool, bool) {
 
 // HasDefaultVersion returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasDefaultVersion() bool {
-	if o != nil && o.DefaultVersion != nil {
+	if o != nil && !IsNil(o.DefaultVersion) {
 		return true
 	}
 
@@ -169,7 +219,7 @@ func (o *WorkflowWorkflowDefinition) SetDefaultVersion(v bool) {
 
 // GetDescription returns the Description field value if set, zero value otherwise.
 func (o *WorkflowWorkflowDefinition) GetDescription() string {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		var ret string
 		return ret
 	}
@@ -179,7 +229,7 @@ func (o *WorkflowWorkflowDefinition) GetDescription() string {
 // GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowDefinition) GetDescriptionOk() (*string, bool) {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		return nil, false
 	}
 	return o.Description, true
@@ -187,7 +237,7 @@ func (o *WorkflowWorkflowDefinition) GetDescriptionOk() (*string, bool) {
 
 // HasDescription returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasDescription() bool {
-	if o != nil && o.Description != nil {
+	if o != nil && !IsNil(o.Description) {
 		return true
 	}
 
@@ -212,7 +262,7 @@ func (o *WorkflowWorkflowDefinition) GetInputDefinition() []WorkflowBaseDataType
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetInputDefinitionOk() ([]WorkflowBaseDataType, bool) {
-	if o == nil || o.InputDefinition == nil {
+	if o == nil || IsNil(o.InputDefinition) {
 		return nil, false
 	}
 	return o.InputDefinition, true
@@ -220,7 +270,7 @@ func (o *WorkflowWorkflowDefinition) GetInputDefinitionOk() ([]WorkflowBaseDataT
 
 // HasInputDefinition returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasInputDefinition() bool {
-	if o != nil && o.InputDefinition != nil {
+	if o != nil && !IsNil(o.InputDefinition) {
 		return true
 	}
 
@@ -245,7 +295,7 @@ func (o *WorkflowWorkflowDefinition) GetInputParameterSet() []WorkflowParameterS
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetInputParameterSetOk() ([]WorkflowParameterSet, bool) {
-	if o == nil || o.InputParameterSet == nil {
+	if o == nil || IsNil(o.InputParameterSet) {
 		return nil, false
 	}
 	return o.InputParameterSet, true
@@ -253,7 +303,7 @@ func (o *WorkflowWorkflowDefinition) GetInputParameterSetOk() ([]WorkflowParamet
 
 // HasInputParameterSet returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasInputParameterSet() bool {
-	if o != nil && o.InputParameterSet != nil {
+	if o != nil && !IsNil(o.InputParameterSet) {
 		return true
 	}
 
@@ -267,7 +317,7 @@ func (o *WorkflowWorkflowDefinition) SetInputParameterSet(v []WorkflowParameterS
 
 // GetLabel returns the Label field value if set, zero value otherwise.
 func (o *WorkflowWorkflowDefinition) GetLabel() string {
-	if o == nil || o.Label == nil {
+	if o == nil || IsNil(o.Label) {
 		var ret string
 		return ret
 	}
@@ -277,7 +327,7 @@ func (o *WorkflowWorkflowDefinition) GetLabel() string {
 // GetLabelOk returns a tuple with the Label field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowDefinition) GetLabelOk() (*string, bool) {
-	if o == nil || o.Label == nil {
+	if o == nil || IsNil(o.Label) {
 		return nil, false
 	}
 	return o.Label, true
@@ -285,7 +335,7 @@ func (o *WorkflowWorkflowDefinition) GetLabelOk() (*string, bool) {
 
 // HasLabel returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasLabel() bool {
-	if o != nil && o.Label != nil {
+	if o != nil && !IsNil(o.Label) {
 		return true
 	}
 
@@ -299,7 +349,7 @@ func (o *WorkflowWorkflowDefinition) SetLabel(v string) {
 
 // GetLicenseEntitlement returns the LicenseEntitlement field value if set, zero value otherwise.
 func (o *WorkflowWorkflowDefinition) GetLicenseEntitlement() string {
-	if o == nil || o.LicenseEntitlement == nil {
+	if o == nil || IsNil(o.LicenseEntitlement) {
 		var ret string
 		return ret
 	}
@@ -309,7 +359,7 @@ func (o *WorkflowWorkflowDefinition) GetLicenseEntitlement() string {
 // GetLicenseEntitlementOk returns a tuple with the LicenseEntitlement field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowDefinition) GetLicenseEntitlementOk() (*string, bool) {
-	if o == nil || o.LicenseEntitlement == nil {
+	if o == nil || IsNil(o.LicenseEntitlement) {
 		return nil, false
 	}
 	return o.LicenseEntitlement, true
@@ -317,7 +367,7 @@ func (o *WorkflowWorkflowDefinition) GetLicenseEntitlementOk() (*string, bool) {
 
 // HasLicenseEntitlement returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasLicenseEntitlement() bool {
-	if o != nil && o.LicenseEntitlement != nil {
+	if o != nil && !IsNil(o.LicenseEntitlement) {
 		return true
 	}
 
@@ -331,7 +381,7 @@ func (o *WorkflowWorkflowDefinition) SetLicenseEntitlement(v string) {
 
 // GetMaxTaskCount returns the MaxTaskCount field value if set, zero value otherwise.
 func (o *WorkflowWorkflowDefinition) GetMaxTaskCount() int64 {
-	if o == nil || o.MaxTaskCount == nil {
+	if o == nil || IsNil(o.MaxTaskCount) {
 		var ret int64
 		return ret
 	}
@@ -341,7 +391,7 @@ func (o *WorkflowWorkflowDefinition) GetMaxTaskCount() int64 {
 // GetMaxTaskCountOk returns a tuple with the MaxTaskCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowDefinition) GetMaxTaskCountOk() (*int64, bool) {
-	if o == nil || o.MaxTaskCount == nil {
+	if o == nil || IsNil(o.MaxTaskCount) {
 		return nil, false
 	}
 	return o.MaxTaskCount, true
@@ -349,7 +399,7 @@ func (o *WorkflowWorkflowDefinition) GetMaxTaskCountOk() (*int64, bool) {
 
 // HasMaxTaskCount returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasMaxTaskCount() bool {
-	if o != nil && o.MaxTaskCount != nil {
+	if o != nil && !IsNil(o.MaxTaskCount) {
 		return true
 	}
 
@@ -363,7 +413,7 @@ func (o *WorkflowWorkflowDefinition) SetMaxTaskCount(v int64) {
 
 // GetMaxWorkerTaskCount returns the MaxWorkerTaskCount field value if set, zero value otherwise.
 func (o *WorkflowWorkflowDefinition) GetMaxWorkerTaskCount() int64 {
-	if o == nil || o.MaxWorkerTaskCount == nil {
+	if o == nil || IsNil(o.MaxWorkerTaskCount) {
 		var ret int64
 		return ret
 	}
@@ -373,7 +423,7 @@ func (o *WorkflowWorkflowDefinition) GetMaxWorkerTaskCount() int64 {
 // GetMaxWorkerTaskCountOk returns a tuple with the MaxWorkerTaskCount field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowDefinition) GetMaxWorkerTaskCountOk() (*int64, bool) {
-	if o == nil || o.MaxWorkerTaskCount == nil {
+	if o == nil || IsNil(o.MaxWorkerTaskCount) {
 		return nil, false
 	}
 	return o.MaxWorkerTaskCount, true
@@ -381,7 +431,7 @@ func (o *WorkflowWorkflowDefinition) GetMaxWorkerTaskCountOk() (*int64, bool) {
 
 // HasMaxWorkerTaskCount returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasMaxWorkerTaskCount() bool {
-	if o != nil && o.MaxWorkerTaskCount != nil {
+	if o != nil && !IsNil(o.MaxWorkerTaskCount) {
 		return true
 	}
 
@@ -393,9 +443,41 @@ func (o *WorkflowWorkflowDefinition) SetMaxWorkerTaskCount(v int64) {
 	o.MaxWorkerTaskCount = &v
 }
 
+// GetModUser returns the ModUser field value if set, zero value otherwise.
+func (o *WorkflowWorkflowDefinition) GetModUser() string {
+	if o == nil || IsNil(o.ModUser) {
+		var ret string
+		return ret
+	}
+	return *o.ModUser
+}
+
+// GetModUserOk returns a tuple with the ModUser field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *WorkflowWorkflowDefinition) GetModUserOk() (*string, bool) {
+	if o == nil || IsNil(o.ModUser) {
+		return nil, false
+	}
+	return o.ModUser, true
+}
+
+// HasModUser returns a boolean if a field has been set.
+func (o *WorkflowWorkflowDefinition) HasModUser() bool {
+	if o != nil && !IsNil(o.ModUser) {
+		return true
+	}
+
+	return false
+}
+
+// SetModUser gets a reference to the given string and assigns it to the ModUser field.
+func (o *WorkflowWorkflowDefinition) SetModUser(v string) {
+	o.ModUser = &v
+}
+
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *WorkflowWorkflowDefinition) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -405,7 +487,7 @@ func (o *WorkflowWorkflowDefinition) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowDefinition) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -413,7 +495,7 @@ func (o *WorkflowWorkflowDefinition) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -438,7 +520,7 @@ func (o *WorkflowWorkflowDefinition) GetOutputDefinition() []WorkflowBaseDataTyp
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetOutputDefinitionOk() ([]WorkflowBaseDataType, bool) {
-	if o == nil || o.OutputDefinition == nil {
+	if o == nil || IsNil(o.OutputDefinition) {
 		return nil, false
 	}
 	return o.OutputDefinition, true
@@ -446,7 +528,7 @@ func (o *WorkflowWorkflowDefinition) GetOutputDefinitionOk() ([]WorkflowBaseData
 
 // HasOutputDefinition returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasOutputDefinition() bool {
-	if o != nil && o.OutputDefinition != nil {
+	if o != nil && !IsNil(o.OutputDefinition) {
 		return true
 	}
 
@@ -471,7 +553,7 @@ func (o *WorkflowWorkflowDefinition) GetOutputParameters() interface{} {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetOutputParametersOk() (*interface{}, bool) {
-	if o == nil || o.OutputParameters == nil {
+	if o == nil || IsNil(o.OutputParameters) {
 		return nil, false
 	}
 	return &o.OutputParameters, true
@@ -479,7 +561,7 @@ func (o *WorkflowWorkflowDefinition) GetOutputParametersOk() (*interface{}, bool
 
 // HasOutputParameters returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasOutputParameters() bool {
-	if o != nil && o.OutputParameters != nil {
+	if o != nil && !IsNil(o.OutputParameters) {
 		return true
 	}
 
@@ -493,7 +575,7 @@ func (o *WorkflowWorkflowDefinition) SetOutputParameters(v interface{}) {
 
 // GetProperties returns the Properties field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowDefinition) GetProperties() WorkflowWorkflowProperties {
-	if o == nil || o.Properties.Get() == nil {
+	if o == nil || IsNil(o.Properties.Get()) {
 		var ret WorkflowWorkflowProperties
 		return ret
 	}
@@ -547,7 +629,7 @@ func (o *WorkflowWorkflowDefinition) GetTasks() []WorkflowWorkflowTask {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetTasksOk() ([]WorkflowWorkflowTask, bool) {
-	if o == nil || o.Tasks == nil {
+	if o == nil || IsNil(o.Tasks) {
 		return nil, false
 	}
 	return o.Tasks, true
@@ -555,7 +637,7 @@ func (o *WorkflowWorkflowDefinition) GetTasksOk() ([]WorkflowWorkflowTask, bool)
 
 // HasTasks returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasTasks() bool {
-	if o != nil && o.Tasks != nil {
+	if o != nil && !IsNil(o.Tasks) {
 		return true
 	}
 
@@ -580,7 +662,7 @@ func (o *WorkflowWorkflowDefinition) GetUiInputFilters() []WorkflowUiInputFilter
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetUiInputFiltersOk() ([]WorkflowUiInputFilter, bool) {
-	if o == nil || o.UiInputFilters == nil {
+	if o == nil || IsNil(o.UiInputFilters) {
 		return nil, false
 	}
 	return o.UiInputFilters, true
@@ -588,7 +670,7 @@ func (o *WorkflowWorkflowDefinition) GetUiInputFiltersOk() ([]WorkflowUiInputFil
 
 // HasUiInputFilters returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasUiInputFilters() bool {
-	if o != nil && o.UiInputFilters != nil {
+	if o != nil && !IsNil(o.UiInputFilters) {
 		return true
 	}
 
@@ -613,7 +695,7 @@ func (o *WorkflowWorkflowDefinition) GetUiRenderingData() interface{} {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetUiRenderingDataOk() (*interface{}, bool) {
-	if o == nil || o.UiRenderingData == nil {
+	if o == nil || IsNil(o.UiRenderingData) {
 		return nil, false
 	}
 	return &o.UiRenderingData, true
@@ -621,7 +703,7 @@ func (o *WorkflowWorkflowDefinition) GetUiRenderingDataOk() (*interface{}, bool)
 
 // HasUiRenderingData returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasUiRenderingData() bool {
-	if o != nil && o.UiRenderingData != nil {
+	if o != nil && !IsNil(o.UiRenderingData) {
 		return true
 	}
 
@@ -635,7 +717,7 @@ func (o *WorkflowWorkflowDefinition) SetUiRenderingData(v interface{}) {
 
 // GetValidationInformation returns the ValidationInformation field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowDefinition) GetValidationInformation() WorkflowValidationInformation {
-	if o == nil || o.ValidationInformation.Get() == nil {
+	if o == nil || IsNil(o.ValidationInformation.Get()) {
 		var ret WorkflowValidationInformation
 		return ret
 	}
@@ -689,7 +771,7 @@ func (o *WorkflowWorkflowDefinition) GetVariableDefinition() []WorkflowBaseDataT
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetVariableDefinitionOk() ([]WorkflowBaseDataType, bool) {
-	if o == nil || o.VariableDefinition == nil {
+	if o == nil || IsNil(o.VariableDefinition) {
 		return nil, false
 	}
 	return o.VariableDefinition, true
@@ -697,7 +779,7 @@ func (o *WorkflowWorkflowDefinition) GetVariableDefinitionOk() ([]WorkflowBaseDa
 
 // HasVariableDefinition returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasVariableDefinition() bool {
-	if o != nil && o.VariableDefinition != nil {
+	if o != nil && !IsNil(o.VariableDefinition) {
 		return true
 	}
 
@@ -711,7 +793,7 @@ func (o *WorkflowWorkflowDefinition) SetVariableDefinition(v []WorkflowBaseDataT
 
 // GetVersion returns the Version field value if set, zero value otherwise.
 func (o *WorkflowWorkflowDefinition) GetVersion() int64 {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		var ret int64
 		return ret
 	}
@@ -721,7 +803,7 @@ func (o *WorkflowWorkflowDefinition) GetVersion() int64 {
 // GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowDefinition) GetVersionOk() (*int64, bool) {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		return nil, false
 	}
 	return o.Version, true
@@ -729,7 +811,7 @@ func (o *WorkflowWorkflowDefinition) GetVersionOk() (*int64, bool) {
 
 // HasVersion returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasVersion() bool {
-	if o != nil && o.Version != nil {
+	if o != nil && !IsNil(o.Version) {
 		return true
 	}
 
@@ -741,122 +823,168 @@ func (o *WorkflowWorkflowDefinition) SetVersion(v int64) {
 	o.Version = &v
 }
 
-// GetCatalog returns the Catalog field value if set, zero value otherwise.
+// GetCatalog returns the Catalog field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowDefinition) GetCatalog() WorkflowCatalogRelationship {
-	if o == nil || o.Catalog == nil {
+	if o == nil || IsNil(o.Catalog.Get()) {
 		var ret WorkflowCatalogRelationship
 		return ret
 	}
-	return *o.Catalog
+	return *o.Catalog.Get()
 }
 
 // GetCatalogOk returns a tuple with the Catalog field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetCatalogOk() (*WorkflowCatalogRelationship, bool) {
-	if o == nil || o.Catalog == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Catalog, true
+	return o.Catalog.Get(), o.Catalog.IsSet()
 }
 
 // HasCatalog returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasCatalog() bool {
-	if o != nil && o.Catalog != nil {
+	if o != nil && o.Catalog.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetCatalog gets a reference to the given WorkflowCatalogRelationship and assigns it to the Catalog field.
+// SetCatalog gets a reference to the given NullableWorkflowCatalogRelationship and assigns it to the Catalog field.
 func (o *WorkflowWorkflowDefinition) SetCatalog(v WorkflowCatalogRelationship) {
-	o.Catalog = &v
+	o.Catalog.Set(&v)
 }
 
-// GetClonedFrom returns the ClonedFrom field value if set, zero value otherwise.
+// SetCatalogNil sets the value for Catalog to be an explicit nil
+func (o *WorkflowWorkflowDefinition) SetCatalogNil() {
+	o.Catalog.Set(nil)
+}
+
+// UnsetCatalog ensures that no value is present for Catalog, not even an explicit nil
+func (o *WorkflowWorkflowDefinition) UnsetCatalog() {
+	o.Catalog.Unset()
+}
+
+// GetClonedFrom returns the ClonedFrom field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowDefinition) GetClonedFrom() WorkflowWorkflowDefinitionRelationship {
-	if o == nil || o.ClonedFrom == nil {
+	if o == nil || IsNil(o.ClonedFrom.Get()) {
 		var ret WorkflowWorkflowDefinitionRelationship
 		return ret
 	}
-	return *o.ClonedFrom
+	return *o.ClonedFrom.Get()
 }
 
 // GetClonedFromOk returns a tuple with the ClonedFrom field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetClonedFromOk() (*WorkflowWorkflowDefinitionRelationship, bool) {
-	if o == nil || o.ClonedFrom == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ClonedFrom, true
+	return o.ClonedFrom.Get(), o.ClonedFrom.IsSet()
 }
 
 // HasClonedFrom returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasClonedFrom() bool {
-	if o != nil && o.ClonedFrom != nil {
+	if o != nil && o.ClonedFrom.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetClonedFrom gets a reference to the given WorkflowWorkflowDefinitionRelationship and assigns it to the ClonedFrom field.
+// SetClonedFrom gets a reference to the given NullableWorkflowWorkflowDefinitionRelationship and assigns it to the ClonedFrom field.
 func (o *WorkflowWorkflowDefinition) SetClonedFrom(v WorkflowWorkflowDefinitionRelationship) {
-	o.ClonedFrom = &v
+	o.ClonedFrom.Set(&v)
 }
 
-// GetWorkflowMetadata returns the WorkflowMetadata field value if set, zero value otherwise.
+// SetClonedFromNil sets the value for ClonedFrom to be an explicit nil
+func (o *WorkflowWorkflowDefinition) SetClonedFromNil() {
+	o.ClonedFrom.Set(nil)
+}
+
+// UnsetClonedFrom ensures that no value is present for ClonedFrom, not even an explicit nil
+func (o *WorkflowWorkflowDefinition) UnsetClonedFrom() {
+	o.ClonedFrom.Unset()
+}
+
+// GetWorkflowMetadata returns the WorkflowMetadata field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowDefinition) GetWorkflowMetadata() WorkflowWorkflowMetadataRelationship {
-	if o == nil || o.WorkflowMetadata == nil {
+	if o == nil || IsNil(o.WorkflowMetadata.Get()) {
 		var ret WorkflowWorkflowMetadataRelationship
 		return ret
 	}
-	return *o.WorkflowMetadata
+	return *o.WorkflowMetadata.Get()
 }
 
 // GetWorkflowMetadataOk returns a tuple with the WorkflowMetadata field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowDefinition) GetWorkflowMetadataOk() (*WorkflowWorkflowMetadataRelationship, bool) {
-	if o == nil || o.WorkflowMetadata == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.WorkflowMetadata, true
+	return o.WorkflowMetadata.Get(), o.WorkflowMetadata.IsSet()
 }
 
 // HasWorkflowMetadata returns a boolean if a field has been set.
 func (o *WorkflowWorkflowDefinition) HasWorkflowMetadata() bool {
-	if o != nil && o.WorkflowMetadata != nil {
+	if o != nil && o.WorkflowMetadata.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetWorkflowMetadata gets a reference to the given WorkflowWorkflowMetadataRelationship and assigns it to the WorkflowMetadata field.
+// SetWorkflowMetadata gets a reference to the given NullableWorkflowWorkflowMetadataRelationship and assigns it to the WorkflowMetadata field.
 func (o *WorkflowWorkflowDefinition) SetWorkflowMetadata(v WorkflowWorkflowMetadataRelationship) {
-	o.WorkflowMetadata = &v
+	o.WorkflowMetadata.Set(&v)
+}
+
+// SetWorkflowMetadataNil sets the value for WorkflowMetadata to be an explicit nil
+func (o *WorkflowWorkflowDefinition) SetWorkflowMetadataNil() {
+	o.WorkflowMetadata.Set(nil)
+}
+
+// UnsetWorkflowMetadata ensures that no value is present for WorkflowMetadata, not even an explicit nil
+func (o *WorkflowWorkflowDefinition) UnsetWorkflowMetadata() {
+	o.WorkflowMetadata.Unset()
 }
 
 func (o WorkflowWorkflowDefinition) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o WorkflowWorkflowDefinition) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.DefaultVersion != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.CreateUser) {
+		toSerialize["CreateUser"] = o.CreateUser
+	}
+	if !IsNil(o.DefaultVersion) {
 		toSerialize["DefaultVersion"] = o.DefaultVersion
 	}
-	if o.Description != nil {
+	if !IsNil(o.Description) {
 		toSerialize["Description"] = o.Description
 	}
 	if o.InputDefinition != nil {
@@ -865,19 +993,22 @@ func (o WorkflowWorkflowDefinition) MarshalJSON() ([]byte, error) {
 	if o.InputParameterSet != nil {
 		toSerialize["InputParameterSet"] = o.InputParameterSet
 	}
-	if o.Label != nil {
+	if !IsNil(o.Label) {
 		toSerialize["Label"] = o.Label
 	}
-	if o.LicenseEntitlement != nil {
+	if !IsNil(o.LicenseEntitlement) {
 		toSerialize["LicenseEntitlement"] = o.LicenseEntitlement
 	}
-	if o.MaxTaskCount != nil {
+	if !IsNil(o.MaxTaskCount) {
 		toSerialize["MaxTaskCount"] = o.MaxTaskCount
 	}
-	if o.MaxWorkerTaskCount != nil {
+	if !IsNil(o.MaxWorkerTaskCount) {
 		toSerialize["MaxWorkerTaskCount"] = o.MaxWorkerTaskCount
 	}
-	if o.Name != nil {
+	if !IsNil(o.ModUser) {
+		toSerialize["ModUser"] = o.ModUser
+	}
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
 	if o.OutputDefinition != nil {
@@ -904,32 +1035,75 @@ func (o WorkflowWorkflowDefinition) MarshalJSON() ([]byte, error) {
 	if o.VariableDefinition != nil {
 		toSerialize["VariableDefinition"] = o.VariableDefinition
 	}
-	if o.Version != nil {
+	if !IsNil(o.Version) {
 		toSerialize["Version"] = o.Version
 	}
-	if o.Catalog != nil {
-		toSerialize["Catalog"] = o.Catalog
+	if o.Catalog.IsSet() {
+		toSerialize["Catalog"] = o.Catalog.Get()
 	}
-	if o.ClonedFrom != nil {
-		toSerialize["ClonedFrom"] = o.ClonedFrom
+	if o.ClonedFrom.IsSet() {
+		toSerialize["ClonedFrom"] = o.ClonedFrom.Get()
 	}
-	if o.WorkflowMetadata != nil {
-		toSerialize["WorkflowMetadata"] = o.WorkflowMetadata
+	if o.WorkflowMetadata.IsSet() {
+		toSerialize["WorkflowMetadata"] = o.WorkflowMetadata.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *WorkflowWorkflowDefinition) UnmarshalJSON(bytes []byte) (err error) {
+func (o *WorkflowWorkflowDefinition) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type WorkflowWorkflowDefinitionWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
+		// The user identifier who created or cloned the workflow definition.
+		CreateUser *string `json:"CreateUser,omitempty"`
 		// When true this will be the workflow version that is used when a specific workflow definition version is not specified. The default version is used when user executes a workflow without specifying a version or when workflow is included in another workflow without a specific version. The very first workflow definition created with a name will be set as the default version, after that user can explicitly set any version of the workflow definition as the default version.
 		DefaultVersion *bool `json:"DefaultVersion,omitempty"`
 		// The description for this workflow.
@@ -937,17 +1111,19 @@ func (o *WorkflowWorkflowDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		InputDefinition   []WorkflowBaseDataType `json:"InputDefinition,omitempty"`
 		InputParameterSet []WorkflowParameterSet `json:"InputParameterSet,omitempty"`
 		// A user friendly short name to identify the workflow. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), period (.), colon (:), space ( ), forward slash (/), or an underscore (_).
-		Label *string `json:"Label,omitempty"`
-		// License entitlement required to run this workflow. It is calculated based on the highest license requirement of all its tasks. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+		Label *string `json:"Label,omitempty" validate:"regexp=^[a-zA-Z0-9]{1}[\\\\sa-zA-Z0-9_.\\/:-]{0,91}$"`
+		// License entitlement required to run this workflow. It is calculated based on the highest license requirement of all its tasks. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 		LicenseEntitlement *string `json:"LicenseEntitlement,omitempty"`
 		// The maximum number of tasks that can be executed on this workflow.
 		MaxTaskCount *int64 `json:"MaxTaskCount,omitempty"`
 		// The maximum number of external (worker) tasks that can be executed on this workflow.
 		MaxWorkerTaskCount *int64 `json:"MaxWorkerTaskCount,omitempty"`
+		// The user identifier who last updated the workflow definition.
+		ModUser *string `json:"ModUser,omitempty"`
 		// The name for this workflow. You can have multiple versions of the workflow with the same name. Name can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), period (.) or an underscore (_).
-		Name             *string                `json:"Name,omitempty"`
+		Name             *string                `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9]{1}[a-zA-Z0-9_.-]{0,63}$"`
 		OutputDefinition []WorkflowBaseDataType `json:"OutputDefinition,omitempty"`
-		// The output mappings for the workflow. The outputs for workflows will generally be task output variables that we want to export out at the end of the workflow. The format to specify the mapping is '${Source.output.JsonPath}', where 'Source' is the name of the task within the workflow. Any task output can be mapped to a workflow output as long as the types are compatible. It's followed by a JSON path expression to extract JSON fragment from source's output.
+		// The output mappings for the workflow. The schema for outputs of a workflow is defined using OutputDefinition. The outputs for workflows that we want to export out at the end of the workflow can be mapped from task outputs, workflow inputs, or workflow variables. Any task output, workflow input, or workflow variable can be mapped to a workflow output as long as the types are compatible. The format to specify the mapping is '${ 'workflow | <taskName>'. 'output |input | variable'.<name>[.<JsonPath>]}'. First, either the keyword 'workflow' or the name of the task in the workflow must be given. If a task name is used, then it must be followed by the keyword 'output', if the keyword workflow was used, then it must be followed by the keyword 'input' or 'variable'. Following this '<name>' must be the name of either input, output, or variable that must be mapped as workflow output. The last part of the mapping can be an optional <JsonPath> to extract specific fields on the data.
 		OutputParameters interface{}                        `json:"OutputParameters,omitempty"`
 		Properties       NullableWorkflowWorkflowProperties `json:"Properties,omitempty"`
 		Tasks            []WorkflowWorkflowTask             `json:"Tasks,omitempty"`
@@ -957,19 +1133,20 @@ func (o *WorkflowWorkflowDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		ValidationInformation NullableWorkflowValidationInformation `json:"ValidationInformation,omitempty"`
 		VariableDefinition    []WorkflowBaseDataType                `json:"VariableDefinition,omitempty"`
 		// The version of the workflow to support multiple versions.
-		Version          *int64                                  `json:"Version,omitempty"`
-		Catalog          *WorkflowCatalogRelationship            `json:"Catalog,omitempty"`
-		ClonedFrom       *WorkflowWorkflowDefinitionRelationship `json:"ClonedFrom,omitempty"`
-		WorkflowMetadata *WorkflowWorkflowMetadataRelationship   `json:"WorkflowMetadata,omitempty"`
+		Version          *int64                                         `json:"Version,omitempty"`
+		Catalog          NullableWorkflowCatalogRelationship            `json:"Catalog,omitempty"`
+		ClonedFrom       NullableWorkflowWorkflowDefinitionRelationship `json:"ClonedFrom,omitempty"`
+		WorkflowMetadata NullableWorkflowWorkflowMetadataRelationship   `json:"WorkflowMetadata,omitempty"`
 	}
 
 	varWorkflowWorkflowDefinitionWithoutEmbeddedStruct := WorkflowWorkflowDefinitionWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varWorkflowWorkflowDefinitionWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varWorkflowWorkflowDefinitionWithoutEmbeddedStruct)
 	if err == nil {
 		varWorkflowWorkflowDefinition := _WorkflowWorkflowDefinition{}
 		varWorkflowWorkflowDefinition.ClassId = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.ClassId
 		varWorkflowWorkflowDefinition.ObjectType = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.ObjectType
+		varWorkflowWorkflowDefinition.CreateUser = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.CreateUser
 		varWorkflowWorkflowDefinition.DefaultVersion = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.DefaultVersion
 		varWorkflowWorkflowDefinition.Description = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.Description
 		varWorkflowWorkflowDefinition.InputDefinition = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.InputDefinition
@@ -978,6 +1155,7 @@ func (o *WorkflowWorkflowDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		varWorkflowWorkflowDefinition.LicenseEntitlement = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.LicenseEntitlement
 		varWorkflowWorkflowDefinition.MaxTaskCount = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.MaxTaskCount
 		varWorkflowWorkflowDefinition.MaxWorkerTaskCount = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.MaxWorkerTaskCount
+		varWorkflowWorkflowDefinition.ModUser = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.ModUser
 		varWorkflowWorkflowDefinition.Name = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.Name
 		varWorkflowWorkflowDefinition.OutputDefinition = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.OutputDefinition
 		varWorkflowWorkflowDefinition.OutputParameters = varWorkflowWorkflowDefinitionWithoutEmbeddedStruct.OutputParameters
@@ -998,7 +1176,7 @@ func (o *WorkflowWorkflowDefinition) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowWorkflowDefinition := _WorkflowWorkflowDefinition{}
 
-	err = json.Unmarshal(bytes, &varWorkflowWorkflowDefinition)
+	err = json.Unmarshal(data, &varWorkflowWorkflowDefinition)
 	if err == nil {
 		o.MoBaseMo = varWorkflowWorkflowDefinition.MoBaseMo
 	} else {
@@ -1007,9 +1185,10 @@ func (o *WorkflowWorkflowDefinition) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "CreateUser")
 		delete(additionalProperties, "DefaultVersion")
 		delete(additionalProperties, "Description")
 		delete(additionalProperties, "InputDefinition")
@@ -1018,6 +1197,7 @@ func (o *WorkflowWorkflowDefinition) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "LicenseEntitlement")
 		delete(additionalProperties, "MaxTaskCount")
 		delete(additionalProperties, "MaxWorkerTaskCount")
+		delete(additionalProperties, "ModUser")
 		delete(additionalProperties, "Name")
 		delete(additionalProperties, "OutputDefinition")
 		delete(additionalProperties, "OutputParameters")

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the ConvergedinfraBasePod type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ConvergedinfraBasePod{}
 
 // ConvergedinfraBasePod Abstract base type for all pods.
 type ConvergedinfraBasePod struct {
@@ -25,9 +29,9 @@ type ConvergedinfraBasePod struct {
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property. The enum values provides the list of concrete types that can be instantiated from this abstract type.
 	ObjectType string `json:"ObjectType"`
 	// Description of the pod. A short note about the nature or purpose of the pod.
-	Description *string `json:"Description,omitempty"`
+	Description *string `json:"Description,omitempty" validate:"regexp=^$|^[a-zA-Z0-9]+[\\\\x00-\\\\xFF]*$"`
 	// Name of the pod. Concrete pod will be created with this name.
-	Name *string `json:"Name,omitempty"`
+	Name *string `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9_.-]{1,64}$"`
 	// Defines the type of the pod. * `FlexPod` - Pod type is FlexPod, an integrated infrastructure solution developed by Cisco and NetApp. * `FlashStack` - Pod type is FlashStack, an integrated infrastructure solution developed by Cisco and Pure Storage.
 	Type                 *string `json:"Type,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -86,6 +90,11 @@ func (o *ConvergedinfraBasePod) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "convergedinfra.Pod" of the ClassId field.
+func (o *ConvergedinfraBasePod) GetDefaultClassId() interface{} {
+	return "convergedinfra.Pod"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ConvergedinfraBasePod) GetObjectType() string {
 	if o == nil {
@@ -110,9 +119,14 @@ func (o *ConvergedinfraBasePod) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "convergedinfra.Pod" of the ObjectType field.
+func (o *ConvergedinfraBasePod) GetDefaultObjectType() interface{} {
+	return "convergedinfra.Pod"
+}
+
 // GetDescription returns the Description field value if set, zero value otherwise.
 func (o *ConvergedinfraBasePod) GetDescription() string {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		var ret string
 		return ret
 	}
@@ -122,7 +136,7 @@ func (o *ConvergedinfraBasePod) GetDescription() string {
 // GetDescriptionOk returns a tuple with the Description field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConvergedinfraBasePod) GetDescriptionOk() (*string, bool) {
-	if o == nil || o.Description == nil {
+	if o == nil || IsNil(o.Description) {
 		return nil, false
 	}
 	return o.Description, true
@@ -130,7 +144,7 @@ func (o *ConvergedinfraBasePod) GetDescriptionOk() (*string, bool) {
 
 // HasDescription returns a boolean if a field has been set.
 func (o *ConvergedinfraBasePod) HasDescription() bool {
-	if o != nil && o.Description != nil {
+	if o != nil && !IsNil(o.Description) {
 		return true
 	}
 
@@ -144,7 +158,7 @@ func (o *ConvergedinfraBasePod) SetDescription(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *ConvergedinfraBasePod) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -154,7 +168,7 @@ func (o *ConvergedinfraBasePod) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConvergedinfraBasePod) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -162,7 +176,7 @@ func (o *ConvergedinfraBasePod) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *ConvergedinfraBasePod) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -176,7 +190,7 @@ func (o *ConvergedinfraBasePod) SetName(v string) {
 
 // GetType returns the Type field value if set, zero value otherwise.
 func (o *ConvergedinfraBasePod) GetType() string {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		var ret string
 		return ret
 	}
@@ -186,7 +200,7 @@ func (o *ConvergedinfraBasePod) GetType() string {
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConvergedinfraBasePod) GetTypeOk() (*string, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		return nil, false
 	}
 	return o.Type, true
@@ -194,7 +208,7 @@ func (o *ConvergedinfraBasePod) GetTypeOk() (*string, bool) {
 
 // HasType returns a boolean if a field has been set.
 func (o *ConvergedinfraBasePod) HasType() bool {
-	if o != nil && o.Type != nil {
+	if o != nil && !IsNil(o.Type) {
 		return true
 	}
 
@@ -207,28 +221,38 @@ func (o *ConvergedinfraBasePod) SetType(v string) {
 }
 
 func (o ConvergedinfraBasePod) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ConvergedinfraBasePod) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Description != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Description) {
 		toSerialize["Description"] = o.Description
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.Type != nil {
+	if !IsNil(o.Type) {
 		toSerialize["Type"] = o.Type
 	}
 
@@ -236,26 +260,67 @@ func (o ConvergedinfraBasePod) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ConvergedinfraBasePod) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ConvergedinfraBasePod) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ConvergedinfraBasePodWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. The enum values provides the list of concrete types that can be instantiated from this abstract type.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property. The enum values provides the list of concrete types that can be instantiated from this abstract type.
 		ObjectType string `json:"ObjectType"`
 		// Description of the pod. A short note about the nature or purpose of the pod.
-		Description *string `json:"Description,omitempty"`
+		Description *string `json:"Description,omitempty" validate:"regexp=^$|^[a-zA-Z0-9]+[\\\\x00-\\\\xFF]*$"`
 		// Name of the pod. Concrete pod will be created with this name.
-		Name *string `json:"Name,omitempty"`
+		Name *string `json:"Name,omitempty" validate:"regexp=^[a-zA-Z0-9_.-]{1,64}$"`
 		// Defines the type of the pod. * `FlexPod` - Pod type is FlexPod, an integrated infrastructure solution developed by Cisco and NetApp. * `FlashStack` - Pod type is FlashStack, an integrated infrastructure solution developed by Cisco and Pure Storage.
 		Type *string `json:"Type,omitempty"`
 	}
 
 	varConvergedinfraBasePodWithoutEmbeddedStruct := ConvergedinfraBasePodWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varConvergedinfraBasePodWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varConvergedinfraBasePodWithoutEmbeddedStruct)
 	if err == nil {
 		varConvergedinfraBasePod := _ConvergedinfraBasePod{}
 		varConvergedinfraBasePod.ClassId = varConvergedinfraBasePodWithoutEmbeddedStruct.ClassId
@@ -270,7 +335,7 @@ func (o *ConvergedinfraBasePod) UnmarshalJSON(bytes []byte) (err error) {
 
 	varConvergedinfraBasePod := _ConvergedinfraBasePod{}
 
-	err = json.Unmarshal(bytes, &varConvergedinfraBasePod)
+	err = json.Unmarshal(data, &varConvergedinfraBasePod)
 	if err == nil {
 		o.MoBaseMo = varConvergedinfraBasePod.MoBaseMo
 	} else {
@@ -279,7 +344,7 @@ func (o *ConvergedinfraBasePod) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Description")

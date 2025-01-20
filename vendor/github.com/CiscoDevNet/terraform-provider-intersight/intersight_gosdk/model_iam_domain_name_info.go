@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the IamDomainNameInfo type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IamDomainNameInfo{}
 
 // IamDomainNameInfo The organisation's domain name such as cisco.com that has been used to log in to Intersight.
 type IamDomainNameInfo struct {
@@ -28,15 +32,15 @@ type IamDomainNameInfo struct {
 	// Regenerate TXT record and validate TXT record. * `generate` - Generate TXT record for domain name ownership validation. * `verify` - Verify TXT record for domain name ownership validation.
 	Action *string `json:"Action,omitempty"`
 	// Email domain name. When a user enters an email during login in the Intersight home page, the IdP is picked by matching this domain name with the email domain name for authentication.
-	DomainName     *string                   `json:"DomainName,omitempty"`
+	DomainName     *string                   `json:"DomainName,omitempty" validate:"regexp=^$|^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"`
 	FailureDetails NullableIamFailureDetails `json:"FailureDetails,omitempty"`
 	// Expiration time of TXT Record.
 	RecordExpiryTime *time.Time `json:"RecordExpiryTime,omitempty"`
 	// Status of Domain Ownership Verification. * `Pending` - Domain verification is pending. * `Failed` - Domain verification failed. Re-generate token and verify. * `Verified` - Domain verification succeeded. * `Expired` - TXT Record for Domain verification expired.
 	Status *string `json:"Status,omitempty"`
 	// Resource record used to verify Domain Ownership. Users need to verify the domain by adding the TXT Record in their DNS Host.
-	TxtRecord            *string                 `json:"TxtRecord,omitempty"`
-	Account              *IamAccountRelationship `json:"Account,omitempty"`
+	TxtRecord            *string                        `json:"TxtRecord,omitempty"`
+	Account              NullableIamAccountRelationship `json:"Account,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -93,6 +97,11 @@ func (o *IamDomainNameInfo) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "iam.DomainNameInfo" of the ClassId field.
+func (o *IamDomainNameInfo) GetDefaultClassId() interface{} {
+	return "iam.DomainNameInfo"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IamDomainNameInfo) GetObjectType() string {
 	if o == nil {
@@ -117,9 +126,14 @@ func (o *IamDomainNameInfo) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "iam.DomainNameInfo" of the ObjectType field.
+func (o *IamDomainNameInfo) GetDefaultObjectType() interface{} {
+	return "iam.DomainNameInfo"
+}
+
 // GetAction returns the Action field value if set, zero value otherwise.
 func (o *IamDomainNameInfo) GetAction() string {
-	if o == nil || o.Action == nil {
+	if o == nil || IsNil(o.Action) {
 		var ret string
 		return ret
 	}
@@ -129,7 +143,7 @@ func (o *IamDomainNameInfo) GetAction() string {
 // GetActionOk returns a tuple with the Action field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamDomainNameInfo) GetActionOk() (*string, bool) {
-	if o == nil || o.Action == nil {
+	if o == nil || IsNil(o.Action) {
 		return nil, false
 	}
 	return o.Action, true
@@ -137,7 +151,7 @@ func (o *IamDomainNameInfo) GetActionOk() (*string, bool) {
 
 // HasAction returns a boolean if a field has been set.
 func (o *IamDomainNameInfo) HasAction() bool {
-	if o != nil && o.Action != nil {
+	if o != nil && !IsNil(o.Action) {
 		return true
 	}
 
@@ -151,7 +165,7 @@ func (o *IamDomainNameInfo) SetAction(v string) {
 
 // GetDomainName returns the DomainName field value if set, zero value otherwise.
 func (o *IamDomainNameInfo) GetDomainName() string {
-	if o == nil || o.DomainName == nil {
+	if o == nil || IsNil(o.DomainName) {
 		var ret string
 		return ret
 	}
@@ -161,7 +175,7 @@ func (o *IamDomainNameInfo) GetDomainName() string {
 // GetDomainNameOk returns a tuple with the DomainName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamDomainNameInfo) GetDomainNameOk() (*string, bool) {
-	if o == nil || o.DomainName == nil {
+	if o == nil || IsNil(o.DomainName) {
 		return nil, false
 	}
 	return o.DomainName, true
@@ -169,7 +183,7 @@ func (o *IamDomainNameInfo) GetDomainNameOk() (*string, bool) {
 
 // HasDomainName returns a boolean if a field has been set.
 func (o *IamDomainNameInfo) HasDomainName() bool {
-	if o != nil && o.DomainName != nil {
+	if o != nil && !IsNil(o.DomainName) {
 		return true
 	}
 
@@ -183,7 +197,7 @@ func (o *IamDomainNameInfo) SetDomainName(v string) {
 
 // GetFailureDetails returns the FailureDetails field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamDomainNameInfo) GetFailureDetails() IamFailureDetails {
-	if o == nil || o.FailureDetails.Get() == nil {
+	if o == nil || IsNil(o.FailureDetails.Get()) {
 		var ret IamFailureDetails
 		return ret
 	}
@@ -226,7 +240,7 @@ func (o *IamDomainNameInfo) UnsetFailureDetails() {
 
 // GetRecordExpiryTime returns the RecordExpiryTime field value if set, zero value otherwise.
 func (o *IamDomainNameInfo) GetRecordExpiryTime() time.Time {
-	if o == nil || o.RecordExpiryTime == nil {
+	if o == nil || IsNil(o.RecordExpiryTime) {
 		var ret time.Time
 		return ret
 	}
@@ -236,7 +250,7 @@ func (o *IamDomainNameInfo) GetRecordExpiryTime() time.Time {
 // GetRecordExpiryTimeOk returns a tuple with the RecordExpiryTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamDomainNameInfo) GetRecordExpiryTimeOk() (*time.Time, bool) {
-	if o == nil || o.RecordExpiryTime == nil {
+	if o == nil || IsNil(o.RecordExpiryTime) {
 		return nil, false
 	}
 	return o.RecordExpiryTime, true
@@ -244,7 +258,7 @@ func (o *IamDomainNameInfo) GetRecordExpiryTimeOk() (*time.Time, bool) {
 
 // HasRecordExpiryTime returns a boolean if a field has been set.
 func (o *IamDomainNameInfo) HasRecordExpiryTime() bool {
-	if o != nil && o.RecordExpiryTime != nil {
+	if o != nil && !IsNil(o.RecordExpiryTime) {
 		return true
 	}
 
@@ -258,7 +272,7 @@ func (o *IamDomainNameInfo) SetRecordExpiryTime(v time.Time) {
 
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *IamDomainNameInfo) GetStatus() string {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
@@ -268,7 +282,7 @@ func (o *IamDomainNameInfo) GetStatus() string {
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamDomainNameInfo) GetStatusOk() (*string, bool) {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
 	return o.Status, true
@@ -276,7 +290,7 @@ func (o *IamDomainNameInfo) GetStatusOk() (*string, bool) {
 
 // HasStatus returns a boolean if a field has been set.
 func (o *IamDomainNameInfo) HasStatus() bool {
-	if o != nil && o.Status != nil {
+	if o != nil && !IsNil(o.Status) {
 		return true
 	}
 
@@ -290,7 +304,7 @@ func (o *IamDomainNameInfo) SetStatus(v string) {
 
 // GetTxtRecord returns the TxtRecord field value if set, zero value otherwise.
 func (o *IamDomainNameInfo) GetTxtRecord() string {
-	if o == nil || o.TxtRecord == nil {
+	if o == nil || IsNil(o.TxtRecord) {
 		var ret string
 		return ret
 	}
@@ -300,7 +314,7 @@ func (o *IamDomainNameInfo) GetTxtRecord() string {
 // GetTxtRecordOk returns a tuple with the TxtRecord field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamDomainNameInfo) GetTxtRecordOk() (*string, bool) {
-	if o == nil || o.TxtRecord == nil {
+	if o == nil || IsNil(o.TxtRecord) {
 		return nil, false
 	}
 	return o.TxtRecord, true
@@ -308,7 +322,7 @@ func (o *IamDomainNameInfo) GetTxtRecordOk() (*string, bool) {
 
 // HasTxtRecord returns a boolean if a field has been set.
 func (o *IamDomainNameInfo) HasTxtRecord() bool {
-	if o != nil && o.TxtRecord != nil {
+	if o != nil && !IsNil(o.TxtRecord) {
 		return true
 	}
 
@@ -320,84 +334,146 @@ func (o *IamDomainNameInfo) SetTxtRecord(v string) {
 	o.TxtRecord = &v
 }
 
-// GetAccount returns the Account field value if set, zero value otherwise.
+// GetAccount returns the Account field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamDomainNameInfo) GetAccount() IamAccountRelationship {
-	if o == nil || o.Account == nil {
+	if o == nil || IsNil(o.Account.Get()) {
 		var ret IamAccountRelationship
 		return ret
 	}
-	return *o.Account
+	return *o.Account.Get()
 }
 
 // GetAccountOk returns a tuple with the Account field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamDomainNameInfo) GetAccountOk() (*IamAccountRelationship, bool) {
-	if o == nil || o.Account == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Account, true
+	return o.Account.Get(), o.Account.IsSet()
 }
 
 // HasAccount returns a boolean if a field has been set.
 func (o *IamDomainNameInfo) HasAccount() bool {
-	if o != nil && o.Account != nil {
+	if o != nil && o.Account.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAccount gets a reference to the given IamAccountRelationship and assigns it to the Account field.
+// SetAccount gets a reference to the given NullableIamAccountRelationship and assigns it to the Account field.
 func (o *IamDomainNameInfo) SetAccount(v IamAccountRelationship) {
-	o.Account = &v
+	o.Account.Set(&v)
+}
+
+// SetAccountNil sets the value for Account to be an explicit nil
+func (o *IamDomainNameInfo) SetAccountNil() {
+	o.Account.Set(nil)
+}
+
+// UnsetAccount ensures that no value is present for Account, not even an explicit nil
+func (o *IamDomainNameInfo) UnsetAccount() {
+	o.Account.Unset()
 }
 
 func (o IamDomainNameInfo) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IamDomainNameInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Action != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Action) {
 		toSerialize["Action"] = o.Action
 	}
-	if o.DomainName != nil {
+	if !IsNil(o.DomainName) {
 		toSerialize["DomainName"] = o.DomainName
 	}
 	if o.FailureDetails.IsSet() {
 		toSerialize["FailureDetails"] = o.FailureDetails.Get()
 	}
-	if o.RecordExpiryTime != nil {
+	if !IsNil(o.RecordExpiryTime) {
 		toSerialize["RecordExpiryTime"] = o.RecordExpiryTime
 	}
-	if o.Status != nil {
+	if !IsNil(o.Status) {
 		toSerialize["Status"] = o.Status
 	}
-	if o.TxtRecord != nil {
+	if !IsNil(o.TxtRecord) {
 		toSerialize["TxtRecord"] = o.TxtRecord
 	}
-	if o.Account != nil {
-		toSerialize["Account"] = o.Account
+	if o.Account.IsSet() {
+		toSerialize["Account"] = o.Account.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IamDomainNameInfo) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IamDomainNameInfo) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IamDomainNameInfoWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -406,20 +482,20 @@ func (o *IamDomainNameInfo) UnmarshalJSON(bytes []byte) (err error) {
 		// Regenerate TXT record and validate TXT record. * `generate` - Generate TXT record for domain name ownership validation. * `verify` - Verify TXT record for domain name ownership validation.
 		Action *string `json:"Action,omitempty"`
 		// Email domain name. When a user enters an email during login in the Intersight home page, the IdP is picked by matching this domain name with the email domain name for authentication.
-		DomainName     *string                   `json:"DomainName,omitempty"`
+		DomainName     *string                   `json:"DomainName,omitempty" validate:"regexp=^$|^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"`
 		FailureDetails NullableIamFailureDetails `json:"FailureDetails,omitempty"`
 		// Expiration time of TXT Record.
 		RecordExpiryTime *time.Time `json:"RecordExpiryTime,omitempty"`
 		// Status of Domain Ownership Verification. * `Pending` - Domain verification is pending. * `Failed` - Domain verification failed. Re-generate token and verify. * `Verified` - Domain verification succeeded. * `Expired` - TXT Record for Domain verification expired.
 		Status *string `json:"Status,omitempty"`
 		// Resource record used to verify Domain Ownership. Users need to verify the domain by adding the TXT Record in their DNS Host.
-		TxtRecord *string                 `json:"TxtRecord,omitempty"`
-		Account   *IamAccountRelationship `json:"Account,omitempty"`
+		TxtRecord *string                        `json:"TxtRecord,omitempty"`
+		Account   NullableIamAccountRelationship `json:"Account,omitempty"`
 	}
 
 	varIamDomainNameInfoWithoutEmbeddedStruct := IamDomainNameInfoWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIamDomainNameInfoWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIamDomainNameInfoWithoutEmbeddedStruct)
 	if err == nil {
 		varIamDomainNameInfo := _IamDomainNameInfo{}
 		varIamDomainNameInfo.ClassId = varIamDomainNameInfoWithoutEmbeddedStruct.ClassId
@@ -438,7 +514,7 @@ func (o *IamDomainNameInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIamDomainNameInfo := _IamDomainNameInfo{}
 
-	err = json.Unmarshal(bytes, &varIamDomainNameInfo)
+	err = json.Unmarshal(data, &varIamDomainNameInfo)
 	if err == nil {
 		o.MoBaseMo = varIamDomainNameInfo.MoBaseMo
 	} else {
@@ -447,7 +523,7 @@ func (o *IamDomainNameInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Action")

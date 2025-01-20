@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceIamUser() *schema.Resource {
 		UpdateContext: resourceIamUserUpdate,
 		DeleteContext: resourceIamUserDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -196,23 +198,17 @@ func resourceIamUser() *schema.Resource {
 					return
 				}},
 			"email": {
-				Description:  "Email of the user. Users are added to Intersight using the email configured in the IdP.",
+				Description:  "Email of the user. Remote users are added to Intersight using the email configured in the IdP.",
 				Type:         schema.TypeString,
 				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"), ""),
 				Optional:     true,
 				ForceNew:     true,
 			},
 			"first_name": {
-				Description: "First name of the user. This field is populated from the IdP attributes received after authentication.",
+				Description: "First name of the user. For remote users, this field is populated from the IdP attributes received after authentication.",
 				Type:        schema.TypeString,
 				Optional:    true,
-				Computed:    true,
-				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					if val != nil {
-						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
-					}
-					return
-				}},
+			},
 			"idp": {
 				Description: "A reference to a iamIdp resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
 				Type:        schema.TypeList,
@@ -305,16 +301,10 @@ func resourceIamUser() *schema.Resource {
 					return
 				}},
 			"last_name": {
-				Description: "Last name of the user. This field is populated from the IdP attributes received after authentication.",
+				Description: "Last name of the user. For remote users, this field is populated from the IdP attributes received after authentication.",
 				Type:        schema.TypeString,
 				Optional:    true,
-				Computed:    true,
-				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
-					if val != nil {
-						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
-					}
-					return
-				}},
+			},
 			"last_role_modified_time": {
 				Description: "Last role modification time for user.",
 				Type:        schema.TypeString,
@@ -366,6 +356,17 @@ func resourceIamUser() *schema.Resource {
 					},
 				},
 			},
+			"locked_until": {
+				Description: "Time until which the user account will be locked out.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"mod_time": {
 				Description: "The time when this managed object was last modified.",
 				Type:        schema.TypeString,
@@ -385,7 +386,7 @@ func resourceIamUser() *schema.Resource {
 				ForceNew:    true,
 			},
 			"name": {
-				Description: "Name as configured in the IdP.",
+				Description: "Name of the user. For remote users, it is the value as configured in the IdP.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -644,7 +645,7 @@ func resourceIamUser() *schema.Resource {
 				},
 			},
 			"user_id_or_email": {
-				Description: "UserID or email as configured in the IdP.",
+				Description: "UserID or email of the user. For remote users, it is the value as configured in the IDP.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				ForceNew:    true,
@@ -729,6 +730,17 @@ func resourceIamUser() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -837,6 +849,11 @@ func resourceIamUserCreate(c context.Context, d *schema.ResourceData, meta inter
 		o.SetEmail(x)
 	}
 
+	if v, ok := d.GetOk("first_name"); ok {
+		x := (v.(string))
+		o.SetFirstName(x)
+	}
+
 	if v, ok := d.GetOk("idp"); ok {
 		p := make([]models.IamIdpRelationship, 0, 1)
 		s := v.([]interface{})
@@ -921,6 +938,11 @@ func resourceIamUserCreate(c context.Context, d *schema.ResourceData, meta inter
 			x := p[0]
 			o.SetIdpreference(x)
 		}
+	}
+
+	if v, ok := d.GetOk("last_name"); ok {
+		x := (v.(string))
+		o.SetLastName(x)
 	}
 
 	if v, ok := d.GetOk("moid"); ok {
@@ -1022,14 +1044,25 @@ func resourceIamUserCreate(c context.Context, d *schema.ResourceData, meta inter
 		}
 		return diag.Errorf("error occurred while creating IamUser: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceIamUserRead(c, d, meta)...)
 }
 
 func resourceIamUserRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.IamApi.GetIamUserByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1113,6 +1146,10 @@ func resourceIamUserRead(c context.Context, d *schema.ResourceData, meta interfa
 
 	if err := d.Set("local_user_password", flattenMapIamLocalUserPasswordRelationship(s.GetLocalUserPassword(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property LocalUserPassword in IamUser object: %s", err.Error())
+	}
+
+	if err := d.Set("locked_until", (s.GetLockedUntil()).String()); err != nil {
+		return diag.Errorf("error occurred while setting property LockedUntil in IamUser object: %s", err.Error())
 	}
 
 	if err := d.Set("mod_time", (s.GetModTime()).String()); err != nil {
@@ -1208,6 +1245,12 @@ func resourceIamUserUpdate(c context.Context, d *schema.ResourceData, meta inter
 		o.SetEmail(x)
 	}
 
+	if d.HasChange("first_name") {
+		v := d.Get("first_name")
+		x := (v.(string))
+		o.SetFirstName(x)
+	}
+
 	if d.HasChange("idp") {
 		v := d.Get("idp")
 		p := make([]models.IamIdpRelationship, 0, 1)
@@ -1294,6 +1337,12 @@ func resourceIamUserUpdate(c context.Context, d *schema.ResourceData, meta inter
 			x := p[0]
 			o.SetIdpreference(x)
 		}
+	}
+
+	if d.HasChange("last_name") {
+		v := d.Get("last_name")
+		x := (v.(string))
+		o.SetLastName(x)
 	}
 
 	if d.HasChange("moid") {

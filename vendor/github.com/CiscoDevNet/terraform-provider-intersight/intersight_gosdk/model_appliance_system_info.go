@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the ApplianceSystemInfo type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ApplianceSystemInfo{}
 
 // ApplianceSystemInfo The Intersight Appliance's system information. SystemInfo is a singleton managed object created during the Intersight Appliance setup. The Intersight Appliance updates the SystemInfo managed object with up to date cluster status information periodically.
 type ApplianceSystemInfo struct {
@@ -26,17 +30,23 @@ type ApplianceSystemInfo struct {
 	ObjectType string `json:"ObjectType"`
 	// Connection state of the Intersight Appliance to the Intersight. * `` - The target details have been persisted but Intersight has not yet attempted to connect to the target. * `Connected` - Intersight is able to establish a connection to the target and initiate management activities. * `NotConnected` - Intersight is unable to establish a connection to the target. * `ClaimInProgress` - Claim of the target is in progress. A connection to the target has not been fully established. * `UnclaimInProgress` - Unclaim of the target is in progress. Intersight is able to connect to the target and all management operations are supported. * `Unclaimed` - The device was un-claimed from the users account by an Administrator of the device. Also indicates the failure to claim Targets of type HTTP Endpoint in Intersight. * `Claimed` - Target of type HTTP Endpoint is successfully claimed in Intersight. Currently no validation is performed to verify the Target connectivity from Intersight at the time of creation. However invoking API from Intersight Orchestrator fails if this Target is not reachable from Intersight or if Target API credentials are incorrect.
 	CloudConnStatus *string `json:"CloudConnStatus,omitempty"`
+	// Current status of cluster operation on the Intersight Appliance. * `none` - The Intersight Appliance is running in standalone mode. * `active` - The Intersight Appliance is running as part of a cluster. * `pending` - The Intersight Appliance is currently forming a cluster. * `failed` - The Intersight Appliance failed to form a cluster.
+	ClusterStatus *string `json:"ClusterStatus,omitempty"`
 	// Current running deployment size for the Intersight Appliance cluster. Eg. small, medium, large etc.
 	DeploymentSize *string `json:"DeploymentSize,omitempty"`
-	// Publicly accessible FQDN or IP address of the Intersight Appliance.
+	// Publicly accessible FQDN of the Intersight Appliance.
 	Hostname *string `json:"Hostname,omitempty"`
 	// Indicates that the setup initialization process has been completed.
 	InitDone *bool `json:"InitDone,omitempty"`
-	// Operational status of the Intersight Appliance cluster. * `Unknown` - Operational status of the Intersight Appliance entity is Unknown. * `Operational` - Operational status of the Intersight Appliance entity is Operational. * `Impaired` - Operational status of the Intersight Appliance entity is Impaired. * `AttentionNeeded` - Operational status of the Intersight Appliance entity is AttentionNeeded.
+	// Publicly accessible IP address of the Intersight Appliance.
+	IpAddress *string `json:"IpAddress,omitempty"`
+	// Specifies whether this Intersight Appliance is using a virtual ip address.
+	IsVirtualIp *bool `json:"IsVirtualIp,omitempty"`
+	// Operational status of the Intersight Appliance cluster. * `Unknown` - The status of the appliance node is unknown. * `Operational` - The appliance node is operational. * `Impaired` - The appliance node is impaired. * `AttentionNeeded` - The appliance node needs attention. * `ReadyToJoin` - The node is ready to be added to a standalone Intersight Appliance to form a cluster. * `OutOfService` - The user has taken this node (part of a cluster) to out of service. * `ReadyForReplacement` - The cluster node is ready to be replaced. * `ReplacementInProgress` - The cluster node replacement is in progress. * `ReplacementFailed` - There was a failure during the cluster node replacement.
 	OperationalStatus *string `json:"OperationalStatus,omitempty"`
 	// SerialId of the Intersight Appliance. SerialId is generated when the Intersight Appliance is setup. It is a unique UUID string, and serialId will not change for the life time of the Intersight Appliance.
 	SerialId *string `json:"SerialId,omitempty"`
-	// Timezone of the Intersight Appliance. * `Pacific/Niue` -  * `Pacific/Pago_Pago` -  * `Pacific/Honolulu` -  * `Pacific/Rarotonga` -  * `Pacific/Tahiti` -  * `Pacific/Marquesas` -  * `America/Anchorage` -  * `Pacific/Gambier` -  * `America/Los_Angeles` -  * `America/Tijuana` -  * `America/Vancouver` -  * `America/Whitehorse` -  * `Pacific/Pitcairn` -  * `America/Dawson_Creek` -  * `America/Denver` -  * `America/Edmonton` -  * `America/Hermosillo` -  * `America/Mazatlan` -  * `America/Phoenix` -  * `America/Yellowknife` -  * `America/Belize` -  * `America/Chicago` -  * `America/Costa_Rica` -  * `America/El_Salvador` -  * `America/Guatemala` -  * `America/Managua` -  * `America/Mexico_City` -  * `America/Regina` -  * `America/Tegucigalpa` -  * `America/Winnipeg` -  * `Pacific/Galapagos` -  * `America/Bogota` -  * `America/Cancun` -  * `America/Cayman` -  * `America/Guayaquil` -  * `America/Havana` -  * `America/Iqaluit` -  * `America/Jamaica` -  * `America/Lima` -  * `America/Nassau` -  * `America/New_York` -  * `America/Nuuk` -  * `America/Panama` -  * `America/Port-au-Prince` -  * `America/Rio_Branco` -  * `America/Toronto` -  * `Pacific/Easter` -  * `America/Caracas` -  * `America/Asuncion` -  * `America/Barbados` -  * `America/Boa_Vista` -  * `America/Campo_Grande` -  * `America/Cuiaba` -  * `America/Curacao` -  * `America/Grand_Turk` -  * `America/Guyana` -  * `America/Halifax` -  * `America/La_Paz` -  * `America/Manaus` -  * `America/Martinique` -  * `America/Port_of_Spain` -  * `America/Porto_Velho` -  * `America/Puerto_Rico` -  * `America/Santo_Domingo` -  * `America/Thule` -  * `Atlantic/Bermuda` -  * `America/St_Johns` -  * `America/Araguaina` -  * `America/Argentina/Buenos_Aires` -  * `America/Bahia` -  * `America/Belem` -  * `America/Cayenne` -  * `America/Fortaleza` -  * `America/Godthab` -  * `America/Maceio` -  * `America/Miquelon` -  * `America/Montevideo` -  * `America/Paramaribo` -  * `America/Recife` -  * `America/Santiago` -  * `America/Sao_Paulo` -  * `Antarctica/Palmer` -  * `Antarctica/Rothera` -  * `Atlantic/Stanley` -  * `America/Noronha` -  * `Atlantic/South_Georgia` -  * `America/Scoresbysund` -  * `Atlantic/Azores` -  * `Atlantic/Cape_Verde` -  * `Africa/Abidjan` -  * `Africa/Accra` -  * `Africa/Bissau` -  * `Africa/Casablanca` -  * `Africa/El_Aaiun` -  * `Africa/Monrovia` -  * `America/Danmarkshavn` -  * `Atlantic/Canary` -  * `Atlantic/Faroe` -  * `Atlantic/Reykjavik` -  * `Etc/GMT` -  * `Europe/Dublin` -  * `Europe/Lisbon` -  * `Europe/London` -  * `Africa/Algiers` -  * `Africa/Ceuta` -  * `Africa/Lagos` -  * `Africa/Ndjamena` -  * `Africa/Tunis` -  * `Africa/Windhoek` -  * `Europe/Amsterdam` -  * `Europe/Andorra` -  * `Europe/Belgrade` -  * `Europe/Berlin` -  * `Europe/Brussels` -  * `Europe/Budapest` -  * `Europe/Copenhagen` -  * `Europe/Gibraltar` -  * `Europe/Luxembourg` -  * `Europe/Madrid` -  * `Europe/Malta` -  * `Europe/Monaco` -  * `Europe/Oslo` -  * `Europe/Paris` -  * `Europe/Prague` -  * `Europe/Rome` -  * `Europe/Stockholm` -  * `Europe/Tirane` -  * `Europe/Vienna` -  * `Europe/Warsaw` -  * `Europe/Zurich` -  * `Africa/Cairo` -  * `Africa/Johannesburg` -  * `Africa/Maputo` -  * `Africa/Tripoli` -  * `Asia/Amman` -  * `Asia/Beirut` -  * `Asia/Damascus` -  * `Asia/Gaza` -  * `Asia/Jerusalem` -  * `Asia/Nicosia` -  * `Europe/Athens` -  * `Europe/Bucharest` -  * `Europe/Chisinau` -  * `Europe/Helsinki` -  * `Europe/Istanbul` -  * `Europe/Kaliningrad` -  * `Europe/Kiev` -  * `Europe/Riga` -  * `Europe/Sofia` -  * `Europe/Tallinn` -  * `Europe/Vilnius` -  * `Africa/Khartoum` -  * `Africa/Nairobi` -  * `Antarctica/Syowa` -  * `Asia/Baghdad` -  * `Asia/Qatar` -  * `Asia/Riyadh` -  * `Europe/Minsk` -  * `Europe/Moscow` -  * `Asia/Tehran` -  * `Asia/Baku` -  * `Asia/Dubai` -  * `Asia/Tbilisi` -  * `Asia/Yerevan` -  * `Europe/Samara` -  * `Indian/Mahe` -  * `Indian/Mauritius` -  * `Indian/Reunion` -  * `Asia/Kabul` -  * `Antarctica/Mawson` -  * `Asia/Aqtau` -  * `Asia/Aqtobe` -  * `Asia/Ashgabat` -  * `Asia/Dushanbe` -  * `Asia/Karachi` -  * `Asia/Tashkent` -  * `Asia/Yekaterinburg` -  * `Indian/Kerguelen` -  * `Indian/Maldives` -  * `Asia/Calcutta` -  * `Asia/Kolkata` -  * `Asia/Colombo` -  * `Asia/Kathmandu` -  * `Asia/Katmandu` -  * `Antarctica/Vostok` -  * `Asia/Almaty` -  * `Asia/Bishkek` -  * `Asia/Dhaka` -  * `Asia/Omsk` -  * `Asia/Thimphu` -  * `Indian/Chagos` -  * `Asia/Rangoon` -  * `Indian/Cocos` -  * `Antarctica/Davis` -  * `Asia/Bangkok` -  * `Asia/Ho_Chi_Minh` -  * `Asia/Hovd` -  * `Asia/Jakarta` -  * `Asia/Krasnoyarsk` -  * `Asia/Saigon` -  * `Indian/Christmas` -  * `Antarctica/Casey` -  * `Asia/Brunei` -  * `Asia/Choibalsan` -  * `Asia/Hong_Kong` -  * `Asia/Irkutsk` -  * `Asia/Kuala_Lumpur` -  * `Asia/Macau` -  * `Asia/Makassar` -  * `Asia/Manila` -  * `Asia/Shanghai` -  * `Asia/Singapore` -  * `Asia/Taipei` -  * `Asia/Ulaanbaatar` -  * `Australia/Perth` -  * `Asia/Pyongyang` -  * `Asia/Dili` -  * `Asia/Jayapura` -  * `Asia/Seoul` -  * `Asia/Tokyo` -  * `Asia/Yakutsk` -  * `Asia/Yangon` -  * `Pacific/Palau` -  * `Australia/Adelaide` -  * `Australia/Darwin` -  * `Antarctica/DumontDUrville` -  * `Asia/Magadan` -  * `Asia/Vladivostok` -  * `Australia/Brisbane` -  * `Australia/Hobart` -  * `Australia/Sydney` -  * `Pacific/Chuuk` -  * `Pacific/Guam` -  * `Pacific/Port_Moresby` -  * `Pacific/Efate` -  * `Pacific/Guadalcanal` -  * `Pacific/Kosrae` -  * `Pacific/Norfolk` -  * `Pacific/Noumea` -  * `Pacific/Pohnpei` -  * `Asia/Kamchatka` -  * `Pacific/Auckland` -  * `Pacific/Fiji` -  * `Pacific/Funafuti` -  * `Pacific/Kwajalein` -  * `Pacific/Majuro` -  * `Pacific/Nauru` -  * `Pacific/Tarawa` -  * `Pacific/Wake` -  * `Pacific/Wallis` -  * `Pacific/Apia` -  * `Pacific/Enderbury` -  * `Pacific/Fakaofo` -  * `Pacific/Tongatapu` -  * `Pacific/Kiritimati` -
+	// Timezone of the Intersight Appliance. * `Pacific/Niue` -  * `Africa/Abidjan` -  * `Africa/Accra` -  * `Africa/Addis_Ababa` -  * `Africa/Algiers` -  * `Africa/Asmara` -  * `Africa/Bamako` -  * `Africa/Bangui` -  * `Africa/Banjul` -  * `Africa/Bissau` -  * `Africa/Blantyre` -  * `Africa/Brazzaville` -  * `Africa/Bujumbura` -  * `Africa/Cairo` -  * `Africa/Casablanca` -  * `Africa/Ceuta` -  * `Africa/Conakry` -  * `Africa/Dakar` -  * `Africa/Dar_es_Salaam` -  * `Africa/Djibouti` -  * `Africa/Douala` -  * `Africa/El_Aaiun` -  * `Africa/Freetown` -  * `Africa/Gaborone` -  * `Africa/Harare` -  * `Africa/Johannesburg` -  * `Africa/Juba` -  * `Africa/Kampala` -  * `Africa/Khartoum` -  * `Africa/Kigali` -  * `Africa/Kinshasa` -  * `Africa/Lagos` -  * `Africa/Libreville` -  * `Africa/Lome` -  * `Africa/Luanda` -  * `Africa/Lubumbashi` -  * `Africa/Lusaka` -  * `Africa/Malabo` -  * `Africa/Maputo` -  * `Africa/Maseru` -  * `Africa/Mbabane` -  * `Africa/Mogadishu` -  * `Africa/Monrovia` -  * `Africa/Nairobi` -  * `Africa/Ndjamena` -  * `Africa/Niamey` -  * `Africa/Nouakchott` -  * `Africa/Ouagadougou` -  * `Africa/Porto-Novo` -  * `Africa/Sao_Tome` -  * `Africa/Tripoli` -  * `Africa/Tunis` -  * `Africa/Windhoek` -  * `America/Adak` -  * `America/Anchorage` -  * `America/Anguilla` -  * `America/Antigua` -  * `America/Araguaina` -  * `America/Argentina/Buenos_Aires` -  * `America/Argentina/Catamarca` -  * `America/Argentina/Cordoba` -  * `America/Argentina/Jujuy` -  * `America/Argentina/La_Rioja` -  * `America/Argentina/Mendoza` -  * `America/Argentina/Rio_Gallegos` -  * `America/Argentina/Salta` -  * `America/Argentina/San_Juan` -  * `America/Argentina/San_Luis` -  * `America/Argentina/Tucuman` -  * `America/Argentina/Ushuaia` -  * `America/Aruba` -  * `America/Asuncion` -  * `America/Atikokan` -  * `America/Bahia` -  * `America/Bahia_Banderas` -  * `America/Barbados` -  * `America/Belem` -  * `America/Belize` -  * `America/Blanc-Sablon` -  * `America/Boa_Vista` -  * `America/Bogota` -  * `America/Boise` -  * `America/Cambridge_Bay` -  * `America/Campo_Grande` -  * `America/Cancun` -  * `America/Caracas` -  * `America/Cayenne` -  * `America/Cayman` -  * `America/Chicago` -  * `America/Chihuahua` -  * `America/Costa_Rica` -  * `America/Creston` -  * `America/Cuiaba` -  * `America/Curacao` -  * `America/Danmarkshavn` -  * `America/Dawson` -  * `America/Dawson_Creek` -  * `America/Denver` -  * `America/Detroit` -  * `America/Dominica` -  * `America/Edmonton` -  * `America/Eirunepe` -  * `America/El_Salvador` -  * `America/Fortaleza` -  * `America/Glace_Bay` -  * `America/Godthab` -  * `America/Goose_Bay` -  * `America/Grand_Turk` -  * `America/Grenada` -  * `America/Guadeloupe` -  * `America/Guatemala` -  * `America/Guayaquil` -  * `America/Guyana` -  * `America/Halifax` -  * `America/Havana` -  * `America/Hermosillo` -  * `America/Indiana/Indianapolis` -  * `America/Indiana/Knox` -  * `America/Indiana/Marengo` -  * `America/Indiana/Petersburg` -  * `America/Indiana/Tell_City` -  * `America/Indiana/Vevay` -  * `America/Indiana/Vincennes` -  * `America/Indiana/Winamac` -  * `America/Inuvik` -  * `America/Iqaluit` -  * `America/Jamaica` -  * `America/Juneau` -  * `America/Kentucky/Louisville` -  * `America/Kentucky/Monticello` -  * `America/Kralendijk` -  * `America/La_Paz` -  * `America/Lima` -  * `America/Los_Angeles` -  * `America/Lower_Princes` -  * `America/Maceio` -  * `America/Managua` -  * `America/Manaus` -  * `America/Marigot` -  * `America/Martinique` -  * `America/Matamoros` -  * `America/Mazatlan` -  * `America/Menominee` -  * `America/Merida` -  * `America/Metlakatla` -  * `America/Mexico_City` -  * `America/Miquelon` -  * `America/Moncton` -  * `America/Monterrey` -  * `America/Montevideo` -  * `America/Montreal` -  * `America/Montserrat` -  * `America/Nassau` -  * `America/New_York` -  * `America/Nipigon` -  * `America/Nome` -  * `America/Noronha` -  * `America/North_Dakota/Beulah` -  * `America/North_Dakota/Center` -  * `America/North_Dakota/New_Salem` -  * `America/Ojinaga` -  * `America/Panama` -  * `America/Pangnirtung` -  * `America/Paramaribo` -  * `America/Phoenix` -  * `America/Port-au-Prince` -  * `America/Port_of_Spain` -  * `America/Porto_Velho` -  * `America/Puerto_Rico` -  * `America/Rainy_River` -  * `America/Rankin_Inlet` -  * `America/Recife` -  * `America/Regina` -  * `America/Resolute` -  * `America/Rio_Branco` -  * `America/Santa_Isabel` -  * `America/Santarem` -  * `America/Santiago` -  * `America/Santo_Domingo` -  * `America/Sao_Paulo` -  * `America/Scoresbysund` -  * `America/Shiprock` -  * `America/Sitka` -  * `America/St_Barthelemy` -  * `America/St_Johns` -  * `America/St_Kitts` -  * `America/St_Lucia` -  * `America/St_Thomas` -  * `America/St_Vincent` -  * `America/Swift_Current` -  * `America/Tegucigalpa` -  * `America/Thule` -  * `America/Thunder_Bay` -  * `America/Tijuana` -  * `America/Toronto` -  * `America/Tortola` -  * `America/Vancouver` -  * `America/Whitehorse` -  * `America/Winnipeg` -  * `America/Yakutat` -  * `America/Yellowknife` -  * `Antarctica/Casey` -  * `Antarctica/Davis` -  * `Antarctica/DumontDUrville` -  * `Antarctica/Macquarie` -  * `Antarctica/Mawson` -  * `Antarctica/McMurdo` -  * `Antarctica/Palmer` -  * `Antarctica/Rothera` -  * `Antarctica/South_Pole` -  * `Antarctica/Syowa` -  * `Antarctica/Troll` -  * `Antarctica/Vostok` -  * `Arctic/Longyearbyen` -  * `Asia/Aden` -  * `Asia/Almaty` -  * `Asia/Amman` -  * `Asia/Anadyr` -  * `Asia/Aqtau` -  * `Asia/Aqtobe` -  * `Asia/Ashgabat` -  * `Asia/Baghdad` -  * `Asia/Bahrain` -  * `Asia/Baku` -  * `Asia/Bangkok` -  * `Asia/Beirut` -  * `Asia/Bishkek` -  * `Asia/Brunei` -  * `Asia/Calcutta` -  * `Asia/Choibalsan` -  * `Asia/Chongqing` -  * `Asia/Colombo` -  * `Asia/Damascus` -  * `Asia/Dhaka` -  * `Asia/Dili` -  * `Asia/Dubai` -  * `Asia/Dushanbe` -  * `Asia/Gaza` -  * `Asia/Harbin` -  * `Asia/Hebron` -  * `Asia/Ho_Chi_Minh` -  * `Asia/Hong_Kong` -  * `Asia/Hovd` -  * `Asia/Irkutsk` -  * `Asia/Jakarta` -  * `Asia/Jayapura` -  * `Asia/Jerusalem` -  * `Asia/Kabul` -  * `Asia/Kamchatka` -  * `Asia/Karachi` -  * `Asia/Kashgar` -  * `Asia/Kathmandu` -  * `Asia/Katmandu` -  * `Asia/Khandyga` -  * `Asia/Kolkata` -  * `Asia/Krasnoyarsk` -  * `Asia/Kuala_Lumpur` -  * `Asia/Kuching` -  * `Asia/Kuwait` -  * `Asia/Macau` -  * `Asia/Magadan` -  * `Asia/Makassar` -  * `Asia/Manila` -  * `Asia/Muscat` -  * `Asia/Nicosia` -  * `Asia/Novokuznetsk` -  * `Asia/Novosibirsk` -  * `Asia/Omsk` -  * `Asia/Oral` -  * `Asia/Phnom_Penh` -  * `Asia/Pontianak` -  * `Asia/Pyongyang` -  * `Asia/Qatar` -  * `Asia/Qyzylorda` -  * `Asia/Rangoon` -  * `Asia/Riyadh` -  * `Asia/Saigon` -  * `Asia/Sakhalin` -  * `Asia/Samarkand` -  * `Asia/Seoul` -  * `Asia/Shanghai` -  * `Asia/Singapore` -  * `Asia/Taipei` -  * `Asia/Tashkent` -  * `Asia/Tbilisi` -  * `Asia/Tehran` -  * `Asia/Thimphu` -  * `Asia/Tokyo` -  * `Asia/Ulaanbaatar` -  * `Asia/Urumqi` -  * `Asia/Ust-Nera` -  * `Asia/Vientiane` -  * `Asia/Vladivostok` -  * `Asia/Yakutsk` -  * `Asia/Yekaterinburg` -  * `Asia/Yerevan` -  * `Atlantic/Azores` -  * `Atlantic/Bermuda` -  * `Atlantic/Canary` -  * `Atlantic/Cape_Verde` -  * `Atlantic/Faroe` -  * `Atlantic/Madeira` -  * `Atlantic/Reykjavik` -  * `Atlantic/South_Georgia` -  * `Atlantic/St_Helena` -  * `Atlantic/Stanley` -  * `Australia/Adelaide` -  * `Australia/Brisbane` -  * `Australia/Broken_Hill` -  * `Australia/Currie` -  * `Australia/Darwin` -  * `Australia/Eucla` -  * `Australia/Hobart` -  * `Australia/Lindeman` -  * `Australia/Lord_Howe` -  * `Australia/Melbourne` -  * `Australia/Perth` -  * `Australia/Sydney` -  * `Etc/GMT` -  * `Europe/Amsterdam` -  * `Europe/Andorra` -  * `Europe/Athens` -  * `Europe/Belgrade` -  * `Europe/Berlin` -  * `Europe/Bratislava` -  * `Europe/Brussels` -  * `Europe/Bucharest` -  * `Europe/Budapest` -  * `Europe/Busingen` -  * `Europe/Chisinau` -  * `Europe/Copenhagen` -  * `Europe/Dublin` -  * `Europe/Gibraltar` -  * `Europe/Guernsey` -  * `Europe/Helsinki` -  * `Europe/Isle_of_Man` -  * `Europe/Istanbul` -  * `Europe/Jersey` -  * `Europe/Kaliningrad` -  * `Europe/Kiev` -  * `Europe/Lisbon` -  * `Europe/Ljubljana` -  * `Europe/London` -  * `Europe/Luxembourg` -  * `Europe/Madrid` -  * `Europe/Malta` -  * `Europe/Mariehamn` -  * `Europe/Minsk` -  * `Europe/Monaco` -  * `Europe/Moscow` -  * `Europe/Oslo` -  * `Europe/Paris` -  * `Europe/Podgorica` -  * `Europe/Prague` -  * `Europe/Riga` -  * `Europe/Rome` -  * `Europe/Samara` -  * `Europe/San_Marino` -  * `Europe/Sarajevo` -  * `Europe/Simferopol` -  * `Europe/Skopje` -  * `Europe/Sofia` -  * `Europe/Stockholm` -  * `Europe/Tallinn` -  * `Europe/Tirane` -  * `Europe/Uzhgorod` -  * `Europe/Vaduz` -  * `Europe/Vatican` -  * `Europe/Vienna` -  * `Europe/Vilnius` -  * `Europe/Volgograd` -  * `Europe/Warsaw` -  * `Europe/Zagreb` -  * `Europe/Zaporozhye` -  * `Europe/Zurich` -  * `Indian/Antananarivo` -  * `Indian/Chagos` -  * `Indian/Christmas` -  * `Indian/Cocos` -  * `Indian/Comoro` -  * `Indian/Kerguelen` -  * `Indian/Mahe` -  * `Indian/Maldives` -  * `Indian/Mauritius` -  * `Indian/Mayotte` -  * `Indian/Reunion` -  * `Pacific/Apia` -  * `Pacific/Auckland` -  * `Pacific/Chatham` -  * `Pacific/Chuuk` -  * `Pacific/Easter` -  * `Pacific/Efate` -  * `Pacific/Enderbury` -  * `Pacific/Fakaofo` -  * `Pacific/Fiji` -  * `Pacific/Funafuti` -  * `Pacific/Galapagos` -  * `Pacific/Gambier` -  * `Pacific/Guadalcanal` -  * `Pacific/Guam` -  * `Pacific/Honolulu` -  * `Pacific/Johnston` -  * `Pacific/Kiritimati` -  * `Pacific/Kosrae` -  * `Pacific/Kwajalein` -  * `Pacific/Majuro` -  * `Pacific/Marquesas` -  * `Pacific/Midway` -  * `Pacific/Nauru` -  * `Pacific/Norfolk` -  * `Pacific/Noumea` -  * `Pacific/Pago_Pago` -  * `Pacific/Palau` -  * `Pacific/Pitcairn` -  * `Pacific/Pohnpei` -  * `Pacific/Port_Moresby` -  * `Pacific/Rarotonga` -  * `Pacific/Saipan` -  * `Pacific/Tahiti` -  * `Pacific/Tarawa` -  * `Pacific/Tongatapu` -  * `Pacific/Wake` -  * `Pacific/Wallis` -  * `UTC` -
 	TimeZone *string `json:"TimeZone,omitempty"`
 	// Current software version of the Intersight Appliance.
 	Version              *string `json:"Version,omitempty"`
@@ -96,6 +106,11 @@ func (o *ApplianceSystemInfo) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "appliance.SystemInfo" of the ClassId field.
+func (o *ApplianceSystemInfo) GetDefaultClassId() interface{} {
+	return "appliance.SystemInfo"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ApplianceSystemInfo) GetObjectType() string {
 	if o == nil {
@@ -120,9 +135,14 @@ func (o *ApplianceSystemInfo) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "appliance.SystemInfo" of the ObjectType field.
+func (o *ApplianceSystemInfo) GetDefaultObjectType() interface{} {
+	return "appliance.SystemInfo"
+}
+
 // GetCloudConnStatus returns the CloudConnStatus field value if set, zero value otherwise.
 func (o *ApplianceSystemInfo) GetCloudConnStatus() string {
-	if o == nil || o.CloudConnStatus == nil {
+	if o == nil || IsNil(o.CloudConnStatus) {
 		var ret string
 		return ret
 	}
@@ -132,7 +152,7 @@ func (o *ApplianceSystemInfo) GetCloudConnStatus() string {
 // GetCloudConnStatusOk returns a tuple with the CloudConnStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceSystemInfo) GetCloudConnStatusOk() (*string, bool) {
-	if o == nil || o.CloudConnStatus == nil {
+	if o == nil || IsNil(o.CloudConnStatus) {
 		return nil, false
 	}
 	return o.CloudConnStatus, true
@@ -140,7 +160,7 @@ func (o *ApplianceSystemInfo) GetCloudConnStatusOk() (*string, bool) {
 
 // HasCloudConnStatus returns a boolean if a field has been set.
 func (o *ApplianceSystemInfo) HasCloudConnStatus() bool {
-	if o != nil && o.CloudConnStatus != nil {
+	if o != nil && !IsNil(o.CloudConnStatus) {
 		return true
 	}
 
@@ -152,9 +172,41 @@ func (o *ApplianceSystemInfo) SetCloudConnStatus(v string) {
 	o.CloudConnStatus = &v
 }
 
+// GetClusterStatus returns the ClusterStatus field value if set, zero value otherwise.
+func (o *ApplianceSystemInfo) GetClusterStatus() string {
+	if o == nil || IsNil(o.ClusterStatus) {
+		var ret string
+		return ret
+	}
+	return *o.ClusterStatus
+}
+
+// GetClusterStatusOk returns a tuple with the ClusterStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApplianceSystemInfo) GetClusterStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.ClusterStatus) {
+		return nil, false
+	}
+	return o.ClusterStatus, true
+}
+
+// HasClusterStatus returns a boolean if a field has been set.
+func (o *ApplianceSystemInfo) HasClusterStatus() bool {
+	if o != nil && !IsNil(o.ClusterStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetClusterStatus gets a reference to the given string and assigns it to the ClusterStatus field.
+func (o *ApplianceSystemInfo) SetClusterStatus(v string) {
+	o.ClusterStatus = &v
+}
+
 // GetDeploymentSize returns the DeploymentSize field value if set, zero value otherwise.
 func (o *ApplianceSystemInfo) GetDeploymentSize() string {
-	if o == nil || o.DeploymentSize == nil {
+	if o == nil || IsNil(o.DeploymentSize) {
 		var ret string
 		return ret
 	}
@@ -164,7 +216,7 @@ func (o *ApplianceSystemInfo) GetDeploymentSize() string {
 // GetDeploymentSizeOk returns a tuple with the DeploymentSize field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceSystemInfo) GetDeploymentSizeOk() (*string, bool) {
-	if o == nil || o.DeploymentSize == nil {
+	if o == nil || IsNil(o.DeploymentSize) {
 		return nil, false
 	}
 	return o.DeploymentSize, true
@@ -172,7 +224,7 @@ func (o *ApplianceSystemInfo) GetDeploymentSizeOk() (*string, bool) {
 
 // HasDeploymentSize returns a boolean if a field has been set.
 func (o *ApplianceSystemInfo) HasDeploymentSize() bool {
-	if o != nil && o.DeploymentSize != nil {
+	if o != nil && !IsNil(o.DeploymentSize) {
 		return true
 	}
 
@@ -186,7 +238,7 @@ func (o *ApplianceSystemInfo) SetDeploymentSize(v string) {
 
 // GetHostname returns the Hostname field value if set, zero value otherwise.
 func (o *ApplianceSystemInfo) GetHostname() string {
-	if o == nil || o.Hostname == nil {
+	if o == nil || IsNil(o.Hostname) {
 		var ret string
 		return ret
 	}
@@ -196,7 +248,7 @@ func (o *ApplianceSystemInfo) GetHostname() string {
 // GetHostnameOk returns a tuple with the Hostname field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceSystemInfo) GetHostnameOk() (*string, bool) {
-	if o == nil || o.Hostname == nil {
+	if o == nil || IsNil(o.Hostname) {
 		return nil, false
 	}
 	return o.Hostname, true
@@ -204,7 +256,7 @@ func (o *ApplianceSystemInfo) GetHostnameOk() (*string, bool) {
 
 // HasHostname returns a boolean if a field has been set.
 func (o *ApplianceSystemInfo) HasHostname() bool {
-	if o != nil && o.Hostname != nil {
+	if o != nil && !IsNil(o.Hostname) {
 		return true
 	}
 
@@ -218,7 +270,7 @@ func (o *ApplianceSystemInfo) SetHostname(v string) {
 
 // GetInitDone returns the InitDone field value if set, zero value otherwise.
 func (o *ApplianceSystemInfo) GetInitDone() bool {
-	if o == nil || o.InitDone == nil {
+	if o == nil || IsNil(o.InitDone) {
 		var ret bool
 		return ret
 	}
@@ -228,7 +280,7 @@ func (o *ApplianceSystemInfo) GetInitDone() bool {
 // GetInitDoneOk returns a tuple with the InitDone field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceSystemInfo) GetInitDoneOk() (*bool, bool) {
-	if o == nil || o.InitDone == nil {
+	if o == nil || IsNil(o.InitDone) {
 		return nil, false
 	}
 	return o.InitDone, true
@@ -236,7 +288,7 @@ func (o *ApplianceSystemInfo) GetInitDoneOk() (*bool, bool) {
 
 // HasInitDone returns a boolean if a field has been set.
 func (o *ApplianceSystemInfo) HasInitDone() bool {
-	if o != nil && o.InitDone != nil {
+	if o != nil && !IsNil(o.InitDone) {
 		return true
 	}
 
@@ -248,9 +300,73 @@ func (o *ApplianceSystemInfo) SetInitDone(v bool) {
 	o.InitDone = &v
 }
 
+// GetIpAddress returns the IpAddress field value if set, zero value otherwise.
+func (o *ApplianceSystemInfo) GetIpAddress() string {
+	if o == nil || IsNil(o.IpAddress) {
+		var ret string
+		return ret
+	}
+	return *o.IpAddress
+}
+
+// GetIpAddressOk returns a tuple with the IpAddress field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApplianceSystemInfo) GetIpAddressOk() (*string, bool) {
+	if o == nil || IsNil(o.IpAddress) {
+		return nil, false
+	}
+	return o.IpAddress, true
+}
+
+// HasIpAddress returns a boolean if a field has been set.
+func (o *ApplianceSystemInfo) HasIpAddress() bool {
+	if o != nil && !IsNil(o.IpAddress) {
+		return true
+	}
+
+	return false
+}
+
+// SetIpAddress gets a reference to the given string and assigns it to the IpAddress field.
+func (o *ApplianceSystemInfo) SetIpAddress(v string) {
+	o.IpAddress = &v
+}
+
+// GetIsVirtualIp returns the IsVirtualIp field value if set, zero value otherwise.
+func (o *ApplianceSystemInfo) GetIsVirtualIp() bool {
+	if o == nil || IsNil(o.IsVirtualIp) {
+		var ret bool
+		return ret
+	}
+	return *o.IsVirtualIp
+}
+
+// GetIsVirtualIpOk returns a tuple with the IsVirtualIp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ApplianceSystemInfo) GetIsVirtualIpOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsVirtualIp) {
+		return nil, false
+	}
+	return o.IsVirtualIp, true
+}
+
+// HasIsVirtualIp returns a boolean if a field has been set.
+func (o *ApplianceSystemInfo) HasIsVirtualIp() bool {
+	if o != nil && !IsNil(o.IsVirtualIp) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsVirtualIp gets a reference to the given bool and assigns it to the IsVirtualIp field.
+func (o *ApplianceSystemInfo) SetIsVirtualIp(v bool) {
+	o.IsVirtualIp = &v
+}
+
 // GetOperationalStatus returns the OperationalStatus field value if set, zero value otherwise.
 func (o *ApplianceSystemInfo) GetOperationalStatus() string {
-	if o == nil || o.OperationalStatus == nil {
+	if o == nil || IsNil(o.OperationalStatus) {
 		var ret string
 		return ret
 	}
@@ -260,7 +376,7 @@ func (o *ApplianceSystemInfo) GetOperationalStatus() string {
 // GetOperationalStatusOk returns a tuple with the OperationalStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceSystemInfo) GetOperationalStatusOk() (*string, bool) {
-	if o == nil || o.OperationalStatus == nil {
+	if o == nil || IsNil(o.OperationalStatus) {
 		return nil, false
 	}
 	return o.OperationalStatus, true
@@ -268,7 +384,7 @@ func (o *ApplianceSystemInfo) GetOperationalStatusOk() (*string, bool) {
 
 // HasOperationalStatus returns a boolean if a field has been set.
 func (o *ApplianceSystemInfo) HasOperationalStatus() bool {
-	if o != nil && o.OperationalStatus != nil {
+	if o != nil && !IsNil(o.OperationalStatus) {
 		return true
 	}
 
@@ -282,7 +398,7 @@ func (o *ApplianceSystemInfo) SetOperationalStatus(v string) {
 
 // GetSerialId returns the SerialId field value if set, zero value otherwise.
 func (o *ApplianceSystemInfo) GetSerialId() string {
-	if o == nil || o.SerialId == nil {
+	if o == nil || IsNil(o.SerialId) {
 		var ret string
 		return ret
 	}
@@ -292,7 +408,7 @@ func (o *ApplianceSystemInfo) GetSerialId() string {
 // GetSerialIdOk returns a tuple with the SerialId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceSystemInfo) GetSerialIdOk() (*string, bool) {
-	if o == nil || o.SerialId == nil {
+	if o == nil || IsNil(o.SerialId) {
 		return nil, false
 	}
 	return o.SerialId, true
@@ -300,7 +416,7 @@ func (o *ApplianceSystemInfo) GetSerialIdOk() (*string, bool) {
 
 // HasSerialId returns a boolean if a field has been set.
 func (o *ApplianceSystemInfo) HasSerialId() bool {
-	if o != nil && o.SerialId != nil {
+	if o != nil && !IsNil(o.SerialId) {
 		return true
 	}
 
@@ -314,7 +430,7 @@ func (o *ApplianceSystemInfo) SetSerialId(v string) {
 
 // GetTimeZone returns the TimeZone field value if set, zero value otherwise.
 func (o *ApplianceSystemInfo) GetTimeZone() string {
-	if o == nil || o.TimeZone == nil {
+	if o == nil || IsNil(o.TimeZone) {
 		var ret string
 		return ret
 	}
@@ -324,7 +440,7 @@ func (o *ApplianceSystemInfo) GetTimeZone() string {
 // GetTimeZoneOk returns a tuple with the TimeZone field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceSystemInfo) GetTimeZoneOk() (*string, bool) {
-	if o == nil || o.TimeZone == nil {
+	if o == nil || IsNil(o.TimeZone) {
 		return nil, false
 	}
 	return o.TimeZone, true
@@ -332,7 +448,7 @@ func (o *ApplianceSystemInfo) GetTimeZoneOk() (*string, bool) {
 
 // HasTimeZone returns a boolean if a field has been set.
 func (o *ApplianceSystemInfo) HasTimeZone() bool {
-	if o != nil && o.TimeZone != nil {
+	if o != nil && !IsNil(o.TimeZone) {
 		return true
 	}
 
@@ -346,7 +462,7 @@ func (o *ApplianceSystemInfo) SetTimeZone(v string) {
 
 // GetVersion returns the Version field value if set, zero value otherwise.
 func (o *ApplianceSystemInfo) GetVersion() string {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		var ret string
 		return ret
 	}
@@ -356,7 +472,7 @@ func (o *ApplianceSystemInfo) GetVersion() string {
 // GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ApplianceSystemInfo) GetVersionOk() (*string, bool) {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		return nil, false
 	}
 	return o.Version, true
@@ -364,7 +480,7 @@ func (o *ApplianceSystemInfo) GetVersionOk() (*string, bool) {
 
 // HasVersion returns a boolean if a field has been set.
 func (o *ApplianceSystemInfo) HasVersion() bool {
-	if o != nil && o.Version != nil {
+	if o != nil && !IsNil(o.Version) {
 		return true
 	}
 
@@ -377,43 +493,62 @@ func (o *ApplianceSystemInfo) SetVersion(v string) {
 }
 
 func (o ApplianceSystemInfo) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ApplianceSystemInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.CloudConnStatus != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.CloudConnStatus) {
 		toSerialize["CloudConnStatus"] = o.CloudConnStatus
 	}
-	if o.DeploymentSize != nil {
+	if !IsNil(o.ClusterStatus) {
+		toSerialize["ClusterStatus"] = o.ClusterStatus
+	}
+	if !IsNil(o.DeploymentSize) {
 		toSerialize["DeploymentSize"] = o.DeploymentSize
 	}
-	if o.Hostname != nil {
+	if !IsNil(o.Hostname) {
 		toSerialize["Hostname"] = o.Hostname
 	}
-	if o.InitDone != nil {
+	if !IsNil(o.InitDone) {
 		toSerialize["InitDone"] = o.InitDone
 	}
-	if o.OperationalStatus != nil {
+	if !IsNil(o.IpAddress) {
+		toSerialize["IpAddress"] = o.IpAddress
+	}
+	if !IsNil(o.IsVirtualIp) {
+		toSerialize["IsVirtualIp"] = o.IsVirtualIp
+	}
+	if !IsNil(o.OperationalStatus) {
 		toSerialize["OperationalStatus"] = o.OperationalStatus
 	}
-	if o.SerialId != nil {
+	if !IsNil(o.SerialId) {
 		toSerialize["SerialId"] = o.SerialId
 	}
-	if o.TimeZone != nil {
+	if !IsNil(o.TimeZone) {
 		toSerialize["TimeZone"] = o.TimeZone
 	}
-	if o.Version != nil {
+	if !IsNil(o.Version) {
 		toSerialize["Version"] = o.Version
 	}
 
@@ -421,10 +556,51 @@ func (o ApplianceSystemInfo) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ApplianceSystemInfo) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ApplianceSystemInfo) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ApplianceSystemInfoWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -432,17 +608,23 @@ func (o *ApplianceSystemInfo) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// Connection state of the Intersight Appliance to the Intersight. * `` - The target details have been persisted but Intersight has not yet attempted to connect to the target. * `Connected` - Intersight is able to establish a connection to the target and initiate management activities. * `NotConnected` - Intersight is unable to establish a connection to the target. * `ClaimInProgress` - Claim of the target is in progress. A connection to the target has not been fully established. * `UnclaimInProgress` - Unclaim of the target is in progress. Intersight is able to connect to the target and all management operations are supported. * `Unclaimed` - The device was un-claimed from the users account by an Administrator of the device. Also indicates the failure to claim Targets of type HTTP Endpoint in Intersight. * `Claimed` - Target of type HTTP Endpoint is successfully claimed in Intersight. Currently no validation is performed to verify the Target connectivity from Intersight at the time of creation. However invoking API from Intersight Orchestrator fails if this Target is not reachable from Intersight or if Target API credentials are incorrect.
 		CloudConnStatus *string `json:"CloudConnStatus,omitempty"`
+		// Current status of cluster operation on the Intersight Appliance. * `none` - The Intersight Appliance is running in standalone mode. * `active` - The Intersight Appliance is running as part of a cluster. * `pending` - The Intersight Appliance is currently forming a cluster. * `failed` - The Intersight Appliance failed to form a cluster.
+		ClusterStatus *string `json:"ClusterStatus,omitempty"`
 		// Current running deployment size for the Intersight Appliance cluster. Eg. small, medium, large etc.
 		DeploymentSize *string `json:"DeploymentSize,omitempty"`
-		// Publicly accessible FQDN or IP address of the Intersight Appliance.
+		// Publicly accessible FQDN of the Intersight Appliance.
 		Hostname *string `json:"Hostname,omitempty"`
 		// Indicates that the setup initialization process has been completed.
 		InitDone *bool `json:"InitDone,omitempty"`
-		// Operational status of the Intersight Appliance cluster. * `Unknown` - Operational status of the Intersight Appliance entity is Unknown. * `Operational` - Operational status of the Intersight Appliance entity is Operational. * `Impaired` - Operational status of the Intersight Appliance entity is Impaired. * `AttentionNeeded` - Operational status of the Intersight Appliance entity is AttentionNeeded.
+		// Publicly accessible IP address of the Intersight Appliance.
+		IpAddress *string `json:"IpAddress,omitempty"`
+		// Specifies whether this Intersight Appliance is using a virtual ip address.
+		IsVirtualIp *bool `json:"IsVirtualIp,omitempty"`
+		// Operational status of the Intersight Appliance cluster. * `Unknown` - The status of the appliance node is unknown. * `Operational` - The appliance node is operational. * `Impaired` - The appliance node is impaired. * `AttentionNeeded` - The appliance node needs attention. * `ReadyToJoin` - The node is ready to be added to a standalone Intersight Appliance to form a cluster. * `OutOfService` - The user has taken this node (part of a cluster) to out of service. * `ReadyForReplacement` - The cluster node is ready to be replaced. * `ReplacementInProgress` - The cluster node replacement is in progress. * `ReplacementFailed` - There was a failure during the cluster node replacement.
 		OperationalStatus *string `json:"OperationalStatus,omitempty"`
 		// SerialId of the Intersight Appliance. SerialId is generated when the Intersight Appliance is setup. It is a unique UUID string, and serialId will not change for the life time of the Intersight Appliance.
 		SerialId *string `json:"SerialId,omitempty"`
-		// Timezone of the Intersight Appliance. * `Pacific/Niue` -  * `Pacific/Pago_Pago` -  * `Pacific/Honolulu` -  * `Pacific/Rarotonga` -  * `Pacific/Tahiti` -  * `Pacific/Marquesas` -  * `America/Anchorage` -  * `Pacific/Gambier` -  * `America/Los_Angeles` -  * `America/Tijuana` -  * `America/Vancouver` -  * `America/Whitehorse` -  * `Pacific/Pitcairn` -  * `America/Dawson_Creek` -  * `America/Denver` -  * `America/Edmonton` -  * `America/Hermosillo` -  * `America/Mazatlan` -  * `America/Phoenix` -  * `America/Yellowknife` -  * `America/Belize` -  * `America/Chicago` -  * `America/Costa_Rica` -  * `America/El_Salvador` -  * `America/Guatemala` -  * `America/Managua` -  * `America/Mexico_City` -  * `America/Regina` -  * `America/Tegucigalpa` -  * `America/Winnipeg` -  * `Pacific/Galapagos` -  * `America/Bogota` -  * `America/Cancun` -  * `America/Cayman` -  * `America/Guayaquil` -  * `America/Havana` -  * `America/Iqaluit` -  * `America/Jamaica` -  * `America/Lima` -  * `America/Nassau` -  * `America/New_York` -  * `America/Nuuk` -  * `America/Panama` -  * `America/Port-au-Prince` -  * `America/Rio_Branco` -  * `America/Toronto` -  * `Pacific/Easter` -  * `America/Caracas` -  * `America/Asuncion` -  * `America/Barbados` -  * `America/Boa_Vista` -  * `America/Campo_Grande` -  * `America/Cuiaba` -  * `America/Curacao` -  * `America/Grand_Turk` -  * `America/Guyana` -  * `America/Halifax` -  * `America/La_Paz` -  * `America/Manaus` -  * `America/Martinique` -  * `America/Port_of_Spain` -  * `America/Porto_Velho` -  * `America/Puerto_Rico` -  * `America/Santo_Domingo` -  * `America/Thule` -  * `Atlantic/Bermuda` -  * `America/St_Johns` -  * `America/Araguaina` -  * `America/Argentina/Buenos_Aires` -  * `America/Bahia` -  * `America/Belem` -  * `America/Cayenne` -  * `America/Fortaleza` -  * `America/Godthab` -  * `America/Maceio` -  * `America/Miquelon` -  * `America/Montevideo` -  * `America/Paramaribo` -  * `America/Recife` -  * `America/Santiago` -  * `America/Sao_Paulo` -  * `Antarctica/Palmer` -  * `Antarctica/Rothera` -  * `Atlantic/Stanley` -  * `America/Noronha` -  * `Atlantic/South_Georgia` -  * `America/Scoresbysund` -  * `Atlantic/Azores` -  * `Atlantic/Cape_Verde` -  * `Africa/Abidjan` -  * `Africa/Accra` -  * `Africa/Bissau` -  * `Africa/Casablanca` -  * `Africa/El_Aaiun` -  * `Africa/Monrovia` -  * `America/Danmarkshavn` -  * `Atlantic/Canary` -  * `Atlantic/Faroe` -  * `Atlantic/Reykjavik` -  * `Etc/GMT` -  * `Europe/Dublin` -  * `Europe/Lisbon` -  * `Europe/London` -  * `Africa/Algiers` -  * `Africa/Ceuta` -  * `Africa/Lagos` -  * `Africa/Ndjamena` -  * `Africa/Tunis` -  * `Africa/Windhoek` -  * `Europe/Amsterdam` -  * `Europe/Andorra` -  * `Europe/Belgrade` -  * `Europe/Berlin` -  * `Europe/Brussels` -  * `Europe/Budapest` -  * `Europe/Copenhagen` -  * `Europe/Gibraltar` -  * `Europe/Luxembourg` -  * `Europe/Madrid` -  * `Europe/Malta` -  * `Europe/Monaco` -  * `Europe/Oslo` -  * `Europe/Paris` -  * `Europe/Prague` -  * `Europe/Rome` -  * `Europe/Stockholm` -  * `Europe/Tirane` -  * `Europe/Vienna` -  * `Europe/Warsaw` -  * `Europe/Zurich` -  * `Africa/Cairo` -  * `Africa/Johannesburg` -  * `Africa/Maputo` -  * `Africa/Tripoli` -  * `Asia/Amman` -  * `Asia/Beirut` -  * `Asia/Damascus` -  * `Asia/Gaza` -  * `Asia/Jerusalem` -  * `Asia/Nicosia` -  * `Europe/Athens` -  * `Europe/Bucharest` -  * `Europe/Chisinau` -  * `Europe/Helsinki` -  * `Europe/Istanbul` -  * `Europe/Kaliningrad` -  * `Europe/Kiev` -  * `Europe/Riga` -  * `Europe/Sofia` -  * `Europe/Tallinn` -  * `Europe/Vilnius` -  * `Africa/Khartoum` -  * `Africa/Nairobi` -  * `Antarctica/Syowa` -  * `Asia/Baghdad` -  * `Asia/Qatar` -  * `Asia/Riyadh` -  * `Europe/Minsk` -  * `Europe/Moscow` -  * `Asia/Tehran` -  * `Asia/Baku` -  * `Asia/Dubai` -  * `Asia/Tbilisi` -  * `Asia/Yerevan` -  * `Europe/Samara` -  * `Indian/Mahe` -  * `Indian/Mauritius` -  * `Indian/Reunion` -  * `Asia/Kabul` -  * `Antarctica/Mawson` -  * `Asia/Aqtau` -  * `Asia/Aqtobe` -  * `Asia/Ashgabat` -  * `Asia/Dushanbe` -  * `Asia/Karachi` -  * `Asia/Tashkent` -  * `Asia/Yekaterinburg` -  * `Indian/Kerguelen` -  * `Indian/Maldives` -  * `Asia/Calcutta` -  * `Asia/Kolkata` -  * `Asia/Colombo` -  * `Asia/Kathmandu` -  * `Asia/Katmandu` -  * `Antarctica/Vostok` -  * `Asia/Almaty` -  * `Asia/Bishkek` -  * `Asia/Dhaka` -  * `Asia/Omsk` -  * `Asia/Thimphu` -  * `Indian/Chagos` -  * `Asia/Rangoon` -  * `Indian/Cocos` -  * `Antarctica/Davis` -  * `Asia/Bangkok` -  * `Asia/Ho_Chi_Minh` -  * `Asia/Hovd` -  * `Asia/Jakarta` -  * `Asia/Krasnoyarsk` -  * `Asia/Saigon` -  * `Indian/Christmas` -  * `Antarctica/Casey` -  * `Asia/Brunei` -  * `Asia/Choibalsan` -  * `Asia/Hong_Kong` -  * `Asia/Irkutsk` -  * `Asia/Kuala_Lumpur` -  * `Asia/Macau` -  * `Asia/Makassar` -  * `Asia/Manila` -  * `Asia/Shanghai` -  * `Asia/Singapore` -  * `Asia/Taipei` -  * `Asia/Ulaanbaatar` -  * `Australia/Perth` -  * `Asia/Pyongyang` -  * `Asia/Dili` -  * `Asia/Jayapura` -  * `Asia/Seoul` -  * `Asia/Tokyo` -  * `Asia/Yakutsk` -  * `Asia/Yangon` -  * `Pacific/Palau` -  * `Australia/Adelaide` -  * `Australia/Darwin` -  * `Antarctica/DumontDUrville` -  * `Asia/Magadan` -  * `Asia/Vladivostok` -  * `Australia/Brisbane` -  * `Australia/Hobart` -  * `Australia/Sydney` -  * `Pacific/Chuuk` -  * `Pacific/Guam` -  * `Pacific/Port_Moresby` -  * `Pacific/Efate` -  * `Pacific/Guadalcanal` -  * `Pacific/Kosrae` -  * `Pacific/Norfolk` -  * `Pacific/Noumea` -  * `Pacific/Pohnpei` -  * `Asia/Kamchatka` -  * `Pacific/Auckland` -  * `Pacific/Fiji` -  * `Pacific/Funafuti` -  * `Pacific/Kwajalein` -  * `Pacific/Majuro` -  * `Pacific/Nauru` -  * `Pacific/Tarawa` -  * `Pacific/Wake` -  * `Pacific/Wallis` -  * `Pacific/Apia` -  * `Pacific/Enderbury` -  * `Pacific/Fakaofo` -  * `Pacific/Tongatapu` -  * `Pacific/Kiritimati` -
+		// Timezone of the Intersight Appliance. * `Pacific/Niue` -  * `Africa/Abidjan` -  * `Africa/Accra` -  * `Africa/Addis_Ababa` -  * `Africa/Algiers` -  * `Africa/Asmara` -  * `Africa/Bamako` -  * `Africa/Bangui` -  * `Africa/Banjul` -  * `Africa/Bissau` -  * `Africa/Blantyre` -  * `Africa/Brazzaville` -  * `Africa/Bujumbura` -  * `Africa/Cairo` -  * `Africa/Casablanca` -  * `Africa/Ceuta` -  * `Africa/Conakry` -  * `Africa/Dakar` -  * `Africa/Dar_es_Salaam` -  * `Africa/Djibouti` -  * `Africa/Douala` -  * `Africa/El_Aaiun` -  * `Africa/Freetown` -  * `Africa/Gaborone` -  * `Africa/Harare` -  * `Africa/Johannesburg` -  * `Africa/Juba` -  * `Africa/Kampala` -  * `Africa/Khartoum` -  * `Africa/Kigali` -  * `Africa/Kinshasa` -  * `Africa/Lagos` -  * `Africa/Libreville` -  * `Africa/Lome` -  * `Africa/Luanda` -  * `Africa/Lubumbashi` -  * `Africa/Lusaka` -  * `Africa/Malabo` -  * `Africa/Maputo` -  * `Africa/Maseru` -  * `Africa/Mbabane` -  * `Africa/Mogadishu` -  * `Africa/Monrovia` -  * `Africa/Nairobi` -  * `Africa/Ndjamena` -  * `Africa/Niamey` -  * `Africa/Nouakchott` -  * `Africa/Ouagadougou` -  * `Africa/Porto-Novo` -  * `Africa/Sao_Tome` -  * `Africa/Tripoli` -  * `Africa/Tunis` -  * `Africa/Windhoek` -  * `America/Adak` -  * `America/Anchorage` -  * `America/Anguilla` -  * `America/Antigua` -  * `America/Araguaina` -  * `America/Argentina/Buenos_Aires` -  * `America/Argentina/Catamarca` -  * `America/Argentina/Cordoba` -  * `America/Argentina/Jujuy` -  * `America/Argentina/La_Rioja` -  * `America/Argentina/Mendoza` -  * `America/Argentina/Rio_Gallegos` -  * `America/Argentina/Salta` -  * `America/Argentina/San_Juan` -  * `America/Argentina/San_Luis` -  * `America/Argentina/Tucuman` -  * `America/Argentina/Ushuaia` -  * `America/Aruba` -  * `America/Asuncion` -  * `America/Atikokan` -  * `America/Bahia` -  * `America/Bahia_Banderas` -  * `America/Barbados` -  * `America/Belem` -  * `America/Belize` -  * `America/Blanc-Sablon` -  * `America/Boa_Vista` -  * `America/Bogota` -  * `America/Boise` -  * `America/Cambridge_Bay` -  * `America/Campo_Grande` -  * `America/Cancun` -  * `America/Caracas` -  * `America/Cayenne` -  * `America/Cayman` -  * `America/Chicago` -  * `America/Chihuahua` -  * `America/Costa_Rica` -  * `America/Creston` -  * `America/Cuiaba` -  * `America/Curacao` -  * `America/Danmarkshavn` -  * `America/Dawson` -  * `America/Dawson_Creek` -  * `America/Denver` -  * `America/Detroit` -  * `America/Dominica` -  * `America/Edmonton` -  * `America/Eirunepe` -  * `America/El_Salvador` -  * `America/Fortaleza` -  * `America/Glace_Bay` -  * `America/Godthab` -  * `America/Goose_Bay` -  * `America/Grand_Turk` -  * `America/Grenada` -  * `America/Guadeloupe` -  * `America/Guatemala` -  * `America/Guayaquil` -  * `America/Guyana` -  * `America/Halifax` -  * `America/Havana` -  * `America/Hermosillo` -  * `America/Indiana/Indianapolis` -  * `America/Indiana/Knox` -  * `America/Indiana/Marengo` -  * `America/Indiana/Petersburg` -  * `America/Indiana/Tell_City` -  * `America/Indiana/Vevay` -  * `America/Indiana/Vincennes` -  * `America/Indiana/Winamac` -  * `America/Inuvik` -  * `America/Iqaluit` -  * `America/Jamaica` -  * `America/Juneau` -  * `America/Kentucky/Louisville` -  * `America/Kentucky/Monticello` -  * `America/Kralendijk` -  * `America/La_Paz` -  * `America/Lima` -  * `America/Los_Angeles` -  * `America/Lower_Princes` -  * `America/Maceio` -  * `America/Managua` -  * `America/Manaus` -  * `America/Marigot` -  * `America/Martinique` -  * `America/Matamoros` -  * `America/Mazatlan` -  * `America/Menominee` -  * `America/Merida` -  * `America/Metlakatla` -  * `America/Mexico_City` -  * `America/Miquelon` -  * `America/Moncton` -  * `America/Monterrey` -  * `America/Montevideo` -  * `America/Montreal` -  * `America/Montserrat` -  * `America/Nassau` -  * `America/New_York` -  * `America/Nipigon` -  * `America/Nome` -  * `America/Noronha` -  * `America/North_Dakota/Beulah` -  * `America/North_Dakota/Center` -  * `America/North_Dakota/New_Salem` -  * `America/Ojinaga` -  * `America/Panama` -  * `America/Pangnirtung` -  * `America/Paramaribo` -  * `America/Phoenix` -  * `America/Port-au-Prince` -  * `America/Port_of_Spain` -  * `America/Porto_Velho` -  * `America/Puerto_Rico` -  * `America/Rainy_River` -  * `America/Rankin_Inlet` -  * `America/Recife` -  * `America/Regina` -  * `America/Resolute` -  * `America/Rio_Branco` -  * `America/Santa_Isabel` -  * `America/Santarem` -  * `America/Santiago` -  * `America/Santo_Domingo` -  * `America/Sao_Paulo` -  * `America/Scoresbysund` -  * `America/Shiprock` -  * `America/Sitka` -  * `America/St_Barthelemy` -  * `America/St_Johns` -  * `America/St_Kitts` -  * `America/St_Lucia` -  * `America/St_Thomas` -  * `America/St_Vincent` -  * `America/Swift_Current` -  * `America/Tegucigalpa` -  * `America/Thule` -  * `America/Thunder_Bay` -  * `America/Tijuana` -  * `America/Toronto` -  * `America/Tortola` -  * `America/Vancouver` -  * `America/Whitehorse` -  * `America/Winnipeg` -  * `America/Yakutat` -  * `America/Yellowknife` -  * `Antarctica/Casey` -  * `Antarctica/Davis` -  * `Antarctica/DumontDUrville` -  * `Antarctica/Macquarie` -  * `Antarctica/Mawson` -  * `Antarctica/McMurdo` -  * `Antarctica/Palmer` -  * `Antarctica/Rothera` -  * `Antarctica/South_Pole` -  * `Antarctica/Syowa` -  * `Antarctica/Troll` -  * `Antarctica/Vostok` -  * `Arctic/Longyearbyen` -  * `Asia/Aden` -  * `Asia/Almaty` -  * `Asia/Amman` -  * `Asia/Anadyr` -  * `Asia/Aqtau` -  * `Asia/Aqtobe` -  * `Asia/Ashgabat` -  * `Asia/Baghdad` -  * `Asia/Bahrain` -  * `Asia/Baku` -  * `Asia/Bangkok` -  * `Asia/Beirut` -  * `Asia/Bishkek` -  * `Asia/Brunei` -  * `Asia/Calcutta` -  * `Asia/Choibalsan` -  * `Asia/Chongqing` -  * `Asia/Colombo` -  * `Asia/Damascus` -  * `Asia/Dhaka` -  * `Asia/Dili` -  * `Asia/Dubai` -  * `Asia/Dushanbe` -  * `Asia/Gaza` -  * `Asia/Harbin` -  * `Asia/Hebron` -  * `Asia/Ho_Chi_Minh` -  * `Asia/Hong_Kong` -  * `Asia/Hovd` -  * `Asia/Irkutsk` -  * `Asia/Jakarta` -  * `Asia/Jayapura` -  * `Asia/Jerusalem` -  * `Asia/Kabul` -  * `Asia/Kamchatka` -  * `Asia/Karachi` -  * `Asia/Kashgar` -  * `Asia/Kathmandu` -  * `Asia/Katmandu` -  * `Asia/Khandyga` -  * `Asia/Kolkata` -  * `Asia/Krasnoyarsk` -  * `Asia/Kuala_Lumpur` -  * `Asia/Kuching` -  * `Asia/Kuwait` -  * `Asia/Macau` -  * `Asia/Magadan` -  * `Asia/Makassar` -  * `Asia/Manila` -  * `Asia/Muscat` -  * `Asia/Nicosia` -  * `Asia/Novokuznetsk` -  * `Asia/Novosibirsk` -  * `Asia/Omsk` -  * `Asia/Oral` -  * `Asia/Phnom_Penh` -  * `Asia/Pontianak` -  * `Asia/Pyongyang` -  * `Asia/Qatar` -  * `Asia/Qyzylorda` -  * `Asia/Rangoon` -  * `Asia/Riyadh` -  * `Asia/Saigon` -  * `Asia/Sakhalin` -  * `Asia/Samarkand` -  * `Asia/Seoul` -  * `Asia/Shanghai` -  * `Asia/Singapore` -  * `Asia/Taipei` -  * `Asia/Tashkent` -  * `Asia/Tbilisi` -  * `Asia/Tehran` -  * `Asia/Thimphu` -  * `Asia/Tokyo` -  * `Asia/Ulaanbaatar` -  * `Asia/Urumqi` -  * `Asia/Ust-Nera` -  * `Asia/Vientiane` -  * `Asia/Vladivostok` -  * `Asia/Yakutsk` -  * `Asia/Yekaterinburg` -  * `Asia/Yerevan` -  * `Atlantic/Azores` -  * `Atlantic/Bermuda` -  * `Atlantic/Canary` -  * `Atlantic/Cape_Verde` -  * `Atlantic/Faroe` -  * `Atlantic/Madeira` -  * `Atlantic/Reykjavik` -  * `Atlantic/South_Georgia` -  * `Atlantic/St_Helena` -  * `Atlantic/Stanley` -  * `Australia/Adelaide` -  * `Australia/Brisbane` -  * `Australia/Broken_Hill` -  * `Australia/Currie` -  * `Australia/Darwin` -  * `Australia/Eucla` -  * `Australia/Hobart` -  * `Australia/Lindeman` -  * `Australia/Lord_Howe` -  * `Australia/Melbourne` -  * `Australia/Perth` -  * `Australia/Sydney` -  * `Etc/GMT` -  * `Europe/Amsterdam` -  * `Europe/Andorra` -  * `Europe/Athens` -  * `Europe/Belgrade` -  * `Europe/Berlin` -  * `Europe/Bratislava` -  * `Europe/Brussels` -  * `Europe/Bucharest` -  * `Europe/Budapest` -  * `Europe/Busingen` -  * `Europe/Chisinau` -  * `Europe/Copenhagen` -  * `Europe/Dublin` -  * `Europe/Gibraltar` -  * `Europe/Guernsey` -  * `Europe/Helsinki` -  * `Europe/Isle_of_Man` -  * `Europe/Istanbul` -  * `Europe/Jersey` -  * `Europe/Kaliningrad` -  * `Europe/Kiev` -  * `Europe/Lisbon` -  * `Europe/Ljubljana` -  * `Europe/London` -  * `Europe/Luxembourg` -  * `Europe/Madrid` -  * `Europe/Malta` -  * `Europe/Mariehamn` -  * `Europe/Minsk` -  * `Europe/Monaco` -  * `Europe/Moscow` -  * `Europe/Oslo` -  * `Europe/Paris` -  * `Europe/Podgorica` -  * `Europe/Prague` -  * `Europe/Riga` -  * `Europe/Rome` -  * `Europe/Samara` -  * `Europe/San_Marino` -  * `Europe/Sarajevo` -  * `Europe/Simferopol` -  * `Europe/Skopje` -  * `Europe/Sofia` -  * `Europe/Stockholm` -  * `Europe/Tallinn` -  * `Europe/Tirane` -  * `Europe/Uzhgorod` -  * `Europe/Vaduz` -  * `Europe/Vatican` -  * `Europe/Vienna` -  * `Europe/Vilnius` -  * `Europe/Volgograd` -  * `Europe/Warsaw` -  * `Europe/Zagreb` -  * `Europe/Zaporozhye` -  * `Europe/Zurich` -  * `Indian/Antananarivo` -  * `Indian/Chagos` -  * `Indian/Christmas` -  * `Indian/Cocos` -  * `Indian/Comoro` -  * `Indian/Kerguelen` -  * `Indian/Mahe` -  * `Indian/Maldives` -  * `Indian/Mauritius` -  * `Indian/Mayotte` -  * `Indian/Reunion` -  * `Pacific/Apia` -  * `Pacific/Auckland` -  * `Pacific/Chatham` -  * `Pacific/Chuuk` -  * `Pacific/Easter` -  * `Pacific/Efate` -  * `Pacific/Enderbury` -  * `Pacific/Fakaofo` -  * `Pacific/Fiji` -  * `Pacific/Funafuti` -  * `Pacific/Galapagos` -  * `Pacific/Gambier` -  * `Pacific/Guadalcanal` -  * `Pacific/Guam` -  * `Pacific/Honolulu` -  * `Pacific/Johnston` -  * `Pacific/Kiritimati` -  * `Pacific/Kosrae` -  * `Pacific/Kwajalein` -  * `Pacific/Majuro` -  * `Pacific/Marquesas` -  * `Pacific/Midway` -  * `Pacific/Nauru` -  * `Pacific/Norfolk` -  * `Pacific/Noumea` -  * `Pacific/Pago_Pago` -  * `Pacific/Palau` -  * `Pacific/Pitcairn` -  * `Pacific/Pohnpei` -  * `Pacific/Port_Moresby` -  * `Pacific/Rarotonga` -  * `Pacific/Saipan` -  * `Pacific/Tahiti` -  * `Pacific/Tarawa` -  * `Pacific/Tongatapu` -  * `Pacific/Wake` -  * `Pacific/Wallis` -  * `UTC` -
 		TimeZone *string `json:"TimeZone,omitempty"`
 		// Current software version of the Intersight Appliance.
 		Version *string `json:"Version,omitempty"`
@@ -450,15 +632,18 @@ func (o *ApplianceSystemInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	varApplianceSystemInfoWithoutEmbeddedStruct := ApplianceSystemInfoWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varApplianceSystemInfoWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varApplianceSystemInfoWithoutEmbeddedStruct)
 	if err == nil {
 		varApplianceSystemInfo := _ApplianceSystemInfo{}
 		varApplianceSystemInfo.ClassId = varApplianceSystemInfoWithoutEmbeddedStruct.ClassId
 		varApplianceSystemInfo.ObjectType = varApplianceSystemInfoWithoutEmbeddedStruct.ObjectType
 		varApplianceSystemInfo.CloudConnStatus = varApplianceSystemInfoWithoutEmbeddedStruct.CloudConnStatus
+		varApplianceSystemInfo.ClusterStatus = varApplianceSystemInfoWithoutEmbeddedStruct.ClusterStatus
 		varApplianceSystemInfo.DeploymentSize = varApplianceSystemInfoWithoutEmbeddedStruct.DeploymentSize
 		varApplianceSystemInfo.Hostname = varApplianceSystemInfoWithoutEmbeddedStruct.Hostname
 		varApplianceSystemInfo.InitDone = varApplianceSystemInfoWithoutEmbeddedStruct.InitDone
+		varApplianceSystemInfo.IpAddress = varApplianceSystemInfoWithoutEmbeddedStruct.IpAddress
+		varApplianceSystemInfo.IsVirtualIp = varApplianceSystemInfoWithoutEmbeddedStruct.IsVirtualIp
 		varApplianceSystemInfo.OperationalStatus = varApplianceSystemInfoWithoutEmbeddedStruct.OperationalStatus
 		varApplianceSystemInfo.SerialId = varApplianceSystemInfoWithoutEmbeddedStruct.SerialId
 		varApplianceSystemInfo.TimeZone = varApplianceSystemInfoWithoutEmbeddedStruct.TimeZone
@@ -470,7 +655,7 @@ func (o *ApplianceSystemInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	varApplianceSystemInfo := _ApplianceSystemInfo{}
 
-	err = json.Unmarshal(bytes, &varApplianceSystemInfo)
+	err = json.Unmarshal(data, &varApplianceSystemInfo)
 	if err == nil {
 		o.MoBaseMo = varApplianceSystemInfo.MoBaseMo
 	} else {
@@ -479,13 +664,16 @@ func (o *ApplianceSystemInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "CloudConnStatus")
+		delete(additionalProperties, "ClusterStatus")
 		delete(additionalProperties, "DeploymentSize")
 		delete(additionalProperties, "Hostname")
 		delete(additionalProperties, "InitDone")
+		delete(additionalProperties, "IpAddress")
+		delete(additionalProperties, "IsVirtualIp")
 		delete(additionalProperties, "OperationalStatus")
 		delete(additionalProperties, "SerialId")
 		delete(additionalProperties, "TimeZone")

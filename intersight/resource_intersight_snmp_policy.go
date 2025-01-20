@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,12 +23,12 @@ func resourceSnmpPolicy() *schema.Resource {
 		UpdateContext: resourceSnmpPolicyUpdate,
 		DeleteContext: resourceSnmpPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"access_community_string": {
-				Description:  "The default SNMPv1, SNMPv2c community name or SNMPv3 username to include on any trap messages sent to the SNMP host. The name can be 18 characters long.",
+				Description:  "The default SNMPv1, SNMPv2c community name or SNMPv3 username to include on any trap messages sent to the SNMP host. The name can be 32 characters long.",
 				Type:         schema.TypeString,
-				ValidateFunc: StringLenMaximum(18),
+				ValidateFunc: StringLenMaximum(32),
 				Optional:     true,
 			},
 			"account_moid": {
@@ -374,7 +376,7 @@ func resourceSnmpPolicy() *schema.Resource {
 						"community": {
 							Description:  "SNMP community group used for sending SNMP trap to other devices. Applicable only for SNMP v2c.",
 							Type:         schema.TypeString,
-							ValidateFunc: StringLenMaximum(18),
+							ValidateFunc: StringLenMaximum(32),
 							Optional:     true,
 						},
 						"destination": {
@@ -401,6 +403,17 @@ func resourceSnmpPolicy() *schema.Resource {
 							Optional:     true,
 							Default:      162,
 						},
+						"security_level": {
+							Description: "Security level of the trap receiver used for communication.\n* `AuthPriv` - The user requires both an authorization password and a privacy password.\n* `NoAuthNoPriv` - The user does not require an authorization or privacy password.\n* `AuthNoPriv` - The user requires an authorization password but not a privacy password.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"type": {
 							Description:  "Type of trap which decides whether to receive a notification when a trap is received at the destination.\n* `Trap` - Do not receive notifications when trap is sent to the destination.\n* `Inform` - Receive notifications when trap is sent to the destination. This option is valid only for V2 users.",
 							Type:         schema.TypeString,
@@ -414,12 +427,23 @@ func resourceSnmpPolicy() *schema.Resource {
 							Optional:    true,
 						},
 						"nr_version": {
-							Description:  "SNMP version used for the trap.\n* `V3` - SNMP v3 trap version notifications.\n* `V2` - SNMP v2 trap version notifications.",
+							Description:  "SNMP version used for the trap.\n* `V3` - SNMP v3 trap version notifications.\n* `V1` - SNMP v1 trap version notifications.\n* `V2` - SNMP v2 trap version notifications.",
 							Type:         schema.TypeString,
-							ValidateFunc: validation.StringInSlice([]string{"V3", "V2"}, false),
+							ValidateFunc: validation.StringInSlice([]string{"V3", "V1", "V2"}, false),
 							Optional:     true,
 							Default:      "V3",
 						},
+						"vrf_name": {
+							Description: "VRF name of the SNMP server.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 					},
 				},
 			},
@@ -625,6 +649,17 @@ func resourceSnmpPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1062,8 +1097,16 @@ func resourceSnmpPolicyCreate(c context.Context, d *schema.ResourceData, meta in
 		}
 		return diag.Errorf("error occurred while creating SnmpPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceSnmpPolicyRead(c, d, meta)...)
 }
 func detachSnmpPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -1091,6 +1134,9 @@ func detachSnmpPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Dia
 func resourceSnmpPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.SnmpApi.GetSnmpPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the WorkflowRollbackWorkflow type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &WorkflowRollbackWorkflow{}
 
 // WorkflowRollbackWorkflow Rollback workflow contains details about the workflow instance, tasks to be rollback along with the status and workflow instances.
 type WorkflowRollbackWorkflow struct {
@@ -31,8 +35,8 @@ type WorkflowRollbackWorkflow struct {
 	RollbackTasks         []WorkflowRollbackWorkflowTask `json:"RollbackTasks,omitempty"`
 	SelectedTasks         []WorkflowRollbackWorkflowTask `json:"SelectedTasks,omitempty"`
 	// Status of the rollback workflow instance (Created, Running, Completed, Failed). * `None` - If no status is set, then the default value is set none for the status field. * `Created` - Status of the rollback workflow when it identifies the eligible tasks for rollback. * `Running` - Status of the rollback workflow when it is in-progress. * `Completed` - Status of the rollback workflow after execution is successful. * `Failed` - Status of the rollback workflow after execution results in failure.
-	Status          *string                           `json:"Status,omitempty"`
-	PrimaryWorkflow *WorkflowWorkflowInfoRelationship `json:"PrimaryWorkflow,omitempty"`
+	Status          *string                                  `json:"Status,omitempty"`
+	PrimaryWorkflow NullableWorkflowWorkflowInfoRelationship `json:"PrimaryWorkflow,omitempty"`
 	// An array of relationships to workflowWorkflowInfo resources.
 	RollbackWorkflows    []WorkflowWorkflowInfoRelationship `json:"RollbackWorkflows,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -95,6 +99,11 @@ func (o *WorkflowRollbackWorkflow) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "workflow.RollbackWorkflow" of the ClassId field.
+func (o *WorkflowRollbackWorkflow) GetDefaultClassId() interface{} {
+	return "workflow.RollbackWorkflow"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *WorkflowRollbackWorkflow) GetObjectType() string {
 	if o == nil {
@@ -119,9 +128,14 @@ func (o *WorkflowRollbackWorkflow) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "workflow.RollbackWorkflow" of the ObjectType field.
+func (o *WorkflowRollbackWorkflow) GetDefaultObjectType() interface{} {
+	return "workflow.RollbackWorkflow"
+}
+
 // GetAction returns the Action field value if set, zero value otherwise.
 func (o *WorkflowRollbackWorkflow) GetAction() string {
-	if o == nil || o.Action == nil {
+	if o == nil || IsNil(o.Action) {
 		var ret string
 		return ret
 	}
@@ -131,7 +145,7 @@ func (o *WorkflowRollbackWorkflow) GetAction() string {
 // GetActionOk returns a tuple with the Action field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowRollbackWorkflow) GetActionOk() (*string, bool) {
-	if o == nil || o.Action == nil {
+	if o == nil || IsNil(o.Action) {
 		return nil, false
 	}
 	return o.Action, true
@@ -139,7 +153,7 @@ func (o *WorkflowRollbackWorkflow) GetActionOk() (*string, bool) {
 
 // HasAction returns a boolean if a field has been set.
 func (o *WorkflowRollbackWorkflow) HasAction() bool {
-	if o != nil && o.Action != nil {
+	if o != nil && !IsNil(o.Action) {
 		return true
 	}
 
@@ -153,7 +167,7 @@ func (o *WorkflowRollbackWorkflow) SetAction(v string) {
 
 // GetContinueOnTaskFailure returns the ContinueOnTaskFailure field value if set, zero value otherwise.
 func (o *WorkflowRollbackWorkflow) GetContinueOnTaskFailure() bool {
-	if o == nil || o.ContinueOnTaskFailure == nil {
+	if o == nil || IsNil(o.ContinueOnTaskFailure) {
 		var ret bool
 		return ret
 	}
@@ -163,7 +177,7 @@ func (o *WorkflowRollbackWorkflow) GetContinueOnTaskFailure() bool {
 // GetContinueOnTaskFailureOk returns a tuple with the ContinueOnTaskFailure field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowRollbackWorkflow) GetContinueOnTaskFailureOk() (*bool, bool) {
-	if o == nil || o.ContinueOnTaskFailure == nil {
+	if o == nil || IsNil(o.ContinueOnTaskFailure) {
 		return nil, false
 	}
 	return o.ContinueOnTaskFailure, true
@@ -171,7 +185,7 @@ func (o *WorkflowRollbackWorkflow) GetContinueOnTaskFailureOk() (*bool, bool) {
 
 // HasContinueOnTaskFailure returns a boolean if a field has been set.
 func (o *WorkflowRollbackWorkflow) HasContinueOnTaskFailure() bool {
-	if o != nil && o.ContinueOnTaskFailure != nil {
+	if o != nil && !IsNil(o.ContinueOnTaskFailure) {
 		return true
 	}
 
@@ -196,7 +210,7 @@ func (o *WorkflowRollbackWorkflow) GetRollbackTasks() []WorkflowRollbackWorkflow
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowRollbackWorkflow) GetRollbackTasksOk() ([]WorkflowRollbackWorkflowTask, bool) {
-	if o == nil || o.RollbackTasks == nil {
+	if o == nil || IsNil(o.RollbackTasks) {
 		return nil, false
 	}
 	return o.RollbackTasks, true
@@ -204,7 +218,7 @@ func (o *WorkflowRollbackWorkflow) GetRollbackTasksOk() ([]WorkflowRollbackWorkf
 
 // HasRollbackTasks returns a boolean if a field has been set.
 func (o *WorkflowRollbackWorkflow) HasRollbackTasks() bool {
-	if o != nil && o.RollbackTasks != nil {
+	if o != nil && !IsNil(o.RollbackTasks) {
 		return true
 	}
 
@@ -229,7 +243,7 @@ func (o *WorkflowRollbackWorkflow) GetSelectedTasks() []WorkflowRollbackWorkflow
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowRollbackWorkflow) GetSelectedTasksOk() ([]WorkflowRollbackWorkflowTask, bool) {
-	if o == nil || o.SelectedTasks == nil {
+	if o == nil || IsNil(o.SelectedTasks) {
 		return nil, false
 	}
 	return o.SelectedTasks, true
@@ -237,7 +251,7 @@ func (o *WorkflowRollbackWorkflow) GetSelectedTasksOk() ([]WorkflowRollbackWorkf
 
 // HasSelectedTasks returns a boolean if a field has been set.
 func (o *WorkflowRollbackWorkflow) HasSelectedTasks() bool {
-	if o != nil && o.SelectedTasks != nil {
+	if o != nil && !IsNil(o.SelectedTasks) {
 		return true
 	}
 
@@ -251,7 +265,7 @@ func (o *WorkflowRollbackWorkflow) SetSelectedTasks(v []WorkflowRollbackWorkflow
 
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *WorkflowRollbackWorkflow) GetStatus() string {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
@@ -261,7 +275,7 @@ func (o *WorkflowRollbackWorkflow) GetStatus() string {
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowRollbackWorkflow) GetStatusOk() (*string, bool) {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
 	return o.Status, true
@@ -269,7 +283,7 @@ func (o *WorkflowRollbackWorkflow) GetStatusOk() (*string, bool) {
 
 // HasStatus returns a boolean if a field has been set.
 func (o *WorkflowRollbackWorkflow) HasStatus() bool {
-	if o != nil && o.Status != nil {
+	if o != nil && !IsNil(o.Status) {
 		return true
 	}
 
@@ -281,36 +295,47 @@ func (o *WorkflowRollbackWorkflow) SetStatus(v string) {
 	o.Status = &v
 }
 
-// GetPrimaryWorkflow returns the PrimaryWorkflow field value if set, zero value otherwise.
+// GetPrimaryWorkflow returns the PrimaryWorkflow field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowRollbackWorkflow) GetPrimaryWorkflow() WorkflowWorkflowInfoRelationship {
-	if o == nil || o.PrimaryWorkflow == nil {
+	if o == nil || IsNil(o.PrimaryWorkflow.Get()) {
 		var ret WorkflowWorkflowInfoRelationship
 		return ret
 	}
-	return *o.PrimaryWorkflow
+	return *o.PrimaryWorkflow.Get()
 }
 
 // GetPrimaryWorkflowOk returns a tuple with the PrimaryWorkflow field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowRollbackWorkflow) GetPrimaryWorkflowOk() (*WorkflowWorkflowInfoRelationship, bool) {
-	if o == nil || o.PrimaryWorkflow == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.PrimaryWorkflow, true
+	return o.PrimaryWorkflow.Get(), o.PrimaryWorkflow.IsSet()
 }
 
 // HasPrimaryWorkflow returns a boolean if a field has been set.
 func (o *WorkflowRollbackWorkflow) HasPrimaryWorkflow() bool {
-	if o != nil && o.PrimaryWorkflow != nil {
+	if o != nil && o.PrimaryWorkflow.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPrimaryWorkflow gets a reference to the given WorkflowWorkflowInfoRelationship and assigns it to the PrimaryWorkflow field.
+// SetPrimaryWorkflow gets a reference to the given NullableWorkflowWorkflowInfoRelationship and assigns it to the PrimaryWorkflow field.
 func (o *WorkflowRollbackWorkflow) SetPrimaryWorkflow(v WorkflowWorkflowInfoRelationship) {
-	o.PrimaryWorkflow = &v
+	o.PrimaryWorkflow.Set(&v)
+}
+
+// SetPrimaryWorkflowNil sets the value for PrimaryWorkflow to be an explicit nil
+func (o *WorkflowRollbackWorkflow) SetPrimaryWorkflowNil() {
+	o.PrimaryWorkflow.Set(nil)
+}
+
+// UnsetPrimaryWorkflow ensures that no value is present for PrimaryWorkflow, not even an explicit nil
+func (o *WorkflowRollbackWorkflow) UnsetPrimaryWorkflow() {
+	o.PrimaryWorkflow.Unset()
 }
 
 // GetRollbackWorkflows returns the RollbackWorkflows field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -326,7 +351,7 @@ func (o *WorkflowRollbackWorkflow) GetRollbackWorkflows() []WorkflowWorkflowInfo
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowRollbackWorkflow) GetRollbackWorkflowsOk() ([]WorkflowWorkflowInfoRelationship, bool) {
-	if o == nil || o.RollbackWorkflows == nil {
+	if o == nil || IsNil(o.RollbackWorkflows) {
 		return nil, false
 	}
 	return o.RollbackWorkflows, true
@@ -334,7 +359,7 @@ func (o *WorkflowRollbackWorkflow) GetRollbackWorkflowsOk() ([]WorkflowWorkflowI
 
 // HasRollbackWorkflows returns a boolean if a field has been set.
 func (o *WorkflowRollbackWorkflow) HasRollbackWorkflows() bool {
-	if o != nil && o.RollbackWorkflows != nil {
+	if o != nil && !IsNil(o.RollbackWorkflows) {
 		return true
 	}
 
@@ -347,25 +372,35 @@ func (o *WorkflowRollbackWorkflow) SetRollbackWorkflows(v []WorkflowWorkflowInfo
 }
 
 func (o WorkflowRollbackWorkflow) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o WorkflowRollbackWorkflow) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Action != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Action) {
 		toSerialize["Action"] = o.Action
 	}
-	if o.ContinueOnTaskFailure != nil {
+	if !IsNil(o.ContinueOnTaskFailure) {
 		toSerialize["ContinueOnTaskFailure"] = o.ContinueOnTaskFailure
 	}
 	if o.RollbackTasks != nil {
@@ -374,11 +409,11 @@ func (o WorkflowRollbackWorkflow) MarshalJSON() ([]byte, error) {
 	if o.SelectedTasks != nil {
 		toSerialize["SelectedTasks"] = o.SelectedTasks
 	}
-	if o.Status != nil {
+	if !IsNil(o.Status) {
 		toSerialize["Status"] = o.Status
 	}
-	if o.PrimaryWorkflow != nil {
-		toSerialize["PrimaryWorkflow"] = o.PrimaryWorkflow
+	if o.PrimaryWorkflow.IsSet() {
+		toSerialize["PrimaryWorkflow"] = o.PrimaryWorkflow.Get()
 	}
 	if o.RollbackWorkflows != nil {
 		toSerialize["RollbackWorkflows"] = o.RollbackWorkflows
@@ -388,10 +423,51 @@ func (o WorkflowRollbackWorkflow) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *WorkflowRollbackWorkflow) UnmarshalJSON(bytes []byte) (err error) {
+func (o *WorkflowRollbackWorkflow) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type WorkflowRollbackWorkflowWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -404,15 +480,15 @@ func (o *WorkflowRollbackWorkflow) UnmarshalJSON(bytes []byte) (err error) {
 		RollbackTasks         []WorkflowRollbackWorkflowTask `json:"RollbackTasks,omitempty"`
 		SelectedTasks         []WorkflowRollbackWorkflowTask `json:"SelectedTasks,omitempty"`
 		// Status of the rollback workflow instance (Created, Running, Completed, Failed). * `None` - If no status is set, then the default value is set none for the status field. * `Created` - Status of the rollback workflow when it identifies the eligible tasks for rollback. * `Running` - Status of the rollback workflow when it is in-progress. * `Completed` - Status of the rollback workflow after execution is successful. * `Failed` - Status of the rollback workflow after execution results in failure.
-		Status          *string                           `json:"Status,omitempty"`
-		PrimaryWorkflow *WorkflowWorkflowInfoRelationship `json:"PrimaryWorkflow,omitempty"`
+		Status          *string                                  `json:"Status,omitempty"`
+		PrimaryWorkflow NullableWorkflowWorkflowInfoRelationship `json:"PrimaryWorkflow,omitempty"`
 		// An array of relationships to workflowWorkflowInfo resources.
 		RollbackWorkflows []WorkflowWorkflowInfoRelationship `json:"RollbackWorkflows,omitempty"`
 	}
 
 	varWorkflowRollbackWorkflowWithoutEmbeddedStruct := WorkflowRollbackWorkflowWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varWorkflowRollbackWorkflowWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varWorkflowRollbackWorkflowWithoutEmbeddedStruct)
 	if err == nil {
 		varWorkflowRollbackWorkflow := _WorkflowRollbackWorkflow{}
 		varWorkflowRollbackWorkflow.ClassId = varWorkflowRollbackWorkflowWithoutEmbeddedStruct.ClassId
@@ -431,7 +507,7 @@ func (o *WorkflowRollbackWorkflow) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowRollbackWorkflow := _WorkflowRollbackWorkflow{}
 
-	err = json.Unmarshal(bytes, &varWorkflowRollbackWorkflow)
+	err = json.Unmarshal(data, &varWorkflowRollbackWorkflow)
 	if err == nil {
 		o.MoBaseMo = varWorkflowRollbackWorkflow.MoBaseMo
 	} else {
@@ -440,7 +516,7 @@ func (o *WorkflowRollbackWorkflow) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Action")

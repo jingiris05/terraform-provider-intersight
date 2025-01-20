@@ -11,7 +11,9 @@ Name | Type | Description | Notes
 **Sources** | Pointer to [**[]MoBaseMo**](MoBaseMo.md) |  | [optional] 
 **TargetConfig** | Pointer to [**MoBaseMo**](MoBaseMo.md) |  | [optional] 
 **Targets** | Pointer to [**[]MoBaseMo**](MoBaseMo.md) |  | [optional] 
-**Organization** | Pointer to [**OrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**WorkflowNameSuffix** | Pointer to **string** | A user-friendly short name to identify the workflow. Name can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), period (.), colon (:), space ( ), forward slash (/), comma or an underscore (_). | [optional] 
+**AsyncResult** | Pointer to [**NullableBulkResultRelationship**](BulkResultRelationship.md) |  | [optional] 
+**Organization** | Pointer to [**NullableOrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -227,6 +229,66 @@ HasTargets returns a boolean if a field has been set.
 `func (o *BulkMoMerger) UnsetTargets()`
 
 UnsetTargets ensures that no value is present for Targets, not even an explicit nil
+### GetWorkflowNameSuffix
+
+`func (o *BulkMoMerger) GetWorkflowNameSuffix() string`
+
+GetWorkflowNameSuffix returns the WorkflowNameSuffix field if non-nil, zero value otherwise.
+
+### GetWorkflowNameSuffixOk
+
+`func (o *BulkMoMerger) GetWorkflowNameSuffixOk() (*string, bool)`
+
+GetWorkflowNameSuffixOk returns a tuple with the WorkflowNameSuffix field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetWorkflowNameSuffix
+
+`func (o *BulkMoMerger) SetWorkflowNameSuffix(v string)`
+
+SetWorkflowNameSuffix sets WorkflowNameSuffix field to given value.
+
+### HasWorkflowNameSuffix
+
+`func (o *BulkMoMerger) HasWorkflowNameSuffix() bool`
+
+HasWorkflowNameSuffix returns a boolean if a field has been set.
+
+### GetAsyncResult
+
+`func (o *BulkMoMerger) GetAsyncResult() BulkResultRelationship`
+
+GetAsyncResult returns the AsyncResult field if non-nil, zero value otherwise.
+
+### GetAsyncResultOk
+
+`func (o *BulkMoMerger) GetAsyncResultOk() (*BulkResultRelationship, bool)`
+
+GetAsyncResultOk returns a tuple with the AsyncResult field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAsyncResult
+
+`func (o *BulkMoMerger) SetAsyncResult(v BulkResultRelationship)`
+
+SetAsyncResult sets AsyncResult field to given value.
+
+### HasAsyncResult
+
+`func (o *BulkMoMerger) HasAsyncResult() bool`
+
+HasAsyncResult returns a boolean if a field has been set.
+
+### SetAsyncResultNil
+
+`func (o *BulkMoMerger) SetAsyncResultNil(b bool)`
+
+ SetAsyncResultNil sets the value for AsyncResult to be an explicit nil
+
+### UnsetAsyncResult
+`func (o *BulkMoMerger) UnsetAsyncResult()`
+
+UnsetAsyncResult ensures that no value is present for AsyncResult, not even an explicit nil
 ### GetOrganization
 
 `func (o *BulkMoMerger) GetOrganization() OrganizationOrganizationRelationship`
@@ -252,6 +314,16 @@ SetOrganization sets Organization field to given value.
 
 HasOrganization returns a boolean if a field has been set.
 
+### SetOrganizationNil
+
+`func (o *BulkMoMerger) SetOrganizationNil(b bool)`
+
+ SetOrganizationNil sets the value for Organization to be an explicit nil
+
+### UnsetOrganization
+`func (o *BulkMoMerger) UnsetOrganization()`
+
+UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -7,8 +7,9 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "storage.NetAppSchedule"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.NetAppSchedule"]
 **Name** | Pointer to **string** | The name of the schedule. | [optional] [readonly] 
+**Type** | Pointer to **string** | The type of the schedule (cron or interval). | [optional] [readonly] 
 **Uuid** | Pointer to **string** | Universally unique identifier of the schedule. | [optional] [readonly] 
-**Array** | Pointer to [**StorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
+**Array** | Pointer to [**NullableStorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -94,6 +95,31 @@ SetName sets Name field to given value.
 
 HasName returns a boolean if a field has been set.
 
+### GetType
+
+`func (o *StorageNetAppSchedule) GetType() string`
+
+GetType returns the Type field if non-nil, zero value otherwise.
+
+### GetTypeOk
+
+`func (o *StorageNetAppSchedule) GetTypeOk() (*string, bool)`
+
+GetTypeOk returns a tuple with the Type field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetType
+
+`func (o *StorageNetAppSchedule) SetType(v string)`
+
+SetType sets Type field to given value.
+
+### HasType
+
+`func (o *StorageNetAppSchedule) HasType() bool`
+
+HasType returns a boolean if a field has been set.
+
 ### GetUuid
 
 `func (o *StorageNetAppSchedule) GetUuid() string`
@@ -144,6 +170,16 @@ SetArray sets Array field to given value.
 
 HasArray returns a boolean if a field has been set.
 
+### SetArrayNil
+
+`func (o *StorageNetAppSchedule) SetArrayNil(b bool)`
+
+ SetArrayNil sets the value for Array to be an explicit nil
+
+### UnsetArray
+`func (o *StorageNetAppSchedule) UnsetArray()`
+
+UnsetArray ensures that no value is present for Array, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

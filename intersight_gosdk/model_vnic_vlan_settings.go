@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VnicVlanSettings type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VnicVlanSettings{}
 
 // VnicVlanSettings VLAN configuration for the virtual interface.
 type VnicVlanSettings struct {
@@ -25,11 +29,15 @@ type VnicVlanSettings struct {
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
 	// Allowed VLAN IDs of the virtual interface.
-	AllowedVlans *string `json:"AllowedVlans,omitempty"`
+	AllowedVlans *string `json:"AllowedVlans,omitempty" validate:"regexp=^$|^((\\\\d+\\\\-\\\\d+)|(\\\\d+))(,((\\\\d+\\\\-\\\\d+)|(\\\\d+)))*$"`
 	// Native VLAN ID of the virtual interface or the corresponding vethernet on the peer Fabric Interconnect to which the virtual interface is connected. Setting the ID to 0 will not associate any native VLAN to the traffic on the virtual interface.
 	DefaultVlan *int64 `json:"DefaultVlan,omitempty"`
 	// Option to determine if the port can carry single VLAN (Access) or multiple VLANs (Trunk) traffic. * `ACCESS` - An access port carries traffic only for a single VLAN on the interface. * `TRUNK` - A trunk port can have two or more VLANs configured on the interface. It can carry traffic for several VLANs simultaneously.
-	Mode                 *string `json:"Mode,omitempty"`
+	Mode *string `json:"Mode,omitempty"`
+	// Enable QinQ (802.1Q-in-802.1Q) Tunneling on the vNIC.
+	QinqEnabled *bool `json:"QinqEnabled,omitempty"`
+	// When activating VIC QinQ (802.1Q-in-802.1Q) Tunneling, a particular VLAN ID is set. In Access VLAN mode, this QinQ VLAN ID is established as the default VLAN.
+	QinqVlan             *int64 `json:"QinqVlan,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -47,6 +55,10 @@ func NewVnicVlanSettings(classId string, objectType string) *VnicVlanSettings {
 	this.DefaultVlan = &defaultVlan
 	var mode string = "ACCESS"
 	this.Mode = &mode
+	var qinqEnabled bool = false
+	this.QinqEnabled = &qinqEnabled
+	var qinqVlan int64 = 2
+	this.QinqVlan = &qinqVlan
 	return &this
 }
 
@@ -63,6 +75,10 @@ func NewVnicVlanSettingsWithDefaults() *VnicVlanSettings {
 	this.DefaultVlan = &defaultVlan
 	var mode string = "ACCESS"
 	this.Mode = &mode
+	var qinqEnabled bool = false
+	this.QinqEnabled = &qinqEnabled
+	var qinqVlan int64 = 2
+	this.QinqVlan = &qinqVlan
 	return &this
 }
 
@@ -90,6 +106,11 @@ func (o *VnicVlanSettings) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "vnic.VlanSettings" of the ClassId field.
+func (o *VnicVlanSettings) GetDefaultClassId() interface{} {
+	return "vnic.VlanSettings"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VnicVlanSettings) GetObjectType() string {
 	if o == nil {
@@ -114,9 +135,14 @@ func (o *VnicVlanSettings) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "vnic.VlanSettings" of the ObjectType field.
+func (o *VnicVlanSettings) GetDefaultObjectType() interface{} {
+	return "vnic.VlanSettings"
+}
+
 // GetAllowedVlans returns the AllowedVlans field value if set, zero value otherwise.
 func (o *VnicVlanSettings) GetAllowedVlans() string {
-	if o == nil || o.AllowedVlans == nil {
+	if o == nil || IsNil(o.AllowedVlans) {
 		var ret string
 		return ret
 	}
@@ -126,7 +152,7 @@ func (o *VnicVlanSettings) GetAllowedVlans() string {
 // GetAllowedVlansOk returns a tuple with the AllowedVlans field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicVlanSettings) GetAllowedVlansOk() (*string, bool) {
-	if o == nil || o.AllowedVlans == nil {
+	if o == nil || IsNil(o.AllowedVlans) {
 		return nil, false
 	}
 	return o.AllowedVlans, true
@@ -134,7 +160,7 @@ func (o *VnicVlanSettings) GetAllowedVlansOk() (*string, bool) {
 
 // HasAllowedVlans returns a boolean if a field has been set.
 func (o *VnicVlanSettings) HasAllowedVlans() bool {
-	if o != nil && o.AllowedVlans != nil {
+	if o != nil && !IsNil(o.AllowedVlans) {
 		return true
 	}
 
@@ -148,7 +174,7 @@ func (o *VnicVlanSettings) SetAllowedVlans(v string) {
 
 // GetDefaultVlan returns the DefaultVlan field value if set, zero value otherwise.
 func (o *VnicVlanSettings) GetDefaultVlan() int64 {
-	if o == nil || o.DefaultVlan == nil {
+	if o == nil || IsNil(o.DefaultVlan) {
 		var ret int64
 		return ret
 	}
@@ -158,7 +184,7 @@ func (o *VnicVlanSettings) GetDefaultVlan() int64 {
 // GetDefaultVlanOk returns a tuple with the DefaultVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicVlanSettings) GetDefaultVlanOk() (*int64, bool) {
-	if o == nil || o.DefaultVlan == nil {
+	if o == nil || IsNil(o.DefaultVlan) {
 		return nil, false
 	}
 	return o.DefaultVlan, true
@@ -166,7 +192,7 @@ func (o *VnicVlanSettings) GetDefaultVlanOk() (*int64, bool) {
 
 // HasDefaultVlan returns a boolean if a field has been set.
 func (o *VnicVlanSettings) HasDefaultVlan() bool {
-	if o != nil && o.DefaultVlan != nil {
+	if o != nil && !IsNil(o.DefaultVlan) {
 		return true
 	}
 
@@ -180,7 +206,7 @@ func (o *VnicVlanSettings) SetDefaultVlan(v int64) {
 
 // GetMode returns the Mode field value if set, zero value otherwise.
 func (o *VnicVlanSettings) GetMode() string {
-	if o == nil || o.Mode == nil {
+	if o == nil || IsNil(o.Mode) {
 		var ret string
 		return ret
 	}
@@ -190,7 +216,7 @@ func (o *VnicVlanSettings) GetMode() string {
 // GetModeOk returns a tuple with the Mode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VnicVlanSettings) GetModeOk() (*string, bool) {
-	if o == nil || o.Mode == nil {
+	if o == nil || IsNil(o.Mode) {
 		return nil, false
 	}
 	return o.Mode, true
@@ -198,7 +224,7 @@ func (o *VnicVlanSettings) GetModeOk() (*string, bool) {
 
 // HasMode returns a boolean if a field has been set.
 func (o *VnicVlanSettings) HasMode() bool {
-	if o != nil && o.Mode != nil {
+	if o != nil && !IsNil(o.Mode) {
 		return true
 	}
 
@@ -210,56 +236,181 @@ func (o *VnicVlanSettings) SetMode(v string) {
 	o.Mode = &v
 }
 
+// GetQinqEnabled returns the QinqEnabled field value if set, zero value otherwise.
+func (o *VnicVlanSettings) GetQinqEnabled() bool {
+	if o == nil || IsNil(o.QinqEnabled) {
+		var ret bool
+		return ret
+	}
+	return *o.QinqEnabled
+}
+
+// GetQinqEnabledOk returns a tuple with the QinqEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VnicVlanSettings) GetQinqEnabledOk() (*bool, bool) {
+	if o == nil || IsNil(o.QinqEnabled) {
+		return nil, false
+	}
+	return o.QinqEnabled, true
+}
+
+// HasQinqEnabled returns a boolean if a field has been set.
+func (o *VnicVlanSettings) HasQinqEnabled() bool {
+	if o != nil && !IsNil(o.QinqEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetQinqEnabled gets a reference to the given bool and assigns it to the QinqEnabled field.
+func (o *VnicVlanSettings) SetQinqEnabled(v bool) {
+	o.QinqEnabled = &v
+}
+
+// GetQinqVlan returns the QinqVlan field value if set, zero value otherwise.
+func (o *VnicVlanSettings) GetQinqVlan() int64 {
+	if o == nil || IsNil(o.QinqVlan) {
+		var ret int64
+		return ret
+	}
+	return *o.QinqVlan
+}
+
+// GetQinqVlanOk returns a tuple with the QinqVlan field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *VnicVlanSettings) GetQinqVlanOk() (*int64, bool) {
+	if o == nil || IsNil(o.QinqVlan) {
+		return nil, false
+	}
+	return o.QinqVlan, true
+}
+
+// HasQinqVlan returns a boolean if a field has been set.
+func (o *VnicVlanSettings) HasQinqVlan() bool {
+	if o != nil && !IsNil(o.QinqVlan) {
+		return true
+	}
+
+	return false
+}
+
+// SetQinqVlan gets a reference to the given int64 and assigns it to the QinqVlan field.
+func (o *VnicVlanSettings) SetQinqVlan(v int64) {
+	o.QinqVlan = &v
+}
+
 func (o VnicVlanSettings) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VnicVlanSettings) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AllowedVlans != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AllowedVlans) {
 		toSerialize["AllowedVlans"] = o.AllowedVlans
 	}
-	if o.DefaultVlan != nil {
+	if !IsNil(o.DefaultVlan) {
 		toSerialize["DefaultVlan"] = o.DefaultVlan
 	}
-	if o.Mode != nil {
+	if !IsNil(o.Mode) {
 		toSerialize["Mode"] = o.Mode
+	}
+	if !IsNil(o.QinqEnabled) {
+		toSerialize["QinqEnabled"] = o.QinqEnabled
+	}
+	if !IsNil(o.QinqVlan) {
+		toSerialize["QinqVlan"] = o.QinqVlan
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VnicVlanSettings) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VnicVlanSettings) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VnicVlanSettingsWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
 		// Allowed VLAN IDs of the virtual interface.
-		AllowedVlans *string `json:"AllowedVlans,omitempty"`
+		AllowedVlans *string `json:"AllowedVlans,omitempty" validate:"regexp=^$|^((\\\\d+\\\\-\\\\d+)|(\\\\d+))(,((\\\\d+\\\\-\\\\d+)|(\\\\d+)))*$"`
 		// Native VLAN ID of the virtual interface or the corresponding vethernet on the peer Fabric Interconnect to which the virtual interface is connected. Setting the ID to 0 will not associate any native VLAN to the traffic on the virtual interface.
 		DefaultVlan *int64 `json:"DefaultVlan,omitempty"`
 		// Option to determine if the port can carry single VLAN (Access) or multiple VLANs (Trunk) traffic. * `ACCESS` - An access port carries traffic only for a single VLAN on the interface. * `TRUNK` - A trunk port can have two or more VLANs configured on the interface. It can carry traffic for several VLANs simultaneously.
 		Mode *string `json:"Mode,omitempty"`
+		// Enable QinQ (802.1Q-in-802.1Q) Tunneling on the vNIC.
+		QinqEnabled *bool `json:"QinqEnabled,omitempty"`
+		// When activating VIC QinQ (802.1Q-in-802.1Q) Tunneling, a particular VLAN ID is set. In Access VLAN mode, this QinQ VLAN ID is established as the default VLAN.
+		QinqVlan *int64 `json:"QinqVlan,omitempty"`
 	}
 
 	varVnicVlanSettingsWithoutEmbeddedStruct := VnicVlanSettingsWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVnicVlanSettingsWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVnicVlanSettingsWithoutEmbeddedStruct)
 	if err == nil {
 		varVnicVlanSettings := _VnicVlanSettings{}
 		varVnicVlanSettings.ClassId = varVnicVlanSettingsWithoutEmbeddedStruct.ClassId
@@ -267,6 +418,8 @@ func (o *VnicVlanSettings) UnmarshalJSON(bytes []byte) (err error) {
 		varVnicVlanSettings.AllowedVlans = varVnicVlanSettingsWithoutEmbeddedStruct.AllowedVlans
 		varVnicVlanSettings.DefaultVlan = varVnicVlanSettingsWithoutEmbeddedStruct.DefaultVlan
 		varVnicVlanSettings.Mode = varVnicVlanSettingsWithoutEmbeddedStruct.Mode
+		varVnicVlanSettings.QinqEnabled = varVnicVlanSettingsWithoutEmbeddedStruct.QinqEnabled
+		varVnicVlanSettings.QinqVlan = varVnicVlanSettingsWithoutEmbeddedStruct.QinqVlan
 		*o = VnicVlanSettings(varVnicVlanSettings)
 	} else {
 		return err
@@ -274,7 +427,7 @@ func (o *VnicVlanSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	varVnicVlanSettings := _VnicVlanSettings{}
 
-	err = json.Unmarshal(bytes, &varVnicVlanSettings)
+	err = json.Unmarshal(data, &varVnicVlanSettings)
 	if err == nil {
 		o.MoBaseComplexType = varVnicVlanSettings.MoBaseComplexType
 	} else {
@@ -283,12 +436,14 @@ func (o *VnicVlanSettings) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AllowedVlans")
 		delete(additionalProperties, "DefaultVlan")
 		delete(additionalProperties, "Mode")
+		delete(additionalProperties, "QinqEnabled")
+		delete(additionalProperties, "QinqVlan")
 
 		// remove fields from embedded structs
 		reflectMoBaseComplexType := reflect.ValueOf(o.MoBaseComplexType)

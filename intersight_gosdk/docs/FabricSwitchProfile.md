@@ -6,13 +6,13 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "fabric.SwitchProfile"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "fabric.SwitchProfile"]
+**ConfigChangeContext** | Pointer to [**NullablePolicyConfigChangeContext**](PolicyConfigChangeContext.md) |  | [optional] 
 **ConfigChanges** | Pointer to [**NullablePolicyConfigChange**](PolicyConfigChange.md) |  | [optional] 
-**AssignedSwitch** | Pointer to [**NetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
-**AssociatedSwitch** | Pointer to [**NetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
+**AssignedSwitch** | Pointer to [**NullableNetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
+**AssociatedSwitch** | Pointer to [**NullableNetworkElementRelationship**](NetworkElementRelationship.md) |  | [optional] 
 **ConfigChangeDetails** | Pointer to [**[]FabricConfigChangeDetailRelationship**](FabricConfigChangeDetailRelationship.md) | An array of relationships to fabricConfigChangeDetail resources. | [optional] [readonly] 
-**ConfigResult** | Pointer to [**FabricConfigResultRelationship**](FabricConfigResultRelationship.md) |  | [optional] 
 **RunningWorkflows** | Pointer to [**[]WorkflowWorkflowInfoRelationship**](WorkflowWorkflowInfoRelationship.md) | An array of relationships to workflowWorkflowInfo resources. | [optional] [readonly] 
-**SwitchClusterProfile** | Pointer to [**FabricSwitchClusterProfileRelationship**](FabricSwitchClusterProfileRelationship.md) |  | [optional] 
+**SwitchClusterProfile** | Pointer to [**NullableFabricSwitchClusterProfileRelationship**](FabricSwitchClusterProfileRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -73,6 +73,41 @@ and a boolean to check if the value has been set.
 SetObjectType sets ObjectType field to given value.
 
 
+### GetConfigChangeContext
+
+`func (o *FabricSwitchProfile) GetConfigChangeContext() PolicyConfigChangeContext`
+
+GetConfigChangeContext returns the ConfigChangeContext field if non-nil, zero value otherwise.
+
+### GetConfigChangeContextOk
+
+`func (o *FabricSwitchProfile) GetConfigChangeContextOk() (*PolicyConfigChangeContext, bool)`
+
+GetConfigChangeContextOk returns a tuple with the ConfigChangeContext field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetConfigChangeContext
+
+`func (o *FabricSwitchProfile) SetConfigChangeContext(v PolicyConfigChangeContext)`
+
+SetConfigChangeContext sets ConfigChangeContext field to given value.
+
+### HasConfigChangeContext
+
+`func (o *FabricSwitchProfile) HasConfigChangeContext() bool`
+
+HasConfigChangeContext returns a boolean if a field has been set.
+
+### SetConfigChangeContextNil
+
+`func (o *FabricSwitchProfile) SetConfigChangeContextNil(b bool)`
+
+ SetConfigChangeContextNil sets the value for ConfigChangeContext to be an explicit nil
+
+### UnsetConfigChangeContext
+`func (o *FabricSwitchProfile) UnsetConfigChangeContext()`
+
+UnsetConfigChangeContext ensures that no value is present for ConfigChangeContext, not even an explicit nil
 ### GetConfigChanges
 
 `func (o *FabricSwitchProfile) GetConfigChanges() PolicyConfigChange`
@@ -133,6 +168,16 @@ SetAssignedSwitch sets AssignedSwitch field to given value.
 
 HasAssignedSwitch returns a boolean if a field has been set.
 
+### SetAssignedSwitchNil
+
+`func (o *FabricSwitchProfile) SetAssignedSwitchNil(b bool)`
+
+ SetAssignedSwitchNil sets the value for AssignedSwitch to be an explicit nil
+
+### UnsetAssignedSwitch
+`func (o *FabricSwitchProfile) UnsetAssignedSwitch()`
+
+UnsetAssignedSwitch ensures that no value is present for AssignedSwitch, not even an explicit nil
 ### GetAssociatedSwitch
 
 `func (o *FabricSwitchProfile) GetAssociatedSwitch() NetworkElementRelationship`
@@ -158,6 +203,16 @@ SetAssociatedSwitch sets AssociatedSwitch field to given value.
 
 HasAssociatedSwitch returns a boolean if a field has been set.
 
+### SetAssociatedSwitchNil
+
+`func (o *FabricSwitchProfile) SetAssociatedSwitchNil(b bool)`
+
+ SetAssociatedSwitchNil sets the value for AssociatedSwitch to be an explicit nil
+
+### UnsetAssociatedSwitch
+`func (o *FabricSwitchProfile) UnsetAssociatedSwitch()`
+
+UnsetAssociatedSwitch ensures that no value is present for AssociatedSwitch, not even an explicit nil
 ### GetConfigChangeDetails
 
 `func (o *FabricSwitchProfile) GetConfigChangeDetails() []FabricConfigChangeDetailRelationship`
@@ -193,31 +248,6 @@ HasConfigChangeDetails returns a boolean if a field has been set.
 `func (o *FabricSwitchProfile) UnsetConfigChangeDetails()`
 
 UnsetConfigChangeDetails ensures that no value is present for ConfigChangeDetails, not even an explicit nil
-### GetConfigResult
-
-`func (o *FabricSwitchProfile) GetConfigResult() FabricConfigResultRelationship`
-
-GetConfigResult returns the ConfigResult field if non-nil, zero value otherwise.
-
-### GetConfigResultOk
-
-`func (o *FabricSwitchProfile) GetConfigResultOk() (*FabricConfigResultRelationship, bool)`
-
-GetConfigResultOk returns a tuple with the ConfigResult field if it's non-nil, zero value otherwise
-and a boolean to check if the value has been set.
-
-### SetConfigResult
-
-`func (o *FabricSwitchProfile) SetConfigResult(v FabricConfigResultRelationship)`
-
-SetConfigResult sets ConfigResult field to given value.
-
-### HasConfigResult
-
-`func (o *FabricSwitchProfile) HasConfigResult() bool`
-
-HasConfigResult returns a boolean if a field has been set.
-
 ### GetRunningWorkflows
 
 `func (o *FabricSwitchProfile) GetRunningWorkflows() []WorkflowWorkflowInfoRelationship`
@@ -278,6 +308,16 @@ SetSwitchClusterProfile sets SwitchClusterProfile field to given value.
 
 HasSwitchClusterProfile returns a boolean if a field has been set.
 
+### SetSwitchClusterProfileNil
+
+`func (o *FabricSwitchProfile) SetSwitchClusterProfileNil(b bool)`
+
+ SetSwitchClusterProfileNil sets the value for SwitchClusterProfile to be an explicit nil
+
+### UnsetSwitchClusterProfile
+`func (o *FabricSwitchProfile) UnsetSwitchClusterProfile()`
+
+UnsetSwitchClusterProfile ensures that no value is present for SwitchClusterProfile, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +24,7 @@ func resourceHyperflexClusterProfile() *schema.Resource {
 		UpdateContext: resourceHyperflexClusterProfileUpdate,
 		DeleteContext: resourceHyperflexClusterProfileDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -128,46 +131,6 @@ func resourceHyperflexClusterProfile() *schema.Resource {
 				Optional:    true,
 				ConfigMode:  schema.SchemaConfigModeAttr,
 				Computed:    true,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"additional_properties": {
-							Type:             schema.TypeString,
-							Optional:         true,
-							DiffSuppressFunc: SuppressDiffAdditionProps,
-						},
-						"class_id": {
-							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
-							Type:        schema.TypeString,
-							Optional:    true,
-							Default:     "mo.MoRef",
-						},
-						"moid": {
-							Description: "The Moid of the referenced REST resource.",
-							Type:        schema.TypeString,
-							Optional:    true,
-							Computed:    true,
-						},
-						"object_type": {
-							Description: "The fully-qualified name of the remote type referred by this relationship.",
-							Type:        schema.TypeString,
-							Optional:    true,
-							Computed:    true,
-						},
-						"selector": {
-							Description: "An OData $filter expression which describes the REST resource to be referenced. This field may\nbe set instead of 'moid' by clients.\n1. If 'moid' is set this field is ignored.\n1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of the\nresource matching the filter expression and populates it in the MoRef that is part of the object\ninstance being inserted/updated to fulfill the REST request.\nAn error is returned if the filter matches zero or more than one REST resource.\nAn example filter string is: Serial eq '3AA8B7T11'.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-					},
-				},
-			},
-			"associated_compute_cluster": {
-				Description: "A reference to a virtualizationIweCluster resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
-				Type:        schema.TypeList,
-				MaxItems:    1,
-				Optional:    true,
-				Computed:    true,
-				ConfigMode:  schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"additional_properties": {
@@ -405,6 +368,17 @@ func resourceHyperflexClusterProfile() *schema.Resource {
 								}
 								return
 							}},
+						"config_state_summary": {
+							Description: "Indicates a profile's configuration deploying state. Values -- Assigned, Not-assigned, Associated, InConsistent, Validating, Configuring, Failed, Activating, UnConfiguring.\n* `None` - The default state is none.\n* `Not-assigned` - Server is not assigned to the profile.\n* `Assigned` - Server is assigned to the profile and the configurations are not yet deployed.\n* `Preparing` - Preparing to deploy the configuration.\n* `Validating` - Profile validation in progress.\n* `Configuring` - Profile deploy operation is in progress.\n* `UnConfiguring` - Server is unassigned and config cleanup is in progress.\n* `Analyzing` - Profile changes are being analyzed.\n* `Activating` - Configuration is being activated at the endpoint.\n* `Inconsistent` - Profile is inconsistent with the endpoint configuration.\n* `Associated` - The profile configuration has been applied to the endpoint and no inconsistencies have been detected.\n* `Failed` - The last action on the profile has failed.\n* `Not-complete` - Config import operation on the profile is not complete.\n* `Waiting-for-resource` - Waiting for the resource to be allocated for the profile.\n* `Partially-deployed` - The profile configuration has been applied on a subset of endpoints.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"config_type": {
 							Description: "The type of configuration running on the profile. Since profile deployments can configure multiple different settings, configType indicates which type of configuration is currently in progress.",
 							Type:        schema.TypeString,
@@ -426,6 +400,14 @@ func resourceHyperflexClusterProfile() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 						},
+						"inconsistency_reason": {
+							Type:       schema.TypeList,
+							Optional:   true,
+							ConfigMode: schema.SchemaConfigModeAttr,
+							Computed:   true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -509,6 +491,14 @@ func resourceHyperflexClusterProfile() *schema.Resource {
 					return false
 				},
 			},
+			"deployed_policies": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				}},
 			"description": {
 				Description:  "Description of the profile.",
 				Type:         schema.TypeString,
@@ -659,12 +649,23 @@ func resourceHyperflexClusterProfile() *schema.Resource {
 				Optional:     true,
 			},
 			"hypervisor_type": {
-				Description:  "The hypervisor type for the HyperFlex cluster.\n* `ESXi` - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version.\n* `HyperFlexAp` - The hypervisor of the virtualization platform is Cisco HyperFlex Application Platform.\n* `IWE` - The hypervisor of the virtualization platform is Cisco Intersight Workload Engine.\n* `Hyper-V` - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V.\n* `Unknown` - The hypervisor running on the HyperFlex cluster is not known.",
+				Description:  "The hypervisor type for the HyperFlex cluster.\n* `ESXi` - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version.\n* `Hyper-V` - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V.\n* `Unknown` - The hypervisor running on the HyperFlex cluster is not known.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringInSlice([]string{"ESXi", "HyperFlexAp", "IWE", "Hyper-V", "Unknown"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"ESXi", "Hyper-V", "Unknown"}, false),
 				Optional:     true,
 				Default:      "ESXi",
 			},
+			"is_nic_based": {
+				Description: "The NIC based setup being set/unset determined by inventory.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"local_credential": {
 				Description: "A reference to a hyperflexLocalCredentialPolicy resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
 				Type:        schema.TypeList,
@@ -1041,6 +1042,14 @@ func resourceHyperflexClusterProfile() *schema.Resource {
 					},
 				},
 			},
+			"removed_policies": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				}},
 			"replication": {
 				Description: "The number of copies of each data block written.",
 				Type:        schema.TypeInt,
@@ -1086,6 +1095,43 @@ func resourceHyperflexClusterProfile() *schema.Resource {
 						"selector": {
 							Description: "An OData $filter expression which describes the REST resource to be referenced. This field may\nbe set instead of 'moid' by clients.\n1. If 'moid' is set this field is ignored.\n1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of the\nresource matching the filter expression and populates it in the MoRef that is part of the object\ninstance being inserted/updated to fulfill the REST request.\nAn error is returned if the filter matches zero or more than one REST resource.\nAn example filter string is: Serial eq '3AA8B7T11'.",
 							Type:        schema.TypeString,
+							Optional:    true,
+						},
+					},
+				},
+			},
+			"scheduled_actions": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"action": {
+							Description: "Name of the action to be performed on the profile.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "policy.ScheduledAction",
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "policy.ScheduledAction",
+						},
+						"proceed_on_reboot": {
+							Description: "ProceedOnReboot can be used to acknowledge server reboot while triggering deploy/activate.",
+							Type:        schema.TypeBool,
 							Optional:    true,
 						},
 					},
@@ -1512,6 +1558,17 @@ func resourceHyperflexClusterProfile() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1923,6 +1980,20 @@ func resourceHyperflexClusterProfileCreate(c context.Context, d *schema.Resource
 					o.SetErrorState(x)
 				}
 			}
+			if v, ok := l["inconsistency_reason"]; ok {
+				{
+					x := make([]string, 0)
+					y := reflect.ValueOf(v)
+					for i := 0; i < y.Len(); i++ {
+						if y.Index(i).Interface() != nil {
+							x = append(x, y.Index(i).Interface().(string))
+						}
+					}
+					if len(x) > 0 {
+						o.SetInconsistencyReason(x)
+					}
+				}
+			}
 			if v, ok := l["object_type"]; ok {
 				{
 					x := (v.(string))
@@ -1940,6 +2011,19 @@ func resourceHyperflexClusterProfileCreate(c context.Context, d *schema.Resource
 	if v, ok := d.GetOk("data_ip_address"); ok {
 		x := (v.(string))
 		o.SetDataIpAddress(x)
+	}
+
+	if v, ok := d.GetOk("deployed_policies"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetDeployedPolicies(x)
+		}
 	}
 
 	if v, ok := d.GetOk("description"); ok {
@@ -2374,9 +2458,64 @@ func resourceHyperflexClusterProfileCreate(c context.Context, d *schema.Resource
 		}
 	}
 
+	if v, ok := d.GetOk("removed_policies"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetRemovedPolicies(x)
+		}
+	}
+
 	if v, ok := d.GetOkExists("replication"); ok {
 		x := int64(v.(int))
 		o.SetReplication(x)
+	}
+
+	if v, ok := d.GetOk("scheduled_actions"); ok {
+		x := make([]models.PolicyScheduledAction, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := models.NewPolicyScheduledActionWithDefaults()
+			l := s[i].(map[string]interface{})
+			if v, ok := l["action"]; ok {
+				{
+					x := (v.(string))
+					o.SetAction(x)
+				}
+			}
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("policy.ScheduledAction")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["proceed_on_reboot"]; ok {
+				{
+					x := (v.(bool))
+					o.SetProceedOnReboot(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		if len(x) > 0 {
+			o.SetScheduledActions(x)
+		}
 	}
 
 	if v, ok := d.GetOk("software_version"); ok {
@@ -2755,8 +2894,13 @@ func resourceHyperflexClusterProfileCreate(c context.Context, d *schema.Resource
 		}
 		return diag.Errorf("error occurred while creating HyperflexClusterProfile: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
 	var waitForCompletion bool
 	if v, ok := d.GetOk("wait_for_completion"); ok {
 		waitForCompletion = v.(bool)
@@ -2806,12 +2950,18 @@ func resourceHyperflexClusterProfileCreate(c context.Context, d *schema.Resource
 			}
 		}
 	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceHyperflexClusterProfileRead(c, d, meta)...)
 }
 
 func resourceHyperflexClusterProfileRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.HyperflexApi.GetHyperflexClusterProfileByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -2853,10 +3003,6 @@ func resourceHyperflexClusterProfileRead(c context.Context, d *schema.ResourceDa
 		return diag.Errorf("error occurred while setting property AssociatedCluster in HyperflexClusterProfile object: %s", err.Error())
 	}
 
-	if err := d.Set("associated_compute_cluster", flattenMapVirtualizationIweClusterRelationship(s.GetAssociatedComputeCluster(), d)); err != nil {
-		return diag.Errorf("error occurred while setting property AssociatedComputeCluster in HyperflexClusterProfile object: %s", err.Error())
-	}
-
 	if err := d.Set("auto_support", flattenMapHyperflexAutoSupportPolicyRelationship(s.GetAutoSupport(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property AutoSupport in HyperflexClusterProfile object: %s", err.Error())
 	}
@@ -2893,6 +3039,10 @@ func resourceHyperflexClusterProfileRead(c context.Context, d *schema.ResourceDa
 		return diag.Errorf("error occurred while setting property DataIpAddress in HyperflexClusterProfile object: %s", err.Error())
 	}
 
+	if err := d.Set("deployed_policies", (s.GetDeployedPolicies())); err != nil {
+		return diag.Errorf("error occurred while setting property DeployedPolicies in HyperflexClusterProfile object: %s", err.Error())
+	}
+
 	if err := d.Set("description", (s.GetDescription())); err != nil {
 		return diag.Errorf("error occurred while setting property Description in HyperflexClusterProfile object: %s", err.Error())
 	}
@@ -2923,6 +3073,10 @@ func resourceHyperflexClusterProfileRead(c context.Context, d *schema.ResourceDa
 
 	if err := d.Set("hypervisor_type", (s.GetHypervisorType())); err != nil {
 		return diag.Errorf("error occurred while setting property HypervisorType in HyperflexClusterProfile object: %s", err.Error())
+	}
+
+	if err := d.Set("is_nic_based", (s.GetIsNicBased())); err != nil {
+		return diag.Errorf("error occurred while setting property IsNicBased in HyperflexClusterProfile object: %s", err.Error())
 	}
 
 	if err := d.Set("local_credential", flattenMapHyperflexLocalCredentialPolicyRelationship(s.GetLocalCredential(), d)); err != nil {
@@ -2989,12 +3143,20 @@ func resourceHyperflexClusterProfileRead(c context.Context, d *schema.ResourceDa
 		return diag.Errorf("error occurred while setting property ProxySetting in HyperflexClusterProfile object: %s", err.Error())
 	}
 
+	if err := d.Set("removed_policies", (s.GetRemovedPolicies())); err != nil {
+		return diag.Errorf("error occurred while setting property RemovedPolicies in HyperflexClusterProfile object: %s", err.Error())
+	}
+
 	if err := d.Set("replication", (s.GetReplication())); err != nil {
 		return diag.Errorf("error occurred while setting property Replication in HyperflexClusterProfile object: %s", err.Error())
 	}
 
 	if err := d.Set("running_workflows", flattenListWorkflowWorkflowInfoRelationship(s.GetRunningWorkflows(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property RunningWorkflows in HyperflexClusterProfile object: %s", err.Error())
+	}
+
+	if err := d.Set("scheduled_actions", flattenListPolicyScheduledAction(s.GetScheduledActions(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property ScheduledActions in HyperflexClusterProfile object: %s", err.Error())
 	}
 
 	if err := d.Set("shared_scope", (s.GetSharedScope())); err != nil {
@@ -3387,6 +3549,20 @@ func resourceHyperflexClusterProfileUpdate(c context.Context, d *schema.Resource
 					o.SetErrorState(x)
 				}
 			}
+			if v, ok := l["inconsistency_reason"]; ok {
+				{
+					x := make([]string, 0)
+					y := reflect.ValueOf(v)
+					for i := 0; i < y.Len(); i++ {
+						if y.Index(i).Interface() != nil {
+							x = append(x, y.Index(i).Interface().(string))
+						}
+					}
+					if len(x) > 0 {
+						o.SetInconsistencyReason(x)
+					}
+				}
+			}
 			if v, ok := l["object_type"]; ok {
 				{
 					x := (v.(string))
@@ -3405,6 +3581,18 @@ func resourceHyperflexClusterProfileUpdate(c context.Context, d *schema.Resource
 		v := d.Get("data_ip_address")
 		x := (v.(string))
 		o.SetDataIpAddress(x)
+	}
+
+	if d.HasChange("deployed_policies") {
+		v := d.Get("deployed_policies")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetDeployedPolicies(x)
 	}
 
 	if d.HasChange("description") {
@@ -3853,10 +4041,63 @@ func resourceHyperflexClusterProfileUpdate(c context.Context, d *schema.Resource
 		}
 	}
 
+	if d.HasChange("removed_policies") {
+		v := d.Get("removed_policies")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetRemovedPolicies(x)
+	}
+
 	if d.HasChange("replication") {
 		v := d.Get("replication")
 		x := int64(v.(int))
 		o.SetReplication(x)
+	}
+
+	if d.HasChange("scheduled_actions") {
+		v := d.Get("scheduled_actions")
+		x := make([]models.PolicyScheduledAction, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := &models.PolicyScheduledAction{}
+			l := s[i].(map[string]interface{})
+			if v, ok := l["action"]; ok {
+				{
+					x := (v.(string))
+					o.SetAction(x)
+				}
+			}
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("policy.ScheduledAction")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["proceed_on_reboot"]; ok {
+				{
+					x := (v.(bool))
+					o.SetProceedOnReboot(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		o.SetScheduledActions(x)
 	}
 
 	if d.HasChange("software_version") {

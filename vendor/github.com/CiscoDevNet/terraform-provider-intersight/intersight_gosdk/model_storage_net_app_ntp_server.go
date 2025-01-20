@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the StorageNetAppNtpServer type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &StorageNetAppNtpServer{}
 
 // StorageNetAppNtpServer External NTP time servers ONTAP uses for time adjustment and correction.
 type StorageNetAppNtpServer struct {
@@ -25,14 +29,19 @@ type StorageNetAppNtpServer struct {
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
 	// Indicates whether or not NTP symmetric authentication is enabled.
+	// Deprecated
 	AuthenticationEnabled *bool `json:"AuthenticationEnabled,omitempty"`
 	// NTP symmetric authentication key identifier or index number (ID).
 	AuthenticationKeyId *string `json:"AuthenticationKeyId,omitempty"`
+	// Unique identity of the device.
+	ClusterUuid *string `json:"ClusterUuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+	// Indicates whether or not NTP symmetric authentication is enabled.
+	IsAuthenticationEnabled *string `json:"IsAuthenticationEnabled,omitempty"`
 	// NTP server host name, IPv4, or IPv6 address.
 	Server *string `json:"Server,omitempty"`
 	// NTP protocol version for server. Valid versions are 3, 4, or auto. * `none` - Default unknown NTP protocol version. * `3` - NTP protocol version is 3. * `4` - NTP protocol version is 4. * `auto` - NTP protocol version is auto.
-	Version              *string                           `json:"Version,omitempty"`
-	Array                *StorageNetAppClusterRelationship `json:"Array,omitempty"`
+	Version              *string                                  `json:"Version,omitempty"`
+	Array                NullableStorageNetAppClusterRelationship `json:"Array,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -85,6 +94,11 @@ func (o *StorageNetAppNtpServer) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "storage.NetAppNtpServer" of the ClassId field.
+func (o *StorageNetAppNtpServer) GetDefaultClassId() interface{} {
+	return "storage.NetAppNtpServer"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *StorageNetAppNtpServer) GetObjectType() string {
 	if o == nil {
@@ -109,9 +123,15 @@ func (o *StorageNetAppNtpServer) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "storage.NetAppNtpServer" of the ObjectType field.
+func (o *StorageNetAppNtpServer) GetDefaultObjectType() interface{} {
+	return "storage.NetAppNtpServer"
+}
+
 // GetAuthenticationEnabled returns the AuthenticationEnabled field value if set, zero value otherwise.
+// Deprecated
 func (o *StorageNetAppNtpServer) GetAuthenticationEnabled() bool {
-	if o == nil || o.AuthenticationEnabled == nil {
+	if o == nil || IsNil(o.AuthenticationEnabled) {
 		var ret bool
 		return ret
 	}
@@ -120,8 +140,9 @@ func (o *StorageNetAppNtpServer) GetAuthenticationEnabled() bool {
 
 // GetAuthenticationEnabledOk returns a tuple with the AuthenticationEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *StorageNetAppNtpServer) GetAuthenticationEnabledOk() (*bool, bool) {
-	if o == nil || o.AuthenticationEnabled == nil {
+	if o == nil || IsNil(o.AuthenticationEnabled) {
 		return nil, false
 	}
 	return o.AuthenticationEnabled, true
@@ -129,7 +150,7 @@ func (o *StorageNetAppNtpServer) GetAuthenticationEnabledOk() (*bool, bool) {
 
 // HasAuthenticationEnabled returns a boolean if a field has been set.
 func (o *StorageNetAppNtpServer) HasAuthenticationEnabled() bool {
-	if o != nil && o.AuthenticationEnabled != nil {
+	if o != nil && !IsNil(o.AuthenticationEnabled) {
 		return true
 	}
 
@@ -137,13 +158,14 @@ func (o *StorageNetAppNtpServer) HasAuthenticationEnabled() bool {
 }
 
 // SetAuthenticationEnabled gets a reference to the given bool and assigns it to the AuthenticationEnabled field.
+// Deprecated
 func (o *StorageNetAppNtpServer) SetAuthenticationEnabled(v bool) {
 	o.AuthenticationEnabled = &v
 }
 
 // GetAuthenticationKeyId returns the AuthenticationKeyId field value if set, zero value otherwise.
 func (o *StorageNetAppNtpServer) GetAuthenticationKeyId() string {
-	if o == nil || o.AuthenticationKeyId == nil {
+	if o == nil || IsNil(o.AuthenticationKeyId) {
 		var ret string
 		return ret
 	}
@@ -153,7 +175,7 @@ func (o *StorageNetAppNtpServer) GetAuthenticationKeyId() string {
 // GetAuthenticationKeyIdOk returns a tuple with the AuthenticationKeyId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppNtpServer) GetAuthenticationKeyIdOk() (*string, bool) {
-	if o == nil || o.AuthenticationKeyId == nil {
+	if o == nil || IsNil(o.AuthenticationKeyId) {
 		return nil, false
 	}
 	return o.AuthenticationKeyId, true
@@ -161,7 +183,7 @@ func (o *StorageNetAppNtpServer) GetAuthenticationKeyIdOk() (*string, bool) {
 
 // HasAuthenticationKeyId returns a boolean if a field has been set.
 func (o *StorageNetAppNtpServer) HasAuthenticationKeyId() bool {
-	if o != nil && o.AuthenticationKeyId != nil {
+	if o != nil && !IsNil(o.AuthenticationKeyId) {
 		return true
 	}
 
@@ -173,9 +195,73 @@ func (o *StorageNetAppNtpServer) SetAuthenticationKeyId(v string) {
 	o.AuthenticationKeyId = &v
 }
 
+// GetClusterUuid returns the ClusterUuid field value if set, zero value otherwise.
+func (o *StorageNetAppNtpServer) GetClusterUuid() string {
+	if o == nil || IsNil(o.ClusterUuid) {
+		var ret string
+		return ret
+	}
+	return *o.ClusterUuid
+}
+
+// GetClusterUuidOk returns a tuple with the ClusterUuid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppNtpServer) GetClusterUuidOk() (*string, bool) {
+	if o == nil || IsNil(o.ClusterUuid) {
+		return nil, false
+	}
+	return o.ClusterUuid, true
+}
+
+// HasClusterUuid returns a boolean if a field has been set.
+func (o *StorageNetAppNtpServer) HasClusterUuid() bool {
+	if o != nil && !IsNil(o.ClusterUuid) {
+		return true
+	}
+
+	return false
+}
+
+// SetClusterUuid gets a reference to the given string and assigns it to the ClusterUuid field.
+func (o *StorageNetAppNtpServer) SetClusterUuid(v string) {
+	o.ClusterUuid = &v
+}
+
+// GetIsAuthenticationEnabled returns the IsAuthenticationEnabled field value if set, zero value otherwise.
+func (o *StorageNetAppNtpServer) GetIsAuthenticationEnabled() string {
+	if o == nil || IsNil(o.IsAuthenticationEnabled) {
+		var ret string
+		return ret
+	}
+	return *o.IsAuthenticationEnabled
+}
+
+// GetIsAuthenticationEnabledOk returns a tuple with the IsAuthenticationEnabled field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppNtpServer) GetIsAuthenticationEnabledOk() (*string, bool) {
+	if o == nil || IsNil(o.IsAuthenticationEnabled) {
+		return nil, false
+	}
+	return o.IsAuthenticationEnabled, true
+}
+
+// HasIsAuthenticationEnabled returns a boolean if a field has been set.
+func (o *StorageNetAppNtpServer) HasIsAuthenticationEnabled() bool {
+	if o != nil && !IsNil(o.IsAuthenticationEnabled) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsAuthenticationEnabled gets a reference to the given string and assigns it to the IsAuthenticationEnabled field.
+func (o *StorageNetAppNtpServer) SetIsAuthenticationEnabled(v string) {
+	o.IsAuthenticationEnabled = &v
+}
+
 // GetServer returns the Server field value if set, zero value otherwise.
 func (o *StorageNetAppNtpServer) GetServer() string {
-	if o == nil || o.Server == nil {
+	if o == nil || IsNil(o.Server) {
 		var ret string
 		return ret
 	}
@@ -185,7 +271,7 @@ func (o *StorageNetAppNtpServer) GetServer() string {
 // GetServerOk returns a tuple with the Server field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppNtpServer) GetServerOk() (*string, bool) {
-	if o == nil || o.Server == nil {
+	if o == nil || IsNil(o.Server) {
 		return nil, false
 	}
 	return o.Server, true
@@ -193,7 +279,7 @@ func (o *StorageNetAppNtpServer) GetServerOk() (*string, bool) {
 
 // HasServer returns a boolean if a field has been set.
 func (o *StorageNetAppNtpServer) HasServer() bool {
-	if o != nil && o.Server != nil {
+	if o != nil && !IsNil(o.Server) {
 		return true
 	}
 
@@ -207,7 +293,7 @@ func (o *StorageNetAppNtpServer) SetServer(v string) {
 
 // GetVersion returns the Version field value if set, zero value otherwise.
 func (o *StorageNetAppNtpServer) GetVersion() string {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		var ret string
 		return ret
 	}
@@ -217,7 +303,7 @@ func (o *StorageNetAppNtpServer) GetVersion() string {
 // GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppNtpServer) GetVersionOk() (*string, bool) {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		return nil, false
 	}
 	return o.Version, true
@@ -225,7 +311,7 @@ func (o *StorageNetAppNtpServer) GetVersionOk() (*string, bool) {
 
 // HasVersion returns a boolean if a field has been set.
 func (o *StorageNetAppNtpServer) HasVersion() bool {
-	if o != nil && o.Version != nil {
+	if o != nil && !IsNil(o.Version) {
 		return true
 	}
 
@@ -237,103 +323,178 @@ func (o *StorageNetAppNtpServer) SetVersion(v string) {
 	o.Version = &v
 }
 
-// GetArray returns the Array field value if set, zero value otherwise.
+// GetArray returns the Array field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorageNetAppNtpServer) GetArray() StorageNetAppClusterRelationship {
-	if o == nil || o.Array == nil {
+	if o == nil || IsNil(o.Array.Get()) {
 		var ret StorageNetAppClusterRelationship
 		return ret
 	}
-	return *o.Array
+	return *o.Array.Get()
 }
 
 // GetArrayOk returns a tuple with the Array field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppNtpServer) GetArrayOk() (*StorageNetAppClusterRelationship, bool) {
-	if o == nil || o.Array == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Array, true
+	return o.Array.Get(), o.Array.IsSet()
 }
 
 // HasArray returns a boolean if a field has been set.
 func (o *StorageNetAppNtpServer) HasArray() bool {
-	if o != nil && o.Array != nil {
+	if o != nil && o.Array.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetArray gets a reference to the given StorageNetAppClusterRelationship and assigns it to the Array field.
+// SetArray gets a reference to the given NullableStorageNetAppClusterRelationship and assigns it to the Array field.
 func (o *StorageNetAppNtpServer) SetArray(v StorageNetAppClusterRelationship) {
-	o.Array = &v
+	o.Array.Set(&v)
+}
+
+// SetArrayNil sets the value for Array to be an explicit nil
+func (o *StorageNetAppNtpServer) SetArrayNil() {
+	o.Array.Set(nil)
+}
+
+// UnsetArray ensures that no value is present for Array, not even an explicit nil
+func (o *StorageNetAppNtpServer) UnsetArray() {
+	o.Array.Unset()
 }
 
 func (o StorageNetAppNtpServer) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o StorageNetAppNtpServer) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AuthenticationEnabled != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AuthenticationEnabled) {
 		toSerialize["AuthenticationEnabled"] = o.AuthenticationEnabled
 	}
-	if o.AuthenticationKeyId != nil {
+	if !IsNil(o.AuthenticationKeyId) {
 		toSerialize["AuthenticationKeyId"] = o.AuthenticationKeyId
 	}
-	if o.Server != nil {
+	if !IsNil(o.ClusterUuid) {
+		toSerialize["ClusterUuid"] = o.ClusterUuid
+	}
+	if !IsNil(o.IsAuthenticationEnabled) {
+		toSerialize["IsAuthenticationEnabled"] = o.IsAuthenticationEnabled
+	}
+	if !IsNil(o.Server) {
 		toSerialize["Server"] = o.Server
 	}
-	if o.Version != nil {
+	if !IsNil(o.Version) {
 		toSerialize["Version"] = o.Version
 	}
-	if o.Array != nil {
-		toSerialize["Array"] = o.Array
+	if o.Array.IsSet() {
+		toSerialize["Array"] = o.Array.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *StorageNetAppNtpServer) UnmarshalJSON(bytes []byte) (err error) {
+func (o *StorageNetAppNtpServer) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type StorageNetAppNtpServerWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
 		// Indicates whether or not NTP symmetric authentication is enabled.
+		// Deprecated
 		AuthenticationEnabled *bool `json:"AuthenticationEnabled,omitempty"`
 		// NTP symmetric authentication key identifier or index number (ID).
 		AuthenticationKeyId *string `json:"AuthenticationKeyId,omitempty"`
+		// Unique identity of the device.
+		ClusterUuid *string `json:"ClusterUuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+		// Indicates whether or not NTP symmetric authentication is enabled.
+		IsAuthenticationEnabled *string `json:"IsAuthenticationEnabled,omitempty"`
 		// NTP server host name, IPv4, or IPv6 address.
 		Server *string `json:"Server,omitempty"`
 		// NTP protocol version for server. Valid versions are 3, 4, or auto. * `none` - Default unknown NTP protocol version. * `3` - NTP protocol version is 3. * `4` - NTP protocol version is 4. * `auto` - NTP protocol version is auto.
-		Version *string                           `json:"Version,omitempty"`
-		Array   *StorageNetAppClusterRelationship `json:"Array,omitempty"`
+		Version *string                                  `json:"Version,omitempty"`
+		Array   NullableStorageNetAppClusterRelationship `json:"Array,omitempty"`
 	}
 
 	varStorageNetAppNtpServerWithoutEmbeddedStruct := StorageNetAppNtpServerWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppNtpServerWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varStorageNetAppNtpServerWithoutEmbeddedStruct)
 	if err == nil {
 		varStorageNetAppNtpServer := _StorageNetAppNtpServer{}
 		varStorageNetAppNtpServer.ClassId = varStorageNetAppNtpServerWithoutEmbeddedStruct.ClassId
 		varStorageNetAppNtpServer.ObjectType = varStorageNetAppNtpServerWithoutEmbeddedStruct.ObjectType
 		varStorageNetAppNtpServer.AuthenticationEnabled = varStorageNetAppNtpServerWithoutEmbeddedStruct.AuthenticationEnabled
 		varStorageNetAppNtpServer.AuthenticationKeyId = varStorageNetAppNtpServerWithoutEmbeddedStruct.AuthenticationKeyId
+		varStorageNetAppNtpServer.ClusterUuid = varStorageNetAppNtpServerWithoutEmbeddedStruct.ClusterUuid
+		varStorageNetAppNtpServer.IsAuthenticationEnabled = varStorageNetAppNtpServerWithoutEmbeddedStruct.IsAuthenticationEnabled
 		varStorageNetAppNtpServer.Server = varStorageNetAppNtpServerWithoutEmbeddedStruct.Server
 		varStorageNetAppNtpServer.Version = varStorageNetAppNtpServerWithoutEmbeddedStruct.Version
 		varStorageNetAppNtpServer.Array = varStorageNetAppNtpServerWithoutEmbeddedStruct.Array
@@ -344,7 +505,7 @@ func (o *StorageNetAppNtpServer) UnmarshalJSON(bytes []byte) (err error) {
 
 	varStorageNetAppNtpServer := _StorageNetAppNtpServer{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppNtpServer)
+	err = json.Unmarshal(data, &varStorageNetAppNtpServer)
 	if err == nil {
 		o.MoBaseMo = varStorageNetAppNtpServer.MoBaseMo
 	} else {
@@ -353,11 +514,13 @@ func (o *StorageNetAppNtpServer) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AuthenticationEnabled")
 		delete(additionalProperties, "AuthenticationKeyId")
+		delete(additionalProperties, "ClusterUuid")
+		delete(additionalProperties, "IsAuthenticationEnabled")
 		delete(additionalProperties, "Server")
 		delete(additionalProperties, "Version")
 		delete(additionalProperties, "Array")

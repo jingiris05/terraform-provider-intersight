@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -56,8 +56,8 @@ func (r ApiCreateKubernetesAciCniApicRequest) Execute() (*KubernetesAciCniApic, 
 /*
 CreateKubernetesAciCniApic Create a 'kubernetes.AciCniApic' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesAciCniApicRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesAciCniApicRequest
 
 Deprecated
 */
@@ -69,7 +69,9 @@ func (a *KubernetesApiService) CreateKubernetesAciCniApic(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniApic
+//
+//	@return KubernetesAciCniApic
+//
 // Deprecated
 func (a *KubernetesApiService) CreateKubernetesAciCniApicExecute(r ApiCreateKubernetesAciCniApicRequest) (*KubernetesAciCniApic, *http.Response, error) {
 	var (
@@ -111,10 +113,10 @@ func (a *KubernetesApiService) CreateKubernetesAciCniApicExecute(r ApiCreateKube
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAciCniApic
@@ -128,9 +130,9 @@ func (a *KubernetesApiService) CreateKubernetesAciCniApicExecute(r ApiCreateKube
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -147,6 +149,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniApicExecute(r ApiCreateKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -157,6 +160,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniApicExecute(r ApiCreateKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -167,6 +171,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniApicExecute(r ApiCreateKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -177,6 +182,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniApicExecute(r ApiCreateKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -186,6 +192,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniApicExecute(r ApiCreateKube
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -235,8 +242,8 @@ func (r ApiCreateKubernetesAciCniProfileRequest) Execute() (*KubernetesAciCniPro
 /*
 CreateKubernetesAciCniProfile Create a 'kubernetes.AciCniProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesAciCniProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesAciCniProfileRequest
 
 Deprecated
 */
@@ -248,7 +255,9 @@ func (a *KubernetesApiService) CreateKubernetesAciCniProfile(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniProfile
+//
+//	@return KubernetesAciCniProfile
+//
 // Deprecated
 func (a *KubernetesApiService) CreateKubernetesAciCniProfileExecute(r ApiCreateKubernetesAciCniProfileRequest) (*KubernetesAciCniProfile, *http.Response, error) {
 	var (
@@ -290,10 +299,10 @@ func (a *KubernetesApiService) CreateKubernetesAciCniProfileExecute(r ApiCreateK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAciCniProfile
@@ -307,9 +316,9 @@ func (a *KubernetesApiService) CreateKubernetesAciCniProfileExecute(r ApiCreateK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -326,6 +335,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniProfileExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -336,6 +346,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniProfileExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -346,6 +357,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniProfileExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -356,6 +368,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniProfileExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -365,6 +378,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniProfileExecute(r ApiCreateK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -414,8 +428,8 @@ func (r ApiCreateKubernetesAciCniTenantClusterAllocationRequest) Execute() (*Kub
 /*
 CreateKubernetesAciCniTenantClusterAllocation Create a 'kubernetes.AciCniTenantClusterAllocation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesAciCniTenantClusterAllocationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesAciCniTenantClusterAllocationRequest
 
 Deprecated
 */
@@ -427,7 +441,9 @@ func (a *KubernetesApiService) CreateKubernetesAciCniTenantClusterAllocation(ctx
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniTenantClusterAllocation
+//
+//	@return KubernetesAciCniTenantClusterAllocation
+//
 // Deprecated
 func (a *KubernetesApiService) CreateKubernetesAciCniTenantClusterAllocationExecute(r ApiCreateKubernetesAciCniTenantClusterAllocationRequest) (*KubernetesAciCniTenantClusterAllocation, *http.Response, error) {
 	var (
@@ -469,10 +485,10 @@ func (a *KubernetesApiService) CreateKubernetesAciCniTenantClusterAllocationExec
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAciCniTenantClusterAllocation
@@ -486,9 +502,9 @@ func (a *KubernetesApiService) CreateKubernetesAciCniTenantClusterAllocationExec
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -505,6 +521,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -515,6 +532,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -525,6 +543,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -535,6 +554,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -544,6 +564,7 @@ func (a *KubernetesApiService) CreateKubernetesAciCniTenantClusterAllocationExec
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -593,8 +614,8 @@ func (r ApiCreateKubernetesAddonDefinitionRequest) Execute() (*KubernetesAddonDe
 /*
 CreateKubernetesAddonDefinition Create a 'kubernetes.AddonDefinition' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesAddonDefinitionRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesAddonDefinitionRequest
 */
 func (a *KubernetesApiService) CreateKubernetesAddonDefinition(ctx context.Context) ApiCreateKubernetesAddonDefinitionRequest {
 	return ApiCreateKubernetesAddonDefinitionRequest{
@@ -604,7 +625,8 @@ func (a *KubernetesApiService) CreateKubernetesAddonDefinition(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesAddonDefinition
+//
+//	@return KubernetesAddonDefinition
 func (a *KubernetesApiService) CreateKubernetesAddonDefinitionExecute(r ApiCreateKubernetesAddonDefinitionRequest) (*KubernetesAddonDefinition, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -645,10 +667,10 @@ func (a *KubernetesApiService) CreateKubernetesAddonDefinitionExecute(r ApiCreat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAddonDefinition
@@ -662,9 +684,9 @@ func (a *KubernetesApiService) CreateKubernetesAddonDefinitionExecute(r ApiCreat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -681,6 +703,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonDefinitionExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -691,6 +714,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonDefinitionExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -701,6 +725,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonDefinitionExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -711,6 +736,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonDefinitionExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -720,6 +746,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonDefinitionExecute(r ApiCreat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -769,8 +796,8 @@ func (r ApiCreateKubernetesAddonPolicyRequest) Execute() (*KubernetesAddonPolicy
 /*
 CreateKubernetesAddonPolicy Create a 'kubernetes.AddonPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesAddonPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesAddonPolicyRequest
 */
 func (a *KubernetesApiService) CreateKubernetesAddonPolicy(ctx context.Context) ApiCreateKubernetesAddonPolicyRequest {
 	return ApiCreateKubernetesAddonPolicyRequest{
@@ -780,7 +807,8 @@ func (a *KubernetesApiService) CreateKubernetesAddonPolicy(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return KubernetesAddonPolicy
+//
+//	@return KubernetesAddonPolicy
 func (a *KubernetesApiService) CreateKubernetesAddonPolicyExecute(r ApiCreateKubernetesAddonPolicyRequest) (*KubernetesAddonPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -821,10 +849,10 @@ func (a *KubernetesApiService) CreateKubernetesAddonPolicyExecute(r ApiCreateKub
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAddonPolicy
@@ -838,9 +866,9 @@ func (a *KubernetesApiService) CreateKubernetesAddonPolicyExecute(r ApiCreateKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -857,6 +885,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonPolicyExecute(r ApiCreateKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -867,6 +896,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonPolicyExecute(r ApiCreateKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -877,6 +907,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonPolicyExecute(r ApiCreateKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -887,6 +918,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonPolicyExecute(r ApiCreateKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -896,6 +928,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonPolicyExecute(r ApiCreateKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -945,8 +978,8 @@ func (r ApiCreateKubernetesAddonRepositoryRequest) Execute() (*KubernetesAddonRe
 /*
 CreateKubernetesAddonRepository Create a 'kubernetes.AddonRepository' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesAddonRepositoryRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesAddonRepositoryRequest
 */
 func (a *KubernetesApiService) CreateKubernetesAddonRepository(ctx context.Context) ApiCreateKubernetesAddonRepositoryRequest {
 	return ApiCreateKubernetesAddonRepositoryRequest{
@@ -956,7 +989,8 @@ func (a *KubernetesApiService) CreateKubernetesAddonRepository(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesAddonRepository
+//
+//	@return KubernetesAddonRepository
 func (a *KubernetesApiService) CreateKubernetesAddonRepositoryExecute(r ApiCreateKubernetesAddonRepositoryRequest) (*KubernetesAddonRepository, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -997,10 +1031,10 @@ func (a *KubernetesApiService) CreateKubernetesAddonRepositoryExecute(r ApiCreat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAddonRepository
@@ -1014,9 +1048,9 @@ func (a *KubernetesApiService) CreateKubernetesAddonRepositoryExecute(r ApiCreat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1033,6 +1067,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonRepositoryExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1043,6 +1078,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonRepositoryExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1053,6 +1089,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonRepositoryExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1063,6 +1100,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonRepositoryExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1072,6 +1110,7 @@ func (a *KubernetesApiService) CreateKubernetesAddonRepositoryExecute(r ApiCreat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1121,8 +1160,10 @@ func (r ApiCreateKubernetesBaremetalNodeProfileRequest) Execute() (*KubernetesBa
 /*
 CreateKubernetesBaremetalNodeProfile Create a 'kubernetes.BaremetalNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesBaremetalNodeProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesBaremetalNodeProfileRequest
+
+Deprecated
 */
 func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfile(ctx context.Context) ApiCreateKubernetesBaremetalNodeProfileRequest {
 	return ApiCreateKubernetesBaremetalNodeProfileRequest{
@@ -1132,7 +1173,10 @@ func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfile(ctx context.
 }
 
 // Execute executes the request
-//  @return KubernetesBaremetalNodeProfile
+//
+//	@return KubernetesBaremetalNodeProfile
+//
+// Deprecated
 func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfileExecute(r ApiCreateKubernetesBaremetalNodeProfileRequest) (*KubernetesBaremetalNodeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1173,10 +1217,10 @@ func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfileExecute(r Api
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesBaremetalNodeProfile
@@ -1190,9 +1234,9 @@ func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfileExecute(r Api
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1209,6 +1253,7 @@ func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1219,6 +1264,7 @@ func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1229,6 +1275,7 @@ func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1239,6 +1286,7 @@ func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1248,6 +1296,7 @@ func (a *KubernetesApiService) CreateKubernetesBaremetalNodeProfileExecute(r Api
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1297,8 +1346,8 @@ func (r ApiCreateKubernetesClusterRequest) Execute() (*KubernetesCluster, *http.
 /*
 CreateKubernetesCluster Create a 'kubernetes.Cluster' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesClusterRequest
 */
 func (a *KubernetesApiService) CreateKubernetesCluster(ctx context.Context) ApiCreateKubernetesClusterRequest {
 	return ApiCreateKubernetesClusterRequest{
@@ -1308,7 +1357,8 @@ func (a *KubernetesApiService) CreateKubernetesCluster(ctx context.Context) ApiC
 }
 
 // Execute executes the request
-//  @return KubernetesCluster
+//
+//	@return KubernetesCluster
 func (a *KubernetesApiService) CreateKubernetesClusterExecute(r ApiCreateKubernetesClusterRequest) (*KubernetesCluster, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1349,10 +1399,10 @@ func (a *KubernetesApiService) CreateKubernetesClusterExecute(r ApiCreateKuberne
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesCluster
@@ -1366,9 +1416,9 @@ func (a *KubernetesApiService) CreateKubernetesClusterExecute(r ApiCreateKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1385,6 +1435,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterExecute(r ApiCreateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1395,6 +1446,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterExecute(r ApiCreateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1405,6 +1457,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterExecute(r ApiCreateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1415,6 +1468,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterExecute(r ApiCreateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1424,6 +1478,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterExecute(r ApiCreateKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1473,8 +1528,8 @@ func (r ApiCreateKubernetesClusterAddonProfileRequest) Execute() (*KubernetesClu
 /*
 CreateKubernetesClusterAddonProfile Create a 'kubernetes.ClusterAddonProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesClusterAddonProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesClusterAddonProfileRequest
 */
 func (a *KubernetesApiService) CreateKubernetesClusterAddonProfile(ctx context.Context) ApiCreateKubernetesClusterAddonProfileRequest {
 	return ApiCreateKubernetesClusterAddonProfileRequest{
@@ -1484,7 +1539,8 @@ func (a *KubernetesApiService) CreateKubernetesClusterAddonProfile(ctx context.C
 }
 
 // Execute executes the request
-//  @return KubernetesClusterAddonProfile
+//
+//	@return KubernetesClusterAddonProfile
 func (a *KubernetesApiService) CreateKubernetesClusterAddonProfileExecute(r ApiCreateKubernetesClusterAddonProfileRequest) (*KubernetesClusterAddonProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1525,10 +1581,10 @@ func (a *KubernetesApiService) CreateKubernetesClusterAddonProfileExecute(r ApiC
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesClusterAddonProfile
@@ -1542,9 +1598,9 @@ func (a *KubernetesApiService) CreateKubernetesClusterAddonProfileExecute(r ApiC
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1561,6 +1617,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterAddonProfileExecute(r ApiC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1571,6 +1628,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterAddonProfileExecute(r ApiC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1581,6 +1639,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterAddonProfileExecute(r ApiC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1591,6 +1650,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterAddonProfileExecute(r ApiC
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1600,6 +1660,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterAddonProfileExecute(r ApiC
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1649,8 +1710,8 @@ func (r ApiCreateKubernetesClusterProfileRequest) Execute() (*KubernetesClusterP
 /*
 CreateKubernetesClusterProfile Create a 'kubernetes.ClusterProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesClusterProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesClusterProfileRequest
 */
 func (a *KubernetesApiService) CreateKubernetesClusterProfile(ctx context.Context) ApiCreateKubernetesClusterProfileRequest {
 	return ApiCreateKubernetesClusterProfileRequest{
@@ -1660,7 +1721,8 @@ func (a *KubernetesApiService) CreateKubernetesClusterProfile(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesClusterProfile
+//
+//	@return KubernetesClusterProfile
 func (a *KubernetesApiService) CreateKubernetesClusterProfileExecute(r ApiCreateKubernetesClusterProfileRequest) (*KubernetesClusterProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1701,10 +1763,10 @@ func (a *KubernetesApiService) CreateKubernetesClusterProfileExecute(r ApiCreate
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesClusterProfile
@@ -1718,9 +1780,9 @@ func (a *KubernetesApiService) CreateKubernetesClusterProfileExecute(r ApiCreate
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1737,6 +1799,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterProfileExecute(r ApiCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1747,6 +1810,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterProfileExecute(r ApiCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1757,6 +1821,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterProfileExecute(r ApiCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1767,6 +1832,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterProfileExecute(r ApiCreate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1776,6 +1842,7 @@ func (a *KubernetesApiService) CreateKubernetesClusterProfileExecute(r ApiCreate
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1825,8 +1892,8 @@ func (r ApiCreateKubernetesContainerRuntimePolicyRequest) Execute() (*Kubernetes
 /*
 CreateKubernetesContainerRuntimePolicy Create a 'kubernetes.ContainerRuntimePolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesContainerRuntimePolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesContainerRuntimePolicyRequest
 */
 func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicy(ctx context.Context) ApiCreateKubernetesContainerRuntimePolicyRequest {
 	return ApiCreateKubernetesContainerRuntimePolicyRequest{
@@ -1836,7 +1903,8 @@ func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicy(ctx contex
 }
 
 // Execute executes the request
-//  @return KubernetesContainerRuntimePolicy
+//
+//	@return KubernetesContainerRuntimePolicy
 func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicyExecute(r ApiCreateKubernetesContainerRuntimePolicyRequest) (*KubernetesContainerRuntimePolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1877,10 +1945,10 @@ func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicyExecute(r A
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesContainerRuntimePolicy
@@ -1894,9 +1962,9 @@ func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicyExecute(r A
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1913,6 +1981,7 @@ func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1923,6 +1992,7 @@ func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1933,6 +2003,7 @@ func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1943,6 +2014,7 @@ func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1952,6 +2024,7 @@ func (a *KubernetesApiService) CreateKubernetesContainerRuntimePolicyExecute(r A
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2001,8 +2074,8 @@ func (r ApiCreateKubernetesHttpProxyPolicyRequest) Execute() (*KubernetesHttpPro
 /*
 CreateKubernetesHttpProxyPolicy Create a 'kubernetes.HttpProxyPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesHttpProxyPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesHttpProxyPolicyRequest
 */
 func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicy(ctx context.Context) ApiCreateKubernetesHttpProxyPolicyRequest {
 	return ApiCreateKubernetesHttpProxyPolicyRequest{
@@ -2012,7 +2085,8 @@ func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicy(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesHttpProxyPolicy
+//
+//	@return KubernetesHttpProxyPolicy
 func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicyExecute(r ApiCreateKubernetesHttpProxyPolicyRequest) (*KubernetesHttpProxyPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2053,10 +2127,10 @@ func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicyExecute(r ApiCreat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesHttpProxyPolicy
@@ -2070,9 +2144,9 @@ func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicyExecute(r ApiCreat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2089,6 +2163,7 @@ func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicyExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2099,6 +2174,7 @@ func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicyExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2109,6 +2185,7 @@ func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicyExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2119,6 +2196,7 @@ func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicyExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2128,6 +2206,7 @@ func (a *KubernetesApiService) CreateKubernetesHttpProxyPolicyExecute(r ApiCreat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2177,8 +2256,8 @@ func (r ApiCreateKubernetesNetworkPolicyRequest) Execute() (*KubernetesNetworkPo
 /*
 CreateKubernetesNetworkPolicy Create a 'kubernetes.NetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesNetworkPolicyRequest
 */
 func (a *KubernetesApiService) CreateKubernetesNetworkPolicy(ctx context.Context) ApiCreateKubernetesNetworkPolicyRequest {
 	return ApiCreateKubernetesNetworkPolicyRequest{
@@ -2188,7 +2267,8 @@ func (a *KubernetesApiService) CreateKubernetesNetworkPolicy(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesNetworkPolicy
+//
+//	@return KubernetesNetworkPolicy
 func (a *KubernetesApiService) CreateKubernetesNetworkPolicyExecute(r ApiCreateKubernetesNetworkPolicyRequest) (*KubernetesNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2229,10 +2309,10 @@ func (a *KubernetesApiService) CreateKubernetesNetworkPolicyExecute(r ApiCreateK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesNetworkPolicy
@@ -2246,9 +2326,9 @@ func (a *KubernetesApiService) CreateKubernetesNetworkPolicyExecute(r ApiCreateK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2265,6 +2345,7 @@ func (a *KubernetesApiService) CreateKubernetesNetworkPolicyExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2275,6 +2356,7 @@ func (a *KubernetesApiService) CreateKubernetesNetworkPolicyExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2285,6 +2367,7 @@ func (a *KubernetesApiService) CreateKubernetesNetworkPolicyExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2295,6 +2378,7 @@ func (a *KubernetesApiService) CreateKubernetesNetworkPolicyExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2304,6 +2388,7 @@ func (a *KubernetesApiService) CreateKubernetesNetworkPolicyExecute(r ApiCreateK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2353,8 +2438,8 @@ func (r ApiCreateKubernetesNodeGroupProfileRequest) Execute() (*KubernetesNodeGr
 /*
 CreateKubernetesNodeGroupProfile Create a 'kubernetes.NodeGroupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesNodeGroupProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesNodeGroupProfileRequest
 */
 func (a *KubernetesApiService) CreateKubernetesNodeGroupProfile(ctx context.Context) ApiCreateKubernetesNodeGroupProfileRequest {
 	return ApiCreateKubernetesNodeGroupProfileRequest{
@@ -2364,7 +2449,8 @@ func (a *KubernetesApiService) CreateKubernetesNodeGroupProfile(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesNodeGroupProfile
+//
+//	@return KubernetesNodeGroupProfile
 func (a *KubernetesApiService) CreateKubernetesNodeGroupProfileExecute(r ApiCreateKubernetesNodeGroupProfileRequest) (*KubernetesNodeGroupProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2405,10 +2491,10 @@ func (a *KubernetesApiService) CreateKubernetesNodeGroupProfileExecute(r ApiCrea
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesNodeGroupProfile
@@ -2422,9 +2508,9 @@ func (a *KubernetesApiService) CreateKubernetesNodeGroupProfileExecute(r ApiCrea
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2441,6 +2527,7 @@ func (a *KubernetesApiService) CreateKubernetesNodeGroupProfileExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2451,6 +2538,7 @@ func (a *KubernetesApiService) CreateKubernetesNodeGroupProfileExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2461,6 +2549,7 @@ func (a *KubernetesApiService) CreateKubernetesNodeGroupProfileExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2471,6 +2560,7 @@ func (a *KubernetesApiService) CreateKubernetesNodeGroupProfileExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2480,6 +2570,7 @@ func (a *KubernetesApiService) CreateKubernetesNodeGroupProfileExecute(r ApiCrea
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2529,8 +2620,8 @@ func (r ApiCreateKubernetesNvidiaGpuProductRequest) Execute() (*KubernetesNvidia
 /*
 CreateKubernetesNvidiaGpuProduct Create a 'kubernetes.NvidiaGpuProduct' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesNvidiaGpuProductRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesNvidiaGpuProductRequest
 */
 func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProduct(ctx context.Context) ApiCreateKubernetesNvidiaGpuProductRequest {
 	return ApiCreateKubernetesNvidiaGpuProductRequest{
@@ -2540,7 +2631,8 @@ func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProduct(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesNvidiaGpuProduct
+//
+//	@return KubernetesNvidiaGpuProduct
 func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProductExecute(r ApiCreateKubernetesNvidiaGpuProductRequest) (*KubernetesNvidiaGpuProduct, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2581,10 +2673,10 @@ func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProductExecute(r ApiCrea
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesNvidiaGpuProduct
@@ -2598,9 +2690,9 @@ func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProductExecute(r ApiCrea
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2617,6 +2709,7 @@ func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProductExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2627,6 +2720,7 @@ func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProductExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2637,6 +2731,7 @@ func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProductExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2647,6 +2742,7 @@ func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProductExecute(r ApiCrea
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2656,6 +2752,7 @@ func (a *KubernetesApiService) CreateKubernetesNvidiaGpuProductExecute(r ApiCrea
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2705,8 +2802,8 @@ func (r ApiCreateKubernetesSysConfigPolicyRequest) Execute() (*KubernetesSysConf
 /*
 CreateKubernetesSysConfigPolicy Create a 'kubernetes.SysConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesSysConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesSysConfigPolicyRequest
 */
 func (a *KubernetesApiService) CreateKubernetesSysConfigPolicy(ctx context.Context) ApiCreateKubernetesSysConfigPolicyRequest {
 	return ApiCreateKubernetesSysConfigPolicyRequest{
@@ -2716,7 +2813,8 @@ func (a *KubernetesApiService) CreateKubernetesSysConfigPolicy(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesSysConfigPolicy
+//
+//	@return KubernetesSysConfigPolicy
 func (a *KubernetesApiService) CreateKubernetesSysConfigPolicyExecute(r ApiCreateKubernetesSysConfigPolicyRequest) (*KubernetesSysConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2757,10 +2855,10 @@ func (a *KubernetesApiService) CreateKubernetesSysConfigPolicyExecute(r ApiCreat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesSysConfigPolicy
@@ -2774,9 +2872,9 @@ func (a *KubernetesApiService) CreateKubernetesSysConfigPolicyExecute(r ApiCreat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2793,6 +2891,7 @@ func (a *KubernetesApiService) CreateKubernetesSysConfigPolicyExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2803,6 +2902,7 @@ func (a *KubernetesApiService) CreateKubernetesSysConfigPolicyExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2813,6 +2913,7 @@ func (a *KubernetesApiService) CreateKubernetesSysConfigPolicyExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2823,6 +2924,7 @@ func (a *KubernetesApiService) CreateKubernetesSysConfigPolicyExecute(r ApiCreat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2832,6 +2934,7 @@ func (a *KubernetesApiService) CreateKubernetesSysConfigPolicyExecute(r ApiCreat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2881,8 +2984,8 @@ func (r ApiCreateKubernetesTrustedRegistriesPolicyRequest) Execute() (*Kubernete
 /*
 CreateKubernetesTrustedRegistriesPolicy Create a 'kubernetes.TrustedRegistriesPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesTrustedRegistriesPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesTrustedRegistriesPolicyRequest
 */
 func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicy(ctx context.Context) ApiCreateKubernetesTrustedRegistriesPolicyRequest {
 	return ApiCreateKubernetesTrustedRegistriesPolicyRequest{
@@ -2892,7 +2995,8 @@ func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicy(ctx conte
 }
 
 // Execute executes the request
-//  @return KubernetesTrustedRegistriesPolicy
+//
+//	@return KubernetesTrustedRegistriesPolicy
 func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicyExecute(r ApiCreateKubernetesTrustedRegistriesPolicyRequest) (*KubernetesTrustedRegistriesPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2933,10 +3037,10 @@ func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicyExecute(r 
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesTrustedRegistriesPolicy
@@ -2950,9 +3054,9 @@ func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicyExecute(r 
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2969,6 +3073,7 @@ func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2979,6 +3084,7 @@ func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2989,6 +3095,7 @@ func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2999,6 +3106,7 @@ func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3008,6 +3116,7 @@ func (a *KubernetesApiService) CreateKubernetesTrustedRegistriesPolicyExecute(r 
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3057,8 +3166,8 @@ func (r ApiCreateKubernetesVersionRequest) Execute() (*KubernetesVersion, *http.
 /*
 CreateKubernetesVersion Create a 'kubernetes.Version' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesVersionRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesVersionRequest
 */
 func (a *KubernetesApiService) CreateKubernetesVersion(ctx context.Context) ApiCreateKubernetesVersionRequest {
 	return ApiCreateKubernetesVersionRequest{
@@ -3068,7 +3177,8 @@ func (a *KubernetesApiService) CreateKubernetesVersion(ctx context.Context) ApiC
 }
 
 // Execute executes the request
-//  @return KubernetesVersion
+//
+//	@return KubernetesVersion
 func (a *KubernetesApiService) CreateKubernetesVersionExecute(r ApiCreateKubernetesVersionRequest) (*KubernetesVersion, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3109,10 +3219,10 @@ func (a *KubernetesApiService) CreateKubernetesVersionExecute(r ApiCreateKuberne
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVersion
@@ -3126,9 +3236,9 @@ func (a *KubernetesApiService) CreateKubernetesVersionExecute(r ApiCreateKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3145,6 +3255,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionExecute(r ApiCreateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3155,6 +3266,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionExecute(r ApiCreateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3165,6 +3277,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionExecute(r ApiCreateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3175,6 +3288,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionExecute(r ApiCreateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3184,6 +3298,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionExecute(r ApiCreateKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3233,8 +3348,8 @@ func (r ApiCreateKubernetesVersionPolicyRequest) Execute() (*KubernetesVersionPo
 /*
 CreateKubernetesVersionPolicy Create a 'kubernetes.VersionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesVersionPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesVersionPolicyRequest
 */
 func (a *KubernetesApiService) CreateKubernetesVersionPolicy(ctx context.Context) ApiCreateKubernetesVersionPolicyRequest {
 	return ApiCreateKubernetesVersionPolicyRequest{
@@ -3244,7 +3359,8 @@ func (a *KubernetesApiService) CreateKubernetesVersionPolicy(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesVersionPolicy
+//
+//	@return KubernetesVersionPolicy
 func (a *KubernetesApiService) CreateKubernetesVersionPolicyExecute(r ApiCreateKubernetesVersionPolicyRequest) (*KubernetesVersionPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3285,10 +3401,10 @@ func (a *KubernetesApiService) CreateKubernetesVersionPolicyExecute(r ApiCreateK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVersionPolicy
@@ -3302,9 +3418,9 @@ func (a *KubernetesApiService) CreateKubernetesVersionPolicyExecute(r ApiCreateK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3321,6 +3437,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionPolicyExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3331,6 +3448,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionPolicyExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3341,6 +3459,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionPolicyExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3351,6 +3470,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionPolicyExecute(r ApiCreateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3360,6 +3480,7 @@ func (a *KubernetesApiService) CreateKubernetesVersionPolicyExecute(r ApiCreateK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3409,8 +3530,8 @@ func (r ApiCreateKubernetesVirtualMachineInfraConfigPolicyRequest) Execute() (*K
 /*
 CreateKubernetesVirtualMachineInfraConfigPolicy Create a 'kubernetes.VirtualMachineInfraConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesVirtualMachineInfraConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesVirtualMachineInfraConfigPolicyRequest
 */
 func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicy(ctx context.Context) ApiCreateKubernetesVirtualMachineInfraConfigPolicyRequest {
 	return ApiCreateKubernetesVirtualMachineInfraConfigPolicyRequest{
@@ -3420,7 +3541,8 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicy(c
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfraConfigPolicy
+//
+//	@return KubernetesVirtualMachineInfraConfigPolicy
 func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicyExecute(r ApiCreateKubernetesVirtualMachineInfraConfigPolicyRequest) (*KubernetesVirtualMachineInfraConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3461,10 +3583,10 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicyEx
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineInfraConfigPolicy
@@ -3478,9 +3600,9 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicyEx
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3497,6 +3619,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3507,6 +3630,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3517,6 +3641,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3527,6 +3652,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3536,6 +3662,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfraConfigPolicyEx
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3585,8 +3712,8 @@ func (r ApiCreateKubernetesVirtualMachineInfrastructureProviderRequest) Execute(
 /*
 CreateKubernetesVirtualMachineInfrastructureProvider Create a 'kubernetes.VirtualMachineInfrastructureProvider' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesVirtualMachineInfrastructureProviderRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesVirtualMachineInfrastructureProviderRequest
 */
 func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProvider(ctx context.Context) ApiCreateKubernetesVirtualMachineInfrastructureProviderRequest {
 	return ApiCreateKubernetesVirtualMachineInfrastructureProviderRequest{
@@ -3596,7 +3723,8 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProvi
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfrastructureProvider
+//
+//	@return KubernetesVirtualMachineInfrastructureProvider
 func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProviderExecute(r ApiCreateKubernetesVirtualMachineInfrastructureProviderRequest) (*KubernetesVirtualMachineInfrastructureProvider, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3637,10 +3765,10 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProvi
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineInfrastructureProvider
@@ -3654,9 +3782,9 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProvi
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3673,6 +3801,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3683,6 +3812,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3693,6 +3823,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3703,6 +3834,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3712,6 +3844,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInfrastructureProvi
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3761,8 +3894,8 @@ func (r ApiCreateKubernetesVirtualMachineInstanceTypeRequest) Execute() (*Kubern
 /*
 CreateKubernetesVirtualMachineInstanceType Create a 'kubernetes.VirtualMachineInstanceType' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesVirtualMachineInstanceTypeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesVirtualMachineInstanceTypeRequest
 */
 func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceType(ctx context.Context) ApiCreateKubernetesVirtualMachineInstanceTypeRequest {
 	return ApiCreateKubernetesVirtualMachineInstanceTypeRequest{
@@ -3772,7 +3905,8 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceType(ctx co
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInstanceType
+//
+//	@return KubernetesVirtualMachineInstanceType
 func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceTypeExecute(r ApiCreateKubernetesVirtualMachineInstanceTypeRequest) (*KubernetesVirtualMachineInstanceType, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3813,10 +3947,10 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceTypeExecute
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineInstanceType
@@ -3830,9 +3964,9 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceTypeExecute
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -3849,6 +3983,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3859,6 +3994,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3869,6 +4005,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3879,6 +4016,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -3888,6 +4026,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineInstanceTypeExecute
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -3937,8 +4076,8 @@ func (r ApiCreateKubernetesVirtualMachineNodeProfileRequest) Execute() (*Kuberne
 /*
 CreateKubernetesVirtualMachineNodeProfile Create a 'kubernetes.VirtualMachineNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateKubernetesVirtualMachineNodeProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateKubernetesVirtualMachineNodeProfileRequest
 */
 func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfile(ctx context.Context) ApiCreateKubernetesVirtualMachineNodeProfileRequest {
 	return ApiCreateKubernetesVirtualMachineNodeProfileRequest{
@@ -3948,7 +4087,8 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfile(ctx con
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineNodeProfile
+//
+//	@return KubernetesVirtualMachineNodeProfile
 func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfileExecute(r ApiCreateKubernetesVirtualMachineNodeProfileRequest) (*KubernetesVirtualMachineNodeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -3989,10 +4129,10 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfileExecute(
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineNodeProfile
@@ -4006,9 +4146,9 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfileExecute(
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4025,6 +4165,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4035,6 +4176,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4045,6 +4187,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4055,6 +4198,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4064,6 +4208,7 @@ func (a *KubernetesApiService) CreateKubernetesVirtualMachineNodeProfileExecute(
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4093,9 +4238,9 @@ func (r ApiDeleteKubernetesAciCniApicRequest) Execute() (*http.Response, error) 
 /*
 DeleteKubernetesAciCniApic Delete a 'kubernetes.AciCniApic' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesAciCniApicRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesAciCniApicRequest
 
 Deprecated
 */
@@ -4122,7 +4267,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniApicExecute(r ApiDeleteKube
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniApics/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4155,9 +4300,9 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniApicExecute(r ApiDeleteKube
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4174,6 +4319,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniApicExecute(r ApiDeleteKube
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4184,6 +4330,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniApicExecute(r ApiDeleteKube
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4194,6 +4341,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniApicExecute(r ApiDeleteKube
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4204,6 +4352,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniApicExecute(r ApiDeleteKube
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4213,6 +4362,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniApicExecute(r ApiDeleteKube
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4233,9 +4383,9 @@ func (r ApiDeleteKubernetesAciCniProfileRequest) Execute() (*http.Response, erro
 /*
 DeleteKubernetesAciCniProfile Delete a 'kubernetes.AciCniProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesAciCniProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesAciCniProfileRequest
 
 Deprecated
 */
@@ -4262,7 +4412,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniProfileExecute(r ApiDeleteK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4295,9 +4445,9 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniProfileExecute(r ApiDeleteK
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4314,6 +4464,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniProfileExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4324,6 +4475,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniProfileExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4334,6 +4486,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniProfileExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4344,6 +4497,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniProfileExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4353,6 +4507,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniProfileExecute(r ApiDeleteK
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4373,9 +4528,9 @@ func (r ApiDeleteKubernetesAciCniTenantClusterAllocationRequest) Execute() (*htt
 /*
 DeleteKubernetesAciCniTenantClusterAllocation Delete a 'kubernetes.AciCniTenantClusterAllocation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesAciCniTenantClusterAllocationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesAciCniTenantClusterAllocationRequest
 
 Deprecated
 */
@@ -4402,7 +4557,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniTenantClusterAllocationExec
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniTenantClusterAllocations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4435,9 +4590,9 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniTenantClusterAllocationExec
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4454,6 +4609,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4464,6 +4620,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4474,6 +4631,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4484,6 +4642,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4493,6 +4652,7 @@ func (a *KubernetesApiService) DeleteKubernetesAciCniTenantClusterAllocationExec
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4513,9 +4673,9 @@ func (r ApiDeleteKubernetesAddonDefinitionRequest) Execute() (*http.Response, er
 /*
 DeleteKubernetesAddonDefinition Delete a 'kubernetes.AddonDefinition' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesAddonDefinitionRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesAddonDefinitionRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesAddonDefinition(ctx context.Context, moid string) ApiDeleteKubernetesAddonDefinitionRequest {
 	return ApiDeleteKubernetesAddonDefinitionRequest{
@@ -4539,7 +4699,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonDefinitionExecute(r ApiDelet
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonDefinitions/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4572,9 +4732,9 @@ func (a *KubernetesApiService) DeleteKubernetesAddonDefinitionExecute(r ApiDelet
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4591,6 +4751,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonDefinitionExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4601,6 +4762,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonDefinitionExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4611,6 +4773,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonDefinitionExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4621,6 +4784,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonDefinitionExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4630,6 +4794,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonDefinitionExecute(r ApiDelet
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4650,9 +4815,9 @@ func (r ApiDeleteKubernetesAddonPolicyRequest) Execute() (*http.Response, error)
 /*
 DeleteKubernetesAddonPolicy Delete a 'kubernetes.AddonPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesAddonPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesAddonPolicyRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesAddonPolicy(ctx context.Context, moid string) ApiDeleteKubernetesAddonPolicyRequest {
 	return ApiDeleteKubernetesAddonPolicyRequest{
@@ -4676,7 +4841,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonPolicyExecute(r ApiDeleteKub
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4709,9 +4874,9 @@ func (a *KubernetesApiService) DeleteKubernetesAddonPolicyExecute(r ApiDeleteKub
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4728,6 +4893,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonPolicyExecute(r ApiDeleteKub
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4738,6 +4904,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonPolicyExecute(r ApiDeleteKub
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4748,6 +4915,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonPolicyExecute(r ApiDeleteKub
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4758,6 +4926,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonPolicyExecute(r ApiDeleteKub
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4767,6 +4936,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonPolicyExecute(r ApiDeleteKub
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4787,9 +4957,9 @@ func (r ApiDeleteKubernetesAddonRepositoryRequest) Execute() (*http.Response, er
 /*
 DeleteKubernetesAddonRepository Delete a 'kubernetes.AddonRepository' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesAddonRepositoryRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesAddonRepositoryRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesAddonRepository(ctx context.Context, moid string) ApiDeleteKubernetesAddonRepositoryRequest {
 	return ApiDeleteKubernetesAddonRepositoryRequest{
@@ -4813,7 +4983,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonRepositoryExecute(r ApiDelet
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonRepositories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4846,9 +5016,9 @@ func (a *KubernetesApiService) DeleteKubernetesAddonRepositoryExecute(r ApiDelet
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4865,6 +5035,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonRepositoryExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4875,6 +5046,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonRepositoryExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4885,6 +5057,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonRepositoryExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4895,6 +5068,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonRepositoryExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4904,6 +5078,7 @@ func (a *KubernetesApiService) DeleteKubernetesAddonRepositoryExecute(r ApiDelet
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4924,9 +5099,11 @@ func (r ApiDeleteKubernetesBaremetalNodeProfileRequest) Execute() (*http.Respons
 /*
 DeleteKubernetesBaremetalNodeProfile Delete a 'kubernetes.BaremetalNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesBaremetalNodeProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesBaremetalNodeProfileRequest
+
+Deprecated
 */
 func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfile(ctx context.Context, moid string) ApiDeleteKubernetesBaremetalNodeProfileRequest {
 	return ApiDeleteKubernetesBaremetalNodeProfileRequest{
@@ -4937,6 +5114,7 @@ func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfile(ctx context.
 }
 
 // Execute executes the request
+// Deprecated
 func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfileExecute(r ApiDeleteKubernetesBaremetalNodeProfileRequest) (*http.Response, error) {
 	var (
 		localVarHTTPMethod = http.MethodDelete
@@ -4950,7 +5128,7 @@ func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfileExecute(r Api
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/BaremetalNodeProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4983,9 +5161,9 @@ func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfileExecute(r Api
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5002,6 +5180,7 @@ func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5012,6 +5191,7 @@ func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5022,6 +5202,7 @@ func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5032,6 +5213,7 @@ func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5041,6 +5223,7 @@ func (a *KubernetesApiService) DeleteKubernetesBaremetalNodeProfileExecute(r Api
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5061,9 +5244,9 @@ func (r ApiDeleteKubernetesClusterRequest) Execute() (*http.Response, error) {
 /*
 DeleteKubernetesCluster Delete a 'kubernetes.Cluster' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesClusterRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesCluster(ctx context.Context, moid string) ApiDeleteKubernetesClusterRequest {
 	return ApiDeleteKubernetesClusterRequest{
@@ -5087,7 +5270,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterExecute(r ApiDeleteKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Clusters/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5120,9 +5303,9 @@ func (a *KubernetesApiService) DeleteKubernetesClusterExecute(r ApiDeleteKuberne
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5139,6 +5322,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5149,6 +5333,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5159,6 +5344,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5169,6 +5355,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5178,6 +5365,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterExecute(r ApiDeleteKuberne
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5198,9 +5386,9 @@ func (r ApiDeleteKubernetesClusterAddonProfileRequest) Execute() (*http.Response
 /*
 DeleteKubernetesClusterAddonProfile Delete a 'kubernetes.ClusterAddonProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesClusterAddonProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesClusterAddonProfileRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesClusterAddonProfile(ctx context.Context, moid string) ApiDeleteKubernetesClusterAddonProfileRequest {
 	return ApiDeleteKubernetesClusterAddonProfileRequest{
@@ -5224,7 +5412,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterAddonProfileExecute(r ApiD
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ClusterAddonProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5257,9 +5445,9 @@ func (a *KubernetesApiService) DeleteKubernetesClusterAddonProfileExecute(r ApiD
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5276,6 +5464,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterAddonProfileExecute(r ApiD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5286,6 +5475,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterAddonProfileExecute(r ApiD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5296,6 +5486,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterAddonProfileExecute(r ApiD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5306,6 +5497,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterAddonProfileExecute(r ApiD
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5315,6 +5507,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterAddonProfileExecute(r ApiD
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5335,9 +5528,9 @@ func (r ApiDeleteKubernetesClusterProfileRequest) Execute() (*http.Response, err
 /*
 DeleteKubernetesClusterProfile Delete a 'kubernetes.ClusterProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesClusterProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesClusterProfileRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesClusterProfile(ctx context.Context, moid string) ApiDeleteKubernetesClusterProfileRequest {
 	return ApiDeleteKubernetesClusterProfileRequest{
@@ -5361,7 +5554,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterProfileExecute(r ApiDelete
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ClusterProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5394,9 +5587,9 @@ func (a *KubernetesApiService) DeleteKubernetesClusterProfileExecute(r ApiDelete
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5413,6 +5606,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterProfileExecute(r ApiDelete
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5423,6 +5617,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterProfileExecute(r ApiDelete
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5433,6 +5628,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterProfileExecute(r ApiDelete
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5443,6 +5639,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterProfileExecute(r ApiDelete
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5452,6 +5649,7 @@ func (a *KubernetesApiService) DeleteKubernetesClusterProfileExecute(r ApiDelete
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5472,9 +5670,9 @@ func (r ApiDeleteKubernetesContainerRuntimePolicyRequest) Execute() (*http.Respo
 /*
 DeleteKubernetesContainerRuntimePolicy Delete a 'kubernetes.ContainerRuntimePolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesContainerRuntimePolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesContainerRuntimePolicyRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesContainerRuntimePolicy(ctx context.Context, moid string) ApiDeleteKubernetesContainerRuntimePolicyRequest {
 	return ApiDeleteKubernetesContainerRuntimePolicyRequest{
@@ -5498,7 +5696,7 @@ func (a *KubernetesApiService) DeleteKubernetesContainerRuntimePolicyExecute(r A
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ContainerRuntimePolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5531,9 +5729,9 @@ func (a *KubernetesApiService) DeleteKubernetesContainerRuntimePolicyExecute(r A
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5550,6 +5748,7 @@ func (a *KubernetesApiService) DeleteKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5560,6 +5759,7 @@ func (a *KubernetesApiService) DeleteKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5570,6 +5770,7 @@ func (a *KubernetesApiService) DeleteKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5580,6 +5781,7 @@ func (a *KubernetesApiService) DeleteKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5589,6 +5791,7 @@ func (a *KubernetesApiService) DeleteKubernetesContainerRuntimePolicyExecute(r A
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5609,9 +5812,9 @@ func (r ApiDeleteKubernetesDaemonSetRequest) Execute() (*http.Response, error) {
 /*
 DeleteKubernetesDaemonSet Delete a 'kubernetes.DaemonSet' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesDaemonSetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesDaemonSetRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesDaemonSet(ctx context.Context, moid string) ApiDeleteKubernetesDaemonSetRequest {
 	return ApiDeleteKubernetesDaemonSetRequest{
@@ -5635,7 +5838,7 @@ func (a *KubernetesApiService) DeleteKubernetesDaemonSetExecute(r ApiDeleteKuber
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/DaemonSets/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5668,9 +5871,9 @@ func (a *KubernetesApiService) DeleteKubernetesDaemonSetExecute(r ApiDeleteKuber
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5687,6 +5890,7 @@ func (a *KubernetesApiService) DeleteKubernetesDaemonSetExecute(r ApiDeleteKuber
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5697,6 +5901,7 @@ func (a *KubernetesApiService) DeleteKubernetesDaemonSetExecute(r ApiDeleteKuber
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5707,6 +5912,7 @@ func (a *KubernetesApiService) DeleteKubernetesDaemonSetExecute(r ApiDeleteKuber
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5717,6 +5923,7 @@ func (a *KubernetesApiService) DeleteKubernetesDaemonSetExecute(r ApiDeleteKuber
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5726,6 +5933,7 @@ func (a *KubernetesApiService) DeleteKubernetesDaemonSetExecute(r ApiDeleteKuber
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5746,9 +5954,9 @@ func (r ApiDeleteKubernetesDeploymentRequest) Execute() (*http.Response, error) 
 /*
 DeleteKubernetesDeployment Delete a 'kubernetes.Deployment' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesDeploymentRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesDeploymentRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesDeployment(ctx context.Context, moid string) ApiDeleteKubernetesDeploymentRequest {
 	return ApiDeleteKubernetesDeploymentRequest{
@@ -5772,7 +5980,7 @@ func (a *KubernetesApiService) DeleteKubernetesDeploymentExecute(r ApiDeleteKube
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Deployments/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5805,9 +6013,9 @@ func (a *KubernetesApiService) DeleteKubernetesDeploymentExecute(r ApiDeleteKube
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5824,6 +6032,7 @@ func (a *KubernetesApiService) DeleteKubernetesDeploymentExecute(r ApiDeleteKube
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5834,6 +6043,7 @@ func (a *KubernetesApiService) DeleteKubernetesDeploymentExecute(r ApiDeleteKube
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5844,6 +6054,7 @@ func (a *KubernetesApiService) DeleteKubernetesDeploymentExecute(r ApiDeleteKube
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5854,6 +6065,7 @@ func (a *KubernetesApiService) DeleteKubernetesDeploymentExecute(r ApiDeleteKube
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5863,6 +6075,7 @@ func (a *KubernetesApiService) DeleteKubernetesDeploymentExecute(r ApiDeleteKube
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -5883,9 +6096,9 @@ func (r ApiDeleteKubernetesHttpProxyPolicyRequest) Execute() (*http.Response, er
 /*
 DeleteKubernetesHttpProxyPolicy Delete a 'kubernetes.HttpProxyPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesHttpProxyPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesHttpProxyPolicyRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesHttpProxyPolicy(ctx context.Context, moid string) ApiDeleteKubernetesHttpProxyPolicyRequest {
 	return ApiDeleteKubernetesHttpProxyPolicyRequest{
@@ -5909,7 +6122,7 @@ func (a *KubernetesApiService) DeleteKubernetesHttpProxyPolicyExecute(r ApiDelet
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/HttpProxyPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5942,9 +6155,9 @@ func (a *KubernetesApiService) DeleteKubernetesHttpProxyPolicyExecute(r ApiDelet
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -5961,6 +6174,7 @@ func (a *KubernetesApiService) DeleteKubernetesHttpProxyPolicyExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5971,6 +6185,7 @@ func (a *KubernetesApiService) DeleteKubernetesHttpProxyPolicyExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5981,6 +6196,7 @@ func (a *KubernetesApiService) DeleteKubernetesHttpProxyPolicyExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -5991,6 +6207,7 @@ func (a *KubernetesApiService) DeleteKubernetesHttpProxyPolicyExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6000,6 +6217,7 @@ func (a *KubernetesApiService) DeleteKubernetesHttpProxyPolicyExecute(r ApiDelet
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6020,9 +6238,9 @@ func (r ApiDeleteKubernetesIngressRequest) Execute() (*http.Response, error) {
 /*
 DeleteKubernetesIngress Delete a 'kubernetes.Ingress' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesIngressRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesIngressRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesIngress(ctx context.Context, moid string) ApiDeleteKubernetesIngressRequest {
 	return ApiDeleteKubernetesIngressRequest{
@@ -6046,7 +6264,7 @@ func (a *KubernetesApiService) DeleteKubernetesIngressExecute(r ApiDeleteKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Ingresses/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6079,9 +6297,9 @@ func (a *KubernetesApiService) DeleteKubernetesIngressExecute(r ApiDeleteKuberne
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6098,6 +6316,7 @@ func (a *KubernetesApiService) DeleteKubernetesIngressExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6108,6 +6327,7 @@ func (a *KubernetesApiService) DeleteKubernetesIngressExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6118,6 +6338,7 @@ func (a *KubernetesApiService) DeleteKubernetesIngressExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6128,6 +6349,7 @@ func (a *KubernetesApiService) DeleteKubernetesIngressExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6137,6 +6359,7 @@ func (a *KubernetesApiService) DeleteKubernetesIngressExecute(r ApiDeleteKuberne
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6157,9 +6380,9 @@ func (r ApiDeleteKubernetesNetworkPolicyRequest) Execute() (*http.Response, erro
 /*
 DeleteKubernetesNetworkPolicy Delete a 'kubernetes.NetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesNetworkPolicyRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesNetworkPolicy(ctx context.Context, moid string) ApiDeleteKubernetesNetworkPolicyRequest {
 	return ApiDeleteKubernetesNetworkPolicyRequest{
@@ -6183,7 +6406,7 @@ func (a *KubernetesApiService) DeleteKubernetesNetworkPolicyExecute(r ApiDeleteK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6216,9 +6439,9 @@ func (a *KubernetesApiService) DeleteKubernetesNetworkPolicyExecute(r ApiDeleteK
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6235,6 +6458,7 @@ func (a *KubernetesApiService) DeleteKubernetesNetworkPolicyExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6245,6 +6469,7 @@ func (a *KubernetesApiService) DeleteKubernetesNetworkPolicyExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6255,6 +6480,7 @@ func (a *KubernetesApiService) DeleteKubernetesNetworkPolicyExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6265,6 +6491,7 @@ func (a *KubernetesApiService) DeleteKubernetesNetworkPolicyExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6274,6 +6501,7 @@ func (a *KubernetesApiService) DeleteKubernetesNetworkPolicyExecute(r ApiDeleteK
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6294,9 +6522,9 @@ func (r ApiDeleteKubernetesNodeRequest) Execute() (*http.Response, error) {
 /*
 DeleteKubernetesNode Delete a 'kubernetes.Node' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesNodeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesNodeRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesNode(ctx context.Context, moid string) ApiDeleteKubernetesNodeRequest {
 	return ApiDeleteKubernetesNodeRequest{
@@ -6320,7 +6548,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeExecute(r ApiDeleteKubernetes
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Nodes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6353,9 +6581,9 @@ func (a *KubernetesApiService) DeleteKubernetesNodeExecute(r ApiDeleteKubernetes
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6372,6 +6600,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeExecute(r ApiDeleteKubernetes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6382,6 +6611,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeExecute(r ApiDeleteKubernetes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6392,6 +6622,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeExecute(r ApiDeleteKubernetes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6402,6 +6633,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeExecute(r ApiDeleteKubernetes
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6411,6 +6643,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeExecute(r ApiDeleteKubernetes
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6431,9 +6664,9 @@ func (r ApiDeleteKubernetesNodeGroupProfileRequest) Execute() (*http.Response, e
 /*
 DeleteKubernetesNodeGroupProfile Delete a 'kubernetes.NodeGroupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesNodeGroupProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesNodeGroupProfileRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesNodeGroupProfile(ctx context.Context, moid string) ApiDeleteKubernetesNodeGroupProfileRequest {
 	return ApiDeleteKubernetesNodeGroupProfileRequest{
@@ -6457,7 +6690,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeGroupProfileExecute(r ApiDele
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NodeGroupProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6490,9 +6723,9 @@ func (a *KubernetesApiService) DeleteKubernetesNodeGroupProfileExecute(r ApiDele
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6509,6 +6742,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeGroupProfileExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6519,6 +6753,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeGroupProfileExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6529,6 +6764,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeGroupProfileExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6539,6 +6775,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeGroupProfileExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6548,6 +6785,7 @@ func (a *KubernetesApiService) DeleteKubernetesNodeGroupProfileExecute(r ApiDele
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6568,9 +6806,9 @@ func (r ApiDeleteKubernetesNvidiaGpuProductRequest) Execute() (*http.Response, e
 /*
 DeleteKubernetesNvidiaGpuProduct Delete a 'kubernetes.NvidiaGpuProduct' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesNvidiaGpuProductRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesNvidiaGpuProductRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesNvidiaGpuProduct(ctx context.Context, moid string) ApiDeleteKubernetesNvidiaGpuProductRequest {
 	return ApiDeleteKubernetesNvidiaGpuProductRequest{
@@ -6594,7 +6832,7 @@ func (a *KubernetesApiService) DeleteKubernetesNvidiaGpuProductExecute(r ApiDele
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NvidiaGpuProducts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6627,9 +6865,9 @@ func (a *KubernetesApiService) DeleteKubernetesNvidiaGpuProductExecute(r ApiDele
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6646,6 +6884,7 @@ func (a *KubernetesApiService) DeleteKubernetesNvidiaGpuProductExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6656,6 +6895,7 @@ func (a *KubernetesApiService) DeleteKubernetesNvidiaGpuProductExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6666,6 +6906,7 @@ func (a *KubernetesApiService) DeleteKubernetesNvidiaGpuProductExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6676,6 +6917,7 @@ func (a *KubernetesApiService) DeleteKubernetesNvidiaGpuProductExecute(r ApiDele
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6685,6 +6927,7 @@ func (a *KubernetesApiService) DeleteKubernetesNvidiaGpuProductExecute(r ApiDele
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6705,9 +6948,9 @@ func (r ApiDeleteKubernetesPodRequest) Execute() (*http.Response, error) {
 /*
 DeleteKubernetesPod Delete a 'kubernetes.Pod' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesPodRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesPodRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesPod(ctx context.Context, moid string) ApiDeleteKubernetesPodRequest {
 	return ApiDeleteKubernetesPodRequest{
@@ -6731,7 +6974,7 @@ func (a *KubernetesApiService) DeleteKubernetesPodExecute(r ApiDeleteKubernetesP
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Pods/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6764,9 +7007,9 @@ func (a *KubernetesApiService) DeleteKubernetesPodExecute(r ApiDeleteKubernetesP
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6783,6 +7026,7 @@ func (a *KubernetesApiService) DeleteKubernetesPodExecute(r ApiDeleteKubernetesP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6793,6 +7037,7 @@ func (a *KubernetesApiService) DeleteKubernetesPodExecute(r ApiDeleteKubernetesP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6803,6 +7048,7 @@ func (a *KubernetesApiService) DeleteKubernetesPodExecute(r ApiDeleteKubernetesP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6813,6 +7059,7 @@ func (a *KubernetesApiService) DeleteKubernetesPodExecute(r ApiDeleteKubernetesP
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6822,6 +7069,7 @@ func (a *KubernetesApiService) DeleteKubernetesPodExecute(r ApiDeleteKubernetesP
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6842,9 +7090,9 @@ func (r ApiDeleteKubernetesServiceRequest) Execute() (*http.Response, error) {
 /*
 DeleteKubernetesService Delete a 'kubernetes.Service' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesServiceRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesServiceRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesService(ctx context.Context, moid string) ApiDeleteKubernetesServiceRequest {
 	return ApiDeleteKubernetesServiceRequest{
@@ -6868,7 +7116,7 @@ func (a *KubernetesApiService) DeleteKubernetesServiceExecute(r ApiDeleteKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Services/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6901,9 +7149,9 @@ func (a *KubernetesApiService) DeleteKubernetesServiceExecute(r ApiDeleteKuberne
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -6920,6 +7168,7 @@ func (a *KubernetesApiService) DeleteKubernetesServiceExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6930,6 +7179,7 @@ func (a *KubernetesApiService) DeleteKubernetesServiceExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6940,6 +7190,7 @@ func (a *KubernetesApiService) DeleteKubernetesServiceExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6950,6 +7201,7 @@ func (a *KubernetesApiService) DeleteKubernetesServiceExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -6959,6 +7211,7 @@ func (a *KubernetesApiService) DeleteKubernetesServiceExecute(r ApiDeleteKuberne
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -6979,9 +7232,9 @@ func (r ApiDeleteKubernetesStatefulSetRequest) Execute() (*http.Response, error)
 /*
 DeleteKubernetesStatefulSet Delete a 'kubernetes.StatefulSet' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesStatefulSetRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesStatefulSetRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesStatefulSet(ctx context.Context, moid string) ApiDeleteKubernetesStatefulSetRequest {
 	return ApiDeleteKubernetesStatefulSetRequest{
@@ -7005,7 +7258,7 @@ func (a *KubernetesApiService) DeleteKubernetesStatefulSetExecute(r ApiDeleteKub
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/StatefulSets/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7038,9 +7291,9 @@ func (a *KubernetesApiService) DeleteKubernetesStatefulSetExecute(r ApiDeleteKub
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -7057,6 +7310,7 @@ func (a *KubernetesApiService) DeleteKubernetesStatefulSetExecute(r ApiDeleteKub
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7067,6 +7321,7 @@ func (a *KubernetesApiService) DeleteKubernetesStatefulSetExecute(r ApiDeleteKub
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7077,6 +7332,7 @@ func (a *KubernetesApiService) DeleteKubernetesStatefulSetExecute(r ApiDeleteKub
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7087,6 +7343,7 @@ func (a *KubernetesApiService) DeleteKubernetesStatefulSetExecute(r ApiDeleteKub
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7096,6 +7353,7 @@ func (a *KubernetesApiService) DeleteKubernetesStatefulSetExecute(r ApiDeleteKub
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -7116,9 +7374,9 @@ func (r ApiDeleteKubernetesSysConfigPolicyRequest) Execute() (*http.Response, er
 /*
 DeleteKubernetesSysConfigPolicy Delete a 'kubernetes.SysConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesSysConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesSysConfigPolicyRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesSysConfigPolicy(ctx context.Context, moid string) ApiDeleteKubernetesSysConfigPolicyRequest {
 	return ApiDeleteKubernetesSysConfigPolicyRequest{
@@ -7142,7 +7400,7 @@ func (a *KubernetesApiService) DeleteKubernetesSysConfigPolicyExecute(r ApiDelet
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/SysConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7175,9 +7433,9 @@ func (a *KubernetesApiService) DeleteKubernetesSysConfigPolicyExecute(r ApiDelet
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -7194,6 +7452,7 @@ func (a *KubernetesApiService) DeleteKubernetesSysConfigPolicyExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7204,6 +7463,7 @@ func (a *KubernetesApiService) DeleteKubernetesSysConfigPolicyExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7214,6 +7474,7 @@ func (a *KubernetesApiService) DeleteKubernetesSysConfigPolicyExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7224,6 +7485,7 @@ func (a *KubernetesApiService) DeleteKubernetesSysConfigPolicyExecute(r ApiDelet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7233,6 +7495,7 @@ func (a *KubernetesApiService) DeleteKubernetesSysConfigPolicyExecute(r ApiDelet
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -7253,9 +7516,9 @@ func (r ApiDeleteKubernetesTrustedRegistriesPolicyRequest) Execute() (*http.Resp
 /*
 DeleteKubernetesTrustedRegistriesPolicy Delete a 'kubernetes.TrustedRegistriesPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesTrustedRegistriesPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesTrustedRegistriesPolicyRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesTrustedRegistriesPolicy(ctx context.Context, moid string) ApiDeleteKubernetesTrustedRegistriesPolicyRequest {
 	return ApiDeleteKubernetesTrustedRegistriesPolicyRequest{
@@ -7279,7 +7542,7 @@ func (a *KubernetesApiService) DeleteKubernetesTrustedRegistriesPolicyExecute(r 
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/TrustedRegistriesPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7312,9 +7575,9 @@ func (a *KubernetesApiService) DeleteKubernetesTrustedRegistriesPolicyExecute(r 
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -7331,6 +7594,7 @@ func (a *KubernetesApiService) DeleteKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7341,6 +7605,7 @@ func (a *KubernetesApiService) DeleteKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7351,6 +7616,7 @@ func (a *KubernetesApiService) DeleteKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7361,6 +7627,7 @@ func (a *KubernetesApiService) DeleteKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7370,6 +7637,7 @@ func (a *KubernetesApiService) DeleteKubernetesTrustedRegistriesPolicyExecute(r 
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -7390,9 +7658,9 @@ func (r ApiDeleteKubernetesVersionRequest) Execute() (*http.Response, error) {
 /*
 DeleteKubernetesVersion Delete a 'kubernetes.Version' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesVersionRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesVersionRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesVersion(ctx context.Context, moid string) ApiDeleteKubernetesVersionRequest {
 	return ApiDeleteKubernetesVersionRequest{
@@ -7416,7 +7684,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionExecute(r ApiDeleteKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Versions/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7449,9 +7717,9 @@ func (a *KubernetesApiService) DeleteKubernetesVersionExecute(r ApiDeleteKuberne
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -7468,6 +7736,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7478,6 +7747,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7488,6 +7758,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7498,6 +7769,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionExecute(r ApiDeleteKuberne
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7507,6 +7779,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionExecute(r ApiDeleteKuberne
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -7527,9 +7800,9 @@ func (r ApiDeleteKubernetesVersionPolicyRequest) Execute() (*http.Response, erro
 /*
 DeleteKubernetesVersionPolicy Delete a 'kubernetes.VersionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesVersionPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesVersionPolicyRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesVersionPolicy(ctx context.Context, moid string) ApiDeleteKubernetesVersionPolicyRequest {
 	return ApiDeleteKubernetesVersionPolicyRequest{
@@ -7553,7 +7826,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionPolicyExecute(r ApiDeleteK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VersionPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7586,9 +7859,9 @@ func (a *KubernetesApiService) DeleteKubernetesVersionPolicyExecute(r ApiDeleteK
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -7605,6 +7878,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionPolicyExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7615,6 +7889,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionPolicyExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7625,6 +7900,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionPolicyExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7635,6 +7911,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionPolicyExecute(r ApiDeleteK
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7644,6 +7921,7 @@ func (a *KubernetesApiService) DeleteKubernetesVersionPolicyExecute(r ApiDeleteK
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -7664,9 +7942,9 @@ func (r ApiDeleteKubernetesVirtualMachineInfraConfigPolicyRequest) Execute() (*h
 /*
 DeleteKubernetesVirtualMachineInfraConfigPolicy Delete a 'kubernetes.VirtualMachineInfraConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesVirtualMachineInfraConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesVirtualMachineInfraConfigPolicyRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInfraConfigPolicy(ctx context.Context, moid string) ApiDeleteKubernetesVirtualMachineInfraConfigPolicyRequest {
 	return ApiDeleteKubernetesVirtualMachineInfraConfigPolicyRequest{
@@ -7690,7 +7968,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInfraConfigPolicyEx
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInfraConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7723,9 +8001,9 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInfraConfigPolicyEx
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -7742,6 +8020,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7752,6 +8031,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7762,6 +8042,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7772,6 +8053,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7781,6 +8063,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInfraConfigPolicyEx
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -7801,9 +8084,9 @@ func (r ApiDeleteKubernetesVirtualMachineInstanceTypeRequest) Execute() (*http.R
 /*
 DeleteKubernetesVirtualMachineInstanceType Delete a 'kubernetes.VirtualMachineInstanceType' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesVirtualMachineInstanceTypeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesVirtualMachineInstanceTypeRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInstanceType(ctx context.Context, moid string) ApiDeleteKubernetesVirtualMachineInstanceTypeRequest {
 	return ApiDeleteKubernetesVirtualMachineInstanceTypeRequest{
@@ -7827,7 +8110,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInstanceTypeExecute
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInstanceTypes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7860,9 +8143,9 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInstanceTypeExecute
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -7879,6 +8162,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7889,6 +8173,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7899,6 +8184,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7909,6 +8195,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -7918,6 +8205,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineInstanceTypeExecute
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -7938,9 +8226,9 @@ func (r ApiDeleteKubernetesVirtualMachineNodeProfileRequest) Execute() (*http.Re
 /*
 DeleteKubernetesVirtualMachineNodeProfile Delete a 'kubernetes.VirtualMachineNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteKubernetesVirtualMachineNodeProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteKubernetesVirtualMachineNodeProfileRequest
 */
 func (a *KubernetesApiService) DeleteKubernetesVirtualMachineNodeProfile(ctx context.Context, moid string) ApiDeleteKubernetesVirtualMachineNodeProfileRequest {
 	return ApiDeleteKubernetesVirtualMachineNodeProfileRequest{
@@ -7964,7 +8252,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineNodeProfileExecute(
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineNodeProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7997,9 +8285,9 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineNodeProfileExecute(
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -8016,6 +8304,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -8026,6 +8315,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -8036,6 +8326,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -8046,6 +8337,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -8055,6 +8347,7 @@ func (a *KubernetesApiService) DeleteKubernetesVirtualMachineNodeProfileExecute(
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -8075,9 +8368,9 @@ func (r ApiGetKubernetesAciCniApicByMoidRequest) Execute() (*KubernetesAciCniApi
 /*
 GetKubernetesAciCniApicByMoid Read a 'kubernetes.AciCniApic' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesAciCniApicByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesAciCniApicByMoidRequest
 
 Deprecated
 */
@@ -8090,7 +8383,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniApic
+//
+//	@return KubernetesAciCniApic
+//
 // Deprecated
 func (a *KubernetesApiService) GetKubernetesAciCniApicByMoidExecute(r ApiGetKubernetesAciCniApicByMoidRequest) (*KubernetesAciCniApic, *http.Response, error) {
 	var (
@@ -8106,7 +8401,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicByMoidExecute(r ApiGetKube
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniApics/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8139,9 +8434,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicByMoidExecute(r ApiGetKube
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8158,6 +8453,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicByMoidExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8168,6 +8464,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicByMoidExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8178,6 +8475,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicByMoidExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8188,6 +8486,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicByMoidExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8197,6 +8496,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicByMoidExecute(r ApiGetKube
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8265,7 +8565,7 @@ func (r ApiGetKubernetesAciCniApicListRequest) Expand(expand string) ApiGetKuber
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesAciCniApicListRequest) Apply(apply string) ApiGetKubernetesAciCniApicListRequest {
 	r.apply = &apply
 	return r
@@ -8302,8 +8602,8 @@ func (r ApiGetKubernetesAciCniApicListRequest) Execute() (*KubernetesAciCniApicR
 /*
 GetKubernetesAciCniApicList Read a 'kubernetes.AciCniApic' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesAciCniApicListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesAciCniApicListRequest
 
 Deprecated
 */
@@ -8315,7 +8615,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniApicResponse
+//
+//	@return KubernetesAciCniApicResponse
+//
 // Deprecated
 func (a *KubernetesApiService) GetKubernetesAciCniApicListExecute(r ApiGetKubernetesAciCniApicListRequest) (*KubernetesAciCniApicResponse, *http.Response, error) {
 	var (
@@ -8337,37 +8639,52 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicListExecute(r ApiGetKubern
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8396,9 +8713,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicListExecute(r ApiGetKubern
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8415,6 +8732,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicListExecute(r ApiGetKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8425,6 +8743,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicListExecute(r ApiGetKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8435,6 +8754,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicListExecute(r ApiGetKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8445,6 +8765,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicListExecute(r ApiGetKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8454,6 +8775,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniApicListExecute(r ApiGetKubern
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8483,9 +8805,9 @@ func (r ApiGetKubernetesAciCniProfileByMoidRequest) Execute() (*KubernetesAciCni
 /*
 GetKubernetesAciCniProfileByMoid Read a 'kubernetes.AciCniProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesAciCniProfileByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesAciCniProfileByMoidRequest
 
 Deprecated
 */
@@ -8498,7 +8820,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniProfile
+//
+//	@return KubernetesAciCniProfile
+//
 // Deprecated
 func (a *KubernetesApiService) GetKubernetesAciCniProfileByMoidExecute(r ApiGetKubernetesAciCniProfileByMoidRequest) (*KubernetesAciCniProfile, *http.Response, error) {
 	var (
@@ -8514,7 +8838,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileByMoidExecute(r ApiGetK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8547,9 +8871,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileByMoidExecute(r ApiGetK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8566,6 +8890,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8576,6 +8901,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8586,6 +8912,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8596,6 +8923,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8605,6 +8933,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileByMoidExecute(r ApiGetK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8673,7 +9002,7 @@ func (r ApiGetKubernetesAciCniProfileListRequest) Expand(expand string) ApiGetKu
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesAciCniProfileListRequest) Apply(apply string) ApiGetKubernetesAciCniProfileListRequest {
 	r.apply = &apply
 	return r
@@ -8710,8 +9039,8 @@ func (r ApiGetKubernetesAciCniProfileListRequest) Execute() (*KubernetesAciCniPr
 /*
 GetKubernetesAciCniProfileList Read a 'kubernetes.AciCniProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesAciCniProfileListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesAciCniProfileListRequest
 
 Deprecated
 */
@@ -8723,7 +9052,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniProfileResponse
+//
+//	@return KubernetesAciCniProfileResponse
+//
 // Deprecated
 func (a *KubernetesApiService) GetKubernetesAciCniProfileListExecute(r ApiGetKubernetesAciCniProfileListRequest) (*KubernetesAciCniProfileResponse, *http.Response, error) {
 	var (
@@ -8745,37 +9076,52 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileListExecute(r ApiGetKub
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8804,9 +9150,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileListExecute(r ApiGetKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8823,6 +9169,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8833,6 +9180,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8843,6 +9191,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8853,6 +9202,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8862,6 +9212,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniProfileListExecute(r ApiGetKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8891,9 +9242,9 @@ func (r ApiGetKubernetesAciCniTenantClusterAllocationByMoidRequest) Execute() (*
 /*
 GetKubernetesAciCniTenantClusterAllocationByMoid Read a 'kubernetes.AciCniTenantClusterAllocation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesAciCniTenantClusterAllocationByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesAciCniTenantClusterAllocationByMoidRequest
 
 Deprecated
 */
@@ -8906,7 +9257,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationByMoid(
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniTenantClusterAllocation
+//
+//	@return KubernetesAciCniTenantClusterAllocation
+//
 // Deprecated
 func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationByMoidExecute(r ApiGetKubernetesAciCniTenantClusterAllocationByMoidRequest) (*KubernetesAciCniTenantClusterAllocation, *http.Response, error) {
 	var (
@@ -8922,7 +9275,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationByMoidE
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniTenantClusterAllocations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8955,9 +9308,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationByMoidE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8974,6 +9327,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationByMoidE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8984,6 +9338,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationByMoidE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8994,6 +9349,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationByMoidE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9004,6 +9360,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationByMoidE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9013,6 +9370,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationByMoidE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9081,7 +9439,7 @@ func (r ApiGetKubernetesAciCniTenantClusterAllocationListRequest) Expand(expand 
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesAciCniTenantClusterAllocationListRequest) Apply(apply string) ApiGetKubernetesAciCniTenantClusterAllocationListRequest {
 	r.apply = &apply
 	return r
@@ -9118,8 +9476,8 @@ func (r ApiGetKubernetesAciCniTenantClusterAllocationListRequest) Execute() (*Ku
 /*
 GetKubernetesAciCniTenantClusterAllocationList Read a 'kubernetes.AciCniTenantClusterAllocation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesAciCniTenantClusterAllocationListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesAciCniTenantClusterAllocationListRequest
 
 Deprecated
 */
@@ -9131,7 +9489,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationList(ct
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniTenantClusterAllocationResponse
+//
+//	@return KubernetesAciCniTenantClusterAllocationResponse
+//
 // Deprecated
 func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationListExecute(r ApiGetKubernetesAciCniTenantClusterAllocationListRequest) (*KubernetesAciCniTenantClusterAllocationResponse, *http.Response, error) {
 	var (
@@ -9153,37 +9513,52 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationListExe
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9212,9 +9587,9 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationListExe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9231,6 +9606,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9241,6 +9617,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9251,6 +9628,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9261,6 +9639,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationListExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9270,6 +9649,7 @@ func (a *KubernetesApiService) GetKubernetesAciCniTenantClusterAllocationListExe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9299,9 +9679,9 @@ func (r ApiGetKubernetesAddonDefinitionByMoidRequest) Execute() (*KubernetesAddo
 /*
 GetKubernetesAddonDefinitionByMoid Read a 'kubernetes.AddonDefinition' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesAddonDefinitionByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesAddonDefinitionByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoid(ctx context.Context, moid string) ApiGetKubernetesAddonDefinitionByMoidRequest {
 	return ApiGetKubernetesAddonDefinitionByMoidRequest{
@@ -9312,7 +9692,8 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoid(ctx context.Co
 }
 
 // Execute executes the request
-//  @return KubernetesAddonDefinition
+//
+//	@return KubernetesAddonDefinition
 func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoidExecute(r ApiGetKubernetesAddonDefinitionByMoidRequest) (*KubernetesAddonDefinition, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9327,7 +9708,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoidExecute(r ApiGe
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonDefinitions/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9360,9 +9741,9 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoidExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9379,6 +9760,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9389,6 +9771,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9399,6 +9782,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9409,6 +9793,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9418,6 +9803,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionByMoidExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9486,7 +9872,7 @@ func (r ApiGetKubernetesAddonDefinitionListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesAddonDefinitionListRequest) Apply(apply string) ApiGetKubernetesAddonDefinitionListRequest {
 	r.apply = &apply
 	return r
@@ -9523,8 +9909,8 @@ func (r ApiGetKubernetesAddonDefinitionListRequest) Execute() (*KubernetesAddonD
 /*
 GetKubernetesAddonDefinitionList Read a 'kubernetes.AddonDefinition' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesAddonDefinitionListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesAddonDefinitionListRequest
 */
 func (a *KubernetesApiService) GetKubernetesAddonDefinitionList(ctx context.Context) ApiGetKubernetesAddonDefinitionListRequest {
 	return ApiGetKubernetesAddonDefinitionListRequest{
@@ -9534,7 +9920,8 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionList(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesAddonDefinitionResponse
+//
+//	@return KubernetesAddonDefinitionResponse
 func (a *KubernetesApiService) GetKubernetesAddonDefinitionListExecute(r ApiGetKubernetesAddonDefinitionListRequest) (*KubernetesAddonDefinitionResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9555,37 +9942,52 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionListExecute(r ApiGetK
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9614,9 +10016,9 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionListExecute(r ApiGetK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9633,6 +10035,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9643,6 +10046,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9653,6 +10057,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9663,6 +10068,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9672,6 +10078,7 @@ func (a *KubernetesApiService) GetKubernetesAddonDefinitionListExecute(r ApiGetK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9701,9 +10108,9 @@ func (r ApiGetKubernetesAddonPolicyByMoidRequest) Execute() (*KubernetesAddonPol
 /*
 GetKubernetesAddonPolicyByMoid Read a 'kubernetes.AddonPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesAddonPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesAddonPolicyByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoid(ctx context.Context, moid string) ApiGetKubernetesAddonPolicyByMoidRequest {
 	return ApiGetKubernetesAddonPolicyByMoidRequest{
@@ -9714,7 +10121,8 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesAddonPolicy
+//
+//	@return KubernetesAddonPolicy
 func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoidExecute(r ApiGetKubernetesAddonPolicyByMoidRequest) (*KubernetesAddonPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9729,7 +10137,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoidExecute(r ApiGetKub
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9762,9 +10170,9 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoidExecute(r ApiGetKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9781,6 +10189,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoidExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9791,6 +10200,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoidExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9801,6 +10211,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoidExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9811,6 +10222,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoidExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9820,6 +10232,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyByMoidExecute(r ApiGetKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9888,7 +10301,7 @@ func (r ApiGetKubernetesAddonPolicyListRequest) Expand(expand string) ApiGetKube
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesAddonPolicyListRequest) Apply(apply string) ApiGetKubernetesAddonPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -9925,8 +10338,8 @@ func (r ApiGetKubernetesAddonPolicyListRequest) Execute() (*KubernetesAddonPolic
 /*
 GetKubernetesAddonPolicyList Read a 'kubernetes.AddonPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesAddonPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesAddonPolicyListRequest
 */
 func (a *KubernetesApiService) GetKubernetesAddonPolicyList(ctx context.Context) ApiGetKubernetesAddonPolicyListRequest {
 	return ApiGetKubernetesAddonPolicyListRequest{
@@ -9936,7 +10349,8 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return KubernetesAddonPolicyResponse
+//
+//	@return KubernetesAddonPolicyResponse
 func (a *KubernetesApiService) GetKubernetesAddonPolicyListExecute(r ApiGetKubernetesAddonPolicyListRequest) (*KubernetesAddonPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9957,37 +10371,52 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyListExecute(r ApiGetKuber
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10016,9 +10445,9 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyListExecute(r ApiGetKuber
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10035,6 +10464,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyListExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10045,6 +10475,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyListExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10055,6 +10486,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyListExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10065,6 +10497,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyListExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10074,6 +10507,7 @@ func (a *KubernetesApiService) GetKubernetesAddonPolicyListExecute(r ApiGetKuber
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10103,9 +10537,9 @@ func (r ApiGetKubernetesAddonRepositoryByMoidRequest) Execute() (*KubernetesAddo
 /*
 GetKubernetesAddonRepositoryByMoid Read a 'kubernetes.AddonRepository' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesAddonRepositoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesAddonRepositoryByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoid(ctx context.Context, moid string) ApiGetKubernetesAddonRepositoryByMoidRequest {
 	return ApiGetKubernetesAddonRepositoryByMoidRequest{
@@ -10116,7 +10550,8 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoid(ctx context.Co
 }
 
 // Execute executes the request
-//  @return KubernetesAddonRepository
+//
+//	@return KubernetesAddonRepository
 func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoidExecute(r ApiGetKubernetesAddonRepositoryByMoidRequest) (*KubernetesAddonRepository, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10131,7 +10566,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoidExecute(r ApiGe
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonRepositories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10164,9 +10599,9 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoidExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10183,6 +10618,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10193,6 +10629,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10203,6 +10640,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10213,6 +10651,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10222,6 +10661,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryByMoidExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10290,7 +10730,7 @@ func (r ApiGetKubernetesAddonRepositoryListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesAddonRepositoryListRequest) Apply(apply string) ApiGetKubernetesAddonRepositoryListRequest {
 	r.apply = &apply
 	return r
@@ -10327,8 +10767,8 @@ func (r ApiGetKubernetesAddonRepositoryListRequest) Execute() (*KubernetesAddonR
 /*
 GetKubernetesAddonRepositoryList Read a 'kubernetes.AddonRepository' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesAddonRepositoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesAddonRepositoryListRequest
 */
 func (a *KubernetesApiService) GetKubernetesAddonRepositoryList(ctx context.Context) ApiGetKubernetesAddonRepositoryListRequest {
 	return ApiGetKubernetesAddonRepositoryListRequest{
@@ -10338,7 +10778,8 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryList(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesAddonRepositoryResponse
+//
+//	@return KubernetesAddonRepositoryResponse
 func (a *KubernetesApiService) GetKubernetesAddonRepositoryListExecute(r ApiGetKubernetesAddonRepositoryListRequest) (*KubernetesAddonRepositoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10359,37 +10800,52 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryListExecute(r ApiGetK
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10418,9 +10874,9 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryListExecute(r ApiGetK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10437,6 +10893,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10447,6 +10904,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10457,6 +10915,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10467,6 +10926,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10476,6 +10936,7 @@ func (a *KubernetesApiService) GetKubernetesAddonRepositoryListExecute(r ApiGetK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10505,9 +10966,11 @@ func (r ApiGetKubernetesBaremetalNodeProfileByMoidRequest) Execute() (*Kubernete
 /*
 GetKubernetesBaremetalNodeProfileByMoid Read a 'kubernetes.BaremetalNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesBaremetalNodeProfileByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesBaremetalNodeProfileByMoidRequest
+
+Deprecated
 */
 func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoid(ctx context.Context, moid string) ApiGetKubernetesBaremetalNodeProfileByMoidRequest {
 	return ApiGetKubernetesBaremetalNodeProfileByMoidRequest{
@@ -10518,7 +10981,10 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoid(ctx conte
 }
 
 // Execute executes the request
-//  @return KubernetesBaremetalNodeProfile
+//
+//	@return KubernetesBaremetalNodeProfile
+//
+// Deprecated
 func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoidExecute(r ApiGetKubernetesBaremetalNodeProfileByMoidRequest) (*KubernetesBaremetalNodeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10533,7 +10999,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoidExecute(r 
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/BaremetalNodeProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10566,9 +11032,9 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoidExecute(r 
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10585,6 +11051,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoidExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10595,6 +11062,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoidExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10605,6 +11073,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoidExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10615,6 +11084,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoidExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10624,6 +11094,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileByMoidExecute(r 
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10692,7 +11163,7 @@ func (r ApiGetKubernetesBaremetalNodeProfileListRequest) Expand(expand string) A
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesBaremetalNodeProfileListRequest) Apply(apply string) ApiGetKubernetesBaremetalNodeProfileListRequest {
 	r.apply = &apply
 	return r
@@ -10729,8 +11200,10 @@ func (r ApiGetKubernetesBaremetalNodeProfileListRequest) Execute() (*KubernetesB
 /*
 GetKubernetesBaremetalNodeProfileList Read a 'kubernetes.BaremetalNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesBaremetalNodeProfileListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesBaremetalNodeProfileListRequest
+
+Deprecated
 */
 func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileList(ctx context.Context) ApiGetKubernetesBaremetalNodeProfileListRequest {
 	return ApiGetKubernetesBaremetalNodeProfileListRequest{
@@ -10740,7 +11213,10 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileList(ctx context
 }
 
 // Execute executes the request
-//  @return KubernetesBaremetalNodeProfileResponse
+//
+//	@return KubernetesBaremetalNodeProfileResponse
+//
+// Deprecated
 func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileListExecute(r ApiGetKubernetesBaremetalNodeProfileListRequest) (*KubernetesBaremetalNodeProfileResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10761,37 +11237,52 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileListExecute(r Ap
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10820,9 +11311,9 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileListExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10839,6 +11330,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10849,6 +11341,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10859,6 +11352,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10869,6 +11363,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10878,6 +11373,7 @@ func (a *KubernetesApiService) GetKubernetesBaremetalNodeProfileListExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10907,9 +11403,9 @@ func (r ApiGetKubernetesCatalogByMoidRequest) Execute() (*KubernetesCatalog, *ht
 /*
 GetKubernetesCatalogByMoid Read a 'kubernetes.Catalog' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesCatalogByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesCatalogByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesCatalogByMoid(ctx context.Context, moid string) ApiGetKubernetesCatalogByMoidRequest {
 	return ApiGetKubernetesCatalogByMoidRequest{
@@ -10920,7 +11416,8 @@ func (a *KubernetesApiService) GetKubernetesCatalogByMoid(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return KubernetesCatalog
+//
+//	@return KubernetesCatalog
 func (a *KubernetesApiService) GetKubernetesCatalogByMoidExecute(r ApiGetKubernetesCatalogByMoidRequest) (*KubernetesCatalog, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10935,7 +11432,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogByMoidExecute(r ApiGetKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Catalogs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10968,9 +11465,9 @@ func (a *KubernetesApiService) GetKubernetesCatalogByMoidExecute(r ApiGetKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10987,6 +11484,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10997,6 +11495,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11007,6 +11506,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11017,6 +11517,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11026,6 +11527,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogByMoidExecute(r ApiGetKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11094,7 +11596,7 @@ func (r ApiGetKubernetesCatalogListRequest) Expand(expand string) ApiGetKubernet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesCatalogListRequest) Apply(apply string) ApiGetKubernetesCatalogListRequest {
 	r.apply = &apply
 	return r
@@ -11131,8 +11633,8 @@ func (r ApiGetKubernetesCatalogListRequest) Execute() (*KubernetesCatalogRespons
 /*
 GetKubernetesCatalogList Read a 'kubernetes.Catalog' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesCatalogListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesCatalogListRequest
 */
 func (a *KubernetesApiService) GetKubernetesCatalogList(ctx context.Context) ApiGetKubernetesCatalogListRequest {
 	return ApiGetKubernetesCatalogListRequest{
@@ -11142,7 +11644,8 @@ func (a *KubernetesApiService) GetKubernetesCatalogList(ctx context.Context) Api
 }
 
 // Execute executes the request
-//  @return KubernetesCatalogResponse
+//
+//	@return KubernetesCatalogResponse
 func (a *KubernetesApiService) GetKubernetesCatalogListExecute(r ApiGetKubernetesCatalogListRequest) (*KubernetesCatalogResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11163,37 +11666,52 @@ func (a *KubernetesApiService) GetKubernetesCatalogListExecute(r ApiGetKubernete
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -11222,9 +11740,9 @@ func (a *KubernetesApiService) GetKubernetesCatalogListExecute(r ApiGetKubernete
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11241,6 +11759,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11251,6 +11770,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11261,6 +11781,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11271,6 +11792,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11280,6 +11802,7 @@ func (a *KubernetesApiService) GetKubernetesCatalogListExecute(r ApiGetKubernete
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11309,9 +11832,9 @@ func (r ApiGetKubernetesClusterAddonProfileByMoidRequest) Execute() (*Kubernetes
 /*
 GetKubernetesClusterAddonProfileByMoid Read a 'kubernetes.ClusterAddonProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesClusterAddonProfileByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesClusterAddonProfileByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoid(ctx context.Context, moid string) ApiGetKubernetesClusterAddonProfileByMoidRequest {
 	return ApiGetKubernetesClusterAddonProfileByMoidRequest{
@@ -11322,7 +11845,8 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoid(ctx contex
 }
 
 // Execute executes the request
-//  @return KubernetesClusterAddonProfile
+//
+//	@return KubernetesClusterAddonProfile
 func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoidExecute(r ApiGetKubernetesClusterAddonProfileByMoidRequest) (*KubernetesClusterAddonProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11337,7 +11861,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoidExecute(r A
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ClusterAddonProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11370,9 +11894,9 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoidExecute(r A
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11389,6 +11913,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoidExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11399,6 +11924,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoidExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11409,6 +11935,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoidExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11419,6 +11946,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoidExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11428,6 +11956,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileByMoidExecute(r A
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11496,7 +12025,7 @@ func (r ApiGetKubernetesClusterAddonProfileListRequest) Expand(expand string) Ap
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesClusterAddonProfileListRequest) Apply(apply string) ApiGetKubernetesClusterAddonProfileListRequest {
 	r.apply = &apply
 	return r
@@ -11533,8 +12062,8 @@ func (r ApiGetKubernetesClusterAddonProfileListRequest) Execute() (*KubernetesCl
 /*
 GetKubernetesClusterAddonProfileList Read a 'kubernetes.ClusterAddonProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesClusterAddonProfileListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesClusterAddonProfileListRequest
 */
 func (a *KubernetesApiService) GetKubernetesClusterAddonProfileList(ctx context.Context) ApiGetKubernetesClusterAddonProfileListRequest {
 	return ApiGetKubernetesClusterAddonProfileListRequest{
@@ -11544,7 +12073,8 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileList(ctx context.
 }
 
 // Execute executes the request
-//  @return KubernetesClusterAddonProfileResponse
+//
+//	@return KubernetesClusterAddonProfileResponse
 func (a *KubernetesApiService) GetKubernetesClusterAddonProfileListExecute(r ApiGetKubernetesClusterAddonProfileListRequest) (*KubernetesClusterAddonProfileResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11565,37 +12095,52 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileListExecute(r Api
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -11624,9 +12169,9 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileListExecute(r Api
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11643,6 +12188,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11653,6 +12199,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11663,6 +12210,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11673,6 +12221,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileListExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11682,6 +12231,7 @@ func (a *KubernetesApiService) GetKubernetesClusterAddonProfileListExecute(r Api
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11711,9 +12261,9 @@ func (r ApiGetKubernetesClusterByMoidRequest) Execute() (*KubernetesCluster, *ht
 /*
 GetKubernetesClusterByMoid Read a 'kubernetes.Cluster' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesClusterByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesClusterByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesClusterByMoid(ctx context.Context, moid string) ApiGetKubernetesClusterByMoidRequest {
 	return ApiGetKubernetesClusterByMoidRequest{
@@ -11724,7 +12274,8 @@ func (a *KubernetesApiService) GetKubernetesClusterByMoid(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return KubernetesCluster
+//
+//	@return KubernetesCluster
 func (a *KubernetesApiService) GetKubernetesClusterByMoidExecute(r ApiGetKubernetesClusterByMoidRequest) (*KubernetesCluster, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11739,7 +12290,7 @@ func (a *KubernetesApiService) GetKubernetesClusterByMoidExecute(r ApiGetKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Clusters/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11772,9 +12323,9 @@ func (a *KubernetesApiService) GetKubernetesClusterByMoidExecute(r ApiGetKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11791,6 +12342,7 @@ func (a *KubernetesApiService) GetKubernetesClusterByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11801,6 +12353,7 @@ func (a *KubernetesApiService) GetKubernetesClusterByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11811,6 +12364,7 @@ func (a *KubernetesApiService) GetKubernetesClusterByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11821,6 +12375,7 @@ func (a *KubernetesApiService) GetKubernetesClusterByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11830,6 +12385,7 @@ func (a *KubernetesApiService) GetKubernetesClusterByMoidExecute(r ApiGetKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11898,7 +12454,7 @@ func (r ApiGetKubernetesClusterListRequest) Expand(expand string) ApiGetKubernet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesClusterListRequest) Apply(apply string) ApiGetKubernetesClusterListRequest {
 	r.apply = &apply
 	return r
@@ -11935,8 +12491,8 @@ func (r ApiGetKubernetesClusterListRequest) Execute() (*KubernetesClusterRespons
 /*
 GetKubernetesClusterList Read a 'kubernetes.Cluster' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesClusterListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesClusterListRequest
 */
 func (a *KubernetesApiService) GetKubernetesClusterList(ctx context.Context) ApiGetKubernetesClusterListRequest {
 	return ApiGetKubernetesClusterListRequest{
@@ -11946,7 +12502,8 @@ func (a *KubernetesApiService) GetKubernetesClusterList(ctx context.Context) Api
 }
 
 // Execute executes the request
-//  @return KubernetesClusterResponse
+//
+//	@return KubernetesClusterResponse
 func (a *KubernetesApiService) GetKubernetesClusterListExecute(r ApiGetKubernetesClusterListRequest) (*KubernetesClusterResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11967,37 +12524,52 @@ func (a *KubernetesApiService) GetKubernetesClusterListExecute(r ApiGetKubernete
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -12026,9 +12598,9 @@ func (a *KubernetesApiService) GetKubernetesClusterListExecute(r ApiGetKubernete
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12045,6 +12617,7 @@ func (a *KubernetesApiService) GetKubernetesClusterListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12055,6 +12628,7 @@ func (a *KubernetesApiService) GetKubernetesClusterListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12065,6 +12639,7 @@ func (a *KubernetesApiService) GetKubernetesClusterListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12075,6 +12650,7 @@ func (a *KubernetesApiService) GetKubernetesClusterListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12084,6 +12660,7 @@ func (a *KubernetesApiService) GetKubernetesClusterListExecute(r ApiGetKubernete
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12113,9 +12690,9 @@ func (r ApiGetKubernetesClusterProfileByMoidRequest) Execute() (*KubernetesClust
 /*
 GetKubernetesClusterProfileByMoid Read a 'kubernetes.ClusterProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesClusterProfileByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesClusterProfileByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesClusterProfileByMoid(ctx context.Context, moid string) ApiGetKubernetesClusterProfileByMoidRequest {
 	return ApiGetKubernetesClusterProfileByMoidRequest{
@@ -12126,7 +12703,8 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileByMoid(ctx context.Con
 }
 
 // Execute executes the request
-//  @return KubernetesClusterProfile
+//
+//	@return KubernetesClusterProfile
 func (a *KubernetesApiService) GetKubernetesClusterProfileByMoidExecute(r ApiGetKubernetesClusterProfileByMoidRequest) (*KubernetesClusterProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12141,7 +12719,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileByMoidExecute(r ApiGet
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ClusterProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12174,9 +12752,9 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileByMoidExecute(r ApiGet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12193,6 +12771,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12203,6 +12782,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12213,6 +12793,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12223,6 +12804,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileByMoidExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12232,6 +12814,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileByMoidExecute(r ApiGet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12300,7 +12883,7 @@ func (r ApiGetKubernetesClusterProfileListRequest) Expand(expand string) ApiGetK
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesClusterProfileListRequest) Apply(apply string) ApiGetKubernetesClusterProfileListRequest {
 	r.apply = &apply
 	return r
@@ -12337,8 +12920,8 @@ func (r ApiGetKubernetesClusterProfileListRequest) Execute() (*KubernetesCluster
 /*
 GetKubernetesClusterProfileList Read a 'kubernetes.ClusterProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesClusterProfileListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesClusterProfileListRequest
 */
 func (a *KubernetesApiService) GetKubernetesClusterProfileList(ctx context.Context) ApiGetKubernetesClusterProfileListRequest {
 	return ApiGetKubernetesClusterProfileListRequest{
@@ -12348,7 +12931,8 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileList(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesClusterProfileResponse
+//
+//	@return KubernetesClusterProfileResponse
 func (a *KubernetesApiService) GetKubernetesClusterProfileListExecute(r ApiGetKubernetesClusterProfileListRequest) (*KubernetesClusterProfileResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12369,37 +12953,52 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileListExecute(r ApiGetKu
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -12428,9 +13027,9 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileListExecute(r ApiGetKu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12447,6 +13046,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileListExecute(r ApiGetKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12457,6 +13057,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileListExecute(r ApiGetKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12467,6 +13068,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileListExecute(r ApiGetKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12477,6 +13079,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileListExecute(r ApiGetKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12486,6 +13089,7 @@ func (a *KubernetesApiService) GetKubernetesClusterProfileListExecute(r ApiGetKu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12515,9 +13119,9 @@ func (r ApiGetKubernetesConfigResultByMoidRequest) Execute() (*KubernetesConfigR
 /*
 GetKubernetesConfigResultByMoid Read a 'kubernetes.ConfigResult' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesConfigResultByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesConfigResultByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesConfigResultByMoid(ctx context.Context, moid string) ApiGetKubernetesConfigResultByMoidRequest {
 	return ApiGetKubernetesConfigResultByMoidRequest{
@@ -12528,7 +13132,8 @@ func (a *KubernetesApiService) GetKubernetesConfigResultByMoid(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesConfigResult
+//
+//	@return KubernetesConfigResult
 func (a *KubernetesApiService) GetKubernetesConfigResultByMoidExecute(r ApiGetKubernetesConfigResultByMoidRequest) (*KubernetesConfigResult, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12543,7 +13148,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultByMoidExecute(r ApiGetKu
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ConfigResults/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12576,9 +13181,9 @@ func (a *KubernetesApiService) GetKubernetesConfigResultByMoidExecute(r ApiGetKu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12595,6 +13200,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultByMoidExecute(r ApiGetKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12605,6 +13211,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultByMoidExecute(r ApiGetKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12615,6 +13222,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultByMoidExecute(r ApiGetKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12625,6 +13233,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultByMoidExecute(r ApiGetKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12634,6 +13243,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultByMoidExecute(r ApiGetKu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12663,9 +13273,9 @@ func (r ApiGetKubernetesConfigResultEntryByMoidRequest) Execute() (*KubernetesCo
 /*
 GetKubernetesConfigResultEntryByMoid Read a 'kubernetes.ConfigResultEntry' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesConfigResultEntryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesConfigResultEntryByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoid(ctx context.Context, moid string) ApiGetKubernetesConfigResultEntryByMoidRequest {
 	return ApiGetKubernetesConfigResultEntryByMoidRequest{
@@ -12676,7 +13286,8 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoid(ctx context.
 }
 
 // Execute executes the request
-//  @return KubernetesConfigResultEntry
+//
+//	@return KubernetesConfigResultEntry
 func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoidExecute(r ApiGetKubernetesConfigResultEntryByMoidRequest) (*KubernetesConfigResultEntry, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12691,7 +13302,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoidExecute(r Api
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ConfigResultEntries/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12724,9 +13335,9 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoidExecute(r Api
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12743,6 +13354,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12753,6 +13365,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12763,6 +13376,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12773,6 +13387,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoidExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12782,6 +13397,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryByMoidExecute(r Api
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12850,7 +13466,7 @@ func (r ApiGetKubernetesConfigResultEntryListRequest) Expand(expand string) ApiG
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesConfigResultEntryListRequest) Apply(apply string) ApiGetKubernetesConfigResultEntryListRequest {
 	r.apply = &apply
 	return r
@@ -12887,8 +13503,8 @@ func (r ApiGetKubernetesConfigResultEntryListRequest) Execute() (*KubernetesConf
 /*
 GetKubernetesConfigResultEntryList Read a 'kubernetes.ConfigResultEntry' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesConfigResultEntryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesConfigResultEntryListRequest
 */
 func (a *KubernetesApiService) GetKubernetesConfigResultEntryList(ctx context.Context) ApiGetKubernetesConfigResultEntryListRequest {
 	return ApiGetKubernetesConfigResultEntryListRequest{
@@ -12898,7 +13514,8 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryList(ctx context.Co
 }
 
 // Execute executes the request
-//  @return KubernetesConfigResultEntryResponse
+//
+//	@return KubernetesConfigResultEntryResponse
 func (a *KubernetesApiService) GetKubernetesConfigResultEntryListExecute(r ApiGetKubernetesConfigResultEntryListRequest) (*KubernetesConfigResultEntryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12919,37 +13536,52 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryListExecute(r ApiGe
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -12978,9 +13610,9 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryListExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12997,6 +13629,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13007,6 +13640,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13017,6 +13651,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13027,6 +13662,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryListExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13036,6 +13672,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultEntryListExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13104,7 +13741,7 @@ func (r ApiGetKubernetesConfigResultListRequest) Expand(expand string) ApiGetKub
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesConfigResultListRequest) Apply(apply string) ApiGetKubernetesConfigResultListRequest {
 	r.apply = &apply
 	return r
@@ -13141,8 +13778,8 @@ func (r ApiGetKubernetesConfigResultListRequest) Execute() (*KubernetesConfigRes
 /*
 GetKubernetesConfigResultList Read a 'kubernetes.ConfigResult' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesConfigResultListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesConfigResultListRequest
 */
 func (a *KubernetesApiService) GetKubernetesConfigResultList(ctx context.Context) ApiGetKubernetesConfigResultListRequest {
 	return ApiGetKubernetesConfigResultListRequest{
@@ -13152,7 +13789,8 @@ func (a *KubernetesApiService) GetKubernetesConfigResultList(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesConfigResultResponse
+//
+//	@return KubernetesConfigResultResponse
 func (a *KubernetesApiService) GetKubernetesConfigResultListExecute(r ApiGetKubernetesConfigResultListRequest) (*KubernetesConfigResultResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13173,37 +13811,52 @@ func (a *KubernetesApiService) GetKubernetesConfigResultListExecute(r ApiGetKube
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -13232,9 +13885,9 @@ func (a *KubernetesApiService) GetKubernetesConfigResultListExecute(r ApiGetKube
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13251,6 +13904,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultListExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13261,6 +13915,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultListExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13271,6 +13926,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultListExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13281,6 +13937,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultListExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13290,6 +13947,7 @@ func (a *KubernetesApiService) GetKubernetesConfigResultListExecute(r ApiGetKube
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13319,9 +13977,9 @@ func (r ApiGetKubernetesContainerRuntimePolicyByMoidRequest) Execute() (*Kuberne
 /*
 GetKubernetesContainerRuntimePolicyByMoid Read a 'kubernetes.ContainerRuntimePolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesContainerRuntimePolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesContainerRuntimePolicyByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoid(ctx context.Context, moid string) ApiGetKubernetesContainerRuntimePolicyByMoidRequest {
 	return ApiGetKubernetesContainerRuntimePolicyByMoidRequest{
@@ -13332,7 +13990,8 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoid(ctx con
 }
 
 // Execute executes the request
-//  @return KubernetesContainerRuntimePolicy
+//
+//	@return KubernetesContainerRuntimePolicy
 func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoidExecute(r ApiGetKubernetesContainerRuntimePolicyByMoidRequest) (*KubernetesContainerRuntimePolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13347,7 +14006,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoidExecute(
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ContainerRuntimePolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13380,9 +14039,9 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoidExecute(
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13399,6 +14058,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoidExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13409,6 +14069,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoidExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13419,6 +14080,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoidExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13429,6 +14091,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoidExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13438,6 +14101,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyByMoidExecute(
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13506,7 +14170,7 @@ func (r ApiGetKubernetesContainerRuntimePolicyListRequest) Expand(expand string)
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesContainerRuntimePolicyListRequest) Apply(apply string) ApiGetKubernetesContainerRuntimePolicyListRequest {
 	r.apply = &apply
 	return r
@@ -13543,8 +14207,8 @@ func (r ApiGetKubernetesContainerRuntimePolicyListRequest) Execute() (*Kubernete
 /*
 GetKubernetesContainerRuntimePolicyList Read a 'kubernetes.ContainerRuntimePolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesContainerRuntimePolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesContainerRuntimePolicyListRequest
 */
 func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyList(ctx context.Context) ApiGetKubernetesContainerRuntimePolicyListRequest {
 	return ApiGetKubernetesContainerRuntimePolicyListRequest{
@@ -13554,7 +14218,8 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyList(ctx conte
 }
 
 // Execute executes the request
-//  @return KubernetesContainerRuntimePolicyResponse
+//
+//	@return KubernetesContainerRuntimePolicyResponse
 func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyListExecute(r ApiGetKubernetesContainerRuntimePolicyListRequest) (*KubernetesContainerRuntimePolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13575,37 +14240,52 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyListExecute(r 
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -13634,9 +14314,9 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyListExecute(r 
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13653,6 +14333,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyListExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13663,6 +14344,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyListExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13673,6 +14355,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyListExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13683,6 +14366,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyListExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13692,6 +14376,7 @@ func (a *KubernetesApiService) GetKubernetesContainerRuntimePolicyListExecute(r 
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13721,9 +14406,9 @@ func (r ApiGetKubernetesDaemonSetByMoidRequest) Execute() (*KubernetesDaemonSet,
 /*
 GetKubernetesDaemonSetByMoid Read a 'kubernetes.DaemonSet' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesDaemonSetByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesDaemonSetByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesDaemonSetByMoid(ctx context.Context, moid string) ApiGetKubernetesDaemonSetByMoidRequest {
 	return ApiGetKubernetesDaemonSetByMoidRequest{
@@ -13734,7 +14419,8 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return KubernetesDaemonSet
+//
+//	@return KubernetesDaemonSet
 func (a *KubernetesApiService) GetKubernetesDaemonSetByMoidExecute(r ApiGetKubernetesDaemonSetByMoidRequest) (*KubernetesDaemonSet, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13749,7 +14435,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetByMoidExecute(r ApiGetKuber
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/DaemonSets/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13782,9 +14468,9 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetByMoidExecute(r ApiGetKuber
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13801,6 +14487,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetByMoidExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13811,6 +14498,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetByMoidExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13821,6 +14509,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetByMoidExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13831,6 +14520,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetByMoidExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13840,6 +14530,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetByMoidExecute(r ApiGetKuber
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13908,7 +14599,7 @@ func (r ApiGetKubernetesDaemonSetListRequest) Expand(expand string) ApiGetKubern
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesDaemonSetListRequest) Apply(apply string) ApiGetKubernetesDaemonSetListRequest {
 	r.apply = &apply
 	return r
@@ -13945,8 +14636,8 @@ func (r ApiGetKubernetesDaemonSetListRequest) Execute() (*KubernetesDaemonSetRes
 /*
 GetKubernetesDaemonSetList Read a 'kubernetes.DaemonSet' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesDaemonSetListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesDaemonSetListRequest
 */
 func (a *KubernetesApiService) GetKubernetesDaemonSetList(ctx context.Context) ApiGetKubernetesDaemonSetListRequest {
 	return ApiGetKubernetesDaemonSetListRequest{
@@ -13956,7 +14647,8 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return KubernetesDaemonSetResponse
+//
+//	@return KubernetesDaemonSetResponse
 func (a *KubernetesApiService) GetKubernetesDaemonSetListExecute(r ApiGetKubernetesDaemonSetListRequest) (*KubernetesDaemonSetResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13977,37 +14669,52 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetListExecute(r ApiGetKuberne
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -14036,9 +14743,9 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetListExecute(r ApiGetKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14055,6 +14762,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetListExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14065,6 +14773,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetListExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14075,6 +14784,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetListExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14085,6 +14795,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetListExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14094,6 +14805,7 @@ func (a *KubernetesApiService) GetKubernetesDaemonSetListExecute(r ApiGetKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14123,9 +14835,9 @@ func (r ApiGetKubernetesDeploymentByMoidRequest) Execute() (*KubernetesDeploymen
 /*
 GetKubernetesDeploymentByMoid Read a 'kubernetes.Deployment' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesDeploymentByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesDeploymentByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesDeploymentByMoid(ctx context.Context, moid string) ApiGetKubernetesDeploymentByMoidRequest {
 	return ApiGetKubernetesDeploymentByMoidRequest{
@@ -14136,7 +14848,8 @@ func (a *KubernetesApiService) GetKubernetesDeploymentByMoid(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesDeployment
+//
+//	@return KubernetesDeployment
 func (a *KubernetesApiService) GetKubernetesDeploymentByMoidExecute(r ApiGetKubernetesDeploymentByMoidRequest) (*KubernetesDeployment, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14151,7 +14864,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentByMoidExecute(r ApiGetKube
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Deployments/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14184,9 +14897,9 @@ func (a *KubernetesApiService) GetKubernetesDeploymentByMoidExecute(r ApiGetKube
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14203,6 +14916,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentByMoidExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14213,6 +14927,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentByMoidExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14223,6 +14938,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentByMoidExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14233,6 +14949,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentByMoidExecute(r ApiGetKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14242,6 +14959,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentByMoidExecute(r ApiGetKube
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14310,7 +15028,7 @@ func (r ApiGetKubernetesDeploymentListRequest) Expand(expand string) ApiGetKuber
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesDeploymentListRequest) Apply(apply string) ApiGetKubernetesDeploymentListRequest {
 	r.apply = &apply
 	return r
@@ -14347,8 +15065,8 @@ func (r ApiGetKubernetesDeploymentListRequest) Execute() (*KubernetesDeploymentR
 /*
 GetKubernetesDeploymentList Read a 'kubernetes.Deployment' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesDeploymentListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesDeploymentListRequest
 */
 func (a *KubernetesApiService) GetKubernetesDeploymentList(ctx context.Context) ApiGetKubernetesDeploymentListRequest {
 	return ApiGetKubernetesDeploymentListRequest{
@@ -14358,7 +15076,8 @@ func (a *KubernetesApiService) GetKubernetesDeploymentList(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return KubernetesDeploymentResponse
+//
+//	@return KubernetesDeploymentResponse
 func (a *KubernetesApiService) GetKubernetesDeploymentListExecute(r ApiGetKubernetesDeploymentListRequest) (*KubernetesDeploymentResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14379,37 +15098,52 @@ func (a *KubernetesApiService) GetKubernetesDeploymentListExecute(r ApiGetKubern
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -14438,9 +15172,9 @@ func (a *KubernetesApiService) GetKubernetesDeploymentListExecute(r ApiGetKubern
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14457,6 +15191,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentListExecute(r ApiGetKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14467,6 +15202,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentListExecute(r ApiGetKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14477,6 +15213,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentListExecute(r ApiGetKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14487,6 +15224,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentListExecute(r ApiGetKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14496,6 +15234,7 @@ func (a *KubernetesApiService) GetKubernetesDeploymentListExecute(r ApiGetKubern
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14525,9 +15264,9 @@ func (r ApiGetKubernetesHttpProxyPolicyByMoidRequest) Execute() (*KubernetesHttp
 /*
 GetKubernetesHttpProxyPolicyByMoid Read a 'kubernetes.HttpProxyPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesHttpProxyPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesHttpProxyPolicyByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoid(ctx context.Context, moid string) ApiGetKubernetesHttpProxyPolicyByMoidRequest {
 	return ApiGetKubernetesHttpProxyPolicyByMoidRequest{
@@ -14538,7 +15277,8 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoid(ctx context.Co
 }
 
 // Execute executes the request
-//  @return KubernetesHttpProxyPolicy
+//
+//	@return KubernetesHttpProxyPolicy
 func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoidExecute(r ApiGetKubernetesHttpProxyPolicyByMoidRequest) (*KubernetesHttpProxyPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14553,7 +15293,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoidExecute(r ApiGe
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/HttpProxyPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14586,9 +15326,9 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoidExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14605,6 +15345,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14615,6 +15356,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14625,6 +15367,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14635,6 +15378,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14644,6 +15388,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyByMoidExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14712,7 +15457,7 @@ func (r ApiGetKubernetesHttpProxyPolicyListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesHttpProxyPolicyListRequest) Apply(apply string) ApiGetKubernetesHttpProxyPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -14749,8 +15494,8 @@ func (r ApiGetKubernetesHttpProxyPolicyListRequest) Execute() (*KubernetesHttpPr
 /*
 GetKubernetesHttpProxyPolicyList Read a 'kubernetes.HttpProxyPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesHttpProxyPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesHttpProxyPolicyListRequest
 */
 func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyList(ctx context.Context) ApiGetKubernetesHttpProxyPolicyListRequest {
 	return ApiGetKubernetesHttpProxyPolicyListRequest{
@@ -14760,7 +15505,8 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyList(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesHttpProxyPolicyResponse
+//
+//	@return KubernetesHttpProxyPolicyResponse
 func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyListExecute(r ApiGetKubernetesHttpProxyPolicyListRequest) (*KubernetesHttpProxyPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14781,37 +15527,52 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyListExecute(r ApiGetK
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -14840,9 +15601,9 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyListExecute(r ApiGetK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14859,6 +15620,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14869,6 +15631,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14879,6 +15642,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14889,6 +15653,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14898,6 +15663,7 @@ func (a *KubernetesApiService) GetKubernetesHttpProxyPolicyListExecute(r ApiGetK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14927,9 +15693,9 @@ func (r ApiGetKubernetesIngressByMoidRequest) Execute() (*KubernetesIngress, *ht
 /*
 GetKubernetesIngressByMoid Read a 'kubernetes.Ingress' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesIngressByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesIngressByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesIngressByMoid(ctx context.Context, moid string) ApiGetKubernetesIngressByMoidRequest {
 	return ApiGetKubernetesIngressByMoidRequest{
@@ -14940,7 +15706,8 @@ func (a *KubernetesApiService) GetKubernetesIngressByMoid(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return KubernetesIngress
+//
+//	@return KubernetesIngress
 func (a *KubernetesApiService) GetKubernetesIngressByMoidExecute(r ApiGetKubernetesIngressByMoidRequest) (*KubernetesIngress, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14955,7 +15722,7 @@ func (a *KubernetesApiService) GetKubernetesIngressByMoidExecute(r ApiGetKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Ingresses/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14988,9 +15755,9 @@ func (a *KubernetesApiService) GetKubernetesIngressByMoidExecute(r ApiGetKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15007,6 +15774,7 @@ func (a *KubernetesApiService) GetKubernetesIngressByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15017,6 +15785,7 @@ func (a *KubernetesApiService) GetKubernetesIngressByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15027,6 +15796,7 @@ func (a *KubernetesApiService) GetKubernetesIngressByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15037,6 +15807,7 @@ func (a *KubernetesApiService) GetKubernetesIngressByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15046,6 +15817,7 @@ func (a *KubernetesApiService) GetKubernetesIngressByMoidExecute(r ApiGetKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15114,7 +15886,7 @@ func (r ApiGetKubernetesIngressListRequest) Expand(expand string) ApiGetKubernet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesIngressListRequest) Apply(apply string) ApiGetKubernetesIngressListRequest {
 	r.apply = &apply
 	return r
@@ -15151,8 +15923,8 @@ func (r ApiGetKubernetesIngressListRequest) Execute() (*KubernetesIngressRespons
 /*
 GetKubernetesIngressList Read a 'kubernetes.Ingress' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesIngressListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesIngressListRequest
 */
 func (a *KubernetesApiService) GetKubernetesIngressList(ctx context.Context) ApiGetKubernetesIngressListRequest {
 	return ApiGetKubernetesIngressListRequest{
@@ -15162,7 +15934,8 @@ func (a *KubernetesApiService) GetKubernetesIngressList(ctx context.Context) Api
 }
 
 // Execute executes the request
-//  @return KubernetesIngressResponse
+//
+//	@return KubernetesIngressResponse
 func (a *KubernetesApiService) GetKubernetesIngressListExecute(r ApiGetKubernetesIngressListRequest) (*KubernetesIngressResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15183,37 +15956,52 @@ func (a *KubernetesApiService) GetKubernetesIngressListExecute(r ApiGetKubernete
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -15242,9 +16030,9 @@ func (a *KubernetesApiService) GetKubernetesIngressListExecute(r ApiGetKubernete
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15261,6 +16049,7 @@ func (a *KubernetesApiService) GetKubernetesIngressListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15271,6 +16060,7 @@ func (a *KubernetesApiService) GetKubernetesIngressListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15281,6 +16071,7 @@ func (a *KubernetesApiService) GetKubernetesIngressListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15291,6 +16082,7 @@ func (a *KubernetesApiService) GetKubernetesIngressListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15300,6 +16092,7 @@ func (a *KubernetesApiService) GetKubernetesIngressListExecute(r ApiGetKubernete
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15329,9 +16122,9 @@ func (r ApiGetKubernetesNetworkPolicyByMoidRequest) Execute() (*KubernetesNetwor
 /*
 GetKubernetesNetworkPolicyByMoid Read a 'kubernetes.NetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesNetworkPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesNetworkPolicyByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoid(ctx context.Context, moid string) ApiGetKubernetesNetworkPolicyByMoidRequest {
 	return ApiGetKubernetesNetworkPolicyByMoidRequest{
@@ -15342,7 +16135,8 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesNetworkPolicy
+//
+//	@return KubernetesNetworkPolicy
 func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoidExecute(r ApiGetKubernetesNetworkPolicyByMoidRequest) (*KubernetesNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15357,7 +16151,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoidExecute(r ApiGetK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15390,9 +16184,9 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoidExecute(r ApiGetK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15409,6 +16203,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15419,6 +16214,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15429,6 +16225,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15439,6 +16236,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15448,6 +16246,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyByMoidExecute(r ApiGetK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15516,7 +16315,7 @@ func (r ApiGetKubernetesNetworkPolicyListRequest) Expand(expand string) ApiGetKu
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesNetworkPolicyListRequest) Apply(apply string) ApiGetKubernetesNetworkPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -15553,8 +16352,8 @@ func (r ApiGetKubernetesNetworkPolicyListRequest) Execute() (*KubernetesNetworkP
 /*
 GetKubernetesNetworkPolicyList Read a 'kubernetes.NetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesNetworkPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesNetworkPolicyListRequest
 */
 func (a *KubernetesApiService) GetKubernetesNetworkPolicyList(ctx context.Context) ApiGetKubernetesNetworkPolicyListRequest {
 	return ApiGetKubernetesNetworkPolicyListRequest{
@@ -15564,7 +16363,8 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesNetworkPolicyResponse
+//
+//	@return KubernetesNetworkPolicyResponse
 func (a *KubernetesApiService) GetKubernetesNetworkPolicyListExecute(r ApiGetKubernetesNetworkPolicyListRequest) (*KubernetesNetworkPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15585,37 +16385,52 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyListExecute(r ApiGetKub
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -15644,9 +16459,9 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyListExecute(r ApiGetKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15663,6 +16478,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15673,6 +16489,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15683,6 +16500,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15693,6 +16511,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15702,6 +16521,7 @@ func (a *KubernetesApiService) GetKubernetesNetworkPolicyListExecute(r ApiGetKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15731,9 +16551,9 @@ func (r ApiGetKubernetesNodeByMoidRequest) Execute() (*KubernetesNode, *http.Res
 /*
 GetKubernetesNodeByMoid Read a 'kubernetes.Node' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesNodeByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesNodeByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesNodeByMoid(ctx context.Context, moid string) ApiGetKubernetesNodeByMoidRequest {
 	return ApiGetKubernetesNodeByMoidRequest{
@@ -15744,7 +16564,8 @@ func (a *KubernetesApiService) GetKubernetesNodeByMoid(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return KubernetesNode
+//
+//	@return KubernetesNode
 func (a *KubernetesApiService) GetKubernetesNodeByMoidExecute(r ApiGetKubernetesNodeByMoidRequest) (*KubernetesNode, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15759,7 +16580,7 @@ func (a *KubernetesApiService) GetKubernetesNodeByMoidExecute(r ApiGetKubernetes
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Nodes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15792,9 +16613,9 @@ func (a *KubernetesApiService) GetKubernetesNodeByMoidExecute(r ApiGetKubernetes
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15811,6 +16632,7 @@ func (a *KubernetesApiService) GetKubernetesNodeByMoidExecute(r ApiGetKubernetes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15821,6 +16643,7 @@ func (a *KubernetesApiService) GetKubernetesNodeByMoidExecute(r ApiGetKubernetes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15831,6 +16654,7 @@ func (a *KubernetesApiService) GetKubernetesNodeByMoidExecute(r ApiGetKubernetes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15841,6 +16665,7 @@ func (a *KubernetesApiService) GetKubernetesNodeByMoidExecute(r ApiGetKubernetes
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15850,6 +16675,7 @@ func (a *KubernetesApiService) GetKubernetesNodeByMoidExecute(r ApiGetKubernetes
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15879,9 +16705,9 @@ func (r ApiGetKubernetesNodeGroupProfileByMoidRequest) Execute() (*KubernetesNod
 /*
 GetKubernetesNodeGroupProfileByMoid Read a 'kubernetes.NodeGroupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesNodeGroupProfileByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesNodeGroupProfileByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoid(ctx context.Context, moid string) ApiGetKubernetesNodeGroupProfileByMoidRequest {
 	return ApiGetKubernetesNodeGroupProfileByMoidRequest{
@@ -15892,7 +16718,8 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoid(ctx context.C
 }
 
 // Execute executes the request
-//  @return KubernetesNodeGroupProfile
+//
+//	@return KubernetesNodeGroupProfile
 func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoidExecute(r ApiGetKubernetesNodeGroupProfileByMoidRequest) (*KubernetesNodeGroupProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15907,7 +16734,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoidExecute(r ApiG
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NodeGroupProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15940,9 +16767,9 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoidExecute(r ApiG
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15959,6 +16786,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15969,6 +16797,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15979,6 +16808,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15989,6 +16819,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15998,6 +16829,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileByMoidExecute(r ApiG
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16066,7 +16898,7 @@ func (r ApiGetKubernetesNodeGroupProfileListRequest) Expand(expand string) ApiGe
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesNodeGroupProfileListRequest) Apply(apply string) ApiGetKubernetesNodeGroupProfileListRequest {
 	r.apply = &apply
 	return r
@@ -16103,8 +16935,8 @@ func (r ApiGetKubernetesNodeGroupProfileListRequest) Execute() (*KubernetesNodeG
 /*
 GetKubernetesNodeGroupProfileList Read a 'kubernetes.NodeGroupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesNodeGroupProfileListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesNodeGroupProfileListRequest
 */
 func (a *KubernetesApiService) GetKubernetesNodeGroupProfileList(ctx context.Context) ApiGetKubernetesNodeGroupProfileListRequest {
 	return ApiGetKubernetesNodeGroupProfileListRequest{
@@ -16114,7 +16946,8 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileList(ctx context.Con
 }
 
 // Execute executes the request
-//  @return KubernetesNodeGroupProfileResponse
+//
+//	@return KubernetesNodeGroupProfileResponse
 func (a *KubernetesApiService) GetKubernetesNodeGroupProfileListExecute(r ApiGetKubernetesNodeGroupProfileListRequest) (*KubernetesNodeGroupProfileResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16135,37 +16968,52 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileListExecute(r ApiGet
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -16194,9 +17042,9 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileListExecute(r ApiGet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16213,6 +17061,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16223,6 +17072,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16233,6 +17083,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16243,6 +17094,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16252,6 +17104,7 @@ func (a *KubernetesApiService) GetKubernetesNodeGroupProfileListExecute(r ApiGet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16320,7 +17173,7 @@ func (r ApiGetKubernetesNodeListRequest) Expand(expand string) ApiGetKubernetesN
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesNodeListRequest) Apply(apply string) ApiGetKubernetesNodeListRequest {
 	r.apply = &apply
 	return r
@@ -16357,8 +17210,8 @@ func (r ApiGetKubernetesNodeListRequest) Execute() (*KubernetesNodeResponse, *ht
 /*
 GetKubernetesNodeList Read a 'kubernetes.Node' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesNodeListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesNodeListRequest
 */
 func (a *KubernetesApiService) GetKubernetesNodeList(ctx context.Context) ApiGetKubernetesNodeListRequest {
 	return ApiGetKubernetesNodeListRequest{
@@ -16368,7 +17221,8 @@ func (a *KubernetesApiService) GetKubernetesNodeList(ctx context.Context) ApiGet
 }
 
 // Execute executes the request
-//  @return KubernetesNodeResponse
+//
+//	@return KubernetesNodeResponse
 func (a *KubernetesApiService) GetKubernetesNodeListExecute(r ApiGetKubernetesNodeListRequest) (*KubernetesNodeResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16389,37 +17243,52 @@ func (a *KubernetesApiService) GetKubernetesNodeListExecute(r ApiGetKubernetesNo
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -16448,9 +17317,9 @@ func (a *KubernetesApiService) GetKubernetesNodeListExecute(r ApiGetKubernetesNo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16467,6 +17336,7 @@ func (a *KubernetesApiService) GetKubernetesNodeListExecute(r ApiGetKubernetesNo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16477,6 +17347,7 @@ func (a *KubernetesApiService) GetKubernetesNodeListExecute(r ApiGetKubernetesNo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16487,6 +17358,7 @@ func (a *KubernetesApiService) GetKubernetesNodeListExecute(r ApiGetKubernetesNo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16497,6 +17369,7 @@ func (a *KubernetesApiService) GetKubernetesNodeListExecute(r ApiGetKubernetesNo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16506,6 +17379,7 @@ func (a *KubernetesApiService) GetKubernetesNodeListExecute(r ApiGetKubernetesNo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16535,9 +17409,9 @@ func (r ApiGetKubernetesNvidiaGpuProductByMoidRequest) Execute() (*KubernetesNvi
 /*
 GetKubernetesNvidiaGpuProductByMoid Read a 'kubernetes.NvidiaGpuProduct' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesNvidiaGpuProductByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesNvidiaGpuProductByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoid(ctx context.Context, moid string) ApiGetKubernetesNvidiaGpuProductByMoidRequest {
 	return ApiGetKubernetesNvidiaGpuProductByMoidRequest{
@@ -16548,7 +17422,8 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoid(ctx context.C
 }
 
 // Execute executes the request
-//  @return KubernetesNvidiaGpuProduct
+//
+//	@return KubernetesNvidiaGpuProduct
 func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoidExecute(r ApiGetKubernetesNvidiaGpuProductByMoidRequest) (*KubernetesNvidiaGpuProduct, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16563,7 +17438,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoidExecute(r ApiG
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NvidiaGpuProducts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16596,9 +17471,9 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoidExecute(r ApiG
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16615,6 +17490,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16625,6 +17501,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16635,6 +17512,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16645,6 +17523,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoidExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16654,6 +17533,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductByMoidExecute(r ApiG
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16722,7 +17602,7 @@ func (r ApiGetKubernetesNvidiaGpuProductListRequest) Expand(expand string) ApiGe
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesNvidiaGpuProductListRequest) Apply(apply string) ApiGetKubernetesNvidiaGpuProductListRequest {
 	r.apply = &apply
 	return r
@@ -16759,8 +17639,8 @@ func (r ApiGetKubernetesNvidiaGpuProductListRequest) Execute() (*KubernetesNvidi
 /*
 GetKubernetesNvidiaGpuProductList Read a 'kubernetes.NvidiaGpuProduct' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesNvidiaGpuProductListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesNvidiaGpuProductListRequest
 */
 func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductList(ctx context.Context) ApiGetKubernetesNvidiaGpuProductListRequest {
 	return ApiGetKubernetesNvidiaGpuProductListRequest{
@@ -16770,7 +17650,8 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductList(ctx context.Con
 }
 
 // Execute executes the request
-//  @return KubernetesNvidiaGpuProductResponse
+//
+//	@return KubernetesNvidiaGpuProductResponse
 func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductListExecute(r ApiGetKubernetesNvidiaGpuProductListRequest) (*KubernetesNvidiaGpuProductResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16791,37 +17672,52 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductListExecute(r ApiGet
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -16850,9 +17746,9 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductListExecute(r ApiGet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16869,6 +17765,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16879,6 +17776,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16889,6 +17787,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16899,6 +17798,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductListExecute(r ApiGet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16908,6 +17808,7 @@ func (a *KubernetesApiService) GetKubernetesNvidiaGpuProductListExecute(r ApiGet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16937,9 +17838,9 @@ func (r ApiGetKubernetesPodByMoidRequest) Execute() (*KubernetesPod, *http.Respo
 /*
 GetKubernetesPodByMoid Read a 'kubernetes.Pod' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesPodByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesPodByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesPodByMoid(ctx context.Context, moid string) ApiGetKubernetesPodByMoidRequest {
 	return ApiGetKubernetesPodByMoidRequest{
@@ -16950,7 +17851,8 @@ func (a *KubernetesApiService) GetKubernetesPodByMoid(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return KubernetesPod
+//
+//	@return KubernetesPod
 func (a *KubernetesApiService) GetKubernetesPodByMoidExecute(r ApiGetKubernetesPodByMoidRequest) (*KubernetesPod, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16965,7 +17867,7 @@ func (a *KubernetesApiService) GetKubernetesPodByMoidExecute(r ApiGetKubernetesP
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Pods/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16998,9 +17900,9 @@ func (a *KubernetesApiService) GetKubernetesPodByMoidExecute(r ApiGetKubernetesP
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17017,6 +17919,7 @@ func (a *KubernetesApiService) GetKubernetesPodByMoidExecute(r ApiGetKubernetesP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17027,6 +17930,7 @@ func (a *KubernetesApiService) GetKubernetesPodByMoidExecute(r ApiGetKubernetesP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17037,6 +17941,7 @@ func (a *KubernetesApiService) GetKubernetesPodByMoidExecute(r ApiGetKubernetesP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17047,6 +17952,7 @@ func (a *KubernetesApiService) GetKubernetesPodByMoidExecute(r ApiGetKubernetesP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17056,6 +17962,7 @@ func (a *KubernetesApiService) GetKubernetesPodByMoidExecute(r ApiGetKubernetesP
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17124,7 +18031,7 @@ func (r ApiGetKubernetesPodListRequest) Expand(expand string) ApiGetKubernetesPo
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesPodListRequest) Apply(apply string) ApiGetKubernetesPodListRequest {
 	r.apply = &apply
 	return r
@@ -17161,8 +18068,8 @@ func (r ApiGetKubernetesPodListRequest) Execute() (*KubernetesPodResponse, *http
 /*
 GetKubernetesPodList Read a 'kubernetes.Pod' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesPodListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesPodListRequest
 */
 func (a *KubernetesApiService) GetKubernetesPodList(ctx context.Context) ApiGetKubernetesPodListRequest {
 	return ApiGetKubernetesPodListRequest{
@@ -17172,7 +18079,8 @@ func (a *KubernetesApiService) GetKubernetesPodList(ctx context.Context) ApiGetK
 }
 
 // Execute executes the request
-//  @return KubernetesPodResponse
+//
+//	@return KubernetesPodResponse
 func (a *KubernetesApiService) GetKubernetesPodListExecute(r ApiGetKubernetesPodListRequest) (*KubernetesPodResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -17193,37 +18101,52 @@ func (a *KubernetesApiService) GetKubernetesPodListExecute(r ApiGetKubernetesPod
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -17252,9 +18175,9 @@ func (a *KubernetesApiService) GetKubernetesPodListExecute(r ApiGetKubernetesPod
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17271,6 +18194,7 @@ func (a *KubernetesApiService) GetKubernetesPodListExecute(r ApiGetKubernetesPod
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17281,6 +18205,7 @@ func (a *KubernetesApiService) GetKubernetesPodListExecute(r ApiGetKubernetesPod
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17291,6 +18216,7 @@ func (a *KubernetesApiService) GetKubernetesPodListExecute(r ApiGetKubernetesPod
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17301,6 +18227,7 @@ func (a *KubernetesApiService) GetKubernetesPodListExecute(r ApiGetKubernetesPod
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17310,6 +18237,7 @@ func (a *KubernetesApiService) GetKubernetesPodListExecute(r ApiGetKubernetesPod
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17339,9 +18267,9 @@ func (r ApiGetKubernetesServiceByMoidRequest) Execute() (*KubernetesService, *ht
 /*
 GetKubernetesServiceByMoid Read a 'kubernetes.Service' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesServiceByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesServiceByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesServiceByMoid(ctx context.Context, moid string) ApiGetKubernetesServiceByMoidRequest {
 	return ApiGetKubernetesServiceByMoidRequest{
@@ -17352,7 +18280,8 @@ func (a *KubernetesApiService) GetKubernetesServiceByMoid(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return KubernetesService
+//
+//	@return KubernetesService
 func (a *KubernetesApiService) GetKubernetesServiceByMoidExecute(r ApiGetKubernetesServiceByMoidRequest) (*KubernetesService, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -17367,7 +18296,7 @@ func (a *KubernetesApiService) GetKubernetesServiceByMoidExecute(r ApiGetKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Services/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17400,9 +18329,9 @@ func (a *KubernetesApiService) GetKubernetesServiceByMoidExecute(r ApiGetKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17419,6 +18348,7 @@ func (a *KubernetesApiService) GetKubernetesServiceByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17429,6 +18359,7 @@ func (a *KubernetesApiService) GetKubernetesServiceByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17439,6 +18370,7 @@ func (a *KubernetesApiService) GetKubernetesServiceByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17449,6 +18381,7 @@ func (a *KubernetesApiService) GetKubernetesServiceByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17458,6 +18391,7 @@ func (a *KubernetesApiService) GetKubernetesServiceByMoidExecute(r ApiGetKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17526,7 +18460,7 @@ func (r ApiGetKubernetesServiceListRequest) Expand(expand string) ApiGetKubernet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesServiceListRequest) Apply(apply string) ApiGetKubernetesServiceListRequest {
 	r.apply = &apply
 	return r
@@ -17563,8 +18497,8 @@ func (r ApiGetKubernetesServiceListRequest) Execute() (*KubernetesServiceRespons
 /*
 GetKubernetesServiceList Read a 'kubernetes.Service' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesServiceListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesServiceListRequest
 */
 func (a *KubernetesApiService) GetKubernetesServiceList(ctx context.Context) ApiGetKubernetesServiceListRequest {
 	return ApiGetKubernetesServiceListRequest{
@@ -17574,7 +18508,8 @@ func (a *KubernetesApiService) GetKubernetesServiceList(ctx context.Context) Api
 }
 
 // Execute executes the request
-//  @return KubernetesServiceResponse
+//
+//	@return KubernetesServiceResponse
 func (a *KubernetesApiService) GetKubernetesServiceListExecute(r ApiGetKubernetesServiceListRequest) (*KubernetesServiceResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -17595,37 +18530,52 @@ func (a *KubernetesApiService) GetKubernetesServiceListExecute(r ApiGetKubernete
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -17654,9 +18604,9 @@ func (a *KubernetesApiService) GetKubernetesServiceListExecute(r ApiGetKubernete
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17673,6 +18623,7 @@ func (a *KubernetesApiService) GetKubernetesServiceListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17683,6 +18634,7 @@ func (a *KubernetesApiService) GetKubernetesServiceListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17693,6 +18645,7 @@ func (a *KubernetesApiService) GetKubernetesServiceListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17703,6 +18656,7 @@ func (a *KubernetesApiService) GetKubernetesServiceListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17712,6 +18666,7 @@ func (a *KubernetesApiService) GetKubernetesServiceListExecute(r ApiGetKubernete
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17741,9 +18696,9 @@ func (r ApiGetKubernetesStatefulSetByMoidRequest) Execute() (*KubernetesStateful
 /*
 GetKubernetesStatefulSetByMoid Read a 'kubernetes.StatefulSet' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesStatefulSetByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesStatefulSetByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesStatefulSetByMoid(ctx context.Context, moid string) ApiGetKubernetesStatefulSetByMoidRequest {
 	return ApiGetKubernetesStatefulSetByMoidRequest{
@@ -17754,7 +18709,8 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesStatefulSet
+//
+//	@return KubernetesStatefulSet
 func (a *KubernetesApiService) GetKubernetesStatefulSetByMoidExecute(r ApiGetKubernetesStatefulSetByMoidRequest) (*KubernetesStatefulSet, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -17769,7 +18725,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetByMoidExecute(r ApiGetKub
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/StatefulSets/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17802,9 +18758,9 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetByMoidExecute(r ApiGetKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17821,6 +18777,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetByMoidExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17831,6 +18788,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetByMoidExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17841,6 +18799,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetByMoidExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17851,6 +18810,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetByMoidExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17860,6 +18820,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetByMoidExecute(r ApiGetKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17928,7 +18889,7 @@ func (r ApiGetKubernetesStatefulSetListRequest) Expand(expand string) ApiGetKube
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesStatefulSetListRequest) Apply(apply string) ApiGetKubernetesStatefulSetListRequest {
 	r.apply = &apply
 	return r
@@ -17965,8 +18926,8 @@ func (r ApiGetKubernetesStatefulSetListRequest) Execute() (*KubernetesStatefulSe
 /*
 GetKubernetesStatefulSetList Read a 'kubernetes.StatefulSet' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesStatefulSetListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesStatefulSetListRequest
 */
 func (a *KubernetesApiService) GetKubernetesStatefulSetList(ctx context.Context) ApiGetKubernetesStatefulSetListRequest {
 	return ApiGetKubernetesStatefulSetListRequest{
@@ -17976,7 +18937,8 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return KubernetesStatefulSetResponse
+//
+//	@return KubernetesStatefulSetResponse
 func (a *KubernetesApiService) GetKubernetesStatefulSetListExecute(r ApiGetKubernetesStatefulSetListRequest) (*KubernetesStatefulSetResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -17997,37 +18959,52 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetListExecute(r ApiGetKuber
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -18056,9 +19033,9 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetListExecute(r ApiGetKuber
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18075,6 +19052,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetListExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18085,6 +19063,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetListExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18095,6 +19074,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetListExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18105,6 +19085,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetListExecute(r ApiGetKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18114,6 +19095,7 @@ func (a *KubernetesApiService) GetKubernetesStatefulSetListExecute(r ApiGetKuber
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18143,9 +19125,9 @@ func (r ApiGetKubernetesSysConfigPolicyByMoidRequest) Execute() (*KubernetesSysC
 /*
 GetKubernetesSysConfigPolicyByMoid Read a 'kubernetes.SysConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesSysConfigPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesSysConfigPolicyByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoid(ctx context.Context, moid string) ApiGetKubernetesSysConfigPolicyByMoidRequest {
 	return ApiGetKubernetesSysConfigPolicyByMoidRequest{
@@ -18156,7 +19138,8 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoid(ctx context.Co
 }
 
 // Execute executes the request
-//  @return KubernetesSysConfigPolicy
+//
+//	@return KubernetesSysConfigPolicy
 func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoidExecute(r ApiGetKubernetesSysConfigPolicyByMoidRequest) (*KubernetesSysConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -18171,7 +19154,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoidExecute(r ApiGe
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/SysConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18204,9 +19187,9 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoidExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18223,6 +19206,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18233,6 +19217,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18243,6 +19228,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18253,6 +19239,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18262,6 +19249,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyByMoidExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18330,7 +19318,7 @@ func (r ApiGetKubernetesSysConfigPolicyListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesSysConfigPolicyListRequest) Apply(apply string) ApiGetKubernetesSysConfigPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -18367,8 +19355,8 @@ func (r ApiGetKubernetesSysConfigPolicyListRequest) Execute() (*KubernetesSysCon
 /*
 GetKubernetesSysConfigPolicyList Read a 'kubernetes.SysConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesSysConfigPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesSysConfigPolicyListRequest
 */
 func (a *KubernetesApiService) GetKubernetesSysConfigPolicyList(ctx context.Context) ApiGetKubernetesSysConfigPolicyListRequest {
 	return ApiGetKubernetesSysConfigPolicyListRequest{
@@ -18378,7 +19366,8 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyList(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesSysConfigPolicyResponse
+//
+//	@return KubernetesSysConfigPolicyResponse
 func (a *KubernetesApiService) GetKubernetesSysConfigPolicyListExecute(r ApiGetKubernetesSysConfigPolicyListRequest) (*KubernetesSysConfigPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -18399,37 +19388,52 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyListExecute(r ApiGetK
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -18458,9 +19462,9 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyListExecute(r ApiGetK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18477,6 +19481,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18487,6 +19492,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18497,6 +19503,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18507,6 +19514,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyListExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18516,6 +19524,7 @@ func (a *KubernetesApiService) GetKubernetesSysConfigPolicyListExecute(r ApiGetK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18545,9 +19554,9 @@ func (r ApiGetKubernetesTrustedRegistriesPolicyByMoidRequest) Execute() (*Kubern
 /*
 GetKubernetesTrustedRegistriesPolicyByMoid Read a 'kubernetes.TrustedRegistriesPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesTrustedRegistriesPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesTrustedRegistriesPolicyByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoid(ctx context.Context, moid string) ApiGetKubernetesTrustedRegistriesPolicyByMoidRequest {
 	return ApiGetKubernetesTrustedRegistriesPolicyByMoidRequest{
@@ -18558,7 +19567,8 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoid(ctx co
 }
 
 // Execute executes the request
-//  @return KubernetesTrustedRegistriesPolicy
+//
+//	@return KubernetesTrustedRegistriesPolicy
 func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoidExecute(r ApiGetKubernetesTrustedRegistriesPolicyByMoidRequest) (*KubernetesTrustedRegistriesPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -18573,7 +19583,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoidExecute
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/TrustedRegistriesPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18606,9 +19616,9 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoidExecute
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18625,6 +19635,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoidExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18635,6 +19646,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoidExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18645,6 +19657,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoidExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18655,6 +19668,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoidExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18664,6 +19678,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyByMoidExecute
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18732,7 +19747,7 @@ func (r ApiGetKubernetesTrustedRegistriesPolicyListRequest) Expand(expand string
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesTrustedRegistriesPolicyListRequest) Apply(apply string) ApiGetKubernetesTrustedRegistriesPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -18769,8 +19784,8 @@ func (r ApiGetKubernetesTrustedRegistriesPolicyListRequest) Execute() (*Kubernet
 /*
 GetKubernetesTrustedRegistriesPolicyList Read a 'kubernetes.TrustedRegistriesPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesTrustedRegistriesPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesTrustedRegistriesPolicyListRequest
 */
 func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyList(ctx context.Context) ApiGetKubernetesTrustedRegistriesPolicyListRequest {
 	return ApiGetKubernetesTrustedRegistriesPolicyListRequest{
@@ -18780,7 +19795,8 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyList(ctx cont
 }
 
 // Execute executes the request
-//  @return KubernetesTrustedRegistriesPolicyResponse
+//
+//	@return KubernetesTrustedRegistriesPolicyResponse
 func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyListExecute(r ApiGetKubernetesTrustedRegistriesPolicyListRequest) (*KubernetesTrustedRegistriesPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -18801,37 +19817,52 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyListExecute(r
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -18860,9 +19891,9 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyListExecute(r
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18879,6 +19910,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18889,6 +19921,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18899,6 +19932,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18909,6 +19943,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyListExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18918,6 +19953,7 @@ func (a *KubernetesApiService) GetKubernetesTrustedRegistriesPolicyListExecute(r
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18947,9 +19983,9 @@ func (r ApiGetKubernetesVersionByMoidRequest) Execute() (*KubernetesVersion, *ht
 /*
 GetKubernetesVersionByMoid Read a 'kubernetes.Version' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesVersionByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesVersionByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesVersionByMoid(ctx context.Context, moid string) ApiGetKubernetesVersionByMoidRequest {
 	return ApiGetKubernetesVersionByMoidRequest{
@@ -18960,7 +19996,8 @@ func (a *KubernetesApiService) GetKubernetesVersionByMoid(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return KubernetesVersion
+//
+//	@return KubernetesVersion
 func (a *KubernetesApiService) GetKubernetesVersionByMoidExecute(r ApiGetKubernetesVersionByMoidRequest) (*KubernetesVersion, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -18975,7 +20012,7 @@ func (a *KubernetesApiService) GetKubernetesVersionByMoidExecute(r ApiGetKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Versions/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19008,9 +20045,9 @@ func (a *KubernetesApiService) GetKubernetesVersionByMoidExecute(r ApiGetKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19027,6 +20064,7 @@ func (a *KubernetesApiService) GetKubernetesVersionByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19037,6 +20075,7 @@ func (a *KubernetesApiService) GetKubernetesVersionByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19047,6 +20086,7 @@ func (a *KubernetesApiService) GetKubernetesVersionByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19057,6 +20097,7 @@ func (a *KubernetesApiService) GetKubernetesVersionByMoidExecute(r ApiGetKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19066,6 +20107,7 @@ func (a *KubernetesApiService) GetKubernetesVersionByMoidExecute(r ApiGetKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19134,7 +20176,7 @@ func (r ApiGetKubernetesVersionListRequest) Expand(expand string) ApiGetKubernet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesVersionListRequest) Apply(apply string) ApiGetKubernetesVersionListRequest {
 	r.apply = &apply
 	return r
@@ -19171,8 +20213,8 @@ func (r ApiGetKubernetesVersionListRequest) Execute() (*KubernetesVersionRespons
 /*
 GetKubernetesVersionList Read a 'kubernetes.Version' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesVersionListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesVersionListRequest
 */
 func (a *KubernetesApiService) GetKubernetesVersionList(ctx context.Context) ApiGetKubernetesVersionListRequest {
 	return ApiGetKubernetesVersionListRequest{
@@ -19182,7 +20224,8 @@ func (a *KubernetesApiService) GetKubernetesVersionList(ctx context.Context) Api
 }
 
 // Execute executes the request
-//  @return KubernetesVersionResponse
+//
+//	@return KubernetesVersionResponse
 func (a *KubernetesApiService) GetKubernetesVersionListExecute(r ApiGetKubernetesVersionListRequest) (*KubernetesVersionResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -19203,37 +20246,52 @@ func (a *KubernetesApiService) GetKubernetesVersionListExecute(r ApiGetKubernete
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -19262,9 +20320,9 @@ func (a *KubernetesApiService) GetKubernetesVersionListExecute(r ApiGetKubernete
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19281,6 +20339,7 @@ func (a *KubernetesApiService) GetKubernetesVersionListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19291,6 +20350,7 @@ func (a *KubernetesApiService) GetKubernetesVersionListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19301,6 +20361,7 @@ func (a *KubernetesApiService) GetKubernetesVersionListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19311,6 +20372,7 @@ func (a *KubernetesApiService) GetKubernetesVersionListExecute(r ApiGetKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19320,6 +20382,7 @@ func (a *KubernetesApiService) GetKubernetesVersionListExecute(r ApiGetKubernete
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19349,9 +20412,9 @@ func (r ApiGetKubernetesVersionPolicyByMoidRequest) Execute() (*KubernetesVersio
 /*
 GetKubernetesVersionPolicyByMoid Read a 'kubernetes.VersionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesVersionPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesVersionPolicyByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoid(ctx context.Context, moid string) ApiGetKubernetesVersionPolicyByMoidRequest {
 	return ApiGetKubernetesVersionPolicyByMoidRequest{
@@ -19362,7 +20425,8 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesVersionPolicy
+//
+//	@return KubernetesVersionPolicy
 func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoidExecute(r ApiGetKubernetesVersionPolicyByMoidRequest) (*KubernetesVersionPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -19377,7 +20441,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoidExecute(r ApiGetK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VersionPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19410,9 +20474,9 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoidExecute(r ApiGetK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19429,6 +20493,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19439,6 +20504,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19449,6 +20515,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19459,6 +20526,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoidExecute(r ApiGetK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19468,6 +20536,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyByMoidExecute(r ApiGetK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19536,7 +20605,7 @@ func (r ApiGetKubernetesVersionPolicyListRequest) Expand(expand string) ApiGetKu
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesVersionPolicyListRequest) Apply(apply string) ApiGetKubernetesVersionPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -19573,8 +20642,8 @@ func (r ApiGetKubernetesVersionPolicyListRequest) Execute() (*KubernetesVersionP
 /*
 GetKubernetesVersionPolicyList Read a 'kubernetes.VersionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesVersionPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesVersionPolicyListRequest
 */
 func (a *KubernetesApiService) GetKubernetesVersionPolicyList(ctx context.Context) ApiGetKubernetesVersionPolicyListRequest {
 	return ApiGetKubernetesVersionPolicyListRequest{
@@ -19584,7 +20653,8 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesVersionPolicyResponse
+//
+//	@return KubernetesVersionPolicyResponse
 func (a *KubernetesApiService) GetKubernetesVersionPolicyListExecute(r ApiGetKubernetesVersionPolicyListRequest) (*KubernetesVersionPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -19605,37 +20675,52 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyListExecute(r ApiGetKub
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -19664,9 +20749,9 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyListExecute(r ApiGetKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19683,6 +20768,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19693,6 +20779,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19703,6 +20790,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19713,6 +20801,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyListExecute(r ApiGetKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19722,6 +20811,7 @@ func (a *KubernetesApiService) GetKubernetesVersionPolicyListExecute(r ApiGetKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19751,9 +20841,9 @@ func (r ApiGetKubernetesVirtualMachineInfraConfigPolicyByMoidRequest) Execute() 
 /*
 GetKubernetesVirtualMachineInfraConfigPolicyByMoid Read a 'kubernetes.VirtualMachineInfraConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesVirtualMachineInfraConfigPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesVirtualMachineInfraConfigPolicyByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoid(ctx context.Context, moid string) ApiGetKubernetesVirtualMachineInfraConfigPolicyByMoidRequest {
 	return ApiGetKubernetesVirtualMachineInfraConfigPolicyByMoidRequest{
@@ -19764,7 +20854,8 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoi
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfraConfigPolicy
+//
+//	@return KubernetesVirtualMachineInfraConfigPolicy
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoidExecute(r ApiGetKubernetesVirtualMachineInfraConfigPolicyByMoidRequest) (*KubernetesVirtualMachineInfraConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -19779,7 +20870,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoi
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInfraConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19812,9 +20903,9 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoi
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19831,6 +20922,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19841,6 +20933,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19851,6 +20944,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19861,6 +20955,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19870,6 +20965,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyByMoi
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19938,7 +21034,7 @@ func (r ApiGetKubernetesVirtualMachineInfraConfigPolicyListRequest) Expand(expan
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesVirtualMachineInfraConfigPolicyListRequest) Apply(apply string) ApiGetKubernetesVirtualMachineInfraConfigPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -19975,8 +21071,8 @@ func (r ApiGetKubernetesVirtualMachineInfraConfigPolicyListRequest) Execute() (*
 /*
 GetKubernetesVirtualMachineInfraConfigPolicyList Read a 'kubernetes.VirtualMachineInfraConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesVirtualMachineInfraConfigPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesVirtualMachineInfraConfigPolicyListRequest
 */
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyList(ctx context.Context) ApiGetKubernetesVirtualMachineInfraConfigPolicyListRequest {
 	return ApiGetKubernetesVirtualMachineInfraConfigPolicyListRequest{
@@ -19986,7 +21082,8 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyList(
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfraConfigPolicyResponse
+//
+//	@return KubernetesVirtualMachineInfraConfigPolicyResponse
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyListExecute(r ApiGetKubernetesVirtualMachineInfraConfigPolicyListRequest) (*KubernetesVirtualMachineInfraConfigPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -20007,37 +21104,52 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyListE
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -20066,9 +21178,9 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyListE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20085,6 +21197,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyListE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20095,6 +21208,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyListE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20105,6 +21219,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyListE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20115,6 +21230,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyListE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20124,6 +21240,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfraConfigPolicyListE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20153,9 +21270,9 @@ func (r ApiGetKubernetesVirtualMachineInfrastructureProviderByMoidRequest) Execu
 /*
 GetKubernetesVirtualMachineInfrastructureProviderByMoid Read a 'kubernetes.VirtualMachineInfrastructureProvider' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesVirtualMachineInfrastructureProviderByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesVirtualMachineInfrastructureProviderByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProviderByMoid(ctx context.Context, moid string) ApiGetKubernetesVirtualMachineInfrastructureProviderByMoidRequest {
 	return ApiGetKubernetesVirtualMachineInfrastructureProviderByMoidRequest{
@@ -20166,7 +21283,8 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfrastructureProvider
+//
+//	@return KubernetesVirtualMachineInfrastructureProvider
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProviderByMoidExecute(r ApiGetKubernetesVirtualMachineInfrastructureProviderByMoidRequest) (*KubernetesVirtualMachineInfrastructureProvider, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -20181,7 +21299,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInfrastructureProviders/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20214,9 +21332,9 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20233,6 +21351,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20243,6 +21362,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20253,6 +21373,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20263,6 +21384,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20272,6 +21394,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20340,7 +21463,7 @@ func (r ApiGetKubernetesVirtualMachineInfrastructureProviderListRequest) Expand(
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesVirtualMachineInfrastructureProviderListRequest) Apply(apply string) ApiGetKubernetesVirtualMachineInfrastructureProviderListRequest {
 	r.apply = &apply
 	return r
@@ -20377,8 +21500,8 @@ func (r ApiGetKubernetesVirtualMachineInfrastructureProviderListRequest) Execute
 /*
 GetKubernetesVirtualMachineInfrastructureProviderList Read a 'kubernetes.VirtualMachineInfrastructureProvider' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesVirtualMachineInfrastructureProviderListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesVirtualMachineInfrastructureProviderListRequest
 */
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProviderList(ctx context.Context) ApiGetKubernetesVirtualMachineInfrastructureProviderListRequest {
 	return ApiGetKubernetesVirtualMachineInfrastructureProviderListRequest{
@@ -20388,7 +21511,8 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfrastructureProviderResponse
+//
+//	@return KubernetesVirtualMachineInfrastructureProviderResponse
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProviderListExecute(r ApiGetKubernetesVirtualMachineInfrastructureProviderListRequest) (*KubernetesVirtualMachineInfrastructureProviderResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -20409,37 +21533,52 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -20468,9 +21607,9 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20487,6 +21626,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20497,6 +21637,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20507,6 +21648,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20517,6 +21659,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20526,6 +21669,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInfrastructureProvider
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20555,9 +21699,9 @@ func (r ApiGetKubernetesVirtualMachineInstanceTypeByMoidRequest) Execute() (*Kub
 /*
 GetKubernetesVirtualMachineInstanceTypeByMoid Read a 'kubernetes.VirtualMachineInstanceType' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesVirtualMachineInstanceTypeByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesVirtualMachineInstanceTypeByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoid(ctx context.Context, moid string) ApiGetKubernetesVirtualMachineInstanceTypeByMoidRequest {
 	return ApiGetKubernetesVirtualMachineInstanceTypeByMoidRequest{
@@ -20568,7 +21712,8 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoid(ctx
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInstanceType
+//
+//	@return KubernetesVirtualMachineInstanceType
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoidExecute(r ApiGetKubernetesVirtualMachineInstanceTypeByMoidRequest) (*KubernetesVirtualMachineInstanceType, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -20583,7 +21728,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoidExec
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInstanceTypes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20616,9 +21761,9 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoidExec
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20635,6 +21780,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoidExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20645,6 +21791,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoidExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20655,6 +21802,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoidExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20665,6 +21813,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoidExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20674,6 +21823,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeByMoidExec
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20742,7 +21892,7 @@ func (r ApiGetKubernetesVirtualMachineInstanceTypeListRequest) Expand(expand str
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesVirtualMachineInstanceTypeListRequest) Apply(apply string) ApiGetKubernetesVirtualMachineInstanceTypeListRequest {
 	r.apply = &apply
 	return r
@@ -20779,8 +21929,8 @@ func (r ApiGetKubernetesVirtualMachineInstanceTypeListRequest) Execute() (*Kuber
 /*
 GetKubernetesVirtualMachineInstanceTypeList Read a 'kubernetes.VirtualMachineInstanceType' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesVirtualMachineInstanceTypeListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesVirtualMachineInstanceTypeListRequest
 */
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeList(ctx context.Context) ApiGetKubernetesVirtualMachineInstanceTypeListRequest {
 	return ApiGetKubernetesVirtualMachineInstanceTypeListRequest{
@@ -20790,7 +21940,8 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeList(ctx c
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInstanceTypeResponse
+//
+//	@return KubernetesVirtualMachineInstanceTypeResponse
 func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeListExecute(r ApiGetKubernetesVirtualMachineInstanceTypeListRequest) (*KubernetesVirtualMachineInstanceTypeResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -20811,37 +21962,52 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeListExecut
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -20870,9 +22036,9 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeListExecut
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20889,6 +22055,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeListExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20899,6 +22066,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeListExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20909,6 +22077,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeListExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20919,6 +22088,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeListExecut
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20928,6 +22098,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineInstanceTypeListExecut
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20957,9 +22128,9 @@ func (r ApiGetKubernetesVirtualMachineNodeProfileByMoidRequest) Execute() (*Kube
 /*
 GetKubernetesVirtualMachineNodeProfileByMoid Read a 'kubernetes.VirtualMachineNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetKubernetesVirtualMachineNodeProfileByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetKubernetesVirtualMachineNodeProfileByMoidRequest
 */
 func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoid(ctx context.Context, moid string) ApiGetKubernetesVirtualMachineNodeProfileByMoidRequest {
 	return ApiGetKubernetesVirtualMachineNodeProfileByMoidRequest{
@@ -20970,7 +22141,8 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoid(ctx 
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineNodeProfile
+//
+//	@return KubernetesVirtualMachineNodeProfile
 func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoidExecute(r ApiGetKubernetesVirtualMachineNodeProfileByMoidRequest) (*KubernetesVirtualMachineNodeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -20985,7 +22157,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoidExecu
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineNodeProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21018,9 +22190,9 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoidExecu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21037,6 +22209,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoidExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21047,6 +22220,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoidExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21057,6 +22231,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoidExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21067,6 +22242,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoidExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21076,6 +22252,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileByMoidExecu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21144,7 +22321,7 @@ func (r ApiGetKubernetesVirtualMachineNodeProfileListRequest) Expand(expand stri
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetKubernetesVirtualMachineNodeProfileListRequest) Apply(apply string) ApiGetKubernetesVirtualMachineNodeProfileListRequest {
 	r.apply = &apply
 	return r
@@ -21181,8 +22358,8 @@ func (r ApiGetKubernetesVirtualMachineNodeProfileListRequest) Execute() (*Kubern
 /*
 GetKubernetesVirtualMachineNodeProfileList Read a 'kubernetes.VirtualMachineNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetKubernetesVirtualMachineNodeProfileListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetKubernetesVirtualMachineNodeProfileListRequest
 */
 func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileList(ctx context.Context) ApiGetKubernetesVirtualMachineNodeProfileListRequest {
 	return ApiGetKubernetesVirtualMachineNodeProfileListRequest{
@@ -21192,7 +22369,8 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileList(ctx co
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineNodeProfileResponse
+//
+//	@return KubernetesVirtualMachineNodeProfileResponse
 func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileListExecute(r ApiGetKubernetesVirtualMachineNodeProfileListRequest) (*KubernetesVirtualMachineNodeProfileResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -21213,37 +22391,52 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileListExecute
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -21272,9 +22465,9 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileListExecute
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21291,6 +22484,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21301,6 +22495,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21311,6 +22506,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21321,6 +22517,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileListExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21330,6 +22527,7 @@ func (a *KubernetesApiService) GetKubernetesVirtualMachineNodeProfileListExecute
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21373,9 +22571,9 @@ func (r ApiPatchKubernetesAciCniApicRequest) Execute() (*KubernetesAciCniApic, *
 /*
 PatchKubernetesAciCniApic Update a 'kubernetes.AciCniApic' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesAciCniApicRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesAciCniApicRequest
 
 Deprecated
 */
@@ -21388,7 +22586,9 @@ func (a *KubernetesApiService) PatchKubernetesAciCniApic(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniApic
+//
+//	@return KubernetesAciCniApic
+//
 // Deprecated
 func (a *KubernetesApiService) PatchKubernetesAciCniApicExecute(r ApiPatchKubernetesAciCniApicRequest) (*KubernetesAciCniApic, *http.Response, error) {
 	var (
@@ -21404,7 +22604,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniApicExecute(r ApiPatchKubern
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniApics/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21431,7 +22631,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniApicExecute(r ApiPatchKubern
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAciCniApic
@@ -21445,9 +22645,9 @@ func (a *KubernetesApiService) PatchKubernetesAciCniApicExecute(r ApiPatchKubern
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21464,6 +22664,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniApicExecute(r ApiPatchKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21474,6 +22675,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniApicExecute(r ApiPatchKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21484,6 +22686,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniApicExecute(r ApiPatchKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21494,6 +22697,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniApicExecute(r ApiPatchKubern
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21503,6 +22707,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniApicExecute(r ApiPatchKubern
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21546,9 +22751,9 @@ func (r ApiPatchKubernetesAciCniProfileRequest) Execute() (*KubernetesAciCniProf
 /*
 PatchKubernetesAciCniProfile Update a 'kubernetes.AciCniProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesAciCniProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesAciCniProfileRequest
 
 Deprecated
 */
@@ -21561,7 +22766,9 @@ func (a *KubernetesApiService) PatchKubernetesAciCniProfile(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniProfile
+//
+//	@return KubernetesAciCniProfile
+//
 // Deprecated
 func (a *KubernetesApiService) PatchKubernetesAciCniProfileExecute(r ApiPatchKubernetesAciCniProfileRequest) (*KubernetesAciCniProfile, *http.Response, error) {
 	var (
@@ -21577,7 +22784,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniProfileExecute(r ApiPatchKub
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21604,7 +22811,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniProfileExecute(r ApiPatchKub
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAciCniProfile
@@ -21618,9 +22825,9 @@ func (a *KubernetesApiService) PatchKubernetesAciCniProfileExecute(r ApiPatchKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21637,6 +22844,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniProfileExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21647,6 +22855,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniProfileExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21657,6 +22866,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniProfileExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21667,6 +22877,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniProfileExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21676,6 +22887,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniProfileExecute(r ApiPatchKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21719,9 +22931,9 @@ func (r ApiPatchKubernetesAciCniTenantClusterAllocationRequest) Execute() (*Kube
 /*
 PatchKubernetesAciCniTenantClusterAllocation Update a 'kubernetes.AciCniTenantClusterAllocation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesAciCniTenantClusterAllocationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesAciCniTenantClusterAllocationRequest
 
 Deprecated
 */
@@ -21734,7 +22946,9 @@ func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocation(ctx 
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniTenantClusterAllocation
+//
+//	@return KubernetesAciCniTenantClusterAllocation
+//
 // Deprecated
 func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocationExecute(r ApiPatchKubernetesAciCniTenantClusterAllocationRequest) (*KubernetesAciCniTenantClusterAllocation, *http.Response, error) {
 	var (
@@ -21750,7 +22964,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocationExecu
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniTenantClusterAllocations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21777,7 +22991,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocationExecu
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAciCniTenantClusterAllocation
@@ -21791,9 +23005,9 @@ func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocationExecu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21810,6 +23024,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocationExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21820,6 +23035,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocationExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21830,6 +23046,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocationExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21840,6 +23057,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocationExecu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21849,6 +23067,7 @@ func (a *KubernetesApiService) PatchKubernetesAciCniTenantClusterAllocationExecu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21892,9 +23111,9 @@ func (r ApiPatchKubernetesAddonDefinitionRequest) Execute() (*KubernetesAddonDef
 /*
 PatchKubernetesAddonDefinition Update a 'kubernetes.AddonDefinition' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesAddonDefinitionRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesAddonDefinitionRequest
 */
 func (a *KubernetesApiService) PatchKubernetesAddonDefinition(ctx context.Context, moid string) ApiPatchKubernetesAddonDefinitionRequest {
 	return ApiPatchKubernetesAddonDefinitionRequest{
@@ -21905,7 +23124,8 @@ func (a *KubernetesApiService) PatchKubernetesAddonDefinition(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesAddonDefinition
+//
+//	@return KubernetesAddonDefinition
 func (a *KubernetesApiService) PatchKubernetesAddonDefinitionExecute(r ApiPatchKubernetesAddonDefinitionRequest) (*KubernetesAddonDefinition, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -21920,7 +23140,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonDefinitionExecute(r ApiPatchK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonDefinitions/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21947,7 +23167,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonDefinitionExecute(r ApiPatchK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAddonDefinition
@@ -21961,9 +23181,9 @@ func (a *KubernetesApiService) PatchKubernetesAddonDefinitionExecute(r ApiPatchK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21980,6 +23200,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonDefinitionExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21990,6 +23211,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonDefinitionExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22000,6 +23222,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonDefinitionExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22010,6 +23233,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonDefinitionExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22019,6 +23243,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonDefinitionExecute(r ApiPatchK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22062,9 +23287,9 @@ func (r ApiPatchKubernetesAddonPolicyRequest) Execute() (*KubernetesAddonPolicy,
 /*
 PatchKubernetesAddonPolicy Update a 'kubernetes.AddonPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesAddonPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesAddonPolicyRequest
 */
 func (a *KubernetesApiService) PatchKubernetesAddonPolicy(ctx context.Context, moid string) ApiPatchKubernetesAddonPolicyRequest {
 	return ApiPatchKubernetesAddonPolicyRequest{
@@ -22075,7 +23300,8 @@ func (a *KubernetesApiService) PatchKubernetesAddonPolicy(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return KubernetesAddonPolicy
+//
+//	@return KubernetesAddonPolicy
 func (a *KubernetesApiService) PatchKubernetesAddonPolicyExecute(r ApiPatchKubernetesAddonPolicyRequest) (*KubernetesAddonPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -22090,7 +23316,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonPolicyExecute(r ApiPatchKuber
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22117,7 +23343,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonPolicyExecute(r ApiPatchKuber
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAddonPolicy
@@ -22131,9 +23357,9 @@ func (a *KubernetesApiService) PatchKubernetesAddonPolicyExecute(r ApiPatchKuber
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22150,6 +23376,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonPolicyExecute(r ApiPatchKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22160,6 +23387,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonPolicyExecute(r ApiPatchKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22170,6 +23398,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonPolicyExecute(r ApiPatchKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22180,6 +23409,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonPolicyExecute(r ApiPatchKuber
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22189,6 +23419,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonPolicyExecute(r ApiPatchKuber
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22232,9 +23463,9 @@ func (r ApiPatchKubernetesAddonRepositoryRequest) Execute() (*KubernetesAddonRep
 /*
 PatchKubernetesAddonRepository Update a 'kubernetes.AddonRepository' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesAddonRepositoryRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesAddonRepositoryRequest
 */
 func (a *KubernetesApiService) PatchKubernetesAddonRepository(ctx context.Context, moid string) ApiPatchKubernetesAddonRepositoryRequest {
 	return ApiPatchKubernetesAddonRepositoryRequest{
@@ -22245,7 +23476,8 @@ func (a *KubernetesApiService) PatchKubernetesAddonRepository(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesAddonRepository
+//
+//	@return KubernetesAddonRepository
 func (a *KubernetesApiService) PatchKubernetesAddonRepositoryExecute(r ApiPatchKubernetesAddonRepositoryRequest) (*KubernetesAddonRepository, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -22260,7 +23492,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonRepositoryExecute(r ApiPatchK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonRepositories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22287,7 +23519,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonRepositoryExecute(r ApiPatchK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAddonRepository
@@ -22301,9 +23533,9 @@ func (a *KubernetesApiService) PatchKubernetesAddonRepositoryExecute(r ApiPatchK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22320,6 +23552,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonRepositoryExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22330,6 +23563,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonRepositoryExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22340,6 +23574,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonRepositoryExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22350,6 +23585,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonRepositoryExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22359,6 +23595,7 @@ func (a *KubernetesApiService) PatchKubernetesAddonRepositoryExecute(r ApiPatchK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22402,9 +23639,11 @@ func (r ApiPatchKubernetesBaremetalNodeProfileRequest) Execute() (*KubernetesBar
 /*
 PatchKubernetesBaremetalNodeProfile Update a 'kubernetes.BaremetalNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesBaremetalNodeProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesBaremetalNodeProfileRequest
+
+Deprecated
 */
 func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfile(ctx context.Context, moid string) ApiPatchKubernetesBaremetalNodeProfileRequest {
 	return ApiPatchKubernetesBaremetalNodeProfileRequest{
@@ -22415,7 +23654,10 @@ func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfile(ctx context.C
 }
 
 // Execute executes the request
-//  @return KubernetesBaremetalNodeProfile
+//
+//	@return KubernetesBaremetalNodeProfile
+//
+// Deprecated
 func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfileExecute(r ApiPatchKubernetesBaremetalNodeProfileRequest) (*KubernetesBaremetalNodeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -22430,7 +23672,7 @@ func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfileExecute(r ApiP
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/BaremetalNodeProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22457,7 +23699,7 @@ func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfileExecute(r ApiP
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesBaremetalNodeProfile
@@ -22471,9 +23713,9 @@ func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfileExecute(r ApiP
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22490,6 +23732,7 @@ func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfileExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22500,6 +23743,7 @@ func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfileExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22510,6 +23754,7 @@ func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfileExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22520,6 +23765,7 @@ func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfileExecute(r ApiP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22529,6 +23775,7 @@ func (a *KubernetesApiService) PatchKubernetesBaremetalNodeProfileExecute(r ApiP
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22572,9 +23819,9 @@ func (r ApiPatchKubernetesClusterRequest) Execute() (*KubernetesCluster, *http.R
 /*
 PatchKubernetesCluster Update a 'kubernetes.Cluster' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesClusterRequest
 */
 func (a *KubernetesApiService) PatchKubernetesCluster(ctx context.Context, moid string) ApiPatchKubernetesClusterRequest {
 	return ApiPatchKubernetesClusterRequest{
@@ -22585,7 +23832,8 @@ func (a *KubernetesApiService) PatchKubernetesCluster(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return KubernetesCluster
+//
+//	@return KubernetesCluster
 func (a *KubernetesApiService) PatchKubernetesClusterExecute(r ApiPatchKubernetesClusterRequest) (*KubernetesCluster, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -22600,7 +23848,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterExecute(r ApiPatchKubernete
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Clusters/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22627,7 +23875,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterExecute(r ApiPatchKubernete
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesCluster
@@ -22641,9 +23889,9 @@ func (a *KubernetesApiService) PatchKubernetesClusterExecute(r ApiPatchKubernete
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22660,6 +23908,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterExecute(r ApiPatchKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22670,6 +23919,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterExecute(r ApiPatchKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22680,6 +23930,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterExecute(r ApiPatchKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22690,6 +23941,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterExecute(r ApiPatchKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22699,6 +23951,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterExecute(r ApiPatchKubernete
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22742,9 +23995,9 @@ func (r ApiPatchKubernetesClusterAddonProfileRequest) Execute() (*KubernetesClus
 /*
 PatchKubernetesClusterAddonProfile Update a 'kubernetes.ClusterAddonProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesClusterAddonProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesClusterAddonProfileRequest
 */
 func (a *KubernetesApiService) PatchKubernetesClusterAddonProfile(ctx context.Context, moid string) ApiPatchKubernetesClusterAddonProfileRequest {
 	return ApiPatchKubernetesClusterAddonProfileRequest{
@@ -22755,7 +24008,8 @@ func (a *KubernetesApiService) PatchKubernetesClusterAddonProfile(ctx context.Co
 }
 
 // Execute executes the request
-//  @return KubernetesClusterAddonProfile
+//
+//	@return KubernetesClusterAddonProfile
 func (a *KubernetesApiService) PatchKubernetesClusterAddonProfileExecute(r ApiPatchKubernetesClusterAddonProfileRequest) (*KubernetesClusterAddonProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -22770,7 +24024,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterAddonProfileExecute(r ApiPa
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ClusterAddonProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22797,7 +24051,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterAddonProfileExecute(r ApiPa
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesClusterAddonProfile
@@ -22811,9 +24065,9 @@ func (a *KubernetesApiService) PatchKubernetesClusterAddonProfileExecute(r ApiPa
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -22830,6 +24084,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterAddonProfileExecute(r ApiPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22840,6 +24095,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterAddonProfileExecute(r ApiPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22850,6 +24106,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterAddonProfileExecute(r ApiPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22860,6 +24117,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterAddonProfileExecute(r ApiPa
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -22869,6 +24127,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterAddonProfileExecute(r ApiPa
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -22912,9 +24171,9 @@ func (r ApiPatchKubernetesClusterProfileRequest) Execute() (*KubernetesClusterPr
 /*
 PatchKubernetesClusterProfile Update a 'kubernetes.ClusterProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesClusterProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesClusterProfileRequest
 */
 func (a *KubernetesApiService) PatchKubernetesClusterProfile(ctx context.Context, moid string) ApiPatchKubernetesClusterProfileRequest {
 	return ApiPatchKubernetesClusterProfileRequest{
@@ -22925,7 +24184,8 @@ func (a *KubernetesApiService) PatchKubernetesClusterProfile(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesClusterProfile
+//
+//	@return KubernetesClusterProfile
 func (a *KubernetesApiService) PatchKubernetesClusterProfileExecute(r ApiPatchKubernetesClusterProfileRequest) (*KubernetesClusterProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -22940,7 +24200,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterProfileExecute(r ApiPatchKu
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ClusterProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -22967,7 +24227,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterProfileExecute(r ApiPatchKu
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesClusterProfile
@@ -22981,9 +24241,9 @@ func (a *KubernetesApiService) PatchKubernetesClusterProfileExecute(r ApiPatchKu
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23000,6 +24260,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterProfileExecute(r ApiPatchKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23010,6 +24271,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterProfileExecute(r ApiPatchKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23020,6 +24282,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterProfileExecute(r ApiPatchKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23030,6 +24293,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterProfileExecute(r ApiPatchKu
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23039,6 +24303,7 @@ func (a *KubernetesApiService) PatchKubernetesClusterProfileExecute(r ApiPatchKu
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23082,9 +24347,9 @@ func (r ApiPatchKubernetesContainerRuntimePolicyRequest) Execute() (*KubernetesC
 /*
 PatchKubernetesContainerRuntimePolicy Update a 'kubernetes.ContainerRuntimePolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesContainerRuntimePolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesContainerRuntimePolicyRequest
 */
 func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicy(ctx context.Context, moid string) ApiPatchKubernetesContainerRuntimePolicyRequest {
 	return ApiPatchKubernetesContainerRuntimePolicyRequest{
@@ -23095,7 +24360,8 @@ func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicy(ctx context
 }
 
 // Execute executes the request
-//  @return KubernetesContainerRuntimePolicy
+//
+//	@return KubernetesContainerRuntimePolicy
 func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicyExecute(r ApiPatchKubernetesContainerRuntimePolicyRequest) (*KubernetesContainerRuntimePolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -23110,7 +24376,7 @@ func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicyExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ContainerRuntimePolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23137,7 +24403,7 @@ func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicyExecute(r Ap
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesContainerRuntimePolicy
@@ -23151,9 +24417,9 @@ func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicyExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23170,6 +24436,7 @@ func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23180,6 +24447,7 @@ func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23190,6 +24458,7 @@ func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23200,6 +24469,7 @@ func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicyExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23209,6 +24479,7 @@ func (a *KubernetesApiService) PatchKubernetesContainerRuntimePolicyExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23252,9 +24523,9 @@ func (r ApiPatchKubernetesHttpProxyPolicyRequest) Execute() (*KubernetesHttpProx
 /*
 PatchKubernetesHttpProxyPolicy Update a 'kubernetes.HttpProxyPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesHttpProxyPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesHttpProxyPolicyRequest
 */
 func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicy(ctx context.Context, moid string) ApiPatchKubernetesHttpProxyPolicyRequest {
 	return ApiPatchKubernetesHttpProxyPolicyRequest{
@@ -23265,7 +24536,8 @@ func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicy(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesHttpProxyPolicy
+//
+//	@return KubernetesHttpProxyPolicy
 func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicyExecute(r ApiPatchKubernetesHttpProxyPolicyRequest) (*KubernetesHttpProxyPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -23280,7 +24552,7 @@ func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicyExecute(r ApiPatchK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/HttpProxyPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23307,7 +24579,7 @@ func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicyExecute(r ApiPatchK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesHttpProxyPolicy
@@ -23321,9 +24593,9 @@ func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicyExecute(r ApiPatchK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23340,6 +24612,7 @@ func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicyExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23350,6 +24623,7 @@ func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicyExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23360,6 +24634,7 @@ func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicyExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23370,6 +24645,7 @@ func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicyExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23379,6 +24655,7 @@ func (a *KubernetesApiService) PatchKubernetesHttpProxyPolicyExecute(r ApiPatchK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23422,9 +24699,9 @@ func (r ApiPatchKubernetesNetworkPolicyRequest) Execute() (*KubernetesNetworkPol
 /*
 PatchKubernetesNetworkPolicy Update a 'kubernetes.NetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesNetworkPolicyRequest
 */
 func (a *KubernetesApiService) PatchKubernetesNetworkPolicy(ctx context.Context, moid string) ApiPatchKubernetesNetworkPolicyRequest {
 	return ApiPatchKubernetesNetworkPolicyRequest{
@@ -23435,7 +24712,8 @@ func (a *KubernetesApiService) PatchKubernetesNetworkPolicy(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return KubernetesNetworkPolicy
+//
+//	@return KubernetesNetworkPolicy
 func (a *KubernetesApiService) PatchKubernetesNetworkPolicyExecute(r ApiPatchKubernetesNetworkPolicyRequest) (*KubernetesNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -23450,7 +24728,7 @@ func (a *KubernetesApiService) PatchKubernetesNetworkPolicyExecute(r ApiPatchKub
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23477,7 +24755,7 @@ func (a *KubernetesApiService) PatchKubernetesNetworkPolicyExecute(r ApiPatchKub
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesNetworkPolicy
@@ -23491,9 +24769,9 @@ func (a *KubernetesApiService) PatchKubernetesNetworkPolicyExecute(r ApiPatchKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23510,6 +24788,7 @@ func (a *KubernetesApiService) PatchKubernetesNetworkPolicyExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23520,6 +24799,7 @@ func (a *KubernetesApiService) PatchKubernetesNetworkPolicyExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23530,6 +24810,7 @@ func (a *KubernetesApiService) PatchKubernetesNetworkPolicyExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23540,6 +24821,7 @@ func (a *KubernetesApiService) PatchKubernetesNetworkPolicyExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23549,6 +24831,7 @@ func (a *KubernetesApiService) PatchKubernetesNetworkPolicyExecute(r ApiPatchKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23592,9 +24875,9 @@ func (r ApiPatchKubernetesNodeGroupProfileRequest) Execute() (*KubernetesNodeGro
 /*
 PatchKubernetesNodeGroupProfile Update a 'kubernetes.NodeGroupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesNodeGroupProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesNodeGroupProfileRequest
 */
 func (a *KubernetesApiService) PatchKubernetesNodeGroupProfile(ctx context.Context, moid string) ApiPatchKubernetesNodeGroupProfileRequest {
 	return ApiPatchKubernetesNodeGroupProfileRequest{
@@ -23605,7 +24888,8 @@ func (a *KubernetesApiService) PatchKubernetesNodeGroupProfile(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesNodeGroupProfile
+//
+//	@return KubernetesNodeGroupProfile
 func (a *KubernetesApiService) PatchKubernetesNodeGroupProfileExecute(r ApiPatchKubernetesNodeGroupProfileRequest) (*KubernetesNodeGroupProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -23620,7 +24904,7 @@ func (a *KubernetesApiService) PatchKubernetesNodeGroupProfileExecute(r ApiPatch
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NodeGroupProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23647,7 +24931,7 @@ func (a *KubernetesApiService) PatchKubernetesNodeGroupProfileExecute(r ApiPatch
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesNodeGroupProfile
@@ -23661,9 +24945,9 @@ func (a *KubernetesApiService) PatchKubernetesNodeGroupProfileExecute(r ApiPatch
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23680,6 +24964,7 @@ func (a *KubernetesApiService) PatchKubernetesNodeGroupProfileExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23690,6 +24975,7 @@ func (a *KubernetesApiService) PatchKubernetesNodeGroupProfileExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23700,6 +24986,7 @@ func (a *KubernetesApiService) PatchKubernetesNodeGroupProfileExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23710,6 +24997,7 @@ func (a *KubernetesApiService) PatchKubernetesNodeGroupProfileExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23719,6 +25007,7 @@ func (a *KubernetesApiService) PatchKubernetesNodeGroupProfileExecute(r ApiPatch
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23762,9 +25051,9 @@ func (r ApiPatchKubernetesNvidiaGpuProductRequest) Execute() (*KubernetesNvidiaG
 /*
 PatchKubernetesNvidiaGpuProduct Update a 'kubernetes.NvidiaGpuProduct' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesNvidiaGpuProductRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesNvidiaGpuProductRequest
 */
 func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProduct(ctx context.Context, moid string) ApiPatchKubernetesNvidiaGpuProductRequest {
 	return ApiPatchKubernetesNvidiaGpuProductRequest{
@@ -23775,7 +25064,8 @@ func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProduct(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesNvidiaGpuProduct
+//
+//	@return KubernetesNvidiaGpuProduct
 func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProductExecute(r ApiPatchKubernetesNvidiaGpuProductRequest) (*KubernetesNvidiaGpuProduct, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -23790,7 +25080,7 @@ func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProductExecute(r ApiPatch
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NvidiaGpuProducts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23817,7 +25107,7 @@ func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProductExecute(r ApiPatch
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesNvidiaGpuProduct
@@ -23831,9 +25121,9 @@ func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProductExecute(r ApiPatch
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -23850,6 +25140,7 @@ func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProductExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23860,6 +25151,7 @@ func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProductExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23870,6 +25162,7 @@ func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProductExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23880,6 +25173,7 @@ func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProductExecute(r ApiPatch
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -23889,6 +25183,7 @@ func (a *KubernetesApiService) PatchKubernetesNvidiaGpuProductExecute(r ApiPatch
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -23932,9 +25227,9 @@ func (r ApiPatchKubernetesSysConfigPolicyRequest) Execute() (*KubernetesSysConfi
 /*
 PatchKubernetesSysConfigPolicy Update a 'kubernetes.SysConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesSysConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesSysConfigPolicyRequest
 */
 func (a *KubernetesApiService) PatchKubernetesSysConfigPolicy(ctx context.Context, moid string) ApiPatchKubernetesSysConfigPolicyRequest {
 	return ApiPatchKubernetesSysConfigPolicyRequest{
@@ -23945,7 +25240,8 @@ func (a *KubernetesApiService) PatchKubernetesSysConfigPolicy(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesSysConfigPolicy
+//
+//	@return KubernetesSysConfigPolicy
 func (a *KubernetesApiService) PatchKubernetesSysConfigPolicyExecute(r ApiPatchKubernetesSysConfigPolicyRequest) (*KubernetesSysConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -23960,7 +25256,7 @@ func (a *KubernetesApiService) PatchKubernetesSysConfigPolicyExecute(r ApiPatchK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/SysConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -23987,7 +25283,7 @@ func (a *KubernetesApiService) PatchKubernetesSysConfigPolicyExecute(r ApiPatchK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesSysConfigPolicy
@@ -24001,9 +25297,9 @@ func (a *KubernetesApiService) PatchKubernetesSysConfigPolicyExecute(r ApiPatchK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24020,6 +25316,7 @@ func (a *KubernetesApiService) PatchKubernetesSysConfigPolicyExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24030,6 +25327,7 @@ func (a *KubernetesApiService) PatchKubernetesSysConfigPolicyExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24040,6 +25338,7 @@ func (a *KubernetesApiService) PatchKubernetesSysConfigPolicyExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24050,6 +25349,7 @@ func (a *KubernetesApiService) PatchKubernetesSysConfigPolicyExecute(r ApiPatchK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24059,6 +25359,7 @@ func (a *KubernetesApiService) PatchKubernetesSysConfigPolicyExecute(r ApiPatchK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24102,9 +25403,9 @@ func (r ApiPatchKubernetesTrustedRegistriesPolicyRequest) Execute() (*Kubernetes
 /*
 PatchKubernetesTrustedRegistriesPolicy Update a 'kubernetes.TrustedRegistriesPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesTrustedRegistriesPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesTrustedRegistriesPolicyRequest
 */
 func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicy(ctx context.Context, moid string) ApiPatchKubernetesTrustedRegistriesPolicyRequest {
 	return ApiPatchKubernetesTrustedRegistriesPolicyRequest{
@@ -24115,7 +25416,8 @@ func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicy(ctx contex
 }
 
 // Execute executes the request
-//  @return KubernetesTrustedRegistriesPolicy
+//
+//	@return KubernetesTrustedRegistriesPolicy
 func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicyExecute(r ApiPatchKubernetesTrustedRegistriesPolicyRequest) (*KubernetesTrustedRegistriesPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -24130,7 +25432,7 @@ func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicyExecute(r A
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/TrustedRegistriesPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24157,7 +25459,7 @@ func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicyExecute(r A
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesTrustedRegistriesPolicy
@@ -24171,9 +25473,9 @@ func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicyExecute(r A
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24190,6 +25492,7 @@ func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24200,6 +25503,7 @@ func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24210,6 +25514,7 @@ func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24220,6 +25525,7 @@ func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24229,6 +25535,7 @@ func (a *KubernetesApiService) PatchKubernetesTrustedRegistriesPolicyExecute(r A
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24272,9 +25579,9 @@ func (r ApiPatchKubernetesVersionRequest) Execute() (*KubernetesVersion, *http.R
 /*
 PatchKubernetesVersion Update a 'kubernetes.Version' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesVersionRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesVersionRequest
 */
 func (a *KubernetesApiService) PatchKubernetesVersion(ctx context.Context, moid string) ApiPatchKubernetesVersionRequest {
 	return ApiPatchKubernetesVersionRequest{
@@ -24285,7 +25592,8 @@ func (a *KubernetesApiService) PatchKubernetesVersion(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return KubernetesVersion
+//
+//	@return KubernetesVersion
 func (a *KubernetesApiService) PatchKubernetesVersionExecute(r ApiPatchKubernetesVersionRequest) (*KubernetesVersion, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -24300,7 +25608,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionExecute(r ApiPatchKubernete
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Versions/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24327,7 +25635,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionExecute(r ApiPatchKubernete
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVersion
@@ -24341,9 +25649,9 @@ func (a *KubernetesApiService) PatchKubernetesVersionExecute(r ApiPatchKubernete
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24360,6 +25668,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionExecute(r ApiPatchKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24370,6 +25679,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionExecute(r ApiPatchKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24380,6 +25690,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionExecute(r ApiPatchKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24390,6 +25701,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionExecute(r ApiPatchKubernete
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24399,6 +25711,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionExecute(r ApiPatchKubernete
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24442,9 +25755,9 @@ func (r ApiPatchKubernetesVersionPolicyRequest) Execute() (*KubernetesVersionPol
 /*
 PatchKubernetesVersionPolicy Update a 'kubernetes.VersionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesVersionPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesVersionPolicyRequest
 */
 func (a *KubernetesApiService) PatchKubernetesVersionPolicy(ctx context.Context, moid string) ApiPatchKubernetesVersionPolicyRequest {
 	return ApiPatchKubernetesVersionPolicyRequest{
@@ -24455,7 +25768,8 @@ func (a *KubernetesApiService) PatchKubernetesVersionPolicy(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return KubernetesVersionPolicy
+//
+//	@return KubernetesVersionPolicy
 func (a *KubernetesApiService) PatchKubernetesVersionPolicyExecute(r ApiPatchKubernetesVersionPolicyRequest) (*KubernetesVersionPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -24470,7 +25784,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionPolicyExecute(r ApiPatchKub
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VersionPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24497,7 +25811,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionPolicyExecute(r ApiPatchKub
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVersionPolicy
@@ -24511,9 +25825,9 @@ func (a *KubernetesApiService) PatchKubernetesVersionPolicyExecute(r ApiPatchKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24530,6 +25844,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionPolicyExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24540,6 +25855,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionPolicyExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24550,6 +25866,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionPolicyExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24560,6 +25877,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionPolicyExecute(r ApiPatchKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24569,6 +25887,7 @@ func (a *KubernetesApiService) PatchKubernetesVersionPolicyExecute(r ApiPatchKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24612,9 +25931,9 @@ func (r ApiPatchKubernetesVirtualMachineInfraConfigPolicyRequest) Execute() (*Ku
 /*
 PatchKubernetesVirtualMachineInfraConfigPolicy Update a 'kubernetes.VirtualMachineInfraConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesVirtualMachineInfraConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesVirtualMachineInfraConfigPolicyRequest
 */
 func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicy(ctx context.Context, moid string) ApiPatchKubernetesVirtualMachineInfraConfigPolicyRequest {
 	return ApiPatchKubernetesVirtualMachineInfraConfigPolicyRequest{
@@ -24625,7 +25944,8 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicy(ct
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfraConfigPolicy
+//
+//	@return KubernetesVirtualMachineInfraConfigPolicy
 func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicyExecute(r ApiPatchKubernetesVirtualMachineInfraConfigPolicyRequest) (*KubernetesVirtualMachineInfraConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -24640,7 +25960,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicyExe
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInfraConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24667,7 +25987,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicyExe
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineInfraConfigPolicy
@@ -24681,9 +26001,9 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicyExe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24700,6 +26020,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicyExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24710,6 +26031,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicyExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24720,6 +26042,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicyExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24730,6 +26053,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicyExe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24739,6 +26063,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfraConfigPolicyExe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24782,9 +26107,9 @@ func (r ApiPatchKubernetesVirtualMachineInfrastructureProviderRequest) Execute()
 /*
 PatchKubernetesVirtualMachineInfrastructureProvider Update a 'kubernetes.VirtualMachineInfrastructureProvider' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesVirtualMachineInfrastructureProviderRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesVirtualMachineInfrastructureProviderRequest
 */
 func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvider(ctx context.Context, moid string) ApiPatchKubernetesVirtualMachineInfrastructureProviderRequest {
 	return ApiPatchKubernetesVirtualMachineInfrastructureProviderRequest{
@@ -24795,7 +26120,8 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvid
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfrastructureProvider
+//
+//	@return KubernetesVirtualMachineInfrastructureProvider
 func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProviderExecute(r ApiPatchKubernetesVirtualMachineInfrastructureProviderRequest) (*KubernetesVirtualMachineInfrastructureProvider, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -24810,7 +26136,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvid
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInfrastructureProviders/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -24837,7 +26163,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvid
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineInfrastructureProvider
@@ -24851,9 +26177,9 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvid
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -24870,6 +26196,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvid
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24880,6 +26207,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvid
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24890,6 +26218,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvid
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24900,6 +26229,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvid
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -24909,6 +26239,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInfrastructureProvid
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -24952,9 +26283,9 @@ func (r ApiPatchKubernetesVirtualMachineInstanceTypeRequest) Execute() (*Kuberne
 /*
 PatchKubernetesVirtualMachineInstanceType Update a 'kubernetes.VirtualMachineInstanceType' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesVirtualMachineInstanceTypeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesVirtualMachineInstanceTypeRequest
 */
 func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceType(ctx context.Context, moid string) ApiPatchKubernetesVirtualMachineInstanceTypeRequest {
 	return ApiPatchKubernetesVirtualMachineInstanceTypeRequest{
@@ -24965,7 +26296,8 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceType(ctx con
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInstanceType
+//
+//	@return KubernetesVirtualMachineInstanceType
 func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceTypeExecute(r ApiPatchKubernetesVirtualMachineInstanceTypeRequest) (*KubernetesVirtualMachineInstanceType, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -24980,7 +26312,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceTypeExecute(
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInstanceTypes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -25007,7 +26339,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceTypeExecute(
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineInstanceType
@@ -25021,9 +26353,9 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceTypeExecute(
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -25040,6 +26372,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceTypeExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25050,6 +26383,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceTypeExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25060,6 +26394,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceTypeExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25070,6 +26405,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceTypeExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25079,6 +26415,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineInstanceTypeExecute(
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -25122,9 +26459,9 @@ func (r ApiPatchKubernetesVirtualMachineNodeProfileRequest) Execute() (*Kubernet
 /*
 PatchKubernetesVirtualMachineNodeProfile Update a 'kubernetes.VirtualMachineNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchKubernetesVirtualMachineNodeProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchKubernetesVirtualMachineNodeProfileRequest
 */
 func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfile(ctx context.Context, moid string) ApiPatchKubernetesVirtualMachineNodeProfileRequest {
 	return ApiPatchKubernetesVirtualMachineNodeProfileRequest{
@@ -25135,7 +26472,8 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfile(ctx cont
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineNodeProfile
+//
+//	@return KubernetesVirtualMachineNodeProfile
 func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfileExecute(r ApiPatchKubernetesVirtualMachineNodeProfileRequest) (*KubernetesVirtualMachineNodeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -25150,7 +26488,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfileExecute(r
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineNodeProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -25177,7 +26515,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfileExecute(r
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineNodeProfile
@@ -25191,9 +26529,9 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfileExecute(r
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -25210,6 +26548,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfileExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25220,6 +26559,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfileExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25230,6 +26570,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfileExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25240,6 +26581,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfileExecute(r
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25249,6 +26591,7 @@ func (a *KubernetesApiService) PatchKubernetesVirtualMachineNodeProfileExecute(r
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -25292,9 +26635,9 @@ func (r ApiUpdateKubernetesAciCniApicRequest) Execute() (*KubernetesAciCniApic, 
 /*
 UpdateKubernetesAciCniApic Update a 'kubernetes.AciCniApic' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesAciCniApicRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesAciCniApicRequest
 
 Deprecated
 */
@@ -25307,7 +26650,9 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniApic(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniApic
+//
+//	@return KubernetesAciCniApic
+//
 // Deprecated
 func (a *KubernetesApiService) UpdateKubernetesAciCniApicExecute(r ApiUpdateKubernetesAciCniApicRequest) (*KubernetesAciCniApic, *http.Response, error) {
 	var (
@@ -25323,7 +26668,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniApicExecute(r ApiUpdateKube
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniApics/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -25350,7 +26695,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniApicExecute(r ApiUpdateKube
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAciCniApic
@@ -25364,9 +26709,9 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniApicExecute(r ApiUpdateKube
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -25383,6 +26728,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniApicExecute(r ApiUpdateKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25393,6 +26739,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniApicExecute(r ApiUpdateKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25403,6 +26750,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniApicExecute(r ApiUpdateKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25413,6 +26761,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniApicExecute(r ApiUpdateKube
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25422,6 +26771,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniApicExecute(r ApiUpdateKube
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -25465,9 +26815,9 @@ func (r ApiUpdateKubernetesAciCniProfileRequest) Execute() (*KubernetesAciCniPro
 /*
 UpdateKubernetesAciCniProfile Update a 'kubernetes.AciCniProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesAciCniProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesAciCniProfileRequest
 
 Deprecated
 */
@@ -25480,7 +26830,9 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniProfile(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniProfile
+//
+//	@return KubernetesAciCniProfile
+//
 // Deprecated
 func (a *KubernetesApiService) UpdateKubernetesAciCniProfileExecute(r ApiUpdateKubernetesAciCniProfileRequest) (*KubernetesAciCniProfile, *http.Response, error) {
 	var (
@@ -25496,7 +26848,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniProfileExecute(r ApiUpdateK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -25523,7 +26875,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniProfileExecute(r ApiUpdateK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAciCniProfile
@@ -25537,9 +26889,9 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniProfileExecute(r ApiUpdateK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -25556,6 +26908,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniProfileExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25566,6 +26919,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniProfileExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25576,6 +26930,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniProfileExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25586,6 +26941,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniProfileExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25595,6 +26951,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniProfileExecute(r ApiUpdateK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -25638,9 +26995,9 @@ func (r ApiUpdateKubernetesAciCniTenantClusterAllocationRequest) Execute() (*Kub
 /*
 UpdateKubernetesAciCniTenantClusterAllocation Update a 'kubernetes.AciCniTenantClusterAllocation' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesAciCniTenantClusterAllocationRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesAciCniTenantClusterAllocationRequest
 
 Deprecated
 */
@@ -25653,7 +27010,9 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocation(ctx
 }
 
 // Execute executes the request
-//  @return KubernetesAciCniTenantClusterAllocation
+//
+//	@return KubernetesAciCniTenantClusterAllocation
+//
 // Deprecated
 func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocationExecute(r ApiUpdateKubernetesAciCniTenantClusterAllocationRequest) (*KubernetesAciCniTenantClusterAllocation, *http.Response, error) {
 	var (
@@ -25669,7 +27028,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocationExec
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AciCniTenantClusterAllocations/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -25696,7 +27055,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocationExec
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAciCniTenantClusterAllocation
@@ -25710,9 +27069,9 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocationExec
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -25729,6 +27088,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25739,6 +27099,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25749,6 +27110,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25759,6 +27121,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocationExec
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25768,6 +27131,7 @@ func (a *KubernetesApiService) UpdateKubernetesAciCniTenantClusterAllocationExec
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -25811,9 +27175,9 @@ func (r ApiUpdateKubernetesAddonDefinitionRequest) Execute() (*KubernetesAddonDe
 /*
 UpdateKubernetesAddonDefinition Update a 'kubernetes.AddonDefinition' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesAddonDefinitionRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesAddonDefinitionRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesAddonDefinition(ctx context.Context, moid string) ApiUpdateKubernetesAddonDefinitionRequest {
 	return ApiUpdateKubernetesAddonDefinitionRequest{
@@ -25824,7 +27188,8 @@ func (a *KubernetesApiService) UpdateKubernetesAddonDefinition(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesAddonDefinition
+//
+//	@return KubernetesAddonDefinition
 func (a *KubernetesApiService) UpdateKubernetesAddonDefinitionExecute(r ApiUpdateKubernetesAddonDefinitionRequest) (*KubernetesAddonDefinition, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -25839,7 +27204,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonDefinitionExecute(r ApiUpdat
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonDefinitions/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -25866,7 +27231,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonDefinitionExecute(r ApiUpdat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAddonDefinition
@@ -25880,9 +27245,9 @@ func (a *KubernetesApiService) UpdateKubernetesAddonDefinitionExecute(r ApiUpdat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -25899,6 +27264,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonDefinitionExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25909,6 +27275,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonDefinitionExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25919,6 +27286,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonDefinitionExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25929,6 +27297,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonDefinitionExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -25938,6 +27307,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonDefinitionExecute(r ApiUpdat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -25981,9 +27351,9 @@ func (r ApiUpdateKubernetesAddonPolicyRequest) Execute() (*KubernetesAddonPolicy
 /*
 UpdateKubernetesAddonPolicy Update a 'kubernetes.AddonPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesAddonPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesAddonPolicyRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesAddonPolicy(ctx context.Context, moid string) ApiUpdateKubernetesAddonPolicyRequest {
 	return ApiUpdateKubernetesAddonPolicyRequest{
@@ -25994,7 +27364,8 @@ func (a *KubernetesApiService) UpdateKubernetesAddonPolicy(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return KubernetesAddonPolicy
+//
+//	@return KubernetesAddonPolicy
 func (a *KubernetesApiService) UpdateKubernetesAddonPolicyExecute(r ApiUpdateKubernetesAddonPolicyRequest) (*KubernetesAddonPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -26009,7 +27380,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonPolicyExecute(r ApiUpdateKub
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -26036,7 +27407,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonPolicyExecute(r ApiUpdateKub
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAddonPolicy
@@ -26050,9 +27421,9 @@ func (a *KubernetesApiService) UpdateKubernetesAddonPolicyExecute(r ApiUpdateKub
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -26069,6 +27440,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonPolicyExecute(r ApiUpdateKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26079,6 +27451,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonPolicyExecute(r ApiUpdateKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26089,6 +27462,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonPolicyExecute(r ApiUpdateKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26099,6 +27473,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonPolicyExecute(r ApiUpdateKub
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26108,6 +27483,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonPolicyExecute(r ApiUpdateKub
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -26151,9 +27527,9 @@ func (r ApiUpdateKubernetesAddonRepositoryRequest) Execute() (*KubernetesAddonRe
 /*
 UpdateKubernetesAddonRepository Update a 'kubernetes.AddonRepository' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesAddonRepositoryRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesAddonRepositoryRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesAddonRepository(ctx context.Context, moid string) ApiUpdateKubernetesAddonRepositoryRequest {
 	return ApiUpdateKubernetesAddonRepositoryRequest{
@@ -26164,7 +27540,8 @@ func (a *KubernetesApiService) UpdateKubernetesAddonRepository(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesAddonRepository
+//
+//	@return KubernetesAddonRepository
 func (a *KubernetesApiService) UpdateKubernetesAddonRepositoryExecute(r ApiUpdateKubernetesAddonRepositoryRequest) (*KubernetesAddonRepository, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -26179,7 +27556,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonRepositoryExecute(r ApiUpdat
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/AddonRepositories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -26206,7 +27583,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonRepositoryExecute(r ApiUpdat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesAddonRepository
@@ -26220,9 +27597,9 @@ func (a *KubernetesApiService) UpdateKubernetesAddonRepositoryExecute(r ApiUpdat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -26239,6 +27616,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonRepositoryExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26249,6 +27627,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonRepositoryExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26259,6 +27638,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonRepositoryExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26269,6 +27649,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonRepositoryExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26278,6 +27659,7 @@ func (a *KubernetesApiService) UpdateKubernetesAddonRepositoryExecute(r ApiUpdat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -26321,9 +27703,11 @@ func (r ApiUpdateKubernetesBaremetalNodeProfileRequest) Execute() (*KubernetesBa
 /*
 UpdateKubernetesBaremetalNodeProfile Update a 'kubernetes.BaremetalNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesBaremetalNodeProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesBaremetalNodeProfileRequest
+
+Deprecated
 */
 func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfile(ctx context.Context, moid string) ApiUpdateKubernetesBaremetalNodeProfileRequest {
 	return ApiUpdateKubernetesBaremetalNodeProfileRequest{
@@ -26334,7 +27718,10 @@ func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfile(ctx context.
 }
 
 // Execute executes the request
-//  @return KubernetesBaremetalNodeProfile
+//
+//	@return KubernetesBaremetalNodeProfile
+//
+// Deprecated
 func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfileExecute(r ApiUpdateKubernetesBaremetalNodeProfileRequest) (*KubernetesBaremetalNodeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -26349,7 +27736,7 @@ func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfileExecute(r Api
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/BaremetalNodeProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -26376,7 +27763,7 @@ func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfileExecute(r Api
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesBaremetalNodeProfile
@@ -26390,9 +27777,9 @@ func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfileExecute(r Api
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -26409,6 +27796,7 @@ func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26419,6 +27807,7 @@ func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26429,6 +27818,7 @@ func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26439,6 +27829,7 @@ func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfileExecute(r Api
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26448,6 +27839,7 @@ func (a *KubernetesApiService) UpdateKubernetesBaremetalNodeProfileExecute(r Api
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -26491,9 +27883,9 @@ func (r ApiUpdateKubernetesClusterRequest) Execute() (*KubernetesCluster, *http.
 /*
 UpdateKubernetesCluster Update a 'kubernetes.Cluster' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesClusterRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesClusterRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesCluster(ctx context.Context, moid string) ApiUpdateKubernetesClusterRequest {
 	return ApiUpdateKubernetesClusterRequest{
@@ -26504,7 +27896,8 @@ func (a *KubernetesApiService) UpdateKubernetesCluster(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return KubernetesCluster
+//
+//	@return KubernetesCluster
 func (a *KubernetesApiService) UpdateKubernetesClusterExecute(r ApiUpdateKubernetesClusterRequest) (*KubernetesCluster, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -26519,7 +27912,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterExecute(r ApiUpdateKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Clusters/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -26546,7 +27939,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterExecute(r ApiUpdateKuberne
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesCluster
@@ -26560,9 +27953,9 @@ func (a *KubernetesApiService) UpdateKubernetesClusterExecute(r ApiUpdateKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -26579,6 +27972,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterExecute(r ApiUpdateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26589,6 +27983,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterExecute(r ApiUpdateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26599,6 +27994,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterExecute(r ApiUpdateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26609,6 +28005,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterExecute(r ApiUpdateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26618,6 +28015,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterExecute(r ApiUpdateKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -26661,9 +28059,9 @@ func (r ApiUpdateKubernetesClusterAddonProfileRequest) Execute() (*KubernetesClu
 /*
 UpdateKubernetesClusterAddonProfile Update a 'kubernetes.ClusterAddonProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesClusterAddonProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesClusterAddonProfileRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfile(ctx context.Context, moid string) ApiUpdateKubernetesClusterAddonProfileRequest {
 	return ApiUpdateKubernetesClusterAddonProfileRequest{
@@ -26674,7 +28072,8 @@ func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfile(ctx context.C
 }
 
 // Execute executes the request
-//  @return KubernetesClusterAddonProfile
+//
+//	@return KubernetesClusterAddonProfile
 func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfileExecute(r ApiUpdateKubernetesClusterAddonProfileRequest) (*KubernetesClusterAddonProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -26689,7 +28088,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfileExecute(r ApiU
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ClusterAddonProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -26716,7 +28115,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfileExecute(r ApiU
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesClusterAddonProfile
@@ -26730,9 +28129,9 @@ func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfileExecute(r ApiU
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -26749,6 +28148,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfileExecute(r ApiU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26759,6 +28159,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfileExecute(r ApiU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26769,6 +28170,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfileExecute(r ApiU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26779,6 +28181,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfileExecute(r ApiU
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26788,6 +28191,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterAddonProfileExecute(r ApiU
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -26831,9 +28235,9 @@ func (r ApiUpdateKubernetesClusterProfileRequest) Execute() (*KubernetesClusterP
 /*
 UpdateKubernetesClusterProfile Update a 'kubernetes.ClusterProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesClusterProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesClusterProfileRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesClusterProfile(ctx context.Context, moid string) ApiUpdateKubernetesClusterProfileRequest {
 	return ApiUpdateKubernetesClusterProfileRequest{
@@ -26844,7 +28248,8 @@ func (a *KubernetesApiService) UpdateKubernetesClusterProfile(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return KubernetesClusterProfile
+//
+//	@return KubernetesClusterProfile
 func (a *KubernetesApiService) UpdateKubernetesClusterProfileExecute(r ApiUpdateKubernetesClusterProfileRequest) (*KubernetesClusterProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -26859,7 +28264,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterProfileExecute(r ApiUpdate
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ClusterProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -26886,7 +28291,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterProfileExecute(r ApiUpdate
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesClusterProfile
@@ -26900,9 +28305,9 @@ func (a *KubernetesApiService) UpdateKubernetesClusterProfileExecute(r ApiUpdate
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -26919,6 +28324,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterProfileExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26929,6 +28335,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterProfileExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26939,6 +28346,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterProfileExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26949,6 +28357,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterProfileExecute(r ApiUpdate
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -26958,6 +28367,7 @@ func (a *KubernetesApiService) UpdateKubernetesClusterProfileExecute(r ApiUpdate
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -27001,9 +28411,9 @@ func (r ApiUpdateKubernetesContainerRuntimePolicyRequest) Execute() (*Kubernetes
 /*
 UpdateKubernetesContainerRuntimePolicy Update a 'kubernetes.ContainerRuntimePolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesContainerRuntimePolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesContainerRuntimePolicyRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicy(ctx context.Context, moid string) ApiUpdateKubernetesContainerRuntimePolicyRequest {
 	return ApiUpdateKubernetesContainerRuntimePolicyRequest{
@@ -27014,7 +28424,8 @@ func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicy(ctx contex
 }
 
 // Execute executes the request
-//  @return KubernetesContainerRuntimePolicy
+//
+//	@return KubernetesContainerRuntimePolicy
 func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicyExecute(r ApiUpdateKubernetesContainerRuntimePolicyRequest) (*KubernetesContainerRuntimePolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -27029,7 +28440,7 @@ func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicyExecute(r A
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/ContainerRuntimePolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -27056,7 +28467,7 @@ func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicyExecute(r A
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesContainerRuntimePolicy
@@ -27070,9 +28481,9 @@ func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicyExecute(r A
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -27089,6 +28500,7 @@ func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27099,6 +28511,7 @@ func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27109,6 +28522,7 @@ func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27119,6 +28533,7 @@ func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicyExecute(r A
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27128,6 +28543,7 @@ func (a *KubernetesApiService) UpdateKubernetesContainerRuntimePolicyExecute(r A
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -27171,9 +28587,9 @@ func (r ApiUpdateKubernetesHttpProxyPolicyRequest) Execute() (*KubernetesHttpPro
 /*
 UpdateKubernetesHttpProxyPolicy Update a 'kubernetes.HttpProxyPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesHttpProxyPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesHttpProxyPolicyRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicy(ctx context.Context, moid string) ApiUpdateKubernetesHttpProxyPolicyRequest {
 	return ApiUpdateKubernetesHttpProxyPolicyRequest{
@@ -27184,7 +28600,8 @@ func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicy(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesHttpProxyPolicy
+//
+//	@return KubernetesHttpProxyPolicy
 func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicyExecute(r ApiUpdateKubernetesHttpProxyPolicyRequest) (*KubernetesHttpProxyPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -27199,7 +28616,7 @@ func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicyExecute(r ApiUpdat
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/HttpProxyPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -27226,7 +28643,7 @@ func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicyExecute(r ApiUpdat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesHttpProxyPolicy
@@ -27240,9 +28657,9 @@ func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicyExecute(r ApiUpdat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -27259,6 +28676,7 @@ func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicyExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27269,6 +28687,7 @@ func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicyExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27279,6 +28698,7 @@ func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicyExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27289,6 +28709,7 @@ func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicyExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27298,6 +28719,7 @@ func (a *KubernetesApiService) UpdateKubernetesHttpProxyPolicyExecute(r ApiUpdat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -27341,9 +28763,9 @@ func (r ApiUpdateKubernetesNetworkPolicyRequest) Execute() (*KubernetesNetworkPo
 /*
 UpdateKubernetesNetworkPolicy Update a 'kubernetes.NetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesNetworkPolicyRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesNetworkPolicy(ctx context.Context, moid string) ApiUpdateKubernetesNetworkPolicyRequest {
 	return ApiUpdateKubernetesNetworkPolicyRequest{
@@ -27354,7 +28776,8 @@ func (a *KubernetesApiService) UpdateKubernetesNetworkPolicy(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesNetworkPolicy
+//
+//	@return KubernetesNetworkPolicy
 func (a *KubernetesApiService) UpdateKubernetesNetworkPolicyExecute(r ApiUpdateKubernetesNetworkPolicyRequest) (*KubernetesNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -27369,7 +28792,7 @@ func (a *KubernetesApiService) UpdateKubernetesNetworkPolicyExecute(r ApiUpdateK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -27396,7 +28819,7 @@ func (a *KubernetesApiService) UpdateKubernetesNetworkPolicyExecute(r ApiUpdateK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesNetworkPolicy
@@ -27410,9 +28833,9 @@ func (a *KubernetesApiService) UpdateKubernetesNetworkPolicyExecute(r ApiUpdateK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -27429,6 +28852,7 @@ func (a *KubernetesApiService) UpdateKubernetesNetworkPolicyExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27439,6 +28863,7 @@ func (a *KubernetesApiService) UpdateKubernetesNetworkPolicyExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27449,6 +28874,7 @@ func (a *KubernetesApiService) UpdateKubernetesNetworkPolicyExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27459,6 +28885,7 @@ func (a *KubernetesApiService) UpdateKubernetesNetworkPolicyExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27468,6 +28895,7 @@ func (a *KubernetesApiService) UpdateKubernetesNetworkPolicyExecute(r ApiUpdateK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -27511,9 +28939,9 @@ func (r ApiUpdateKubernetesNodeGroupProfileRequest) Execute() (*KubernetesNodeGr
 /*
 UpdateKubernetesNodeGroupProfile Update a 'kubernetes.NodeGroupProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesNodeGroupProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesNodeGroupProfileRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfile(ctx context.Context, moid string) ApiUpdateKubernetesNodeGroupProfileRequest {
 	return ApiUpdateKubernetesNodeGroupProfileRequest{
@@ -27524,7 +28952,8 @@ func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfile(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesNodeGroupProfile
+//
+//	@return KubernetesNodeGroupProfile
 func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfileExecute(r ApiUpdateKubernetesNodeGroupProfileRequest) (*KubernetesNodeGroupProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -27539,7 +28968,7 @@ func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfileExecute(r ApiUpda
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NodeGroupProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -27566,7 +28995,7 @@ func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfileExecute(r ApiUpda
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesNodeGroupProfile
@@ -27580,9 +29009,9 @@ func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfileExecute(r ApiUpda
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -27599,6 +29028,7 @@ func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfileExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27609,6 +29039,7 @@ func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfileExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27619,6 +29050,7 @@ func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfileExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27629,6 +29061,7 @@ func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfileExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27638,6 +29071,7 @@ func (a *KubernetesApiService) UpdateKubernetesNodeGroupProfileExecute(r ApiUpda
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -27681,9 +29115,9 @@ func (r ApiUpdateKubernetesNvidiaGpuProductRequest) Execute() (*KubernetesNvidia
 /*
 UpdateKubernetesNvidiaGpuProduct Update a 'kubernetes.NvidiaGpuProduct' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesNvidiaGpuProductRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesNvidiaGpuProductRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProduct(ctx context.Context, moid string) ApiUpdateKubernetesNvidiaGpuProductRequest {
 	return ApiUpdateKubernetesNvidiaGpuProductRequest{
@@ -27694,7 +29128,8 @@ func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProduct(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return KubernetesNvidiaGpuProduct
+//
+//	@return KubernetesNvidiaGpuProduct
 func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProductExecute(r ApiUpdateKubernetesNvidiaGpuProductRequest) (*KubernetesNvidiaGpuProduct, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -27709,7 +29144,7 @@ func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProductExecute(r ApiUpda
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/NvidiaGpuProducts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -27736,7 +29171,7 @@ func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProductExecute(r ApiUpda
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesNvidiaGpuProduct
@@ -27750,9 +29185,9 @@ func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProductExecute(r ApiUpda
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -27769,6 +29204,7 @@ func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProductExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27779,6 +29215,7 @@ func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProductExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27789,6 +29226,7 @@ func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProductExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27799,6 +29237,7 @@ func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProductExecute(r ApiUpda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27808,6 +29247,7 @@ func (a *KubernetesApiService) UpdateKubernetesNvidiaGpuProductExecute(r ApiUpda
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -27851,9 +29291,9 @@ func (r ApiUpdateKubernetesSysConfigPolicyRequest) Execute() (*KubernetesSysConf
 /*
 UpdateKubernetesSysConfigPolicy Update a 'kubernetes.SysConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesSysConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesSysConfigPolicyRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicy(ctx context.Context, moid string) ApiUpdateKubernetesSysConfigPolicyRequest {
 	return ApiUpdateKubernetesSysConfigPolicyRequest{
@@ -27864,7 +29304,8 @@ func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicy(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return KubernetesSysConfigPolicy
+//
+//	@return KubernetesSysConfigPolicy
 func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicyExecute(r ApiUpdateKubernetesSysConfigPolicyRequest) (*KubernetesSysConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -27879,7 +29320,7 @@ func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicyExecute(r ApiUpdat
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/SysConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -27906,7 +29347,7 @@ func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicyExecute(r ApiUpdat
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesSysConfigPolicy
@@ -27920,9 +29361,9 @@ func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicyExecute(r ApiUpdat
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -27939,6 +29380,7 @@ func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicyExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27949,6 +29391,7 @@ func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicyExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27959,6 +29402,7 @@ func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicyExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27969,6 +29413,7 @@ func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicyExecute(r ApiUpdat
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -27978,6 +29423,7 @@ func (a *KubernetesApiService) UpdateKubernetesSysConfigPolicyExecute(r ApiUpdat
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -28021,9 +29467,9 @@ func (r ApiUpdateKubernetesTrustedRegistriesPolicyRequest) Execute() (*Kubernete
 /*
 UpdateKubernetesTrustedRegistriesPolicy Update a 'kubernetes.TrustedRegistriesPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesTrustedRegistriesPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesTrustedRegistriesPolicyRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicy(ctx context.Context, moid string) ApiUpdateKubernetesTrustedRegistriesPolicyRequest {
 	return ApiUpdateKubernetesTrustedRegistriesPolicyRequest{
@@ -28034,7 +29480,8 @@ func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicy(ctx conte
 }
 
 // Execute executes the request
-//  @return KubernetesTrustedRegistriesPolicy
+//
+//	@return KubernetesTrustedRegistriesPolicy
 func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicyExecute(r ApiUpdateKubernetesTrustedRegistriesPolicyRequest) (*KubernetesTrustedRegistriesPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -28049,7 +29496,7 @@ func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicyExecute(r 
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/TrustedRegistriesPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -28076,7 +29523,7 @@ func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicyExecute(r 
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesTrustedRegistriesPolicy
@@ -28090,9 +29537,9 @@ func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicyExecute(r 
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -28109,6 +29556,7 @@ func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28119,6 +29567,7 @@ func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28129,6 +29578,7 @@ func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28139,6 +29589,7 @@ func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicyExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28148,6 +29599,7 @@ func (a *KubernetesApiService) UpdateKubernetesTrustedRegistriesPolicyExecute(r 
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -28191,9 +29643,9 @@ func (r ApiUpdateKubernetesVersionRequest) Execute() (*KubernetesVersion, *http.
 /*
 UpdateKubernetesVersion Update a 'kubernetes.Version' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesVersionRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesVersionRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesVersion(ctx context.Context, moid string) ApiUpdateKubernetesVersionRequest {
 	return ApiUpdateKubernetesVersionRequest{
@@ -28204,7 +29656,8 @@ func (a *KubernetesApiService) UpdateKubernetesVersion(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return KubernetesVersion
+//
+//	@return KubernetesVersion
 func (a *KubernetesApiService) UpdateKubernetesVersionExecute(r ApiUpdateKubernetesVersionRequest) (*KubernetesVersion, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -28219,7 +29672,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionExecute(r ApiUpdateKuberne
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/Versions/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -28246,7 +29699,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionExecute(r ApiUpdateKuberne
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVersion
@@ -28260,9 +29713,9 @@ func (a *KubernetesApiService) UpdateKubernetesVersionExecute(r ApiUpdateKuberne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -28279,6 +29732,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionExecute(r ApiUpdateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28289,6 +29743,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionExecute(r ApiUpdateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28299,6 +29754,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionExecute(r ApiUpdateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28309,6 +29765,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionExecute(r ApiUpdateKuberne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28318,6 +29775,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionExecute(r ApiUpdateKuberne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -28361,9 +29819,9 @@ func (r ApiUpdateKubernetesVersionPolicyRequest) Execute() (*KubernetesVersionPo
 /*
 UpdateKubernetesVersionPolicy Update a 'kubernetes.VersionPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesVersionPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesVersionPolicyRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesVersionPolicy(ctx context.Context, moid string) ApiUpdateKubernetesVersionPolicyRequest {
 	return ApiUpdateKubernetesVersionPolicyRequest{
@@ -28374,7 +29832,8 @@ func (a *KubernetesApiService) UpdateKubernetesVersionPolicy(ctx context.Context
 }
 
 // Execute executes the request
-//  @return KubernetesVersionPolicy
+//
+//	@return KubernetesVersionPolicy
 func (a *KubernetesApiService) UpdateKubernetesVersionPolicyExecute(r ApiUpdateKubernetesVersionPolicyRequest) (*KubernetesVersionPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -28389,7 +29848,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionPolicyExecute(r ApiUpdateK
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VersionPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -28416,7 +29875,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionPolicyExecute(r ApiUpdateK
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVersionPolicy
@@ -28430,9 +29889,9 @@ func (a *KubernetesApiService) UpdateKubernetesVersionPolicyExecute(r ApiUpdateK
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -28449,6 +29908,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionPolicyExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28459,6 +29919,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionPolicyExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28469,6 +29930,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionPolicyExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28479,6 +29941,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionPolicyExecute(r ApiUpdateK
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28488,6 +29951,7 @@ func (a *KubernetesApiService) UpdateKubernetesVersionPolicyExecute(r ApiUpdateK
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -28531,9 +29995,9 @@ func (r ApiUpdateKubernetesVirtualMachineInfraConfigPolicyRequest) Execute() (*K
 /*
 UpdateKubernetesVirtualMachineInfraConfigPolicy Update a 'kubernetes.VirtualMachineInfraConfigPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesVirtualMachineInfraConfigPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesVirtualMachineInfraConfigPolicyRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicy(ctx context.Context, moid string) ApiUpdateKubernetesVirtualMachineInfraConfigPolicyRequest {
 	return ApiUpdateKubernetesVirtualMachineInfraConfigPolicyRequest{
@@ -28544,7 +30008,8 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicy(c
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfraConfigPolicy
+//
+//	@return KubernetesVirtualMachineInfraConfigPolicy
 func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicyExecute(r ApiUpdateKubernetesVirtualMachineInfraConfigPolicyRequest) (*KubernetesVirtualMachineInfraConfigPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -28559,7 +30024,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicyEx
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInfraConfigPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -28586,7 +30051,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicyEx
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineInfraConfigPolicy
@@ -28600,9 +30065,9 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicyEx
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -28619,6 +30084,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28629,6 +30095,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28639,6 +30106,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28649,6 +30117,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicyEx
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28658,6 +30127,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfraConfigPolicyEx
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -28701,9 +30171,9 @@ func (r ApiUpdateKubernetesVirtualMachineInfrastructureProviderRequest) Execute(
 /*
 UpdateKubernetesVirtualMachineInfrastructureProvider Update a 'kubernetes.VirtualMachineInfrastructureProvider' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesVirtualMachineInfrastructureProviderRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesVirtualMachineInfrastructureProviderRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvider(ctx context.Context, moid string) ApiUpdateKubernetesVirtualMachineInfrastructureProviderRequest {
 	return ApiUpdateKubernetesVirtualMachineInfrastructureProviderRequest{
@@ -28714,7 +30184,8 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvi
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInfrastructureProvider
+//
+//	@return KubernetesVirtualMachineInfrastructureProvider
 func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProviderExecute(r ApiUpdateKubernetesVirtualMachineInfrastructureProviderRequest) (*KubernetesVirtualMachineInfrastructureProvider, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -28729,7 +30200,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvi
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInfrastructureProviders/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -28756,7 +30227,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvi
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineInfrastructureProvider
@@ -28770,9 +30241,9 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvi
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -28789,6 +30260,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28799,6 +30271,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28809,6 +30282,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28819,6 +30293,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28828,6 +30303,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInfrastructureProvi
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -28871,9 +30347,9 @@ func (r ApiUpdateKubernetesVirtualMachineInstanceTypeRequest) Execute() (*Kubern
 /*
 UpdateKubernetesVirtualMachineInstanceType Update a 'kubernetes.VirtualMachineInstanceType' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesVirtualMachineInstanceTypeRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesVirtualMachineInstanceTypeRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceType(ctx context.Context, moid string) ApiUpdateKubernetesVirtualMachineInstanceTypeRequest {
 	return ApiUpdateKubernetesVirtualMachineInstanceTypeRequest{
@@ -28884,7 +30360,8 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceType(ctx co
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineInstanceType
+//
+//	@return KubernetesVirtualMachineInstanceType
 func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceTypeExecute(r ApiUpdateKubernetesVirtualMachineInstanceTypeRequest) (*KubernetesVirtualMachineInstanceType, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -28899,7 +30376,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceTypeExecute
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineInstanceTypes/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -28926,7 +30403,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceTypeExecute
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineInstanceType
@@ -28940,9 +30417,9 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceTypeExecute
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -28959,6 +30436,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28969,6 +30447,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28979,6 +30458,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28989,6 +30469,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceTypeExecute
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -28998,6 +30479,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineInstanceTypeExecute
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -29041,9 +30523,9 @@ func (r ApiUpdateKubernetesVirtualMachineNodeProfileRequest) Execute() (*Kuberne
 /*
 UpdateKubernetesVirtualMachineNodeProfile Update a 'kubernetes.VirtualMachineNodeProfile' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateKubernetesVirtualMachineNodeProfileRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateKubernetesVirtualMachineNodeProfileRequest
 */
 func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfile(ctx context.Context, moid string) ApiUpdateKubernetesVirtualMachineNodeProfileRequest {
 	return ApiUpdateKubernetesVirtualMachineNodeProfileRequest{
@@ -29054,7 +30536,8 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfile(ctx con
 }
 
 // Execute executes the request
-//  @return KubernetesVirtualMachineNodeProfile
+//
+//	@return KubernetesVirtualMachineNodeProfile
 func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfileExecute(r ApiUpdateKubernetesVirtualMachineNodeProfileRequest) (*KubernetesVirtualMachineNodeProfile, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -29069,7 +30552,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfileExecute(
 	}
 
 	localVarPath := localBasePath + "/api/v1/kubernetes/VirtualMachineNodeProfiles/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -29096,7 +30579,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfileExecute(
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.kubernetesVirtualMachineNodeProfile
@@ -29110,9 +30593,9 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfileExecute(
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -29129,6 +30612,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -29139,6 +30623,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -29149,6 +30634,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -29159,6 +30645,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfileExecute(
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -29168,6 +30655,7 @@ func (a *KubernetesApiService) UpdateKubernetesVirtualMachineNodeProfileExecute(
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

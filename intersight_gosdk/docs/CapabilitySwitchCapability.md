@@ -6,14 +6,18 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "capability.SwitchCapability"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "capability.SwitchCapability"]
-**DefaultFcoeVlan** | Pointer to **int64** | Default Fcoe VLAN associated with this switch. | [optional] 
-**DynamicVifsSupported** | Pointer to **bool** | Dynamic VIFs support on this switch. | [optional] 
-**FanModulesSupported** | Pointer to **bool** | Fan Modules support on this switch. | [optional] 
+**DefaultFcoeVlan** | Pointer to **int64** | Default Fcoe VLAN associated with this switch. | [optional] [readonly] 
+**DynamicVifsSupported** | Pointer to **bool** | Dynamic VIFs support on this switch. | [optional] [readonly] 
+**FanModulesSupported** | Pointer to **bool** | Fan Modules support on this switch. | [optional] [readonly] 
 **FcEndHostModeReservedVsans** | Pointer to [**[]CapabilityPortRange**](CapabilityPortRange.md) |  | [optional] 
-**FcUplinkPortsAutoNegotiationSupported** | Pointer to **bool** | Fc Uplink ports auto negotiation speed support on this switch. | [optional] 
-**LocatorBeaconSupported** | Pointer to **bool** | Locator Beacon LED support on this switch. | [optional] 
-**MaxPorts** | Pointer to **int64** | Maximum allowed physical ports on this switch. | [optional] 
-**MaxSlots** | Pointer to **int64** | Maximum allowed physical slots on this switch. | [optional] 
+**FcUplinkPortsAutoNegotiationSupported** | Pointer to **bool** | Fc Uplink ports auto negotiation speed support on this switch. | [optional] [readonly] 
+**ImmControlsVpcompression** | Pointer to **bool** | VlanPort Compression is controlled by IMM. | [optional] [readonly] 
+**LocatorBeaconSupported** | Pointer to **bool** | Locator Beacon LED support on this switch. | [optional] [readonly] 
+**MaxPorts** | Pointer to **int64** | Maximum allowed physical ports on this switch. | [optional] [readonly] 
+**MaxSlots** | Pointer to **int64** | Maximum allowed physical slots on this switch. | [optional] [readonly] 
+**MinVersionMapWithBreakoutSupport** | Pointer to [**NullableFirmwareVersionMap**](FirmwareVersionMap.md) |  | [optional] 
+**MinVersionMapWithLocatorLedSupport** | Pointer to [**NullableFirmwareVersionMap**](FirmwareVersionMap.md) |  | [optional] 
+**MinVersionMapWithNegAuto25gSupport** | Pointer to [**NullableFirmwareVersionMap**](FirmwareVersionMap.md) |  | [optional] 
 **NetworkLimits** | Pointer to [**NullableCapabilitySwitchNetworkLimits**](CapabilitySwitchNetworkLimits.md) |  | [optional] 
 **PortsSupporting100gSpeed** | Pointer to [**[]CapabilityPortRange**](CapabilityPortRange.md) |  | [optional] 
 **PortsSupporting10gSpeed** | Pointer to [**[]CapabilityPortRange**](CapabilityPortRange.md) |  | [optional] 
@@ -24,12 +28,14 @@ Name | Type | Description | Notes
 **PortsSupportingFcoe** | Pointer to [**[]CapabilityPortRange**](CapabilityPortRange.md) |  | [optional] 
 **PortsSupportingServerRole** | Pointer to [**[]CapabilityPortRange**](CapabilityPortRange.md) |  | [optional] 
 **ReservedVsans** | Pointer to [**[]CapabilityPortRange**](CapabilityPortRange.md) |  | [optional] 
-**SerenoNetflowSupported** | Pointer to **bool** | Sereno Adaptor with Netflow support on this switch. | [optional] 
+**SerenoNetflowSupported** | Pointer to **bool** | Sereno Adaptor with Netflow support on this switch. | [optional] [readonly] 
+**ServerRoleSupportedOnBreakout** | Pointer to **[]string** |  | [optional] 
 **StorageLimits** | Pointer to [**NullableCapabilitySwitchStorageLimits**](CapabilitySwitchStorageLimits.md) |  | [optional] 
 **SwitchingModeCapabilities** | Pointer to [**[]CapabilitySwitchingModeCapability**](CapabilitySwitchingModeCapability.md) |  | [optional] 
 **SystemLimits** | Pointer to [**NullableCapabilitySwitchSystemLimits**](CapabilitySwitchSystemLimits.md) |  | [optional] 
 **UnifiedPorts** | Pointer to [**[]CapabilityPortRange**](CapabilityPortRange.md) |  | [optional] 
-**UnifiedRule** | Pointer to **string** | The Slider rule for Unified ports on this switch. | [optional] 
+**UnifiedRule** | Pointer to **string** | The Slider rule for Unified ports on this switch. | [optional] [readonly] 
+**UplinkAdminPortSpeedNegAuto25GbpsSupported** | Pointer to **bool** | &#39;Negotiate Auto 25000&#39; admin speed support on this switch for port or port-channel with Ethernet Uplink/Appliance/FCoE Uplink roles. | [optional] [readonly] 
 
 ## Methods
 
@@ -225,6 +231,31 @@ SetFcUplinkPortsAutoNegotiationSupported sets FcUplinkPortsAutoNegotiationSuppor
 
 HasFcUplinkPortsAutoNegotiationSupported returns a boolean if a field has been set.
 
+### GetImmControlsVpcompression
+
+`func (o *CapabilitySwitchCapability) GetImmControlsVpcompression() bool`
+
+GetImmControlsVpcompression returns the ImmControlsVpcompression field if non-nil, zero value otherwise.
+
+### GetImmControlsVpcompressionOk
+
+`func (o *CapabilitySwitchCapability) GetImmControlsVpcompressionOk() (*bool, bool)`
+
+GetImmControlsVpcompressionOk returns a tuple with the ImmControlsVpcompression field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetImmControlsVpcompression
+
+`func (o *CapabilitySwitchCapability) SetImmControlsVpcompression(v bool)`
+
+SetImmControlsVpcompression sets ImmControlsVpcompression field to given value.
+
+### HasImmControlsVpcompression
+
+`func (o *CapabilitySwitchCapability) HasImmControlsVpcompression() bool`
+
+HasImmControlsVpcompression returns a boolean if a field has been set.
+
 ### GetLocatorBeaconSupported
 
 `func (o *CapabilitySwitchCapability) GetLocatorBeaconSupported() bool`
@@ -300,6 +331,111 @@ SetMaxSlots sets MaxSlots field to given value.
 
 HasMaxSlots returns a boolean if a field has been set.
 
+### GetMinVersionMapWithBreakoutSupport
+
+`func (o *CapabilitySwitchCapability) GetMinVersionMapWithBreakoutSupport() FirmwareVersionMap`
+
+GetMinVersionMapWithBreakoutSupport returns the MinVersionMapWithBreakoutSupport field if non-nil, zero value otherwise.
+
+### GetMinVersionMapWithBreakoutSupportOk
+
+`func (o *CapabilitySwitchCapability) GetMinVersionMapWithBreakoutSupportOk() (*FirmwareVersionMap, bool)`
+
+GetMinVersionMapWithBreakoutSupportOk returns a tuple with the MinVersionMapWithBreakoutSupport field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMinVersionMapWithBreakoutSupport
+
+`func (o *CapabilitySwitchCapability) SetMinVersionMapWithBreakoutSupport(v FirmwareVersionMap)`
+
+SetMinVersionMapWithBreakoutSupport sets MinVersionMapWithBreakoutSupport field to given value.
+
+### HasMinVersionMapWithBreakoutSupport
+
+`func (o *CapabilitySwitchCapability) HasMinVersionMapWithBreakoutSupport() bool`
+
+HasMinVersionMapWithBreakoutSupport returns a boolean if a field has been set.
+
+### SetMinVersionMapWithBreakoutSupportNil
+
+`func (o *CapabilitySwitchCapability) SetMinVersionMapWithBreakoutSupportNil(b bool)`
+
+ SetMinVersionMapWithBreakoutSupportNil sets the value for MinVersionMapWithBreakoutSupport to be an explicit nil
+
+### UnsetMinVersionMapWithBreakoutSupport
+`func (o *CapabilitySwitchCapability) UnsetMinVersionMapWithBreakoutSupport()`
+
+UnsetMinVersionMapWithBreakoutSupport ensures that no value is present for MinVersionMapWithBreakoutSupport, not even an explicit nil
+### GetMinVersionMapWithLocatorLedSupport
+
+`func (o *CapabilitySwitchCapability) GetMinVersionMapWithLocatorLedSupport() FirmwareVersionMap`
+
+GetMinVersionMapWithLocatorLedSupport returns the MinVersionMapWithLocatorLedSupport field if non-nil, zero value otherwise.
+
+### GetMinVersionMapWithLocatorLedSupportOk
+
+`func (o *CapabilitySwitchCapability) GetMinVersionMapWithLocatorLedSupportOk() (*FirmwareVersionMap, bool)`
+
+GetMinVersionMapWithLocatorLedSupportOk returns a tuple with the MinVersionMapWithLocatorLedSupport field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMinVersionMapWithLocatorLedSupport
+
+`func (o *CapabilitySwitchCapability) SetMinVersionMapWithLocatorLedSupport(v FirmwareVersionMap)`
+
+SetMinVersionMapWithLocatorLedSupport sets MinVersionMapWithLocatorLedSupport field to given value.
+
+### HasMinVersionMapWithLocatorLedSupport
+
+`func (o *CapabilitySwitchCapability) HasMinVersionMapWithLocatorLedSupport() bool`
+
+HasMinVersionMapWithLocatorLedSupport returns a boolean if a field has been set.
+
+### SetMinVersionMapWithLocatorLedSupportNil
+
+`func (o *CapabilitySwitchCapability) SetMinVersionMapWithLocatorLedSupportNil(b bool)`
+
+ SetMinVersionMapWithLocatorLedSupportNil sets the value for MinVersionMapWithLocatorLedSupport to be an explicit nil
+
+### UnsetMinVersionMapWithLocatorLedSupport
+`func (o *CapabilitySwitchCapability) UnsetMinVersionMapWithLocatorLedSupport()`
+
+UnsetMinVersionMapWithLocatorLedSupport ensures that no value is present for MinVersionMapWithLocatorLedSupport, not even an explicit nil
+### GetMinVersionMapWithNegAuto25gSupport
+
+`func (o *CapabilitySwitchCapability) GetMinVersionMapWithNegAuto25gSupport() FirmwareVersionMap`
+
+GetMinVersionMapWithNegAuto25gSupport returns the MinVersionMapWithNegAuto25gSupport field if non-nil, zero value otherwise.
+
+### GetMinVersionMapWithNegAuto25gSupportOk
+
+`func (o *CapabilitySwitchCapability) GetMinVersionMapWithNegAuto25gSupportOk() (*FirmwareVersionMap, bool)`
+
+GetMinVersionMapWithNegAuto25gSupportOk returns a tuple with the MinVersionMapWithNegAuto25gSupport field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMinVersionMapWithNegAuto25gSupport
+
+`func (o *CapabilitySwitchCapability) SetMinVersionMapWithNegAuto25gSupport(v FirmwareVersionMap)`
+
+SetMinVersionMapWithNegAuto25gSupport sets MinVersionMapWithNegAuto25gSupport field to given value.
+
+### HasMinVersionMapWithNegAuto25gSupport
+
+`func (o *CapabilitySwitchCapability) HasMinVersionMapWithNegAuto25gSupport() bool`
+
+HasMinVersionMapWithNegAuto25gSupport returns a boolean if a field has been set.
+
+### SetMinVersionMapWithNegAuto25gSupportNil
+
+`func (o *CapabilitySwitchCapability) SetMinVersionMapWithNegAuto25gSupportNil(b bool)`
+
+ SetMinVersionMapWithNegAuto25gSupportNil sets the value for MinVersionMapWithNegAuto25gSupport to be an explicit nil
+
+### UnsetMinVersionMapWithNegAuto25gSupport
+`func (o *CapabilitySwitchCapability) UnsetMinVersionMapWithNegAuto25gSupport()`
+
+UnsetMinVersionMapWithNegAuto25gSupport ensures that no value is present for MinVersionMapWithNegAuto25gSupport, not even an explicit nil
 ### GetNetworkLimits
 
 `func (o *CapabilitySwitchCapability) GetNetworkLimits() CapabilitySwitchNetworkLimits`
@@ -675,6 +811,41 @@ SetSerenoNetflowSupported sets SerenoNetflowSupported field to given value.
 
 HasSerenoNetflowSupported returns a boolean if a field has been set.
 
+### GetServerRoleSupportedOnBreakout
+
+`func (o *CapabilitySwitchCapability) GetServerRoleSupportedOnBreakout() []string`
+
+GetServerRoleSupportedOnBreakout returns the ServerRoleSupportedOnBreakout field if non-nil, zero value otherwise.
+
+### GetServerRoleSupportedOnBreakoutOk
+
+`func (o *CapabilitySwitchCapability) GetServerRoleSupportedOnBreakoutOk() (*[]string, bool)`
+
+GetServerRoleSupportedOnBreakoutOk returns a tuple with the ServerRoleSupportedOnBreakout field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetServerRoleSupportedOnBreakout
+
+`func (o *CapabilitySwitchCapability) SetServerRoleSupportedOnBreakout(v []string)`
+
+SetServerRoleSupportedOnBreakout sets ServerRoleSupportedOnBreakout field to given value.
+
+### HasServerRoleSupportedOnBreakout
+
+`func (o *CapabilitySwitchCapability) HasServerRoleSupportedOnBreakout() bool`
+
+HasServerRoleSupportedOnBreakout returns a boolean if a field has been set.
+
+### SetServerRoleSupportedOnBreakoutNil
+
+`func (o *CapabilitySwitchCapability) SetServerRoleSupportedOnBreakoutNil(b bool)`
+
+ SetServerRoleSupportedOnBreakoutNil sets the value for ServerRoleSupportedOnBreakout to be an explicit nil
+
+### UnsetServerRoleSupportedOnBreakout
+`func (o *CapabilitySwitchCapability) UnsetServerRoleSupportedOnBreakout()`
+
+UnsetServerRoleSupportedOnBreakout ensures that no value is present for ServerRoleSupportedOnBreakout, not even an explicit nil
 ### GetStorageLimits
 
 `func (o *CapabilitySwitchCapability) GetStorageLimits() CapabilitySwitchStorageLimits`
@@ -839,6 +1010,31 @@ SetUnifiedRule sets UnifiedRule field to given value.
 `func (o *CapabilitySwitchCapability) HasUnifiedRule() bool`
 
 HasUnifiedRule returns a boolean if a field has been set.
+
+### GetUplinkAdminPortSpeedNegAuto25GbpsSupported
+
+`func (o *CapabilitySwitchCapability) GetUplinkAdminPortSpeedNegAuto25GbpsSupported() bool`
+
+GetUplinkAdminPortSpeedNegAuto25GbpsSupported returns the UplinkAdminPortSpeedNegAuto25GbpsSupported field if non-nil, zero value otherwise.
+
+### GetUplinkAdminPortSpeedNegAuto25GbpsSupportedOk
+
+`func (o *CapabilitySwitchCapability) GetUplinkAdminPortSpeedNegAuto25GbpsSupportedOk() (*bool, bool)`
+
+GetUplinkAdminPortSpeedNegAuto25GbpsSupportedOk returns a tuple with the UplinkAdminPortSpeedNegAuto25GbpsSupported field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetUplinkAdminPortSpeedNegAuto25GbpsSupported
+
+`func (o *CapabilitySwitchCapability) SetUplinkAdminPortSpeedNegAuto25GbpsSupported(v bool)`
+
+SetUplinkAdminPortSpeedNegAuto25GbpsSupported sets UplinkAdminPortSpeedNegAuto25GbpsSupported field to given value.
+
+### HasUplinkAdminPortSpeedNegAuto25GbpsSupported
+
+`func (o *CapabilitySwitchCapability) HasUplinkAdminPortSpeedNegAuto25GbpsSupported() bool`
+
+HasUplinkAdminPortSpeedNegAuto25GbpsSupported returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

@@ -33,36 +33,6 @@ To register an OAuth2 application, the following information must be provided.
 4) A short description of the application
 5) A list of redirect URLs
 When an AppRegistration is created, a unique OAuth2 clientId is generated and returned in the HTTP response.
-## Usage Example
-### Resource Creation
-
-```hcl
-resource "intersight_iam_app_registration" "iam_app_registration1" {
-  client_name         = "name1"
-  client_type         = "confidential"
-  revoke              = true
-  renew_client_secret = true
-  roles {
-    moid        = var.iam_role
-    object_type = "iam.Role"
-    class_id    = "iam.Role"
-  }
-  permission {
-    moid        = var.iam_permission
-    object_type = "iam.Permission"
-  }
-}
-
-variable "iam_permission" {
-  type        = string
-  description = "value for iam_permission"
-}
-
-variable "iam_role" {
-  type        = string
-  description = "value for iam_role"
-}
-```
 ## Argument Reference
 The following arguments are supported:
 * `account`:(HashMap) -(ReadOnly) A reference to a iamAccount resource.When the $expand query parameter is specified, the referenced resource is returned inline. 
@@ -71,6 +41,7 @@ This complex property has following sub-properties:
   + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
   + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
 * `account_moid`:(string)(ReadOnly) The Account ID for this managed object. 
+* `admin_status`:(string) Used to trigger the enable or disable action on the App Registration. These actions change the status of an App Registration.* `enable` - Used to enable a disabled API key/App Registration. If the API key/App Registration is already expired, this action has no effect.* `disable` - Used to disable an active API key/App Registration. If the API key/App Registration is already expired, this action has no effect. 
 * `ancestors`:(Array)(ReadOnly) An array of relationships to moBaseMo resources. 
 This complex property has following sub-properties:
   + `moid`:(string) The Moid of the referenced REST resource. 
@@ -83,8 +54,12 @@ This complex property has following sub-properties:
 * `create_time`:(string)(ReadOnly) The time when this managed object was created. 
 * `description`:(string) Description of the application. 
 * `domain_group_moid`:(string)(ReadOnly) The DomainGroup ID for this managed object. 
+* `expiry_date_time`:(string) The expiration date of the App Registration which is set at the time of its creation. Its value can only be assigned a date that falls within the range determined by the maximum expiration time configured at the account level. The expiry date can be edited to be earlier or later, provided it stays within the designated expiry period. This period is determined by adding the 'startTime' property of the App Registration to the maximum expiry time configured at the account level. 
 * `grant_types`:
                 (Array of schema.TypeString) -
+* `is_never_expiring`:(bool) Used to mark the App Registration as a never-expiring App Registration. 
+* `last_used_ip`:(string)(ReadOnly) The ip address from which the App Registration was last used. 
+* `last_used_time`:(string)(ReadOnly) The time at which the App Registration was last used. It is updated every 24 hours. 
 * `mod_time`:(string)(ReadOnly) The time when this managed object was last modified. 
 * `moid`:(string) The unique identifier of this Managed Object instance. 
 * `oauth_tokens`:(Array)(ReadOnly) An array of relationships to iamOAuthToken resources. 
@@ -92,6 +67,7 @@ This complex property has following sub-properties:
   + `moid`:(string) The Moid of the referenced REST resource. 
   + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
   + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+* `oper_status`:(string)(ReadOnly) The current status of the App Registration that dictates the validity of the app.* `enabled` - An API key/App Registration having enabled status can be used for API invocation.* `disabled` - An API key/App Registration having disabled status cannot be used for API invocation.* `expired` - An API key/App Registration having expired status cannot be used for API invocation as the expiration date has passed. 
 * `owners`:
                 (Array of schema.TypeString) -(ReadOnly)
 * `parent`:(HashMap) -(ReadOnly) A reference to a moBaseMo resource.When the $expand query parameter is specified, the referenced resource is returned inline. 
@@ -121,8 +97,24 @@ This complex property has following sub-properties:
   + `moid`:(string) The Moid of the referenced REST resource. 
   + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
   + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+* `scope`:(HashMap) -(ReadOnly) Scope holds a collection of account Id, permission Id to which the current session is scoped to. 
+This complex property has following sub-properties:
+  + `account_access_control_id`:(string)(ReadOnly) Moid of the AccountAccessControl through which the access is given to switch scope. 
+  + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+  + `request_identifier`:(string)(ReadOnly) Stores the identifier of the issue for which user is trying to switch scope to another account. 
+  + `switched_from_account`:(HashMap) -(ReadOnly) Permission for the Account from which user switched the scope. 
+This complex property has following sub-properties:
+    + `account_id`:(string)(ReadOnly) Moid of the Account to/from which user switched the scope. 
+    + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+    + `permission_id`:(string)(ReadOnly) Moid of the Permission for the Account to/from which user switched the scope. 
+  + `switched_to_accounts`:(Array)
+This complex property has following sub-properties:
+    + `account_id`:(string)(ReadOnly) Moid of the Account to/from which user switched the scope. 
+    + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+    + `permission_id`:(string)(ReadOnly) Moid of the Permission for the Account to/from which user switched the scope. 
 * `shared_scope`:(string)(ReadOnly) Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.Objects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs. 
 * `show_consent_screen`:(bool) Set to true if consent screen needs to be shown during the OAuth login process.Applicable only for public AppRegistrations, means only 'authorization_code' grantType.Note that consent screen will be shown on each login. 
+* `start_time`:(string)(ReadOnly) The timestamp at which an expiry date was first set on this app registration. For expiring App Registrations, this field is same as the create time of the App Registration.For never-expiring App Registrations, this field is set initially to zero time value. If a never-expiry App Registration is later changed to have an expiration, the timestamp marking the start of this transition is recorded in this field. 
 * `tags`:(Array)
 This complex property has following sub-properties:
   + `key`:(string) The string representation of a tag key. 
@@ -139,6 +131,7 @@ This complex property has following sub-properties:
     + `moid`:(string) The Moid of the referenced REST resource. 
     + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
     + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+  + `marked_for_deletion`:(bool)(ReadOnly) The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `ref_mo`:(HashMap) -(ReadOnly) A reference to the original Managed Object. 
 This complex property has following sub-properties:

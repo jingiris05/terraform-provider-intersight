@@ -5,8 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +24,7 @@ func resourceVnicFcIf() *schema.Resource {
 		UpdateContext: resourceVnicFcIfUpdate,
 		DeleteContext: resourceVnicFcIfDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -296,10 +299,18 @@ func resourceVnicFcIf() *schema.Resource {
 				Default:     "vnic.FcIf",
 			},
 			"order": {
-				Description: "The order in which the virtual interface is brought up. The order assigned to an interface should be unique for all the Ethernet and Fibre-Channel interfaces on each PCI link on a VIC adapter. The maximum value of PCI order is limited by the number of virtual interfaces (Ethernet and Fibre-Channel) on each PCI link on a VIC adapter. All VIC adapters have a single PCI link except VIC 1385 which has two.",
+				Description: "The order in which the virtual interface is brought up. The order assigned to an interface should be unique for all the Ethernet and Fibre-Channel interfaces on each PCI link on a VIC adapter. The order should start from zero with no overlaps. The maximum value of PCI order is limited by the number of virtual interfaces (Ethernet and Fibre-Channel) on each PCI link on a VIC adapter. All VIC adapters have a single PCI link except VIC 1340, VIC 1380 and VIC 1385 which have two.",
 				Type:        schema.TypeInt,
 				Optional:    true,
 			},
+			"overridden_list": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				}},
 			"owners": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -412,6 +423,18 @@ func resourceVnicFcIf() *schema.Resource {
 							Optional:         true,
 							DiffSuppressFunc: SuppressDiffAdditionProps,
 						},
+						"auto_pci_link": {
+							Description: "Enable or disable automatic assignment of the PCI Link in a dual-link adapter. This option applies only to 13xx series VICs that support dual-link. If enabled, the system determines the placement of the vNIC/vHBA on either of the PCI Links.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
+						},
+						"auto_slot_id": {
+							Description: "Enable or disable automatic assignment of the VIC slot ID. If enabled and the server has only one VIC, the same VIC is chosen for all the vNICs. If enabled and the server has multiple VICs, the vNIC/vHBA are deployed on the first VIC. The Slot ID determines the first VIC. MLOM is the first Slot ID and the ID increments to 2, 3, and so on.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
+						},
 						"class_id": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
 							Type:        schema.TypeString,
@@ -431,11 +454,18 @@ func resourceVnicFcIf() *schema.Resource {
 							Default:     "vnic.PlacementSettings",
 						},
 						"pci_link": {
-							Description:  "The PCI Link used as transport for the virtual interface. This field is applicable only for VIC 1385 model (UCSC-PCIE-C40Q-03) which support two PCI links. The value, if specified, for any other VIC model will be ignored.",
+							Description:  "The PCI Link used as transport for the virtual interface. PCI Link is only applicable for select Cisco UCS VIC 1300 models (UCSC-PCIE-C40Q-03, UCSB-MLOM-40G-03, UCSB-VIC-M83-8P) that support two PCI links. The value, if specified, for any other VIC model will be ignored.",
 							Type:         schema.TypeInt,
 							ValidateFunc: validation.IntBetween(0, 1),
 							Optional:     true,
 							Default:      0,
+						},
+						"pci_link_assignment_mode": {
+							Description:  "If the autoPciLink is disabled, the user can either choose to place the vNICs manually or based on a policy.If the autoPciLink is enabled, it will be set to None.\n* `Custom` - The user needs to specify the PCI Link manually.\n* `Load-Balanced` - The system will uniformly distribute the interfaces across the PCI Links.\n* `None` - Assignment is not applicable and will be set when the AutoPciLink is set to true.",
+							Type:         schema.TypeString,
+							ValidateFunc: validation.StringInSlice([]string{"Custom", "Load-Balanced", "None"}, false),
+							Optional:     true,
+							Default:      "Custom",
 						},
 						"switch_id": {
 							Description:  "The fabric port to which the vNICs will be associated.\n* `None` - Fabric Id is not set to either A or B for the standalone case where the server is not connected to Fabric Interconnects. The value 'None' should be used.\n* `A` - Fabric A of the FI cluster.\n* `B` - Fabric B of the FI cluster.",
@@ -538,8 +568,8 @@ func resourceVnicFcIf() *schema.Resource {
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
-				ConfigMode:  schema.SchemaConfigModeAttr,
 				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"additional_properties": {
@@ -588,6 +618,46 @@ func resourceVnicFcIf() *schema.Resource {
 				Description: "An array of relationships to vnicFcIf resources.",
 				Type:        schema.TypeList,
 				Optional:    true,
+				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "mo.MoRef",
+						},
+						"moid": {
+							Description: "The Moid of the referenced REST resource.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the remote type referred by this relationship.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+						},
+						"selector": {
+							Description: "An OData $filter expression which describes the REST resource to be referenced. This field may\nbe set instead of 'moid' by clients.\n1. If 'moid' is set this field is ignored.\n1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of the\nresource matching the filter expression and populates it in the MoRef that is part of the object\ninstance being inserted/updated to fulfill the REST request.\nAn error is returned if the filter matches zero or more than one REST resource.\nAn example filter string is: Serial eq '3AA8B7T11'.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+					},
+				},
+			},
+			"src_template": {
+				Description: "A reference to a vnicVhbaTemplate resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
 				ConfigMode:  schema.SchemaConfigModeAttr,
 				Computed:    true,
 				Elem: &schema.Resource{
@@ -626,7 +696,7 @@ func resourceVnicFcIf() *schema.Resource {
 			"static_wwpn_address": {
 				Description:  "The WWPN address must be in hexadecimal format xx:xx:xx:xx:xx:xx:xx:xx.\nAllowed ranges are 20:00:00:00:00:00:00:00 to 20:FF:FF:FF:FF:FF:FF:FF or from 50:00:00:00:00:00:00:00 to 5F:FF:FF:FF:FF:FF:FF:FF.\nTo ensure uniqueness of WWN's in the SAN fabric, you are strongly encouraged to use the WWN prefix - 20:00:00:25:B5:xx:xx:xx.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|((^20|5[0-9a-fA-F]{1}):([0-9a-fA-F]{2}:){6}([0-9a-fA-F]{2}))"), ""),
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|((^20|5[0-9a-fA-F]{1}):([0-9a-fA-F]{2}:){6}([0-9a-fA-F]{2})$)"), ""),
 				Optional:     true,
 			},
 			"tags": {
@@ -656,6 +726,139 @@ func resourceVnicFcIf() *schema.Resource {
 					},
 				},
 			},
+			"template_actions": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "motemplate.ActionEntry",
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "motemplate.ActionEntry",
+						},
+						"params": {
+							Type:       schema.TypeList,
+							Optional:   true,
+							ConfigMode: schema.SchemaConfigModeAttr,
+							Computed:   true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"additional_properties": {
+										Type:             schema.TypeString,
+										Optional:         true,
+										DiffSuppressFunc: SuppressDiffAdditionProps,
+									},
+									"class_id": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "motemplate.ActionParam",
+									},
+									"name": {
+										Description:  "The action parameter identifier. The supported values are SyncType and SyncTimer for the template sync action.\n* `None` - The default parameter that implies that no action parameter is required for the template action.\n* `SyncType` - The parameter that describes the type of sync action such as SyncAll, SyncOne or SyncFailed supported on any template or derived object.\n* `SyncTimer` - The parameter for the initial delay in seconds after which the sync action must be executed. The supported range is from 0 to 60 seconds.\n* `OverriddenList` - The parameter applicable in attach operation indicating the configurations that must override the template configurations.",
+										Type:         schema.TypeString,
+										ValidateFunc: validation.StringInSlice([]string{"None", "SyncType", "SyncTimer", "OverriddenList"}, false),
+										Optional:     true,
+										Default:      "None",
+									},
+									"object_type": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "motemplate.ActionParam",
+									},
+									"value": {
+										Description: "The action parameter value is based on the action parameter type. Supported action parameters and their values are-\na) Name - SyncType, Supported Values - SyncAll, SyncFailed, SyncOne.\nb) Name - SyncTimer, Supported Values - 0 to 60 seconds.\nc) Name - OverriddenList, Supported Values - Comma Separated list of overridable configurations.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+								},
+							},
+						},
+						"type": {
+							Description:  "The action type to be executed.\n* `Sync` - The action to merge values from the template to its derived objects.\n* `Deploy` - The action to execute deploy action on all the objects derived from the template that is mainly applicable for the various profile types.\n* `Detach` - The action to detach the current derived object from its attached template.\n* `Attach` - The action to attach the current object to the specified template.",
+							Type:         schema.TypeString,
+							ValidateFunc: validation.StringInSlice([]string{"Sync", "Deploy", "Detach", "Attach"}, false),
+							Optional:     true,
+							Default:      "Sync",
+						},
+					},
+				},
+			},
+			"template_sync_errors": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "motemplate.SyncError",
+						},
+						"message": {
+							Description: "The localized message based on the locale setting of the user's context providing the error description.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "motemplate.SyncError",
+						},
+						"type": {
+							Description: "The error type that indicates the point of failure.\n* `Transient` - Any error which is a runtime error due to some other action in progress on the derived object that is blocking the sync action. This error type is retriable.For example, when vNIC Template is updated, but the derived vNIC or vNICs are part of a LAN Connectivity policy associated with a profile being deployed to endpoint. In this scenario, the derived vNIC update displays this error.\n* `Validation` - When the template sync on the derived object fails due to an incorrect configuration, it displays a validation error. This error type is considered fatal and not retried.For example, when a new policy is attached to a server profile template, the sync to a derived server profile fails due to the policy attach errors.\n* `User` - Any configuration error due to incorrect or invalid input and that requires user intervention for correction, is displayed under this category. This error type is considered fatal and not retried.For example, when a new policy is attached to a server profile template, the sync to a derived server profile fails. This happens when the policyis not applicable to the server assigned to the server profile, such as the Power policy that is not applicable for UCS Rack servers.\n* `Internal` - Any application internal errors are displayed under this category. This error type is considered fatal and not retried.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+					},
+				},
+			},
+			"template_sync_status": {
+				Description: "The sync status of the current MO wrt the attached Template MO.\n* `None` - The Enum value represents that the object is not attached to any template.\n* `OK` - The Enum value represents that the object values are in sync with attached template.\n* `Scheduled` - The Enum value represents that the object sync from attached template is scheduled from template.\n* `InProgress` - The Enum value represents that the object sync with the attached template is in progress.\n* `OutOfSync` - The Enum value represents that the object values are not in sync with attached template.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"type": {
 				Description:  "VHBA Type configuration for SAN Connectivity Policy. This configuration is supported only on Cisco VIC 14XX series and higher series of adapters.\n* `fc-initiator` - The default value set for vHBA Type Configuration. Fc-initiator specifies vHBA as a consumer of storage. Enables SCSI commands to transfer data and status information between host and target storage systems.\n* `fc-nvme-initiator` - Fc-nvme-initiator specifies vHBA as a consumer of storage. Enables NVMe-based message commands to transfer data and status information between host and target storage systems.\n* `fc-nvme-target` - Fc-nvme-target specifies vHBA as a provider of storage volumes to initiators. Enables NVMe-based message commands to transfer data and status information between host and target storage systems. Currently tech-preview, only enabled with an asynchronous driver.\n* `fc-target` - Fc-target specifies vHBA as a provider of storage volumes to initiators. Enables SCSI commands to transfer data and status information between host and target storage systems. fc-target is enabled only with an asynchronous driver.",
 				Type:         schema.TypeString,
@@ -721,6 +924,17 @@ func resourceVnicFcIf() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1121,6 +1335,19 @@ func resourceVnicFcIfCreate(c context.Context, d *schema.ResourceData, meta inte
 		o.SetOrder(x)
 	}
 
+	if v, ok := d.GetOk("overridden_list"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetOverriddenList(x)
+		}
+	}
+
 	if v, ok := d.GetOkExists("persistent_bindings"); ok {
 		x := (v.(bool))
 		o.SetPersistentBindings(x)
@@ -1147,6 +1374,18 @@ func resourceVnicFcIfCreate(c context.Context, d *schema.ResourceData, meta inte
 					}
 				}
 			}
+			if v, ok := l["auto_pci_link"]; ok {
+				{
+					x := (v.(bool))
+					o.SetAutoPciLink(x)
+				}
+			}
+			if v, ok := l["auto_slot_id"]; ok {
+				{
+					x := (v.(bool))
+					o.SetAutoSlotId(x)
+				}
+			}
 			o.SetClassId("vnic.PlacementSettings")
 			if v, ok := l["id"]; ok {
 				{
@@ -1164,6 +1403,12 @@ func resourceVnicFcIfCreate(c context.Context, d *schema.ResourceData, meta inte
 				{
 					x := int64(v.(int))
 					o.SetPciLink(x)
+				}
+			}
+			if v, ok := l["pci_link_assignment_mode"]; ok {
+				{
+					x := (v.(string))
+					o.SetPciLinkAssignmentMode(x)
 				}
 			}
 			if v, ok := l["switch_id"]; ok {
@@ -1272,8 +1517,8 @@ func resourceVnicFcIfCreate(c context.Context, d *schema.ResourceData, meta inte
 		}
 	}
 
-	if v, ok := d.GetOk("scp_vhba"); ok {
-		p := make([]models.VnicFcIfRelationship, 0, 1)
+	if v, ok := d.GetOk("src_template"); ok {
+		p := make([]models.VnicVhbaTemplateRelationship, 0, 1)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			l := s[i].(map[string]interface{})
@@ -1307,53 +1552,11 @@ func resourceVnicFcIfCreate(c context.Context, d *schema.ResourceData, meta inte
 					o.SetSelector(x)
 				}
 			}
-			p = append(p, models.MoMoRefAsVnicFcIfRelationship(o))
+			p = append(p, models.MoMoRefAsVnicVhbaTemplateRelationship(o))
 		}
 		if len(p) > 0 {
 			x := p[0]
-			o.SetScpVhba(x)
-		}
-	}
-
-	if v, ok := d.GetOk("sp_vhbas"); ok {
-		x := make([]models.VnicFcIfRelationship, 0)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			o := models.NewMoMoRefWithDefaults()
-			l := s[i].(map[string]interface{})
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("mo.MoRef")
-			if v, ok := l["moid"]; ok {
-				{
-					x := (v.(string))
-					o.SetMoid(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			if v, ok := l["selector"]; ok {
-				{
-					x := (v.(string))
-					o.SetSelector(x)
-				}
-			}
-			x = append(x, models.MoMoRefAsVnicFcIfRelationship(o))
-		}
-		if len(x) > 0 {
-			o.SetSpVhbas(x)
+			o.SetSrcTemplate(x)
 		}
 	}
 
@@ -1394,6 +1597,115 @@ func resourceVnicFcIfCreate(c context.Context, d *schema.ResourceData, meta inte
 		}
 		if len(x) > 0 {
 			o.SetTags(x)
+		}
+	}
+
+	if v, ok := d.GetOk("template_actions"); ok {
+		x := make([]models.MotemplateActionEntry, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := models.NewMotemplateActionEntryWithDefaults()
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("motemplate.ActionEntry")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["params"]; ok {
+				{
+					x := make([]models.MotemplateActionParam, 0)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						o := models.NewMotemplateActionParamWithDefaults()
+						l := s[i].(map[string]interface{})
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("motemplate.ActionParam")
+						if v, ok := l["name"]; ok {
+							{
+								x := (v.(string))
+								o.SetName(x)
+							}
+						}
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["value"]; ok {
+							{
+								x := (v.(string))
+								o.SetValue(x)
+							}
+						}
+						x = append(x, *o)
+					}
+					if len(x) > 0 {
+						o.SetParams(x)
+					}
+				}
+			}
+			if v, ok := l["type"]; ok {
+				{
+					x := (v.(string))
+					o.SetType(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		if len(x) > 0 {
+			o.SetTemplateActions(x)
+		}
+	}
+
+	if v, ok := d.GetOk("template_sync_errors"); ok {
+		x := make([]models.MotemplateSyncError, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := models.NewMotemplateSyncErrorWithDefaults()
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("motemplate.SyncError")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		if len(x) > 0 {
+			o.SetTemplateSyncErrors(x)
 		}
 	}
 
@@ -1503,8 +1815,16 @@ func resourceVnicFcIfCreate(c context.Context, d *schema.ResourceData, meta inte
 		}
 		return diag.Errorf("error occurred while creating VnicFcIf: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceVnicFcIfRead(c, d, meta)...)
 }
 func detachVnicFcIfProfiles(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -1532,6 +1852,9 @@ func detachVnicFcIfProfiles(d *schema.ResourceData, meta interface{}) diag.Diagn
 func resourceVnicFcIfRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.VnicApi.GetVnicFcIfByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1609,6 +1932,10 @@ func resourceVnicFcIfRead(c context.Context, d *schema.ResourceData, meta interf
 		return diag.Errorf("error occurred while setting property Order in VnicFcIf object: %s", err.Error())
 	}
 
+	if err := d.Set("overridden_list", (s.GetOverriddenList())); err != nil {
+		return diag.Errorf("error occurred while setting property OverriddenList in VnicFcIf object: %s", err.Error())
+	}
+
 	if err := d.Set("owners", (s.GetOwners())); err != nil {
 		return diag.Errorf("error occurred while setting property Owners in VnicFcIf object: %s", err.Error())
 	}
@@ -1653,12 +1980,28 @@ func resourceVnicFcIfRead(c context.Context, d *schema.ResourceData, meta interf
 		return diag.Errorf("error occurred while setting property SpVhbas in VnicFcIf object: %s", err.Error())
 	}
 
+	if err := d.Set("src_template", flattenMapVnicVhbaTemplateRelationship(s.GetSrcTemplate(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property SrcTemplate in VnicFcIf object: %s", err.Error())
+	}
+
 	if err := d.Set("static_wwpn_address", (s.GetStaticWwpnAddress())); err != nil {
 		return diag.Errorf("error occurred while setting property StaticWwpnAddress in VnicFcIf object: %s", err.Error())
 	}
 
 	if err := d.Set("tags", flattenListMoTag(s.GetTags(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Tags in VnicFcIf object: %s", err.Error())
+	}
+
+	if err := d.Set("template_actions", flattenListMotemplateActionEntry(s.GetTemplateActions(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property TemplateActions in VnicFcIf object: %s", err.Error())
+	}
+
+	if err := d.Set("template_sync_errors", flattenListMotemplateSyncError(s.GetTemplateSyncErrors(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property TemplateSyncErrors in VnicFcIf object: %s", err.Error())
+	}
+
+	if err := d.Set("template_sync_status", (s.GetTemplateSyncStatus())); err != nil {
+		return diag.Errorf("error occurred while setting property TemplateSyncStatus in VnicFcIf object: %s", err.Error())
 	}
 
 	if err := d.Set("type", (s.GetType())); err != nil {
@@ -1905,6 +2248,18 @@ func resourceVnicFcIfUpdate(c context.Context, d *schema.ResourceData, meta inte
 		o.SetOrder(x)
 	}
 
+	if d.HasChange("overridden_list") {
+		v := d.Get("overridden_list")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetOverriddenList(x)
+	}
+
 	if d.HasChange("persistent_bindings") {
 		v := d.Get("persistent_bindings")
 		x := (v.(bool))
@@ -1934,6 +2289,18 @@ func resourceVnicFcIfUpdate(c context.Context, d *schema.ResourceData, meta inte
 					}
 				}
 			}
+			if v, ok := l["auto_pci_link"]; ok {
+				{
+					x := (v.(bool))
+					o.SetAutoPciLink(x)
+				}
+			}
+			if v, ok := l["auto_slot_id"]; ok {
+				{
+					x := (v.(bool))
+					o.SetAutoSlotId(x)
+				}
+			}
 			o.SetClassId("vnic.PlacementSettings")
 			if v, ok := l["id"]; ok {
 				{
@@ -1951,6 +2318,12 @@ func resourceVnicFcIfUpdate(c context.Context, d *schema.ResourceData, meta inte
 				{
 					x := int64(v.(int))
 					o.SetPciLink(x)
+				}
+			}
+			if v, ok := l["pci_link_assignment_mode"]; ok {
+				{
+					x := (v.(string))
+					o.SetPciLinkAssignmentMode(x)
 				}
 			}
 			if v, ok := l["switch_id"]; ok {
@@ -2061,9 +2434,9 @@ func resourceVnicFcIfUpdate(c context.Context, d *schema.ResourceData, meta inte
 		}
 	}
 
-	if d.HasChange("scp_vhba") {
-		v := d.Get("scp_vhba")
-		p := make([]models.VnicFcIfRelationship, 0, 1)
+	if d.HasChange("src_template") {
+		v := d.Get("src_template")
+		p := make([]models.VnicVhbaTemplateRelationship, 0, 1)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			l := s[i].(map[string]interface{})
@@ -2097,53 +2470,12 @@ func resourceVnicFcIfUpdate(c context.Context, d *schema.ResourceData, meta inte
 					o.SetSelector(x)
 				}
 			}
-			p = append(p, models.MoMoRefAsVnicFcIfRelationship(o))
+			p = append(p, models.MoMoRefAsVnicVhbaTemplateRelationship(o))
 		}
 		if len(p) > 0 {
 			x := p[0]
-			o.SetScpVhba(x)
+			o.SetSrcTemplate(x)
 		}
-	}
-
-	if d.HasChange("sp_vhbas") {
-		v := d.Get("sp_vhbas")
-		x := make([]models.VnicFcIfRelationship, 0)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			o := &models.MoMoRef{}
-			l := s[i].(map[string]interface{})
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			o.SetClassId("mo.MoRef")
-			if v, ok := l["moid"]; ok {
-				{
-					x := (v.(string))
-					o.SetMoid(x)
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			if v, ok := l["selector"]; ok {
-				{
-					x := (v.(string))
-					o.SetSelector(x)
-				}
-			}
-			x = append(x, models.MoMoRefAsVnicFcIfRelationship(o))
-		}
-		o.SetSpVhbas(x)
 	}
 
 	if d.HasChange("static_wwpn_address") {
@@ -2184,6 +2516,113 @@ func resourceVnicFcIfUpdate(c context.Context, d *schema.ResourceData, meta inte
 			x = append(x, *o)
 		}
 		o.SetTags(x)
+	}
+
+	if d.HasChange("template_actions") {
+		v := d.Get("template_actions")
+		x := make([]models.MotemplateActionEntry, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := &models.MotemplateActionEntry{}
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("motemplate.ActionEntry")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["params"]; ok {
+				{
+					x := make([]models.MotemplateActionParam, 0)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						o := models.NewMotemplateActionParamWithDefaults()
+						l := s[i].(map[string]interface{})
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("motemplate.ActionParam")
+						if v, ok := l["name"]; ok {
+							{
+								x := (v.(string))
+								o.SetName(x)
+							}
+						}
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["value"]; ok {
+							{
+								x := (v.(string))
+								o.SetValue(x)
+							}
+						}
+						x = append(x, *o)
+					}
+					if len(x) > 0 {
+						o.SetParams(x)
+					}
+				}
+			}
+			if v, ok := l["type"]; ok {
+				{
+					x := (v.(string))
+					o.SetType(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		o.SetTemplateActions(x)
+	}
+
+	if d.HasChange("template_sync_errors") {
+		v := d.Get("template_sync_errors")
+		x := make([]models.MotemplateSyncError, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := &models.MotemplateSyncError{}
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("motemplate.SyncError")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		o.SetTemplateSyncErrors(x)
 	}
 
 	if d.HasChange("type") {

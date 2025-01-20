@@ -15,8 +15,9 @@ Name | Type | Description | Notes
 **V6Assigned** | Pointer to **int64** | Number of IPv6 addresses currently in use. | [optional] [readonly] 
 **V6Size** | Pointer to **int64** | Number of IPv6 addresses in this pool. | [optional] [readonly] 
 **IpBlockHeads** | Pointer to [**[]IppoolShadowBlockRelationship**](IppoolShadowBlockRelationship.md) | An array of relationships to ippoolShadowBlock resources. | [optional] [readonly] 
-**Pool** | Pointer to [**IppoolPoolRelationship**](IppoolPoolRelationship.md) |  | [optional] 
-**Vrf** | Pointer to [**VrfVrfRelationship**](VrfVrfRelationship.md) |  | [optional] 
+**Pool** | Pointer to [**NullableIppoolPoolRelationship**](IppoolPoolRelationship.md) |  | [optional] 
+**Reservations** | Pointer to [**[]IppoolReservationRelationship**](IppoolReservationRelationship.md) | An array of relationships to ippoolReservation resources. | [optional] [readonly] 
+**Vrf** | Pointer to [**NullableVrfVrfRelationship**](VrfVrfRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -377,6 +378,51 @@ SetPool sets Pool field to given value.
 
 HasPool returns a boolean if a field has been set.
 
+### SetPoolNil
+
+`func (o *IppoolShadowPool) SetPoolNil(b bool)`
+
+ SetPoolNil sets the value for Pool to be an explicit nil
+
+### UnsetPool
+`func (o *IppoolShadowPool) UnsetPool()`
+
+UnsetPool ensures that no value is present for Pool, not even an explicit nil
+### GetReservations
+
+`func (o *IppoolShadowPool) GetReservations() []IppoolReservationRelationship`
+
+GetReservations returns the Reservations field if non-nil, zero value otherwise.
+
+### GetReservationsOk
+
+`func (o *IppoolShadowPool) GetReservationsOk() (*[]IppoolReservationRelationship, bool)`
+
+GetReservationsOk returns a tuple with the Reservations field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReservations
+
+`func (o *IppoolShadowPool) SetReservations(v []IppoolReservationRelationship)`
+
+SetReservations sets Reservations field to given value.
+
+### HasReservations
+
+`func (o *IppoolShadowPool) HasReservations() bool`
+
+HasReservations returns a boolean if a field has been set.
+
+### SetReservationsNil
+
+`func (o *IppoolShadowPool) SetReservationsNil(b bool)`
+
+ SetReservationsNil sets the value for Reservations to be an explicit nil
+
+### UnsetReservations
+`func (o *IppoolShadowPool) UnsetReservations()`
+
+UnsetReservations ensures that no value is present for Reservations, not even an explicit nil
 ### GetVrf
 
 `func (o *IppoolShadowPool) GetVrf() VrfVrfRelationship`
@@ -402,6 +448,16 @@ SetVrf sets Vrf field to given value.
 
 HasVrf returns a boolean if a field has been set.
 
+### SetVrfNil
+
+`func (o *IppoolShadowPool) SetVrfNil(b bool)`
+
+ SetVrfNil sets the value for Vrf to be an explicit nil
+
+### UnsetVrf
+`func (o *IppoolShadowPool) UnsetVrf()`
+
+UnsetVrf ensures that no value is present for Vrf, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

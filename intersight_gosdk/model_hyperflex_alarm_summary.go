@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HyperflexAlarmSummary type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexAlarmSummary{}
 
 // HyperflexAlarmSummary The summary of alarm counts based on alarm severity.
 type HyperflexAlarmSummary struct {
@@ -26,6 +30,10 @@ type HyperflexAlarmSummary struct {
 	ObjectType string `json:"ObjectType"`
 	// The count of alarms that have severity type Critical.
 	Critical *int64 `json:"Critical,omitempty"`
+	// The health of the managed endpoint. The health is computed from the highest-severity alarm raised on the endpoint. * `Healthy` - The Enum value represents that the entity is healthy. * `Warning` - The Enum value Warning represents that the entity has one or more active warnings on it. * `Critical` - The Enum value Critical represents that the entity is in a critical state.
+	Health *string `json:"Health,omitempty"`
+	// The count of alarms that have severity type Info.
+	Info *int64 `json:"Info,omitempty"`
 	// The count of alarms that have severity type Warning.
 	Warning              *int64 `json:"Warning,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -80,6 +88,11 @@ func (o *HyperflexAlarmSummary) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.AlarmSummary" of the ClassId field.
+func (o *HyperflexAlarmSummary) GetDefaultClassId() interface{} {
+	return "hyperflex.AlarmSummary"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexAlarmSummary) GetObjectType() string {
 	if o == nil {
@@ -104,9 +117,14 @@ func (o *HyperflexAlarmSummary) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.AlarmSummary" of the ObjectType field.
+func (o *HyperflexAlarmSummary) GetDefaultObjectType() interface{} {
+	return "hyperflex.AlarmSummary"
+}
+
 // GetCritical returns the Critical field value if set, zero value otherwise.
 func (o *HyperflexAlarmSummary) GetCritical() int64 {
-	if o == nil || o.Critical == nil {
+	if o == nil || IsNil(o.Critical) {
 		var ret int64
 		return ret
 	}
@@ -116,7 +134,7 @@ func (o *HyperflexAlarmSummary) GetCritical() int64 {
 // GetCriticalOk returns a tuple with the Critical field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexAlarmSummary) GetCriticalOk() (*int64, bool) {
-	if o == nil || o.Critical == nil {
+	if o == nil || IsNil(o.Critical) {
 		return nil, false
 	}
 	return o.Critical, true
@@ -124,7 +142,7 @@ func (o *HyperflexAlarmSummary) GetCriticalOk() (*int64, bool) {
 
 // HasCritical returns a boolean if a field has been set.
 func (o *HyperflexAlarmSummary) HasCritical() bool {
-	if o != nil && o.Critical != nil {
+	if o != nil && !IsNil(o.Critical) {
 		return true
 	}
 
@@ -136,9 +154,73 @@ func (o *HyperflexAlarmSummary) SetCritical(v int64) {
 	o.Critical = &v
 }
 
+// GetHealth returns the Health field value if set, zero value otherwise.
+func (o *HyperflexAlarmSummary) GetHealth() string {
+	if o == nil || IsNil(o.Health) {
+		var ret string
+		return ret
+	}
+	return *o.Health
+}
+
+// GetHealthOk returns a tuple with the Health field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HyperflexAlarmSummary) GetHealthOk() (*string, bool) {
+	if o == nil || IsNil(o.Health) {
+		return nil, false
+	}
+	return o.Health, true
+}
+
+// HasHealth returns a boolean if a field has been set.
+func (o *HyperflexAlarmSummary) HasHealth() bool {
+	if o != nil && !IsNil(o.Health) {
+		return true
+	}
+
+	return false
+}
+
+// SetHealth gets a reference to the given string and assigns it to the Health field.
+func (o *HyperflexAlarmSummary) SetHealth(v string) {
+	o.Health = &v
+}
+
+// GetInfo returns the Info field value if set, zero value otherwise.
+func (o *HyperflexAlarmSummary) GetInfo() int64 {
+	if o == nil || IsNil(o.Info) {
+		var ret int64
+		return ret
+	}
+	return *o.Info
+}
+
+// GetInfoOk returns a tuple with the Info field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *HyperflexAlarmSummary) GetInfoOk() (*int64, bool) {
+	if o == nil || IsNil(o.Info) {
+		return nil, false
+	}
+	return o.Info, true
+}
+
+// HasInfo returns a boolean if a field has been set.
+func (o *HyperflexAlarmSummary) HasInfo() bool {
+	if o != nil && !IsNil(o.Info) {
+		return true
+	}
+
+	return false
+}
+
+// SetInfo gets a reference to the given int64 and assigns it to the Info field.
+func (o *HyperflexAlarmSummary) SetInfo(v int64) {
+	o.Info = &v
+}
+
 // GetWarning returns the Warning field value if set, zero value otherwise.
 func (o *HyperflexAlarmSummary) GetWarning() int64 {
-	if o == nil || o.Warning == nil {
+	if o == nil || IsNil(o.Warning) {
 		var ret int64
 		return ret
 	}
@@ -148,7 +230,7 @@ func (o *HyperflexAlarmSummary) GetWarning() int64 {
 // GetWarningOk returns a tuple with the Warning field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexAlarmSummary) GetWarningOk() (*int64, bool) {
-	if o == nil || o.Warning == nil {
+	if o == nil || IsNil(o.Warning) {
 		return nil, false
 	}
 	return o.Warning, true
@@ -156,7 +238,7 @@ func (o *HyperflexAlarmSummary) GetWarningOk() (*int64, bool) {
 
 // HasWarning returns a boolean if a field has been set.
 func (o *HyperflexAlarmSummary) HasWarning() bool {
-	if o != nil && o.Warning != nil {
+	if o != nil && !IsNil(o.Warning) {
 		return true
 	}
 
@@ -169,25 +251,41 @@ func (o *HyperflexAlarmSummary) SetWarning(v int64) {
 }
 
 func (o HyperflexAlarmSummary) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexAlarmSummary) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Critical != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Critical) {
 		toSerialize["Critical"] = o.Critical
 	}
-	if o.Warning != nil {
+	if !IsNil(o.Health) {
+		toSerialize["Health"] = o.Health
+	}
+	if !IsNil(o.Info) {
+		toSerialize["Info"] = o.Info
+	}
+	if !IsNil(o.Warning) {
 		toSerialize["Warning"] = o.Warning
 	}
 
@@ -195,10 +293,51 @@ func (o HyperflexAlarmSummary) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexAlarmSummary) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexAlarmSummary) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexAlarmSummaryWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -206,18 +345,24 @@ func (o *HyperflexAlarmSummary) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// The count of alarms that have severity type Critical.
 		Critical *int64 `json:"Critical,omitempty"`
+		// The health of the managed endpoint. The health is computed from the highest-severity alarm raised on the endpoint. * `Healthy` - The Enum value represents that the entity is healthy. * `Warning` - The Enum value Warning represents that the entity has one or more active warnings on it. * `Critical` - The Enum value Critical represents that the entity is in a critical state.
+		Health *string `json:"Health,omitempty"`
+		// The count of alarms that have severity type Info.
+		Info *int64 `json:"Info,omitempty"`
 		// The count of alarms that have severity type Warning.
 		Warning *int64 `json:"Warning,omitempty"`
 	}
 
 	varHyperflexAlarmSummaryWithoutEmbeddedStruct := HyperflexAlarmSummaryWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexAlarmSummaryWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexAlarmSummaryWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexAlarmSummary := _HyperflexAlarmSummary{}
 		varHyperflexAlarmSummary.ClassId = varHyperflexAlarmSummaryWithoutEmbeddedStruct.ClassId
 		varHyperflexAlarmSummary.ObjectType = varHyperflexAlarmSummaryWithoutEmbeddedStruct.ObjectType
 		varHyperflexAlarmSummary.Critical = varHyperflexAlarmSummaryWithoutEmbeddedStruct.Critical
+		varHyperflexAlarmSummary.Health = varHyperflexAlarmSummaryWithoutEmbeddedStruct.Health
+		varHyperflexAlarmSummary.Info = varHyperflexAlarmSummaryWithoutEmbeddedStruct.Info
 		varHyperflexAlarmSummary.Warning = varHyperflexAlarmSummaryWithoutEmbeddedStruct.Warning
 		*o = HyperflexAlarmSummary(varHyperflexAlarmSummary)
 	} else {
@@ -226,7 +371,7 @@ func (o *HyperflexAlarmSummary) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHyperflexAlarmSummary := _HyperflexAlarmSummary{}
 
-	err = json.Unmarshal(bytes, &varHyperflexAlarmSummary)
+	err = json.Unmarshal(data, &varHyperflexAlarmSummary)
 	if err == nil {
 		o.MoBaseComplexType = varHyperflexAlarmSummary.MoBaseComplexType
 	} else {
@@ -235,10 +380,12 @@ func (o *HyperflexAlarmSummary) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Critical")
+		delete(additionalProperties, "Health")
+		delete(additionalProperties, "Info")
 		delete(additionalProperties, "Warning")
 
 		// remove fields from embedded structs

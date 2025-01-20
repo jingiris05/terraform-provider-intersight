@@ -6,16 +6,19 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "bulk.ExportedItem"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "bulk.ExportedItem"]
+**ExcludePeers** | Pointer to **[]string** |  | [optional] 
+**ExcludeRelations** | Pointer to **bool** | Do not export relationships. | [optional] [readonly] 
 **ExportTags** | Pointer to **bool** | Specifies whether tags must be exported for item MO. | [optional] [readonly] [default to false]
 **FileName** | Pointer to **string** | Name of the file corresponding to item MO. | [optional] [readonly] 
+**IncludeOrgIdentity** | Pointer to **bool** | Indicates that exported references for objects which are organization owned should include the organization reference along with the other identity properties. | [optional] [readonly] 
 **Item** | Pointer to [**MoMoRef**](MoMoRef.md) |  | [optional] 
 **Name** | Pointer to **string** | MO item identity (the moref corresponding to item) expressed as a string. | [optional] [readonly] 
-**ServiceName** | Pointer to **string** | Name of the service that owns the item MO. | [optional] [readonly] 
+**ServiceName** | Pointer to **string** | Name of the target service that owns the item MO. Service responsible for handling exported item mo notifications. | [optional] [readonly] 
 **ServiceVersion** | Pointer to **string** | Version of the service that owns the item MO. | [optional] [readonly] 
-**Status** | Pointer to **string** | Status of the item&#39;s export operation. * &#x60;&#x60; - The operation has not started. * &#x60;ValidationInProgress&#x60; - The validation operation is in progress. * &#x60;Valid&#x60; - The content to be imported is valid. * &#x60;InValid&#x60; - The content to be imported is not valid and the status message will have the reason. * &#x60;InProgress&#x60; - The operation is in progress. * &#x60;Success&#x60; - The operation has succeeded. * &#x60;Failed&#x60; - The operation has failed. * &#x60;RollBackInitiated&#x60; - The rollback has been inititiated for import failure. * &#x60;RollBackFailed&#x60; - The rollback has failed for import failure. * &#x60;RollbackCompleted&#x60; - The rollback has completed for import failure. * &#x60;RollbackAborted&#x60; - The rollback has been aborted for import failure. * &#x60;OperationTimedOut&#x60; - The operation has timed out. * &#x60;OperationCancelled&#x60; - The operation has been cancelled. * &#x60;CancelInProgress&#x60; - The operation is being cancelled. | [optional] [readonly] [default to ""]
+**Status** | Pointer to **string** | Status of the item&#39;s export operation. * &#x60;&#x60; - The operation has not started. * &#x60;ValidationInProgress&#x60; - The validation operation is in progress. * &#x60;Valid&#x60; - The content to be imported is valid. * &#x60;InValid&#x60; - The content to be imported is not valid and the status message will have the reason. * &#x60;InProgress&#x60; - The operation is in progress. * &#x60;Success&#x60; - The operation has succeeded. * &#x60;Failed&#x60; - The operation has failed. * &#x60;RollBackInitiated&#x60; - The rollback has been inititiated for import failure. * &#x60;RollBackFailed&#x60; - The rollback has failed for import failure. * &#x60;RollbackCompleted&#x60; - The rollback has completed for import failure. * &#x60;RollbackAborted&#x60; - The rollback has been aborted for import failure. * &#x60;OperationTimedOut&#x60; - The operation has timed out. * &#x60;OperationCancelled&#x60; - The operation has been canceled. * &#x60;CancelInProgress&#x60; - The operation is being canceled. | [optional] [readonly] [default to ""]
 **StatusMessage** | Pointer to **string** | Progress or error message for the MO&#39;s export operation. | [optional] [readonly] 
-**Export** | Pointer to [**BulkExportRelationship**](BulkExportRelationship.md) |  | [optional] 
-**ParentItem** | Pointer to [**BulkExportedItemRelationship**](BulkExportedItemRelationship.md) |  | [optional] 
+**Export** | Pointer to [**NullableBulkExportRelationship**](BulkExportRelationship.md) |  | [optional] 
+**ParentItem** | Pointer to [**NullableBulkExportedItemRelationship**](BulkExportedItemRelationship.md) |  | [optional] 
 **RelatedItems** | Pointer to [**[]BulkExportedItemRelationship**](BulkExportedItemRelationship.md) | An array of relationships to bulkExportedItem resources. | [optional] [readonly] 
 
 ## Methods
@@ -77,6 +80,66 @@ and a boolean to check if the value has been set.
 SetObjectType sets ObjectType field to given value.
 
 
+### GetExcludePeers
+
+`func (o *BulkExportedItem) GetExcludePeers() []string`
+
+GetExcludePeers returns the ExcludePeers field if non-nil, zero value otherwise.
+
+### GetExcludePeersOk
+
+`func (o *BulkExportedItem) GetExcludePeersOk() (*[]string, bool)`
+
+GetExcludePeersOk returns a tuple with the ExcludePeers field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExcludePeers
+
+`func (o *BulkExportedItem) SetExcludePeers(v []string)`
+
+SetExcludePeers sets ExcludePeers field to given value.
+
+### HasExcludePeers
+
+`func (o *BulkExportedItem) HasExcludePeers() bool`
+
+HasExcludePeers returns a boolean if a field has been set.
+
+### SetExcludePeersNil
+
+`func (o *BulkExportedItem) SetExcludePeersNil(b bool)`
+
+ SetExcludePeersNil sets the value for ExcludePeers to be an explicit nil
+
+### UnsetExcludePeers
+`func (o *BulkExportedItem) UnsetExcludePeers()`
+
+UnsetExcludePeers ensures that no value is present for ExcludePeers, not even an explicit nil
+### GetExcludeRelations
+
+`func (o *BulkExportedItem) GetExcludeRelations() bool`
+
+GetExcludeRelations returns the ExcludeRelations field if non-nil, zero value otherwise.
+
+### GetExcludeRelationsOk
+
+`func (o *BulkExportedItem) GetExcludeRelationsOk() (*bool, bool)`
+
+GetExcludeRelationsOk returns a tuple with the ExcludeRelations field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetExcludeRelations
+
+`func (o *BulkExportedItem) SetExcludeRelations(v bool)`
+
+SetExcludeRelations sets ExcludeRelations field to given value.
+
+### HasExcludeRelations
+
+`func (o *BulkExportedItem) HasExcludeRelations() bool`
+
+HasExcludeRelations returns a boolean if a field has been set.
+
 ### GetExportTags
 
 `func (o *BulkExportedItem) GetExportTags() bool`
@@ -126,6 +189,31 @@ SetFileName sets FileName field to given value.
 `func (o *BulkExportedItem) HasFileName() bool`
 
 HasFileName returns a boolean if a field has been set.
+
+### GetIncludeOrgIdentity
+
+`func (o *BulkExportedItem) GetIncludeOrgIdentity() bool`
+
+GetIncludeOrgIdentity returns the IncludeOrgIdentity field if non-nil, zero value otherwise.
+
+### GetIncludeOrgIdentityOk
+
+`func (o *BulkExportedItem) GetIncludeOrgIdentityOk() (*bool, bool)`
+
+GetIncludeOrgIdentityOk returns a tuple with the IncludeOrgIdentity field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIncludeOrgIdentity
+
+`func (o *BulkExportedItem) SetIncludeOrgIdentity(v bool)`
+
+SetIncludeOrgIdentity sets IncludeOrgIdentity field to given value.
+
+### HasIncludeOrgIdentity
+
+`func (o *BulkExportedItem) HasIncludeOrgIdentity() bool`
+
+HasIncludeOrgIdentity returns a boolean if a field has been set.
 
 ### GetItem
 
@@ -302,6 +390,16 @@ SetExport sets Export field to given value.
 
 HasExport returns a boolean if a field has been set.
 
+### SetExportNil
+
+`func (o *BulkExportedItem) SetExportNil(b bool)`
+
+ SetExportNil sets the value for Export to be an explicit nil
+
+### UnsetExport
+`func (o *BulkExportedItem) UnsetExport()`
+
+UnsetExport ensures that no value is present for Export, not even an explicit nil
 ### GetParentItem
 
 `func (o *BulkExportedItem) GetParentItem() BulkExportedItemRelationship`
@@ -327,6 +425,16 @@ SetParentItem sets ParentItem field to given value.
 
 HasParentItem returns a boolean if a field has been set.
 
+### SetParentItemNil
+
+`func (o *BulkExportedItem) SetParentItemNil(b bool)`
+
+ SetParentItemNil sets the value for ParentItem to be an explicit nil
+
+### UnsetParentItem
+`func (o *BulkExportedItem) UnsetParentItem()`
+
+UnsetParentItem ensures that no value is present for ParentItem, not even an explicit nil
 ### GetRelatedItems
 
 `func (o *BulkExportedItem) GetRelatedItems() []BulkExportedItemRelationship`

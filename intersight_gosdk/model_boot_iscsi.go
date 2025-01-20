@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the BootIscsi type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &BootIscsi{}
 
 // BootIscsi Device type used when booting from iSCSI boot device.
 type BootIscsi struct {
@@ -26,11 +30,11 @@ type BootIscsi struct {
 	ObjectType string                 `json:"ObjectType"`
 	Bootloader NullableBootBootloader `json:"Bootloader,omitempty"`
 	// The name of the underlying virtual ethernet interface used by the iSCSI boot device.
-	InterfaceName *string `json:"InterfaceName,omitempty"`
+	InterfaceName *string `json:"InterfaceName,omitempty" validate:"regexp=^[a-zA-Z0-9-._:]*$"`
 	// Port ID of the ISCSI boot device.
 	Port *int64 `json:"Port,omitempty"`
 	// The slot id of the device. Supported values are (1 - 255, \"MLOM\", \"L\", \"L1\", \"L2\", \"OCP\").
-	Slot                 *string `json:"Slot,omitempty"`
+	Slot                 *string `json:"Slot,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]|L|MLOM|L1|L2|OCP)$"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -89,6 +93,11 @@ func (o *BootIscsi) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "boot.Iscsi" of the ClassId field.
+func (o *BootIscsi) GetDefaultClassId() interface{} {
+	return "boot.Iscsi"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *BootIscsi) GetObjectType() string {
 	if o == nil {
@@ -113,9 +122,14 @@ func (o *BootIscsi) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "boot.Iscsi" of the ObjectType field.
+func (o *BootIscsi) GetDefaultObjectType() interface{} {
+	return "boot.Iscsi"
+}
+
 // GetBootloader returns the Bootloader field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *BootIscsi) GetBootloader() BootBootloader {
-	if o == nil || o.Bootloader.Get() == nil {
+	if o == nil || IsNil(o.Bootloader.Get()) {
 		var ret BootBootloader
 		return ret
 	}
@@ -158,7 +172,7 @@ func (o *BootIscsi) UnsetBootloader() {
 
 // GetInterfaceName returns the InterfaceName field value if set, zero value otherwise.
 func (o *BootIscsi) GetInterfaceName() string {
-	if o == nil || o.InterfaceName == nil {
+	if o == nil || IsNil(o.InterfaceName) {
 		var ret string
 		return ret
 	}
@@ -168,7 +182,7 @@ func (o *BootIscsi) GetInterfaceName() string {
 // GetInterfaceNameOk returns a tuple with the InterfaceName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BootIscsi) GetInterfaceNameOk() (*string, bool) {
-	if o == nil || o.InterfaceName == nil {
+	if o == nil || IsNil(o.InterfaceName) {
 		return nil, false
 	}
 	return o.InterfaceName, true
@@ -176,7 +190,7 @@ func (o *BootIscsi) GetInterfaceNameOk() (*string, bool) {
 
 // HasInterfaceName returns a boolean if a field has been set.
 func (o *BootIscsi) HasInterfaceName() bool {
-	if o != nil && o.InterfaceName != nil {
+	if o != nil && !IsNil(o.InterfaceName) {
 		return true
 	}
 
@@ -190,7 +204,7 @@ func (o *BootIscsi) SetInterfaceName(v string) {
 
 // GetPort returns the Port field value if set, zero value otherwise.
 func (o *BootIscsi) GetPort() int64 {
-	if o == nil || o.Port == nil {
+	if o == nil || IsNil(o.Port) {
 		var ret int64
 		return ret
 	}
@@ -200,7 +214,7 @@ func (o *BootIscsi) GetPort() int64 {
 // GetPortOk returns a tuple with the Port field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BootIscsi) GetPortOk() (*int64, bool) {
-	if o == nil || o.Port == nil {
+	if o == nil || IsNil(o.Port) {
 		return nil, false
 	}
 	return o.Port, true
@@ -208,7 +222,7 @@ func (o *BootIscsi) GetPortOk() (*int64, bool) {
 
 // HasPort returns a boolean if a field has been set.
 func (o *BootIscsi) HasPort() bool {
-	if o != nil && o.Port != nil {
+	if o != nil && !IsNil(o.Port) {
 		return true
 	}
 
@@ -222,7 +236,7 @@ func (o *BootIscsi) SetPort(v int64) {
 
 // GetSlot returns the Slot field value if set, zero value otherwise.
 func (o *BootIscsi) GetSlot() string {
-	if o == nil || o.Slot == nil {
+	if o == nil || IsNil(o.Slot) {
 		var ret string
 		return ret
 	}
@@ -232,7 +246,7 @@ func (o *BootIscsi) GetSlot() string {
 // GetSlotOk returns a tuple with the Slot field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *BootIscsi) GetSlotOk() (*string, bool) {
-	if o == nil || o.Slot == nil {
+	if o == nil || IsNil(o.Slot) {
 		return nil, false
 	}
 	return o.Slot, true
@@ -240,7 +254,7 @@ func (o *BootIscsi) GetSlotOk() (*string, bool) {
 
 // HasSlot returns a boolean if a field has been set.
 func (o *BootIscsi) HasSlot() bool {
-	if o != nil && o.Slot != nil {
+	if o != nil && !IsNil(o.Slot) {
 		return true
 	}
 
@@ -253,31 +267,41 @@ func (o *BootIscsi) SetSlot(v string) {
 }
 
 func (o BootIscsi) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o BootIscsi) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedBootDeviceBase, errBootDeviceBase := json.Marshal(o.BootDeviceBase)
 	if errBootDeviceBase != nil {
-		return []byte{}, errBootDeviceBase
+		return map[string]interface{}{}, errBootDeviceBase
 	}
 	errBootDeviceBase = json.Unmarshal([]byte(serializedBootDeviceBase), &toSerialize)
 	if errBootDeviceBase != nil {
-		return []byte{}, errBootDeviceBase
+		return map[string]interface{}{}, errBootDeviceBase
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.Bootloader.IsSet() {
 		toSerialize["Bootloader"] = o.Bootloader.Get()
 	}
-	if o.InterfaceName != nil {
+	if !IsNil(o.InterfaceName) {
 		toSerialize["InterfaceName"] = o.InterfaceName
 	}
-	if o.Port != nil {
+	if !IsNil(o.Port) {
 		toSerialize["Port"] = o.Port
 	}
-	if o.Slot != nil {
+	if !IsNil(o.Slot) {
 		toSerialize["Slot"] = o.Slot
 	}
 
@@ -285,10 +309,51 @@ func (o BootIscsi) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *BootIscsi) UnmarshalJSON(bytes []byte) (err error) {
+func (o *BootIscsi) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type BootIscsiWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -296,16 +361,16 @@ func (o *BootIscsi) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string                 `json:"ObjectType"`
 		Bootloader NullableBootBootloader `json:"Bootloader,omitempty"`
 		// The name of the underlying virtual ethernet interface used by the iSCSI boot device.
-		InterfaceName *string `json:"InterfaceName,omitempty"`
+		InterfaceName *string `json:"InterfaceName,omitempty" validate:"regexp=^[a-zA-Z0-9-._:]*$"`
 		// Port ID of the ISCSI boot device.
 		Port *int64 `json:"Port,omitempty"`
 		// The slot id of the device. Supported values are (1 - 255, \"MLOM\", \"L\", \"L1\", \"L2\", \"OCP\").
-		Slot *string `json:"Slot,omitempty"`
+		Slot *string `json:"Slot,omitempty" validate:"regexp=^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]|L|MLOM|L1|L2|OCP)$"`
 	}
 
 	varBootIscsiWithoutEmbeddedStruct := BootIscsiWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varBootIscsiWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varBootIscsiWithoutEmbeddedStruct)
 	if err == nil {
 		varBootIscsi := _BootIscsi{}
 		varBootIscsi.ClassId = varBootIscsiWithoutEmbeddedStruct.ClassId
@@ -321,7 +386,7 @@ func (o *BootIscsi) UnmarshalJSON(bytes []byte) (err error) {
 
 	varBootIscsi := _BootIscsi{}
 
-	err = json.Unmarshal(bytes, &varBootIscsi)
+	err = json.Unmarshal(data, &varBootIscsi)
 	if err == nil {
 		o.BootDeviceBase = varBootIscsi.BootDeviceBase
 	} else {
@@ -330,7 +395,7 @@ func (o *BootIscsi) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Bootloader")

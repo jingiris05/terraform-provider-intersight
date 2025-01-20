@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceWorkflowTaskDefinition() *schema.Resource {
 		UpdateContext: resourceWorkflowTaskDefinitionUpdate,
 		DeleteContext: resourceWorkflowTaskDefinitionDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -377,11 +379,11 @@ func resourceWorkflowTaskDefinition() *schema.Resource {
 			"label": {
 				Description:  "A user friendly short name to identify the task definition. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), period (.), colon (:), space ( ), single quote ('), forward slash (/), or an underscore (_) and must be at least 2 characters.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'./:-]{1,92}$"), ""),
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]{1}[\\sa-zA-Z0-9_'./:-]{0,91}$"), ""),
 				Optional:     true,
 			},
 			"license_entitlement": {
-				Description: "License entitlement required to run this task. It is determined by license requirement of features.\n* `Base` - Base as a License type. It is default license type.\n* `Essential` - Essential as a License type.\n* `Standard` - Standard as a License type.\n* `Advantage` - Advantage as a License type.\n* `Premier` - Premier as a License type.\n* `IWO-Essential` - IWO-Essential as a License type.\n* `IWO-Advantage` - IWO-Advantage as a License type.\n* `IWO-Premier` - IWO-Premier as a License type.\n* `IKS-Advantage` - IKS-Advantage as a License type.",
+				Description: "License entitlement required to run this task. It is determined by license requirement of features.\n* `Base` - Base as a License type. It is default license type.\n* `Essential` - Essential as a License type.\n* `Standard` - Standard as a License type.\n* `Advantage` - Advantage as a License type.\n* `Premier` - Premier as a License type.\n* `IWO-Essential` - IWO-Essential as a License type.\n* `IWO-Advantage` - IWO-Advantage as a License type.\n* `IWO-Premier` - IWO-Premier as a License type.\n* `IKS-Advantage` - IKS-Advantage as a License type.\n* `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud.\n* `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud.\n* `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud.\n* `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud.\n* `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud.\n* `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud.\n* `ERP-Advantage` - Advantage license tier for ERP workflows.\n* `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers.\n* `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers.\n* `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers.\n* `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -412,7 +414,7 @@ func resourceWorkflowTaskDefinition() *schema.Resource {
 			"name": {
 				Description:  "The name of the task definition. The name should follow this convention <Verb or Action><Category><Vendor><Product><Noun or object> Verb or Action is a required portion of the name and this must be part of the pre-approved verb list. Category is an optional field and this will refer to the broad category of the task referring to the type of resource or endpoint. If there is no specific category then use \"Generic\" if required. Vendor is an optional field and this will refer to the specific vendor this task applies to. If the task is generic and not tied to a vendor, then do not specify anything. Product is an optional field, this will contain the vendor product and model when desired. Noun or object is a required field and  this will contain the noun or object on which the action is being performed. Name can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), period (.), colon (:), or an underscore (_). Examples SendEmail  - This is a task in Generic category for sending email. NewStorageVolume - This is a vendor agnostic task under Storage device category for creating a new volume.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9_.:-]{1,64}$"), ""),
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]{1}[a-zA-Z0-9_.:-]{0,63}$"), ""),
 				Optional:     true,
 				ForceNew:     true,
 			},
@@ -544,8 +546,13 @@ func resourceWorkflowTaskDefinition() *schema.Resource {
 							Description: "When set to false the task definition can only be used by internal system workflows. When set to true then the task can be included in user defined workflows.",
 							Type:        schema.TypeBool,
 							Optional:    true,
-							Default:     false,
-						},
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"input_definition": {
 							Type:       schema.TypeList,
 							Optional:   true,
@@ -667,9 +674,9 @@ func resourceWorkflowTaskDefinition() *schema.Resource {
 										Optional:    true,
 									},
 									"label": {
-										Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ) or an underscore (_). The first and last character in label must be an alphanumeric character.",
+										Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ), forward slash (/) or an underscore (_). The first and last character in label must be an alphanumeric character.",
 										Type:         schema.TypeString,
-										ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
+										ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:/-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
 										Optional:     true,
 									},
 									"name": {
@@ -819,9 +826,9 @@ func resourceWorkflowTaskDefinition() *schema.Resource {
 										Optional:    true,
 									},
 									"label": {
-										Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ) or an underscore (_). The first and last character in label must be an alphanumeric character.",
+										Description:  "Descriptive label for the data type. Label can only contain letters (a-z, A-Z), numbers (0-9), hyphen (-), space ( ), forward slash (/) or an underscore (_). The first and last character in label must be an alphanumeric character.",
 										Type:         schema.TypeString,
-										ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
+										ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+[\\sa-zA-Z0-9_'.:/-]{1,92}$"), ""), validation.StringLenBetween(1, 92)),
 										Optional:     true,
 									},
 									"name": {
@@ -961,9 +968,11 @@ func resourceWorkflowTaskDefinition() *schema.Resource {
 							Optional:    true,
 						},
 						"nr_version": {
-							Description: "The version of the task definition.",
-							Type:        schema.TypeInt,
-							Optional:    true,
+							Description:  "The version of the task definition.",
+							Type:         schema.TypeInt,
+							ValidateFunc: validation.IntAtLeast(1),
+							Optional:     true,
+							Default:      1,
 						},
 					},
 				},
@@ -972,7 +981,13 @@ func resourceWorkflowTaskDefinition() *schema.Resource {
 				Description: "If set to true, the task requires access to secure properties and uses an encryption token associated with a workflow moid to encrypt or decrypt the secure properties.",
 				Type:        schema.TypeBool,
 				Optional:    true,
-			},
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"shared_scope": {
 				Description: "Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.\nObjects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs.",
 				Type:        schema.TypeString,
@@ -1117,6 +1132,17 @@ func resourceWorkflowTaskDefinition() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1392,12 +1418,6 @@ func resourceWorkflowTaskDefinitionCreate(c context.Context, d *schema.ResourceD
 				}
 			}
 			o.SetClassId("workflow.Properties")
-			if v, ok := l["external_meta"]; ok {
-				{
-					x := (v.(bool))
-					o.SetExternalMeta(x)
-				}
-			}
 			if v, ok := l["input_definition"]; ok {
 				{
 					x := make([]models.WorkflowBaseDataType, 0)
@@ -1837,11 +1857,6 @@ func resourceWorkflowTaskDefinitionCreate(c context.Context, d *schema.ResourceD
 		}
 	}
 
-	if v, ok := d.GetOkExists("secure_prop_access"); ok {
-		x := (v.(bool))
-		o.SetSecurePropAccess(x)
-	}
-
 	if v, ok := d.GetOk("tags"); ok {
 		x := make([]models.MoTag, 0)
 		s := v.([]interface{})
@@ -1935,14 +1950,25 @@ func resourceWorkflowTaskDefinitionCreate(c context.Context, d *schema.ResourceD
 		}
 		return diag.Errorf("error occurred while creating WorkflowTaskDefinition: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceWorkflowTaskDefinitionRead(c, d, meta)...)
 }
 
 func resourceWorkflowTaskDefinitionRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.WorkflowApi.GetWorkflowTaskDefinitionByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -2282,12 +2308,6 @@ func resourceWorkflowTaskDefinitionUpdate(c context.Context, d *schema.ResourceD
 				}
 			}
 			o.SetClassId("workflow.Properties")
-			if v, ok := l["external_meta"]; ok {
-				{
-					x := (v.(bool))
-					o.SetExternalMeta(x)
-				}
-			}
 			if v, ok := l["input_definition"]; ok {
 				{
 					x := make([]models.WorkflowBaseDataType, 0)
@@ -2724,12 +2744,6 @@ func resourceWorkflowTaskDefinitionUpdate(c context.Context, d *schema.ResourceD
 			x = append(x, *o)
 		}
 		o.SetRollbackTasks(x)
-	}
-
-	if d.HasChange("secure_prop_access") {
-		v := d.Get("secure_prop_access")
-		x := (v.(bool))
-		o.SetSecurePropAccess(x)
 	}
 
 	if d.HasChange("tags") {

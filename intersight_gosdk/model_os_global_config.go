@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the OsGlobalConfig type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &OsGlobalConfig{}
 
 // OsGlobalConfig The Global configuration parameter for the uploaded CSV file for OS Install.
 type OsGlobalConfig struct {
@@ -25,16 +29,19 @@ type OsGlobalConfig struct {
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
 	// Name of the Configuration file.
-	ConfigurationFileName *string `json:"ConfigurationFileName,omitempty"`
+	ConfigurationFileName *string `json:"ConfigurationFileName,omitempty" validate:"regexp=^$|^[a-zA-Z0-9\\\\._\\\\-]+$"`
 	// Configuration source for the OS Installation.
 	ConfigurationSource *string `json:"ConfigurationSource,omitempty"`
 	// The install method to be used for OS installation - vMedia, iPXE. Only vMedia is supported as of now.
 	InstallMethod *string `json:"InstallMethod,omitempty"`
 	// The Prefill install Target Name.
-	InstallTargetType         *string                             `json:"InstallTargetType,omitempty"`
-	OperatingSystemParameters NullableOsOperatingSystemParameters `json:"OperatingSystemParameters,omitempty"`
+	InstallTargetType *string `json:"InstallTargetType,omitempty"`
+	// Installation parameters specific to selected OS.
+	OperatingSystemParameters NullableMoBaseComplexType `json:"OperatingSystemParameters,omitempty"`
 	// The Operating System Image name.
 	OsImageName *string `json:"OsImageName,omitempty"`
+	// ESXi Secure Boot installation is currently not supported. As a workaround, Secure Boot will be disabled before installation and restored after installation is complete. Enable to Override Secure Boot Configuration.
+	OverrideSecureBoot *bool `json:"OverrideSecureBoot,omitempty"`
 	// The name of the Server Configuration Utilities Image.
 	ScuImageName *string `json:"ScuImageName,omitempty"`
 	// The Windows OS edition, this property required only for Windows server.
@@ -52,6 +59,8 @@ func NewOsGlobalConfig(classId string, objectType string) *OsGlobalConfig {
 	this := OsGlobalConfig{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var overrideSecureBoot bool = false
+	this.OverrideSecureBoot = &overrideSecureBoot
 	return &this
 }
 
@@ -64,6 +73,8 @@ func NewOsGlobalConfigWithDefaults() *OsGlobalConfig {
 	this.ClassId = classId
 	var objectType string = "os.GlobalConfig"
 	this.ObjectType = objectType
+	var overrideSecureBoot bool = false
+	this.OverrideSecureBoot = &overrideSecureBoot
 	return &this
 }
 
@@ -91,6 +102,11 @@ func (o *OsGlobalConfig) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "os.GlobalConfig" of the ClassId field.
+func (o *OsGlobalConfig) GetDefaultClassId() interface{} {
+	return "os.GlobalConfig"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *OsGlobalConfig) GetObjectType() string {
 	if o == nil {
@@ -115,9 +131,14 @@ func (o *OsGlobalConfig) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "os.GlobalConfig" of the ObjectType field.
+func (o *OsGlobalConfig) GetDefaultObjectType() interface{} {
+	return "os.GlobalConfig"
+}
+
 // GetConfigurationFileName returns the ConfigurationFileName field value if set, zero value otherwise.
 func (o *OsGlobalConfig) GetConfigurationFileName() string {
-	if o == nil || o.ConfigurationFileName == nil {
+	if o == nil || IsNil(o.ConfigurationFileName) {
 		var ret string
 		return ret
 	}
@@ -127,7 +148,7 @@ func (o *OsGlobalConfig) GetConfigurationFileName() string {
 // GetConfigurationFileNameOk returns a tuple with the ConfigurationFileName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OsGlobalConfig) GetConfigurationFileNameOk() (*string, bool) {
-	if o == nil || o.ConfigurationFileName == nil {
+	if o == nil || IsNil(o.ConfigurationFileName) {
 		return nil, false
 	}
 	return o.ConfigurationFileName, true
@@ -135,7 +156,7 @@ func (o *OsGlobalConfig) GetConfigurationFileNameOk() (*string, bool) {
 
 // HasConfigurationFileName returns a boolean if a field has been set.
 func (o *OsGlobalConfig) HasConfigurationFileName() bool {
-	if o != nil && o.ConfigurationFileName != nil {
+	if o != nil && !IsNil(o.ConfigurationFileName) {
 		return true
 	}
 
@@ -149,7 +170,7 @@ func (o *OsGlobalConfig) SetConfigurationFileName(v string) {
 
 // GetConfigurationSource returns the ConfigurationSource field value if set, zero value otherwise.
 func (o *OsGlobalConfig) GetConfigurationSource() string {
-	if o == nil || o.ConfigurationSource == nil {
+	if o == nil || IsNil(o.ConfigurationSource) {
 		var ret string
 		return ret
 	}
@@ -159,7 +180,7 @@ func (o *OsGlobalConfig) GetConfigurationSource() string {
 // GetConfigurationSourceOk returns a tuple with the ConfigurationSource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OsGlobalConfig) GetConfigurationSourceOk() (*string, bool) {
-	if o == nil || o.ConfigurationSource == nil {
+	if o == nil || IsNil(o.ConfigurationSource) {
 		return nil, false
 	}
 	return o.ConfigurationSource, true
@@ -167,7 +188,7 @@ func (o *OsGlobalConfig) GetConfigurationSourceOk() (*string, bool) {
 
 // HasConfigurationSource returns a boolean if a field has been set.
 func (o *OsGlobalConfig) HasConfigurationSource() bool {
-	if o != nil && o.ConfigurationSource != nil {
+	if o != nil && !IsNil(o.ConfigurationSource) {
 		return true
 	}
 
@@ -181,7 +202,7 @@ func (o *OsGlobalConfig) SetConfigurationSource(v string) {
 
 // GetInstallMethod returns the InstallMethod field value if set, zero value otherwise.
 func (o *OsGlobalConfig) GetInstallMethod() string {
-	if o == nil || o.InstallMethod == nil {
+	if o == nil || IsNil(o.InstallMethod) {
 		var ret string
 		return ret
 	}
@@ -191,7 +212,7 @@ func (o *OsGlobalConfig) GetInstallMethod() string {
 // GetInstallMethodOk returns a tuple with the InstallMethod field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OsGlobalConfig) GetInstallMethodOk() (*string, bool) {
-	if o == nil || o.InstallMethod == nil {
+	if o == nil || IsNil(o.InstallMethod) {
 		return nil, false
 	}
 	return o.InstallMethod, true
@@ -199,7 +220,7 @@ func (o *OsGlobalConfig) GetInstallMethodOk() (*string, bool) {
 
 // HasInstallMethod returns a boolean if a field has been set.
 func (o *OsGlobalConfig) HasInstallMethod() bool {
-	if o != nil && o.InstallMethod != nil {
+	if o != nil && !IsNil(o.InstallMethod) {
 		return true
 	}
 
@@ -213,7 +234,7 @@ func (o *OsGlobalConfig) SetInstallMethod(v string) {
 
 // GetInstallTargetType returns the InstallTargetType field value if set, zero value otherwise.
 func (o *OsGlobalConfig) GetInstallTargetType() string {
-	if o == nil || o.InstallTargetType == nil {
+	if o == nil || IsNil(o.InstallTargetType) {
 		var ret string
 		return ret
 	}
@@ -223,7 +244,7 @@ func (o *OsGlobalConfig) GetInstallTargetType() string {
 // GetInstallTargetTypeOk returns a tuple with the InstallTargetType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OsGlobalConfig) GetInstallTargetTypeOk() (*string, bool) {
-	if o == nil || o.InstallTargetType == nil {
+	if o == nil || IsNil(o.InstallTargetType) {
 		return nil, false
 	}
 	return o.InstallTargetType, true
@@ -231,7 +252,7 @@ func (o *OsGlobalConfig) GetInstallTargetTypeOk() (*string, bool) {
 
 // HasInstallTargetType returns a boolean if a field has been set.
 func (o *OsGlobalConfig) HasInstallTargetType() bool {
-	if o != nil && o.InstallTargetType != nil {
+	if o != nil && !IsNil(o.InstallTargetType) {
 		return true
 	}
 
@@ -244,9 +265,9 @@ func (o *OsGlobalConfig) SetInstallTargetType(v string) {
 }
 
 // GetOperatingSystemParameters returns the OperatingSystemParameters field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *OsGlobalConfig) GetOperatingSystemParameters() OsOperatingSystemParameters {
-	if o == nil || o.OperatingSystemParameters.Get() == nil {
-		var ret OsOperatingSystemParameters
+func (o *OsGlobalConfig) GetOperatingSystemParameters() MoBaseComplexType {
+	if o == nil || IsNil(o.OperatingSystemParameters.Get()) {
+		var ret MoBaseComplexType
 		return ret
 	}
 	return *o.OperatingSystemParameters.Get()
@@ -255,7 +276,7 @@ func (o *OsGlobalConfig) GetOperatingSystemParameters() OsOperatingSystemParamet
 // GetOperatingSystemParametersOk returns a tuple with the OperatingSystemParameters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *OsGlobalConfig) GetOperatingSystemParametersOk() (*OsOperatingSystemParameters, bool) {
+func (o *OsGlobalConfig) GetOperatingSystemParametersOk() (*MoBaseComplexType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -271,8 +292,8 @@ func (o *OsGlobalConfig) HasOperatingSystemParameters() bool {
 	return false
 }
 
-// SetOperatingSystemParameters gets a reference to the given NullableOsOperatingSystemParameters and assigns it to the OperatingSystemParameters field.
-func (o *OsGlobalConfig) SetOperatingSystemParameters(v OsOperatingSystemParameters) {
+// SetOperatingSystemParameters gets a reference to the given NullableMoBaseComplexType and assigns it to the OperatingSystemParameters field.
+func (o *OsGlobalConfig) SetOperatingSystemParameters(v MoBaseComplexType) {
 	o.OperatingSystemParameters.Set(&v)
 }
 
@@ -288,7 +309,7 @@ func (o *OsGlobalConfig) UnsetOperatingSystemParameters() {
 
 // GetOsImageName returns the OsImageName field value if set, zero value otherwise.
 func (o *OsGlobalConfig) GetOsImageName() string {
-	if o == nil || o.OsImageName == nil {
+	if o == nil || IsNil(o.OsImageName) {
 		var ret string
 		return ret
 	}
@@ -298,7 +319,7 @@ func (o *OsGlobalConfig) GetOsImageName() string {
 // GetOsImageNameOk returns a tuple with the OsImageName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OsGlobalConfig) GetOsImageNameOk() (*string, bool) {
-	if o == nil || o.OsImageName == nil {
+	if o == nil || IsNil(o.OsImageName) {
 		return nil, false
 	}
 	return o.OsImageName, true
@@ -306,7 +327,7 @@ func (o *OsGlobalConfig) GetOsImageNameOk() (*string, bool) {
 
 // HasOsImageName returns a boolean if a field has been set.
 func (o *OsGlobalConfig) HasOsImageName() bool {
-	if o != nil && o.OsImageName != nil {
+	if o != nil && !IsNil(o.OsImageName) {
 		return true
 	}
 
@@ -318,9 +339,41 @@ func (o *OsGlobalConfig) SetOsImageName(v string) {
 	o.OsImageName = &v
 }
 
+// GetOverrideSecureBoot returns the OverrideSecureBoot field value if set, zero value otherwise.
+func (o *OsGlobalConfig) GetOverrideSecureBoot() bool {
+	if o == nil || IsNil(o.OverrideSecureBoot) {
+		var ret bool
+		return ret
+	}
+	return *o.OverrideSecureBoot
+}
+
+// GetOverrideSecureBootOk returns a tuple with the OverrideSecureBoot field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OsGlobalConfig) GetOverrideSecureBootOk() (*bool, bool) {
+	if o == nil || IsNil(o.OverrideSecureBoot) {
+		return nil, false
+	}
+	return o.OverrideSecureBoot, true
+}
+
+// HasOverrideSecureBoot returns a boolean if a field has been set.
+func (o *OsGlobalConfig) HasOverrideSecureBoot() bool {
+	if o != nil && !IsNil(o.OverrideSecureBoot) {
+		return true
+	}
+
+	return false
+}
+
+// SetOverrideSecureBoot gets a reference to the given bool and assigns it to the OverrideSecureBoot field.
+func (o *OsGlobalConfig) SetOverrideSecureBoot(v bool) {
+	o.OverrideSecureBoot = &v
+}
+
 // GetScuImageName returns the ScuImageName field value if set, zero value otherwise.
 func (o *OsGlobalConfig) GetScuImageName() string {
-	if o == nil || o.ScuImageName == nil {
+	if o == nil || IsNil(o.ScuImageName) {
 		var ret string
 		return ret
 	}
@@ -330,7 +383,7 @@ func (o *OsGlobalConfig) GetScuImageName() string {
 // GetScuImageNameOk returns a tuple with the ScuImageName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OsGlobalConfig) GetScuImageNameOk() (*string, bool) {
-	if o == nil || o.ScuImageName == nil {
+	if o == nil || IsNil(o.ScuImageName) {
 		return nil, false
 	}
 	return o.ScuImageName, true
@@ -338,7 +391,7 @@ func (o *OsGlobalConfig) GetScuImageNameOk() (*string, bool) {
 
 // HasScuImageName returns a boolean if a field has been set.
 func (o *OsGlobalConfig) HasScuImageName() bool {
-	if o != nil && o.ScuImageName != nil {
+	if o != nil && !IsNil(o.ScuImageName) {
 		return true
 	}
 
@@ -352,7 +405,7 @@ func (o *OsGlobalConfig) SetScuImageName(v string) {
 
 // GetWindowsEdition returns the WindowsEdition field value if set, zero value otherwise.
 func (o *OsGlobalConfig) GetWindowsEdition() string {
-	if o == nil || o.WindowsEdition == nil {
+	if o == nil || IsNil(o.WindowsEdition) {
 		var ret string
 		return ret
 	}
@@ -362,7 +415,7 @@ func (o *OsGlobalConfig) GetWindowsEdition() string {
 // GetWindowsEditionOk returns a tuple with the WindowsEdition field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OsGlobalConfig) GetWindowsEditionOk() (*string, bool) {
-	if o == nil || o.WindowsEdition == nil {
+	if o == nil || IsNil(o.WindowsEdition) {
 		return nil, false
 	}
 	return o.WindowsEdition, true
@@ -370,7 +423,7 @@ func (o *OsGlobalConfig) GetWindowsEditionOk() (*string, bool) {
 
 // HasWindowsEdition returns a boolean if a field has been set.
 func (o *OsGlobalConfig) HasWindowsEdition() bool {
-	if o != nil && o.WindowsEdition != nil {
+	if o != nil && !IsNil(o.WindowsEdition) {
 		return true
 	}
 
@@ -383,43 +436,56 @@ func (o *OsGlobalConfig) SetWindowsEdition(v string) {
 }
 
 func (o OsGlobalConfig) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o OsGlobalConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ConfigurationFileName != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ConfigurationFileName) {
 		toSerialize["ConfigurationFileName"] = o.ConfigurationFileName
 	}
-	if o.ConfigurationSource != nil {
+	if !IsNil(o.ConfigurationSource) {
 		toSerialize["ConfigurationSource"] = o.ConfigurationSource
 	}
-	if o.InstallMethod != nil {
+	if !IsNil(o.InstallMethod) {
 		toSerialize["InstallMethod"] = o.InstallMethod
 	}
-	if o.InstallTargetType != nil {
+	if !IsNil(o.InstallTargetType) {
 		toSerialize["InstallTargetType"] = o.InstallTargetType
 	}
 	if o.OperatingSystemParameters.IsSet() {
 		toSerialize["OperatingSystemParameters"] = o.OperatingSystemParameters.Get()
 	}
-	if o.OsImageName != nil {
+	if !IsNil(o.OsImageName) {
 		toSerialize["OsImageName"] = o.OsImageName
 	}
-	if o.ScuImageName != nil {
+	if !IsNil(o.OverrideSecureBoot) {
+		toSerialize["OverrideSecureBoot"] = o.OverrideSecureBoot
+	}
+	if !IsNil(o.ScuImageName) {
 		toSerialize["ScuImageName"] = o.ScuImageName
 	}
-	if o.WindowsEdition != nil {
+	if !IsNil(o.WindowsEdition) {
 		toSerialize["WindowsEdition"] = o.WindowsEdition
 	}
 
@@ -427,26 +493,70 @@ func (o OsGlobalConfig) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *OsGlobalConfig) UnmarshalJSON(bytes []byte) (err error) {
+func (o *OsGlobalConfig) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type OsGlobalConfigWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
 		// Name of the Configuration file.
-		ConfigurationFileName *string `json:"ConfigurationFileName,omitempty"`
+		ConfigurationFileName *string `json:"ConfigurationFileName,omitempty" validate:"regexp=^$|^[a-zA-Z0-9\\\\._\\\\-]+$"`
 		// Configuration source for the OS Installation.
 		ConfigurationSource *string `json:"ConfigurationSource,omitempty"`
 		// The install method to be used for OS installation - vMedia, iPXE. Only vMedia is supported as of now.
 		InstallMethod *string `json:"InstallMethod,omitempty"`
 		// The Prefill install Target Name.
-		InstallTargetType         *string                             `json:"InstallTargetType,omitempty"`
-		OperatingSystemParameters NullableOsOperatingSystemParameters `json:"OperatingSystemParameters,omitempty"`
+		InstallTargetType *string `json:"InstallTargetType,omitempty"`
+		// Installation parameters specific to selected OS.
+		OperatingSystemParameters NullableMoBaseComplexType `json:"OperatingSystemParameters,omitempty"`
 		// The Operating System Image name.
 		OsImageName *string `json:"OsImageName,omitempty"`
+		// ESXi Secure Boot installation is currently not supported. As a workaround, Secure Boot will be disabled before installation and restored after installation is complete. Enable to Override Secure Boot Configuration.
+		OverrideSecureBoot *bool `json:"OverrideSecureBoot,omitempty"`
 		// The name of the Server Configuration Utilities Image.
 		ScuImageName *string `json:"ScuImageName,omitempty"`
 		// The Windows OS edition, this property required only for Windows server.
@@ -455,7 +565,7 @@ func (o *OsGlobalConfig) UnmarshalJSON(bytes []byte) (err error) {
 
 	varOsGlobalConfigWithoutEmbeddedStruct := OsGlobalConfigWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varOsGlobalConfigWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varOsGlobalConfigWithoutEmbeddedStruct)
 	if err == nil {
 		varOsGlobalConfig := _OsGlobalConfig{}
 		varOsGlobalConfig.ClassId = varOsGlobalConfigWithoutEmbeddedStruct.ClassId
@@ -466,6 +576,7 @@ func (o *OsGlobalConfig) UnmarshalJSON(bytes []byte) (err error) {
 		varOsGlobalConfig.InstallTargetType = varOsGlobalConfigWithoutEmbeddedStruct.InstallTargetType
 		varOsGlobalConfig.OperatingSystemParameters = varOsGlobalConfigWithoutEmbeddedStruct.OperatingSystemParameters
 		varOsGlobalConfig.OsImageName = varOsGlobalConfigWithoutEmbeddedStruct.OsImageName
+		varOsGlobalConfig.OverrideSecureBoot = varOsGlobalConfigWithoutEmbeddedStruct.OverrideSecureBoot
 		varOsGlobalConfig.ScuImageName = varOsGlobalConfigWithoutEmbeddedStruct.ScuImageName
 		varOsGlobalConfig.WindowsEdition = varOsGlobalConfigWithoutEmbeddedStruct.WindowsEdition
 		*o = OsGlobalConfig(varOsGlobalConfig)
@@ -475,7 +586,7 @@ func (o *OsGlobalConfig) UnmarshalJSON(bytes []byte) (err error) {
 
 	varOsGlobalConfig := _OsGlobalConfig{}
 
-	err = json.Unmarshal(bytes, &varOsGlobalConfig)
+	err = json.Unmarshal(data, &varOsGlobalConfig)
 	if err == nil {
 		o.MoBaseComplexType = varOsGlobalConfig.MoBaseComplexType
 	} else {
@@ -484,7 +595,7 @@ func (o *OsGlobalConfig) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ConfigurationFileName")
@@ -493,6 +604,7 @@ func (o *OsGlobalConfig) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "InstallTargetType")
 		delete(additionalProperties, "OperatingSystemParameters")
 		delete(additionalProperties, "OsImageName")
+		delete(additionalProperties, "OverrideSecureBoot")
 		delete(additionalProperties, "ScuImageName")
 		delete(additionalProperties, "WindowsEdition")
 

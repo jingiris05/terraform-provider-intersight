@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the WorkflowSshSession type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &WorkflowSshSession{}
 
 // WorkflowSshSession This models a single SSH session from Intersight connected endpoint to a remote server. Multiple SSH operations can be run sequentially over a single SSH session.
 type WorkflowSshSession struct {
@@ -92,6 +96,11 @@ func (o *WorkflowSshSession) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "workflow.SshSession" of the ClassId field.
+func (o *WorkflowSshSession) GetDefaultClassId() interface{} {
+	return "workflow.SshSession"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *WorkflowSshSession) GetObjectType() string {
 	if o == nil {
@@ -116,9 +125,14 @@ func (o *WorkflowSshSession) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "workflow.SshSession" of the ObjectType field.
+func (o *WorkflowSshSession) GetDefaultObjectType() interface{} {
+	return "workflow.SshSession"
+}
+
 // GetCaptureCompleteResponse returns the CaptureCompleteResponse field value if set, zero value otherwise.
 func (o *WorkflowSshSession) GetCaptureCompleteResponse() string {
-	if o == nil || o.CaptureCompleteResponse == nil {
+	if o == nil || IsNil(o.CaptureCompleteResponse) {
 		var ret string
 		return ret
 	}
@@ -128,7 +142,7 @@ func (o *WorkflowSshSession) GetCaptureCompleteResponse() string {
 // GetCaptureCompleteResponseOk returns a tuple with the CaptureCompleteResponse field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowSshSession) GetCaptureCompleteResponseOk() (*string, bool) {
-	if o == nil || o.CaptureCompleteResponse == nil {
+	if o == nil || IsNil(o.CaptureCompleteResponse) {
 		return nil, false
 	}
 	return o.CaptureCompleteResponse, true
@@ -136,7 +150,7 @@ func (o *WorkflowSshSession) GetCaptureCompleteResponseOk() (*string, bool) {
 
 // HasCaptureCompleteResponse returns a boolean if a field has been set.
 func (o *WorkflowSshSession) HasCaptureCompleteResponse() bool {
-	if o != nil && o.CaptureCompleteResponse != nil {
+	if o != nil && !IsNil(o.CaptureCompleteResponse) {
 		return true
 	}
 
@@ -161,7 +175,7 @@ func (o *WorkflowSshSession) GetExpectedExitCodes() interface{} {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowSshSession) GetExpectedExitCodesOk() (*interface{}, bool) {
-	if o == nil || o.ExpectedExitCodes == nil {
+	if o == nil || IsNil(o.ExpectedExitCodes) {
 		return nil, false
 	}
 	return &o.ExpectedExitCodes, true
@@ -169,7 +183,7 @@ func (o *WorkflowSshSession) GetExpectedExitCodesOk() (*interface{}, bool) {
 
 // HasExpectedExitCodes returns a boolean if a field has been set.
 func (o *WorkflowSshSession) HasExpectedExitCodes() bool {
-	if o != nil && o.ExpectedExitCodes != nil {
+	if o != nil && !IsNil(o.ExpectedExitCodes) {
 		return true
 	}
 
@@ -183,7 +197,7 @@ func (o *WorkflowSshSession) SetExpectedExitCodes(v interface{}) {
 
 // GetFileTransferToRemote returns the FileTransferToRemote field value if set, zero value otherwise.
 func (o *WorkflowSshSession) GetFileTransferToRemote() WorkflowFileTransfer {
-	if o == nil || o.FileTransferToRemote == nil {
+	if o == nil || IsNil(o.FileTransferToRemote) {
 		var ret WorkflowFileTransfer
 		return ret
 	}
@@ -193,7 +207,7 @@ func (o *WorkflowSshSession) GetFileTransferToRemote() WorkflowFileTransfer {
 // GetFileTransferToRemoteOk returns a tuple with the FileTransferToRemote field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowSshSession) GetFileTransferToRemoteOk() (*WorkflowFileTransfer, bool) {
-	if o == nil || o.FileTransferToRemote == nil {
+	if o == nil || IsNil(o.FileTransferToRemote) {
 		return nil, false
 	}
 	return o.FileTransferToRemote, true
@@ -201,7 +215,7 @@ func (o *WorkflowSshSession) GetFileTransferToRemoteOk() (*WorkflowFileTransfer,
 
 // HasFileTransferToRemote returns a boolean if a field has been set.
 func (o *WorkflowSshSession) HasFileTransferToRemote() bool {
-	if o != nil && o.FileTransferToRemote != nil {
+	if o != nil && !IsNil(o.FileTransferToRemote) {
 		return true
 	}
 
@@ -215,7 +229,7 @@ func (o *WorkflowSshSession) SetFileTransferToRemote(v WorkflowFileTransfer) {
 
 // GetMessageType returns the MessageType field value if set, zero value otherwise.
 func (o *WorkflowSshSession) GetMessageType() string {
-	if o == nil || o.MessageType == nil {
+	if o == nil || IsNil(o.MessageType) {
 		var ret string
 		return ret
 	}
@@ -225,7 +239,7 @@ func (o *WorkflowSshSession) GetMessageType() string {
 // GetMessageTypeOk returns a tuple with the MessageType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowSshSession) GetMessageTypeOk() (*string, bool) {
-	if o == nil || o.MessageType == nil {
+	if o == nil || IsNil(o.MessageType) {
 		return nil, false
 	}
 	return o.MessageType, true
@@ -233,7 +247,7 @@ func (o *WorkflowSshSession) GetMessageTypeOk() (*string, bool) {
 
 // HasMessageType returns a boolean if a field has been set.
 func (o *WorkflowSshSession) HasMessageType() bool {
-	if o != nil && o.MessageType != nil {
+	if o != nil && !IsNil(o.MessageType) {
 		return true
 	}
 
@@ -258,7 +272,7 @@ func (o *WorkflowSshSession) GetSshCommand() interface{} {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowSshSession) GetSshCommandOk() (*interface{}, bool) {
-	if o == nil || o.SshCommand == nil {
+	if o == nil || IsNil(o.SshCommand) {
 		return nil, false
 	}
 	return &o.SshCommand, true
@@ -266,7 +280,7 @@ func (o *WorkflowSshSession) GetSshCommandOk() (*interface{}, bool) {
 
 // HasSshCommand returns a boolean if a field has been set.
 func (o *WorkflowSshSession) HasSshCommand() bool {
-	if o != nil && o.SshCommand != nil {
+	if o != nil && !IsNil(o.SshCommand) {
 		return true
 	}
 
@@ -280,7 +294,7 @@ func (o *WorkflowSshSession) SetSshCommand(v interface{}) {
 
 // GetSshConfiguration returns the SshConfiguration field value if set, zero value otherwise.
 func (o *WorkflowSshSession) GetSshConfiguration() WorkflowSshConfig {
-	if o == nil || o.SshConfiguration == nil {
+	if o == nil || IsNil(o.SshConfiguration) {
 		var ret WorkflowSshConfig
 		return ret
 	}
@@ -290,7 +304,7 @@ func (o *WorkflowSshSession) GetSshConfiguration() WorkflowSshConfig {
 // GetSshConfigurationOk returns a tuple with the SshConfiguration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowSshSession) GetSshConfigurationOk() (*WorkflowSshConfig, bool) {
-	if o == nil || o.SshConfiguration == nil {
+	if o == nil || IsNil(o.SshConfiguration) {
 		return nil, false
 	}
 	return o.SshConfiguration, true
@@ -298,7 +312,7 @@ func (o *WorkflowSshSession) GetSshConfigurationOk() (*WorkflowSshConfig, bool) 
 
 // HasSshConfiguration returns a boolean if a field has been set.
 func (o *WorkflowSshSession) HasSshConfiguration() bool {
-	if o != nil && o.SshConfiguration != nil {
+	if o != nil && !IsNil(o.SshConfiguration) {
 		return true
 	}
 
@@ -312,7 +326,7 @@ func (o *WorkflowSshSession) SetSshConfiguration(v WorkflowSshConfig) {
 
 // GetSshOpTimeout returns the SshOpTimeout field value if set, zero value otherwise.
 func (o *WorkflowSshSession) GetSshOpTimeout() string {
-	if o == nil || o.SshOpTimeout == nil {
+	if o == nil || IsNil(o.SshOpTimeout) {
 		var ret string
 		return ret
 	}
@@ -322,7 +336,7 @@ func (o *WorkflowSshSession) GetSshOpTimeout() string {
 // GetSshOpTimeoutOk returns a tuple with the SshOpTimeout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowSshSession) GetSshOpTimeoutOk() (*string, bool) {
-	if o == nil || o.SshOpTimeout == nil {
+	if o == nil || IsNil(o.SshOpTimeout) {
 		return nil, false
 	}
 	return o.SshOpTimeout, true
@@ -330,7 +344,7 @@ func (o *WorkflowSshSession) GetSshOpTimeoutOk() (*string, bool) {
 
 // HasSshOpTimeout returns a boolean if a field has been set.
 func (o *WorkflowSshSession) HasSshOpTimeout() bool {
-	if o != nil && o.SshOpTimeout != nil {
+	if o != nil && !IsNil(o.SshOpTimeout) {
 		return true
 	}
 
@@ -343,40 +357,50 @@ func (o *WorkflowSshSession) SetSshOpTimeout(v string) {
 }
 
 func (o WorkflowSshSession) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o WorkflowSshSession) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedWorkflowApi, errWorkflowApi := json.Marshal(o.WorkflowApi)
 	if errWorkflowApi != nil {
-		return []byte{}, errWorkflowApi
+		return map[string]interface{}{}, errWorkflowApi
 	}
 	errWorkflowApi = json.Unmarshal([]byte(serializedWorkflowApi), &toSerialize)
 	if errWorkflowApi != nil {
-		return []byte{}, errWorkflowApi
+		return map[string]interface{}{}, errWorkflowApi
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.CaptureCompleteResponse != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.CaptureCompleteResponse) {
 		toSerialize["CaptureCompleteResponse"] = o.CaptureCompleteResponse
 	}
 	if o.ExpectedExitCodes != nil {
 		toSerialize["ExpectedExitCodes"] = o.ExpectedExitCodes
 	}
-	if o.FileTransferToRemote != nil {
+	if !IsNil(o.FileTransferToRemote) {
 		toSerialize["FileTransferToRemote"] = o.FileTransferToRemote
 	}
-	if o.MessageType != nil {
+	if !IsNil(o.MessageType) {
 		toSerialize["MessageType"] = o.MessageType
 	}
 	if o.SshCommand != nil {
 		toSerialize["SshCommand"] = o.SshCommand
 	}
-	if o.SshConfiguration != nil {
+	if !IsNil(o.SshConfiguration) {
 		toSerialize["SshConfiguration"] = o.SshConfiguration
 	}
-	if o.SshOpTimeout != nil {
+	if !IsNil(o.SshOpTimeout) {
 		toSerialize["SshOpTimeout"] = o.SshOpTimeout
 	}
 
@@ -384,10 +408,51 @@ func (o WorkflowSshSession) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *WorkflowSshSession) UnmarshalJSON(bytes []byte) (err error) {
+func (o *WorkflowSshSession) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type WorkflowSshSessionWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -409,7 +474,7 @@ func (o *WorkflowSshSession) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowSshSessionWithoutEmbeddedStruct := WorkflowSshSessionWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varWorkflowSshSessionWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varWorkflowSshSessionWithoutEmbeddedStruct)
 	if err == nil {
 		varWorkflowSshSession := _WorkflowSshSession{}
 		varWorkflowSshSession.ClassId = varWorkflowSshSessionWithoutEmbeddedStruct.ClassId
@@ -428,7 +493,7 @@ func (o *WorkflowSshSession) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowSshSession := _WorkflowSshSession{}
 
-	err = json.Unmarshal(bytes, &varWorkflowSshSession)
+	err = json.Unmarshal(data, &varWorkflowSshSession)
 	if err == nil {
 		o.WorkflowApi = varWorkflowSshSession.WorkflowApi
 	} else {
@@ -437,7 +502,7 @@ func (o *WorkflowSshSession) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "CaptureCompleteResponse")

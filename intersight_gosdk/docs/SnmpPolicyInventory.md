@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "snmp.PolicyInventory"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "snmp.PolicyInventory"]
-**AccessCommunityString** | Pointer to **string** | The default SNMPv1, SNMPv2c community name or SNMPv3 username to include on any trap messages sent to the SNMP host. The name can be 18 characters long. | [optional] [readonly] 
+**AccessCommunityString** | Pointer to **string** | The default SNMPv1, SNMPv2c community name or SNMPv3 username to include on any trap messages sent to the SNMP host. The name can be 32 characters long. | [optional] [readonly] 
 **CommunityAccess** | Pointer to **string** | Controls access to the information in the inventory tables. Applicable only for SNMPv1 and SNMPv2c users. * &#x60;Disabled&#x60; - Blocks access to the information in the inventory tables. * &#x60;Limited&#x60; - Partial access to read the information in the inventory tables. * &#x60;Full&#x60; - Full access to read the information in the inventory tables. | [optional] [readonly] [default to "Disabled"]
 **Enabled** | Pointer to **bool** | State of the SNMP Policy on the endpoint. If enabled, the endpoint sends SNMP traps to the designated host. | [optional] [readonly] [default to true]
 **EngineId** | Pointer to **string** | User-defined unique identification of the static engine. | [optional] [readonly] 
@@ -18,7 +18,7 @@ Name | Type | Description | Notes
 **TrapCommunity** | Pointer to **string** | SNMP community group used for sending SNMP trap to other devices. Valid only for SNMPv2c users. | [optional] [readonly] 
 **V2Enabled** | Pointer to **bool** | State of the SNMP v2c on the endpoint. If enabled, the endpoint sends SNMP v2c properties to the designated host. | [optional] [readonly] [default to true]
 **V3Enabled** | Pointer to **bool** | State of the SNMP v3 on the endpoint. If enabled, the endpoint sends SNMP v3 properties to the designated host. | [optional] [readonly] [default to true]
-**TargetMo** | Pointer to [**MoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
+**TargetMo** | Pointer to [**NullableMoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -424,6 +424,16 @@ SetTargetMo sets TargetMo field to given value.
 
 HasTargetMo returns a boolean if a field has been set.
 
+### SetTargetMoNil
+
+`func (o *SnmpPolicyInventory) SetTargetMoNil(b bool)`
+
+ SetTargetMoNil sets the value for TargetMo to be an explicit nil
+
+### UnsetTargetMo
+`func (o *SnmpPolicyInventory) UnsetTargetMo()`
+
+UnsetTargetMo ensures that no value is present for TargetMo, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

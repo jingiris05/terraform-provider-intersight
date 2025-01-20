@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the LicenseIwoCustomerOp type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &LicenseIwoCustomerOp{}
 
 // LicenseIwoCustomerOp Customer operation object to refresh the registration or re-authenticate, pre-created.
 type LicenseIwoCustomerOp struct {
@@ -26,15 +30,15 @@ type LicenseIwoCustomerOp struct {
 	ObjectType string `json:"ObjectType"`
 	// The workload optimizer license administrative state. Set this property to 'true' to activate the workload optimizer license entitlements.
 	ActiveAdmin *bool `json:"ActiveAdmin,omitempty"`
-	// Active workload optimizer license tier set by user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+	// Active workload optimizer license tier set by user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 	ActiveLicenseType *string `json:"ActiveLicenseType,omitempty"`
 	// Enable trial for Intersight licensing.
 	EnableTrial *bool `json:"EnableTrial,omitempty"`
 	// The default Trial or Grace period customer is entitled to.
 	EvaluationPeriod *int64 `json:"EvaluationPeriod,omitempty"`
 	// The number of days the trial Trial or Grace period is extended. The trial or grace period can be extended once.
-	ExtraEvaluation      *int64                                 `json:"ExtraEvaluation,omitempty"`
-	AccountLicenseData   *LicenseAccountLicenseDataRelationship `json:"AccountLicenseData,omitempty"`
+	ExtraEvaluation      *int64                                        `json:"ExtraEvaluation,omitempty"`
+	AccountLicenseData   NullableLicenseAccountLicenseDataRelationship `json:"AccountLicenseData,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -91,6 +95,11 @@ func (o *LicenseIwoCustomerOp) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "license.IwoCustomerOp" of the ClassId field.
+func (o *LicenseIwoCustomerOp) GetDefaultClassId() interface{} {
+	return "license.IwoCustomerOp"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *LicenseIwoCustomerOp) GetObjectType() string {
 	if o == nil {
@@ -115,9 +124,14 @@ func (o *LicenseIwoCustomerOp) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "license.IwoCustomerOp" of the ObjectType field.
+func (o *LicenseIwoCustomerOp) GetDefaultObjectType() interface{} {
+	return "license.IwoCustomerOp"
+}
+
 // GetActiveAdmin returns the ActiveAdmin field value if set, zero value otherwise.
 func (o *LicenseIwoCustomerOp) GetActiveAdmin() bool {
-	if o == nil || o.ActiveAdmin == nil {
+	if o == nil || IsNil(o.ActiveAdmin) {
 		var ret bool
 		return ret
 	}
@@ -127,7 +141,7 @@ func (o *LicenseIwoCustomerOp) GetActiveAdmin() bool {
 // GetActiveAdminOk returns a tuple with the ActiveAdmin field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseIwoCustomerOp) GetActiveAdminOk() (*bool, bool) {
-	if o == nil || o.ActiveAdmin == nil {
+	if o == nil || IsNil(o.ActiveAdmin) {
 		return nil, false
 	}
 	return o.ActiveAdmin, true
@@ -135,7 +149,7 @@ func (o *LicenseIwoCustomerOp) GetActiveAdminOk() (*bool, bool) {
 
 // HasActiveAdmin returns a boolean if a field has been set.
 func (o *LicenseIwoCustomerOp) HasActiveAdmin() bool {
-	if o != nil && o.ActiveAdmin != nil {
+	if o != nil && !IsNil(o.ActiveAdmin) {
 		return true
 	}
 
@@ -149,7 +163,7 @@ func (o *LicenseIwoCustomerOp) SetActiveAdmin(v bool) {
 
 // GetActiveLicenseType returns the ActiveLicenseType field value if set, zero value otherwise.
 func (o *LicenseIwoCustomerOp) GetActiveLicenseType() string {
-	if o == nil || o.ActiveLicenseType == nil {
+	if o == nil || IsNil(o.ActiveLicenseType) {
 		var ret string
 		return ret
 	}
@@ -159,7 +173,7 @@ func (o *LicenseIwoCustomerOp) GetActiveLicenseType() string {
 // GetActiveLicenseTypeOk returns a tuple with the ActiveLicenseType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseIwoCustomerOp) GetActiveLicenseTypeOk() (*string, bool) {
-	if o == nil || o.ActiveLicenseType == nil {
+	if o == nil || IsNil(o.ActiveLicenseType) {
 		return nil, false
 	}
 	return o.ActiveLicenseType, true
@@ -167,7 +181,7 @@ func (o *LicenseIwoCustomerOp) GetActiveLicenseTypeOk() (*string, bool) {
 
 // HasActiveLicenseType returns a boolean if a field has been set.
 func (o *LicenseIwoCustomerOp) HasActiveLicenseType() bool {
-	if o != nil && o.ActiveLicenseType != nil {
+	if o != nil && !IsNil(o.ActiveLicenseType) {
 		return true
 	}
 
@@ -181,7 +195,7 @@ func (o *LicenseIwoCustomerOp) SetActiveLicenseType(v string) {
 
 // GetEnableTrial returns the EnableTrial field value if set, zero value otherwise.
 func (o *LicenseIwoCustomerOp) GetEnableTrial() bool {
-	if o == nil || o.EnableTrial == nil {
+	if o == nil || IsNil(o.EnableTrial) {
 		var ret bool
 		return ret
 	}
@@ -191,7 +205,7 @@ func (o *LicenseIwoCustomerOp) GetEnableTrial() bool {
 // GetEnableTrialOk returns a tuple with the EnableTrial field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseIwoCustomerOp) GetEnableTrialOk() (*bool, bool) {
-	if o == nil || o.EnableTrial == nil {
+	if o == nil || IsNil(o.EnableTrial) {
 		return nil, false
 	}
 	return o.EnableTrial, true
@@ -199,7 +213,7 @@ func (o *LicenseIwoCustomerOp) GetEnableTrialOk() (*bool, bool) {
 
 // HasEnableTrial returns a boolean if a field has been set.
 func (o *LicenseIwoCustomerOp) HasEnableTrial() bool {
-	if o != nil && o.EnableTrial != nil {
+	if o != nil && !IsNil(o.EnableTrial) {
 		return true
 	}
 
@@ -213,7 +227,7 @@ func (o *LicenseIwoCustomerOp) SetEnableTrial(v bool) {
 
 // GetEvaluationPeriod returns the EvaluationPeriod field value if set, zero value otherwise.
 func (o *LicenseIwoCustomerOp) GetEvaluationPeriod() int64 {
-	if o == nil || o.EvaluationPeriod == nil {
+	if o == nil || IsNil(o.EvaluationPeriod) {
 		var ret int64
 		return ret
 	}
@@ -223,7 +237,7 @@ func (o *LicenseIwoCustomerOp) GetEvaluationPeriod() int64 {
 // GetEvaluationPeriodOk returns a tuple with the EvaluationPeriod field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseIwoCustomerOp) GetEvaluationPeriodOk() (*int64, bool) {
-	if o == nil || o.EvaluationPeriod == nil {
+	if o == nil || IsNil(o.EvaluationPeriod) {
 		return nil, false
 	}
 	return o.EvaluationPeriod, true
@@ -231,7 +245,7 @@ func (o *LicenseIwoCustomerOp) GetEvaluationPeriodOk() (*int64, bool) {
 
 // HasEvaluationPeriod returns a boolean if a field has been set.
 func (o *LicenseIwoCustomerOp) HasEvaluationPeriod() bool {
-	if o != nil && o.EvaluationPeriod != nil {
+	if o != nil && !IsNil(o.EvaluationPeriod) {
 		return true
 	}
 
@@ -245,7 +259,7 @@ func (o *LicenseIwoCustomerOp) SetEvaluationPeriod(v int64) {
 
 // GetExtraEvaluation returns the ExtraEvaluation field value if set, zero value otherwise.
 func (o *LicenseIwoCustomerOp) GetExtraEvaluation() int64 {
-	if o == nil || o.ExtraEvaluation == nil {
+	if o == nil || IsNil(o.ExtraEvaluation) {
 		var ret int64
 		return ret
 	}
@@ -255,7 +269,7 @@ func (o *LicenseIwoCustomerOp) GetExtraEvaluation() int64 {
 // GetExtraEvaluationOk returns a tuple with the ExtraEvaluation field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LicenseIwoCustomerOp) GetExtraEvaluationOk() (*int64, bool) {
-	if o == nil || o.ExtraEvaluation == nil {
+	if o == nil || IsNil(o.ExtraEvaluation) {
 		return nil, false
 	}
 	return o.ExtraEvaluation, true
@@ -263,7 +277,7 @@ func (o *LicenseIwoCustomerOp) GetExtraEvaluationOk() (*int64, bool) {
 
 // HasExtraEvaluation returns a boolean if a field has been set.
 func (o *LicenseIwoCustomerOp) HasExtraEvaluation() bool {
-	if o != nil && o.ExtraEvaluation != nil {
+	if o != nil && !IsNil(o.ExtraEvaluation) {
 		return true
 	}
 
@@ -275,81 +289,143 @@ func (o *LicenseIwoCustomerOp) SetExtraEvaluation(v int64) {
 	o.ExtraEvaluation = &v
 }
 
-// GetAccountLicenseData returns the AccountLicenseData field value if set, zero value otherwise.
+// GetAccountLicenseData returns the AccountLicenseData field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LicenseIwoCustomerOp) GetAccountLicenseData() LicenseAccountLicenseDataRelationship {
-	if o == nil || o.AccountLicenseData == nil {
+	if o == nil || IsNil(o.AccountLicenseData.Get()) {
 		var ret LicenseAccountLicenseDataRelationship
 		return ret
 	}
-	return *o.AccountLicenseData
+	return *o.AccountLicenseData.Get()
 }
 
 // GetAccountLicenseDataOk returns a tuple with the AccountLicenseData field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LicenseIwoCustomerOp) GetAccountLicenseDataOk() (*LicenseAccountLicenseDataRelationship, bool) {
-	if o == nil || o.AccountLicenseData == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.AccountLicenseData, true
+	return o.AccountLicenseData.Get(), o.AccountLicenseData.IsSet()
 }
 
 // HasAccountLicenseData returns a boolean if a field has been set.
 func (o *LicenseIwoCustomerOp) HasAccountLicenseData() bool {
-	if o != nil && o.AccountLicenseData != nil {
+	if o != nil && o.AccountLicenseData.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAccountLicenseData gets a reference to the given LicenseAccountLicenseDataRelationship and assigns it to the AccountLicenseData field.
+// SetAccountLicenseData gets a reference to the given NullableLicenseAccountLicenseDataRelationship and assigns it to the AccountLicenseData field.
 func (o *LicenseIwoCustomerOp) SetAccountLicenseData(v LicenseAccountLicenseDataRelationship) {
-	o.AccountLicenseData = &v
+	o.AccountLicenseData.Set(&v)
+}
+
+// SetAccountLicenseDataNil sets the value for AccountLicenseData to be an explicit nil
+func (o *LicenseIwoCustomerOp) SetAccountLicenseDataNil() {
+	o.AccountLicenseData.Set(nil)
+}
+
+// UnsetAccountLicenseData ensures that no value is present for AccountLicenseData, not even an explicit nil
+func (o *LicenseIwoCustomerOp) UnsetAccountLicenseData() {
+	o.AccountLicenseData.Unset()
 }
 
 func (o LicenseIwoCustomerOp) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o LicenseIwoCustomerOp) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ActiveAdmin != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ActiveAdmin) {
 		toSerialize["ActiveAdmin"] = o.ActiveAdmin
 	}
-	if o.ActiveLicenseType != nil {
+	if !IsNil(o.ActiveLicenseType) {
 		toSerialize["ActiveLicenseType"] = o.ActiveLicenseType
 	}
-	if o.EnableTrial != nil {
+	if !IsNil(o.EnableTrial) {
 		toSerialize["EnableTrial"] = o.EnableTrial
 	}
-	if o.EvaluationPeriod != nil {
+	if !IsNil(o.EvaluationPeriod) {
 		toSerialize["EvaluationPeriod"] = o.EvaluationPeriod
 	}
-	if o.ExtraEvaluation != nil {
+	if !IsNil(o.ExtraEvaluation) {
 		toSerialize["ExtraEvaluation"] = o.ExtraEvaluation
 	}
-	if o.AccountLicenseData != nil {
-		toSerialize["AccountLicenseData"] = o.AccountLicenseData
+	if o.AccountLicenseData.IsSet() {
+		toSerialize["AccountLicenseData"] = o.AccountLicenseData.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *LicenseIwoCustomerOp) UnmarshalJSON(bytes []byte) (err error) {
+func (o *LicenseIwoCustomerOp) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type LicenseIwoCustomerOpWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -357,20 +433,20 @@ func (o *LicenseIwoCustomerOp) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// The workload optimizer license administrative state. Set this property to 'true' to activate the workload optimizer license entitlements.
 		ActiveAdmin *bool `json:"ActiveAdmin,omitempty"`
-		// Active workload optimizer license tier set by user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type.
+		// Active workload optimizer license tier set by user. * `Base` - Base as a License type. It is default license type. * `Essential` - Essential as a License type. * `Standard` - Standard as a License type. * `Advantage` - Advantage as a License type. * `Premier` - Premier as a License type. * `IWO-Essential` - IWO-Essential as a License type. * `IWO-Advantage` - IWO-Advantage as a License type. * `IWO-Premier` - IWO-Premier as a License type. * `IKS-Advantage` - IKS-Advantage as a License type. * `INC-Premier-1GFixed` - Premier 1G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-10GFixed` - Premier 10G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-100GFixed` - Premier 100G Fixed license tier for Intersight Nexus Cloud. * `INC-Premier-Mod4Slot` - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * `INC-Premier-Mod8Slot` - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsFixed` - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * `INC-Premier-D2OpsMod` - Premier D2Ops modular license tier for Intersight Nexus Cloud. * `INC-Premier-CentralizedMod8Slot` - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * `INC-Premier-DistributedMod8Slot` - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * `ERP-Advantage` - Advantage license tier for ERP workflows. * `IntersightTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * `IWOTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * `IKSTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * `INCTrial` - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers.
 		ActiveLicenseType *string `json:"ActiveLicenseType,omitempty"`
 		// Enable trial for Intersight licensing.
 		EnableTrial *bool `json:"EnableTrial,omitempty"`
 		// The default Trial or Grace period customer is entitled to.
 		EvaluationPeriod *int64 `json:"EvaluationPeriod,omitempty"`
 		// The number of days the trial Trial or Grace period is extended. The trial or grace period can be extended once.
-		ExtraEvaluation    *int64                                 `json:"ExtraEvaluation,omitempty"`
-		AccountLicenseData *LicenseAccountLicenseDataRelationship `json:"AccountLicenseData,omitempty"`
+		ExtraEvaluation    *int64                                        `json:"ExtraEvaluation,omitempty"`
+		AccountLicenseData NullableLicenseAccountLicenseDataRelationship `json:"AccountLicenseData,omitempty"`
 	}
 
 	varLicenseIwoCustomerOpWithoutEmbeddedStruct := LicenseIwoCustomerOpWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varLicenseIwoCustomerOpWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varLicenseIwoCustomerOpWithoutEmbeddedStruct)
 	if err == nil {
 		varLicenseIwoCustomerOp := _LicenseIwoCustomerOp{}
 		varLicenseIwoCustomerOp.ClassId = varLicenseIwoCustomerOpWithoutEmbeddedStruct.ClassId
@@ -388,7 +464,7 @@ func (o *LicenseIwoCustomerOp) UnmarshalJSON(bytes []byte) (err error) {
 
 	varLicenseIwoCustomerOp := _LicenseIwoCustomerOp{}
 
-	err = json.Unmarshal(bytes, &varLicenseIwoCustomerOp)
+	err = json.Unmarshal(data, &varLicenseIwoCustomerOp)
 	if err == nil {
 		o.MoBaseMo = varLicenseIwoCustomerOp.MoBaseMo
 	} else {
@@ -397,7 +473,7 @@ func (o *LicenseIwoCustomerOp) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ActiveAdmin")

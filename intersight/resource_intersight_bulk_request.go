@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceBulkRequest() *schema.Resource {
 		ReadContext:   resourceBulkRequestRead,
 		DeleteContext: resourceBulkRequestDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -606,7 +608,7 @@ func resourceBulkRequest() *schema.Resource {
 				ForceNew:    true,
 			},
 			"status": {
-				Description: "The processing status of the Request.\n* `NotStarted` - Indicates that the request processing has not begun yet.\n* `ObjPresenceCheckInProgress` - Indicates that the object presence check is in progress for this request.\n* `ObjPresenceCheckComplete` - Indicates that the object presence check is complete.\n* `ExecutionInProgress` - Indicates that the request processing is in progress.\n* `Completed` - Indicates that the request processing has been completed successfully.\n* `Failed` - Indicates that the processing of this request failed.",
+				Description: "The processing status of the Request.\n* `NotStarted` - Indicates that the request processing has not begun yet.\n* `ObjPresenceCheckInProgress` - Indicates that the object presence check is in progress for this request.\n* `ObjPresenceCheckComplete` - Indicates that the object presence check is complete.\n* `ExecutionInProgress` - Indicates that the request processing is in progress.\n* `Completed` - Indicates that the request processing has been completed successfully.\n* `CompletedWithErrors` - Indicates that the request processing has one or more failed subrequests.\n* `Failed` - Indicates that the processing of this request failed.\n* `TimedOut` - Indicates that the request processing timed out.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -739,6 +741,18 @@ func resourceBulkRequest() *schema.Resource {
 								},
 							},
 							ForceNew: true,
+						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}, ForceNew: true,
 						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
@@ -1135,8 +1149,13 @@ func resourceBulkRequestCreate(c context.Context, d *schema.ResourceData, meta i
 		}
 		return diag.Errorf("error occurred while creating BulkRequest: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
 	var waitForCompletion bool
 	if v, ok := d.GetOk("wait_for_completion"); ok {
 		waitForCompletion = v.(bool)
@@ -1186,12 +1205,18 @@ func resourceBulkRequestCreate(c context.Context, d *schema.ResourceData, meta i
 			}
 		}
 	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceBulkRequestRead(c, d, meta)...)
 }
 
 func resourceBulkRequestRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.BulkApi.GetBulkRequestByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

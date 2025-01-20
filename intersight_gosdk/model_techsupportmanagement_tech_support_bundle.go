@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the TechsupportmanagementTechSupportBundle type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &TechsupportmanagementTechSupportBundle{}
 
 // TechsupportmanagementTechSupportBundle A request to collect techsupport and upload it to Intersight Storage Service. The serial number, PID and/or relationship to the target resource provided by the user is used to determine the device type for techsupport collection. If the serial number, PID and target resource are specified in the request, the values must match. Valid values of device types are network.Element for fabric interconnect, compute.Blade for blade server, compute.RackUnit for rack server, equipment.Chassis for chassis, equipment.IoCard for IO Module, equipment.FEX for fabric extender and adapter.Unit for network adapter. UCSM techsupport is collected for device type network.Element. Chassis techsupport is collected for compute.Blade, equipment.Chassis, equipment.IoCard, and blade adapter.Unit. Server techsupport is collected for compute.RackUnit and rack adapter.Unit. Fabric extender techsupport is collected for device type equipment.FEX. Hyper Flex node level techsupport is collected when the request specifies the platform type (HX) and the device type is Hyperflex.Node.
 type TechsupportmanagementTechSupportBundle struct {
@@ -29,15 +33,16 @@ type TechsupportmanagementTechSupportBundle struct {
 	// The device type obtained from the inventory.
 	DeviceType *string `json:"DeviceType,omitempty"`
 	// Product identification of the device.
-	Pid           *string                            `json:"Pid,omitempty"`
-	PlatformParam NullableConnectorPlatformParamBase `json:"PlatformParam,omitempty"`
-	// The platform type of the device. * `` - The device reported an empty or unrecognized platform type. * `APIC` - An Application Policy Infrastructure Controller cluster. * `CAPIC` - A Cloud Application Policy Infrastructure Controller instance. * `DCNM` - A Data Center Network Manager instance. Data Center Network Manager (DCNM) is the network management platform for all NX-OS-enabled deployments, spanning new fabric architectures, IP Fabric for Media, and storage networking deployments for the Cisco Nexus-powered data center. * `UCSFI` - A UCS Fabric Interconnect in HA or standalone mode, which is being managed by UCS Manager (UCSM). * `UCSFIISM` - A UCS Fabric Interconnect in HA or standalone mode, managed directly by Intersight. * `IMC` - A standalone UCS Server Integrated Management Controller. * `IMCM4` - A standalone UCS M4 Server. * `IMCM5` - A standalone UCS M5 server. * `IMCRack` - A standalone UCS M6 and above server. * `UCSIOM` - An UCS Chassis IO module. * `HX` - A HyperFlex storage controller. * `HyperFlexAP` - A HyperFlex Application Platform. * `IWE` - An Intersight Workload Engine. * `UCSD` - A UCS Director virtual appliance. Cisco UCS Director automates, orchestrates, and manages Cisco and third-party hardware. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance. * `IntersightAssist` - A Cisco Intersight Assist. * `PureStorageFlashArray` - A Pure Storage FlashArray device. * `NexusDevice` - A generic platform type to support Nexus Network Device. This can also be extended to support all network devices later on. * `ACISwitch` - A platform type to support ACI Switches. * `NexusSwitch` - A platform type to support Cisco Nexus Switches. * `MDSSwitch` - A platform type to support Cisco MDS Switches. * `MDSDevice` - A platform type to support MDS devices. * `UCSC890` - A standalone Cisco UCSC890 server. * `RedfishServer` - A generic target type for servers that support Redfish. Current support is limited to managing HPE and Dell servers on Intersight. * `NetAppOntap` - A NetApp ONTAP storage system. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager. * `EmcScaleIo` - An EMC ScaleIO storage system. * `EmcVmax` - An EMC VMAX storage system. * `EmcVplex` - An EMC VPLEX storage system. * `EmcXtremIo` - An EMC XtremIO storage system. * `VmwareVcenter` - A VMware vCenter device that manages Virtual Machines. * `MicrosoftHyperV` - A Microsoft Hyper-V system that manages Virtual Machines. * `AppDynamics` - An AppDynamics controller that monitors applications. * `Dynatrace` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `NewRelic` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `ReadHatOpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server. * `MySqlServer` - An instance of either Oracle MySQL Database or the open source MariaDB. * `Kubernetes` - A Kubernetes cluster that runs containerized applications. * `AmazonWebService` - An Amazon web service target that discovers and monitors different services like EC2. It discovers entities like VMs, Volumes, regions etc. and monitors attributes like Mem, CPU, cost. * `AmazonWebServiceBilling` - An Amazon web service billing target to retrieve billing information stored in S3 bucket. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal target that discovers all the associated Azure subscriptions. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement target that discovers cost, billing and RIs. * `DellCompellent` - A Dell Compellent storage system. * `HPE3Par` - A HPE 3PAR storage system. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis system that combines servers and storage into a distributed infrastructure platform. * `HPEOneView` - A HPE Oneview management system that manages compute, storage, and networking. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform also referred to as Hitachi VSP. It includes various storage systems designed for data centers. * `IMCBlade` - An Intersight managed UCS Blade Server. * `TerraformCloud` - A Terraform Cloud account. * `TerraformAgent` - A Terraform Cloud Agent that Intersight will deploy in datacenter. The agent will execute Terraform plan for Terraform Cloud workspace configured to use the agent. * `CustomTarget` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic. * `AnsibleEndpoint` - An external endpoint added as Target that can be accessed through Ansible in Intersight Cloud Orchestrator automation workflow. * `HTTPEndpoint` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic, Bearer Token. * `SSHEndpoint` - An external endpoint added as Target that can be accessed through SSH in Intersight Cloud Orchestrator automation workflow. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows machine on which PowerShell scripts can be executed remotely.
+	Pid *string `json:"Pid,omitempty"`
+	// Parameter object for Tech Support requests. PlatformParamBase is the base class for the platform-specific parameter types.
+	PlatformParam NullableMoBaseComplexType `json:"PlatformParam,omitempty"`
+	// The platform type of the device. * `` - An unrecognized platform type. * `APIC` - A Cisco Application Policy Infrastructure Controller (APIC) cluster. * `CAPIC` - A Cisco Cloud Application Policy Infrastructure Controller (Cloud APIC) instance. * `DCNM` - A Cisco Data Center Network Manager (DCNM) instance. * `UCSFI` - A Cisco UCS Fabric Interconnect that is managed by Cisco UCS Manager (UCSM). * `UCSFIISM` - A Cisco UCS Fabric Interconnect that is managed by Cisco Intersight. * `IMC` - A standalone Cisco UCS rack server (Deprecated). * `IMCM4` - A standalone Cisco UCS C-Series or S-Series M4 server. * `IMCM5` - A standalone Cisco UCS C-Series or S-Series M5 server. * `IMCRack` - A standalone Cisco UCS C-Series or S-Series M6 or newer server. * `UCSIOM` - A Cisco UCS Blade Chassis I/O Module (IOM). * `HX` - A Cisco HyperFlex (HX) cluster. * `UCSD` - A Cisco UCS Director (UCSD) instance. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance instance. * `IntersightAssist` - A Cisco Intersight Assist instance. * `PureStorageFlashArray` - A Pure Storage FlashArray that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and storage management features are supported on this device. * `NexusDevice` - A Cisco Nexus Network Switch that is managed using Cisco Intersight Assist. * `ACISwitch` - A Cisco Nexus Network Switch with the embedded Device Connector and is a part of the Cisco ACI fabric. * `NexusSwitch` - A standalone Cisco Nexus Network Switch with the embedded Device Connector. * `MDSSwitch` - A Cisco MDS Switch that is managed using the embedded Device Connector. * `MDSDevice` - A Cisco MDS Switch that is managed using Cisco Intersight Assist. * `UCSC890` - A standalone Cisco UCS C890 server managed using Cisco Intersight Assist. * `RedfishServer` - A generic target type for servers that support Redfish APIs and is managed using Cisco Intersight Assist. Support is limited to HPE and Dell Servers. * `NetAppOntap` - A Netapp ONTAP Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager (AIQUM) that is managed using Cisco Intersight Assist. * `EmcScaleIo` - An EMC ScaleIO Software Defined Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVmax` - An EMC VMAX 2 or 3 series enterprise storage array that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVplex` - An EMC VPLEX virtual storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcXtremIo` - An EMC XtremIO SSD storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `VmwareVcenter` - A VMware vCenter instance that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and Virtualization features are supported on this hypervisor. * `MicrosoftHyperV` - A Microsoft Hyper-V host that is managed using Cisco Intersight Assist. Optionally, other hosts in the cluster can be discovered through this host. Cisco Intersight Workload Optimizer features are supported on this hypervisor. * `AppDynamics` - An AppDynamics controller running in a SaaS or on-prem datacenter. On-prem AppDynamics instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this controller. * `Dynatrace` - A Dynatrace Server instance running in a SaaS or on-prem datacenter. On-prem Dynatrace instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `NewRelic` - A NewRelic user account. The NewRelic instance monitors the application infrastructure. Cisco Intersight Workload Optimizer features are supported on this server. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `Umbrella` - Umbrella cloud target that discovers and monitors an organization. It discovers entities like Datacenters, Devices, Tunnels, Networks, etc. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `MySqlServer` - A MySQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `OracleDatabaseServer` - An Oracle database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `IBMWebSphereApplicationServer` - An IBM WebSphere Application server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application server. * `OracleWebLogicServer` - Oracle WebLogic Server is a unified and extensible platform for developing, deploying and running enterprise applications, such as Java, for on-premises and in the cloud. WebLogic Server offers a robust, mature, and scalable implementation of Java Enterprise Edition (EE) and Jakarta EE. * `ApacheTomcatServer` - An Apache Tomcat server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `JavaVirtualMachine` - A JVM Application with JMX configured that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application. * `RedHatJBossApplicationServer` - JBoss Application Server is an open-source, cross-platform Java application server developed by JBoss, a division of Red Hat Inc. It is an open-source implementation of Java 2 Enterprise Edition (J2EE) that is used for implementing Java applications and other Web-based applications and software. * `Kubernetes` - A Kubernetes cluster that runs containerized applications, with Kubernetes Collector installed. Cisco Intersight Workload Optimizer features are supported on Kubernetes cluster. * `AmazonWebService` - An Amazon Web Service cloud account. Cisco Intersight Workload Optimizer and Virtualization features are supported on this cloud. * `AmazonWebServiceBilling` - An Amazon Web Service cloud billing account used to retrieve billing information stored in S3 bucket. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatform` - A Google Cloud Platform service account with access to one or more projects. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatformBilling` - A Google Cloud Platform service account used to retrieve billing information from BigQuery. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal account with access to Azure subscriptions. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement enrolment used to retrieve pricing and billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureBilling` - A Microsoft Azure Service Principal account with access to billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `DellCompellent` - A Dell EMC SC Series (Compellent) storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `HPE3Par` - A HPE 3PAR StoreServ system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis cluster that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this cluster. * `NutanixPrismCentral` - A Nutanix Prism Central cluster. Prism central is a virtual appliance for managing Nutanix clusters and services. * `HPEOneView` - A HPE OneView system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this system. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform (Hitachi VSP) that is managed using Cisco Intersight Assist. * `GenericTarget` - A generic third-party target supported only in Partner Integration Appliance. This target type is used for development purposes and will not be supported in production environment. * `IMCBlade` - A Cisco UCS blade server managed by Cisco Intersight. * `TerraformCloud` - A Terraform Cloud Business Tier account. * `TerraformAgent` - A Terraform Cloud Agent that will be deployed on Cisco Intersight Assist. The agent can be used to plan and apply Terraform runs from a Terraform Cloud workspace. * `CustomTarget` - CustomTarget is deprecated. Use HTTPEndpoint type to claim HTTP endpoints. * `AnsibleEndpoint` - An external endpoint that is added as a target which can be accessed through Ansible in Intersight Cloud Orchestrator automation workflows. * `HTTPEndpoint` - An HTTP endpoint that can be accessed in Intersight Orchestrator workflows directly or using Cisco Intersight Assist. Authentication Schemes supported are Basic and Bearer Token. * `SSHEndpoint` - An SSH endpoint that can be accessed in Intersight Orchestrator workflows using Cisco Intersight Assist. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows operating system server on which PowerShell scripts can be executed using Cisco Intersight Assist. * `CiscoDNAC` - A Cisco Digital Network Architecture (DNA) Center appliance. * `CiscoFMC` - A Cisco Secure Firewall Management Center. * `ViptelaCloud` - A Cisco Viptela SD-WAN Cloud. * `MerakiCloud` - A Cisco Meraki Organization. * `CiscoISE` - A Cisco Identity Services Engine (ISE) target.
 	PlatformType *string `json:"PlatformType,omitempty"`
 	// Serial number of the device.
-	Serial               *string                                             `json:"Serial,omitempty"`
-	DeviceRegistration   *AssetDeviceRegistrationRelationship                `json:"DeviceRegistration,omitempty"`
-	TargetResource       *MoBaseMoRelationship                               `json:"TargetResource,omitempty"`
-	TechSupportStatus    *TechsupportmanagementTechSupportStatusRelationship `json:"TechSupportStatus,omitempty"`
+	Serial               *string                                                    `json:"Serial,omitempty"`
+	DeviceRegistration   NullableAssetDeviceRegistrationRelationship                `json:"DeviceRegistration,omitempty"`
+	TargetResource       NullableMoBaseMoRelationship                               `json:"TargetResource,omitempty"`
+	TechSupportStatus    NullableTechsupportmanagementTechSupportStatusRelationship `json:"TechSupportStatus,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -94,6 +99,11 @@ func (o *TechsupportmanagementTechSupportBundle) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "techsupportmanagement.TechSupportBundle" of the ClassId field.
+func (o *TechsupportmanagementTechSupportBundle) GetDefaultClassId() interface{} {
+	return "techsupportmanagement.TechSupportBundle"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *TechsupportmanagementTechSupportBundle) GetObjectType() string {
 	if o == nil {
@@ -118,9 +128,14 @@ func (o *TechsupportmanagementTechSupportBundle) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "techsupportmanagement.TechSupportBundle" of the ObjectType field.
+func (o *TechsupportmanagementTechSupportBundle) GetDefaultObjectType() interface{} {
+	return "techsupportmanagement.TechSupportBundle"
+}
+
 // GetDeviceIdentifier returns the DeviceIdentifier field value if set, zero value otherwise.
 func (o *TechsupportmanagementTechSupportBundle) GetDeviceIdentifier() string {
-	if o == nil || o.DeviceIdentifier == nil {
+	if o == nil || IsNil(o.DeviceIdentifier) {
 		var ret string
 		return ret
 	}
@@ -130,7 +145,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetDeviceIdentifier() string {
 // GetDeviceIdentifierOk returns a tuple with the DeviceIdentifier field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TechsupportmanagementTechSupportBundle) GetDeviceIdentifierOk() (*string, bool) {
-	if o == nil || o.DeviceIdentifier == nil {
+	if o == nil || IsNil(o.DeviceIdentifier) {
 		return nil, false
 	}
 	return o.DeviceIdentifier, true
@@ -138,7 +153,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetDeviceIdentifierOk() (*strin
 
 // HasDeviceIdentifier returns a boolean if a field has been set.
 func (o *TechsupportmanagementTechSupportBundle) HasDeviceIdentifier() bool {
-	if o != nil && o.DeviceIdentifier != nil {
+	if o != nil && !IsNil(o.DeviceIdentifier) {
 		return true
 	}
 
@@ -152,7 +167,7 @@ func (o *TechsupportmanagementTechSupportBundle) SetDeviceIdentifier(v string) {
 
 // GetDeviceType returns the DeviceType field value if set, zero value otherwise.
 func (o *TechsupportmanagementTechSupportBundle) GetDeviceType() string {
-	if o == nil || o.DeviceType == nil {
+	if o == nil || IsNil(o.DeviceType) {
 		var ret string
 		return ret
 	}
@@ -162,7 +177,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetDeviceType() string {
 // GetDeviceTypeOk returns a tuple with the DeviceType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TechsupportmanagementTechSupportBundle) GetDeviceTypeOk() (*string, bool) {
-	if o == nil || o.DeviceType == nil {
+	if o == nil || IsNil(o.DeviceType) {
 		return nil, false
 	}
 	return o.DeviceType, true
@@ -170,7 +185,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetDeviceTypeOk() (*string, boo
 
 // HasDeviceType returns a boolean if a field has been set.
 func (o *TechsupportmanagementTechSupportBundle) HasDeviceType() bool {
-	if o != nil && o.DeviceType != nil {
+	if o != nil && !IsNil(o.DeviceType) {
 		return true
 	}
 
@@ -184,7 +199,7 @@ func (o *TechsupportmanagementTechSupportBundle) SetDeviceType(v string) {
 
 // GetPid returns the Pid field value if set, zero value otherwise.
 func (o *TechsupportmanagementTechSupportBundle) GetPid() string {
-	if o == nil || o.Pid == nil {
+	if o == nil || IsNil(o.Pid) {
 		var ret string
 		return ret
 	}
@@ -194,7 +209,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetPid() string {
 // GetPidOk returns a tuple with the Pid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TechsupportmanagementTechSupportBundle) GetPidOk() (*string, bool) {
-	if o == nil || o.Pid == nil {
+	if o == nil || IsNil(o.Pid) {
 		return nil, false
 	}
 	return o.Pid, true
@@ -202,7 +217,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetPidOk() (*string, bool) {
 
 // HasPid returns a boolean if a field has been set.
 func (o *TechsupportmanagementTechSupportBundle) HasPid() bool {
-	if o != nil && o.Pid != nil {
+	if o != nil && !IsNil(o.Pid) {
 		return true
 	}
 
@@ -215,9 +230,9 @@ func (o *TechsupportmanagementTechSupportBundle) SetPid(v string) {
 }
 
 // GetPlatformParam returns the PlatformParam field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *TechsupportmanagementTechSupportBundle) GetPlatformParam() ConnectorPlatformParamBase {
-	if o == nil || o.PlatformParam.Get() == nil {
-		var ret ConnectorPlatformParamBase
+func (o *TechsupportmanagementTechSupportBundle) GetPlatformParam() MoBaseComplexType {
+	if o == nil || IsNil(o.PlatformParam.Get()) {
+		var ret MoBaseComplexType
 		return ret
 	}
 	return *o.PlatformParam.Get()
@@ -226,7 +241,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetPlatformParam() ConnectorPla
 // GetPlatformParamOk returns a tuple with the PlatformParam field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TechsupportmanagementTechSupportBundle) GetPlatformParamOk() (*ConnectorPlatformParamBase, bool) {
+func (o *TechsupportmanagementTechSupportBundle) GetPlatformParamOk() (*MoBaseComplexType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -242,8 +257,8 @@ func (o *TechsupportmanagementTechSupportBundle) HasPlatformParam() bool {
 	return false
 }
 
-// SetPlatformParam gets a reference to the given NullableConnectorPlatformParamBase and assigns it to the PlatformParam field.
-func (o *TechsupportmanagementTechSupportBundle) SetPlatformParam(v ConnectorPlatformParamBase) {
+// SetPlatformParam gets a reference to the given NullableMoBaseComplexType and assigns it to the PlatformParam field.
+func (o *TechsupportmanagementTechSupportBundle) SetPlatformParam(v MoBaseComplexType) {
 	o.PlatformParam.Set(&v)
 }
 
@@ -259,7 +274,7 @@ func (o *TechsupportmanagementTechSupportBundle) UnsetPlatformParam() {
 
 // GetPlatformType returns the PlatformType field value if set, zero value otherwise.
 func (o *TechsupportmanagementTechSupportBundle) GetPlatformType() string {
-	if o == nil || o.PlatformType == nil {
+	if o == nil || IsNil(o.PlatformType) {
 		var ret string
 		return ret
 	}
@@ -269,7 +284,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetPlatformType() string {
 // GetPlatformTypeOk returns a tuple with the PlatformType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TechsupportmanagementTechSupportBundle) GetPlatformTypeOk() (*string, bool) {
-	if o == nil || o.PlatformType == nil {
+	if o == nil || IsNil(o.PlatformType) {
 		return nil, false
 	}
 	return o.PlatformType, true
@@ -277,7 +292,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetPlatformTypeOk() (*string, b
 
 // HasPlatformType returns a boolean if a field has been set.
 func (o *TechsupportmanagementTechSupportBundle) HasPlatformType() bool {
-	if o != nil && o.PlatformType != nil {
+	if o != nil && !IsNil(o.PlatformType) {
 		return true
 	}
 
@@ -291,7 +306,7 @@ func (o *TechsupportmanagementTechSupportBundle) SetPlatformType(v string) {
 
 // GetSerial returns the Serial field value if set, zero value otherwise.
 func (o *TechsupportmanagementTechSupportBundle) GetSerial() string {
-	if o == nil || o.Serial == nil {
+	if o == nil || IsNil(o.Serial) {
 		var ret string
 		return ret
 	}
@@ -301,7 +316,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetSerial() string {
 // GetSerialOk returns a tuple with the Serial field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TechsupportmanagementTechSupportBundle) GetSerialOk() (*string, bool) {
-	if o == nil || o.Serial == nil {
+	if o == nil || IsNil(o.Serial) {
 		return nil, false
 	}
 	return o.Serial, true
@@ -309,7 +324,7 @@ func (o *TechsupportmanagementTechSupportBundle) GetSerialOk() (*string, bool) {
 
 // HasSerial returns a boolean if a field has been set.
 func (o *TechsupportmanagementTechSupportBundle) HasSerial() bool {
-	if o != nil && o.Serial != nil {
+	if o != nil && !IsNil(o.Serial) {
 		return true
 	}
 
@@ -321,154 +336,238 @@ func (o *TechsupportmanagementTechSupportBundle) SetSerial(v string) {
 	o.Serial = &v
 }
 
-// GetDeviceRegistration returns the DeviceRegistration field value if set, zero value otherwise.
+// GetDeviceRegistration returns the DeviceRegistration field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *TechsupportmanagementTechSupportBundle) GetDeviceRegistration() AssetDeviceRegistrationRelationship {
-	if o == nil || o.DeviceRegistration == nil {
+	if o == nil || IsNil(o.DeviceRegistration.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.DeviceRegistration
+	return *o.DeviceRegistration.Get()
 }
 
 // GetDeviceRegistrationOk returns a tuple with the DeviceRegistration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *TechsupportmanagementTechSupportBundle) GetDeviceRegistrationOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.DeviceRegistration == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.DeviceRegistration, true
+	return o.DeviceRegistration.Get(), o.DeviceRegistration.IsSet()
 }
 
 // HasDeviceRegistration returns a boolean if a field has been set.
 func (o *TechsupportmanagementTechSupportBundle) HasDeviceRegistration() bool {
-	if o != nil && o.DeviceRegistration != nil {
+	if o != nil && o.DeviceRegistration.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetDeviceRegistration gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the DeviceRegistration field.
+// SetDeviceRegistration gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the DeviceRegistration field.
 func (o *TechsupportmanagementTechSupportBundle) SetDeviceRegistration(v AssetDeviceRegistrationRelationship) {
-	o.DeviceRegistration = &v
+	o.DeviceRegistration.Set(&v)
 }
 
-// GetTargetResource returns the TargetResource field value if set, zero value otherwise.
+// SetDeviceRegistrationNil sets the value for DeviceRegistration to be an explicit nil
+func (o *TechsupportmanagementTechSupportBundle) SetDeviceRegistrationNil() {
+	o.DeviceRegistration.Set(nil)
+}
+
+// UnsetDeviceRegistration ensures that no value is present for DeviceRegistration, not even an explicit nil
+func (o *TechsupportmanagementTechSupportBundle) UnsetDeviceRegistration() {
+	o.DeviceRegistration.Unset()
+}
+
+// GetTargetResource returns the TargetResource field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *TechsupportmanagementTechSupportBundle) GetTargetResource() MoBaseMoRelationship {
-	if o == nil || o.TargetResource == nil {
+	if o == nil || IsNil(o.TargetResource.Get()) {
 		var ret MoBaseMoRelationship
 		return ret
 	}
-	return *o.TargetResource
+	return *o.TargetResource.Get()
 }
 
 // GetTargetResourceOk returns a tuple with the TargetResource field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *TechsupportmanagementTechSupportBundle) GetTargetResourceOk() (*MoBaseMoRelationship, bool) {
-	if o == nil || o.TargetResource == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.TargetResource, true
+	return o.TargetResource.Get(), o.TargetResource.IsSet()
 }
 
 // HasTargetResource returns a boolean if a field has been set.
 func (o *TechsupportmanagementTechSupportBundle) HasTargetResource() bool {
-	if o != nil && o.TargetResource != nil {
+	if o != nil && o.TargetResource.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetTargetResource gets a reference to the given MoBaseMoRelationship and assigns it to the TargetResource field.
+// SetTargetResource gets a reference to the given NullableMoBaseMoRelationship and assigns it to the TargetResource field.
 func (o *TechsupportmanagementTechSupportBundle) SetTargetResource(v MoBaseMoRelationship) {
-	o.TargetResource = &v
+	o.TargetResource.Set(&v)
 }
 
-// GetTechSupportStatus returns the TechSupportStatus field value if set, zero value otherwise.
+// SetTargetResourceNil sets the value for TargetResource to be an explicit nil
+func (o *TechsupportmanagementTechSupportBundle) SetTargetResourceNil() {
+	o.TargetResource.Set(nil)
+}
+
+// UnsetTargetResource ensures that no value is present for TargetResource, not even an explicit nil
+func (o *TechsupportmanagementTechSupportBundle) UnsetTargetResource() {
+	o.TargetResource.Unset()
+}
+
+// GetTechSupportStatus returns the TechSupportStatus field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *TechsupportmanagementTechSupportBundle) GetTechSupportStatus() TechsupportmanagementTechSupportStatusRelationship {
-	if o == nil || o.TechSupportStatus == nil {
+	if o == nil || IsNil(o.TechSupportStatus.Get()) {
 		var ret TechsupportmanagementTechSupportStatusRelationship
 		return ret
 	}
-	return *o.TechSupportStatus
+	return *o.TechSupportStatus.Get()
 }
 
 // GetTechSupportStatusOk returns a tuple with the TechSupportStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *TechsupportmanagementTechSupportBundle) GetTechSupportStatusOk() (*TechsupportmanagementTechSupportStatusRelationship, bool) {
-	if o == nil || o.TechSupportStatus == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.TechSupportStatus, true
+	return o.TechSupportStatus.Get(), o.TechSupportStatus.IsSet()
 }
 
 // HasTechSupportStatus returns a boolean if a field has been set.
 func (o *TechsupportmanagementTechSupportBundle) HasTechSupportStatus() bool {
-	if o != nil && o.TechSupportStatus != nil {
+	if o != nil && o.TechSupportStatus.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetTechSupportStatus gets a reference to the given TechsupportmanagementTechSupportStatusRelationship and assigns it to the TechSupportStatus field.
+// SetTechSupportStatus gets a reference to the given NullableTechsupportmanagementTechSupportStatusRelationship and assigns it to the TechSupportStatus field.
 func (o *TechsupportmanagementTechSupportBundle) SetTechSupportStatus(v TechsupportmanagementTechSupportStatusRelationship) {
-	o.TechSupportStatus = &v
+	o.TechSupportStatus.Set(&v)
+}
+
+// SetTechSupportStatusNil sets the value for TechSupportStatus to be an explicit nil
+func (o *TechsupportmanagementTechSupportBundle) SetTechSupportStatusNil() {
+	o.TechSupportStatus.Set(nil)
+}
+
+// UnsetTechSupportStatus ensures that no value is present for TechSupportStatus, not even an explicit nil
+func (o *TechsupportmanagementTechSupportBundle) UnsetTechSupportStatus() {
+	o.TechSupportStatus.Unset()
 }
 
 func (o TechsupportmanagementTechSupportBundle) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o TechsupportmanagementTechSupportBundle) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.DeviceIdentifier != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.DeviceIdentifier) {
 		toSerialize["DeviceIdentifier"] = o.DeviceIdentifier
 	}
-	if o.DeviceType != nil {
+	if !IsNil(o.DeviceType) {
 		toSerialize["DeviceType"] = o.DeviceType
 	}
-	if o.Pid != nil {
+	if !IsNil(o.Pid) {
 		toSerialize["Pid"] = o.Pid
 	}
 	if o.PlatformParam.IsSet() {
 		toSerialize["PlatformParam"] = o.PlatformParam.Get()
 	}
-	if o.PlatformType != nil {
+	if !IsNil(o.PlatformType) {
 		toSerialize["PlatformType"] = o.PlatformType
 	}
-	if o.Serial != nil {
+	if !IsNil(o.Serial) {
 		toSerialize["Serial"] = o.Serial
 	}
-	if o.DeviceRegistration != nil {
-		toSerialize["DeviceRegistration"] = o.DeviceRegistration
+	if o.DeviceRegistration.IsSet() {
+		toSerialize["DeviceRegistration"] = o.DeviceRegistration.Get()
 	}
-	if o.TargetResource != nil {
-		toSerialize["TargetResource"] = o.TargetResource
+	if o.TargetResource.IsSet() {
+		toSerialize["TargetResource"] = o.TargetResource.Get()
 	}
-	if o.TechSupportStatus != nil {
-		toSerialize["TechSupportStatus"] = o.TechSupportStatus
+	if o.TechSupportStatus.IsSet() {
+		toSerialize["TechSupportStatus"] = o.TechSupportStatus.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *TechsupportmanagementTechSupportBundle) UnmarshalJSON(bytes []byte) (err error) {
+func (o *TechsupportmanagementTechSupportBundle) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type TechsupportmanagementTechSupportBundleWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -479,20 +578,21 @@ func (o *TechsupportmanagementTechSupportBundle) UnmarshalJSON(bytes []byte) (er
 		// The device type obtained from the inventory.
 		DeviceType *string `json:"DeviceType,omitempty"`
 		// Product identification of the device.
-		Pid           *string                            `json:"Pid,omitempty"`
-		PlatformParam NullableConnectorPlatformParamBase `json:"PlatformParam,omitempty"`
-		// The platform type of the device. * `` - The device reported an empty or unrecognized platform type. * `APIC` - An Application Policy Infrastructure Controller cluster. * `CAPIC` - A Cloud Application Policy Infrastructure Controller instance. * `DCNM` - A Data Center Network Manager instance. Data Center Network Manager (DCNM) is the network management platform for all NX-OS-enabled deployments, spanning new fabric architectures, IP Fabric for Media, and storage networking deployments for the Cisco Nexus-powered data center. * `UCSFI` - A UCS Fabric Interconnect in HA or standalone mode, which is being managed by UCS Manager (UCSM). * `UCSFIISM` - A UCS Fabric Interconnect in HA or standalone mode, managed directly by Intersight. * `IMC` - A standalone UCS Server Integrated Management Controller. * `IMCM4` - A standalone UCS M4 Server. * `IMCM5` - A standalone UCS M5 server. * `IMCRack` - A standalone UCS M6 and above server. * `UCSIOM` - An UCS Chassis IO module. * `HX` - A HyperFlex storage controller. * `HyperFlexAP` - A HyperFlex Application Platform. * `IWE` - An Intersight Workload Engine. * `UCSD` - A UCS Director virtual appliance. Cisco UCS Director automates, orchestrates, and manages Cisco and third-party hardware. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance. * `IntersightAssist` - A Cisco Intersight Assist. * `PureStorageFlashArray` - A Pure Storage FlashArray device. * `NexusDevice` - A generic platform type to support Nexus Network Device. This can also be extended to support all network devices later on. * `ACISwitch` - A platform type to support ACI Switches. * `NexusSwitch` - A platform type to support Cisco Nexus Switches. * `MDSSwitch` - A platform type to support Cisco MDS Switches. * `MDSDevice` - A platform type to support MDS devices. * `UCSC890` - A standalone Cisco UCSC890 server. * `RedfishServer` - A generic target type for servers that support Redfish. Current support is limited to managing HPE and Dell servers on Intersight. * `NetAppOntap` - A NetApp ONTAP storage system. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager. * `EmcScaleIo` - An EMC ScaleIO storage system. * `EmcVmax` - An EMC VMAX storage system. * `EmcVplex` - An EMC VPLEX storage system. * `EmcXtremIo` - An EMC XtremIO storage system. * `VmwareVcenter` - A VMware vCenter device that manages Virtual Machines. * `MicrosoftHyperV` - A Microsoft Hyper-V system that manages Virtual Machines. * `AppDynamics` - An AppDynamics controller that monitors applications. * `Dynatrace` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `NewRelic` - A software-intelligence monitoring platform that simplifies enterprise cloud complexity and accelerates digital transformation. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `ReadHatOpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server. * `MySqlServer` - An instance of either Oracle MySQL Database or the open source MariaDB. * `Kubernetes` - A Kubernetes cluster that runs containerized applications. * `AmazonWebService` - An Amazon web service target that discovers and monitors different services like EC2. It discovers entities like VMs, Volumes, regions etc. and monitors attributes like Mem, CPU, cost. * `AmazonWebServiceBilling` - An Amazon web service billing target to retrieve billing information stored in S3 bucket. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal target that discovers all the associated Azure subscriptions. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement target that discovers cost, billing and RIs. * `DellCompellent` - A Dell Compellent storage system. * `HPE3Par` - A HPE 3PAR storage system. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis system that combines servers and storage into a distributed infrastructure platform. * `HPEOneView` - A HPE Oneview management system that manages compute, storage, and networking. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform also referred to as Hitachi VSP. It includes various storage systems designed for data centers. * `IMCBlade` - An Intersight managed UCS Blade Server. * `TerraformCloud` - A Terraform Cloud account. * `TerraformAgent` - A Terraform Cloud Agent that Intersight will deploy in datacenter. The agent will execute Terraform plan for Terraform Cloud workspace configured to use the agent. * `CustomTarget` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic. * `AnsibleEndpoint` - An external endpoint added as Target that can be accessed through Ansible in Intersight Cloud Orchestrator automation workflow. * `HTTPEndpoint` - An external endpoint added as Target that can be accessed through its HTTP API interface in Intersight Orchestrator automation workflow.Standard HTTP authentication scheme supported: Basic, Bearer Token. * `SSHEndpoint` - An external endpoint added as Target that can be accessed through SSH in Intersight Cloud Orchestrator automation workflow. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows machine on which PowerShell scripts can be executed remotely.
+		Pid *string `json:"Pid,omitempty"`
+		// Parameter object for Tech Support requests. PlatformParamBase is the base class for the platform-specific parameter types.
+		PlatformParam NullableMoBaseComplexType `json:"PlatformParam,omitempty"`
+		// The platform type of the device. * `` - An unrecognized platform type. * `APIC` - A Cisco Application Policy Infrastructure Controller (APIC) cluster. * `CAPIC` - A Cisco Cloud Application Policy Infrastructure Controller (Cloud APIC) instance. * `DCNM` - A Cisco Data Center Network Manager (DCNM) instance. * `UCSFI` - A Cisco UCS Fabric Interconnect that is managed by Cisco UCS Manager (UCSM). * `UCSFIISM` - A Cisco UCS Fabric Interconnect that is managed by Cisco Intersight. * `IMC` - A standalone Cisco UCS rack server (Deprecated). * `IMCM4` - A standalone Cisco UCS C-Series or S-Series M4 server. * `IMCM5` - A standalone Cisco UCS C-Series or S-Series M5 server. * `IMCRack` - A standalone Cisco UCS C-Series or S-Series M6 or newer server. * `UCSIOM` - A Cisco UCS Blade Chassis I/O Module (IOM). * `HX` - A Cisco HyperFlex (HX) cluster. * `UCSD` - A Cisco UCS Director (UCSD) instance. * `IntersightAppliance` - A Cisco Intersight Connected Virtual Appliance instance. * `IntersightAssist` - A Cisco Intersight Assist instance. * `PureStorageFlashArray` - A Pure Storage FlashArray that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and storage management features are supported on this device. * `NexusDevice` - A Cisco Nexus Network Switch that is managed using Cisco Intersight Assist. * `ACISwitch` - A Cisco Nexus Network Switch with the embedded Device Connector and is a part of the Cisco ACI fabric. * `NexusSwitch` - A standalone Cisco Nexus Network Switch with the embedded Device Connector. * `MDSSwitch` - A Cisco MDS Switch that is managed using the embedded Device Connector. * `MDSDevice` - A Cisco MDS Switch that is managed using Cisco Intersight Assist. * `UCSC890` - A standalone Cisco UCS C890 server managed using Cisco Intersight Assist. * `RedfishServer` - A generic target type for servers that support Redfish APIs and is managed using Cisco Intersight Assist. Support is limited to HPE and Dell Servers. * `NetAppOntap` - A Netapp ONTAP Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `NetAppActiveIqUnifiedManager` - A NetApp Active IQ Unified Manager (AIQUM) that is managed using Cisco Intersight Assist. * `EmcScaleIo` - An EMC ScaleIO Software Defined Storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVmax` - An EMC VMAX 2 or 3 series enterprise storage array that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcVplex` - An EMC VPLEX virtual storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `EmcXtremIo` - An EMC XtremIO SSD storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `VmwareVcenter` - A VMware vCenter instance that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer and Virtualization features are supported on this hypervisor. * `MicrosoftHyperV` - A Microsoft Hyper-V host that is managed using Cisco Intersight Assist. Optionally, other hosts in the cluster can be discovered through this host. Cisco Intersight Workload Optimizer features are supported on this hypervisor. * `AppDynamics` - An AppDynamics controller running in a SaaS or on-prem datacenter. On-prem AppDynamics instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this controller. * `Dynatrace` - A Dynatrace Server instance running in a SaaS or on-prem datacenter. On-prem Dynatrace instance is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `NewRelic` - A NewRelic user account. The NewRelic instance monitors the application infrastructure. Cisco Intersight Workload Optimizer features are supported on this server. * `ServiceNow` - A cloud-based workflow automation platform that enables enterprise organizations to improve operational efficiencies by streamlining and automating routine work tasks. * `Umbrella` - Umbrella cloud target that discovers and monitors an organization. It discovers entities like Datacenters, Devices, Tunnels, Networks, etc. * `CloudFoundry` - An open source cloud platform on which developers can build, deploy, run and scale applications. * `MicrosoftAzureApplicationInsights` - A feature of Azure Monitor, is an extensible Application Performance Management service for developers and DevOps professionals to monitor their live applications. * `OpenStack` - An OpenStack target manages Virtual Machines, Physical Machines, Datacenters and Virtual Datacenters using different OpenStack services as administrative endpoints. * `MicrosoftSqlServer` - A Microsoft SQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `MySqlServer` - A MySQL database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `OracleDatabaseServer` - An Oracle database server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this database. * `IBMWebSphereApplicationServer` - An IBM WebSphere Application server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application server. * `OracleWebLogicServer` - Oracle WebLogic Server is a unified and extensible platform for developing, deploying and running enterprise applications, such as Java, for on-premises and in the cloud. WebLogic Server offers a robust, mature, and scalable implementation of Java Enterprise Edition (EE) and Jakarta EE. * `ApacheTomcatServer` - An Apache Tomcat server that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this server. * `JavaVirtualMachine` - A JVM Application with JMX configured that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this application. * `RedHatJBossApplicationServer` - JBoss Application Server is an open-source, cross-platform Java application server developed by JBoss, a division of Red Hat Inc. It is an open-source implementation of Java 2 Enterprise Edition (J2EE) that is used for implementing Java applications and other Web-based applications and software. * `Kubernetes` - A Kubernetes cluster that runs containerized applications, with Kubernetes Collector installed. Cisco Intersight Workload Optimizer features are supported on Kubernetes cluster. * `AmazonWebService` - An Amazon Web Service cloud account. Cisco Intersight Workload Optimizer and Virtualization features are supported on this cloud. * `AmazonWebServiceBilling` - An Amazon Web Service cloud billing account used to retrieve billing information stored in S3 bucket. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatform` - A Google Cloud Platform service account with access to one or more projects. Cisco Intersight Workload Optimizer features are supported on this cloud. * `GoogleCloudPlatformBilling` - A Google Cloud Platform service account used to retrieve billing information from BigQuery. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureServicePrincipal` - A Microsoft Azure Service Principal account with access to Azure subscriptions. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureEnterpriseAgreement` - A Microsoft Azure Enterprise Agreement enrolment used to retrieve pricing and billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `MicrosoftAzureBilling` - A Microsoft Azure Service Principal account with access to billing information. Cisco Intersight Workload Optimizer features are supported on this cloud. * `DellCompellent` - A Dell EMC SC Series (Compellent) storage system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `HPE3Par` - A HPE 3PAR StoreServ system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this device. * `RedHatEnterpriseVirtualization` - A Red Hat Enterprise Virtualization Hypervisor system that manages Virtual Machines. * `NutanixAcropolis` - A Nutanix Acropolis cluster that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this cluster. * `NutanixPrismCentral` - A Nutanix Prism Central cluster. Prism central is a virtual appliance for managing Nutanix clusters and services. * `HPEOneView` - A HPE OneView system that is managed using Cisco Intersight Assist. Cisco Intersight Workload Optimizer features are supported on this system. * `ServiceEngine` - Cisco Application Services Engine. Cisco Application Services Engine is a platform to deploy and manage applications. * `HitachiVirtualStoragePlatform` - A Hitachi Virtual Storage Platform (Hitachi VSP) that is managed using Cisco Intersight Assist. * `GenericTarget` - A generic third-party target supported only in Partner Integration Appliance. This target type is used for development purposes and will not be supported in production environment. * `IMCBlade` - A Cisco UCS blade server managed by Cisco Intersight. * `TerraformCloud` - A Terraform Cloud Business Tier account. * `TerraformAgent` - A Terraform Cloud Agent that will be deployed on Cisco Intersight Assist. The agent can be used to plan and apply Terraform runs from a Terraform Cloud workspace. * `CustomTarget` - CustomTarget is deprecated. Use HTTPEndpoint type to claim HTTP endpoints. * `AnsibleEndpoint` - An external endpoint that is added as a target which can be accessed through Ansible in Intersight Cloud Orchestrator automation workflows. * `HTTPEndpoint` - An HTTP endpoint that can be accessed in Intersight Orchestrator workflows directly or using Cisco Intersight Assist. Authentication Schemes supported are Basic and Bearer Token. * `SSHEndpoint` - An SSH endpoint that can be accessed in Intersight Orchestrator workflows using Cisco Intersight Assist. * `CiscoCatalyst` - A Cisco Catalyst networking switch device. * `PowerShellEndpoint` - A Windows operating system server on which PowerShell scripts can be executed using Cisco Intersight Assist. * `CiscoDNAC` - A Cisco Digital Network Architecture (DNA) Center appliance. * `CiscoFMC` - A Cisco Secure Firewall Management Center. * `ViptelaCloud` - A Cisco Viptela SD-WAN Cloud. * `MerakiCloud` - A Cisco Meraki Organization. * `CiscoISE` - A Cisco Identity Services Engine (ISE) target.
 		PlatformType *string `json:"PlatformType,omitempty"`
 		// Serial number of the device.
-		Serial             *string                                             `json:"Serial,omitempty"`
-		DeviceRegistration *AssetDeviceRegistrationRelationship                `json:"DeviceRegistration,omitempty"`
-		TargetResource     *MoBaseMoRelationship                               `json:"TargetResource,omitempty"`
-		TechSupportStatus  *TechsupportmanagementTechSupportStatusRelationship `json:"TechSupportStatus,omitempty"`
+		Serial             *string                                                    `json:"Serial,omitempty"`
+		DeviceRegistration NullableAssetDeviceRegistrationRelationship                `json:"DeviceRegistration,omitempty"`
+		TargetResource     NullableMoBaseMoRelationship                               `json:"TargetResource,omitempty"`
+		TechSupportStatus  NullableTechsupportmanagementTechSupportStatusRelationship `json:"TechSupportStatus,omitempty"`
 	}
 
 	varTechsupportmanagementTechSupportBundleWithoutEmbeddedStruct := TechsupportmanagementTechSupportBundleWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varTechsupportmanagementTechSupportBundleWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varTechsupportmanagementTechSupportBundleWithoutEmbeddedStruct)
 	if err == nil {
 		varTechsupportmanagementTechSupportBundle := _TechsupportmanagementTechSupportBundle{}
 		varTechsupportmanagementTechSupportBundle.ClassId = varTechsupportmanagementTechSupportBundleWithoutEmbeddedStruct.ClassId
@@ -513,7 +613,7 @@ func (o *TechsupportmanagementTechSupportBundle) UnmarshalJSON(bytes []byte) (er
 
 	varTechsupportmanagementTechSupportBundle := _TechsupportmanagementTechSupportBundle{}
 
-	err = json.Unmarshal(bytes, &varTechsupportmanagementTechSupportBundle)
+	err = json.Unmarshal(data, &varTechsupportmanagementTechSupportBundle)
 	if err == nil {
 		o.MoBaseMo = varTechsupportmanagementTechSupportBundle.MoBaseMo
 	} else {
@@ -522,7 +622,7 @@ func (o *TechsupportmanagementTechSupportBundle) UnmarshalJSON(bytes []byte) (er
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "DeviceIdentifier")

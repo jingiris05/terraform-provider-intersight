@@ -7,10 +7,11 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "storage.PurePort"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.PurePort"]
 **Failover** | Pointer to **string** | Name of the port to which this port has failed over. | [optional] [readonly] 
+**Nqn** | Pointer to **string** | The NVMe Qualified Name (NQN) associated with the host for ethernet port. | [optional] [readonly] 
 **Portal** | Pointer to **string** | Ip address of iSCSI portal configured on the port. | [optional] [readonly] 
-**Array** | Pointer to [**StoragePureArrayRelationship**](StoragePureArrayRelationship.md) |  | [optional] 
-**Controller** | Pointer to [**StoragePureControllerRelationship**](StoragePureControllerRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**Array** | Pointer to [**NullableStoragePureArrayRelationship**](StoragePureArrayRelationship.md) |  | [optional] 
+**Controller** | Pointer to [**NullableStoragePureControllerRelationship**](StoragePureControllerRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -96,6 +97,31 @@ SetFailover sets Failover field to given value.
 
 HasFailover returns a boolean if a field has been set.
 
+### GetNqn
+
+`func (o *StoragePurePort) GetNqn() string`
+
+GetNqn returns the Nqn field if non-nil, zero value otherwise.
+
+### GetNqnOk
+
+`func (o *StoragePurePort) GetNqnOk() (*string, bool)`
+
+GetNqnOk returns a tuple with the Nqn field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetNqn
+
+`func (o *StoragePurePort) SetNqn(v string)`
+
+SetNqn sets Nqn field to given value.
+
+### HasNqn
+
+`func (o *StoragePurePort) HasNqn() bool`
+
+HasNqn returns a boolean if a field has been set.
+
 ### GetPortal
 
 `func (o *StoragePurePort) GetPortal() string`
@@ -146,6 +172,16 @@ SetArray sets Array field to given value.
 
 HasArray returns a boolean if a field has been set.
 
+### SetArrayNil
+
+`func (o *StoragePurePort) SetArrayNil(b bool)`
+
+ SetArrayNil sets the value for Array to be an explicit nil
+
+### UnsetArray
+`func (o *StoragePurePort) UnsetArray()`
+
+UnsetArray ensures that no value is present for Array, not even an explicit nil
 ### GetController
 
 `func (o *StoragePurePort) GetController() StoragePureControllerRelationship`
@@ -171,6 +207,16 @@ SetController sets Controller field to given value.
 
 HasController returns a boolean if a field has been set.
 
+### SetControllerNil
+
+`func (o *StoragePurePort) SetControllerNil(b bool)`
+
+ SetControllerNil sets the value for Controller to be an explicit nil
+
+### UnsetController
+`func (o *StoragePurePort) UnsetController()`
+
+UnsetController ensures that no value is present for Controller, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *StoragePurePort) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -196,6 +242,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *StoragePurePort) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *StoragePurePort) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

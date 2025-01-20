@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceAccessPolicy() *schema.Resource {
 		UpdateContext: resourceAccessPolicyUpdate,
 		DeleteContext: resourceAccessPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -235,9 +237,9 @@ func resourceAccessPolicy() *schema.Resource {
 				},
 			},
 			"inband_vlan": {
-				Description:  "VLAN to be used for server access over Inband network.",
+				Description:  "VLAN to be used for server access over Inband network. When Inband is enabled, only numbers between 4 to 4093 are allowed.",
 				Type:         schema.TypeInt,
-				ValidateFunc: validation.IntBetween(4, 4093),
+				ValidateFunc: validation.IntBetween(0, 4093),
 				Optional:     true,
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					if new == "0" || new == "0.0" {
@@ -245,6 +247,7 @@ func resourceAccessPolicy() *schema.Resource {
 					}
 					return false
 				},
+				Default: 0,
 			},
 			"inband_vrf": {
 				Description: "A reference to a vrfVrf resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
@@ -659,6 +662,17 @@ func resourceAccessPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1172,8 +1186,16 @@ func resourceAccessPolicyCreate(c context.Context, d *schema.ResourceData, meta 
 		}
 		return diag.Errorf("error occurred while creating AccessPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceAccessPolicyRead(c, d, meta)...)
 }
 func detachAccessPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -1201,6 +1223,9 @@ func detachAccessPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.D
 func resourceAccessPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.AccessApi.GetAccessPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

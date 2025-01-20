@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceFabricEthNetworkGroupPolicy() *schema.Resource {
 		UpdateContext: resourceFabricEthNetworkGroupPolicyUpdate,
 		DeleteContext: resourceFabricEthNetworkGroupPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -366,6 +368,17 @@ func resourceFabricEthNetworkGroupPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -463,7 +476,7 @@ func resourceFabricEthNetworkGroupPolicy() *schema.Resource {
 							DiffSuppressFunc: SuppressDiffAdditionProps,
 						},
 						"allowed_vlans": {
-							Description:  "Allowed VLAN IDs of the virtual interface. A list of comma seperated VLAN ids and/or VLAN id ranges.",
+							Description:  "Allowed VLAN IDs of the virtual interface. A list of comma separated VLAN ids and/or VLAN id ranges.",
 							Type:         schema.TypeString,
 							ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^((\\d+\\-\\d+)|(\\d+))(,((\\d+\\-\\d+)|(\\d+)))*$"), ""),
 							Optional:     true,
@@ -475,17 +488,30 @@ func resourceFabricEthNetworkGroupPolicy() *schema.Resource {
 							Default:     "fabric.VlanSettings",
 						},
 						"native_vlan": {
-							Description:  "Native VLAN ID of the virtual interface or the corresponding vethernet on the peer Fabric Interconnect to which the virtual interface is connected. If the native VLAN is not a part of the allowed VLANs, it will automatically be added to the list of allowed VLANs.",
+							Description:  "Native VLAN ID of the virtual interface or the corresponding Vethernet on the peer Fabric Interconnect to which the virtual interface is connected. Native VLAN ID maps all incoming untagged traffic i.e. packets without a VLAN tag to the native VLAN for switching purposes. If the native VLAN is not a part of the allowed VLANs, it will automatically be added to the list of allowed VLANs. A native VLAN ID of 0 will indicate to the system to use the system default native VLAN ID and will also prevent native VLAN from being added to the allowed VLAN list.",
 							Type:         schema.TypeInt,
-							ValidateFunc: validation.IntBetween(1, 4093),
+							ValidateFunc: validation.IntBetween(0, 4093),
 							Optional:     true,
-							Default:      1,
+							Default:      0,
 						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
 							Optional:    true,
 							Default:     "fabric.VlanSettings",
+						},
+						"qinq_enabled": {
+							Description: "Enable QinQ (802.1Q-in-802.1Q) Tunneling on the vNIC.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
+						},
+						"qinq_vlan": {
+							Description:  "Select the VLAN ID for VIC QinQ (802.1Q-in-802.1Q) Tunneling.",
+							Type:         schema.TypeInt,
+							ValidateFunc: validation.IntBetween(2, 4093),
+							Optional:     true,
+							Default:      2,
 						},
 					},
 				},
@@ -641,6 +667,18 @@ func resourceFabricEthNetworkGroupPolicyCreate(c context.Context, d *schema.Reso
 					o.SetObjectType(x)
 				}
 			}
+			if v, ok := l["qinq_enabled"]; ok {
+				{
+					x := (v.(bool))
+					o.SetQinqEnabled(x)
+				}
+			}
+			if v, ok := l["qinq_vlan"]; ok {
+				{
+					x := int64(v.(int))
+					o.SetQinqVlan(x)
+				}
+			}
 			p = append(p, *o)
 		}
 		if len(p) > 0 {
@@ -659,14 +697,25 @@ func resourceFabricEthNetworkGroupPolicyCreate(c context.Context, d *schema.Reso
 		}
 		return diag.Errorf("error occurred while creating FabricEthNetworkGroupPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceFabricEthNetworkGroupPolicyRead(c, d, meta)...)
 }
 
 func resourceFabricEthNetworkGroupPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.FabricApi.GetFabricEthNetworkGroupPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -915,6 +964,18 @@ func resourceFabricEthNetworkGroupPolicyUpdate(c context.Context, d *schema.Reso
 				{
 					x := (v.(string))
 					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["qinq_enabled"]; ok {
+				{
+					x := (v.(bool))
+					o.SetQinqEnabled(x)
+				}
+			}
+			if v, ok := l["qinq_vlan"]; ok {
+				{
+					x := int64(v.(int))
+					o.SetQinqVlan(x)
 				}
 			}
 			p = append(p, *o)

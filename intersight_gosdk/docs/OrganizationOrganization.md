@@ -8,8 +8,9 @@ Name | Type | Description | Notes
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "organization.Organization"]
 **Description** | Pointer to **string** | The informative description about the usage of this organization. | [optional] 
 **Name** | Pointer to **string** | The name of the organization. There can be multiple organizations under an account. | [optional] 
-**Account** | Pointer to [**IamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
+**Account** | Pointer to [**NullableIamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
 **ResourceGroups** | Pointer to [**[]ResourceGroupRelationship**](ResourceGroupRelationship.md) | An array of relationships to resourceGroup resources. | [optional] 
+**SharedWithResources** | Pointer to [**[]MoBaseMoRelationship**](MoBaseMoRelationship.md) | An array of relationships to moBaseMo resources. | [optional] [readonly] 
 
 ## Methods
 
@@ -145,6 +146,16 @@ SetAccount sets Account field to given value.
 
 HasAccount returns a boolean if a field has been set.
 
+### SetAccountNil
+
+`func (o *OrganizationOrganization) SetAccountNil(b bool)`
+
+ SetAccountNil sets the value for Account to be an explicit nil
+
+### UnsetAccount
+`func (o *OrganizationOrganization) UnsetAccount()`
+
+UnsetAccount ensures that no value is present for Account, not even an explicit nil
 ### GetResourceGroups
 
 `func (o *OrganizationOrganization) GetResourceGroups() []ResourceGroupRelationship`
@@ -180,6 +191,41 @@ HasResourceGroups returns a boolean if a field has been set.
 `func (o *OrganizationOrganization) UnsetResourceGroups()`
 
 UnsetResourceGroups ensures that no value is present for ResourceGroups, not even an explicit nil
+### GetSharedWithResources
+
+`func (o *OrganizationOrganization) GetSharedWithResources() []MoBaseMoRelationship`
+
+GetSharedWithResources returns the SharedWithResources field if non-nil, zero value otherwise.
+
+### GetSharedWithResourcesOk
+
+`func (o *OrganizationOrganization) GetSharedWithResourcesOk() (*[]MoBaseMoRelationship, bool)`
+
+GetSharedWithResourcesOk returns a tuple with the SharedWithResources field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSharedWithResources
+
+`func (o *OrganizationOrganization) SetSharedWithResources(v []MoBaseMoRelationship)`
+
+SetSharedWithResources sets SharedWithResources field to given value.
+
+### HasSharedWithResources
+
+`func (o *OrganizationOrganization) HasSharedWithResources() bool`
+
+HasSharedWithResources returns a boolean if a field has been set.
+
+### SetSharedWithResourcesNil
+
+`func (o *OrganizationOrganization) SetSharedWithResourcesNil(b bool)`
+
+ SetSharedWithResourcesNil sets the value for SharedWithResources to be an explicit nil
+
+### UnsetSharedWithResources
+`func (o *OrganizationOrganization) UnsetSharedWithResources()`
+
+UnsetSharedWithResources ensures that no value is present for SharedWithResources, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

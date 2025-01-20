@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the OauthAccessToken type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &OauthAccessToken{}
 
 // OauthAccessToken Api access token for a given account.
 type OauthAccessToken struct {
@@ -25,15 +29,17 @@ type OauthAccessToken struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// Type of OAuth Api. For example, Smart-licensing-API. * `Unknown` - Unknown is the default API type. * `SmartLicensing-API` - Smart licensing API type.
+	// Type of OAuth Api. For example, Smart-licensing-API. * `Unknown` - Unknown is the default API type. * `SmartLicensing-API` - Smart licensing API type. * `CommerceEstimate-API` - Commerce Estimate API type.
 	ApiType *string `json:"ApiType,omitempty"`
 	// The date and time when the access token expires.
 	Expiry *time.Time `json:"Expiry,omitempty"`
 	// Issuer of OAuth access token.
 	Issuer *string `json:"Issuer,omitempty"`
 	// The date and time when the refresh token expires.
-	RefreshExpiry        *time.Time              `json:"RefreshExpiry,omitempty"`
-	Account              *IamAccountRelationship `json:"Account,omitempty"`
+	RefreshExpiry *time.Time `json:"RefreshExpiry,omitempty"`
+	// The moid of the owner of the access token.
+	TokenOwner           *string                        `json:"TokenOwner,omitempty"`
+	Account              NullableIamAccountRelationship `json:"Account,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -90,6 +96,11 @@ func (o *OauthAccessToken) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "oauth.AccessToken" of the ClassId field.
+func (o *OauthAccessToken) GetDefaultClassId() interface{} {
+	return "oauth.AccessToken"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *OauthAccessToken) GetObjectType() string {
 	if o == nil {
@@ -114,9 +125,14 @@ func (o *OauthAccessToken) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "oauth.AccessToken" of the ObjectType field.
+func (o *OauthAccessToken) GetDefaultObjectType() interface{} {
+	return "oauth.AccessToken"
+}
+
 // GetApiType returns the ApiType field value if set, zero value otherwise.
 func (o *OauthAccessToken) GetApiType() string {
-	if o == nil || o.ApiType == nil {
+	if o == nil || IsNil(o.ApiType) {
 		var ret string
 		return ret
 	}
@@ -126,7 +142,7 @@ func (o *OauthAccessToken) GetApiType() string {
 // GetApiTypeOk returns a tuple with the ApiType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OauthAccessToken) GetApiTypeOk() (*string, bool) {
-	if o == nil || o.ApiType == nil {
+	if o == nil || IsNil(o.ApiType) {
 		return nil, false
 	}
 	return o.ApiType, true
@@ -134,7 +150,7 @@ func (o *OauthAccessToken) GetApiTypeOk() (*string, bool) {
 
 // HasApiType returns a boolean if a field has been set.
 func (o *OauthAccessToken) HasApiType() bool {
-	if o != nil && o.ApiType != nil {
+	if o != nil && !IsNil(o.ApiType) {
 		return true
 	}
 
@@ -148,7 +164,7 @@ func (o *OauthAccessToken) SetApiType(v string) {
 
 // GetExpiry returns the Expiry field value if set, zero value otherwise.
 func (o *OauthAccessToken) GetExpiry() time.Time {
-	if o == nil || o.Expiry == nil {
+	if o == nil || IsNil(o.Expiry) {
 		var ret time.Time
 		return ret
 	}
@@ -158,7 +174,7 @@ func (o *OauthAccessToken) GetExpiry() time.Time {
 // GetExpiryOk returns a tuple with the Expiry field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OauthAccessToken) GetExpiryOk() (*time.Time, bool) {
-	if o == nil || o.Expiry == nil {
+	if o == nil || IsNil(o.Expiry) {
 		return nil, false
 	}
 	return o.Expiry, true
@@ -166,7 +182,7 @@ func (o *OauthAccessToken) GetExpiryOk() (*time.Time, bool) {
 
 // HasExpiry returns a boolean if a field has been set.
 func (o *OauthAccessToken) HasExpiry() bool {
-	if o != nil && o.Expiry != nil {
+	if o != nil && !IsNil(o.Expiry) {
 		return true
 	}
 
@@ -180,7 +196,7 @@ func (o *OauthAccessToken) SetExpiry(v time.Time) {
 
 // GetIssuer returns the Issuer field value if set, zero value otherwise.
 func (o *OauthAccessToken) GetIssuer() string {
-	if o == nil || o.Issuer == nil {
+	if o == nil || IsNil(o.Issuer) {
 		var ret string
 		return ret
 	}
@@ -190,7 +206,7 @@ func (o *OauthAccessToken) GetIssuer() string {
 // GetIssuerOk returns a tuple with the Issuer field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OauthAccessToken) GetIssuerOk() (*string, bool) {
-	if o == nil || o.Issuer == nil {
+	if o == nil || IsNil(o.Issuer) {
 		return nil, false
 	}
 	return o.Issuer, true
@@ -198,7 +214,7 @@ func (o *OauthAccessToken) GetIssuerOk() (*string, bool) {
 
 // HasIssuer returns a boolean if a field has been set.
 func (o *OauthAccessToken) HasIssuer() bool {
-	if o != nil && o.Issuer != nil {
+	if o != nil && !IsNil(o.Issuer) {
 		return true
 	}
 
@@ -212,7 +228,7 @@ func (o *OauthAccessToken) SetIssuer(v string) {
 
 // GetRefreshExpiry returns the RefreshExpiry field value if set, zero value otherwise.
 func (o *OauthAccessToken) GetRefreshExpiry() time.Time {
-	if o == nil || o.RefreshExpiry == nil {
+	if o == nil || IsNil(o.RefreshExpiry) {
 		var ret time.Time
 		return ret
 	}
@@ -222,7 +238,7 @@ func (o *OauthAccessToken) GetRefreshExpiry() time.Time {
 // GetRefreshExpiryOk returns a tuple with the RefreshExpiry field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OauthAccessToken) GetRefreshExpiryOk() (*time.Time, bool) {
-	if o == nil || o.RefreshExpiry == nil {
+	if o == nil || IsNil(o.RefreshExpiry) {
 		return nil, false
 	}
 	return o.RefreshExpiry, true
@@ -230,7 +246,7 @@ func (o *OauthAccessToken) GetRefreshExpiryOk() (*time.Time, bool) {
 
 // HasRefreshExpiry returns a boolean if a field has been set.
 func (o *OauthAccessToken) HasRefreshExpiry() bool {
-	if o != nil && o.RefreshExpiry != nil {
+	if o != nil && !IsNil(o.RefreshExpiry) {
 		return true
 	}
 
@@ -242,97 +258,196 @@ func (o *OauthAccessToken) SetRefreshExpiry(v time.Time) {
 	o.RefreshExpiry = &v
 }
 
-// GetAccount returns the Account field value if set, zero value otherwise.
-func (o *OauthAccessToken) GetAccount() IamAccountRelationship {
-	if o == nil || o.Account == nil {
-		var ret IamAccountRelationship
+// GetTokenOwner returns the TokenOwner field value if set, zero value otherwise.
+func (o *OauthAccessToken) GetTokenOwner() string {
+	if o == nil || IsNil(o.TokenOwner) {
+		var ret string
 		return ret
 	}
-	return *o.Account
+	return *o.TokenOwner
 }
 
-// GetAccountOk returns a tuple with the Account field value if set, nil otherwise
+// GetTokenOwnerOk returns a tuple with the TokenOwner field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *OauthAccessToken) GetAccountOk() (*IamAccountRelationship, bool) {
-	if o == nil || o.Account == nil {
+func (o *OauthAccessToken) GetTokenOwnerOk() (*string, bool) {
+	if o == nil || IsNil(o.TokenOwner) {
 		return nil, false
 	}
-	return o.Account, true
+	return o.TokenOwner, true
 }
 
-// HasAccount returns a boolean if a field has been set.
-func (o *OauthAccessToken) HasAccount() bool {
-	if o != nil && o.Account != nil {
+// HasTokenOwner returns a boolean if a field has been set.
+func (o *OauthAccessToken) HasTokenOwner() bool {
+	if o != nil && !IsNil(o.TokenOwner) {
 		return true
 	}
 
 	return false
 }
 
-// SetAccount gets a reference to the given IamAccountRelationship and assigns it to the Account field.
+// SetTokenOwner gets a reference to the given string and assigns it to the TokenOwner field.
+func (o *OauthAccessToken) SetTokenOwner(v string) {
+	o.TokenOwner = &v
+}
+
+// GetAccount returns the Account field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *OauthAccessToken) GetAccount() IamAccountRelationship {
+	if o == nil || IsNil(o.Account.Get()) {
+		var ret IamAccountRelationship
+		return ret
+	}
+	return *o.Account.Get()
+}
+
+// GetAccountOk returns a tuple with the Account field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *OauthAccessToken) GetAccountOk() (*IamAccountRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.Account.Get(), o.Account.IsSet()
+}
+
+// HasAccount returns a boolean if a field has been set.
+func (o *OauthAccessToken) HasAccount() bool {
+	if o != nil && o.Account.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetAccount gets a reference to the given NullableIamAccountRelationship and assigns it to the Account field.
 func (o *OauthAccessToken) SetAccount(v IamAccountRelationship) {
-	o.Account = &v
+	o.Account.Set(&v)
+}
+
+// SetAccountNil sets the value for Account to be an explicit nil
+func (o *OauthAccessToken) SetAccountNil() {
+	o.Account.Set(nil)
+}
+
+// UnsetAccount ensures that no value is present for Account, not even an explicit nil
+func (o *OauthAccessToken) UnsetAccount() {
+	o.Account.Unset()
 }
 
 func (o OauthAccessToken) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o OauthAccessToken) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ApiType != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ApiType) {
 		toSerialize["ApiType"] = o.ApiType
 	}
-	if o.Expiry != nil {
+	if !IsNil(o.Expiry) {
 		toSerialize["Expiry"] = o.Expiry
 	}
-	if o.Issuer != nil {
+	if !IsNil(o.Issuer) {
 		toSerialize["Issuer"] = o.Issuer
 	}
-	if o.RefreshExpiry != nil {
+	if !IsNil(o.RefreshExpiry) {
 		toSerialize["RefreshExpiry"] = o.RefreshExpiry
 	}
-	if o.Account != nil {
-		toSerialize["Account"] = o.Account
+	if !IsNil(o.TokenOwner) {
+		toSerialize["TokenOwner"] = o.TokenOwner
+	}
+	if o.Account.IsSet() {
+		toSerialize["Account"] = o.Account.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *OauthAccessToken) UnmarshalJSON(bytes []byte) (err error) {
+func (o *OauthAccessToken) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type OauthAccessTokenWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// Type of OAuth Api. For example, Smart-licensing-API. * `Unknown` - Unknown is the default API type. * `SmartLicensing-API` - Smart licensing API type.
+		// Type of OAuth Api. For example, Smart-licensing-API. * `Unknown` - Unknown is the default API type. * `SmartLicensing-API` - Smart licensing API type. * `CommerceEstimate-API` - Commerce Estimate API type.
 		ApiType *string `json:"ApiType,omitempty"`
 		// The date and time when the access token expires.
 		Expiry *time.Time `json:"Expiry,omitempty"`
 		// Issuer of OAuth access token.
 		Issuer *string `json:"Issuer,omitempty"`
 		// The date and time when the refresh token expires.
-		RefreshExpiry *time.Time              `json:"RefreshExpiry,omitempty"`
-		Account       *IamAccountRelationship `json:"Account,omitempty"`
+		RefreshExpiry *time.Time `json:"RefreshExpiry,omitempty"`
+		// The moid of the owner of the access token.
+		TokenOwner *string                        `json:"TokenOwner,omitempty"`
+		Account    NullableIamAccountRelationship `json:"Account,omitempty"`
 	}
 
 	varOauthAccessTokenWithoutEmbeddedStruct := OauthAccessTokenWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varOauthAccessTokenWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varOauthAccessTokenWithoutEmbeddedStruct)
 	if err == nil {
 		varOauthAccessToken := _OauthAccessToken{}
 		varOauthAccessToken.ClassId = varOauthAccessTokenWithoutEmbeddedStruct.ClassId
@@ -341,6 +456,7 @@ func (o *OauthAccessToken) UnmarshalJSON(bytes []byte) (err error) {
 		varOauthAccessToken.Expiry = varOauthAccessTokenWithoutEmbeddedStruct.Expiry
 		varOauthAccessToken.Issuer = varOauthAccessTokenWithoutEmbeddedStruct.Issuer
 		varOauthAccessToken.RefreshExpiry = varOauthAccessTokenWithoutEmbeddedStruct.RefreshExpiry
+		varOauthAccessToken.TokenOwner = varOauthAccessTokenWithoutEmbeddedStruct.TokenOwner
 		varOauthAccessToken.Account = varOauthAccessTokenWithoutEmbeddedStruct.Account
 		*o = OauthAccessToken(varOauthAccessToken)
 	} else {
@@ -349,7 +465,7 @@ func (o *OauthAccessToken) UnmarshalJSON(bytes []byte) (err error) {
 
 	varOauthAccessToken := _OauthAccessToken{}
 
-	err = json.Unmarshal(bytes, &varOauthAccessToken)
+	err = json.Unmarshal(data, &varOauthAccessToken)
 	if err == nil {
 		o.MoBaseMo = varOauthAccessToken.MoBaseMo
 	} else {
@@ -358,13 +474,14 @@ func (o *OauthAccessToken) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ApiType")
 		delete(additionalProperties, "Expiry")
 		delete(additionalProperties, "Issuer")
 		delete(additionalProperties, "RefreshExpiry")
+		delete(additionalProperties, "TokenOwner")
 		delete(additionalProperties, "Account")
 
 		// remove fields from embedded structs

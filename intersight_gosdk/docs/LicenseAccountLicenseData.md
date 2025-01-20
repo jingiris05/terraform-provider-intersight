@@ -12,10 +12,11 @@ Name | Type | Description | Notes
 **AuthInitialTime** | Pointer to **string** | Intial authorization time. | [optional] [readonly] 
 **AuthNextTime** | Pointer to **string** | Next time for the authorization. | [optional] [readonly] 
 **Category** | Pointer to **string** | Account license data category name. | [optional] [readonly] 
-**DefaultLicenseType** | Pointer to **string** | Default license tier set by user. * &#x60;Base&#x60; - Base as a License type. It is default license type. * &#x60;Essential&#x60; - Essential as a License type. * &#x60;Standard&#x60; - Standard as a License type. * &#x60;Advantage&#x60; - Advantage as a License type. * &#x60;Premier&#x60; - Premier as a License type. * &#x60;IWO-Essential&#x60; - IWO-Essential as a License type. * &#x60;IWO-Advantage&#x60; - IWO-Advantage as a License type. * &#x60;IWO-Premier&#x60; - IWO-Premier as a License type. * &#x60;IKS-Advantage&#x60; - IKS-Advantage as a License type. | [optional] [default to "Base"]
+**DefaultLicenseType** | Pointer to **string** | Default license tier set by the user. * &#x60;Base&#x60; - Base as a License type. It is default license type. * &#x60;Essential&#x60; - Essential as a License type. * &#x60;Standard&#x60; - Standard as a License type. * &#x60;Advantage&#x60; - Advantage as a License type. * &#x60;Premier&#x60; - Premier as a License type. * &#x60;IWO-Essential&#x60; - IWO-Essential as a License type. * &#x60;IWO-Advantage&#x60; - IWO-Advantage as a License type. * &#x60;IWO-Premier&#x60; - IWO-Premier as a License type. * &#x60;IKS-Advantage&#x60; - IKS-Advantage as a License type. * &#x60;INC-Premier-1GFixed&#x60; - Premier 1G Fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-10GFixed&#x60; - Premier 10G Fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-100GFixed&#x60; - Premier 100G Fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-Mod4Slot&#x60; - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-Mod8Slot&#x60; - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-D2OpsFixed&#x60; - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-D2OpsMod&#x60; - Premier D2Ops modular license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-CentralizedMod8Slot&#x60; - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * &#x60;INC-Premier-DistributedMod8Slot&#x60; - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * &#x60;ERP-Advantage&#x60; - Advantage license tier for ERP workflows. * &#x60;IntersightTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * &#x60;IWOTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * &#x60;IKSTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * &#x60;INCTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers. | [optional] [default to "Base"]
+**DefaultLicenseTypeNewerModels** | Pointer to **string** | Default license tier for newer model M7+ servers set by the user. * &#x60;Base&#x60; - Base as a License type. It is default license type. * &#x60;Essential&#x60; - Essential as a License type. * &#x60;Standard&#x60; - Standard as a License type. * &#x60;Advantage&#x60; - Advantage as a License type. * &#x60;Premier&#x60; - Premier as a License type. * &#x60;IWO-Essential&#x60; - IWO-Essential as a License type. * &#x60;IWO-Advantage&#x60; - IWO-Advantage as a License type. * &#x60;IWO-Premier&#x60; - IWO-Premier as a License type. * &#x60;IKS-Advantage&#x60; - IKS-Advantage as a License type. * &#x60;INC-Premier-1GFixed&#x60; - Premier 1G Fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-10GFixed&#x60; - Premier 10G Fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-100GFixed&#x60; - Premier 100G Fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-Mod4Slot&#x60; - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-Mod8Slot&#x60; - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-D2OpsFixed&#x60; - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-D2OpsMod&#x60; - Premier D2Ops modular license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-CentralizedMod8Slot&#x60; - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * &#x60;INC-Premier-DistributedMod8Slot&#x60; - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * &#x60;ERP-Advantage&#x60; - Advantage license tier for ERP workflows. * &#x60;IntersightTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * &#x60;IWOTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * &#x60;IKSTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * &#x60;INCTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers. | [optional] [default to "Base"]
 **ErrorDesc** | Pointer to **string** | The detailed error message when there is any error related to license sync of this account. | [optional] [readonly] 
 **Group** | Pointer to **string** | Account license data group name. | [optional] [readonly] 
-**HighestCompliantLicenseTier** | Pointer to **string** | The highest license tier which is in compliant of this account. * &#x60;Base&#x60; - Base as a License type. It is default license type. * &#x60;Essential&#x60; - Essential as a License type. * &#x60;Standard&#x60; - Standard as a License type. * &#x60;Advantage&#x60; - Advantage as a License type. * &#x60;Premier&#x60; - Premier as a License type. * &#x60;IWO-Essential&#x60; - IWO-Essential as a License type. * &#x60;IWO-Advantage&#x60; - IWO-Advantage as a License type. * &#x60;IWO-Premier&#x60; - IWO-Premier as a License type. * &#x60;IKS-Advantage&#x60; - IKS-Advantage as a License type. | [optional] [readonly] [default to "Base"]
+**HighestCompliantLicenseTier** | Pointer to **string** | The highest license tier which is in compliant of this account. * &#x60;Base&#x60; - Base as a License type. It is default license type. * &#x60;Essential&#x60; - Essential as a License type. * &#x60;Standard&#x60; - Standard as a License type. * &#x60;Advantage&#x60; - Advantage as a License type. * &#x60;Premier&#x60; - Premier as a License type. * &#x60;IWO-Essential&#x60; - IWO-Essential as a License type. * &#x60;IWO-Advantage&#x60; - IWO-Advantage as a License type. * &#x60;IWO-Premier&#x60; - IWO-Premier as a License type. * &#x60;IKS-Advantage&#x60; - IKS-Advantage as a License type. * &#x60;INC-Premier-1GFixed&#x60; - Premier 1G Fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-10GFixed&#x60; - Premier 10G Fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-100GFixed&#x60; - Premier 100G Fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-Mod4Slot&#x60; - Premier Modular 4 slot license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-Mod8Slot&#x60; - Premier Modular 8 slot license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-D2OpsFixed&#x60; - Premier D2Ops fixed license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-D2OpsMod&#x60; - Premier D2Ops modular license tier for Intersight Nexus Cloud. * &#x60;INC-Premier-CentralizedMod8Slot&#x60; - Premier modular license tier of switch type CentralizedMod8Slot for Intersight Nexus Cloud. * &#x60;INC-Premier-DistributedMod8Slot&#x60; - Premier modular license tier of switch type DistributedMod8Slot for Intersight Nexus Cloud. * &#x60;ERP-Advantage&#x60; - Advantage license tier for ERP workflows. * &#x60;IntersightTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode Intersight tiers. * &#x60;IWOTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode IKS tiers. * &#x60;IKSTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode IWO tiers. * &#x60;INCTrial&#x60; - Virtual dummy license type to indicate trial. Used for UI display of trial mode Nexus tiers. | [optional] [readonly] [default to "Base"]
 **LastCssmSync** | Pointer to **time.Time** | Specifies last sync time with CSSM. | [optional] [readonly] 
 **LastRenew** | Pointer to **time.Time** | Specifies last certificate renew time with SA. | [optional] [readonly] 
 **LastSync** | Pointer to **time.Time** | Specifies last sync time with SA. | [optional] [readonly] 
@@ -33,14 +34,18 @@ Name | Type | Description | Notes
 **SmartApiSyncStatus** | Pointer to **string** | The detailed error message when there is any smart API sync error related to this account. | [optional] [readonly] 
 **SyncStatus** | Pointer to **string** | Current sync status for the account. | [optional] [readonly] 
 **VirtualAccount** | Pointer to **string** | Name of the virtual account. | [optional] [readonly] 
-**Account** | Pointer to [**IamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
-**CustomerOp** | Pointer to [**LicenseCustomerOpRelationship**](LicenseCustomerOpRelationship.md) |  | [optional] 
-**IksCustomerOp** | Pointer to [**LicenseIksCustomerOpRelationship**](LicenseIksCustomerOpRelationship.md) |  | [optional] 
-**IksLicenseCount** | Pointer to [**LicenseIksLicenseCountRelationship**](LicenseIksLicenseCountRelationship.md) |  | [optional] 
-**IwoCustomerOp** | Pointer to [**LicenseIwoCustomerOpRelationship**](LicenseIwoCustomerOpRelationship.md) |  | [optional] 
-**IwoLicenseCount** | Pointer to [**LicenseIwoLicenseCountRelationship**](LicenseIwoLicenseCountRelationship.md) |  | [optional] 
+**Account** | Pointer to [**NullableIamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
+**CustomerOp** | Pointer to [**NullableLicenseCustomerOpRelationship**](LicenseCustomerOpRelationship.md) |  | [optional] 
+**IksCustomerOp** | Pointer to [**NullableLicenseIksCustomerOpRelationship**](LicenseIksCustomerOpRelationship.md) |  | [optional] 
+**IksLicenseCount** | Pointer to [**NullableLicenseIksLicenseCountRelationship**](LicenseIksLicenseCountRelationship.md) |  | [optional] 
+**IncCustomerOp** | Pointer to [**NullableLicenseIncCustomerOpRelationship**](LicenseIncCustomerOpRelationship.md) |  | [optional] 
+**IncLicenseCount** | Pointer to [**NullableLicenseIncLicenseCountRelationship**](LicenseIncLicenseCountRelationship.md) |  | [optional] 
+**IwoCustomerOp** | Pointer to [**NullableLicenseIwoCustomerOpRelationship**](LicenseIwoCustomerOpRelationship.md) |  | [optional] 
+**IwoLicenseCount** | Pointer to [**NullableLicenseIwoLicenseCountRelationship**](LicenseIwoLicenseCountRelationship.md) |  | [optional] 
+**LicenseInfoView** | Pointer to [**NullableLicenseLicenseInfoViewRelationship**](LicenseLicenseInfoViewRelationship.md) |  | [optional] 
+**LicenseRegistrationStatus** | Pointer to [**NullableLicenseLicenseRegistrationStatusRelationship**](LicenseLicenseRegistrationStatusRelationship.md) |  | [optional] 
 **Licenseinfos** | Pointer to [**[]LicenseLicenseInfoRelationship**](LicenseLicenseInfoRelationship.md) | An array of relationships to licenseLicenseInfo resources. | [optional] 
-**SmartlicenseToken** | Pointer to [**LicenseSmartlicenseTokenRelationship**](LicenseSmartlicenseTokenRelationship.md) |  | [optional] 
+**SmartlicenseToken** | Pointer to [**NullableLicenseSmartlicenseTokenRelationship**](LicenseSmartlicenseTokenRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -275,6 +280,31 @@ SetDefaultLicenseType sets DefaultLicenseType field to given value.
 `func (o *LicenseAccountLicenseData) HasDefaultLicenseType() bool`
 
 HasDefaultLicenseType returns a boolean if a field has been set.
+
+### GetDefaultLicenseTypeNewerModels
+
+`func (o *LicenseAccountLicenseData) GetDefaultLicenseTypeNewerModels() string`
+
+GetDefaultLicenseTypeNewerModels returns the DefaultLicenseTypeNewerModels field if non-nil, zero value otherwise.
+
+### GetDefaultLicenseTypeNewerModelsOk
+
+`func (o *LicenseAccountLicenseData) GetDefaultLicenseTypeNewerModelsOk() (*string, bool)`
+
+GetDefaultLicenseTypeNewerModelsOk returns a tuple with the DefaultLicenseTypeNewerModels field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDefaultLicenseTypeNewerModels
+
+`func (o *LicenseAccountLicenseData) SetDefaultLicenseTypeNewerModels(v string)`
+
+SetDefaultLicenseTypeNewerModels sets DefaultLicenseTypeNewerModels field to given value.
+
+### HasDefaultLicenseTypeNewerModels
+
+`func (o *LicenseAccountLicenseData) HasDefaultLicenseTypeNewerModels() bool`
+
+HasDefaultLicenseTypeNewerModels returns a boolean if a field has been set.
 
 ### GetErrorDesc
 
@@ -801,6 +831,16 @@ SetAccount sets Account field to given value.
 
 HasAccount returns a boolean if a field has been set.
 
+### SetAccountNil
+
+`func (o *LicenseAccountLicenseData) SetAccountNil(b bool)`
+
+ SetAccountNil sets the value for Account to be an explicit nil
+
+### UnsetAccount
+`func (o *LicenseAccountLicenseData) UnsetAccount()`
+
+UnsetAccount ensures that no value is present for Account, not even an explicit nil
 ### GetCustomerOp
 
 `func (o *LicenseAccountLicenseData) GetCustomerOp() LicenseCustomerOpRelationship`
@@ -826,6 +866,16 @@ SetCustomerOp sets CustomerOp field to given value.
 
 HasCustomerOp returns a boolean if a field has been set.
 
+### SetCustomerOpNil
+
+`func (o *LicenseAccountLicenseData) SetCustomerOpNil(b bool)`
+
+ SetCustomerOpNil sets the value for CustomerOp to be an explicit nil
+
+### UnsetCustomerOp
+`func (o *LicenseAccountLicenseData) UnsetCustomerOp()`
+
+UnsetCustomerOp ensures that no value is present for CustomerOp, not even an explicit nil
 ### GetIksCustomerOp
 
 `func (o *LicenseAccountLicenseData) GetIksCustomerOp() LicenseIksCustomerOpRelationship`
@@ -851,6 +901,16 @@ SetIksCustomerOp sets IksCustomerOp field to given value.
 
 HasIksCustomerOp returns a boolean if a field has been set.
 
+### SetIksCustomerOpNil
+
+`func (o *LicenseAccountLicenseData) SetIksCustomerOpNil(b bool)`
+
+ SetIksCustomerOpNil sets the value for IksCustomerOp to be an explicit nil
+
+### UnsetIksCustomerOp
+`func (o *LicenseAccountLicenseData) UnsetIksCustomerOp()`
+
+UnsetIksCustomerOp ensures that no value is present for IksCustomerOp, not even an explicit nil
 ### GetIksLicenseCount
 
 `func (o *LicenseAccountLicenseData) GetIksLicenseCount() LicenseIksLicenseCountRelationship`
@@ -876,6 +936,86 @@ SetIksLicenseCount sets IksLicenseCount field to given value.
 
 HasIksLicenseCount returns a boolean if a field has been set.
 
+### SetIksLicenseCountNil
+
+`func (o *LicenseAccountLicenseData) SetIksLicenseCountNil(b bool)`
+
+ SetIksLicenseCountNil sets the value for IksLicenseCount to be an explicit nil
+
+### UnsetIksLicenseCount
+`func (o *LicenseAccountLicenseData) UnsetIksLicenseCount()`
+
+UnsetIksLicenseCount ensures that no value is present for IksLicenseCount, not even an explicit nil
+### GetIncCustomerOp
+
+`func (o *LicenseAccountLicenseData) GetIncCustomerOp() LicenseIncCustomerOpRelationship`
+
+GetIncCustomerOp returns the IncCustomerOp field if non-nil, zero value otherwise.
+
+### GetIncCustomerOpOk
+
+`func (o *LicenseAccountLicenseData) GetIncCustomerOpOk() (*LicenseIncCustomerOpRelationship, bool)`
+
+GetIncCustomerOpOk returns a tuple with the IncCustomerOp field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIncCustomerOp
+
+`func (o *LicenseAccountLicenseData) SetIncCustomerOp(v LicenseIncCustomerOpRelationship)`
+
+SetIncCustomerOp sets IncCustomerOp field to given value.
+
+### HasIncCustomerOp
+
+`func (o *LicenseAccountLicenseData) HasIncCustomerOp() bool`
+
+HasIncCustomerOp returns a boolean if a field has been set.
+
+### SetIncCustomerOpNil
+
+`func (o *LicenseAccountLicenseData) SetIncCustomerOpNil(b bool)`
+
+ SetIncCustomerOpNil sets the value for IncCustomerOp to be an explicit nil
+
+### UnsetIncCustomerOp
+`func (o *LicenseAccountLicenseData) UnsetIncCustomerOp()`
+
+UnsetIncCustomerOp ensures that no value is present for IncCustomerOp, not even an explicit nil
+### GetIncLicenseCount
+
+`func (o *LicenseAccountLicenseData) GetIncLicenseCount() LicenseIncLicenseCountRelationship`
+
+GetIncLicenseCount returns the IncLicenseCount field if non-nil, zero value otherwise.
+
+### GetIncLicenseCountOk
+
+`func (o *LicenseAccountLicenseData) GetIncLicenseCountOk() (*LicenseIncLicenseCountRelationship, bool)`
+
+GetIncLicenseCountOk returns a tuple with the IncLicenseCount field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIncLicenseCount
+
+`func (o *LicenseAccountLicenseData) SetIncLicenseCount(v LicenseIncLicenseCountRelationship)`
+
+SetIncLicenseCount sets IncLicenseCount field to given value.
+
+### HasIncLicenseCount
+
+`func (o *LicenseAccountLicenseData) HasIncLicenseCount() bool`
+
+HasIncLicenseCount returns a boolean if a field has been set.
+
+### SetIncLicenseCountNil
+
+`func (o *LicenseAccountLicenseData) SetIncLicenseCountNil(b bool)`
+
+ SetIncLicenseCountNil sets the value for IncLicenseCount to be an explicit nil
+
+### UnsetIncLicenseCount
+`func (o *LicenseAccountLicenseData) UnsetIncLicenseCount()`
+
+UnsetIncLicenseCount ensures that no value is present for IncLicenseCount, not even an explicit nil
 ### GetIwoCustomerOp
 
 `func (o *LicenseAccountLicenseData) GetIwoCustomerOp() LicenseIwoCustomerOpRelationship`
@@ -901,6 +1041,16 @@ SetIwoCustomerOp sets IwoCustomerOp field to given value.
 
 HasIwoCustomerOp returns a boolean if a field has been set.
 
+### SetIwoCustomerOpNil
+
+`func (o *LicenseAccountLicenseData) SetIwoCustomerOpNil(b bool)`
+
+ SetIwoCustomerOpNil sets the value for IwoCustomerOp to be an explicit nil
+
+### UnsetIwoCustomerOp
+`func (o *LicenseAccountLicenseData) UnsetIwoCustomerOp()`
+
+UnsetIwoCustomerOp ensures that no value is present for IwoCustomerOp, not even an explicit nil
 ### GetIwoLicenseCount
 
 `func (o *LicenseAccountLicenseData) GetIwoLicenseCount() LicenseIwoLicenseCountRelationship`
@@ -926,6 +1076,86 @@ SetIwoLicenseCount sets IwoLicenseCount field to given value.
 
 HasIwoLicenseCount returns a boolean if a field has been set.
 
+### SetIwoLicenseCountNil
+
+`func (o *LicenseAccountLicenseData) SetIwoLicenseCountNil(b bool)`
+
+ SetIwoLicenseCountNil sets the value for IwoLicenseCount to be an explicit nil
+
+### UnsetIwoLicenseCount
+`func (o *LicenseAccountLicenseData) UnsetIwoLicenseCount()`
+
+UnsetIwoLicenseCount ensures that no value is present for IwoLicenseCount, not even an explicit nil
+### GetLicenseInfoView
+
+`func (o *LicenseAccountLicenseData) GetLicenseInfoView() LicenseLicenseInfoViewRelationship`
+
+GetLicenseInfoView returns the LicenseInfoView field if non-nil, zero value otherwise.
+
+### GetLicenseInfoViewOk
+
+`func (o *LicenseAccountLicenseData) GetLicenseInfoViewOk() (*LicenseLicenseInfoViewRelationship, bool)`
+
+GetLicenseInfoViewOk returns a tuple with the LicenseInfoView field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLicenseInfoView
+
+`func (o *LicenseAccountLicenseData) SetLicenseInfoView(v LicenseLicenseInfoViewRelationship)`
+
+SetLicenseInfoView sets LicenseInfoView field to given value.
+
+### HasLicenseInfoView
+
+`func (o *LicenseAccountLicenseData) HasLicenseInfoView() bool`
+
+HasLicenseInfoView returns a boolean if a field has been set.
+
+### SetLicenseInfoViewNil
+
+`func (o *LicenseAccountLicenseData) SetLicenseInfoViewNil(b bool)`
+
+ SetLicenseInfoViewNil sets the value for LicenseInfoView to be an explicit nil
+
+### UnsetLicenseInfoView
+`func (o *LicenseAccountLicenseData) UnsetLicenseInfoView()`
+
+UnsetLicenseInfoView ensures that no value is present for LicenseInfoView, not even an explicit nil
+### GetLicenseRegistrationStatus
+
+`func (o *LicenseAccountLicenseData) GetLicenseRegistrationStatus() LicenseLicenseRegistrationStatusRelationship`
+
+GetLicenseRegistrationStatus returns the LicenseRegistrationStatus field if non-nil, zero value otherwise.
+
+### GetLicenseRegistrationStatusOk
+
+`func (o *LicenseAccountLicenseData) GetLicenseRegistrationStatusOk() (*LicenseLicenseRegistrationStatusRelationship, bool)`
+
+GetLicenseRegistrationStatusOk returns a tuple with the LicenseRegistrationStatus field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetLicenseRegistrationStatus
+
+`func (o *LicenseAccountLicenseData) SetLicenseRegistrationStatus(v LicenseLicenseRegistrationStatusRelationship)`
+
+SetLicenseRegistrationStatus sets LicenseRegistrationStatus field to given value.
+
+### HasLicenseRegistrationStatus
+
+`func (o *LicenseAccountLicenseData) HasLicenseRegistrationStatus() bool`
+
+HasLicenseRegistrationStatus returns a boolean if a field has been set.
+
+### SetLicenseRegistrationStatusNil
+
+`func (o *LicenseAccountLicenseData) SetLicenseRegistrationStatusNil(b bool)`
+
+ SetLicenseRegistrationStatusNil sets the value for LicenseRegistrationStatus to be an explicit nil
+
+### UnsetLicenseRegistrationStatus
+`func (o *LicenseAccountLicenseData) UnsetLicenseRegistrationStatus()`
+
+UnsetLicenseRegistrationStatus ensures that no value is present for LicenseRegistrationStatus, not even an explicit nil
 ### GetLicenseinfos
 
 `func (o *LicenseAccountLicenseData) GetLicenseinfos() []LicenseLicenseInfoRelationship`
@@ -986,6 +1216,16 @@ SetSmartlicenseToken sets SmartlicenseToken field to given value.
 
 HasSmartlicenseToken returns a boolean if a field has been set.
 
+### SetSmartlicenseTokenNil
+
+`func (o *LicenseAccountLicenseData) SetSmartlicenseTokenNil(b bool)`
+
+ SetSmartlicenseTokenNil sets the value for SmartlicenseToken to be an explicit nil
+
+### UnsetSmartlicenseToken
+`func (o *LicenseAccountLicenseData) UnsetSmartlicenseToken()`
+
+UnsetSmartlicenseToken ensures that no value is present for SmartlicenseToken, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

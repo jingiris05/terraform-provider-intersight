@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the IamUser type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &IamUser{}
 
 // IamUser The Intersight account user.
 type IamUser struct {
@@ -27,19 +31,21 @@ type IamUser struct {
 	ObjectType string `json:"ObjectType"`
 	// IP address from which the user last logged in to Intersight.
 	ClientIpAddress *string `json:"ClientIpAddress,omitempty"`
-	// Email of the user. Users are added to Intersight using the email configured in the IdP.
-	Email *string `json:"Email,omitempty"`
-	// First name of the user. This field is populated from the IdP attributes received after authentication.
+	// Email of the user. Remote users are added to Intersight using the email configured in the IdP.
+	Email *string "json:\"Email,omitempty\" validate:\"regexp=^$|^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$\""
+	// First name of the user. For remote users, this field is populated from the IdP attributes received after authentication.
 	FirstName *string `json:"FirstName,omitempty"`
 	// Last successful login time for user.
 	LastLoginTime *time.Time `json:"LastLoginTime,omitempty"`
-	// Last name of the user. This field is populated from the IdP attributes received after authentication.
+	// Last name of the user. For remote users, this field is populated from the IdP attributes received after authentication.
 	LastName *string `json:"LastName,omitempty"`
 	// Last role modification time for user.
 	LastRoleModifiedTime *time.Time `json:"LastRoleModifiedTime,omitempty"`
-	// Name as configured in the IdP.
+	// Time until which the user account will be locked out.
+	LockedUntil *time.Time `json:"LockedUntil,omitempty"`
+	// Name of the user. For remote users, it is the value as configured in the IdP.
 	Name *string `json:"Name,omitempty"`
-	// UserID or email as configured in the IdP.
+	// UserID or email of the user. For remote users, it is the value as configured in the IDP.
 	UserIdOrEmail *string `json:"UserIdOrEmail,omitempty"`
 	// Type of the User. If a user is added manually by specifying the email address, or has logged in using groups, based on the IdP attributes received during authentication. If added manually, the user type will be static, otherwise dynamic.
 	UserType *string `json:"UserType,omitempty"`
@@ -48,10 +54,10 @@ type IamUser struct {
 	// An array of relationships to iamApiKey resources.
 	ApiKeys []IamApiKeyRelationship `json:"ApiKeys,omitempty"`
 	// An array of relationships to iamAppRegistration resources.
-	AppRegistrations  []IamAppRegistrationRelationship  `json:"AppRegistrations,omitempty"`
-	Idp               *IamIdpRelationship               `json:"Idp,omitempty"`
-	Idpreference      *IamIdpReferenceRelationship      `json:"Idpreference,omitempty"`
-	LocalUserPassword *IamLocalUserPasswordRelationship `json:"LocalUserPassword,omitempty"`
+	AppRegistrations  []IamAppRegistrationRelationship         `json:"AppRegistrations,omitempty"`
+	Idp               NullableIamIdpRelationship               `json:"Idp,omitempty"`
+	Idpreference      NullableIamIdpReferenceRelationship      `json:"Idpreference,omitempty"`
+	LocalUserPassword NullableIamLocalUserPasswordRelationship `json:"LocalUserPassword,omitempty"`
 	// An array of relationships to iamOAuthToken resources.
 	OauthTokens []IamOAuthTokenRelationship `json:"OauthTokens,omitempty"`
 	// An array of relationships to iamPermission resources.
@@ -110,6 +116,11 @@ func (o *IamUser) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "iam.User" of the ClassId field.
+func (o *IamUser) GetDefaultClassId() interface{} {
+	return "iam.User"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *IamUser) GetObjectType() string {
 	if o == nil {
@@ -134,9 +145,14 @@ func (o *IamUser) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "iam.User" of the ObjectType field.
+func (o *IamUser) GetDefaultObjectType() interface{} {
+	return "iam.User"
+}
+
 // GetClientIpAddress returns the ClientIpAddress field value if set, zero value otherwise.
 func (o *IamUser) GetClientIpAddress() string {
-	if o == nil || o.ClientIpAddress == nil {
+	if o == nil || IsNil(o.ClientIpAddress) {
 		var ret string
 		return ret
 	}
@@ -146,7 +162,7 @@ func (o *IamUser) GetClientIpAddress() string {
 // GetClientIpAddressOk returns a tuple with the ClientIpAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetClientIpAddressOk() (*string, bool) {
-	if o == nil || o.ClientIpAddress == nil {
+	if o == nil || IsNil(o.ClientIpAddress) {
 		return nil, false
 	}
 	return o.ClientIpAddress, true
@@ -154,7 +170,7 @@ func (o *IamUser) GetClientIpAddressOk() (*string, bool) {
 
 // HasClientIpAddress returns a boolean if a field has been set.
 func (o *IamUser) HasClientIpAddress() bool {
-	if o != nil && o.ClientIpAddress != nil {
+	if o != nil && !IsNil(o.ClientIpAddress) {
 		return true
 	}
 
@@ -168,7 +184,7 @@ func (o *IamUser) SetClientIpAddress(v string) {
 
 // GetEmail returns the Email field value if set, zero value otherwise.
 func (o *IamUser) GetEmail() string {
-	if o == nil || o.Email == nil {
+	if o == nil || IsNil(o.Email) {
 		var ret string
 		return ret
 	}
@@ -178,7 +194,7 @@ func (o *IamUser) GetEmail() string {
 // GetEmailOk returns a tuple with the Email field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetEmailOk() (*string, bool) {
-	if o == nil || o.Email == nil {
+	if o == nil || IsNil(o.Email) {
 		return nil, false
 	}
 	return o.Email, true
@@ -186,7 +202,7 @@ func (o *IamUser) GetEmailOk() (*string, bool) {
 
 // HasEmail returns a boolean if a field has been set.
 func (o *IamUser) HasEmail() bool {
-	if o != nil && o.Email != nil {
+	if o != nil && !IsNil(o.Email) {
 		return true
 	}
 
@@ -200,7 +216,7 @@ func (o *IamUser) SetEmail(v string) {
 
 // GetFirstName returns the FirstName field value if set, zero value otherwise.
 func (o *IamUser) GetFirstName() string {
-	if o == nil || o.FirstName == nil {
+	if o == nil || IsNil(o.FirstName) {
 		var ret string
 		return ret
 	}
@@ -210,7 +226,7 @@ func (o *IamUser) GetFirstName() string {
 // GetFirstNameOk returns a tuple with the FirstName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetFirstNameOk() (*string, bool) {
-	if o == nil || o.FirstName == nil {
+	if o == nil || IsNil(o.FirstName) {
 		return nil, false
 	}
 	return o.FirstName, true
@@ -218,7 +234,7 @@ func (o *IamUser) GetFirstNameOk() (*string, bool) {
 
 // HasFirstName returns a boolean if a field has been set.
 func (o *IamUser) HasFirstName() bool {
-	if o != nil && o.FirstName != nil {
+	if o != nil && !IsNil(o.FirstName) {
 		return true
 	}
 
@@ -232,7 +248,7 @@ func (o *IamUser) SetFirstName(v string) {
 
 // GetLastLoginTime returns the LastLoginTime field value if set, zero value otherwise.
 func (o *IamUser) GetLastLoginTime() time.Time {
-	if o == nil || o.LastLoginTime == nil {
+	if o == nil || IsNil(o.LastLoginTime) {
 		var ret time.Time
 		return ret
 	}
@@ -242,7 +258,7 @@ func (o *IamUser) GetLastLoginTime() time.Time {
 // GetLastLoginTimeOk returns a tuple with the LastLoginTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetLastLoginTimeOk() (*time.Time, bool) {
-	if o == nil || o.LastLoginTime == nil {
+	if o == nil || IsNil(o.LastLoginTime) {
 		return nil, false
 	}
 	return o.LastLoginTime, true
@@ -250,7 +266,7 @@ func (o *IamUser) GetLastLoginTimeOk() (*time.Time, bool) {
 
 // HasLastLoginTime returns a boolean if a field has been set.
 func (o *IamUser) HasLastLoginTime() bool {
-	if o != nil && o.LastLoginTime != nil {
+	if o != nil && !IsNil(o.LastLoginTime) {
 		return true
 	}
 
@@ -264,7 +280,7 @@ func (o *IamUser) SetLastLoginTime(v time.Time) {
 
 // GetLastName returns the LastName field value if set, zero value otherwise.
 func (o *IamUser) GetLastName() string {
-	if o == nil || o.LastName == nil {
+	if o == nil || IsNil(o.LastName) {
 		var ret string
 		return ret
 	}
@@ -274,7 +290,7 @@ func (o *IamUser) GetLastName() string {
 // GetLastNameOk returns a tuple with the LastName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetLastNameOk() (*string, bool) {
-	if o == nil || o.LastName == nil {
+	if o == nil || IsNil(o.LastName) {
 		return nil, false
 	}
 	return o.LastName, true
@@ -282,7 +298,7 @@ func (o *IamUser) GetLastNameOk() (*string, bool) {
 
 // HasLastName returns a boolean if a field has been set.
 func (o *IamUser) HasLastName() bool {
-	if o != nil && o.LastName != nil {
+	if o != nil && !IsNil(o.LastName) {
 		return true
 	}
 
@@ -296,7 +312,7 @@ func (o *IamUser) SetLastName(v string) {
 
 // GetLastRoleModifiedTime returns the LastRoleModifiedTime field value if set, zero value otherwise.
 func (o *IamUser) GetLastRoleModifiedTime() time.Time {
-	if o == nil || o.LastRoleModifiedTime == nil {
+	if o == nil || IsNil(o.LastRoleModifiedTime) {
 		var ret time.Time
 		return ret
 	}
@@ -306,7 +322,7 @@ func (o *IamUser) GetLastRoleModifiedTime() time.Time {
 // GetLastRoleModifiedTimeOk returns a tuple with the LastRoleModifiedTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetLastRoleModifiedTimeOk() (*time.Time, bool) {
-	if o == nil || o.LastRoleModifiedTime == nil {
+	if o == nil || IsNil(o.LastRoleModifiedTime) {
 		return nil, false
 	}
 	return o.LastRoleModifiedTime, true
@@ -314,7 +330,7 @@ func (o *IamUser) GetLastRoleModifiedTimeOk() (*time.Time, bool) {
 
 // HasLastRoleModifiedTime returns a boolean if a field has been set.
 func (o *IamUser) HasLastRoleModifiedTime() bool {
-	if o != nil && o.LastRoleModifiedTime != nil {
+	if o != nil && !IsNil(o.LastRoleModifiedTime) {
 		return true
 	}
 
@@ -326,9 +342,41 @@ func (o *IamUser) SetLastRoleModifiedTime(v time.Time) {
 	o.LastRoleModifiedTime = &v
 }
 
+// GetLockedUntil returns the LockedUntil field value if set, zero value otherwise.
+func (o *IamUser) GetLockedUntil() time.Time {
+	if o == nil || IsNil(o.LockedUntil) {
+		var ret time.Time
+		return ret
+	}
+	return *o.LockedUntil
+}
+
+// GetLockedUntilOk returns a tuple with the LockedUntil field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *IamUser) GetLockedUntilOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.LockedUntil) {
+		return nil, false
+	}
+	return o.LockedUntil, true
+}
+
+// HasLockedUntil returns a boolean if a field has been set.
+func (o *IamUser) HasLockedUntil() bool {
+	if o != nil && !IsNil(o.LockedUntil) {
+		return true
+	}
+
+	return false
+}
+
+// SetLockedUntil gets a reference to the given time.Time and assigns it to the LockedUntil field.
+func (o *IamUser) SetLockedUntil(v time.Time) {
+	o.LockedUntil = &v
+}
+
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *IamUser) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -338,7 +386,7 @@ func (o *IamUser) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -346,7 +394,7 @@ func (o *IamUser) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *IamUser) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -360,7 +408,7 @@ func (o *IamUser) SetName(v string) {
 
 // GetUserIdOrEmail returns the UserIdOrEmail field value if set, zero value otherwise.
 func (o *IamUser) GetUserIdOrEmail() string {
-	if o == nil || o.UserIdOrEmail == nil {
+	if o == nil || IsNil(o.UserIdOrEmail) {
 		var ret string
 		return ret
 	}
@@ -370,7 +418,7 @@ func (o *IamUser) GetUserIdOrEmail() string {
 // GetUserIdOrEmailOk returns a tuple with the UserIdOrEmail field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetUserIdOrEmailOk() (*string, bool) {
-	if o == nil || o.UserIdOrEmail == nil {
+	if o == nil || IsNil(o.UserIdOrEmail) {
 		return nil, false
 	}
 	return o.UserIdOrEmail, true
@@ -378,7 +426,7 @@ func (o *IamUser) GetUserIdOrEmailOk() (*string, bool) {
 
 // HasUserIdOrEmail returns a boolean if a field has been set.
 func (o *IamUser) HasUserIdOrEmail() bool {
-	if o != nil && o.UserIdOrEmail != nil {
+	if o != nil && !IsNil(o.UserIdOrEmail) {
 		return true
 	}
 
@@ -392,7 +440,7 @@ func (o *IamUser) SetUserIdOrEmail(v string) {
 
 // GetUserType returns the UserType field value if set, zero value otherwise.
 func (o *IamUser) GetUserType() string {
-	if o == nil || o.UserType == nil {
+	if o == nil || IsNil(o.UserType) {
 		var ret string
 		return ret
 	}
@@ -402,7 +450,7 @@ func (o *IamUser) GetUserType() string {
 // GetUserTypeOk returns a tuple with the UserType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetUserTypeOk() (*string, bool) {
-	if o == nil || o.UserType == nil {
+	if o == nil || IsNil(o.UserType) {
 		return nil, false
 	}
 	return o.UserType, true
@@ -410,7 +458,7 @@ func (o *IamUser) GetUserTypeOk() (*string, bool) {
 
 // HasUserType returns a boolean if a field has been set.
 func (o *IamUser) HasUserType() bool {
-	if o != nil && o.UserType != nil {
+	if o != nil && !IsNil(o.UserType) {
 		return true
 	}
 
@@ -424,7 +472,7 @@ func (o *IamUser) SetUserType(v string) {
 
 // GetUserUniqueIdentifier returns the UserUniqueIdentifier field value if set, zero value otherwise.
 func (o *IamUser) GetUserUniqueIdentifier() string {
-	if o == nil || o.UserUniqueIdentifier == nil {
+	if o == nil || IsNil(o.UserUniqueIdentifier) {
 		var ret string
 		return ret
 	}
@@ -434,7 +482,7 @@ func (o *IamUser) GetUserUniqueIdentifier() string {
 // GetUserUniqueIdentifierOk returns a tuple with the UserUniqueIdentifier field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *IamUser) GetUserUniqueIdentifierOk() (*string, bool) {
-	if o == nil || o.UserUniqueIdentifier == nil {
+	if o == nil || IsNil(o.UserUniqueIdentifier) {
 		return nil, false
 	}
 	return o.UserUniqueIdentifier, true
@@ -442,7 +490,7 @@ func (o *IamUser) GetUserUniqueIdentifierOk() (*string, bool) {
 
 // HasUserUniqueIdentifier returns a boolean if a field has been set.
 func (o *IamUser) HasUserUniqueIdentifier() bool {
-	if o != nil && o.UserUniqueIdentifier != nil {
+	if o != nil && !IsNil(o.UserUniqueIdentifier) {
 		return true
 	}
 
@@ -467,7 +515,7 @@ func (o *IamUser) GetApiKeys() []IamApiKeyRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamUser) GetApiKeysOk() ([]IamApiKeyRelationship, bool) {
-	if o == nil || o.ApiKeys == nil {
+	if o == nil || IsNil(o.ApiKeys) {
 		return nil, false
 	}
 	return o.ApiKeys, true
@@ -475,7 +523,7 @@ func (o *IamUser) GetApiKeysOk() ([]IamApiKeyRelationship, bool) {
 
 // HasApiKeys returns a boolean if a field has been set.
 func (o *IamUser) HasApiKeys() bool {
-	if o != nil && o.ApiKeys != nil {
+	if o != nil && !IsNil(o.ApiKeys) {
 		return true
 	}
 
@@ -500,7 +548,7 @@ func (o *IamUser) GetAppRegistrations() []IamAppRegistrationRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamUser) GetAppRegistrationsOk() ([]IamAppRegistrationRelationship, bool) {
-	if o == nil || o.AppRegistrations == nil {
+	if o == nil || IsNil(o.AppRegistrations) {
 		return nil, false
 	}
 	return o.AppRegistrations, true
@@ -508,7 +556,7 @@ func (o *IamUser) GetAppRegistrationsOk() ([]IamAppRegistrationRelationship, boo
 
 // HasAppRegistrations returns a boolean if a field has been set.
 func (o *IamUser) HasAppRegistrations() bool {
-	if o != nil && o.AppRegistrations != nil {
+	if o != nil && !IsNil(o.AppRegistrations) {
 		return true
 	}
 
@@ -520,100 +568,133 @@ func (o *IamUser) SetAppRegistrations(v []IamAppRegistrationRelationship) {
 	o.AppRegistrations = v
 }
 
-// GetIdp returns the Idp field value if set, zero value otherwise.
+// GetIdp returns the Idp field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamUser) GetIdp() IamIdpRelationship {
-	if o == nil || o.Idp == nil {
+	if o == nil || IsNil(o.Idp.Get()) {
 		var ret IamIdpRelationship
 		return ret
 	}
-	return *o.Idp
+	return *o.Idp.Get()
 }
 
 // GetIdpOk returns a tuple with the Idp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamUser) GetIdpOk() (*IamIdpRelationship, bool) {
-	if o == nil || o.Idp == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Idp, true
+	return o.Idp.Get(), o.Idp.IsSet()
 }
 
 // HasIdp returns a boolean if a field has been set.
 func (o *IamUser) HasIdp() bool {
-	if o != nil && o.Idp != nil {
+	if o != nil && o.Idp.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetIdp gets a reference to the given IamIdpRelationship and assigns it to the Idp field.
+// SetIdp gets a reference to the given NullableIamIdpRelationship and assigns it to the Idp field.
 func (o *IamUser) SetIdp(v IamIdpRelationship) {
-	o.Idp = &v
+	o.Idp.Set(&v)
 }
 
-// GetIdpreference returns the Idpreference field value if set, zero value otherwise.
+// SetIdpNil sets the value for Idp to be an explicit nil
+func (o *IamUser) SetIdpNil() {
+	o.Idp.Set(nil)
+}
+
+// UnsetIdp ensures that no value is present for Idp, not even an explicit nil
+func (o *IamUser) UnsetIdp() {
+	o.Idp.Unset()
+}
+
+// GetIdpreference returns the Idpreference field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamUser) GetIdpreference() IamIdpReferenceRelationship {
-	if o == nil || o.Idpreference == nil {
+	if o == nil || IsNil(o.Idpreference.Get()) {
 		var ret IamIdpReferenceRelationship
 		return ret
 	}
-	return *o.Idpreference
+	return *o.Idpreference.Get()
 }
 
 // GetIdpreferenceOk returns a tuple with the Idpreference field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamUser) GetIdpreferenceOk() (*IamIdpReferenceRelationship, bool) {
-	if o == nil || o.Idpreference == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Idpreference, true
+	return o.Idpreference.Get(), o.Idpreference.IsSet()
 }
 
 // HasIdpreference returns a boolean if a field has been set.
 func (o *IamUser) HasIdpreference() bool {
-	if o != nil && o.Idpreference != nil {
+	if o != nil && o.Idpreference.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetIdpreference gets a reference to the given IamIdpReferenceRelationship and assigns it to the Idpreference field.
+// SetIdpreference gets a reference to the given NullableIamIdpReferenceRelationship and assigns it to the Idpreference field.
 func (o *IamUser) SetIdpreference(v IamIdpReferenceRelationship) {
-	o.Idpreference = &v
+	o.Idpreference.Set(&v)
 }
 
-// GetLocalUserPassword returns the LocalUserPassword field value if set, zero value otherwise.
+// SetIdpreferenceNil sets the value for Idpreference to be an explicit nil
+func (o *IamUser) SetIdpreferenceNil() {
+	o.Idpreference.Set(nil)
+}
+
+// UnsetIdpreference ensures that no value is present for Idpreference, not even an explicit nil
+func (o *IamUser) UnsetIdpreference() {
+	o.Idpreference.Unset()
+}
+
+// GetLocalUserPassword returns the LocalUserPassword field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *IamUser) GetLocalUserPassword() IamLocalUserPasswordRelationship {
-	if o == nil || o.LocalUserPassword == nil {
+	if o == nil || IsNil(o.LocalUserPassword.Get()) {
 		var ret IamLocalUserPasswordRelationship
 		return ret
 	}
-	return *o.LocalUserPassword
+	return *o.LocalUserPassword.Get()
 }
 
 // GetLocalUserPasswordOk returns a tuple with the LocalUserPassword field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamUser) GetLocalUserPasswordOk() (*IamLocalUserPasswordRelationship, bool) {
-	if o == nil || o.LocalUserPassword == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.LocalUserPassword, true
+	return o.LocalUserPassword.Get(), o.LocalUserPassword.IsSet()
 }
 
 // HasLocalUserPassword returns a boolean if a field has been set.
 func (o *IamUser) HasLocalUserPassword() bool {
-	if o != nil && o.LocalUserPassword != nil {
+	if o != nil && o.LocalUserPassword.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetLocalUserPassword gets a reference to the given IamLocalUserPasswordRelationship and assigns it to the LocalUserPassword field.
+// SetLocalUserPassword gets a reference to the given NullableIamLocalUserPasswordRelationship and assigns it to the LocalUserPassword field.
 func (o *IamUser) SetLocalUserPassword(v IamLocalUserPasswordRelationship) {
-	o.LocalUserPassword = &v
+	o.LocalUserPassword.Set(&v)
+}
+
+// SetLocalUserPasswordNil sets the value for LocalUserPassword to be an explicit nil
+func (o *IamUser) SetLocalUserPasswordNil() {
+	o.LocalUserPassword.Set(nil)
+}
+
+// UnsetLocalUserPassword ensures that no value is present for LocalUserPassword, not even an explicit nil
+func (o *IamUser) UnsetLocalUserPassword() {
+	o.LocalUserPassword.Unset()
 }
 
 // GetOauthTokens returns the OauthTokens field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -629,7 +710,7 @@ func (o *IamUser) GetOauthTokens() []IamOAuthTokenRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamUser) GetOauthTokensOk() ([]IamOAuthTokenRelationship, bool) {
-	if o == nil || o.OauthTokens == nil {
+	if o == nil || IsNil(o.OauthTokens) {
 		return nil, false
 	}
 	return o.OauthTokens, true
@@ -637,7 +718,7 @@ func (o *IamUser) GetOauthTokensOk() ([]IamOAuthTokenRelationship, bool) {
 
 // HasOauthTokens returns a boolean if a field has been set.
 func (o *IamUser) HasOauthTokens() bool {
-	if o != nil && o.OauthTokens != nil {
+	if o != nil && !IsNil(o.OauthTokens) {
 		return true
 	}
 
@@ -662,7 +743,7 @@ func (o *IamUser) GetPermissions() []IamPermissionRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamUser) GetPermissionsOk() ([]IamPermissionRelationship, bool) {
-	if o == nil || o.Permissions == nil {
+	if o == nil || IsNil(o.Permissions) {
 		return nil, false
 	}
 	return o.Permissions, true
@@ -670,7 +751,7 @@ func (o *IamUser) GetPermissionsOk() ([]IamPermissionRelationship, bool) {
 
 // HasPermissions returns a boolean if a field has been set.
 func (o *IamUser) HasPermissions() bool {
-	if o != nil && o.Permissions != nil {
+	if o != nil && !IsNil(o.Permissions) {
 		return true
 	}
 
@@ -695,7 +776,7 @@ func (o *IamUser) GetSessions() []IamSessionRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *IamUser) GetSessionsOk() ([]IamSessionRelationship, bool) {
-	if o == nil || o.Sessions == nil {
+	if o == nil || IsNil(o.Sessions) {
 		return nil, false
 	}
 	return o.Sessions, true
@@ -703,7 +784,7 @@ func (o *IamUser) GetSessionsOk() ([]IamSessionRelationship, bool) {
 
 // HasSessions returns a boolean if a field has been set.
 func (o *IamUser) HasSessions() bool {
-	if o != nil && o.Sessions != nil {
+	if o != nil && !IsNil(o.Sessions) {
 		return true
 	}
 
@@ -716,49 +797,62 @@ func (o *IamUser) SetSessions(v []IamSessionRelationship) {
 }
 
 func (o IamUser) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o IamUser) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ClientIpAddress != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ClientIpAddress) {
 		toSerialize["ClientIpAddress"] = o.ClientIpAddress
 	}
-	if o.Email != nil {
+	if !IsNil(o.Email) {
 		toSerialize["Email"] = o.Email
 	}
-	if o.FirstName != nil {
+	if !IsNil(o.FirstName) {
 		toSerialize["FirstName"] = o.FirstName
 	}
-	if o.LastLoginTime != nil {
+	if !IsNil(o.LastLoginTime) {
 		toSerialize["LastLoginTime"] = o.LastLoginTime
 	}
-	if o.LastName != nil {
+	if !IsNil(o.LastName) {
 		toSerialize["LastName"] = o.LastName
 	}
-	if o.LastRoleModifiedTime != nil {
+	if !IsNil(o.LastRoleModifiedTime) {
 		toSerialize["LastRoleModifiedTime"] = o.LastRoleModifiedTime
 	}
-	if o.Name != nil {
+	if !IsNil(o.LockedUntil) {
+		toSerialize["LockedUntil"] = o.LockedUntil
+	}
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.UserIdOrEmail != nil {
+	if !IsNil(o.UserIdOrEmail) {
 		toSerialize["UserIdOrEmail"] = o.UserIdOrEmail
 	}
-	if o.UserType != nil {
+	if !IsNil(o.UserType) {
 		toSerialize["UserType"] = o.UserType
 	}
-	if o.UserUniqueIdentifier != nil {
+	if !IsNil(o.UserUniqueIdentifier) {
 		toSerialize["UserUniqueIdentifier"] = o.UserUniqueIdentifier
 	}
 	if o.ApiKeys != nil {
@@ -767,14 +861,14 @@ func (o IamUser) MarshalJSON() ([]byte, error) {
 	if o.AppRegistrations != nil {
 		toSerialize["AppRegistrations"] = o.AppRegistrations
 	}
-	if o.Idp != nil {
-		toSerialize["Idp"] = o.Idp
+	if o.Idp.IsSet() {
+		toSerialize["Idp"] = o.Idp.Get()
 	}
-	if o.Idpreference != nil {
-		toSerialize["Idpreference"] = o.Idpreference
+	if o.Idpreference.IsSet() {
+		toSerialize["Idpreference"] = o.Idpreference.Get()
 	}
-	if o.LocalUserPassword != nil {
-		toSerialize["LocalUserPassword"] = o.LocalUserPassword
+	if o.LocalUserPassword.IsSet() {
+		toSerialize["LocalUserPassword"] = o.LocalUserPassword.Get()
 	}
 	if o.OauthTokens != nil {
 		toSerialize["OauthTokens"] = o.OauthTokens
@@ -790,10 +884,51 @@ func (o IamUser) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *IamUser) UnmarshalJSON(bytes []byte) (err error) {
+func (o *IamUser) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type IamUserWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -801,19 +936,21 @@ func (o *IamUser) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// IP address from which the user last logged in to Intersight.
 		ClientIpAddress *string `json:"ClientIpAddress,omitempty"`
-		// Email of the user. Users are added to Intersight using the email configured in the IdP.
-		Email *string `json:"Email,omitempty"`
-		// First name of the user. This field is populated from the IdP attributes received after authentication.
+		// Email of the user. Remote users are added to Intersight using the email configured in the IdP.
+		Email *string "json:\"Email,omitempty\" validate:\"regexp=^$|^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$\""
+		// First name of the user. For remote users, this field is populated from the IdP attributes received after authentication.
 		FirstName *string `json:"FirstName,omitempty"`
 		// Last successful login time for user.
 		LastLoginTime *time.Time `json:"LastLoginTime,omitempty"`
-		// Last name of the user. This field is populated from the IdP attributes received after authentication.
+		// Last name of the user. For remote users, this field is populated from the IdP attributes received after authentication.
 		LastName *string `json:"LastName,omitempty"`
 		// Last role modification time for user.
 		LastRoleModifiedTime *time.Time `json:"LastRoleModifiedTime,omitempty"`
-		// Name as configured in the IdP.
+		// Time until which the user account will be locked out.
+		LockedUntil *time.Time `json:"LockedUntil,omitempty"`
+		// Name of the user. For remote users, it is the value as configured in the IdP.
 		Name *string `json:"Name,omitempty"`
-		// UserID or email as configured in the IdP.
+		// UserID or email of the user. For remote users, it is the value as configured in the IDP.
 		UserIdOrEmail *string `json:"UserIdOrEmail,omitempty"`
 		// Type of the User. If a user is added manually by specifying the email address, or has logged in using groups, based on the IdP attributes received during authentication. If added manually, the user type will be static, otherwise dynamic.
 		UserType *string `json:"UserType,omitempty"`
@@ -822,10 +959,10 @@ func (o *IamUser) UnmarshalJSON(bytes []byte) (err error) {
 		// An array of relationships to iamApiKey resources.
 		ApiKeys []IamApiKeyRelationship `json:"ApiKeys,omitempty"`
 		// An array of relationships to iamAppRegistration resources.
-		AppRegistrations  []IamAppRegistrationRelationship  `json:"AppRegistrations,omitempty"`
-		Idp               *IamIdpRelationship               `json:"Idp,omitempty"`
-		Idpreference      *IamIdpReferenceRelationship      `json:"Idpreference,omitempty"`
-		LocalUserPassword *IamLocalUserPasswordRelationship `json:"LocalUserPassword,omitempty"`
+		AppRegistrations  []IamAppRegistrationRelationship         `json:"AppRegistrations,omitempty"`
+		Idp               NullableIamIdpRelationship               `json:"Idp,omitempty"`
+		Idpreference      NullableIamIdpReferenceRelationship      `json:"Idpreference,omitempty"`
+		LocalUserPassword NullableIamLocalUserPasswordRelationship `json:"LocalUserPassword,omitempty"`
 		// An array of relationships to iamOAuthToken resources.
 		OauthTokens []IamOAuthTokenRelationship `json:"OauthTokens,omitempty"`
 		// An array of relationships to iamPermission resources.
@@ -836,7 +973,7 @@ func (o *IamUser) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIamUserWithoutEmbeddedStruct := IamUserWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varIamUserWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varIamUserWithoutEmbeddedStruct)
 	if err == nil {
 		varIamUser := _IamUser{}
 		varIamUser.ClassId = varIamUserWithoutEmbeddedStruct.ClassId
@@ -847,6 +984,7 @@ func (o *IamUser) UnmarshalJSON(bytes []byte) (err error) {
 		varIamUser.LastLoginTime = varIamUserWithoutEmbeddedStruct.LastLoginTime
 		varIamUser.LastName = varIamUserWithoutEmbeddedStruct.LastName
 		varIamUser.LastRoleModifiedTime = varIamUserWithoutEmbeddedStruct.LastRoleModifiedTime
+		varIamUser.LockedUntil = varIamUserWithoutEmbeddedStruct.LockedUntil
 		varIamUser.Name = varIamUserWithoutEmbeddedStruct.Name
 		varIamUser.UserIdOrEmail = varIamUserWithoutEmbeddedStruct.UserIdOrEmail
 		varIamUser.UserType = varIamUserWithoutEmbeddedStruct.UserType
@@ -866,7 +1004,7 @@ func (o *IamUser) UnmarshalJSON(bytes []byte) (err error) {
 
 	varIamUser := _IamUser{}
 
-	err = json.Unmarshal(bytes, &varIamUser)
+	err = json.Unmarshal(data, &varIamUser)
 	if err == nil {
 		o.MoBaseMo = varIamUser.MoBaseMo
 	} else {
@@ -875,7 +1013,7 @@ func (o *IamUser) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ClientIpAddress")
@@ -884,6 +1022,7 @@ func (o *IamUser) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "LastLoginTime")
 		delete(additionalProperties, "LastName")
 		delete(additionalProperties, "LastRoleModifiedTime")
+		delete(additionalProperties, "LockedUntil")
 		delete(additionalProperties, "Name")
 		delete(additionalProperties, "UserIdOrEmail")
 		delete(additionalProperties, "UserType")

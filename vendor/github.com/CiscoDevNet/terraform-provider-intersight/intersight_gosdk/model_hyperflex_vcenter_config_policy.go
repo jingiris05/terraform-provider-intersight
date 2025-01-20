@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HyperflexVcenterConfigPolicy type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexVcenterConfigPolicy{}
 
 // HyperflexVcenterConfigPolicy A policy specifying vCenter configuration.
 type HyperflexVcenterConfigPolicy struct {
@@ -25,9 +29,9 @@ type HyperflexVcenterConfigPolicy struct {
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
 	// The vCenter datacenter name.
-	DataCenter *string `json:"DataCenter,omitempty"`
+	DataCenter *string `json:"DataCenter,omitempty" validate:"regexp=^[a-zA-Z0-9~!@#$%&*()-_][a-zA-Z0-9~!@#$%&* ()-_]{0,79}$"`
 	// The vCenter server FQDN or IP.
-	Hostname *string `json:"Hostname,omitempty"`
+	Hostname *string `json:"Hostname,omitempty" validate:"regexp=^[A-Za-z]([A-Za-z0-9-]*[A-Za-z0-9])?$|^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?(\\\\.[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?)*(\\\\.[A-Za-z]([A-Za-z0-9-]*[A-Za-z0-9])?)$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 	// Indicates whether the value of the 'password' property has been set.
 	IsPasswordSet *bool `json:"IsPasswordSet,omitempty"`
 	// The password for authenticating with vCenter. Follow the corresponding password policy governed by vCenter.
@@ -35,10 +39,10 @@ type HyperflexVcenterConfigPolicy struct {
 	// Overrides the default vCenter Single Sign-On URL. Do not specify unless instructed by Cisco TAC.
 	SsoUrl *string `json:"SsoUrl,omitempty"`
 	// The vCenter username (e.g. administrator@vsphere.local).
-	Username *string `json:"Username,omitempty"`
+	Username *string `json:"Username,omitempty" validate:"regexp=^$|^([a-zA-Z0-9._-]+)@([a-zA-Z0-9._-]+)$"`
 	// An array of relationships to hyperflexClusterProfile resources.
-	ClusterProfiles      []HyperflexClusterProfileRelationship `json:"ClusterProfiles,omitempty"`
-	Organization         *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	ClusterProfiles      []HyperflexClusterProfileRelationship        `json:"ClusterProfiles,omitempty"`
+	Organization         NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -91,6 +95,11 @@ func (o *HyperflexVcenterConfigPolicy) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.VcenterConfigPolicy" of the ClassId field.
+func (o *HyperflexVcenterConfigPolicy) GetDefaultClassId() interface{} {
+	return "hyperflex.VcenterConfigPolicy"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexVcenterConfigPolicy) GetObjectType() string {
 	if o == nil {
@@ -115,9 +124,14 @@ func (o *HyperflexVcenterConfigPolicy) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.VcenterConfigPolicy" of the ObjectType field.
+func (o *HyperflexVcenterConfigPolicy) GetDefaultObjectType() interface{} {
+	return "hyperflex.VcenterConfigPolicy"
+}
+
 // GetDataCenter returns the DataCenter field value if set, zero value otherwise.
 func (o *HyperflexVcenterConfigPolicy) GetDataCenter() string {
-	if o == nil || o.DataCenter == nil {
+	if o == nil || IsNil(o.DataCenter) {
 		var ret string
 		return ret
 	}
@@ -127,7 +141,7 @@ func (o *HyperflexVcenterConfigPolicy) GetDataCenter() string {
 // GetDataCenterOk returns a tuple with the DataCenter field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexVcenterConfigPolicy) GetDataCenterOk() (*string, bool) {
-	if o == nil || o.DataCenter == nil {
+	if o == nil || IsNil(o.DataCenter) {
 		return nil, false
 	}
 	return o.DataCenter, true
@@ -135,7 +149,7 @@ func (o *HyperflexVcenterConfigPolicy) GetDataCenterOk() (*string, bool) {
 
 // HasDataCenter returns a boolean if a field has been set.
 func (o *HyperflexVcenterConfigPolicy) HasDataCenter() bool {
-	if o != nil && o.DataCenter != nil {
+	if o != nil && !IsNil(o.DataCenter) {
 		return true
 	}
 
@@ -149,7 +163,7 @@ func (o *HyperflexVcenterConfigPolicy) SetDataCenter(v string) {
 
 // GetHostname returns the Hostname field value if set, zero value otherwise.
 func (o *HyperflexVcenterConfigPolicy) GetHostname() string {
-	if o == nil || o.Hostname == nil {
+	if o == nil || IsNil(o.Hostname) {
 		var ret string
 		return ret
 	}
@@ -159,7 +173,7 @@ func (o *HyperflexVcenterConfigPolicy) GetHostname() string {
 // GetHostnameOk returns a tuple with the Hostname field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexVcenterConfigPolicy) GetHostnameOk() (*string, bool) {
-	if o == nil || o.Hostname == nil {
+	if o == nil || IsNil(o.Hostname) {
 		return nil, false
 	}
 	return o.Hostname, true
@@ -167,7 +181,7 @@ func (o *HyperflexVcenterConfigPolicy) GetHostnameOk() (*string, bool) {
 
 // HasHostname returns a boolean if a field has been set.
 func (o *HyperflexVcenterConfigPolicy) HasHostname() bool {
-	if o != nil && o.Hostname != nil {
+	if o != nil && !IsNil(o.Hostname) {
 		return true
 	}
 
@@ -181,7 +195,7 @@ func (o *HyperflexVcenterConfigPolicy) SetHostname(v string) {
 
 // GetIsPasswordSet returns the IsPasswordSet field value if set, zero value otherwise.
 func (o *HyperflexVcenterConfigPolicy) GetIsPasswordSet() bool {
-	if o == nil || o.IsPasswordSet == nil {
+	if o == nil || IsNil(o.IsPasswordSet) {
 		var ret bool
 		return ret
 	}
@@ -191,7 +205,7 @@ func (o *HyperflexVcenterConfigPolicy) GetIsPasswordSet() bool {
 // GetIsPasswordSetOk returns a tuple with the IsPasswordSet field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexVcenterConfigPolicy) GetIsPasswordSetOk() (*bool, bool) {
-	if o == nil || o.IsPasswordSet == nil {
+	if o == nil || IsNil(o.IsPasswordSet) {
 		return nil, false
 	}
 	return o.IsPasswordSet, true
@@ -199,7 +213,7 @@ func (o *HyperflexVcenterConfigPolicy) GetIsPasswordSetOk() (*bool, bool) {
 
 // HasIsPasswordSet returns a boolean if a field has been set.
 func (o *HyperflexVcenterConfigPolicy) HasIsPasswordSet() bool {
-	if o != nil && o.IsPasswordSet != nil {
+	if o != nil && !IsNil(o.IsPasswordSet) {
 		return true
 	}
 
@@ -213,7 +227,7 @@ func (o *HyperflexVcenterConfigPolicy) SetIsPasswordSet(v bool) {
 
 // GetPassword returns the Password field value if set, zero value otherwise.
 func (o *HyperflexVcenterConfigPolicy) GetPassword() string {
-	if o == nil || o.Password == nil {
+	if o == nil || IsNil(o.Password) {
 		var ret string
 		return ret
 	}
@@ -223,7 +237,7 @@ func (o *HyperflexVcenterConfigPolicy) GetPassword() string {
 // GetPasswordOk returns a tuple with the Password field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexVcenterConfigPolicy) GetPasswordOk() (*string, bool) {
-	if o == nil || o.Password == nil {
+	if o == nil || IsNil(o.Password) {
 		return nil, false
 	}
 	return o.Password, true
@@ -231,7 +245,7 @@ func (o *HyperflexVcenterConfigPolicy) GetPasswordOk() (*string, bool) {
 
 // HasPassword returns a boolean if a field has been set.
 func (o *HyperflexVcenterConfigPolicy) HasPassword() bool {
-	if o != nil && o.Password != nil {
+	if o != nil && !IsNil(o.Password) {
 		return true
 	}
 
@@ -245,7 +259,7 @@ func (o *HyperflexVcenterConfigPolicy) SetPassword(v string) {
 
 // GetSsoUrl returns the SsoUrl field value if set, zero value otherwise.
 func (o *HyperflexVcenterConfigPolicy) GetSsoUrl() string {
-	if o == nil || o.SsoUrl == nil {
+	if o == nil || IsNil(o.SsoUrl) {
 		var ret string
 		return ret
 	}
@@ -255,7 +269,7 @@ func (o *HyperflexVcenterConfigPolicy) GetSsoUrl() string {
 // GetSsoUrlOk returns a tuple with the SsoUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexVcenterConfigPolicy) GetSsoUrlOk() (*string, bool) {
-	if o == nil || o.SsoUrl == nil {
+	if o == nil || IsNil(o.SsoUrl) {
 		return nil, false
 	}
 	return o.SsoUrl, true
@@ -263,7 +277,7 @@ func (o *HyperflexVcenterConfigPolicy) GetSsoUrlOk() (*string, bool) {
 
 // HasSsoUrl returns a boolean if a field has been set.
 func (o *HyperflexVcenterConfigPolicy) HasSsoUrl() bool {
-	if o != nil && o.SsoUrl != nil {
+	if o != nil && !IsNil(o.SsoUrl) {
 		return true
 	}
 
@@ -277,7 +291,7 @@ func (o *HyperflexVcenterConfigPolicy) SetSsoUrl(v string) {
 
 // GetUsername returns the Username field value if set, zero value otherwise.
 func (o *HyperflexVcenterConfigPolicy) GetUsername() string {
-	if o == nil || o.Username == nil {
+	if o == nil || IsNil(o.Username) {
 		var ret string
 		return ret
 	}
@@ -287,7 +301,7 @@ func (o *HyperflexVcenterConfigPolicy) GetUsername() string {
 // GetUsernameOk returns a tuple with the Username field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexVcenterConfigPolicy) GetUsernameOk() (*string, bool) {
-	if o == nil || o.Username == nil {
+	if o == nil || IsNil(o.Username) {
 		return nil, false
 	}
 	return o.Username, true
@@ -295,7 +309,7 @@ func (o *HyperflexVcenterConfigPolicy) GetUsernameOk() (*string, bool) {
 
 // HasUsername returns a boolean if a field has been set.
 func (o *HyperflexVcenterConfigPolicy) HasUsername() bool {
-	if o != nil && o.Username != nil {
+	if o != nil && !IsNil(o.Username) {
 		return true
 	}
 
@@ -320,7 +334,7 @@ func (o *HyperflexVcenterConfigPolicy) GetClusterProfiles() []HyperflexClusterPr
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexVcenterConfigPolicy) GetClusterProfilesOk() ([]HyperflexClusterProfileRelationship, bool) {
-	if o == nil || o.ClusterProfiles == nil {
+	if o == nil || IsNil(o.ClusterProfiles) {
 		return nil, false
 	}
 	return o.ClusterProfiles, true
@@ -328,7 +342,7 @@ func (o *HyperflexVcenterConfigPolicy) GetClusterProfilesOk() ([]HyperflexCluste
 
 // HasClusterProfiles returns a boolean if a field has been set.
 func (o *HyperflexVcenterConfigPolicy) HasClusterProfiles() bool {
-	if o != nil && o.ClusterProfiles != nil {
+	if o != nil && !IsNil(o.ClusterProfiles) {
 		return true
 	}
 
@@ -340,96 +354,158 @@ func (o *HyperflexVcenterConfigPolicy) SetClusterProfiles(v []HyperflexClusterPr
 	o.ClusterProfiles = v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *HyperflexVcenterConfigPolicy) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *HyperflexVcenterConfigPolicy) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *HyperflexVcenterConfigPolicy) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *HyperflexVcenterConfigPolicy) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *HyperflexVcenterConfigPolicy) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *HyperflexVcenterConfigPolicy) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 func (o HyperflexVcenterConfigPolicy) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexVcenterConfigPolicy) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedPolicyAbstractPolicy, errPolicyAbstractPolicy := json.Marshal(o.PolicyAbstractPolicy)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
 	errPolicyAbstractPolicy = json.Unmarshal([]byte(serializedPolicyAbstractPolicy), &toSerialize)
 	if errPolicyAbstractPolicy != nil {
-		return []byte{}, errPolicyAbstractPolicy
+		return map[string]interface{}{}, errPolicyAbstractPolicy
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.DataCenter != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.DataCenter) {
 		toSerialize["DataCenter"] = o.DataCenter
 	}
-	if o.Hostname != nil {
+	if !IsNil(o.Hostname) {
 		toSerialize["Hostname"] = o.Hostname
 	}
-	if o.IsPasswordSet != nil {
+	if !IsNil(o.IsPasswordSet) {
 		toSerialize["IsPasswordSet"] = o.IsPasswordSet
 	}
-	if o.Password != nil {
+	if !IsNil(o.Password) {
 		toSerialize["Password"] = o.Password
 	}
-	if o.SsoUrl != nil {
+	if !IsNil(o.SsoUrl) {
 		toSerialize["SsoUrl"] = o.SsoUrl
 	}
-	if o.Username != nil {
+	if !IsNil(o.Username) {
 		toSerialize["Username"] = o.Username
 	}
 	if o.ClusterProfiles != nil {
 		toSerialize["ClusterProfiles"] = o.ClusterProfiles
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexVcenterConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexVcenterConfigPolicy) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexVcenterConfigPolicyWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
 		// The vCenter datacenter name.
-		DataCenter *string `json:"DataCenter,omitempty"`
+		DataCenter *string `json:"DataCenter,omitempty" validate:"regexp=^[a-zA-Z0-9~!@#$%&*()-_][a-zA-Z0-9~!@#$%&* ()-_]{0,79}$"`
 		// The vCenter server FQDN or IP.
-		Hostname *string `json:"Hostname,omitempty"`
+		Hostname *string `json:"Hostname,omitempty" validate:"regexp=^[A-Za-z]([A-Za-z0-9-]*[A-Za-z0-9])?$|^[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?(\\\\.[A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])?)*(\\\\.[A-Za-z]([A-Za-z0-9-]*[A-Za-z0-9])?)$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"`
 		// Indicates whether the value of the 'password' property has been set.
 		IsPasswordSet *bool `json:"IsPasswordSet,omitempty"`
 		// The password for authenticating with vCenter. Follow the corresponding password policy governed by vCenter.
@@ -437,15 +513,15 @@ func (o *HyperflexVcenterConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
 		// Overrides the default vCenter Single Sign-On URL. Do not specify unless instructed by Cisco TAC.
 		SsoUrl *string `json:"SsoUrl,omitempty"`
 		// The vCenter username (e.g. administrator@vsphere.local).
-		Username *string `json:"Username,omitempty"`
+		Username *string `json:"Username,omitempty" validate:"regexp=^$|^([a-zA-Z0-9._-]+)@([a-zA-Z0-9._-]+)$"`
 		// An array of relationships to hyperflexClusterProfile resources.
-		ClusterProfiles []HyperflexClusterProfileRelationship `json:"ClusterProfiles,omitempty"`
-		Organization    *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		ClusterProfiles []HyperflexClusterProfileRelationship        `json:"ClusterProfiles,omitempty"`
+		Organization    NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	}
 
 	varHyperflexVcenterConfigPolicyWithoutEmbeddedStruct := HyperflexVcenterConfigPolicyWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexVcenterConfigPolicyWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexVcenterConfigPolicyWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexVcenterConfigPolicy := _HyperflexVcenterConfigPolicy{}
 		varHyperflexVcenterConfigPolicy.ClassId = varHyperflexVcenterConfigPolicyWithoutEmbeddedStruct.ClassId
@@ -465,7 +541,7 @@ func (o *HyperflexVcenterConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	varHyperflexVcenterConfigPolicy := _HyperflexVcenterConfigPolicy{}
 
-	err = json.Unmarshal(bytes, &varHyperflexVcenterConfigPolicy)
+	err = json.Unmarshal(data, &varHyperflexVcenterConfigPolicy)
 	if err == nil {
 		o.PolicyAbstractPolicy = varHyperflexVcenterConfigPolicy.PolicyAbstractPolicy
 	} else {
@@ -474,7 +550,7 @@ func (o *HyperflexVcenterConfigPolicy) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "DataCenter")

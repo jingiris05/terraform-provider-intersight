@@ -6,18 +6,22 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "storage.NetAppLun"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.NetAppLun"]
-**AvgPerformanceMetrics** | Pointer to [**StorageNetAppPerformanceMetricsAverage**](StorageNetAppPerformanceMetricsAverage.md) |  | [optional] 
-**Key** | Pointer to **string** | Unique identifier of Lun across data center. | [optional] [readonly] 
+**AvgPerformanceMetrics** | Pointer to [**NullableStorageBasePerformanceMetricsAverage**](StorageBasePerformanceMetricsAverage.md) | Average performance metrics data for a NetApp storage resource over a given period of time. | [optional] 
+**ContainerState** | Pointer to **string** | The state of the volume and aggregate that contain the LUN. LUNs are only available when their containers are available. | [optional] [readonly] 
+**IsMapped** | Pointer to **string** | Reports if the LUN is mapped to one or more initiator groups. | [optional] [readonly] 
+**Key** | Pointer to **string** | Unique identifier of LUN across data center. | [optional] [readonly] 
 **Mapped** | Pointer to **bool** | Reports if the LUN is mapped to one or more initiator groups. | [optional] [readonly] 
 **OsType** | Pointer to **string** | The operating system (OS) type for this LUN. * &#x60;Linux&#x60; - Family of open source Unix-like operating systems based on the Linux kernel. * &#x60;AIX&#x60; - Advanced Interactive Executive (AIX). * &#x60;HP-UX&#x60; - HP-UX is implementation of the Unix operating system, based on Unix System V. * &#x60;Hyper-V&#x60; - Windows Server 2008 or Windows Server 2012 Hyper-V. * &#x60;OpenVMS&#x60; - OpenVMS is multi-user, multiprocessing virtual memory-based operating system. * &#x60;Solaris&#x60; - Solaris is a Unix operating system. * &#x60;NetWare&#x60; - NetWare is a computer network operating system. * &#x60;VMware&#x60; - An enterprise-class, type-1 hypervisor developed by VMware for deploying and serving virtual computers. * &#x60;Windows&#x60; - Single-partition Windows disk using the Master Boot Record (MBR) partitioning style. * &#x60;Xen&#x60; - Xen is a type-1 hypervisor, providing services that allow multiple computer operating systems to execute on the same computer hardware concurrently. | [optional] [readonly] [default to "Linux"]
 **Path** | Pointer to **string** | Path where the LUN is mounted. | [optional] [readonly] 
 **Serial** | Pointer to **string** | Serial number for the provisioned LUN. | [optional] [readonly] 
 **State** | Pointer to **string** | The administrative state of a LUN. * &#x60;offline&#x60; - The LUN is administratively offline, or a more detailed offline reason is not available. * &#x60;online&#x60; - The state of the LUN is online. | [optional] [readonly] [default to "offline"]
+**SvmName** | Pointer to **string** | The storage virtual machine name for the lun. | [optional] [readonly] 
 **Uuid** | Pointer to **string** | Universally unique identifier of the LUN. | [optional] [readonly] 
-**Array** | Pointer to [**StorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
+**VolumeName** | Pointer to **string** | The parent volume name for the lun. | [optional] [readonly] 
+**Array** | Pointer to [**NullableStorageNetAppClusterRelationship**](StorageNetAppClusterRelationship.md) |  | [optional] 
 **Events** | Pointer to [**[]StorageNetAppLunEventRelationship**](StorageNetAppLunEventRelationship.md) | An array of relationships to storageNetAppLunEvent resources. | [optional] [readonly] 
 **Host** | Pointer to [**[]StorageNetAppInitiatorGroupRelationship**](StorageNetAppInitiatorGroupRelationship.md) | An array of relationships to storageNetAppInitiatorGroup resources. | [optional] [readonly] 
-**StorageContainer** | Pointer to [**StorageNetAppVolumeRelationship**](StorageNetAppVolumeRelationship.md) |  | [optional] 
+**StorageContainer** | Pointer to [**NullableStorageNetAppVolumeRelationship**](StorageNetAppVolumeRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -80,20 +84,20 @@ SetObjectType sets ObjectType field to given value.
 
 ### GetAvgPerformanceMetrics
 
-`func (o *StorageNetAppLun) GetAvgPerformanceMetrics() StorageNetAppPerformanceMetricsAverage`
+`func (o *StorageNetAppLun) GetAvgPerformanceMetrics() StorageBasePerformanceMetricsAverage`
 
 GetAvgPerformanceMetrics returns the AvgPerformanceMetrics field if non-nil, zero value otherwise.
 
 ### GetAvgPerformanceMetricsOk
 
-`func (o *StorageNetAppLun) GetAvgPerformanceMetricsOk() (*StorageNetAppPerformanceMetricsAverage, bool)`
+`func (o *StorageNetAppLun) GetAvgPerformanceMetricsOk() (*StorageBasePerformanceMetricsAverage, bool)`
 
 GetAvgPerformanceMetricsOk returns a tuple with the AvgPerformanceMetrics field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAvgPerformanceMetrics
 
-`func (o *StorageNetAppLun) SetAvgPerformanceMetrics(v StorageNetAppPerformanceMetricsAverage)`
+`func (o *StorageNetAppLun) SetAvgPerformanceMetrics(v StorageBasePerformanceMetricsAverage)`
 
 SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
@@ -102,6 +106,66 @@ SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 `func (o *StorageNetAppLun) HasAvgPerformanceMetrics() bool`
 
 HasAvgPerformanceMetrics returns a boolean if a field has been set.
+
+### SetAvgPerformanceMetricsNil
+
+`func (o *StorageNetAppLun) SetAvgPerformanceMetricsNil(b bool)`
+
+ SetAvgPerformanceMetricsNil sets the value for AvgPerformanceMetrics to be an explicit nil
+
+### UnsetAvgPerformanceMetrics
+`func (o *StorageNetAppLun) UnsetAvgPerformanceMetrics()`
+
+UnsetAvgPerformanceMetrics ensures that no value is present for AvgPerformanceMetrics, not even an explicit nil
+### GetContainerState
+
+`func (o *StorageNetAppLun) GetContainerState() string`
+
+GetContainerState returns the ContainerState field if non-nil, zero value otherwise.
+
+### GetContainerStateOk
+
+`func (o *StorageNetAppLun) GetContainerStateOk() (*string, bool)`
+
+GetContainerStateOk returns a tuple with the ContainerState field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetContainerState
+
+`func (o *StorageNetAppLun) SetContainerState(v string)`
+
+SetContainerState sets ContainerState field to given value.
+
+### HasContainerState
+
+`func (o *StorageNetAppLun) HasContainerState() bool`
+
+HasContainerState returns a boolean if a field has been set.
+
+### GetIsMapped
+
+`func (o *StorageNetAppLun) GetIsMapped() string`
+
+GetIsMapped returns the IsMapped field if non-nil, zero value otherwise.
+
+### GetIsMappedOk
+
+`func (o *StorageNetAppLun) GetIsMappedOk() (*string, bool)`
+
+GetIsMappedOk returns a tuple with the IsMapped field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsMapped
+
+`func (o *StorageNetAppLun) SetIsMapped(v string)`
+
+SetIsMapped sets IsMapped field to given value.
+
+### HasIsMapped
+
+`func (o *StorageNetAppLun) HasIsMapped() bool`
+
+HasIsMapped returns a boolean if a field has been set.
 
 ### GetKey
 
@@ -253,6 +317,31 @@ SetState sets State field to given value.
 
 HasState returns a boolean if a field has been set.
 
+### GetSvmName
+
+`func (o *StorageNetAppLun) GetSvmName() string`
+
+GetSvmName returns the SvmName field if non-nil, zero value otherwise.
+
+### GetSvmNameOk
+
+`func (o *StorageNetAppLun) GetSvmNameOk() (*string, bool)`
+
+GetSvmNameOk returns a tuple with the SvmName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSvmName
+
+`func (o *StorageNetAppLun) SetSvmName(v string)`
+
+SetSvmName sets SvmName field to given value.
+
+### HasSvmName
+
+`func (o *StorageNetAppLun) HasSvmName() bool`
+
+HasSvmName returns a boolean if a field has been set.
+
 ### GetUuid
 
 `func (o *StorageNetAppLun) GetUuid() string`
@@ -277,6 +366,31 @@ SetUuid sets Uuid field to given value.
 `func (o *StorageNetAppLun) HasUuid() bool`
 
 HasUuid returns a boolean if a field has been set.
+
+### GetVolumeName
+
+`func (o *StorageNetAppLun) GetVolumeName() string`
+
+GetVolumeName returns the VolumeName field if non-nil, zero value otherwise.
+
+### GetVolumeNameOk
+
+`func (o *StorageNetAppLun) GetVolumeNameOk() (*string, bool)`
+
+GetVolumeNameOk returns a tuple with the VolumeName field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVolumeName
+
+`func (o *StorageNetAppLun) SetVolumeName(v string)`
+
+SetVolumeName sets VolumeName field to given value.
+
+### HasVolumeName
+
+`func (o *StorageNetAppLun) HasVolumeName() bool`
+
+HasVolumeName returns a boolean if a field has been set.
 
 ### GetArray
 
@@ -303,6 +417,16 @@ SetArray sets Array field to given value.
 
 HasArray returns a boolean if a field has been set.
 
+### SetArrayNil
+
+`func (o *StorageNetAppLun) SetArrayNil(b bool)`
+
+ SetArrayNil sets the value for Array to be an explicit nil
+
+### UnsetArray
+`func (o *StorageNetAppLun) UnsetArray()`
+
+UnsetArray ensures that no value is present for Array, not even an explicit nil
 ### GetEvents
 
 `func (o *StorageNetAppLun) GetEvents() []StorageNetAppLunEventRelationship`
@@ -398,6 +522,16 @@ SetStorageContainer sets StorageContainer field to given value.
 
 HasStorageContainer returns a boolean if a field has been set.
 
+### SetStorageContainerNil
+
+`func (o *StorageNetAppLun) SetStorageContainerNil(b bool)`
+
+ SetStorageContainerNil sets the value for StorageContainer to be an explicit nil
+
+### UnsetStorageContainer
+`func (o *StorageNetAppLun) UnsetStorageContainer()`
+
+UnsetStorageContainer ensures that no value is present for StorageContainer, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

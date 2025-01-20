@@ -7,7 +7,9 @@ import (
 	"log"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -22,7 +24,7 @@ func resourceFabricSwitchProfile() *schema.Resource {
 		UpdateContext: resourceFabricSwitchProfileUpdate,
 		DeleteContext: resourceFabricSwitchProfileDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -208,6 +210,148 @@ func resourceFabricSwitchProfile() *schema.Resource {
 				Optional:    true,
 				Default:     "fabric.SwitchProfile",
 			},
+			"config_change_context": {
+				Description: "The configuration change state and results of the last change operation.",
+				Type:        schema.TypeList,
+				MaxItems:    1,
+				Optional:    true,
+				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "policy.ConfigChangeContext",
+						},
+						"config_change_error": {
+							Description: "Indicates reason for failure state of configChangeState.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"config_change_state": {
+							Description: "Indicates a profile's configuration change state. Used for tracking pending-changes and out-of-synch states.\n* `Ok` - Config change state represents Validation for change/drift is successful or is not applicable.\n* `Validating-change` - Config change state represents policy changes are being validated. This state starts when policy is changed and becomes different from deployed changes (Pending-changes).\n* `Validating-drift` - Config change state represents endpoint configuration changes are being validated. This state starts when endpoint is changed and endpoint configuration becomes different from policy configured changes (Out-of-sync).\n* `Change-failed` - Config change state represents there is internal error in calculating policy change.\n* `Drift-failed` - Config change state represents there is internal error in calculating endpoint configuraion drift.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
+						"initial_config_context": {
+							Description: "Stores initial Configuration state. Used for reverting back to initial state of ConfigContext in case of validation failure.",
+							Type:        schema.TypeList,
+							MaxItems:    1,
+							Optional:    true,
+							Computed:    true,
+							ConfigMode:  schema.SchemaConfigModeAttr,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"additional_properties": {
+										Type:             schema.TypeString,
+										Optional:         true,
+										DiffSuppressFunc: SuppressDiffAdditionProps,
+									},
+									"class_id": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "policy.ConfigContext",
+									},
+									"config_state": {
+										Description: "Indicates a profile's configuration deploying state. Values -- Assigned, Not-assigned, Associated, Pending-changes, Out-of-sync, Validating, Configuring, Failed.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+										ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+											if val != nil {
+												warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+											}
+											return
+										}},
+									"config_state_summary": {
+										Description: "Indicates a profile's configuration deploying state. Values -- Assigned, Not-assigned, Associated, InConsistent, Validating, Configuring, Failed, Activating, UnConfiguring.\n* `None` - The default state is none.\n* `Not-assigned` - Server is not assigned to the profile.\n* `Assigned` - Server is assigned to the profile and the configurations are not yet deployed.\n* `Preparing` - Preparing to deploy the configuration.\n* `Validating` - Profile validation in progress.\n* `Configuring` - Profile deploy operation is in progress.\n* `UnConfiguring` - Server is unassigned and config cleanup is in progress.\n* `Analyzing` - Profile changes are being analyzed.\n* `Activating` - Configuration is being activated at the endpoint.\n* `Inconsistent` - Profile is inconsistent with the endpoint configuration.\n* `Associated` - The profile configuration has been applied to the endpoint and no inconsistencies have been detected.\n* `Failed` - The last action on the profile has failed.\n* `Not-complete` - Config import operation on the profile is not complete.\n* `Waiting-for-resource` - Waiting for the resource to be allocated for the profile.\n* `Partially-deployed` - The profile configuration has been applied on a subset of endpoints.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+										ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+											if val != nil {
+												warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+											}
+											return
+										}},
+									"config_type": {
+										Description: "The type of configuration running on the profile. Since profile deployments can configure multiple different settings, configType indicates which type of configuration is currently in progress.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+										ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+											if val != nil {
+												warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+											}
+											return
+										}},
+									"control_action": {
+										Description: "System action to trigger the appropriate workflow. Values -- No_op, ConfigChange, Deploy, Unbind.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+									"error_state": {
+										Description: "Indicates a profile's error state. Values -- Validation-error (Static validation error), Pre-config-error (Runtime validation error), Config-error (Runtime configuration error).",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+									"inconsistency_reason": {
+										Type:       schema.TypeList,
+										Optional:   true,
+										ConfigMode: schema.SchemaConfigModeAttr,
+										Computed:   true,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										}},
+									"object_type": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "policy.ConfigContext",
+									},
+									"oper_state": {
+										Description: "Combined state (configState, and operational state of the associated physical resource) to indicate the current state of the profile. Values -- n/a, Power-off, Pending-changes, Configuring, Ok, Failed.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+										ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+											if val != nil {
+												warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+											}
+											return
+										}},
+								},
+							},
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "policy.ConfigChangeContext",
+						},
+					},
+				},
+			},
 			"config_change_details": {
 				Description: "An array of relationships to fabricConfigChangeDetail resources.",
 				Type:        schema.TypeList,
@@ -252,8 +396,8 @@ func resourceFabricSwitchProfile() *schema.Resource {
 				Type:        schema.TypeList,
 				MaxItems:    1,
 				Optional:    true,
-				ConfigMode:  schema.SchemaConfigModeAttr,
 				Computed:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"additional_properties": {
@@ -289,6 +433,51 @@ func resourceFabricSwitchProfile() *schema.Resource {
 							Optional:    true,
 							Default:     "policy.ConfigChange",
 						},
+						"policy_disruptions": {
+							Type:       schema.TypeList,
+							Optional:   true,
+							ConfigMode: schema.SchemaConfigModeAttr,
+							Computed:   true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"additional_properties": {
+										Type:             schema.TypeString,
+										Optional:         true,
+										DiffSuppressFunc: SuppressDiffAdditionProps,
+									},
+									"class_id": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "policy.ConfigChangeDisruptionDetailType",
+									},
+									"disruptions": {
+										Type:       schema.TypeList,
+										Optional:   true,
+										ConfigMode: schema.SchemaConfigModeAttr,
+										Computed:   true,
+										Elem: &schema.Schema{
+											Type: schema.TypeString,
+										}},
+									"object_type": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "policy.ConfigChangeDisruptionDetailType",
+									},
+									"policy_name": {
+										Description: "Name of the policy that, when modified, causes the disruption.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+									"policy_pending_action": {
+										Description: "Name of the action which is pending on this policy. Example, if policy is not yet activated we mark this field as not-activated. Currently we support two actions, not-deployed and not-activated.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+								},
+							},
+						},
 					},
 				},
 			},
@@ -323,6 +512,17 @@ func resourceFabricSwitchProfile() *schema.Resource {
 								}
 								return
 							}},
+						"config_state_summary": {
+							Description: "Indicates a profile's configuration deploying state. Values -- Assigned, Not-assigned, Associated, InConsistent, Validating, Configuring, Failed, Activating, UnConfiguring.\n* `None` - The default state is none.\n* `Not-assigned` - Server is not assigned to the profile.\n* `Assigned` - Server is assigned to the profile and the configurations are not yet deployed.\n* `Preparing` - Preparing to deploy the configuration.\n* `Validating` - Profile validation in progress.\n* `Configuring` - Profile deploy operation is in progress.\n* `UnConfiguring` - Server is unassigned and config cleanup is in progress.\n* `Analyzing` - Profile changes are being analyzed.\n* `Activating` - Configuration is being activated at the endpoint.\n* `Inconsistent` - Profile is inconsistent with the endpoint configuration.\n* `Associated` - The profile configuration has been applied to the endpoint and no inconsistencies have been detected.\n* `Failed` - The last action on the profile has failed.\n* `Not-complete` - Config import operation on the profile is not complete.\n* `Waiting-for-resource` - Waiting for the resource to be allocated for the profile.\n* `Partially-deployed` - The profile configuration has been applied on a subset of endpoints.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"config_type": {
 							Description: "The type of configuration running on the profile. Since profile deployments can configure multiple different settings, configType indicates which type of configuration is currently in progress.",
 							Type:        schema.TypeString,
@@ -344,6 +544,14 @@ func resourceFabricSwitchProfile() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 						},
+						"inconsistency_reason": {
+							Type:       schema.TypeList,
+							Optional:   true,
+							ConfigMode: schema.SchemaConfigModeAttr,
+							Computed:   true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -414,6 +622,14 @@ func resourceFabricSwitchProfile() *schema.Resource {
 						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
 					}
 					return
+				}},
+			"deployed_policies": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
 				}},
 			"description": {
 				Description:  "Description of the profile.",
@@ -588,6 +804,14 @@ func resourceFabricSwitchProfile() *schema.Resource {
 					},
 				},
 			},
+			"removed_policies": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				}},
 			"running_workflows": {
 				Description: "An array of relationships to workflowWorkflowInfo resources.",
 				Type:        schema.TypeList,
@@ -622,6 +846,43 @@ func resourceFabricSwitchProfile() *schema.Resource {
 						"selector": {
 							Description: "An OData $filter expression which describes the REST resource to be referenced. This field may\nbe set instead of 'moid' by clients.\n1. If 'moid' is set this field is ignored.\n1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of the\nresource matching the filter expression and populates it in the MoRef that is part of the object\ninstance being inserted/updated to fulfill the REST request.\nAn error is returned if the filter matches zero or more than one REST resource.\nAn example filter string is: Serial eq '3AA8B7T11'.",
 							Type:        schema.TypeString,
+							Optional:    true,
+						},
+					},
+				},
+			},
+			"scheduled_actions": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"action": {
+							Description: "Name of the action to be performed on the profile.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "policy.ScheduledAction",
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "policy.ScheduledAction",
+						},
+						"proceed_on_reboot": {
+							Description: "ProceedOnReboot can be used to acknowledge server reboot while triggering deploy/activate.",
+							Type:        schema.TypeBool,
 							Optional:    true,
 						},
 					},
@@ -718,6 +979,13 @@ func resourceFabricSwitchProfile() *schema.Resource {
 					},
 				},
 			},
+			"switch_id": {
+				Description:  "Value indicating the switch side on which the switch profile or template has to be deployed.\n* `None` - Switch side not defined for the policy configurations in the switch profile or template.\n* `A` - Policy configurations in the switch profile or template to be deployed on fabric interconnect A.\n* `B` - Policy configurations in the switch profile or template to be deployed on fabric interconnect B.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringInSlice([]string{"None", "A", "B"}, false),
+				Optional:     true,
+				Default:      "None",
+			},
 			"tags": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -810,6 +1078,17 @@ func resourceFabricSwitchProfile() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1008,65 +1287,6 @@ func resourceFabricSwitchProfileCreate(c context.Context, d *schema.ResourceData
 
 	o.SetClassId("fabric.SwitchProfile")
 
-	if v, ok := d.GetOk("config_changes"); ok {
-		p := make([]models.PolicyConfigChange, 0, 1)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			l := s[i].(map[string]interface{})
-			o := models.NewPolicyConfigChangeWithDefaults()
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			if v, ok := l["changes"]; ok {
-				{
-					x := make([]string, 0)
-					y := reflect.ValueOf(v)
-					for i := 0; i < y.Len(); i++ {
-						if y.Index(i).Interface() != nil {
-							x = append(x, y.Index(i).Interface().(string))
-						}
-					}
-					if len(x) > 0 {
-						o.SetChanges(x)
-					}
-				}
-			}
-			o.SetClassId("policy.ConfigChange")
-			if v, ok := l["disruptions"]; ok {
-				{
-					x := make([]string, 0)
-					y := reflect.ValueOf(v)
-					for i := 0; i < y.Len(); i++ {
-						if y.Index(i).Interface() != nil {
-							x = append(x, y.Index(i).Interface().(string))
-						}
-					}
-					if len(x) > 0 {
-						o.SetDisruptions(x)
-					}
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			p = append(p, *o)
-		}
-		if len(p) > 0 {
-			x := p[0]
-			o.SetConfigChanges(x)
-		}
-	}
-
 	if v, ok := d.GetOk("config_context"); ok {
 		p := make([]models.PolicyConfigContext, 0, 1)
 		s := v.([]interface{})
@@ -1096,6 +1316,20 @@ func resourceFabricSwitchProfileCreate(c context.Context, d *schema.ResourceData
 					o.SetErrorState(x)
 				}
 			}
+			if v, ok := l["inconsistency_reason"]; ok {
+				{
+					x := make([]string, 0)
+					y := reflect.ValueOf(v)
+					for i := 0; i < y.Len(); i++ {
+						if y.Index(i).Interface() != nil {
+							x = append(x, y.Index(i).Interface().(string))
+						}
+					}
+					if len(x) > 0 {
+						o.SetInconsistencyReason(x)
+					}
+				}
+			}
 			if v, ok := l["object_type"]; ok {
 				{
 					x := (v.(string))
@@ -1107,6 +1341,19 @@ func resourceFabricSwitchProfileCreate(c context.Context, d *schema.ResourceData
 		if len(p) > 0 {
 			x := p[0]
 			o.SetConfigContext(x)
+		}
+	}
+
+	if v, ok := d.GetOk("deployed_policies"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetDeployedPolicies(x)
 		}
 	}
 
@@ -1166,6 +1413,61 @@ func resourceFabricSwitchProfileCreate(c context.Context, d *schema.ResourceData
 		}
 		if len(x) > 0 {
 			o.SetPolicyBucket(x)
+		}
+	}
+
+	if v, ok := d.GetOk("removed_policies"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetRemovedPolicies(x)
+		}
+	}
+
+	if v, ok := d.GetOk("scheduled_actions"); ok {
+		x := make([]models.PolicyScheduledAction, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := models.NewPolicyScheduledActionWithDefaults()
+			l := s[i].(map[string]interface{})
+			if v, ok := l["action"]; ok {
+				{
+					x := (v.(string))
+					o.SetAction(x)
+				}
+			}
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("policy.ScheduledAction")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["proceed_on_reboot"]; ok {
+				{
+					x := (v.(bool))
+					o.SetProceedOnReboot(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		if len(x) > 0 {
+			o.SetScheduledActions(x)
 		}
 	}
 
@@ -1255,6 +1557,11 @@ func resourceFabricSwitchProfileCreate(c context.Context, d *schema.ResourceData
 		}
 	}
 
+	if v, ok := d.GetOk("switch_id"); ok {
+		x := (v.(string))
+		o.SetSwitchId(x)
+	}
+
 	if v, ok := d.GetOk("tags"); ok {
 		x := make([]models.MoTag, 0)
 		s := v.([]interface{})
@@ -1305,8 +1612,13 @@ func resourceFabricSwitchProfileCreate(c context.Context, d *schema.ResourceData
 		}
 		return diag.Errorf("error occurred while creating FabricSwitchProfile: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
 	var waitForCompletion bool
 	if v, ok := d.GetOk("wait_for_completion"); ok {
 		waitForCompletion = v.(bool)
@@ -1356,12 +1668,18 @@ func resourceFabricSwitchProfileCreate(c context.Context, d *schema.ResourceData
 			}
 		}
 	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceFabricSwitchProfileRead(c, d, meta)...)
 }
 
 func resourceFabricSwitchProfileRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.FabricApi.GetFabricSwitchProfileByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1411,6 +1729,10 @@ func resourceFabricSwitchProfileRead(c context.Context, d *schema.ResourceData, 
 		return diag.Errorf("error occurred while setting property ClassId in FabricSwitchProfile object: %s", err.Error())
 	}
 
+	if err := d.Set("config_change_context", flattenMapPolicyConfigChangeContext(s.GetConfigChangeContext(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property ConfigChangeContext in FabricSwitchProfile object: %s", err.Error())
+	}
+
 	if err := d.Set("config_change_details", flattenListFabricConfigChangeDetailRelationship(s.GetConfigChangeDetails(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property ConfigChangeDetails in FabricSwitchProfile object: %s", err.Error())
 	}
@@ -1429,6 +1751,10 @@ func resourceFabricSwitchProfileRead(c context.Context, d *schema.ResourceData, 
 
 	if err := d.Set("create_time", (s.GetCreateTime()).String()); err != nil {
 		return diag.Errorf("error occurred while setting property CreateTime in FabricSwitchProfile object: %s", err.Error())
+	}
+
+	if err := d.Set("deployed_policies", (s.GetDeployedPolicies())); err != nil {
+		return diag.Errorf("error occurred while setting property DeployedPolicies in FabricSwitchProfile object: %s", err.Error())
 	}
 
 	if err := d.Set("description", (s.GetDescription())); err != nil {
@@ -1471,8 +1797,16 @@ func resourceFabricSwitchProfileRead(c context.Context, d *schema.ResourceData, 
 		return diag.Errorf("error occurred while setting property PolicyBucket in FabricSwitchProfile object: %s", err.Error())
 	}
 
+	if err := d.Set("removed_policies", (s.GetRemovedPolicies())); err != nil {
+		return diag.Errorf("error occurred while setting property RemovedPolicies in FabricSwitchProfile object: %s", err.Error())
+	}
+
 	if err := d.Set("running_workflows", flattenListWorkflowWorkflowInfoRelationship(s.GetRunningWorkflows(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property RunningWorkflows in FabricSwitchProfile object: %s", err.Error())
+	}
+
+	if err := d.Set("scheduled_actions", flattenListPolicyScheduledAction(s.GetScheduledActions(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property ScheduledActions in FabricSwitchProfile object: %s", err.Error())
 	}
 
 	if err := d.Set("shared_scope", (s.GetSharedScope())); err != nil {
@@ -1485,6 +1819,10 @@ func resourceFabricSwitchProfileRead(c context.Context, d *schema.ResourceData, 
 
 	if err := d.Set("switch_cluster_profile", flattenMapFabricSwitchClusterProfileRelationship(s.GetSwitchClusterProfile(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property SwitchClusterProfile in FabricSwitchProfile object: %s", err.Error())
+	}
+
+	if err := d.Set("switch_id", (s.GetSwitchId())); err != nil {
+		return diag.Errorf("error occurred while setting property SwitchId in FabricSwitchProfile object: %s", err.Error())
 	}
 
 	if err := d.Set("tags", flattenListMoTag(s.GetTags(), d)); err != nil {
@@ -1613,66 +1951,6 @@ func resourceFabricSwitchProfileUpdate(c context.Context, d *schema.ResourceData
 
 	o.SetClassId("fabric.SwitchProfile")
 
-	if d.HasChange("config_changes") {
-		v := d.Get("config_changes")
-		p := make([]models.PolicyConfigChange, 0, 1)
-		s := v.([]interface{})
-		for i := 0; i < len(s); i++ {
-			l := s[i].(map[string]interface{})
-			o := &models.PolicyConfigChange{}
-			if v, ok := l["additional_properties"]; ok {
-				{
-					x := []byte(v.(string))
-					var x1 interface{}
-					err := json.Unmarshal(x, &x1)
-					if err == nil && x1 != nil {
-						o.AdditionalProperties = x1.(map[string]interface{})
-					}
-				}
-			}
-			if v, ok := l["changes"]; ok {
-				{
-					x := make([]string, 0)
-					y := reflect.ValueOf(v)
-					for i := 0; i < y.Len(); i++ {
-						if y.Index(i).Interface() != nil {
-							x = append(x, y.Index(i).Interface().(string))
-						}
-					}
-					if len(x) > 0 {
-						o.SetChanges(x)
-					}
-				}
-			}
-			o.SetClassId("policy.ConfigChange")
-			if v, ok := l["disruptions"]; ok {
-				{
-					x := make([]string, 0)
-					y := reflect.ValueOf(v)
-					for i := 0; i < y.Len(); i++ {
-						if y.Index(i).Interface() != nil {
-							x = append(x, y.Index(i).Interface().(string))
-						}
-					}
-					if len(x) > 0 {
-						o.SetDisruptions(x)
-					}
-				}
-			}
-			if v, ok := l["object_type"]; ok {
-				{
-					x := (v.(string))
-					o.SetObjectType(x)
-				}
-			}
-			p = append(p, *o)
-		}
-		if len(p) > 0 {
-			x := p[0]
-			o.SetConfigChanges(x)
-		}
-	}
-
 	if d.HasChange("config_context") {
 		v := d.Get("config_context")
 		p := make([]models.PolicyConfigContext, 0, 1)
@@ -1703,6 +1981,20 @@ func resourceFabricSwitchProfileUpdate(c context.Context, d *schema.ResourceData
 					o.SetErrorState(x)
 				}
 			}
+			if v, ok := l["inconsistency_reason"]; ok {
+				{
+					x := make([]string, 0)
+					y := reflect.ValueOf(v)
+					for i := 0; i < y.Len(); i++ {
+						if y.Index(i).Interface() != nil {
+							x = append(x, y.Index(i).Interface().(string))
+						}
+					}
+					if len(x) > 0 {
+						o.SetInconsistencyReason(x)
+					}
+				}
+			}
 			if v, ok := l["object_type"]; ok {
 				{
 					x := (v.(string))
@@ -1715,6 +2007,18 @@ func resourceFabricSwitchProfileUpdate(c context.Context, d *schema.ResourceData
 			x := p[0]
 			o.SetConfigContext(x)
 		}
+	}
+
+	if d.HasChange("deployed_policies") {
+		v := d.Get("deployed_policies")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetDeployedPolicies(x)
 	}
 
 	if d.HasChange("description") {
@@ -1776,6 +2080,59 @@ func resourceFabricSwitchProfileUpdate(c context.Context, d *schema.ResourceData
 			x = append(x, models.MoMoRefAsPolicyAbstractPolicyRelationship(o))
 		}
 		o.SetPolicyBucket(x)
+	}
+
+	if d.HasChange("removed_policies") {
+		v := d.Get("removed_policies")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetRemovedPolicies(x)
+	}
+
+	if d.HasChange("scheduled_actions") {
+		v := d.Get("scheduled_actions")
+		x := make([]models.PolicyScheduledAction, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := &models.PolicyScheduledAction{}
+			l := s[i].(map[string]interface{})
+			if v, ok := l["action"]; ok {
+				{
+					x := (v.(string))
+					o.SetAction(x)
+				}
+			}
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("policy.ScheduledAction")
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["proceed_on_reboot"]; ok {
+				{
+					x := (v.(bool))
+					o.SetProceedOnReboot(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		o.SetScheduledActions(x)
 	}
 
 	if d.HasChange("src_template") {
@@ -1864,6 +2221,12 @@ func resourceFabricSwitchProfileUpdate(c context.Context, d *schema.ResourceData
 			x := p[0]
 			o.SetSwitchClusterProfile(x)
 		}
+	}
+
+	if d.HasChange("switch_id") {
+		v := d.Get("switch_id")
+		x := (v.(string))
+		o.SetSwitchId(x)
 	}
 
 	if d.HasChange("tags") {

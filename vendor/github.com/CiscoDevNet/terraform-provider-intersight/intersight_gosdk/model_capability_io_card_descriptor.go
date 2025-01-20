@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the CapabilityIoCardDescriptor type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &CapabilityIoCardDescriptor{}
 
 // CapabilityIoCardDescriptor Descriptor that uniquely identifies an IO card module.
 type CapabilityIoCardDescriptor struct {
@@ -24,12 +28,21 @@ type CapabilityIoCardDescriptor struct {
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
+	// Identifies the bif port number for the iocard module.
+	BifPortNum *int64 `json:"BifPortNum,omitempty"`
+	// Identifies whether the iocard module is a part of the UCSX Direct chassis.
+	IsUcsxDirectIoCard *bool `json:"IsUcsxDirectIoCard,omitempty"`
+	// Identifies whether host port-channel is required to be configured for the iocard module.
+	NativeHifPortChannelRequired *bool `json:"NativeHifPortChannelRequired,omitempty"`
+	// Primary port number for native speed configuration for the iocard module.
+	NativeSpeedMasterPortNum *int64 `json:"NativeSpeedMasterPortNum,omitempty"`
 	// Number of hif ports per blade for the iocard module.
 	NumHifPorts *int64 `json:"NumHifPorts,omitempty"`
 	// Revision for the iocard module.
 	Revision *string `json:"Revision,omitempty"`
 	// Connectivity information between UIF Uplink ports and IOM ports. * `inline` - UIF uplink ports and IOM ports are connected inline. * `cross-connected` - UIF uplink ports and IOM ports are cross-connected, a case in washington chassis.
-	UifConnectivity      *string `json:"UifConnectivity,omitempty"`
+	UifConnectivity      *string  `json:"UifConnectivity,omitempty"`
+	UnsupportedPolicies  []string `json:"UnsupportedPolicies,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -43,6 +56,10 @@ func NewCapabilityIoCardDescriptor(classId string, objectType string) *Capabilit
 	this := CapabilityIoCardDescriptor{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var isUcsxDirectIoCard bool = false
+	this.IsUcsxDirectIoCard = &isUcsxDirectIoCard
+	var nativeHifPortChannelRequired bool = true
+	this.NativeHifPortChannelRequired = &nativeHifPortChannelRequired
 	var uifConnectivity string = "inline"
 	this.UifConnectivity = &uifConnectivity
 	return &this
@@ -57,6 +74,10 @@ func NewCapabilityIoCardDescriptorWithDefaults() *CapabilityIoCardDescriptor {
 	this.ClassId = classId
 	var objectType string = "capability.IoCardDescriptor"
 	this.ObjectType = objectType
+	var isUcsxDirectIoCard bool = false
+	this.IsUcsxDirectIoCard = &isUcsxDirectIoCard
+	var nativeHifPortChannelRequired bool = true
+	this.NativeHifPortChannelRequired = &nativeHifPortChannelRequired
 	var uifConnectivity string = "inline"
 	this.UifConnectivity = &uifConnectivity
 	return &this
@@ -86,6 +107,11 @@ func (o *CapabilityIoCardDescriptor) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "capability.IoCardDescriptor" of the ClassId field.
+func (o *CapabilityIoCardDescriptor) GetDefaultClassId() interface{} {
+	return "capability.IoCardDescriptor"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *CapabilityIoCardDescriptor) GetObjectType() string {
 	if o == nil {
@@ -110,9 +136,142 @@ func (o *CapabilityIoCardDescriptor) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "capability.IoCardDescriptor" of the ObjectType field.
+func (o *CapabilityIoCardDescriptor) GetDefaultObjectType() interface{} {
+	return "capability.IoCardDescriptor"
+}
+
+// GetBifPortNum returns the BifPortNum field value if set, zero value otherwise.
+func (o *CapabilityIoCardDescriptor) GetBifPortNum() int64 {
+	if o == nil || IsNil(o.BifPortNum) {
+		var ret int64
+		return ret
+	}
+	return *o.BifPortNum
+}
+
+// GetBifPortNumOk returns a tuple with the BifPortNum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CapabilityIoCardDescriptor) GetBifPortNumOk() (*int64, bool) {
+	if o == nil || IsNil(o.BifPortNum) {
+		return nil, false
+	}
+	return o.BifPortNum, true
+}
+
+// HasBifPortNum returns a boolean if a field has been set.
+func (o *CapabilityIoCardDescriptor) HasBifPortNum() bool {
+	if o != nil && !IsNil(o.BifPortNum) {
+		return true
+	}
+
+	return false
+}
+
+// SetBifPortNum gets a reference to the given int64 and assigns it to the BifPortNum field.
+func (o *CapabilityIoCardDescriptor) SetBifPortNum(v int64) {
+	o.BifPortNum = &v
+}
+
+// GetIsUcsxDirectIoCard returns the IsUcsxDirectIoCard field value if set, zero value otherwise.
+func (o *CapabilityIoCardDescriptor) GetIsUcsxDirectIoCard() bool {
+	if o == nil || IsNil(o.IsUcsxDirectIoCard) {
+		var ret bool
+		return ret
+	}
+	return *o.IsUcsxDirectIoCard
+}
+
+// GetIsUcsxDirectIoCardOk returns a tuple with the IsUcsxDirectIoCard field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CapabilityIoCardDescriptor) GetIsUcsxDirectIoCardOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsUcsxDirectIoCard) {
+		return nil, false
+	}
+	return o.IsUcsxDirectIoCard, true
+}
+
+// HasIsUcsxDirectIoCard returns a boolean if a field has been set.
+func (o *CapabilityIoCardDescriptor) HasIsUcsxDirectIoCard() bool {
+	if o != nil && !IsNil(o.IsUcsxDirectIoCard) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsUcsxDirectIoCard gets a reference to the given bool and assigns it to the IsUcsxDirectIoCard field.
+func (o *CapabilityIoCardDescriptor) SetIsUcsxDirectIoCard(v bool) {
+	o.IsUcsxDirectIoCard = &v
+}
+
+// GetNativeHifPortChannelRequired returns the NativeHifPortChannelRequired field value if set, zero value otherwise.
+func (o *CapabilityIoCardDescriptor) GetNativeHifPortChannelRequired() bool {
+	if o == nil || IsNil(o.NativeHifPortChannelRequired) {
+		var ret bool
+		return ret
+	}
+	return *o.NativeHifPortChannelRequired
+}
+
+// GetNativeHifPortChannelRequiredOk returns a tuple with the NativeHifPortChannelRequired field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CapabilityIoCardDescriptor) GetNativeHifPortChannelRequiredOk() (*bool, bool) {
+	if o == nil || IsNil(o.NativeHifPortChannelRequired) {
+		return nil, false
+	}
+	return o.NativeHifPortChannelRequired, true
+}
+
+// HasNativeHifPortChannelRequired returns a boolean if a field has been set.
+func (o *CapabilityIoCardDescriptor) HasNativeHifPortChannelRequired() bool {
+	if o != nil && !IsNil(o.NativeHifPortChannelRequired) {
+		return true
+	}
+
+	return false
+}
+
+// SetNativeHifPortChannelRequired gets a reference to the given bool and assigns it to the NativeHifPortChannelRequired field.
+func (o *CapabilityIoCardDescriptor) SetNativeHifPortChannelRequired(v bool) {
+	o.NativeHifPortChannelRequired = &v
+}
+
+// GetNativeSpeedMasterPortNum returns the NativeSpeedMasterPortNum field value if set, zero value otherwise.
+func (o *CapabilityIoCardDescriptor) GetNativeSpeedMasterPortNum() int64 {
+	if o == nil || IsNil(o.NativeSpeedMasterPortNum) {
+		var ret int64
+		return ret
+	}
+	return *o.NativeSpeedMasterPortNum
+}
+
+// GetNativeSpeedMasterPortNumOk returns a tuple with the NativeSpeedMasterPortNum field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *CapabilityIoCardDescriptor) GetNativeSpeedMasterPortNumOk() (*int64, bool) {
+	if o == nil || IsNil(o.NativeSpeedMasterPortNum) {
+		return nil, false
+	}
+	return o.NativeSpeedMasterPortNum, true
+}
+
+// HasNativeSpeedMasterPortNum returns a boolean if a field has been set.
+func (o *CapabilityIoCardDescriptor) HasNativeSpeedMasterPortNum() bool {
+	if o != nil && !IsNil(o.NativeSpeedMasterPortNum) {
+		return true
+	}
+
+	return false
+}
+
+// SetNativeSpeedMasterPortNum gets a reference to the given int64 and assigns it to the NativeSpeedMasterPortNum field.
+func (o *CapabilityIoCardDescriptor) SetNativeSpeedMasterPortNum(v int64) {
+	o.NativeSpeedMasterPortNum = &v
+}
+
 // GetNumHifPorts returns the NumHifPorts field value if set, zero value otherwise.
 func (o *CapabilityIoCardDescriptor) GetNumHifPorts() int64 {
-	if o == nil || o.NumHifPorts == nil {
+	if o == nil || IsNil(o.NumHifPorts) {
 		var ret int64
 		return ret
 	}
@@ -122,7 +281,7 @@ func (o *CapabilityIoCardDescriptor) GetNumHifPorts() int64 {
 // GetNumHifPortsOk returns a tuple with the NumHifPorts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CapabilityIoCardDescriptor) GetNumHifPortsOk() (*int64, bool) {
-	if o == nil || o.NumHifPorts == nil {
+	if o == nil || IsNil(o.NumHifPorts) {
 		return nil, false
 	}
 	return o.NumHifPorts, true
@@ -130,7 +289,7 @@ func (o *CapabilityIoCardDescriptor) GetNumHifPortsOk() (*int64, bool) {
 
 // HasNumHifPorts returns a boolean if a field has been set.
 func (o *CapabilityIoCardDescriptor) HasNumHifPorts() bool {
-	if o != nil && o.NumHifPorts != nil {
+	if o != nil && !IsNil(o.NumHifPorts) {
 		return true
 	}
 
@@ -144,7 +303,7 @@ func (o *CapabilityIoCardDescriptor) SetNumHifPorts(v int64) {
 
 // GetRevision returns the Revision field value if set, zero value otherwise.
 func (o *CapabilityIoCardDescriptor) GetRevision() string {
-	if o == nil || o.Revision == nil {
+	if o == nil || IsNil(o.Revision) {
 		var ret string
 		return ret
 	}
@@ -154,7 +313,7 @@ func (o *CapabilityIoCardDescriptor) GetRevision() string {
 // GetRevisionOk returns a tuple with the Revision field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CapabilityIoCardDescriptor) GetRevisionOk() (*string, bool) {
-	if o == nil || o.Revision == nil {
+	if o == nil || IsNil(o.Revision) {
 		return nil, false
 	}
 	return o.Revision, true
@@ -162,7 +321,7 @@ func (o *CapabilityIoCardDescriptor) GetRevisionOk() (*string, bool) {
 
 // HasRevision returns a boolean if a field has been set.
 func (o *CapabilityIoCardDescriptor) HasRevision() bool {
-	if o != nil && o.Revision != nil {
+	if o != nil && !IsNil(o.Revision) {
 		return true
 	}
 
@@ -176,7 +335,7 @@ func (o *CapabilityIoCardDescriptor) SetRevision(v string) {
 
 // GetUifConnectivity returns the UifConnectivity field value if set, zero value otherwise.
 func (o *CapabilityIoCardDescriptor) GetUifConnectivity() string {
-	if o == nil || o.UifConnectivity == nil {
+	if o == nil || IsNil(o.UifConnectivity) {
 		var ret string
 		return ret
 	}
@@ -186,7 +345,7 @@ func (o *CapabilityIoCardDescriptor) GetUifConnectivity() string {
 // GetUifConnectivityOk returns a tuple with the UifConnectivity field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *CapabilityIoCardDescriptor) GetUifConnectivityOk() (*string, bool) {
-	if o == nil || o.UifConnectivity == nil {
+	if o == nil || IsNil(o.UifConnectivity) {
 		return nil, false
 	}
 	return o.UifConnectivity, true
@@ -194,7 +353,7 @@ func (o *CapabilityIoCardDescriptor) GetUifConnectivityOk() (*string, bool) {
 
 // HasUifConnectivity returns a boolean if a field has been set.
 func (o *CapabilityIoCardDescriptor) HasUifConnectivity() bool {
-	if o != nil && o.UifConnectivity != nil {
+	if o != nil && !IsNil(o.UifConnectivity) {
 		return true
 	}
 
@@ -206,63 +365,176 @@ func (o *CapabilityIoCardDescriptor) SetUifConnectivity(v string) {
 	o.UifConnectivity = &v
 }
 
+// GetUnsupportedPolicies returns the UnsupportedPolicies field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *CapabilityIoCardDescriptor) GetUnsupportedPolicies() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.UnsupportedPolicies
+}
+
+// GetUnsupportedPoliciesOk returns a tuple with the UnsupportedPolicies field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *CapabilityIoCardDescriptor) GetUnsupportedPoliciesOk() ([]string, bool) {
+	if o == nil || IsNil(o.UnsupportedPolicies) {
+		return nil, false
+	}
+	return o.UnsupportedPolicies, true
+}
+
+// HasUnsupportedPolicies returns a boolean if a field has been set.
+func (o *CapabilityIoCardDescriptor) HasUnsupportedPolicies() bool {
+	if o != nil && !IsNil(o.UnsupportedPolicies) {
+		return true
+	}
+
+	return false
+}
+
+// SetUnsupportedPolicies gets a reference to the given []string and assigns it to the UnsupportedPolicies field.
+func (o *CapabilityIoCardDescriptor) SetUnsupportedPolicies(v []string) {
+	o.UnsupportedPolicies = v
+}
+
 func (o CapabilityIoCardDescriptor) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o CapabilityIoCardDescriptor) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedCapabilityHardwareDescriptor, errCapabilityHardwareDescriptor := json.Marshal(o.CapabilityHardwareDescriptor)
 	if errCapabilityHardwareDescriptor != nil {
-		return []byte{}, errCapabilityHardwareDescriptor
+		return map[string]interface{}{}, errCapabilityHardwareDescriptor
 	}
 	errCapabilityHardwareDescriptor = json.Unmarshal([]byte(serializedCapabilityHardwareDescriptor), &toSerialize)
 	if errCapabilityHardwareDescriptor != nil {
-		return []byte{}, errCapabilityHardwareDescriptor
+		return map[string]interface{}{}, errCapabilityHardwareDescriptor
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.NumHifPorts != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.BifPortNum) {
+		toSerialize["BifPortNum"] = o.BifPortNum
+	}
+	if !IsNil(o.IsUcsxDirectIoCard) {
+		toSerialize["IsUcsxDirectIoCard"] = o.IsUcsxDirectIoCard
+	}
+	if !IsNil(o.NativeHifPortChannelRequired) {
+		toSerialize["NativeHifPortChannelRequired"] = o.NativeHifPortChannelRequired
+	}
+	if !IsNil(o.NativeSpeedMasterPortNum) {
+		toSerialize["NativeSpeedMasterPortNum"] = o.NativeSpeedMasterPortNum
+	}
+	if !IsNil(o.NumHifPorts) {
 		toSerialize["NumHifPorts"] = o.NumHifPorts
 	}
-	if o.Revision != nil {
+	if !IsNil(o.Revision) {
 		toSerialize["Revision"] = o.Revision
 	}
-	if o.UifConnectivity != nil {
+	if !IsNil(o.UifConnectivity) {
 		toSerialize["UifConnectivity"] = o.UifConnectivity
+	}
+	if o.UnsupportedPolicies != nil {
+		toSerialize["UnsupportedPolicies"] = o.UnsupportedPolicies
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *CapabilityIoCardDescriptor) UnmarshalJSON(bytes []byte) (err error) {
+func (o *CapabilityIoCardDescriptor) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type CapabilityIoCardDescriptorWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
+		// Identifies the bif port number for the iocard module.
+		BifPortNum *int64 `json:"BifPortNum,omitempty"`
+		// Identifies whether the iocard module is a part of the UCSX Direct chassis.
+		IsUcsxDirectIoCard *bool `json:"IsUcsxDirectIoCard,omitempty"`
+		// Identifies whether host port-channel is required to be configured for the iocard module.
+		NativeHifPortChannelRequired *bool `json:"NativeHifPortChannelRequired,omitempty"`
+		// Primary port number for native speed configuration for the iocard module.
+		NativeSpeedMasterPortNum *int64 `json:"NativeSpeedMasterPortNum,omitempty"`
 		// Number of hif ports per blade for the iocard module.
 		NumHifPorts *int64 `json:"NumHifPorts,omitempty"`
 		// Revision for the iocard module.
 		Revision *string `json:"Revision,omitempty"`
 		// Connectivity information between UIF Uplink ports and IOM ports. * `inline` - UIF uplink ports and IOM ports are connected inline. * `cross-connected` - UIF uplink ports and IOM ports are cross-connected, a case in washington chassis.
-		UifConnectivity *string `json:"UifConnectivity,omitempty"`
+		UifConnectivity     *string  `json:"UifConnectivity,omitempty"`
+		UnsupportedPolicies []string `json:"UnsupportedPolicies,omitempty"`
 	}
 
 	varCapabilityIoCardDescriptorWithoutEmbeddedStruct := CapabilityIoCardDescriptorWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varCapabilityIoCardDescriptorWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varCapabilityIoCardDescriptorWithoutEmbeddedStruct)
 	if err == nil {
 		varCapabilityIoCardDescriptor := _CapabilityIoCardDescriptor{}
 		varCapabilityIoCardDescriptor.ClassId = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.ClassId
 		varCapabilityIoCardDescriptor.ObjectType = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.ObjectType
+		varCapabilityIoCardDescriptor.BifPortNum = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.BifPortNum
+		varCapabilityIoCardDescriptor.IsUcsxDirectIoCard = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.IsUcsxDirectIoCard
+		varCapabilityIoCardDescriptor.NativeHifPortChannelRequired = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.NativeHifPortChannelRequired
+		varCapabilityIoCardDescriptor.NativeSpeedMasterPortNum = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.NativeSpeedMasterPortNum
 		varCapabilityIoCardDescriptor.NumHifPorts = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.NumHifPorts
 		varCapabilityIoCardDescriptor.Revision = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.Revision
 		varCapabilityIoCardDescriptor.UifConnectivity = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.UifConnectivity
+		varCapabilityIoCardDescriptor.UnsupportedPolicies = varCapabilityIoCardDescriptorWithoutEmbeddedStruct.UnsupportedPolicies
 		*o = CapabilityIoCardDescriptor(varCapabilityIoCardDescriptor)
 	} else {
 		return err
@@ -270,7 +542,7 @@ func (o *CapabilityIoCardDescriptor) UnmarshalJSON(bytes []byte) (err error) {
 
 	varCapabilityIoCardDescriptor := _CapabilityIoCardDescriptor{}
 
-	err = json.Unmarshal(bytes, &varCapabilityIoCardDescriptor)
+	err = json.Unmarshal(data, &varCapabilityIoCardDescriptor)
 	if err == nil {
 		o.CapabilityHardwareDescriptor = varCapabilityIoCardDescriptor.CapabilityHardwareDescriptor
 	} else {
@@ -279,12 +551,17 @@ func (o *CapabilityIoCardDescriptor) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
+		delete(additionalProperties, "BifPortNum")
+		delete(additionalProperties, "IsUcsxDirectIoCard")
+		delete(additionalProperties, "NativeHifPortChannelRequired")
+		delete(additionalProperties, "NativeSpeedMasterPortNum")
 		delete(additionalProperties, "NumHifPorts")
 		delete(additionalProperties, "Revision")
 		delete(additionalProperties, "UifConnectivity")
+		delete(additionalProperties, "UnsupportedPolicies")
 
 		// remove fields from embedded structs
 		reflectCapabilityHardwareDescriptor := reflect.ValueOf(o.CapabilityHardwareDescriptor)

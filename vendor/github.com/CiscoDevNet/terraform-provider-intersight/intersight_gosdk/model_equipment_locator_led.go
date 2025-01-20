@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the EquipmentLocatorLed type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &EquipmentLocatorLed{}
 
 // EquipmentLocatorLed Locator Led of an Equipment like Rack, Disk etc.
 type EquipmentLocatorLed struct {
@@ -27,14 +31,15 @@ type EquipmentLocatorLed struct {
 	// Color of the locatorled available on an equipment.
 	Color *string `json:"Color,omitempty"`
 	// Identifies the operational state of locatorled.
-	OperState            *string                              `json:"OperState,omitempty"`
-	ComputeBlade         *ComputeBladeRelationship            `json:"ComputeBlade,omitempty"`
-	ComputeRackUnit      *ComputeRackUnitRelationship         `json:"ComputeRackUnit,omitempty"`
-	EquipmentChassis     *EquipmentChassisRelationship        `json:"EquipmentChassis,omitempty"`
-	EquipmentFex         *EquipmentFexRelationship            `json:"EquipmentFex,omitempty"`
-	InventoryDeviceInfo  *InventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
-	RegisteredDevice     *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
-	StoragePhysicalDisk  *StoragePhysicalDiskRelationship     `json:"StoragePhysicalDisk,omitempty"`
+	OperState            *string                                     `json:"OperState,omitempty"`
+	ComputeBlade         NullableComputeBladeRelationship            `json:"ComputeBlade,omitempty"`
+	ComputeRackUnit      NullableComputeRackUnitRelationship         `json:"ComputeRackUnit,omitempty"`
+	EquipmentChassis     NullableEquipmentChassisRelationship        `json:"EquipmentChassis,omitempty"`
+	EquipmentFex         NullableEquipmentFexRelationship            `json:"EquipmentFex,omitempty"`
+	InventoryDeviceInfo  NullableInventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
+	NetworkElement       NullableNetworkElementRelationship          `json:"NetworkElement,omitempty"`
+	RegisteredDevice     NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	StoragePhysicalDisk  NullableStoragePhysicalDiskRelationship     `json:"StoragePhysicalDisk,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -87,6 +92,11 @@ func (o *EquipmentLocatorLed) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "equipment.LocatorLed" of the ClassId field.
+func (o *EquipmentLocatorLed) GetDefaultClassId() interface{} {
+	return "equipment.LocatorLed"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *EquipmentLocatorLed) GetObjectType() string {
 	if o == nil {
@@ -111,9 +121,14 @@ func (o *EquipmentLocatorLed) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "equipment.LocatorLed" of the ObjectType field.
+func (o *EquipmentLocatorLed) GetDefaultObjectType() interface{} {
+	return "equipment.LocatorLed"
+}
+
 // GetColor returns the Color field value if set, zero value otherwise.
 func (o *EquipmentLocatorLed) GetColor() string {
-	if o == nil || o.Color == nil {
+	if o == nil || IsNil(o.Color) {
 		var ret string
 		return ret
 	}
@@ -123,7 +138,7 @@ func (o *EquipmentLocatorLed) GetColor() string {
 // GetColorOk returns a tuple with the Color field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EquipmentLocatorLed) GetColorOk() (*string, bool) {
-	if o == nil || o.Color == nil {
+	if o == nil || IsNil(o.Color) {
 		return nil, false
 	}
 	return o.Color, true
@@ -131,7 +146,7 @@ func (o *EquipmentLocatorLed) GetColorOk() (*string, bool) {
 
 // HasColor returns a boolean if a field has been set.
 func (o *EquipmentLocatorLed) HasColor() bool {
-	if o != nil && o.Color != nil {
+	if o != nil && !IsNil(o.Color) {
 		return true
 	}
 
@@ -145,7 +160,7 @@ func (o *EquipmentLocatorLed) SetColor(v string) {
 
 // GetOperState returns the OperState field value if set, zero value otherwise.
 func (o *EquipmentLocatorLed) GetOperState() string {
-	if o == nil || o.OperState == nil {
+	if o == nil || IsNil(o.OperState) {
 		var ret string
 		return ret
 	}
@@ -155,7 +170,7 @@ func (o *EquipmentLocatorLed) GetOperState() string {
 // GetOperStateOk returns a tuple with the OperState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *EquipmentLocatorLed) GetOperStateOk() (*string, bool) {
-	if o == nil || o.OperState == nil {
+	if o == nil || IsNil(o.OperState) {
 		return nil, false
 	}
 	return o.OperState, true
@@ -163,7 +178,7 @@ func (o *EquipmentLocatorLed) GetOperStateOk() (*string, bool) {
 
 // HasOperState returns a boolean if a field has been set.
 func (o *EquipmentLocatorLed) HasOperState() bool {
-	if o != nil && o.OperState != nil {
+	if o != nil && !IsNil(o.OperState) {
 		return true
 	}
 
@@ -175,282 +190,456 @@ func (o *EquipmentLocatorLed) SetOperState(v string) {
 	o.OperState = &v
 }
 
-// GetComputeBlade returns the ComputeBlade field value if set, zero value otherwise.
+// GetComputeBlade returns the ComputeBlade field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EquipmentLocatorLed) GetComputeBlade() ComputeBladeRelationship {
-	if o == nil || o.ComputeBlade == nil {
+	if o == nil || IsNil(o.ComputeBlade.Get()) {
 		var ret ComputeBladeRelationship
 		return ret
 	}
-	return *o.ComputeBlade
+	return *o.ComputeBlade.Get()
 }
 
 // GetComputeBladeOk returns a tuple with the ComputeBlade field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EquipmentLocatorLed) GetComputeBladeOk() (*ComputeBladeRelationship, bool) {
-	if o == nil || o.ComputeBlade == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ComputeBlade, true
+	return o.ComputeBlade.Get(), o.ComputeBlade.IsSet()
 }
 
 // HasComputeBlade returns a boolean if a field has been set.
 func (o *EquipmentLocatorLed) HasComputeBlade() bool {
-	if o != nil && o.ComputeBlade != nil {
+	if o != nil && o.ComputeBlade.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetComputeBlade gets a reference to the given ComputeBladeRelationship and assigns it to the ComputeBlade field.
+// SetComputeBlade gets a reference to the given NullableComputeBladeRelationship and assigns it to the ComputeBlade field.
 func (o *EquipmentLocatorLed) SetComputeBlade(v ComputeBladeRelationship) {
-	o.ComputeBlade = &v
+	o.ComputeBlade.Set(&v)
 }
 
-// GetComputeRackUnit returns the ComputeRackUnit field value if set, zero value otherwise.
+// SetComputeBladeNil sets the value for ComputeBlade to be an explicit nil
+func (o *EquipmentLocatorLed) SetComputeBladeNil() {
+	o.ComputeBlade.Set(nil)
+}
+
+// UnsetComputeBlade ensures that no value is present for ComputeBlade, not even an explicit nil
+func (o *EquipmentLocatorLed) UnsetComputeBlade() {
+	o.ComputeBlade.Unset()
+}
+
+// GetComputeRackUnit returns the ComputeRackUnit field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EquipmentLocatorLed) GetComputeRackUnit() ComputeRackUnitRelationship {
-	if o == nil || o.ComputeRackUnit == nil {
+	if o == nil || IsNil(o.ComputeRackUnit.Get()) {
 		var ret ComputeRackUnitRelationship
 		return ret
 	}
-	return *o.ComputeRackUnit
+	return *o.ComputeRackUnit.Get()
 }
 
 // GetComputeRackUnitOk returns a tuple with the ComputeRackUnit field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EquipmentLocatorLed) GetComputeRackUnitOk() (*ComputeRackUnitRelationship, bool) {
-	if o == nil || o.ComputeRackUnit == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ComputeRackUnit, true
+	return o.ComputeRackUnit.Get(), o.ComputeRackUnit.IsSet()
 }
 
 // HasComputeRackUnit returns a boolean if a field has been set.
 func (o *EquipmentLocatorLed) HasComputeRackUnit() bool {
-	if o != nil && o.ComputeRackUnit != nil {
+	if o != nil && o.ComputeRackUnit.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetComputeRackUnit gets a reference to the given ComputeRackUnitRelationship and assigns it to the ComputeRackUnit field.
+// SetComputeRackUnit gets a reference to the given NullableComputeRackUnitRelationship and assigns it to the ComputeRackUnit field.
 func (o *EquipmentLocatorLed) SetComputeRackUnit(v ComputeRackUnitRelationship) {
-	o.ComputeRackUnit = &v
+	o.ComputeRackUnit.Set(&v)
 }
 
-// GetEquipmentChassis returns the EquipmentChassis field value if set, zero value otherwise.
+// SetComputeRackUnitNil sets the value for ComputeRackUnit to be an explicit nil
+func (o *EquipmentLocatorLed) SetComputeRackUnitNil() {
+	o.ComputeRackUnit.Set(nil)
+}
+
+// UnsetComputeRackUnit ensures that no value is present for ComputeRackUnit, not even an explicit nil
+func (o *EquipmentLocatorLed) UnsetComputeRackUnit() {
+	o.ComputeRackUnit.Unset()
+}
+
+// GetEquipmentChassis returns the EquipmentChassis field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EquipmentLocatorLed) GetEquipmentChassis() EquipmentChassisRelationship {
-	if o == nil || o.EquipmentChassis == nil {
+	if o == nil || IsNil(o.EquipmentChassis.Get()) {
 		var ret EquipmentChassisRelationship
 		return ret
 	}
-	return *o.EquipmentChassis
+	return *o.EquipmentChassis.Get()
 }
 
 // GetEquipmentChassisOk returns a tuple with the EquipmentChassis field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EquipmentLocatorLed) GetEquipmentChassisOk() (*EquipmentChassisRelationship, bool) {
-	if o == nil || o.EquipmentChassis == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.EquipmentChassis, true
+	return o.EquipmentChassis.Get(), o.EquipmentChassis.IsSet()
 }
 
 // HasEquipmentChassis returns a boolean if a field has been set.
 func (o *EquipmentLocatorLed) HasEquipmentChassis() bool {
-	if o != nil && o.EquipmentChassis != nil {
+	if o != nil && o.EquipmentChassis.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEquipmentChassis gets a reference to the given EquipmentChassisRelationship and assigns it to the EquipmentChassis field.
+// SetEquipmentChassis gets a reference to the given NullableEquipmentChassisRelationship and assigns it to the EquipmentChassis field.
 func (o *EquipmentLocatorLed) SetEquipmentChassis(v EquipmentChassisRelationship) {
-	o.EquipmentChassis = &v
+	o.EquipmentChassis.Set(&v)
 }
 
-// GetEquipmentFex returns the EquipmentFex field value if set, zero value otherwise.
+// SetEquipmentChassisNil sets the value for EquipmentChassis to be an explicit nil
+func (o *EquipmentLocatorLed) SetEquipmentChassisNil() {
+	o.EquipmentChassis.Set(nil)
+}
+
+// UnsetEquipmentChassis ensures that no value is present for EquipmentChassis, not even an explicit nil
+func (o *EquipmentLocatorLed) UnsetEquipmentChassis() {
+	o.EquipmentChassis.Unset()
+}
+
+// GetEquipmentFex returns the EquipmentFex field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EquipmentLocatorLed) GetEquipmentFex() EquipmentFexRelationship {
-	if o == nil || o.EquipmentFex == nil {
+	if o == nil || IsNil(o.EquipmentFex.Get()) {
 		var ret EquipmentFexRelationship
 		return ret
 	}
-	return *o.EquipmentFex
+	return *o.EquipmentFex.Get()
 }
 
 // GetEquipmentFexOk returns a tuple with the EquipmentFex field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EquipmentLocatorLed) GetEquipmentFexOk() (*EquipmentFexRelationship, bool) {
-	if o == nil || o.EquipmentFex == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.EquipmentFex, true
+	return o.EquipmentFex.Get(), o.EquipmentFex.IsSet()
 }
 
 // HasEquipmentFex returns a boolean if a field has been set.
 func (o *EquipmentLocatorLed) HasEquipmentFex() bool {
-	if o != nil && o.EquipmentFex != nil {
+	if o != nil && o.EquipmentFex.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetEquipmentFex gets a reference to the given EquipmentFexRelationship and assigns it to the EquipmentFex field.
+// SetEquipmentFex gets a reference to the given NullableEquipmentFexRelationship and assigns it to the EquipmentFex field.
 func (o *EquipmentLocatorLed) SetEquipmentFex(v EquipmentFexRelationship) {
-	o.EquipmentFex = &v
+	o.EquipmentFex.Set(&v)
 }
 
-// GetInventoryDeviceInfo returns the InventoryDeviceInfo field value if set, zero value otherwise.
+// SetEquipmentFexNil sets the value for EquipmentFex to be an explicit nil
+func (o *EquipmentLocatorLed) SetEquipmentFexNil() {
+	o.EquipmentFex.Set(nil)
+}
+
+// UnsetEquipmentFex ensures that no value is present for EquipmentFex, not even an explicit nil
+func (o *EquipmentLocatorLed) UnsetEquipmentFex() {
+	o.EquipmentFex.Unset()
+}
+
+// GetInventoryDeviceInfo returns the InventoryDeviceInfo field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EquipmentLocatorLed) GetInventoryDeviceInfo() InventoryDeviceInfoRelationship {
-	if o == nil || o.InventoryDeviceInfo == nil {
+	if o == nil || IsNil(o.InventoryDeviceInfo.Get()) {
 		var ret InventoryDeviceInfoRelationship
 		return ret
 	}
-	return *o.InventoryDeviceInfo
+	return *o.InventoryDeviceInfo.Get()
 }
 
 // GetInventoryDeviceInfoOk returns a tuple with the InventoryDeviceInfo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EquipmentLocatorLed) GetInventoryDeviceInfoOk() (*InventoryDeviceInfoRelationship, bool) {
-	if o == nil || o.InventoryDeviceInfo == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.InventoryDeviceInfo, true
+	return o.InventoryDeviceInfo.Get(), o.InventoryDeviceInfo.IsSet()
 }
 
 // HasInventoryDeviceInfo returns a boolean if a field has been set.
 func (o *EquipmentLocatorLed) HasInventoryDeviceInfo() bool {
-	if o != nil && o.InventoryDeviceInfo != nil {
+	if o != nil && o.InventoryDeviceInfo.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetInventoryDeviceInfo gets a reference to the given InventoryDeviceInfoRelationship and assigns it to the InventoryDeviceInfo field.
+// SetInventoryDeviceInfo gets a reference to the given NullableInventoryDeviceInfoRelationship and assigns it to the InventoryDeviceInfo field.
 func (o *EquipmentLocatorLed) SetInventoryDeviceInfo(v InventoryDeviceInfoRelationship) {
-	o.InventoryDeviceInfo = &v
+	o.InventoryDeviceInfo.Set(&v)
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// SetInventoryDeviceInfoNil sets the value for InventoryDeviceInfo to be an explicit nil
+func (o *EquipmentLocatorLed) SetInventoryDeviceInfoNil() {
+	o.InventoryDeviceInfo.Set(nil)
+}
+
+// UnsetInventoryDeviceInfo ensures that no value is present for InventoryDeviceInfo, not even an explicit nil
+func (o *EquipmentLocatorLed) UnsetInventoryDeviceInfo() {
+	o.InventoryDeviceInfo.Unset()
+}
+
+// GetNetworkElement returns the NetworkElement field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *EquipmentLocatorLed) GetNetworkElement() NetworkElementRelationship {
+	if o == nil || IsNil(o.NetworkElement.Get()) {
+		var ret NetworkElementRelationship
+		return ret
+	}
+	return *o.NetworkElement.Get()
+}
+
+// GetNetworkElementOk returns a tuple with the NetworkElement field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *EquipmentLocatorLed) GetNetworkElementOk() (*NetworkElementRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.NetworkElement.Get(), o.NetworkElement.IsSet()
+}
+
+// HasNetworkElement returns a boolean if a field has been set.
+func (o *EquipmentLocatorLed) HasNetworkElement() bool {
+	if o != nil && o.NetworkElement.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetNetworkElement gets a reference to the given NullableNetworkElementRelationship and assigns it to the NetworkElement field.
+func (o *EquipmentLocatorLed) SetNetworkElement(v NetworkElementRelationship) {
+	o.NetworkElement.Set(&v)
+}
+
+// SetNetworkElementNil sets the value for NetworkElement to be an explicit nil
+func (o *EquipmentLocatorLed) SetNetworkElementNil() {
+	o.NetworkElement.Set(nil)
+}
+
+// UnsetNetworkElement ensures that no value is present for NetworkElement, not even an explicit nil
+func (o *EquipmentLocatorLed) UnsetNetworkElement() {
+	o.NetworkElement.Unset()
+}
+
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EquipmentLocatorLed) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EquipmentLocatorLed) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *EquipmentLocatorLed) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *EquipmentLocatorLed) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
 }
 
-// GetStoragePhysicalDisk returns the StoragePhysicalDisk field value if set, zero value otherwise.
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *EquipmentLocatorLed) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *EquipmentLocatorLed) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
+}
+
+// GetStoragePhysicalDisk returns the StoragePhysicalDisk field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *EquipmentLocatorLed) GetStoragePhysicalDisk() StoragePhysicalDiskRelationship {
-	if o == nil || o.StoragePhysicalDisk == nil {
+	if o == nil || IsNil(o.StoragePhysicalDisk.Get()) {
 		var ret StoragePhysicalDiskRelationship
 		return ret
 	}
-	return *o.StoragePhysicalDisk
+	return *o.StoragePhysicalDisk.Get()
 }
 
 // GetStoragePhysicalDiskOk returns a tuple with the StoragePhysicalDisk field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *EquipmentLocatorLed) GetStoragePhysicalDiskOk() (*StoragePhysicalDiskRelationship, bool) {
-	if o == nil || o.StoragePhysicalDisk == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.StoragePhysicalDisk, true
+	return o.StoragePhysicalDisk.Get(), o.StoragePhysicalDisk.IsSet()
 }
 
 // HasStoragePhysicalDisk returns a boolean if a field has been set.
 func (o *EquipmentLocatorLed) HasStoragePhysicalDisk() bool {
-	if o != nil && o.StoragePhysicalDisk != nil {
+	if o != nil && o.StoragePhysicalDisk.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetStoragePhysicalDisk gets a reference to the given StoragePhysicalDiskRelationship and assigns it to the StoragePhysicalDisk field.
+// SetStoragePhysicalDisk gets a reference to the given NullableStoragePhysicalDiskRelationship and assigns it to the StoragePhysicalDisk field.
 func (o *EquipmentLocatorLed) SetStoragePhysicalDisk(v StoragePhysicalDiskRelationship) {
-	o.StoragePhysicalDisk = &v
+	o.StoragePhysicalDisk.Set(&v)
+}
+
+// SetStoragePhysicalDiskNil sets the value for StoragePhysicalDisk to be an explicit nil
+func (o *EquipmentLocatorLed) SetStoragePhysicalDiskNil() {
+	o.StoragePhysicalDisk.Set(nil)
+}
+
+// UnsetStoragePhysicalDisk ensures that no value is present for StoragePhysicalDisk, not even an explicit nil
+func (o *EquipmentLocatorLed) UnsetStoragePhysicalDisk() {
+	o.StoragePhysicalDisk.Unset()
 }
 
 func (o EquipmentLocatorLed) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o EquipmentLocatorLed) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedInventoryBase, errInventoryBase := json.Marshal(o.InventoryBase)
 	if errInventoryBase != nil {
-		return []byte{}, errInventoryBase
+		return map[string]interface{}{}, errInventoryBase
 	}
 	errInventoryBase = json.Unmarshal([]byte(serializedInventoryBase), &toSerialize)
 	if errInventoryBase != nil {
-		return []byte{}, errInventoryBase
+		return map[string]interface{}{}, errInventoryBase
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Color != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Color) {
 		toSerialize["Color"] = o.Color
 	}
-	if o.OperState != nil {
+	if !IsNil(o.OperState) {
 		toSerialize["OperState"] = o.OperState
 	}
-	if o.ComputeBlade != nil {
-		toSerialize["ComputeBlade"] = o.ComputeBlade
+	if o.ComputeBlade.IsSet() {
+		toSerialize["ComputeBlade"] = o.ComputeBlade.Get()
 	}
-	if o.ComputeRackUnit != nil {
-		toSerialize["ComputeRackUnit"] = o.ComputeRackUnit
+	if o.ComputeRackUnit.IsSet() {
+		toSerialize["ComputeRackUnit"] = o.ComputeRackUnit.Get()
 	}
-	if o.EquipmentChassis != nil {
-		toSerialize["EquipmentChassis"] = o.EquipmentChassis
+	if o.EquipmentChassis.IsSet() {
+		toSerialize["EquipmentChassis"] = o.EquipmentChassis.Get()
 	}
-	if o.EquipmentFex != nil {
-		toSerialize["EquipmentFex"] = o.EquipmentFex
+	if o.EquipmentFex.IsSet() {
+		toSerialize["EquipmentFex"] = o.EquipmentFex.Get()
 	}
-	if o.InventoryDeviceInfo != nil {
-		toSerialize["InventoryDeviceInfo"] = o.InventoryDeviceInfo
+	if o.InventoryDeviceInfo.IsSet() {
+		toSerialize["InventoryDeviceInfo"] = o.InventoryDeviceInfo.Get()
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.NetworkElement.IsSet() {
+		toSerialize["NetworkElement"] = o.NetworkElement.Get()
 	}
-	if o.StoragePhysicalDisk != nil {
-		toSerialize["StoragePhysicalDisk"] = o.StoragePhysicalDisk
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
+	}
+	if o.StoragePhysicalDisk.IsSet() {
+		toSerialize["StoragePhysicalDisk"] = o.StoragePhysicalDisk.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *EquipmentLocatorLed) UnmarshalJSON(bytes []byte) (err error) {
+func (o *EquipmentLocatorLed) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type EquipmentLocatorLedWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -459,19 +648,20 @@ func (o *EquipmentLocatorLed) UnmarshalJSON(bytes []byte) (err error) {
 		// Color of the locatorled available on an equipment.
 		Color *string `json:"Color,omitempty"`
 		// Identifies the operational state of locatorled.
-		OperState           *string                              `json:"OperState,omitempty"`
-		ComputeBlade        *ComputeBladeRelationship            `json:"ComputeBlade,omitempty"`
-		ComputeRackUnit     *ComputeRackUnitRelationship         `json:"ComputeRackUnit,omitempty"`
-		EquipmentChassis    *EquipmentChassisRelationship        `json:"EquipmentChassis,omitempty"`
-		EquipmentFex        *EquipmentFexRelationship            `json:"EquipmentFex,omitempty"`
-		InventoryDeviceInfo *InventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
-		RegisteredDevice    *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
-		StoragePhysicalDisk *StoragePhysicalDiskRelationship     `json:"StoragePhysicalDisk,omitempty"`
+		OperState           *string                                     `json:"OperState,omitempty"`
+		ComputeBlade        NullableComputeBladeRelationship            `json:"ComputeBlade,omitempty"`
+		ComputeRackUnit     NullableComputeRackUnitRelationship         `json:"ComputeRackUnit,omitempty"`
+		EquipmentChassis    NullableEquipmentChassisRelationship        `json:"EquipmentChassis,omitempty"`
+		EquipmentFex        NullableEquipmentFexRelationship            `json:"EquipmentFex,omitempty"`
+		InventoryDeviceInfo NullableInventoryDeviceInfoRelationship     `json:"InventoryDeviceInfo,omitempty"`
+		NetworkElement      NullableNetworkElementRelationship          `json:"NetworkElement,omitempty"`
+		RegisteredDevice    NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		StoragePhysicalDisk NullableStoragePhysicalDiskRelationship     `json:"StoragePhysicalDisk,omitempty"`
 	}
 
 	varEquipmentLocatorLedWithoutEmbeddedStruct := EquipmentLocatorLedWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varEquipmentLocatorLedWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varEquipmentLocatorLedWithoutEmbeddedStruct)
 	if err == nil {
 		varEquipmentLocatorLed := _EquipmentLocatorLed{}
 		varEquipmentLocatorLed.ClassId = varEquipmentLocatorLedWithoutEmbeddedStruct.ClassId
@@ -483,6 +673,7 @@ func (o *EquipmentLocatorLed) UnmarshalJSON(bytes []byte) (err error) {
 		varEquipmentLocatorLed.EquipmentChassis = varEquipmentLocatorLedWithoutEmbeddedStruct.EquipmentChassis
 		varEquipmentLocatorLed.EquipmentFex = varEquipmentLocatorLedWithoutEmbeddedStruct.EquipmentFex
 		varEquipmentLocatorLed.InventoryDeviceInfo = varEquipmentLocatorLedWithoutEmbeddedStruct.InventoryDeviceInfo
+		varEquipmentLocatorLed.NetworkElement = varEquipmentLocatorLedWithoutEmbeddedStruct.NetworkElement
 		varEquipmentLocatorLed.RegisteredDevice = varEquipmentLocatorLedWithoutEmbeddedStruct.RegisteredDevice
 		varEquipmentLocatorLed.StoragePhysicalDisk = varEquipmentLocatorLedWithoutEmbeddedStruct.StoragePhysicalDisk
 		*o = EquipmentLocatorLed(varEquipmentLocatorLed)
@@ -492,7 +683,7 @@ func (o *EquipmentLocatorLed) UnmarshalJSON(bytes []byte) (err error) {
 
 	varEquipmentLocatorLed := _EquipmentLocatorLed{}
 
-	err = json.Unmarshal(bytes, &varEquipmentLocatorLed)
+	err = json.Unmarshal(data, &varEquipmentLocatorLed)
 	if err == nil {
 		o.InventoryBase = varEquipmentLocatorLed.InventoryBase
 	} else {
@@ -501,7 +692,7 @@ func (o *EquipmentLocatorLed) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Color")
@@ -511,6 +702,7 @@ func (o *EquipmentLocatorLed) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "EquipmentChassis")
 		delete(additionalProperties, "EquipmentFex")
 		delete(additionalProperties, "InventoryDeviceInfo")
+		delete(additionalProperties, "NetworkElement")
 		delete(additionalProperties, "RegisteredDevice")
 		delete(additionalProperties, "StoragePhysicalDisk")
 

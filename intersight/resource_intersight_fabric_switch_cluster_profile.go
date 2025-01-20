@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceFabricSwitchClusterProfile() *schema.Resource {
 		UpdateContext: resourceFabricSwitchClusterProfileUpdate,
 		DeleteContext: resourceFabricSwitchClusterProfileDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -84,6 +86,79 @@ func resourceFabricSwitchClusterProfile() *schema.Resource {
 				Optional:    true,
 				Default:     "fabric.SwitchClusterProfile",
 			},
+			"cluster_assignments": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "fabric.ClusterAssignment",
+						},
+						"network_element": {
+							Description: "The network element that is to be assigned to the cloned switch profile.",
+							Type:        schema.TypeList,
+							MaxItems:    1,
+							Optional:    true,
+							ConfigMode:  schema.SchemaConfigModeAttr,
+							Computed:    true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"additional_properties": {
+										Type:             schema.TypeString,
+										Optional:         true,
+										DiffSuppressFunc: SuppressDiffAdditionProps,
+									},
+									"class_id": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "mo.MoRef",
+									},
+									"moid": {
+										Description: "The Moid of the referenced REST resource.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+									},
+									"object_type": {
+										Description: "The fully-qualified name of the remote type referred by this relationship.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Computed:    true,
+									},
+									"selector": {
+										Description: "An OData $filter expression which describes the REST resource to be referenced. This field may\nbe set instead of 'moid' by clients.\n1. If 'moid' is set this field is ignored.\n1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of the\nresource matching the filter expression and populates it in the MoRef that is part of the object\ninstance being inserted/updated to fulfill the REST request.\nAn error is returned if the filter matches zero or more than one REST resource.\nAn example filter string is: Serial eq '3AA8B7T11'.",
+										Type:        schema.TypeString,
+										Optional:    true,
+									},
+								},
+							},
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "fabric.ClusterAssignment",
+						},
+						"source_switch_profile_or_template_name": {
+							Description:  "Name of the source SwitchProfile or SwitchProfileTemplate whose clone has to be assigned to the network element mentioned in NetworkElement property under ClusterAssignments.",
+							Type:         schema.TypeString,
+							ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9_.-]{1,64}$"), ""),
+							Optional:     true,
+						},
+					},
+				},
+			},
 			"config_context": {
 				Description: "This provides consolidated configuration context of all the switch profiles referred by Switch Cluster Profile.",
 				Type:        schema.TypeList,
@@ -115,6 +190,17 @@ func resourceFabricSwitchClusterProfile() *schema.Resource {
 								}
 								return
 							}},
+						"config_state_summary": {
+							Description: "Indicates a profile's configuration deploying state. Values -- Assigned, Not-assigned, Associated, InConsistent, Validating, Configuring, Failed, Activating, UnConfiguring.\n* `None` - The default state is none.\n* `Not-assigned` - Server is not assigned to the profile.\n* `Assigned` - Server is assigned to the profile and the configurations are not yet deployed.\n* `Preparing` - Preparing to deploy the configuration.\n* `Validating` - Profile validation in progress.\n* `Configuring` - Profile deploy operation is in progress.\n* `UnConfiguring` - Server is unassigned and config cleanup is in progress.\n* `Analyzing` - Profile changes are being analyzed.\n* `Activating` - Configuration is being activated at the endpoint.\n* `Inconsistent` - Profile is inconsistent with the endpoint configuration.\n* `Associated` - The profile configuration has been applied to the endpoint and no inconsistencies have been detected.\n* `Failed` - The last action on the profile has failed.\n* `Not-complete` - Config import operation on the profile is not complete.\n* `Waiting-for-resource` - Waiting for the resource to be allocated for the profile.\n* `Partially-deployed` - The profile configuration has been applied on a subset of endpoints.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"config_type": {
 							Description: "The type of configuration running on the profile. Since profile deployments can configure multiple different settings, configType indicates which type of configuration is currently in progress.",
 							Type:        schema.TypeString,
@@ -136,6 +222,14 @@ func resourceFabricSwitchClusterProfile() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 						},
+						"inconsistency_reason": {
+							Type:       schema.TypeList,
+							Optional:   true,
+							ConfigMode: schema.SchemaConfigModeAttr,
+							Computed:   true,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -158,6 +252,28 @@ func resourceFabricSwitchClusterProfile() *schema.Resource {
 			},
 			"create_time": {
 				Description: "The time when this managed object was created.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
+			"deploy_status": {
+				Description: "Deploy status of the switch cluster profile indicating if deployment has been initiated on all the members of the cluster profile.\n* `None` - Switch profiles not deployed on either of the switches.\n* `Complete` - Both switch profiles of the cluster profile are deployed.\n* `Partial` - Only one of the switch profiles of the cluster profile is deployed.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
+			"deployed_switches": {
+				Description: "Values indicating the switches on which the cluster profile has been deployed. 0 indicates that the profile has not been deployed on any switch, 1 indicates that the profile has been deployed on A, 2 indicates that it is deployed on B and 3 indicates that it is deployed on both.\n* `None` - Switch profiles not deployed on either of the fabric interconnects.\n* `A` - Switch profiles deployed only on fabric interconnect A.\n* `B` - Switch profiles deployed only on fabric interconnect B.\n* `AB` - Switch profiles deployed on both fabric interconnect A and B.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -477,6 +593,12 @@ func resourceFabricSwitchClusterProfile() *schema.Resource {
 				Optional:     true,
 				Default:      "instance",
 			},
+			"user_label": {
+				Description:  "The user defined label assigned to the switch profile.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[ !#$%&\\(\\)\\*\\+,\\-\\./:;\\?@\\[\\]_\\{\\|\\}~a-zA-Z0-9]*$"), ""), validation.StringLenBetween(0, 64)),
+				Optional:     true,
+			},
 			"version_context": {
 				Description: "The versioning info for this managed object.",
 				Type:        schema.TypeList,
@@ -535,6 +657,17 @@ func resourceFabricSwitchClusterProfile() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -637,6 +770,86 @@ func resourceFabricSwitchClusterProfileCreate(c context.Context, d *schema.Resou
 	}
 
 	o.SetClassId("fabric.SwitchClusterProfile")
+
+	if v, ok := d.GetOk("cluster_assignments"); ok {
+		x := make([]models.FabricClusterAssignment, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := models.NewFabricClusterAssignmentWithDefaults()
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("fabric.ClusterAssignment")
+			if v, ok := l["network_element"]; ok {
+				{
+					p := make([]models.MoMoRef, 0, 1)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						l := s[i].(map[string]interface{})
+						o := models.NewMoMoRefWithDefaults()
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("mo.MoRef")
+						if v, ok := l["moid"]; ok {
+							{
+								x := (v.(string))
+								o.SetMoid(x)
+							}
+						}
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["selector"]; ok {
+							{
+								x := (v.(string))
+								o.SetSelector(x)
+							}
+						}
+						p = append(p, *o)
+					}
+					if len(p) > 0 {
+						x := p[0]
+						o.SetNetworkElement(x)
+					}
+				}
+			}
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["source_switch_profile_or_template_name"]; ok {
+				{
+					x := (v.(string))
+					o.SetSourceSwitchProfileOrTemplateName(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		if len(x) > 0 {
+			o.SetClusterAssignments(x)
+		}
+	}
 
 	if v, ok := d.GetOk("description"); ok {
 		x := (v.(string))
@@ -823,6 +1036,11 @@ func resourceFabricSwitchClusterProfileCreate(c context.Context, d *schema.Resou
 		o.SetType(x)
 	}
 
+	if v, ok := d.GetOk("user_label"); ok {
+		x := (v.(string))
+		o.SetUserLabel(x)
+	}
+
 	r := conn.ApiClient.FabricApi.CreateFabricSwitchClusterProfile(conn.ctx).FabricSwitchClusterProfile(*o)
 	resultMo, _, responseErr := r.Execute()
 	if responseErr != nil {
@@ -833,14 +1051,25 @@ func resourceFabricSwitchClusterProfileCreate(c context.Context, d *schema.Resou
 		}
 		return diag.Errorf("error occurred while creating FabricSwitchClusterProfile: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceFabricSwitchClusterProfileRead(c, d, meta)...)
 }
 
 func resourceFabricSwitchClusterProfileRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.FabricApi.GetFabricSwitchClusterProfileByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -874,12 +1103,24 @@ func resourceFabricSwitchClusterProfileRead(c context.Context, d *schema.Resourc
 		return diag.Errorf("error occurred while setting property ClassId in FabricSwitchClusterProfile object: %s", err.Error())
 	}
 
+	if err := d.Set("cluster_assignments", flattenListFabricClusterAssignment(s.GetClusterAssignments(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property ClusterAssignments in FabricSwitchClusterProfile object: %s", err.Error())
+	}
+
 	if err := d.Set("config_context", flattenMapPolicyConfigContext(s.GetConfigContext(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property ConfigContext in FabricSwitchClusterProfile object: %s", err.Error())
 	}
 
 	if err := d.Set("create_time", (s.GetCreateTime()).String()); err != nil {
 		return diag.Errorf("error occurred while setting property CreateTime in FabricSwitchClusterProfile object: %s", err.Error())
+	}
+
+	if err := d.Set("deploy_status", (s.GetDeployStatus())); err != nil {
+		return diag.Errorf("error occurred while setting property DeployStatus in FabricSwitchClusterProfile object: %s", err.Error())
+	}
+
+	if err := d.Set("deployed_switches", (s.GetDeployedSwitches())); err != nil {
+		return diag.Errorf("error occurred while setting property DeployedSwitches in FabricSwitchClusterProfile object: %s", err.Error())
 	}
 
 	if err := d.Set("description", (s.GetDescription())); err != nil {
@@ -946,6 +1187,10 @@ func resourceFabricSwitchClusterProfileRead(c context.Context, d *schema.Resourc
 		return diag.Errorf("error occurred while setting property Type in FabricSwitchClusterProfile object: %s", err.Error())
 	}
 
+	if err := d.Set("user_label", (s.GetUserLabel())); err != nil {
+		return diag.Errorf("error occurred while setting property UserLabel in FabricSwitchClusterProfile object: %s", err.Error())
+	}
+
 	if err := d.Set("version_context", flattenMapMoVersionContext(s.GetVersionContext(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property VersionContext in FabricSwitchClusterProfile object: %s", err.Error())
 	}
@@ -972,6 +1217,85 @@ func resourceFabricSwitchClusterProfileUpdate(c context.Context, d *schema.Resou
 	}
 
 	o.SetClassId("fabric.SwitchClusterProfile")
+
+	if d.HasChange("cluster_assignments") {
+		v := d.Get("cluster_assignments")
+		x := make([]models.FabricClusterAssignment, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := &models.FabricClusterAssignment{}
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("fabric.ClusterAssignment")
+			if v, ok := l["network_element"]; ok {
+				{
+					p := make([]models.MoMoRef, 0, 1)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						l := s[i].(map[string]interface{})
+						o := models.NewMoMoRefWithDefaults()
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("mo.MoRef")
+						if v, ok := l["moid"]; ok {
+							{
+								x := (v.(string))
+								o.SetMoid(x)
+							}
+						}
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["selector"]; ok {
+							{
+								x := (v.(string))
+								o.SetSelector(x)
+							}
+						}
+						p = append(p, *o)
+					}
+					if len(p) > 0 {
+						x := p[0]
+						o.SetNetworkElement(x)
+					}
+				}
+			}
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["source_switch_profile_or_template_name"]; ok {
+				{
+					x := (v.(string))
+					o.SetSourceSwitchProfileOrTemplateName(x)
+				}
+			}
+			x = append(x, *o)
+		}
+		o.SetClusterAssignments(x)
+	}
 
 	if d.HasChange("description") {
 		v := d.Get("description")
@@ -1160,6 +1484,12 @@ func resourceFabricSwitchClusterProfileUpdate(c context.Context, d *schema.Resou
 		v := d.Get("type")
 		x := (v.(string))
 		o.SetType(x)
+	}
+
+	if d.HasChange("user_label") {
+		v := d.Get("user_label")
+		x := (v.(string))
+		o.SetUserLabel(x)
 	}
 
 	r := conn.ApiClient.FabricApi.UpdateFabricSwitchClusterProfile(conn.ctx, d.Id()).FabricSwitchClusterProfile(*o)

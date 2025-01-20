@@ -9,17 +9,17 @@ Name | Type | Description | Notes
 **Action** | Pointer to **string** | Action to be performed on a host (Create, PowerState, Migrate, Clone etc). * &#x60;None&#x60; - A place holder for the default value. * &#x60;EnterMaintenanceMode&#x60; - Put a host into maintenance mode. * &#x60;ExitMaintenanceMode&#x60; - Put a host into active mode. * &#x60;PowerOffStorageController&#x60; - Power off HyperFlex storage controller node running on selected hypervisor host. * &#x60;PowerOnStorageController&#x60; - Power on HyperFlex storage controller node running on selected hypervisor host. | [optional] [default to "None"]
 **Discovered** | Pointer to **bool** | Flag to indicate whether the configuration is created from inventory object. | [optional] [readonly] 
 **Evacuate** | Pointer to **bool** | If true, move powered-off and suspended virtual machines to other hosts in the cluster. | [optional] 
-**HostConfig** | Pointer to [**NullableVirtualizationBaseHostConfiguration**](VirtualizationBaseHostConfiguration.md) |  | [optional] 
-**HypervisorType** | Pointer to **string** | Identifies the broad product type of the hypervisor but without any version information. It is here to easily identify the type of the virtual machine. There are other entities (Host, Cluster, etc.) that can be indirectly used to determine the hypervisor but a direct attribute makes it easier to work with. * &#x60;ESXi&#x60; - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version. * &#x60;HyperFlexAp&#x60; - The hypervisor of the virtualization platform is Cisco HyperFlex Application Platform. * &#x60;IWE&#x60; - The hypervisor of the virtualization platform is Cisco Intersight Workload Engine. * &#x60;Hyper-V&#x60; - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V. * &#x60;Unknown&#x60; - The hypervisor running on the HyperFlex cluster is not known. | [optional] [readonly] [default to "ESXi"]
+**HostConfig** | Pointer to [**NullableMoBaseComplexType**](MoBaseComplexType.md) | Specify ESXi host custom specification. | [optional] 
+**HypervisorType** | Pointer to **string** | Identifies the broad product type of the hypervisor but without any version information. It is here to easily identify the type of the virtual machine. There are other entities (Host, Cluster, etc.) that can be indirectly used to determine the hypervisor but a direct attribute makes it easier to work with. * &#x60;ESXi&#x60; - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version. * &#x60;Hyper-V&#x60; - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V. * &#x60;Unknown&#x60; - The hypervisor running on the HyperFlex cluster is not known. | [optional] [readonly] [default to "ESXi"]
 **Identity** | Pointer to **string** | Unique identifier assigned to the hypervisor host. | [optional] [readonly] 
-**MaintenanceState** | Pointer to **string** | Expected state of host (enter maintenance, exit maintenance). * &#x60;None&#x60; - A place holder for the default value. * &#x60;Enter&#x60; - Power action is performed on the virtual machine. * &#x60;Exit&#x60; - The virtual machine will be migrated from existing node to a different node in cluster. The behavior depends on the underlying hypervisor. | [optional] [default to "None"]
+**MaintenanceState** | Pointer to **string** | Expected state of host. An action on the host (e.g., Enter Maintenance) may cause the host to be put into maintenance mode. * &#x60;None&#x60; - A place holder for the default value. * &#x60;Enter&#x60; - Power action is performed on the virtual machine. * &#x60;Exit&#x60; - The virtual machine will be migrated from existing node to a different node in cluster. The behavior depends on the underlying hypervisor. | [optional] [default to "None"]
 **Model** | Pointer to **string** | Commercial model information about this hardware. | [optional] [readonly] 
 **Name** | Pointer to **string** | Name of the hypervisor host. It must be unique within the target endpoint. | [optional] [readonly] 
 **Serial** | Pointer to **string** | Serial number of this host (internally generated). | [optional] [readonly] 
 **Vendor** | Pointer to **string** | Commercial vendor details of this hardware. | [optional] [readonly] 
-**Inventory** | Pointer to [**VirtualizationBaseHostRelationship**](VirtualizationBaseHostRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
-**WorkflowInfo** | Pointer to [**WorkflowWorkflowInfoRelationship**](WorkflowWorkflowInfoRelationship.md) |  | [optional] 
+**Inventory** | Pointer to [**NullableVirtualizationBaseHostRelationship**](VirtualizationBaseHostRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**WorkflowInfo** | Pointer to [**NullableWorkflowWorkflowInfoRelationship**](WorkflowWorkflowInfoRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -157,20 +157,20 @@ HasEvacuate returns a boolean if a field has been set.
 
 ### GetHostConfig
 
-`func (o *VirtualizationHost) GetHostConfig() VirtualizationBaseHostConfiguration`
+`func (o *VirtualizationHost) GetHostConfig() MoBaseComplexType`
 
 GetHostConfig returns the HostConfig field if non-nil, zero value otherwise.
 
 ### GetHostConfigOk
 
-`func (o *VirtualizationHost) GetHostConfigOk() (*VirtualizationBaseHostConfiguration, bool)`
+`func (o *VirtualizationHost) GetHostConfigOk() (*MoBaseComplexType, bool)`
 
 GetHostConfigOk returns a tuple with the HostConfig field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetHostConfig
 
-`func (o *VirtualizationHost) SetHostConfig(v VirtualizationBaseHostConfiguration)`
+`func (o *VirtualizationHost) SetHostConfig(v MoBaseComplexType)`
 
 SetHostConfig sets HostConfig field to given value.
 
@@ -390,6 +390,16 @@ SetInventory sets Inventory field to given value.
 
 HasInventory returns a boolean if a field has been set.
 
+### SetInventoryNil
+
+`func (o *VirtualizationHost) SetInventoryNil(b bool)`
+
+ SetInventoryNil sets the value for Inventory to be an explicit nil
+
+### UnsetInventory
+`func (o *VirtualizationHost) UnsetInventory()`
+
+UnsetInventory ensures that no value is present for Inventory, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *VirtualizationHost) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -415,6 +425,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *VirtualizationHost) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *VirtualizationHost) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 ### GetWorkflowInfo
 
 `func (o *VirtualizationHost) GetWorkflowInfo() WorkflowWorkflowInfoRelationship`
@@ -440,6 +460,16 @@ SetWorkflowInfo sets WorkflowInfo field to given value.
 
 HasWorkflowInfo returns a boolean if a field has been set.
 
+### SetWorkflowInfoNil
+
+`func (o *VirtualizationHost) SetWorkflowInfoNil(b bool)`
+
+ SetWorkflowInfoNil sets the value for WorkflowInfo to be an explicit nil
+
+### UnsetWorkflowInfo
+`func (o *VirtualizationHost) UnsetWorkflowInfo()`
+
+UnsetWorkflowInfo ensures that no value is present for WorkflowInfo, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,63 +13,67 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
 
-// WorkflowWorkflowInfo Contains information for a workflow execution which is a runtime instance of workflow.
+// checks if the WorkflowWorkflowInfo type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &WorkflowWorkflowInfo{}
+
+// WorkflowWorkflowInfo Contains information for a workflow which is an execution instance of the workflow definition given in the relationship. The workflow definition will provide the schema of the inputs taken to start the workflow execution and the schema of the outputs generated at the end of successful workflow execution. The sequence of tasks to be executed is also provided in the workflow definition. For a workflow to successfully start execution the following properties must be provided- Name, AssociatedObject that carries the relationship to Organization under which the workflow must be executed, WorkflowDefinition, and Inputs with all the required data in order to start workflow execution.
 type WorkflowWorkflowInfo struct {
 	MoBaseMo
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// The action of the workflow such as start, cancel, retry, pause. * `None` - No action is set, this is the default value for action field. * `Create` - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * `Start` - Start a new execution of the workflow. * `Pause` - Pause the workflow, this can only be issued on workflows that are in running state. * `Resume` - Resume the workflow which was previously paused through pause action on the workflow. * `Retry` - Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration. * `RetryFailed` - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * `Cancel` - Cancel the workflow that is in running or waiting state.
+	// The action of the workflow such as start, cancel, retry, pause. * `None` - No action is set, this is the default value for action field. * `Create` - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * `Start` - Start a new execution of the workflow. * `Pause` - Pause the workflow, this can only be issued on workflows that are in running state. A workflow can be paused for a maximum of 180 days, after 180 days the workflow will be terminated by the system. * `Resume` - Resume the workflow which was previously paused through pause action on the workflow. * `Rerun` - Rerun the workflow that has previously reached a failed state. The workflow is run from the beginning using inputs from previous execution. Completed and currently running workflows cannot be rerun. Workflows do not have to be marked for retry to use this action. * `Retry` - This action has been deprecated. Please use RetryFailed, Rerun or RetryFromTask action. Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration. * `RetryFailed` - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * `RetryFromTask` - Retry the workflow that has previously reached a failed state and has the retryable property set to true. A running or waiting workflow cannot be retried. RetryFromTaskName must be passed along with this action, and the workflow will be started from that specific task. The task name in RetryFromTaskName must be one of the tasks that was executed in the previous attempt. It is not possible to retry a workflow from a task that wasn't run in the previous execution attempt. * `Cancel` - Cancel the workflow that is in running or waiting state.
 	Action *string `json:"Action,omitempty"`
-	// The time when the workflow info will be removed from database.
+	// The time when the workflow info will be removed from the database. When WorkflowInfo is created, cleanup time will be set to 181 days. As the workflow progresses through different states the cleanup time can be updated. A cleanup time of 0 means the workflow is not scheduled for cleanup. An active workflow that continues to schedule & run tasks can run for any amount of time and there is no upper bound for such workflows. Workflows that are not actively running, say in Paused or Waiting states will be removed after 181 days.
 	CleanupTime *time.Time `json:"CleanupTime,omitempty"`
-	// The email address of the user who started this workflow.
+	// The email address of the user who started this workflow. In the case of LDAP users, this field can hold either a username or an email.
 	Email *string `json:"Email,omitempty"`
 	// The time when the workflow reached a final state.
 	EndTime *time.Time `json:"EndTime,omitempty"`
-	// The duration in hours after which the workflow info for failed, terminated or timed out workflow will be removed from database.
+	// The duration in hours after which the workflow info for failed, terminated or timed out workflow will be removed from database. The minimum is 1 hour, maximum is 365 days and default is 90 days.
 	FailedWorkflowCleanupDuration *int64 `json:"FailedWorkflowCleanupDuration,omitempty"`
-	// All the given inputs for the workflow.
+	// All the given inputs for the workflow. The schema for the inputs is defined in the InputDefinition section of the WorkflowDefinition. The InputDefinition will provide a list of input fields to be accepted, the associated datatype of the inputs and any additional constraints on the inputs. For more information please refer to InputDefinition property in the the the WorkflowDefinition resource. The inputs for a workflow are provided as a collection of key-value pairs, where key is the name of the input and value is any valid JSON data which conforms to the datatype of the input as specified in the InputDefinition. When the input passed into a workflow does not match the datatype or the constraints specified in the workflow definition, it will not be accepted. For example, if the InputDefinition specified that workflow must accept a string name 'key' and the value passed for key must adhere to a regex pattern. If Workflow was started with input where 'key' is not a string matching the regex pattern, an error will be generated and workflow will not start execution. During workflow definition design, the input passed into the workflow will be referred using the format 'workflow.input.<inputName>'. If the input is referred directly in a mapping it will be in the format '${workflow.input.<inputName>}' or inside a template mapping in the format '{{.global.workflow.input.<inputName>}}'.
 	Input interface{} `json:"Input,omitempty"`
 	// A workflow instance Id which is the unique identified for the workflow execution.
 	InstId *string `json:"InstId,omitempty"`
-	// Denotes if this workflow is internal and should be hidden from user view of running workflows.
+	// Denotes that an Intersight service started this workflow as internal and hence will not be shown in Intersight User Interface. Typically these are internal system maintenance workflows which are triggered by Intersight services.
 	Internal *bool `json:"Internal,omitempty"`
-	// The last action that was issued on the workflow is saved in this field. * `None` - No action is set, this is the default value for action field. * `Create` - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * `Start` - Start a new execution of the workflow. * `Pause` - Pause the workflow, this can only be issued on workflows that are in running state. * `Resume` - Resume the workflow which was previously paused through pause action on the workflow. * `Retry` - Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration. * `RetryFailed` - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * `Cancel` - Cancel the workflow that is in running or waiting state.
+	// The last action that was issued on the workflow is saved in this field. * `None` - No action is set, this is the default value for action field. * `Create` - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * `Start` - Start a new execution of the workflow. * `Pause` - Pause the workflow, this can only be issued on workflows that are in running state. A workflow can be paused for a maximum of 180 days, after 180 days the workflow will be terminated by the system. * `Resume` - Resume the workflow which was previously paused through pause action on the workflow. * `Rerun` - Rerun the workflow that has previously reached a failed state. The workflow is run from the beginning using inputs from previous execution. Completed and currently running workflows cannot be rerun. Workflows do not have to be marked for retry to use this action. * `Retry` - This action has been deprecated. Please use RetryFailed, Rerun or RetryFromTask action. Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration. * `RetryFailed` - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * `RetryFromTask` - Retry the workflow that has previously reached a failed state and has the retryable property set to true. A running or waiting workflow cannot be retried. RetryFromTaskName must be passed along with this action, and the workflow will be started from that specific task. The task name in RetryFromTaskName must be one of the tasks that was executed in the previous attempt. It is not possible to retry a workflow from a task that wasn't run in the previous execution attempt. * `Cancel` - Cancel the workflow that is in running or waiting state.
 	LastAction *string           `json:"LastAction,omitempty"`
 	Message    []WorkflowMessage `json:"Message,omitempty"`
-	// Version of the workflow metadata for which this workflow execution was started.
-	MetaVersion *int64 `json:"MetaVersion,omitempty"`
 	// A name of the workflow execution instance.
-	Name *string `json:"Name,omitempty"`
-	// All the generated outputs for the workflow.
+	Name *string `json:"Name,omitempty" validate:"regexp=^[^:]{1,92}$"`
+	// All the generated outputs for the workflow. The schema for the outputs are defined in the OutputDefinition section of the WorkflowDefinition. The OutputDefinition will provide a list of output fields that could be generated after workflow execution is completed and the associated datatype of the outputs. For more information please refer to OutputDefinition property in WorkflowDefinition resource. The output for the workflow is generated as a collection of key-value pairs, where key is the name of the output and value is any valid JSON data which conforms to the datatype of output as specified in the OutputDefinition. During workflow definition design, if a workflow is included as a sub-workflow inside a parent workflow then the outputs generated by the sub-workflow can be used in the workflow design. For example, if workflow was included into parent workflow as 'SubWorkflowSample1', then that output can be referred as 'SubWorkflowSample1.output.<outputName>'. In the output is referred directly in a mapping it will be in the format '${SubWorkflowSample1.output.<outputName>}' or inside a template mapping will be in the format '{{SubWorkflowSample1.output.<outputName>}}'.
 	Output interface{} `json:"Output,omitempty"`
 	// Denotes the reason workflow is in paused status. * `None` - Pause reason is none, which indicates there is no reason for the pause state. * `TaskWithWarning` - Pause reason indicates the workflow is in this state due to a task that has a status as completed with warnings. * `SystemMaintenance` - Pause reason indicates the workflow is in this state based on actions of system admin for maintenance.
 	PauseReason *string `json:"PauseReason,omitempty"`
-	// This field indicates percentage of workflow task execution.
+	// This field indicates percentage of workflow task completion based on the total number of tasks in the workflow. The total number of tasks in the workflow is calculated based on the longest path the workflow execution can take. So progress is calculated based on the percentage of tasks that completed out of the total number of tasks that could be executed. Progress is not a representation of the time taken to complete the workflow. A task is considered as completed if the task status is either \"NO_OP\" or \"COMPLETED\". If the task status is \"SKIP_TO_FAIL\", the workflow will be terminated and the progress of the workflow will be set to 100.
 	Progress   *float32                               `json:"Progress,omitempty"`
 	Properties NullableWorkflowWorkflowInfoProperties `json:"Properties,omitempty"`
-	// This field is applicable when Retry action is issued for a workflow which is in 'final' state. When this field is not specified, the workflow will be retried from the start i.e., the first task. When this field is specified then the workflow will be retried from the specified task. This field should specify the task name which is the unique name of the task within the workflow. The task name must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration.
+	// This field is required when RetryFromTask action is issued for a workflow that is in a 'final' state. The workflow will be retried from the specified task. This field must specify a task name which is the unique name of the task within the workflow. The task name must be one of the tasks that were completed or failed in the previous run. It is not possible to retry a workflow from a task that wasn't run in the previous execution attempt.
 	RetryFromTaskName *string `json:"RetryFromTaskName,omitempty"`
-	// The source microservice name which is the owner for this workflow.
+	// The source service that started the workflow execution and hence represents the owning service for this workflow.
 	Src *string `json:"Src,omitempty"`
 	// The time when the workflow was started for execution.
 	StartTime *time.Time `json:"StartTime,omitempty"`
-	// A status of the workflow (RUNNING, WAITING, COMPLETED, TIME_OUT, FAILED).
+	// A status of the workflow (RUNNING, WAITING, COMPLETED, TIME_OUT, FAILED). The \"status\" field has been deprecated and is now replaced with the \"workflowStatus\" field.
+	// Deprecated
 	Status *string `json:"Status,omitempty"`
-	// The duration in hours after which the workflow info for successful workflow will be removed from database.
-	SuccessWorkflowCleanupDuration *int64 `json:"SuccessWorkflowCleanupDuration,omitempty"`
+	// The duration in hours after which the workflow info for successful workflow will be removed from database. The minimum is 1 hour, maximum is 365 days and default is 90 days.
+	SuccessWorkflowCleanupDuration *int64                         `json:"SuccessWorkflowCleanupDuration,omitempty"`
+	TaskInfoUpdate                 NullableWorkflowTaskInfoUpdate `json:"TaskInfoUpdate,omitempty"`
 	// The trace id to keep track of workflow execution.
 	TraceId *string `json:"TraceId,omitempty"`
 	// A type of the workflow (serverconfig, ansible_monitoring).
 	Type *string `json:"Type,omitempty"`
-	// Property will be set when an user action is required on the workflow. This can be because the workflow is waiting for a wait task to be updated, workflow is paused or workflow launched by a configuration object has failed and needs to be retried in order to complete successfully.
+	// Property will be set when a user action is required on the workflow. This can be because the workflow is waiting for a wait task to be updated, workflow is paused or workflow launched by a configuration object has failed and needs to be retried in order to complete successfully.
 	UserActionRequired *bool `json:"UserActionRequired,omitempty"`
 	// The user identifier which indicates the user that started this workflow.
 	UserId *string `json:"UserId,omitempty"`
@@ -78,21 +82,16 @@ type WorkflowWorkflowInfo struct {
 	// Denotes the reason workflow is in waiting status. * `None` - Wait reason is none, which indicates there is no reason for the waiting state. * `GatherTasks` - Wait reason is gathering tasks, which indicates the workflow is in this state in order to gather tasks. * `Duplicate` - Wait reason is duplicate, which indicates the workflow is a duplicate of current running workflow. * `RateLimit` - Wait reason is rate limit, which indicates the workflow is rate limited by account/instance level throttling threshold. * `WaitTask` - Wait reason when there are one or more wait tasks in the workflow which are yet to receive a task status update. * `PendingRetryFailed` - Wait reason when the workflow is pending a RetryFailed action. * `WaitingToStart` - Workflow is waiting to start on workflow engine.
 	WaitReason  *string                     `json:"WaitReason,omitempty"`
 	WorkflowCtx NullableWorkflowWorkflowCtx `json:"WorkflowCtx,omitempty"`
-	// The type of workflow meta. Derived from the workflow meta that is used to launch this workflow instance. * `SystemDefined` - System defined workflow definition. * `UserDefined` - User defined workflow definition. * `Dynamic` - Dynamically defined workflow definition.
-	WorkflowMetaType *string `json:"WorkflowMetaType,omitempty"`
-	// Total number of workflow tasks in this workflow.
-	WorkflowTaskCount *int64 `json:"WorkflowTaskCount,omitempty"`
-	// Total number of worker tasks in this workflow. This count doesn't include the control tasks in the workflow.
-	WorkflowWorkerTaskCount    *int64                                          `json:"WorkflowWorkerTaskCount,omitempty"`
-	Account                    *IamAccountRelationship                         `json:"Account,omitempty"`
-	AssociatedObject           *MoBaseMoRelationship                           `json:"AssociatedObject,omitempty"`
-	Organization               *OrganizationOrganizationRelationship           `json:"Organization,omitempty"`
-	ParentTaskInfo             *WorkflowTaskInfoRelationship                   `json:"ParentTaskInfo,omitempty"`
-	PendingDynamicWorkflowInfo *WorkflowPendingDynamicWorkflowInfoRelationship `json:"PendingDynamicWorkflowInfo,omitempty"`
-	Permission                 *IamPermissionRelationship                      `json:"Permission,omitempty"`
+	// The current state of the workflow execution instance. A draft workflow execution will be in NotStarted state and when \"Start\" action is issued then the workflow will move into Waiting state until the first task of the workflow is scheduled at which time it will move into InProgress state. When execution reaches a final state it move to either Completed, Failed or Terminated state. For more details look at the description for each state. * `NotStarted` - Initially all the workflow instances are at \"NotStarted\" state. A workflow can be drafted in this state by issuing Create action. When a workflow is in this state the inputs can be updated until the workflow is started. * `InProgress` - A workflow execution moves into \"InProgress\" state when the first task of the workflow is scheduled for execution and continues to remain in that state as long as there are tasks executing or yet to be scheduled for execution. * `Waiting` - Workflow can go to waiting state due to execution of wait task present in the workflow or the workflow has not started yet either due to duplicate workflow is running or due to workflow throttling. Once Workflow engine picks up the workflow for execution, it will move to in progress state. * `Completed` - A workflow execution moves into Completed state when the execution path of the workflow has reached the Success node in the workflow design and there are no more tasks to be executed. Completed is the final state for the workflow execution instance and no further actions are allowed on this workflow instance. * `Failed` - A workflow execution moves into a Failed state when the execution path of the workflow has reached the Failed node in the workflow design and there are no more tasks to be scheduled. A Failed node can be reached when the last executed task has failed or timed out and there are no further retries available for the task. Also as per the workflow design, the last executed task did not specify an OnFailure task to be executed and hence by default, the execution will reach the Failed node. Actions like \"Rerun\", \"RetryFailed\" and \"RetryFromTask\" can be issued on failed workflow instances. Please refer to the \"Action\" description for more details. * `Terminated` - A workflow execution moves to Terminated state when user issues a \"Cancel\" action or due to internal errors caused during workflow execution. e.g. - Task input transformation has failed. Terminated is a final state of the workflow, no further action are allowed on this workflow instance. * `Canceled` - A workflow execution moves to Canceled state when a user issues a \"Cancel\" action. Cancel is not a final state, the workflow engine will issue cancel to all the running tasks and then move the workflow to the \"Terminated\" state. * `Paused` - A workflow execution moves to Paused state when user issues a \"Pause\" action. When in paused state the current running task will complete its execution but no further tasks will be scheduled until the workflow is resumed. A paused workflow is resumed when the user issues a \"Resume\" action. Paused workflows can be canceled by user.
+	WorkflowStatus   *string                                      `json:"WorkflowStatus,omitempty"`
+	Account          NullableIamAccountRelationship               `json:"Account,omitempty"`
+	AssociatedObject NullableMoBaseMoRelationship                 `json:"AssociatedObject,omitempty"`
+	Organization     NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	ParentTaskInfo   NullableWorkflowTaskInfoRelationship         `json:"ParentTaskInfo,omitempty"`
+	Permission       NullableIamPermissionRelationship            `json:"Permission,omitempty"`
 	// An array of relationships to workflowTaskInfo resources.
-	TaskInfos            []WorkflowTaskInfoRelationship          `json:"TaskInfos,omitempty"`
-	WorkflowDefinition   *WorkflowWorkflowDefinitionRelationship `json:"WorkflowDefinition,omitempty"`
+	TaskInfos            []WorkflowTaskInfoRelationship                 `json:"TaskInfos,omitempty"`
+	WorkflowDefinition   NullableWorkflowWorkflowDefinitionRelationship `json:"WorkflowDefinition,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -110,14 +109,8 @@ func NewWorkflowWorkflowInfo(classId string, objectType string) *WorkflowWorkflo
 	this.Action = &action
 	var failedWorkflowCleanupDuration int64 = 2160
 	this.FailedWorkflowCleanupDuration = &failedWorkflowCleanupDuration
-	var pauseReason string = "None"
-	this.PauseReason = &pauseReason
 	var successWorkflowCleanupDuration int64 = 2160
 	this.SuccessWorkflowCleanupDuration = &successWorkflowCleanupDuration
-	var waitReason string = "None"
-	this.WaitReason = &waitReason
-	var workflowMetaType string = "SystemDefined"
-	this.WorkflowMetaType = &workflowMetaType
 	return &this
 }
 
@@ -134,14 +127,8 @@ func NewWorkflowWorkflowInfoWithDefaults() *WorkflowWorkflowInfo {
 	this.Action = &action
 	var failedWorkflowCleanupDuration int64 = 2160
 	this.FailedWorkflowCleanupDuration = &failedWorkflowCleanupDuration
-	var pauseReason string = "None"
-	this.PauseReason = &pauseReason
 	var successWorkflowCleanupDuration int64 = 2160
 	this.SuccessWorkflowCleanupDuration = &successWorkflowCleanupDuration
-	var waitReason string = "None"
-	this.WaitReason = &waitReason
-	var workflowMetaType string = "SystemDefined"
-	this.WorkflowMetaType = &workflowMetaType
 	return &this
 }
 
@@ -169,6 +156,11 @@ func (o *WorkflowWorkflowInfo) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "workflow.WorkflowInfo" of the ClassId field.
+func (o *WorkflowWorkflowInfo) GetDefaultClassId() interface{} {
+	return "workflow.WorkflowInfo"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *WorkflowWorkflowInfo) GetObjectType() string {
 	if o == nil {
@@ -193,9 +185,14 @@ func (o *WorkflowWorkflowInfo) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "workflow.WorkflowInfo" of the ObjectType field.
+func (o *WorkflowWorkflowInfo) GetDefaultObjectType() interface{} {
+	return "workflow.WorkflowInfo"
+}
+
 // GetAction returns the Action field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetAction() string {
-	if o == nil || o.Action == nil {
+	if o == nil || IsNil(o.Action) {
 		var ret string
 		return ret
 	}
@@ -205,7 +202,7 @@ func (o *WorkflowWorkflowInfo) GetAction() string {
 // GetActionOk returns a tuple with the Action field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetActionOk() (*string, bool) {
-	if o == nil || o.Action == nil {
+	if o == nil || IsNil(o.Action) {
 		return nil, false
 	}
 	return o.Action, true
@@ -213,7 +210,7 @@ func (o *WorkflowWorkflowInfo) GetActionOk() (*string, bool) {
 
 // HasAction returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasAction() bool {
-	if o != nil && o.Action != nil {
+	if o != nil && !IsNil(o.Action) {
 		return true
 	}
 
@@ -227,7 +224,7 @@ func (o *WorkflowWorkflowInfo) SetAction(v string) {
 
 // GetCleanupTime returns the CleanupTime field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetCleanupTime() time.Time {
-	if o == nil || o.CleanupTime == nil {
+	if o == nil || IsNil(o.CleanupTime) {
 		var ret time.Time
 		return ret
 	}
@@ -237,7 +234,7 @@ func (o *WorkflowWorkflowInfo) GetCleanupTime() time.Time {
 // GetCleanupTimeOk returns a tuple with the CleanupTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetCleanupTimeOk() (*time.Time, bool) {
-	if o == nil || o.CleanupTime == nil {
+	if o == nil || IsNil(o.CleanupTime) {
 		return nil, false
 	}
 	return o.CleanupTime, true
@@ -245,7 +242,7 @@ func (o *WorkflowWorkflowInfo) GetCleanupTimeOk() (*time.Time, bool) {
 
 // HasCleanupTime returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasCleanupTime() bool {
-	if o != nil && o.CleanupTime != nil {
+	if o != nil && !IsNil(o.CleanupTime) {
 		return true
 	}
 
@@ -259,7 +256,7 @@ func (o *WorkflowWorkflowInfo) SetCleanupTime(v time.Time) {
 
 // GetEmail returns the Email field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetEmail() string {
-	if o == nil || o.Email == nil {
+	if o == nil || IsNil(o.Email) {
 		var ret string
 		return ret
 	}
@@ -269,7 +266,7 @@ func (o *WorkflowWorkflowInfo) GetEmail() string {
 // GetEmailOk returns a tuple with the Email field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetEmailOk() (*string, bool) {
-	if o == nil || o.Email == nil {
+	if o == nil || IsNil(o.Email) {
 		return nil, false
 	}
 	return o.Email, true
@@ -277,7 +274,7 @@ func (o *WorkflowWorkflowInfo) GetEmailOk() (*string, bool) {
 
 // HasEmail returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasEmail() bool {
-	if o != nil && o.Email != nil {
+	if o != nil && !IsNil(o.Email) {
 		return true
 	}
 
@@ -291,7 +288,7 @@ func (o *WorkflowWorkflowInfo) SetEmail(v string) {
 
 // GetEndTime returns the EndTime field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetEndTime() time.Time {
-	if o == nil || o.EndTime == nil {
+	if o == nil || IsNil(o.EndTime) {
 		var ret time.Time
 		return ret
 	}
@@ -301,7 +298,7 @@ func (o *WorkflowWorkflowInfo) GetEndTime() time.Time {
 // GetEndTimeOk returns a tuple with the EndTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetEndTimeOk() (*time.Time, bool) {
-	if o == nil || o.EndTime == nil {
+	if o == nil || IsNil(o.EndTime) {
 		return nil, false
 	}
 	return o.EndTime, true
@@ -309,7 +306,7 @@ func (o *WorkflowWorkflowInfo) GetEndTimeOk() (*time.Time, bool) {
 
 // HasEndTime returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasEndTime() bool {
-	if o != nil && o.EndTime != nil {
+	if o != nil && !IsNil(o.EndTime) {
 		return true
 	}
 
@@ -323,7 +320,7 @@ func (o *WorkflowWorkflowInfo) SetEndTime(v time.Time) {
 
 // GetFailedWorkflowCleanupDuration returns the FailedWorkflowCleanupDuration field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetFailedWorkflowCleanupDuration() int64 {
-	if o == nil || o.FailedWorkflowCleanupDuration == nil {
+	if o == nil || IsNil(o.FailedWorkflowCleanupDuration) {
 		var ret int64
 		return ret
 	}
@@ -333,7 +330,7 @@ func (o *WorkflowWorkflowInfo) GetFailedWorkflowCleanupDuration() int64 {
 // GetFailedWorkflowCleanupDurationOk returns a tuple with the FailedWorkflowCleanupDuration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetFailedWorkflowCleanupDurationOk() (*int64, bool) {
-	if o == nil || o.FailedWorkflowCleanupDuration == nil {
+	if o == nil || IsNil(o.FailedWorkflowCleanupDuration) {
 		return nil, false
 	}
 	return o.FailedWorkflowCleanupDuration, true
@@ -341,7 +338,7 @@ func (o *WorkflowWorkflowInfo) GetFailedWorkflowCleanupDurationOk() (*int64, boo
 
 // HasFailedWorkflowCleanupDuration returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasFailedWorkflowCleanupDuration() bool {
-	if o != nil && o.FailedWorkflowCleanupDuration != nil {
+	if o != nil && !IsNil(o.FailedWorkflowCleanupDuration) {
 		return true
 	}
 
@@ -366,7 +363,7 @@ func (o *WorkflowWorkflowInfo) GetInput() interface{} {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetInputOk() (*interface{}, bool) {
-	if o == nil || o.Input == nil {
+	if o == nil || IsNil(o.Input) {
 		return nil, false
 	}
 	return &o.Input, true
@@ -374,7 +371,7 @@ func (o *WorkflowWorkflowInfo) GetInputOk() (*interface{}, bool) {
 
 // HasInput returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasInput() bool {
-	if o != nil && o.Input != nil {
+	if o != nil && !IsNil(o.Input) {
 		return true
 	}
 
@@ -388,7 +385,7 @@ func (o *WorkflowWorkflowInfo) SetInput(v interface{}) {
 
 // GetInstId returns the InstId field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetInstId() string {
-	if o == nil || o.InstId == nil {
+	if o == nil || IsNil(o.InstId) {
 		var ret string
 		return ret
 	}
@@ -398,7 +395,7 @@ func (o *WorkflowWorkflowInfo) GetInstId() string {
 // GetInstIdOk returns a tuple with the InstId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetInstIdOk() (*string, bool) {
-	if o == nil || o.InstId == nil {
+	if o == nil || IsNil(o.InstId) {
 		return nil, false
 	}
 	return o.InstId, true
@@ -406,7 +403,7 @@ func (o *WorkflowWorkflowInfo) GetInstIdOk() (*string, bool) {
 
 // HasInstId returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasInstId() bool {
-	if o != nil && o.InstId != nil {
+	if o != nil && !IsNil(o.InstId) {
 		return true
 	}
 
@@ -420,7 +417,7 @@ func (o *WorkflowWorkflowInfo) SetInstId(v string) {
 
 // GetInternal returns the Internal field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetInternal() bool {
-	if o == nil || o.Internal == nil {
+	if o == nil || IsNil(o.Internal) {
 		var ret bool
 		return ret
 	}
@@ -430,7 +427,7 @@ func (o *WorkflowWorkflowInfo) GetInternal() bool {
 // GetInternalOk returns a tuple with the Internal field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetInternalOk() (*bool, bool) {
-	if o == nil || o.Internal == nil {
+	if o == nil || IsNil(o.Internal) {
 		return nil, false
 	}
 	return o.Internal, true
@@ -438,7 +435,7 @@ func (o *WorkflowWorkflowInfo) GetInternalOk() (*bool, bool) {
 
 // HasInternal returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasInternal() bool {
-	if o != nil && o.Internal != nil {
+	if o != nil && !IsNil(o.Internal) {
 		return true
 	}
 
@@ -452,7 +449,7 @@ func (o *WorkflowWorkflowInfo) SetInternal(v bool) {
 
 // GetLastAction returns the LastAction field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetLastAction() string {
-	if o == nil || o.LastAction == nil {
+	if o == nil || IsNil(o.LastAction) {
 		var ret string
 		return ret
 	}
@@ -462,7 +459,7 @@ func (o *WorkflowWorkflowInfo) GetLastAction() string {
 // GetLastActionOk returns a tuple with the LastAction field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetLastActionOk() (*string, bool) {
-	if o == nil || o.LastAction == nil {
+	if o == nil || IsNil(o.LastAction) {
 		return nil, false
 	}
 	return o.LastAction, true
@@ -470,7 +467,7 @@ func (o *WorkflowWorkflowInfo) GetLastActionOk() (*string, bool) {
 
 // HasLastAction returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasLastAction() bool {
-	if o != nil && o.LastAction != nil {
+	if o != nil && !IsNil(o.LastAction) {
 		return true
 	}
 
@@ -495,7 +492,7 @@ func (o *WorkflowWorkflowInfo) GetMessage() []WorkflowMessage {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetMessageOk() ([]WorkflowMessage, bool) {
-	if o == nil || o.Message == nil {
+	if o == nil || IsNil(o.Message) {
 		return nil, false
 	}
 	return o.Message, true
@@ -503,7 +500,7 @@ func (o *WorkflowWorkflowInfo) GetMessageOk() ([]WorkflowMessage, bool) {
 
 // HasMessage returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasMessage() bool {
-	if o != nil && o.Message != nil {
+	if o != nil && !IsNil(o.Message) {
 		return true
 	}
 
@@ -515,41 +512,9 @@ func (o *WorkflowWorkflowInfo) SetMessage(v []WorkflowMessage) {
 	o.Message = v
 }
 
-// GetMetaVersion returns the MetaVersion field value if set, zero value otherwise.
-func (o *WorkflowWorkflowInfo) GetMetaVersion() int64 {
-	if o == nil || o.MetaVersion == nil {
-		var ret int64
-		return ret
-	}
-	return *o.MetaVersion
-}
-
-// GetMetaVersionOk returns a tuple with the MetaVersion field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *WorkflowWorkflowInfo) GetMetaVersionOk() (*int64, bool) {
-	if o == nil || o.MetaVersion == nil {
-		return nil, false
-	}
-	return o.MetaVersion, true
-}
-
-// HasMetaVersion returns a boolean if a field has been set.
-func (o *WorkflowWorkflowInfo) HasMetaVersion() bool {
-	if o != nil && o.MetaVersion != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetMetaVersion gets a reference to the given int64 and assigns it to the MetaVersion field.
-func (o *WorkflowWorkflowInfo) SetMetaVersion(v int64) {
-	o.MetaVersion = &v
-}
-
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -559,7 +524,7 @@ func (o *WorkflowWorkflowInfo) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -567,7 +532,7 @@ func (o *WorkflowWorkflowInfo) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -592,7 +557,7 @@ func (o *WorkflowWorkflowInfo) GetOutput() interface{} {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetOutputOk() (*interface{}, bool) {
-	if o == nil || o.Output == nil {
+	if o == nil || IsNil(o.Output) {
 		return nil, false
 	}
 	return &o.Output, true
@@ -600,7 +565,7 @@ func (o *WorkflowWorkflowInfo) GetOutputOk() (*interface{}, bool) {
 
 // HasOutput returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasOutput() bool {
-	if o != nil && o.Output != nil {
+	if o != nil && !IsNil(o.Output) {
 		return true
 	}
 
@@ -614,7 +579,7 @@ func (o *WorkflowWorkflowInfo) SetOutput(v interface{}) {
 
 // GetPauseReason returns the PauseReason field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetPauseReason() string {
-	if o == nil || o.PauseReason == nil {
+	if o == nil || IsNil(o.PauseReason) {
 		var ret string
 		return ret
 	}
@@ -624,7 +589,7 @@ func (o *WorkflowWorkflowInfo) GetPauseReason() string {
 // GetPauseReasonOk returns a tuple with the PauseReason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetPauseReasonOk() (*string, bool) {
-	if o == nil || o.PauseReason == nil {
+	if o == nil || IsNil(o.PauseReason) {
 		return nil, false
 	}
 	return o.PauseReason, true
@@ -632,7 +597,7 @@ func (o *WorkflowWorkflowInfo) GetPauseReasonOk() (*string, bool) {
 
 // HasPauseReason returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasPauseReason() bool {
-	if o != nil && o.PauseReason != nil {
+	if o != nil && !IsNil(o.PauseReason) {
 		return true
 	}
 
@@ -646,7 +611,7 @@ func (o *WorkflowWorkflowInfo) SetPauseReason(v string) {
 
 // GetProgress returns the Progress field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetProgress() float32 {
-	if o == nil || o.Progress == nil {
+	if o == nil || IsNil(o.Progress) {
 		var ret float32
 		return ret
 	}
@@ -656,7 +621,7 @@ func (o *WorkflowWorkflowInfo) GetProgress() float32 {
 // GetProgressOk returns a tuple with the Progress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetProgressOk() (*float32, bool) {
-	if o == nil || o.Progress == nil {
+	if o == nil || IsNil(o.Progress) {
 		return nil, false
 	}
 	return o.Progress, true
@@ -664,7 +629,7 @@ func (o *WorkflowWorkflowInfo) GetProgressOk() (*float32, bool) {
 
 // HasProgress returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasProgress() bool {
-	if o != nil && o.Progress != nil {
+	if o != nil && !IsNil(o.Progress) {
 		return true
 	}
 
@@ -678,7 +643,7 @@ func (o *WorkflowWorkflowInfo) SetProgress(v float32) {
 
 // GetProperties returns the Properties field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowInfo) GetProperties() WorkflowWorkflowInfoProperties {
-	if o == nil || o.Properties.Get() == nil {
+	if o == nil || IsNil(o.Properties.Get()) {
 		var ret WorkflowWorkflowInfoProperties
 		return ret
 	}
@@ -721,7 +686,7 @@ func (o *WorkflowWorkflowInfo) UnsetProperties() {
 
 // GetRetryFromTaskName returns the RetryFromTaskName field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetRetryFromTaskName() string {
-	if o == nil || o.RetryFromTaskName == nil {
+	if o == nil || IsNil(o.RetryFromTaskName) {
 		var ret string
 		return ret
 	}
@@ -731,7 +696,7 @@ func (o *WorkflowWorkflowInfo) GetRetryFromTaskName() string {
 // GetRetryFromTaskNameOk returns a tuple with the RetryFromTaskName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetRetryFromTaskNameOk() (*string, bool) {
-	if o == nil || o.RetryFromTaskName == nil {
+	if o == nil || IsNil(o.RetryFromTaskName) {
 		return nil, false
 	}
 	return o.RetryFromTaskName, true
@@ -739,7 +704,7 @@ func (o *WorkflowWorkflowInfo) GetRetryFromTaskNameOk() (*string, bool) {
 
 // HasRetryFromTaskName returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasRetryFromTaskName() bool {
-	if o != nil && o.RetryFromTaskName != nil {
+	if o != nil && !IsNil(o.RetryFromTaskName) {
 		return true
 	}
 
@@ -753,7 +718,7 @@ func (o *WorkflowWorkflowInfo) SetRetryFromTaskName(v string) {
 
 // GetSrc returns the Src field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetSrc() string {
-	if o == nil || o.Src == nil {
+	if o == nil || IsNil(o.Src) {
 		var ret string
 		return ret
 	}
@@ -763,7 +728,7 @@ func (o *WorkflowWorkflowInfo) GetSrc() string {
 // GetSrcOk returns a tuple with the Src field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetSrcOk() (*string, bool) {
-	if o == nil || o.Src == nil {
+	if o == nil || IsNil(o.Src) {
 		return nil, false
 	}
 	return o.Src, true
@@ -771,7 +736,7 @@ func (o *WorkflowWorkflowInfo) GetSrcOk() (*string, bool) {
 
 // HasSrc returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasSrc() bool {
-	if o != nil && o.Src != nil {
+	if o != nil && !IsNil(o.Src) {
 		return true
 	}
 
@@ -785,7 +750,7 @@ func (o *WorkflowWorkflowInfo) SetSrc(v string) {
 
 // GetStartTime returns the StartTime field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetStartTime() time.Time {
-	if o == nil || o.StartTime == nil {
+	if o == nil || IsNil(o.StartTime) {
 		var ret time.Time
 		return ret
 	}
@@ -795,7 +760,7 @@ func (o *WorkflowWorkflowInfo) GetStartTime() time.Time {
 // GetStartTimeOk returns a tuple with the StartTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetStartTimeOk() (*time.Time, bool) {
-	if o == nil || o.StartTime == nil {
+	if o == nil || IsNil(o.StartTime) {
 		return nil, false
 	}
 	return o.StartTime, true
@@ -803,7 +768,7 @@ func (o *WorkflowWorkflowInfo) GetStartTimeOk() (*time.Time, bool) {
 
 // HasStartTime returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasStartTime() bool {
-	if o != nil && o.StartTime != nil {
+	if o != nil && !IsNil(o.StartTime) {
 		return true
 	}
 
@@ -816,8 +781,9 @@ func (o *WorkflowWorkflowInfo) SetStartTime(v time.Time) {
 }
 
 // GetStatus returns the Status field value if set, zero value otherwise.
+// Deprecated
 func (o *WorkflowWorkflowInfo) GetStatus() string {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
@@ -826,8 +792,9 @@ func (o *WorkflowWorkflowInfo) GetStatus() string {
 
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// Deprecated
 func (o *WorkflowWorkflowInfo) GetStatusOk() (*string, bool) {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
 	return o.Status, true
@@ -835,7 +802,7 @@ func (o *WorkflowWorkflowInfo) GetStatusOk() (*string, bool) {
 
 // HasStatus returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasStatus() bool {
-	if o != nil && o.Status != nil {
+	if o != nil && !IsNil(o.Status) {
 		return true
 	}
 
@@ -843,13 +810,14 @@ func (o *WorkflowWorkflowInfo) HasStatus() bool {
 }
 
 // SetStatus gets a reference to the given string and assigns it to the Status field.
+// Deprecated
 func (o *WorkflowWorkflowInfo) SetStatus(v string) {
 	o.Status = &v
 }
 
 // GetSuccessWorkflowCleanupDuration returns the SuccessWorkflowCleanupDuration field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetSuccessWorkflowCleanupDuration() int64 {
-	if o == nil || o.SuccessWorkflowCleanupDuration == nil {
+	if o == nil || IsNil(o.SuccessWorkflowCleanupDuration) {
 		var ret int64
 		return ret
 	}
@@ -859,7 +827,7 @@ func (o *WorkflowWorkflowInfo) GetSuccessWorkflowCleanupDuration() int64 {
 // GetSuccessWorkflowCleanupDurationOk returns a tuple with the SuccessWorkflowCleanupDuration field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetSuccessWorkflowCleanupDurationOk() (*int64, bool) {
-	if o == nil || o.SuccessWorkflowCleanupDuration == nil {
+	if o == nil || IsNil(o.SuccessWorkflowCleanupDuration) {
 		return nil, false
 	}
 	return o.SuccessWorkflowCleanupDuration, true
@@ -867,7 +835,7 @@ func (o *WorkflowWorkflowInfo) GetSuccessWorkflowCleanupDurationOk() (*int64, bo
 
 // HasSuccessWorkflowCleanupDuration returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasSuccessWorkflowCleanupDuration() bool {
-	if o != nil && o.SuccessWorkflowCleanupDuration != nil {
+	if o != nil && !IsNil(o.SuccessWorkflowCleanupDuration) {
 		return true
 	}
 
@@ -879,9 +847,52 @@ func (o *WorkflowWorkflowInfo) SetSuccessWorkflowCleanupDuration(v int64) {
 	o.SuccessWorkflowCleanupDuration = &v
 }
 
+// GetTaskInfoUpdate returns the TaskInfoUpdate field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *WorkflowWorkflowInfo) GetTaskInfoUpdate() WorkflowTaskInfoUpdate {
+	if o == nil || IsNil(o.TaskInfoUpdate.Get()) {
+		var ret WorkflowTaskInfoUpdate
+		return ret
+	}
+	return *o.TaskInfoUpdate.Get()
+}
+
+// GetTaskInfoUpdateOk returns a tuple with the TaskInfoUpdate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *WorkflowWorkflowInfo) GetTaskInfoUpdateOk() (*WorkflowTaskInfoUpdate, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.TaskInfoUpdate.Get(), o.TaskInfoUpdate.IsSet()
+}
+
+// HasTaskInfoUpdate returns a boolean if a field has been set.
+func (o *WorkflowWorkflowInfo) HasTaskInfoUpdate() bool {
+	if o != nil && o.TaskInfoUpdate.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetTaskInfoUpdate gets a reference to the given NullableWorkflowTaskInfoUpdate and assigns it to the TaskInfoUpdate field.
+func (o *WorkflowWorkflowInfo) SetTaskInfoUpdate(v WorkflowTaskInfoUpdate) {
+	o.TaskInfoUpdate.Set(&v)
+}
+
+// SetTaskInfoUpdateNil sets the value for TaskInfoUpdate to be an explicit nil
+func (o *WorkflowWorkflowInfo) SetTaskInfoUpdateNil() {
+	o.TaskInfoUpdate.Set(nil)
+}
+
+// UnsetTaskInfoUpdate ensures that no value is present for TaskInfoUpdate, not even an explicit nil
+func (o *WorkflowWorkflowInfo) UnsetTaskInfoUpdate() {
+	o.TaskInfoUpdate.Unset()
+}
+
 // GetTraceId returns the TraceId field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetTraceId() string {
-	if o == nil || o.TraceId == nil {
+	if o == nil || IsNil(o.TraceId) {
 		var ret string
 		return ret
 	}
@@ -891,7 +902,7 @@ func (o *WorkflowWorkflowInfo) GetTraceId() string {
 // GetTraceIdOk returns a tuple with the TraceId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetTraceIdOk() (*string, bool) {
-	if o == nil || o.TraceId == nil {
+	if o == nil || IsNil(o.TraceId) {
 		return nil, false
 	}
 	return o.TraceId, true
@@ -899,7 +910,7 @@ func (o *WorkflowWorkflowInfo) GetTraceIdOk() (*string, bool) {
 
 // HasTraceId returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasTraceId() bool {
-	if o != nil && o.TraceId != nil {
+	if o != nil && !IsNil(o.TraceId) {
 		return true
 	}
 
@@ -913,7 +924,7 @@ func (o *WorkflowWorkflowInfo) SetTraceId(v string) {
 
 // GetType returns the Type field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetType() string {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		var ret string
 		return ret
 	}
@@ -923,7 +934,7 @@ func (o *WorkflowWorkflowInfo) GetType() string {
 // GetTypeOk returns a tuple with the Type field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetTypeOk() (*string, bool) {
-	if o == nil || o.Type == nil {
+	if o == nil || IsNil(o.Type) {
 		return nil, false
 	}
 	return o.Type, true
@@ -931,7 +942,7 @@ func (o *WorkflowWorkflowInfo) GetTypeOk() (*string, bool) {
 
 // HasType returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasType() bool {
-	if o != nil && o.Type != nil {
+	if o != nil && !IsNil(o.Type) {
 		return true
 	}
 
@@ -945,7 +956,7 @@ func (o *WorkflowWorkflowInfo) SetType(v string) {
 
 // GetUserActionRequired returns the UserActionRequired field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetUserActionRequired() bool {
-	if o == nil || o.UserActionRequired == nil {
+	if o == nil || IsNil(o.UserActionRequired) {
 		var ret bool
 		return ret
 	}
@@ -955,7 +966,7 @@ func (o *WorkflowWorkflowInfo) GetUserActionRequired() bool {
 // GetUserActionRequiredOk returns a tuple with the UserActionRequired field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetUserActionRequiredOk() (*bool, bool) {
-	if o == nil || o.UserActionRequired == nil {
+	if o == nil || IsNil(o.UserActionRequired) {
 		return nil, false
 	}
 	return o.UserActionRequired, true
@@ -963,7 +974,7 @@ func (o *WorkflowWorkflowInfo) GetUserActionRequiredOk() (*bool, bool) {
 
 // HasUserActionRequired returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasUserActionRequired() bool {
-	if o != nil && o.UserActionRequired != nil {
+	if o != nil && !IsNil(o.UserActionRequired) {
 		return true
 	}
 
@@ -977,7 +988,7 @@ func (o *WorkflowWorkflowInfo) SetUserActionRequired(v bool) {
 
 // GetUserId returns the UserId field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetUserId() string {
-	if o == nil || o.UserId == nil {
+	if o == nil || IsNil(o.UserId) {
 		var ret string
 		return ret
 	}
@@ -987,7 +998,7 @@ func (o *WorkflowWorkflowInfo) GetUserId() string {
 // GetUserIdOk returns a tuple with the UserId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetUserIdOk() (*string, bool) {
-	if o == nil || o.UserId == nil {
+	if o == nil || IsNil(o.UserId) {
 		return nil, false
 	}
 	return o.UserId, true
@@ -995,7 +1006,7 @@ func (o *WorkflowWorkflowInfo) GetUserIdOk() (*string, bool) {
 
 // HasUserId returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasUserId() bool {
-	if o != nil && o.UserId != nil {
+	if o != nil && !IsNil(o.UserId) {
 		return true
 	}
 
@@ -1020,7 +1031,7 @@ func (o *WorkflowWorkflowInfo) GetVariable() interface{} {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetVariableOk() (*interface{}, bool) {
-	if o == nil || o.Variable == nil {
+	if o == nil || IsNil(o.Variable) {
 		return nil, false
 	}
 	return &o.Variable, true
@@ -1028,7 +1039,7 @@ func (o *WorkflowWorkflowInfo) GetVariableOk() (*interface{}, bool) {
 
 // HasVariable returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasVariable() bool {
-	if o != nil && o.Variable != nil {
+	if o != nil && !IsNil(o.Variable) {
 		return true
 	}
 
@@ -1042,7 +1053,7 @@ func (o *WorkflowWorkflowInfo) SetVariable(v interface{}) {
 
 // GetWaitReason returns the WaitReason field value if set, zero value otherwise.
 func (o *WorkflowWorkflowInfo) GetWaitReason() string {
-	if o == nil || o.WaitReason == nil {
+	if o == nil || IsNil(o.WaitReason) {
 		var ret string
 		return ret
 	}
@@ -1052,7 +1063,7 @@ func (o *WorkflowWorkflowInfo) GetWaitReason() string {
 // GetWaitReasonOk returns a tuple with the WaitReason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *WorkflowWorkflowInfo) GetWaitReasonOk() (*string, bool) {
-	if o == nil || o.WaitReason == nil {
+	if o == nil || IsNil(o.WaitReason) {
 		return nil, false
 	}
 	return o.WaitReason, true
@@ -1060,7 +1071,7 @@ func (o *WorkflowWorkflowInfo) GetWaitReasonOk() (*string, bool) {
 
 // HasWaitReason returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasWaitReason() bool {
-	if o != nil && o.WaitReason != nil {
+	if o != nil && !IsNil(o.WaitReason) {
 		return true
 	}
 
@@ -1074,7 +1085,7 @@ func (o *WorkflowWorkflowInfo) SetWaitReason(v string) {
 
 // GetWorkflowCtx returns the WorkflowCtx field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowInfo) GetWorkflowCtx() WorkflowWorkflowCtx {
-	if o == nil || o.WorkflowCtx.Get() == nil {
+	if o == nil || IsNil(o.WorkflowCtx.Get()) {
 		var ret WorkflowWorkflowCtx
 		return ret
 	}
@@ -1115,292 +1126,251 @@ func (o *WorkflowWorkflowInfo) UnsetWorkflowCtx() {
 	o.WorkflowCtx.Unset()
 }
 
-// GetWorkflowMetaType returns the WorkflowMetaType field value if set, zero value otherwise.
-func (o *WorkflowWorkflowInfo) GetWorkflowMetaType() string {
-	if o == nil || o.WorkflowMetaType == nil {
+// GetWorkflowStatus returns the WorkflowStatus field value if set, zero value otherwise.
+func (o *WorkflowWorkflowInfo) GetWorkflowStatus() string {
+	if o == nil || IsNil(o.WorkflowStatus) {
 		var ret string
 		return ret
 	}
-	return *o.WorkflowMetaType
+	return *o.WorkflowStatus
 }
 
-// GetWorkflowMetaTypeOk returns a tuple with the WorkflowMetaType field value if set, nil otherwise
+// GetWorkflowStatusOk returns a tuple with the WorkflowStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *WorkflowWorkflowInfo) GetWorkflowMetaTypeOk() (*string, bool) {
-	if o == nil || o.WorkflowMetaType == nil {
+func (o *WorkflowWorkflowInfo) GetWorkflowStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.WorkflowStatus) {
 		return nil, false
 	}
-	return o.WorkflowMetaType, true
+	return o.WorkflowStatus, true
 }
 
-// HasWorkflowMetaType returns a boolean if a field has been set.
-func (o *WorkflowWorkflowInfo) HasWorkflowMetaType() bool {
-	if o != nil && o.WorkflowMetaType != nil {
+// HasWorkflowStatus returns a boolean if a field has been set.
+func (o *WorkflowWorkflowInfo) HasWorkflowStatus() bool {
+	if o != nil && !IsNil(o.WorkflowStatus) {
 		return true
 	}
 
 	return false
 }
 
-// SetWorkflowMetaType gets a reference to the given string and assigns it to the WorkflowMetaType field.
-func (o *WorkflowWorkflowInfo) SetWorkflowMetaType(v string) {
-	o.WorkflowMetaType = &v
+// SetWorkflowStatus gets a reference to the given string and assigns it to the WorkflowStatus field.
+func (o *WorkflowWorkflowInfo) SetWorkflowStatus(v string) {
+	o.WorkflowStatus = &v
 }
 
-// GetWorkflowTaskCount returns the WorkflowTaskCount field value if set, zero value otherwise.
-func (o *WorkflowWorkflowInfo) GetWorkflowTaskCount() int64 {
-	if o == nil || o.WorkflowTaskCount == nil {
-		var ret int64
-		return ret
-	}
-	return *o.WorkflowTaskCount
-}
-
-// GetWorkflowTaskCountOk returns a tuple with the WorkflowTaskCount field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *WorkflowWorkflowInfo) GetWorkflowTaskCountOk() (*int64, bool) {
-	if o == nil || o.WorkflowTaskCount == nil {
-		return nil, false
-	}
-	return o.WorkflowTaskCount, true
-}
-
-// HasWorkflowTaskCount returns a boolean if a field has been set.
-func (o *WorkflowWorkflowInfo) HasWorkflowTaskCount() bool {
-	if o != nil && o.WorkflowTaskCount != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetWorkflowTaskCount gets a reference to the given int64 and assigns it to the WorkflowTaskCount field.
-func (o *WorkflowWorkflowInfo) SetWorkflowTaskCount(v int64) {
-	o.WorkflowTaskCount = &v
-}
-
-// GetWorkflowWorkerTaskCount returns the WorkflowWorkerTaskCount field value if set, zero value otherwise.
-func (o *WorkflowWorkflowInfo) GetWorkflowWorkerTaskCount() int64 {
-	if o == nil || o.WorkflowWorkerTaskCount == nil {
-		var ret int64
-		return ret
-	}
-	return *o.WorkflowWorkerTaskCount
-}
-
-// GetWorkflowWorkerTaskCountOk returns a tuple with the WorkflowWorkerTaskCount field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *WorkflowWorkflowInfo) GetWorkflowWorkerTaskCountOk() (*int64, bool) {
-	if o == nil || o.WorkflowWorkerTaskCount == nil {
-		return nil, false
-	}
-	return o.WorkflowWorkerTaskCount, true
-}
-
-// HasWorkflowWorkerTaskCount returns a boolean if a field has been set.
-func (o *WorkflowWorkflowInfo) HasWorkflowWorkerTaskCount() bool {
-	if o != nil && o.WorkflowWorkerTaskCount != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetWorkflowWorkerTaskCount gets a reference to the given int64 and assigns it to the WorkflowWorkerTaskCount field.
-func (o *WorkflowWorkflowInfo) SetWorkflowWorkerTaskCount(v int64) {
-	o.WorkflowWorkerTaskCount = &v
-}
-
-// GetAccount returns the Account field value if set, zero value otherwise.
+// GetAccount returns the Account field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowInfo) GetAccount() IamAccountRelationship {
-	if o == nil || o.Account == nil {
+	if o == nil || IsNil(o.Account.Get()) {
 		var ret IamAccountRelationship
 		return ret
 	}
-	return *o.Account
+	return *o.Account.Get()
 }
 
 // GetAccountOk returns a tuple with the Account field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetAccountOk() (*IamAccountRelationship, bool) {
-	if o == nil || o.Account == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Account, true
+	return o.Account.Get(), o.Account.IsSet()
 }
 
 // HasAccount returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasAccount() bool {
-	if o != nil && o.Account != nil {
+	if o != nil && o.Account.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAccount gets a reference to the given IamAccountRelationship and assigns it to the Account field.
+// SetAccount gets a reference to the given NullableIamAccountRelationship and assigns it to the Account field.
 func (o *WorkflowWorkflowInfo) SetAccount(v IamAccountRelationship) {
-	o.Account = &v
+	o.Account.Set(&v)
 }
 
-// GetAssociatedObject returns the AssociatedObject field value if set, zero value otherwise.
+// SetAccountNil sets the value for Account to be an explicit nil
+func (o *WorkflowWorkflowInfo) SetAccountNil() {
+	o.Account.Set(nil)
+}
+
+// UnsetAccount ensures that no value is present for Account, not even an explicit nil
+func (o *WorkflowWorkflowInfo) UnsetAccount() {
+	o.Account.Unset()
+}
+
+// GetAssociatedObject returns the AssociatedObject field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowInfo) GetAssociatedObject() MoBaseMoRelationship {
-	if o == nil || o.AssociatedObject == nil {
+	if o == nil || IsNil(o.AssociatedObject.Get()) {
 		var ret MoBaseMoRelationship
 		return ret
 	}
-	return *o.AssociatedObject
+	return *o.AssociatedObject.Get()
 }
 
 // GetAssociatedObjectOk returns a tuple with the AssociatedObject field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetAssociatedObjectOk() (*MoBaseMoRelationship, bool) {
-	if o == nil || o.AssociatedObject == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.AssociatedObject, true
+	return o.AssociatedObject.Get(), o.AssociatedObject.IsSet()
 }
 
 // HasAssociatedObject returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasAssociatedObject() bool {
-	if o != nil && o.AssociatedObject != nil {
+	if o != nil && o.AssociatedObject.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAssociatedObject gets a reference to the given MoBaseMoRelationship and assigns it to the AssociatedObject field.
+// SetAssociatedObject gets a reference to the given NullableMoBaseMoRelationship and assigns it to the AssociatedObject field.
 func (o *WorkflowWorkflowInfo) SetAssociatedObject(v MoBaseMoRelationship) {
-	o.AssociatedObject = &v
+	o.AssociatedObject.Set(&v)
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// SetAssociatedObjectNil sets the value for AssociatedObject to be an explicit nil
+func (o *WorkflowWorkflowInfo) SetAssociatedObjectNil() {
+	o.AssociatedObject.Set(nil)
+}
+
+// UnsetAssociatedObject ensures that no value is present for AssociatedObject, not even an explicit nil
+func (o *WorkflowWorkflowInfo) UnsetAssociatedObject() {
+	o.AssociatedObject.Unset()
+}
+
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowInfo) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *WorkflowWorkflowInfo) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
 }
 
-// GetParentTaskInfo returns the ParentTaskInfo field value if set, zero value otherwise.
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *WorkflowWorkflowInfo) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *WorkflowWorkflowInfo) UnsetOrganization() {
+	o.Organization.Unset()
+}
+
+// GetParentTaskInfo returns the ParentTaskInfo field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowInfo) GetParentTaskInfo() WorkflowTaskInfoRelationship {
-	if o == nil || o.ParentTaskInfo == nil {
+	if o == nil || IsNil(o.ParentTaskInfo.Get()) {
 		var ret WorkflowTaskInfoRelationship
 		return ret
 	}
-	return *o.ParentTaskInfo
+	return *o.ParentTaskInfo.Get()
 }
 
 // GetParentTaskInfoOk returns a tuple with the ParentTaskInfo field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetParentTaskInfoOk() (*WorkflowTaskInfoRelationship, bool) {
-	if o == nil || o.ParentTaskInfo == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ParentTaskInfo, true
+	return o.ParentTaskInfo.Get(), o.ParentTaskInfo.IsSet()
 }
 
 // HasParentTaskInfo returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasParentTaskInfo() bool {
-	if o != nil && o.ParentTaskInfo != nil {
+	if o != nil && o.ParentTaskInfo.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetParentTaskInfo gets a reference to the given WorkflowTaskInfoRelationship and assigns it to the ParentTaskInfo field.
+// SetParentTaskInfo gets a reference to the given NullableWorkflowTaskInfoRelationship and assigns it to the ParentTaskInfo field.
 func (o *WorkflowWorkflowInfo) SetParentTaskInfo(v WorkflowTaskInfoRelationship) {
-	o.ParentTaskInfo = &v
+	o.ParentTaskInfo.Set(&v)
 }
 
-// GetPendingDynamicWorkflowInfo returns the PendingDynamicWorkflowInfo field value if set, zero value otherwise.
-func (o *WorkflowWorkflowInfo) GetPendingDynamicWorkflowInfo() WorkflowPendingDynamicWorkflowInfoRelationship {
-	if o == nil || o.PendingDynamicWorkflowInfo == nil {
-		var ret WorkflowPendingDynamicWorkflowInfoRelationship
-		return ret
-	}
-	return *o.PendingDynamicWorkflowInfo
+// SetParentTaskInfoNil sets the value for ParentTaskInfo to be an explicit nil
+func (o *WorkflowWorkflowInfo) SetParentTaskInfoNil() {
+	o.ParentTaskInfo.Set(nil)
 }
 
-// GetPendingDynamicWorkflowInfoOk returns a tuple with the PendingDynamicWorkflowInfo field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *WorkflowWorkflowInfo) GetPendingDynamicWorkflowInfoOk() (*WorkflowPendingDynamicWorkflowInfoRelationship, bool) {
-	if o == nil || o.PendingDynamicWorkflowInfo == nil {
-		return nil, false
-	}
-	return o.PendingDynamicWorkflowInfo, true
+// UnsetParentTaskInfo ensures that no value is present for ParentTaskInfo, not even an explicit nil
+func (o *WorkflowWorkflowInfo) UnsetParentTaskInfo() {
+	o.ParentTaskInfo.Unset()
 }
 
-// HasPendingDynamicWorkflowInfo returns a boolean if a field has been set.
-func (o *WorkflowWorkflowInfo) HasPendingDynamicWorkflowInfo() bool {
-	if o != nil && o.PendingDynamicWorkflowInfo != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetPendingDynamicWorkflowInfo gets a reference to the given WorkflowPendingDynamicWorkflowInfoRelationship and assigns it to the PendingDynamicWorkflowInfo field.
-func (o *WorkflowWorkflowInfo) SetPendingDynamicWorkflowInfo(v WorkflowPendingDynamicWorkflowInfoRelationship) {
-	o.PendingDynamicWorkflowInfo = &v
-}
-
-// GetPermission returns the Permission field value if set, zero value otherwise.
+// GetPermission returns the Permission field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowInfo) GetPermission() IamPermissionRelationship {
-	if o == nil || o.Permission == nil {
+	if o == nil || IsNil(o.Permission.Get()) {
 		var ret IamPermissionRelationship
 		return ret
 	}
-	return *o.Permission
+	return *o.Permission.Get()
 }
 
 // GetPermissionOk returns a tuple with the Permission field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetPermissionOk() (*IamPermissionRelationship, bool) {
-	if o == nil || o.Permission == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Permission, true
+	return o.Permission.Get(), o.Permission.IsSet()
 }
 
 // HasPermission returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasPermission() bool {
-	if o != nil && o.Permission != nil {
+	if o != nil && o.Permission.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetPermission gets a reference to the given IamPermissionRelationship and assigns it to the Permission field.
+// SetPermission gets a reference to the given NullableIamPermissionRelationship and assigns it to the Permission field.
 func (o *WorkflowWorkflowInfo) SetPermission(v IamPermissionRelationship) {
-	o.Permission = &v
+	o.Permission.Set(&v)
+}
+
+// SetPermissionNil sets the value for Permission to be an explicit nil
+func (o *WorkflowWorkflowInfo) SetPermissionNil() {
+	o.Permission.Set(nil)
+}
+
+// UnsetPermission ensures that no value is present for Permission, not even an explicit nil
+func (o *WorkflowWorkflowInfo) UnsetPermission() {
+	o.Permission.Unset()
 }
 
 // GetTaskInfos returns the TaskInfos field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -1416,7 +1386,7 @@ func (o *WorkflowWorkflowInfo) GetTaskInfos() []WorkflowTaskInfoRelationship {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetTaskInfosOk() ([]WorkflowTaskInfoRelationship, bool) {
-	if o == nil || o.TaskInfos == nil {
+	if o == nil || IsNil(o.TaskInfos) {
 		return nil, false
 	}
 	return o.TaskInfos, true
@@ -1424,7 +1394,7 @@ func (o *WorkflowWorkflowInfo) GetTaskInfosOk() ([]WorkflowTaskInfoRelationship,
 
 // HasTaskInfos returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasTaskInfos() bool {
-	if o != nil && o.TaskInfos != nil {
+	if o != nil && !IsNil(o.TaskInfos) {
 		return true
 	}
 
@@ -1436,230 +1406,283 @@ func (o *WorkflowWorkflowInfo) SetTaskInfos(v []WorkflowTaskInfoRelationship) {
 	o.TaskInfos = v
 }
 
-// GetWorkflowDefinition returns the WorkflowDefinition field value if set, zero value otherwise.
+// GetWorkflowDefinition returns the WorkflowDefinition field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *WorkflowWorkflowInfo) GetWorkflowDefinition() WorkflowWorkflowDefinitionRelationship {
-	if o == nil || o.WorkflowDefinition == nil {
+	if o == nil || IsNil(o.WorkflowDefinition.Get()) {
 		var ret WorkflowWorkflowDefinitionRelationship
 		return ret
 	}
-	return *o.WorkflowDefinition
+	return *o.WorkflowDefinition.Get()
 }
 
 // GetWorkflowDefinitionOk returns a tuple with the WorkflowDefinition field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *WorkflowWorkflowInfo) GetWorkflowDefinitionOk() (*WorkflowWorkflowDefinitionRelationship, bool) {
-	if o == nil || o.WorkflowDefinition == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.WorkflowDefinition, true
+	return o.WorkflowDefinition.Get(), o.WorkflowDefinition.IsSet()
 }
 
 // HasWorkflowDefinition returns a boolean if a field has been set.
 func (o *WorkflowWorkflowInfo) HasWorkflowDefinition() bool {
-	if o != nil && o.WorkflowDefinition != nil {
+	if o != nil && o.WorkflowDefinition.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetWorkflowDefinition gets a reference to the given WorkflowWorkflowDefinitionRelationship and assigns it to the WorkflowDefinition field.
+// SetWorkflowDefinition gets a reference to the given NullableWorkflowWorkflowDefinitionRelationship and assigns it to the WorkflowDefinition field.
 func (o *WorkflowWorkflowInfo) SetWorkflowDefinition(v WorkflowWorkflowDefinitionRelationship) {
-	o.WorkflowDefinition = &v
+	o.WorkflowDefinition.Set(&v)
+}
+
+// SetWorkflowDefinitionNil sets the value for WorkflowDefinition to be an explicit nil
+func (o *WorkflowWorkflowInfo) SetWorkflowDefinitionNil() {
+	o.WorkflowDefinition.Set(nil)
+}
+
+// UnsetWorkflowDefinition ensures that no value is present for WorkflowDefinition, not even an explicit nil
+func (o *WorkflowWorkflowInfo) UnsetWorkflowDefinition() {
+	o.WorkflowDefinition.Unset()
 }
 
 func (o WorkflowWorkflowInfo) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o WorkflowWorkflowInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Action != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Action) {
 		toSerialize["Action"] = o.Action
 	}
-	if o.CleanupTime != nil {
+	if !IsNil(o.CleanupTime) {
 		toSerialize["CleanupTime"] = o.CleanupTime
 	}
-	if o.Email != nil {
+	if !IsNil(o.Email) {
 		toSerialize["Email"] = o.Email
 	}
-	if o.EndTime != nil {
+	if !IsNil(o.EndTime) {
 		toSerialize["EndTime"] = o.EndTime
 	}
-	if o.FailedWorkflowCleanupDuration != nil {
+	if !IsNil(o.FailedWorkflowCleanupDuration) {
 		toSerialize["FailedWorkflowCleanupDuration"] = o.FailedWorkflowCleanupDuration
 	}
 	if o.Input != nil {
 		toSerialize["Input"] = o.Input
 	}
-	if o.InstId != nil {
+	if !IsNil(o.InstId) {
 		toSerialize["InstId"] = o.InstId
 	}
-	if o.Internal != nil {
+	if !IsNil(o.Internal) {
 		toSerialize["Internal"] = o.Internal
 	}
-	if o.LastAction != nil {
+	if !IsNil(o.LastAction) {
 		toSerialize["LastAction"] = o.LastAction
 	}
 	if o.Message != nil {
 		toSerialize["Message"] = o.Message
 	}
-	if o.MetaVersion != nil {
-		toSerialize["MetaVersion"] = o.MetaVersion
-	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
 	if o.Output != nil {
 		toSerialize["Output"] = o.Output
 	}
-	if o.PauseReason != nil {
+	if !IsNil(o.PauseReason) {
 		toSerialize["PauseReason"] = o.PauseReason
 	}
-	if o.Progress != nil {
+	if !IsNil(o.Progress) {
 		toSerialize["Progress"] = o.Progress
 	}
 	if o.Properties.IsSet() {
 		toSerialize["Properties"] = o.Properties.Get()
 	}
-	if o.RetryFromTaskName != nil {
+	if !IsNil(o.RetryFromTaskName) {
 		toSerialize["RetryFromTaskName"] = o.RetryFromTaskName
 	}
-	if o.Src != nil {
+	if !IsNil(o.Src) {
 		toSerialize["Src"] = o.Src
 	}
-	if o.StartTime != nil {
+	if !IsNil(o.StartTime) {
 		toSerialize["StartTime"] = o.StartTime
 	}
-	if o.Status != nil {
+	if !IsNil(o.Status) {
 		toSerialize["Status"] = o.Status
 	}
-	if o.SuccessWorkflowCleanupDuration != nil {
+	if !IsNil(o.SuccessWorkflowCleanupDuration) {
 		toSerialize["SuccessWorkflowCleanupDuration"] = o.SuccessWorkflowCleanupDuration
 	}
-	if o.TraceId != nil {
+	if o.TaskInfoUpdate.IsSet() {
+		toSerialize["TaskInfoUpdate"] = o.TaskInfoUpdate.Get()
+	}
+	if !IsNil(o.TraceId) {
 		toSerialize["TraceId"] = o.TraceId
 	}
-	if o.Type != nil {
+	if !IsNil(o.Type) {
 		toSerialize["Type"] = o.Type
 	}
-	if o.UserActionRequired != nil {
+	if !IsNil(o.UserActionRequired) {
 		toSerialize["UserActionRequired"] = o.UserActionRequired
 	}
-	if o.UserId != nil {
+	if !IsNil(o.UserId) {
 		toSerialize["UserId"] = o.UserId
 	}
 	if o.Variable != nil {
 		toSerialize["Variable"] = o.Variable
 	}
-	if o.WaitReason != nil {
+	if !IsNil(o.WaitReason) {
 		toSerialize["WaitReason"] = o.WaitReason
 	}
 	if o.WorkflowCtx.IsSet() {
 		toSerialize["WorkflowCtx"] = o.WorkflowCtx.Get()
 	}
-	if o.WorkflowMetaType != nil {
-		toSerialize["WorkflowMetaType"] = o.WorkflowMetaType
+	if !IsNil(o.WorkflowStatus) {
+		toSerialize["WorkflowStatus"] = o.WorkflowStatus
 	}
-	if o.WorkflowTaskCount != nil {
-		toSerialize["WorkflowTaskCount"] = o.WorkflowTaskCount
+	if o.Account.IsSet() {
+		toSerialize["Account"] = o.Account.Get()
 	}
-	if o.WorkflowWorkerTaskCount != nil {
-		toSerialize["WorkflowWorkerTaskCount"] = o.WorkflowWorkerTaskCount
+	if o.AssociatedObject.IsSet() {
+		toSerialize["AssociatedObject"] = o.AssociatedObject.Get()
 	}
-	if o.Account != nil {
-		toSerialize["Account"] = o.Account
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
-	if o.AssociatedObject != nil {
-		toSerialize["AssociatedObject"] = o.AssociatedObject
+	if o.ParentTaskInfo.IsSet() {
+		toSerialize["ParentTaskInfo"] = o.ParentTaskInfo.Get()
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
-	}
-	if o.ParentTaskInfo != nil {
-		toSerialize["ParentTaskInfo"] = o.ParentTaskInfo
-	}
-	if o.PendingDynamicWorkflowInfo != nil {
-		toSerialize["PendingDynamicWorkflowInfo"] = o.PendingDynamicWorkflowInfo
-	}
-	if o.Permission != nil {
-		toSerialize["Permission"] = o.Permission
+	if o.Permission.IsSet() {
+		toSerialize["Permission"] = o.Permission.Get()
 	}
 	if o.TaskInfos != nil {
 		toSerialize["TaskInfos"] = o.TaskInfos
 	}
-	if o.WorkflowDefinition != nil {
-		toSerialize["WorkflowDefinition"] = o.WorkflowDefinition
+	if o.WorkflowDefinition.IsSet() {
+		toSerialize["WorkflowDefinition"] = o.WorkflowDefinition.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
+func (o *WorkflowWorkflowInfo) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type WorkflowWorkflowInfoWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// The action of the workflow such as start, cancel, retry, pause. * `None` - No action is set, this is the default value for action field. * `Create` - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * `Start` - Start a new execution of the workflow. * `Pause` - Pause the workflow, this can only be issued on workflows that are in running state. * `Resume` - Resume the workflow which was previously paused through pause action on the workflow. * `Retry` - Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration. * `RetryFailed` - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * `Cancel` - Cancel the workflow that is in running or waiting state.
+		// The action of the workflow such as start, cancel, retry, pause. * `None` - No action is set, this is the default value for action field. * `Create` - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * `Start` - Start a new execution of the workflow. * `Pause` - Pause the workflow, this can only be issued on workflows that are in running state. A workflow can be paused for a maximum of 180 days, after 180 days the workflow will be terminated by the system. * `Resume` - Resume the workflow which was previously paused through pause action on the workflow. * `Rerun` - Rerun the workflow that has previously reached a failed state. The workflow is run from the beginning using inputs from previous execution. Completed and currently running workflows cannot be rerun. Workflows do not have to be marked for retry to use this action. * `Retry` - This action has been deprecated. Please use RetryFailed, Rerun or RetryFromTask action. Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration. * `RetryFailed` - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * `RetryFromTask` - Retry the workflow that has previously reached a failed state and has the retryable property set to true. A running or waiting workflow cannot be retried. RetryFromTaskName must be passed along with this action, and the workflow will be started from that specific task. The task name in RetryFromTaskName must be one of the tasks that was executed in the previous attempt. It is not possible to retry a workflow from a task that wasn't run in the previous execution attempt. * `Cancel` - Cancel the workflow that is in running or waiting state.
 		Action *string `json:"Action,omitempty"`
-		// The time when the workflow info will be removed from database.
+		// The time when the workflow info will be removed from the database. When WorkflowInfo is created, cleanup time will be set to 181 days. As the workflow progresses through different states the cleanup time can be updated. A cleanup time of 0 means the workflow is not scheduled for cleanup. An active workflow that continues to schedule & run tasks can run for any amount of time and there is no upper bound for such workflows. Workflows that are not actively running, say in Paused or Waiting states will be removed after 181 days.
 		CleanupTime *time.Time `json:"CleanupTime,omitempty"`
-		// The email address of the user who started this workflow.
+		// The email address of the user who started this workflow. In the case of LDAP users, this field can hold either a username or an email.
 		Email *string `json:"Email,omitempty"`
 		// The time when the workflow reached a final state.
 		EndTime *time.Time `json:"EndTime,omitempty"`
-		// The duration in hours after which the workflow info for failed, terminated or timed out workflow will be removed from database.
+		// The duration in hours after which the workflow info for failed, terminated or timed out workflow will be removed from database. The minimum is 1 hour, maximum is 365 days and default is 90 days.
 		FailedWorkflowCleanupDuration *int64 `json:"FailedWorkflowCleanupDuration,omitempty"`
-		// All the given inputs for the workflow.
+		// All the given inputs for the workflow. The schema for the inputs is defined in the InputDefinition section of the WorkflowDefinition. The InputDefinition will provide a list of input fields to be accepted, the associated datatype of the inputs and any additional constraints on the inputs. For more information please refer to InputDefinition property in the the the WorkflowDefinition resource. The inputs for a workflow are provided as a collection of key-value pairs, where key is the name of the input and value is any valid JSON data which conforms to the datatype of the input as specified in the InputDefinition. When the input passed into a workflow does not match the datatype or the constraints specified in the workflow definition, it will not be accepted. For example, if the InputDefinition specified that workflow must accept a string name 'key' and the value passed for key must adhere to a regex pattern. If Workflow was started with input where 'key' is not a string matching the regex pattern, an error will be generated and workflow will not start execution. During workflow definition design, the input passed into the workflow will be referred using the format 'workflow.input.<inputName>'. If the input is referred directly in a mapping it will be in the format '${workflow.input.<inputName>}' or inside a template mapping in the format '{{.global.workflow.input.<inputName>}}'.
 		Input interface{} `json:"Input,omitempty"`
 		// A workflow instance Id which is the unique identified for the workflow execution.
 		InstId *string `json:"InstId,omitempty"`
-		// Denotes if this workflow is internal and should be hidden from user view of running workflows.
+		// Denotes that an Intersight service started this workflow as internal and hence will not be shown in Intersight User Interface. Typically these are internal system maintenance workflows which are triggered by Intersight services.
 		Internal *bool `json:"Internal,omitempty"`
-		// The last action that was issued on the workflow is saved in this field. * `None` - No action is set, this is the default value for action field. * `Create` - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * `Start` - Start a new execution of the workflow. * `Pause` - Pause the workflow, this can only be issued on workflows that are in running state. * `Resume` - Resume the workflow which was previously paused through pause action on the workflow. * `Retry` - Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration. * `RetryFailed` - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * `Cancel` - Cancel the workflow that is in running or waiting state.
+		// The last action that was issued on the workflow is saved in this field. * `None` - No action is set, this is the default value for action field. * `Create` - Create a new instance of the workflow but it does not start the execution of the workflow. Use the Start action to start execution of the workflow. * `Start` - Start a new execution of the workflow. * `Pause` - Pause the workflow, this can only be issued on workflows that are in running state. A workflow can be paused for a maximum of 180 days, after 180 days the workflow will be terminated by the system. * `Resume` - Resume the workflow which was previously paused through pause action on the workflow. * `Rerun` - Rerun the workflow that has previously reached a failed state. The workflow is run from the beginning using inputs from previous execution. Completed and currently running workflows cannot be rerun. Workflows do not have to be marked for retry to use this action. * `Retry` - This action has been deprecated. Please use RetryFailed, Rerun or RetryFromTask action. Retry the workflow that has previously reached a final state and has the retryable property set to true. A running or waiting workflow cannot be retried. If the property retryFromTaskName is also passed along with this action, the workflow will be started from that specific task, otherwise the workflow will be restarted from the first task.  The task name in retryFromTaskName must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration. * `RetryFailed` - Retry the workflow that has failed. A running or waiting workflow or a workflow that completed successfully cannot be retried. Only the tasks that failed in the previous run will be retried and the rest of workflow will be run. This action does not restart the workflow and also does not support retrying from a specific task. * `RetryFromTask` - Retry the workflow that has previously reached a failed state and has the retryable property set to true. A running or waiting workflow cannot be retried. RetryFromTaskName must be passed along with this action, and the workflow will be started from that specific task. The task name in RetryFromTaskName must be one of the tasks that was executed in the previous attempt. It is not possible to retry a workflow from a task that wasn't run in the previous execution attempt. * `Cancel` - Cancel the workflow that is in running or waiting state.
 		LastAction *string           `json:"LastAction,omitempty"`
 		Message    []WorkflowMessage `json:"Message,omitempty"`
-		// Version of the workflow metadata for which this workflow execution was started.
-		MetaVersion *int64 `json:"MetaVersion,omitempty"`
 		// A name of the workflow execution instance.
-		Name *string `json:"Name,omitempty"`
-		// All the generated outputs for the workflow.
+		Name *string `json:"Name,omitempty" validate:"regexp=^[^:]{1,92}$"`
+		// All the generated outputs for the workflow. The schema for the outputs are defined in the OutputDefinition section of the WorkflowDefinition. The OutputDefinition will provide a list of output fields that could be generated after workflow execution is completed and the associated datatype of the outputs. For more information please refer to OutputDefinition property in WorkflowDefinition resource. The output for the workflow is generated as a collection of key-value pairs, where key is the name of the output and value is any valid JSON data which conforms to the datatype of output as specified in the OutputDefinition. During workflow definition design, if a workflow is included as a sub-workflow inside a parent workflow then the outputs generated by the sub-workflow can be used in the workflow design. For example, if workflow was included into parent workflow as 'SubWorkflowSample1', then that output can be referred as 'SubWorkflowSample1.output.<outputName>'. In the output is referred directly in a mapping it will be in the format '${SubWorkflowSample1.output.<outputName>}' or inside a template mapping will be in the format '{{SubWorkflowSample1.output.<outputName>}}'.
 		Output interface{} `json:"Output,omitempty"`
 		// Denotes the reason workflow is in paused status. * `None` - Pause reason is none, which indicates there is no reason for the pause state. * `TaskWithWarning` - Pause reason indicates the workflow is in this state due to a task that has a status as completed with warnings. * `SystemMaintenance` - Pause reason indicates the workflow is in this state based on actions of system admin for maintenance.
 		PauseReason *string `json:"PauseReason,omitempty"`
-		// This field indicates percentage of workflow task execution.
+		// This field indicates percentage of workflow task completion based on the total number of tasks in the workflow. The total number of tasks in the workflow is calculated based on the longest path the workflow execution can take. So progress is calculated based on the percentage of tasks that completed out of the total number of tasks that could be executed. Progress is not a representation of the time taken to complete the workflow. A task is considered as completed if the task status is either \"NO_OP\" or \"COMPLETED\". If the task status is \"SKIP_TO_FAIL\", the workflow will be terminated and the progress of the workflow will be set to 100.
 		Progress   *float32                               `json:"Progress,omitempty"`
 		Properties NullableWorkflowWorkflowInfoProperties `json:"Properties,omitempty"`
-		// This field is applicable when Retry action is issued for a workflow which is in 'final' state. When this field is not specified, the workflow will be retried from the start i.e., the first task. When this field is specified then the workflow will be retried from the specified task. This field should specify the task name which is the unique name of the task within the workflow. The task name must be one of the tasks that completed or failed in the previous run. It is not possible to retry a workflow from a task which wasn't run in the previous iteration.
+		// This field is required when RetryFromTask action is issued for a workflow that is in a 'final' state. The workflow will be retried from the specified task. This field must specify a task name which is the unique name of the task within the workflow. The task name must be one of the tasks that were completed or failed in the previous run. It is not possible to retry a workflow from a task that wasn't run in the previous execution attempt.
 		RetryFromTaskName *string `json:"RetryFromTaskName,omitempty"`
-		// The source microservice name which is the owner for this workflow.
+		// The source service that started the workflow execution and hence represents the owning service for this workflow.
 		Src *string `json:"Src,omitempty"`
 		// The time when the workflow was started for execution.
 		StartTime *time.Time `json:"StartTime,omitempty"`
-		// A status of the workflow (RUNNING, WAITING, COMPLETED, TIME_OUT, FAILED).
+		// A status of the workflow (RUNNING, WAITING, COMPLETED, TIME_OUT, FAILED). The \"status\" field has been deprecated and is now replaced with the \"workflowStatus\" field.
+		// Deprecated
 		Status *string `json:"Status,omitempty"`
-		// The duration in hours after which the workflow info for successful workflow will be removed from database.
-		SuccessWorkflowCleanupDuration *int64 `json:"SuccessWorkflowCleanupDuration,omitempty"`
+		// The duration in hours after which the workflow info for successful workflow will be removed from database. The minimum is 1 hour, maximum is 365 days and default is 90 days.
+		SuccessWorkflowCleanupDuration *int64                         `json:"SuccessWorkflowCleanupDuration,omitempty"`
+		TaskInfoUpdate                 NullableWorkflowTaskInfoUpdate `json:"TaskInfoUpdate,omitempty"`
 		// The trace id to keep track of workflow execution.
 		TraceId *string `json:"TraceId,omitempty"`
 		// A type of the workflow (serverconfig, ansible_monitoring).
 		Type *string `json:"Type,omitempty"`
-		// Property will be set when an user action is required on the workflow. This can be because the workflow is waiting for a wait task to be updated, workflow is paused or workflow launched by a configuration object has failed and needs to be retried in order to complete successfully.
+		// Property will be set when a user action is required on the workflow. This can be because the workflow is waiting for a wait task to be updated, workflow is paused or workflow launched by a configuration object has failed and needs to be retried in order to complete successfully.
 		UserActionRequired *bool `json:"UserActionRequired,omitempty"`
 		// The user identifier which indicates the user that started this workflow.
 		UserId *string `json:"UserId,omitempty"`
@@ -1668,26 +1691,21 @@ func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
 		// Denotes the reason workflow is in waiting status. * `None` - Wait reason is none, which indicates there is no reason for the waiting state. * `GatherTasks` - Wait reason is gathering tasks, which indicates the workflow is in this state in order to gather tasks. * `Duplicate` - Wait reason is duplicate, which indicates the workflow is a duplicate of current running workflow. * `RateLimit` - Wait reason is rate limit, which indicates the workflow is rate limited by account/instance level throttling threshold. * `WaitTask` - Wait reason when there are one or more wait tasks in the workflow which are yet to receive a task status update. * `PendingRetryFailed` - Wait reason when the workflow is pending a RetryFailed action. * `WaitingToStart` - Workflow is waiting to start on workflow engine.
 		WaitReason  *string                     `json:"WaitReason,omitempty"`
 		WorkflowCtx NullableWorkflowWorkflowCtx `json:"WorkflowCtx,omitempty"`
-		// The type of workflow meta. Derived from the workflow meta that is used to launch this workflow instance. * `SystemDefined` - System defined workflow definition. * `UserDefined` - User defined workflow definition. * `Dynamic` - Dynamically defined workflow definition.
-		WorkflowMetaType *string `json:"WorkflowMetaType,omitempty"`
-		// Total number of workflow tasks in this workflow.
-		WorkflowTaskCount *int64 `json:"WorkflowTaskCount,omitempty"`
-		// Total number of worker tasks in this workflow. This count doesn't include the control tasks in the workflow.
-		WorkflowWorkerTaskCount    *int64                                          `json:"WorkflowWorkerTaskCount,omitempty"`
-		Account                    *IamAccountRelationship                         `json:"Account,omitempty"`
-		AssociatedObject           *MoBaseMoRelationship                           `json:"AssociatedObject,omitempty"`
-		Organization               *OrganizationOrganizationRelationship           `json:"Organization,omitempty"`
-		ParentTaskInfo             *WorkflowTaskInfoRelationship                   `json:"ParentTaskInfo,omitempty"`
-		PendingDynamicWorkflowInfo *WorkflowPendingDynamicWorkflowInfoRelationship `json:"PendingDynamicWorkflowInfo,omitempty"`
-		Permission                 *IamPermissionRelationship                      `json:"Permission,omitempty"`
+		// The current state of the workflow execution instance. A draft workflow execution will be in NotStarted state and when \"Start\" action is issued then the workflow will move into Waiting state until the first task of the workflow is scheduled at which time it will move into InProgress state. When execution reaches a final state it move to either Completed, Failed or Terminated state. For more details look at the description for each state. * `NotStarted` - Initially all the workflow instances are at \"NotStarted\" state. A workflow can be drafted in this state by issuing Create action. When a workflow is in this state the inputs can be updated until the workflow is started. * `InProgress` - A workflow execution moves into \"InProgress\" state when the first task of the workflow is scheduled for execution and continues to remain in that state as long as there are tasks executing or yet to be scheduled for execution. * `Waiting` - Workflow can go to waiting state due to execution of wait task present in the workflow or the workflow has not started yet either due to duplicate workflow is running or due to workflow throttling. Once Workflow engine picks up the workflow for execution, it will move to in progress state. * `Completed` - A workflow execution moves into Completed state when the execution path of the workflow has reached the Success node in the workflow design and there are no more tasks to be executed. Completed is the final state for the workflow execution instance and no further actions are allowed on this workflow instance. * `Failed` - A workflow execution moves into a Failed state when the execution path of the workflow has reached the Failed node in the workflow design and there are no more tasks to be scheduled. A Failed node can be reached when the last executed task has failed or timed out and there are no further retries available for the task. Also as per the workflow design, the last executed task did not specify an OnFailure task to be executed and hence by default, the execution will reach the Failed node. Actions like \"Rerun\", \"RetryFailed\" and \"RetryFromTask\" can be issued on failed workflow instances. Please refer to the \"Action\" description for more details. * `Terminated` - A workflow execution moves to Terminated state when user issues a \"Cancel\" action or due to internal errors caused during workflow execution. e.g. - Task input transformation has failed. Terminated is a final state of the workflow, no further action are allowed on this workflow instance. * `Canceled` - A workflow execution moves to Canceled state when a user issues a \"Cancel\" action. Cancel is not a final state, the workflow engine will issue cancel to all the running tasks and then move the workflow to the \"Terminated\" state. * `Paused` - A workflow execution moves to Paused state when user issues a \"Pause\" action. When in paused state the current running task will complete its execution but no further tasks will be scheduled until the workflow is resumed. A paused workflow is resumed when the user issues a \"Resume\" action. Paused workflows can be canceled by user.
+		WorkflowStatus   *string                                      `json:"WorkflowStatus,omitempty"`
+		Account          NullableIamAccountRelationship               `json:"Account,omitempty"`
+		AssociatedObject NullableMoBaseMoRelationship                 `json:"AssociatedObject,omitempty"`
+		Organization     NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		ParentTaskInfo   NullableWorkflowTaskInfoRelationship         `json:"ParentTaskInfo,omitempty"`
+		Permission       NullableIamPermissionRelationship            `json:"Permission,omitempty"`
 		// An array of relationships to workflowTaskInfo resources.
-		TaskInfos          []WorkflowTaskInfoRelationship          `json:"TaskInfos,omitempty"`
-		WorkflowDefinition *WorkflowWorkflowDefinitionRelationship `json:"WorkflowDefinition,omitempty"`
+		TaskInfos          []WorkflowTaskInfoRelationship                 `json:"TaskInfos,omitempty"`
+		WorkflowDefinition NullableWorkflowWorkflowDefinitionRelationship `json:"WorkflowDefinition,omitempty"`
 	}
 
 	varWorkflowWorkflowInfoWithoutEmbeddedStruct := WorkflowWorkflowInfoWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varWorkflowWorkflowInfoWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varWorkflowWorkflowInfoWithoutEmbeddedStruct)
 	if err == nil {
 		varWorkflowWorkflowInfo := _WorkflowWorkflowInfo{}
 		varWorkflowWorkflowInfo.ClassId = varWorkflowWorkflowInfoWithoutEmbeddedStruct.ClassId
@@ -1702,7 +1720,6 @@ func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
 		varWorkflowWorkflowInfo.Internal = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Internal
 		varWorkflowWorkflowInfo.LastAction = varWorkflowWorkflowInfoWithoutEmbeddedStruct.LastAction
 		varWorkflowWorkflowInfo.Message = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Message
-		varWorkflowWorkflowInfo.MetaVersion = varWorkflowWorkflowInfoWithoutEmbeddedStruct.MetaVersion
 		varWorkflowWorkflowInfo.Name = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Name
 		varWorkflowWorkflowInfo.Output = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Output
 		varWorkflowWorkflowInfo.PauseReason = varWorkflowWorkflowInfoWithoutEmbeddedStruct.PauseReason
@@ -1713,6 +1730,7 @@ func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
 		varWorkflowWorkflowInfo.StartTime = varWorkflowWorkflowInfoWithoutEmbeddedStruct.StartTime
 		varWorkflowWorkflowInfo.Status = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Status
 		varWorkflowWorkflowInfo.SuccessWorkflowCleanupDuration = varWorkflowWorkflowInfoWithoutEmbeddedStruct.SuccessWorkflowCleanupDuration
+		varWorkflowWorkflowInfo.TaskInfoUpdate = varWorkflowWorkflowInfoWithoutEmbeddedStruct.TaskInfoUpdate
 		varWorkflowWorkflowInfo.TraceId = varWorkflowWorkflowInfoWithoutEmbeddedStruct.TraceId
 		varWorkflowWorkflowInfo.Type = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Type
 		varWorkflowWorkflowInfo.UserActionRequired = varWorkflowWorkflowInfoWithoutEmbeddedStruct.UserActionRequired
@@ -1720,14 +1738,11 @@ func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
 		varWorkflowWorkflowInfo.Variable = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Variable
 		varWorkflowWorkflowInfo.WaitReason = varWorkflowWorkflowInfoWithoutEmbeddedStruct.WaitReason
 		varWorkflowWorkflowInfo.WorkflowCtx = varWorkflowWorkflowInfoWithoutEmbeddedStruct.WorkflowCtx
-		varWorkflowWorkflowInfo.WorkflowMetaType = varWorkflowWorkflowInfoWithoutEmbeddedStruct.WorkflowMetaType
-		varWorkflowWorkflowInfo.WorkflowTaskCount = varWorkflowWorkflowInfoWithoutEmbeddedStruct.WorkflowTaskCount
-		varWorkflowWorkflowInfo.WorkflowWorkerTaskCount = varWorkflowWorkflowInfoWithoutEmbeddedStruct.WorkflowWorkerTaskCount
+		varWorkflowWorkflowInfo.WorkflowStatus = varWorkflowWorkflowInfoWithoutEmbeddedStruct.WorkflowStatus
 		varWorkflowWorkflowInfo.Account = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Account
 		varWorkflowWorkflowInfo.AssociatedObject = varWorkflowWorkflowInfoWithoutEmbeddedStruct.AssociatedObject
 		varWorkflowWorkflowInfo.Organization = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Organization
 		varWorkflowWorkflowInfo.ParentTaskInfo = varWorkflowWorkflowInfoWithoutEmbeddedStruct.ParentTaskInfo
-		varWorkflowWorkflowInfo.PendingDynamicWorkflowInfo = varWorkflowWorkflowInfoWithoutEmbeddedStruct.PendingDynamicWorkflowInfo
 		varWorkflowWorkflowInfo.Permission = varWorkflowWorkflowInfoWithoutEmbeddedStruct.Permission
 		varWorkflowWorkflowInfo.TaskInfos = varWorkflowWorkflowInfoWithoutEmbeddedStruct.TaskInfos
 		varWorkflowWorkflowInfo.WorkflowDefinition = varWorkflowWorkflowInfoWithoutEmbeddedStruct.WorkflowDefinition
@@ -1738,7 +1753,7 @@ func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	varWorkflowWorkflowInfo := _WorkflowWorkflowInfo{}
 
-	err = json.Unmarshal(bytes, &varWorkflowWorkflowInfo)
+	err = json.Unmarshal(data, &varWorkflowWorkflowInfo)
 	if err == nil {
 		o.MoBaseMo = varWorkflowWorkflowInfo.MoBaseMo
 	} else {
@@ -1747,7 +1762,7 @@ func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Action")
@@ -1760,7 +1775,6 @@ func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "Internal")
 		delete(additionalProperties, "LastAction")
 		delete(additionalProperties, "Message")
-		delete(additionalProperties, "MetaVersion")
 		delete(additionalProperties, "Name")
 		delete(additionalProperties, "Output")
 		delete(additionalProperties, "PauseReason")
@@ -1771,6 +1785,7 @@ func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "StartTime")
 		delete(additionalProperties, "Status")
 		delete(additionalProperties, "SuccessWorkflowCleanupDuration")
+		delete(additionalProperties, "TaskInfoUpdate")
 		delete(additionalProperties, "TraceId")
 		delete(additionalProperties, "Type")
 		delete(additionalProperties, "UserActionRequired")
@@ -1778,14 +1793,11 @@ func (o *WorkflowWorkflowInfo) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "Variable")
 		delete(additionalProperties, "WaitReason")
 		delete(additionalProperties, "WorkflowCtx")
-		delete(additionalProperties, "WorkflowMetaType")
-		delete(additionalProperties, "WorkflowTaskCount")
-		delete(additionalProperties, "WorkflowWorkerTaskCount")
+		delete(additionalProperties, "WorkflowStatus")
 		delete(additionalProperties, "Account")
 		delete(additionalProperties, "AssociatedObject")
 		delete(additionalProperties, "Organization")
 		delete(additionalProperties, "ParentTaskInfo")
-		delete(additionalProperties, "PendingDynamicWorkflowInfo")
 		delete(additionalProperties, "Permission")
 		delete(additionalProperties, "TaskInfos")
 		delete(additionalProperties, "WorkflowDefinition")

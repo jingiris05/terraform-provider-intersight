@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -36,9 +36,9 @@ func (r ApiGetEtherHostPortByMoidRequest) Execute() (*EtherHostPort, *http.Respo
 /*
 GetEtherHostPortByMoid Read a 'ether.HostPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEtherHostPortByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEtherHostPortByMoidRequest
 */
 func (a *EtherApiService) GetEtherHostPortByMoid(ctx context.Context, moid string) ApiGetEtherHostPortByMoidRequest {
 	return ApiGetEtherHostPortByMoidRequest{
@@ -49,7 +49,8 @@ func (a *EtherApiService) GetEtherHostPortByMoid(ctx context.Context, moid strin
 }
 
 // Execute executes the request
-//  @return EtherHostPort
+//
+//	@return EtherHostPort
 func (a *EtherApiService) GetEtherHostPortByMoidExecute(r ApiGetEtherHostPortByMoidRequest) (*EtherHostPort, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -64,7 +65,7 @@ func (a *EtherApiService) GetEtherHostPortByMoidExecute(r ApiGetEtherHostPortByM
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/HostPorts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -97,9 +98,9 @@ func (a *EtherApiService) GetEtherHostPortByMoidExecute(r ApiGetEtherHostPortByM
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -116,6 +117,7 @@ func (a *EtherApiService) GetEtherHostPortByMoidExecute(r ApiGetEtherHostPortByM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -126,6 +128,7 @@ func (a *EtherApiService) GetEtherHostPortByMoidExecute(r ApiGetEtherHostPortByM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -136,6 +139,7 @@ func (a *EtherApiService) GetEtherHostPortByMoidExecute(r ApiGetEtherHostPortByM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -146,6 +150,7 @@ func (a *EtherApiService) GetEtherHostPortByMoidExecute(r ApiGetEtherHostPortByM
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -155,6 +160,7 @@ func (a *EtherApiService) GetEtherHostPortByMoidExecute(r ApiGetEtherHostPortByM
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -223,7 +229,7 @@ func (r ApiGetEtherHostPortListRequest) Expand(expand string) ApiGetEtherHostPor
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEtherHostPortListRequest) Apply(apply string) ApiGetEtherHostPortListRequest {
 	r.apply = &apply
 	return r
@@ -260,8 +266,8 @@ func (r ApiGetEtherHostPortListRequest) Execute() (*EtherHostPortResponse, *http
 /*
 GetEtherHostPortList Read a 'ether.HostPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEtherHostPortListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEtherHostPortListRequest
 */
 func (a *EtherApiService) GetEtherHostPortList(ctx context.Context) ApiGetEtherHostPortListRequest {
 	return ApiGetEtherHostPortListRequest{
@@ -271,7 +277,8 @@ func (a *EtherApiService) GetEtherHostPortList(ctx context.Context) ApiGetEtherH
 }
 
 // Execute executes the request
-//  @return EtherHostPortResponse
+//
+//	@return EtherHostPortResponse
 func (a *EtherApiService) GetEtherHostPortListExecute(r ApiGetEtherHostPortListRequest) (*EtherHostPortResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -292,37 +299,52 @@ func (a *EtherApiService) GetEtherHostPortListExecute(r ApiGetEtherHostPortListR
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -351,9 +373,9 @@ func (a *EtherApiService) GetEtherHostPortListExecute(r ApiGetEtherHostPortListR
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -370,6 +392,7 @@ func (a *EtherApiService) GetEtherHostPortListExecute(r ApiGetEtherHostPortListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -380,6 +403,7 @@ func (a *EtherApiService) GetEtherHostPortListExecute(r ApiGetEtherHostPortListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -390,6 +414,7 @@ func (a *EtherApiService) GetEtherHostPortListExecute(r ApiGetEtherHostPortListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -400,6 +425,7 @@ func (a *EtherApiService) GetEtherHostPortListExecute(r ApiGetEtherHostPortListR
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -409,6 +435,7 @@ func (a *EtherApiService) GetEtherHostPortListExecute(r ApiGetEtherHostPortListR
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -438,9 +465,9 @@ func (r ApiGetEtherNetworkPortByMoidRequest) Execute() (*EtherNetworkPort, *http
 /*
 GetEtherNetworkPortByMoid Read a 'ether.NetworkPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEtherNetworkPortByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEtherNetworkPortByMoidRequest
 */
 func (a *EtherApiService) GetEtherNetworkPortByMoid(ctx context.Context, moid string) ApiGetEtherNetworkPortByMoidRequest {
 	return ApiGetEtherNetworkPortByMoidRequest{
@@ -451,7 +478,8 @@ func (a *EtherApiService) GetEtherNetworkPortByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return EtherNetworkPort
+//
+//	@return EtherNetworkPort
 func (a *EtherApiService) GetEtherNetworkPortByMoidExecute(r ApiGetEtherNetworkPortByMoidRequest) (*EtherNetworkPort, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -466,7 +494,7 @@ func (a *EtherApiService) GetEtherNetworkPortByMoidExecute(r ApiGetEtherNetworkP
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/NetworkPorts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -499,9 +527,9 @@ func (a *EtherApiService) GetEtherNetworkPortByMoidExecute(r ApiGetEtherNetworkP
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -518,6 +546,7 @@ func (a *EtherApiService) GetEtherNetworkPortByMoidExecute(r ApiGetEtherNetworkP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -528,6 +557,7 @@ func (a *EtherApiService) GetEtherNetworkPortByMoidExecute(r ApiGetEtherNetworkP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -538,6 +568,7 @@ func (a *EtherApiService) GetEtherNetworkPortByMoidExecute(r ApiGetEtherNetworkP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -548,6 +579,7 @@ func (a *EtherApiService) GetEtherNetworkPortByMoidExecute(r ApiGetEtherNetworkP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -557,6 +589,7 @@ func (a *EtherApiService) GetEtherNetworkPortByMoidExecute(r ApiGetEtherNetworkP
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -625,7 +658,7 @@ func (r ApiGetEtherNetworkPortListRequest) Expand(expand string) ApiGetEtherNetw
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEtherNetworkPortListRequest) Apply(apply string) ApiGetEtherNetworkPortListRequest {
 	r.apply = &apply
 	return r
@@ -662,8 +695,8 @@ func (r ApiGetEtherNetworkPortListRequest) Execute() (*EtherNetworkPortResponse,
 /*
 GetEtherNetworkPortList Read a 'ether.NetworkPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEtherNetworkPortListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEtherNetworkPortListRequest
 */
 func (a *EtherApiService) GetEtherNetworkPortList(ctx context.Context) ApiGetEtherNetworkPortListRequest {
 	return ApiGetEtherNetworkPortListRequest{
@@ -673,7 +706,8 @@ func (a *EtherApiService) GetEtherNetworkPortList(ctx context.Context) ApiGetEth
 }
 
 // Execute executes the request
-//  @return EtherNetworkPortResponse
+//
+//	@return EtherNetworkPortResponse
 func (a *EtherApiService) GetEtherNetworkPortListExecute(r ApiGetEtherNetworkPortListRequest) (*EtherNetworkPortResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -694,37 +728,52 @@ func (a *EtherApiService) GetEtherNetworkPortListExecute(r ApiGetEtherNetworkPor
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -753,9 +802,9 @@ func (a *EtherApiService) GetEtherNetworkPortListExecute(r ApiGetEtherNetworkPor
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -772,6 +821,7 @@ func (a *EtherApiService) GetEtherNetworkPortListExecute(r ApiGetEtherNetworkPor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -782,6 +832,7 @@ func (a *EtherApiService) GetEtherNetworkPortListExecute(r ApiGetEtherNetworkPor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -792,6 +843,7 @@ func (a *EtherApiService) GetEtherNetworkPortListExecute(r ApiGetEtherNetworkPor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -802,6 +854,7 @@ func (a *EtherApiService) GetEtherNetworkPortListExecute(r ApiGetEtherNetworkPor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -811,6 +864,7 @@ func (a *EtherApiService) GetEtherNetworkPortListExecute(r ApiGetEtherNetworkPor
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -840,9 +894,9 @@ func (r ApiGetEtherPhysicalPortByMoidRequest) Execute() (*EtherPhysicalPort, *ht
 /*
 GetEtherPhysicalPortByMoid Read a 'ether.PhysicalPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEtherPhysicalPortByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEtherPhysicalPortByMoidRequest
 */
 func (a *EtherApiService) GetEtherPhysicalPortByMoid(ctx context.Context, moid string) ApiGetEtherPhysicalPortByMoidRequest {
 	return ApiGetEtherPhysicalPortByMoidRequest{
@@ -853,7 +907,8 @@ func (a *EtherApiService) GetEtherPhysicalPortByMoid(ctx context.Context, moid s
 }
 
 // Execute executes the request
-//  @return EtherPhysicalPort
+//
+//	@return EtherPhysicalPort
 func (a *EtherApiService) GetEtherPhysicalPortByMoidExecute(r ApiGetEtherPhysicalPortByMoidRequest) (*EtherPhysicalPort, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -868,7 +923,7 @@ func (a *EtherApiService) GetEtherPhysicalPortByMoidExecute(r ApiGetEtherPhysica
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/PhysicalPorts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -901,9 +956,9 @@ func (a *EtherApiService) GetEtherPhysicalPortByMoidExecute(r ApiGetEtherPhysica
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -920,6 +975,7 @@ func (a *EtherApiService) GetEtherPhysicalPortByMoidExecute(r ApiGetEtherPhysica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -930,6 +986,7 @@ func (a *EtherApiService) GetEtherPhysicalPortByMoidExecute(r ApiGetEtherPhysica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -940,6 +997,7 @@ func (a *EtherApiService) GetEtherPhysicalPortByMoidExecute(r ApiGetEtherPhysica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -950,6 +1008,7 @@ func (a *EtherApiService) GetEtherPhysicalPortByMoidExecute(r ApiGetEtherPhysica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -959,6 +1018,7 @@ func (a *EtherApiService) GetEtherPhysicalPortByMoidExecute(r ApiGetEtherPhysica
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1027,7 +1087,7 @@ func (r ApiGetEtherPhysicalPortListRequest) Expand(expand string) ApiGetEtherPhy
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEtherPhysicalPortListRequest) Apply(apply string) ApiGetEtherPhysicalPortListRequest {
 	r.apply = &apply
 	return r
@@ -1064,8 +1124,8 @@ func (r ApiGetEtherPhysicalPortListRequest) Execute() (*EtherPhysicalPortRespons
 /*
 GetEtherPhysicalPortList Read a 'ether.PhysicalPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEtherPhysicalPortListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEtherPhysicalPortListRequest
 */
 func (a *EtherApiService) GetEtherPhysicalPortList(ctx context.Context) ApiGetEtherPhysicalPortListRequest {
 	return ApiGetEtherPhysicalPortListRequest{
@@ -1075,7 +1135,8 @@ func (a *EtherApiService) GetEtherPhysicalPortList(ctx context.Context) ApiGetEt
 }
 
 // Execute executes the request
-//  @return EtherPhysicalPortResponse
+//
+//	@return EtherPhysicalPortResponse
 func (a *EtherApiService) GetEtherPhysicalPortListExecute(r ApiGetEtherPhysicalPortListRequest) (*EtherPhysicalPortResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1096,37 +1157,52 @@ func (a *EtherApiService) GetEtherPhysicalPortListExecute(r ApiGetEtherPhysicalP
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1155,9 +1231,9 @@ func (a *EtherApiService) GetEtherPhysicalPortListExecute(r ApiGetEtherPhysicalP
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1174,6 +1250,7 @@ func (a *EtherApiService) GetEtherPhysicalPortListExecute(r ApiGetEtherPhysicalP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1184,6 +1261,7 @@ func (a *EtherApiService) GetEtherPhysicalPortListExecute(r ApiGetEtherPhysicalP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1194,6 +1272,7 @@ func (a *EtherApiService) GetEtherPhysicalPortListExecute(r ApiGetEtherPhysicalP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1204,6 +1283,7 @@ func (a *EtherApiService) GetEtherPhysicalPortListExecute(r ApiGetEtherPhysicalP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1213,6 +1293,7 @@ func (a *EtherApiService) GetEtherPhysicalPortListExecute(r ApiGetEtherPhysicalP
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1242,9 +1323,9 @@ func (r ApiGetEtherPortChannelByMoidRequest) Execute() (*EtherPortChannel, *http
 /*
 GetEtherPortChannelByMoid Read a 'ether.PortChannel' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetEtherPortChannelByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetEtherPortChannelByMoidRequest
 */
 func (a *EtherApiService) GetEtherPortChannelByMoid(ctx context.Context, moid string) ApiGetEtherPortChannelByMoidRequest {
 	return ApiGetEtherPortChannelByMoidRequest{
@@ -1255,7 +1336,8 @@ func (a *EtherApiService) GetEtherPortChannelByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return EtherPortChannel
+//
+//	@return EtherPortChannel
 func (a *EtherApiService) GetEtherPortChannelByMoidExecute(r ApiGetEtherPortChannelByMoidRequest) (*EtherPortChannel, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1270,7 +1352,7 @@ func (a *EtherApiService) GetEtherPortChannelByMoidExecute(r ApiGetEtherPortChan
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/PortChannels/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1303,9 +1385,9 @@ func (a *EtherApiService) GetEtherPortChannelByMoidExecute(r ApiGetEtherPortChan
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1322,6 +1404,7 @@ func (a *EtherApiService) GetEtherPortChannelByMoidExecute(r ApiGetEtherPortChan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1332,6 +1415,7 @@ func (a *EtherApiService) GetEtherPortChannelByMoidExecute(r ApiGetEtherPortChan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1342,6 +1426,7 @@ func (a *EtherApiService) GetEtherPortChannelByMoidExecute(r ApiGetEtherPortChan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1352,6 +1437,7 @@ func (a *EtherApiService) GetEtherPortChannelByMoidExecute(r ApiGetEtherPortChan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1361,6 +1447,7 @@ func (a *EtherApiService) GetEtherPortChannelByMoidExecute(r ApiGetEtherPortChan
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1429,7 +1516,7 @@ func (r ApiGetEtherPortChannelListRequest) Expand(expand string) ApiGetEtherPort
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetEtherPortChannelListRequest) Apply(apply string) ApiGetEtherPortChannelListRequest {
 	r.apply = &apply
 	return r
@@ -1466,8 +1553,8 @@ func (r ApiGetEtherPortChannelListRequest) Execute() (*EtherPortChannelResponse,
 /*
 GetEtherPortChannelList Read a 'ether.PortChannel' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetEtherPortChannelListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetEtherPortChannelListRequest
 */
 func (a *EtherApiService) GetEtherPortChannelList(ctx context.Context) ApiGetEtherPortChannelListRequest {
 	return ApiGetEtherPortChannelListRequest{
@@ -1477,7 +1564,8 @@ func (a *EtherApiService) GetEtherPortChannelList(ctx context.Context) ApiGetEth
 }
 
 // Execute executes the request
-//  @return EtherPortChannelResponse
+//
+//	@return EtherPortChannelResponse
 func (a *EtherApiService) GetEtherPortChannelListExecute(r ApiGetEtherPortChannelListRequest) (*EtherPortChannelResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -1498,37 +1586,52 @@ func (a *EtherApiService) GetEtherPortChannelListExecute(r ApiGetEtherPortChanne
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -1557,9 +1660,9 @@ func (a *EtherApiService) GetEtherPortChannelListExecute(r ApiGetEtherPortChanne
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1576,6 +1679,7 @@ func (a *EtherApiService) GetEtherPortChannelListExecute(r ApiGetEtherPortChanne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1586,6 +1690,7 @@ func (a *EtherApiService) GetEtherPortChannelListExecute(r ApiGetEtherPortChanne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1596,6 +1701,7 @@ func (a *EtherApiService) GetEtherPortChannelListExecute(r ApiGetEtherPortChanne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1606,6 +1712,7 @@ func (a *EtherApiService) GetEtherPortChannelListExecute(r ApiGetEtherPortChanne
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1615,6 +1722,7 @@ func (a *EtherApiService) GetEtherPortChannelListExecute(r ApiGetEtherPortChanne
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1658,9 +1766,9 @@ func (r ApiPatchEtherHostPortRequest) Execute() (*EtherHostPort, *http.Response,
 /*
 PatchEtherHostPort Update a 'ether.HostPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEtherHostPortRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEtherHostPortRequest
 */
 func (a *EtherApiService) PatchEtherHostPort(ctx context.Context, moid string) ApiPatchEtherHostPortRequest {
 	return ApiPatchEtherHostPortRequest{
@@ -1671,7 +1779,8 @@ func (a *EtherApiService) PatchEtherHostPort(ctx context.Context, moid string) A
 }
 
 // Execute executes the request
-//  @return EtherHostPort
+//
+//	@return EtherHostPort
 func (a *EtherApiService) PatchEtherHostPortExecute(r ApiPatchEtherHostPortRequest) (*EtherHostPort, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -1686,7 +1795,7 @@ func (a *EtherApiService) PatchEtherHostPortExecute(r ApiPatchEtherHostPortReque
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/HostPorts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1713,7 +1822,7 @@ func (a *EtherApiService) PatchEtherHostPortExecute(r ApiPatchEtherHostPortReque
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.etherHostPort
@@ -1727,9 +1836,9 @@ func (a *EtherApiService) PatchEtherHostPortExecute(r ApiPatchEtherHostPortReque
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1746,6 +1855,7 @@ func (a *EtherApiService) PatchEtherHostPortExecute(r ApiPatchEtherHostPortReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1756,6 +1866,7 @@ func (a *EtherApiService) PatchEtherHostPortExecute(r ApiPatchEtherHostPortReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1766,6 +1877,7 @@ func (a *EtherApiService) PatchEtherHostPortExecute(r ApiPatchEtherHostPortReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1776,6 +1888,7 @@ func (a *EtherApiService) PatchEtherHostPortExecute(r ApiPatchEtherHostPortReque
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1785,6 +1898,7 @@ func (a *EtherApiService) PatchEtherHostPortExecute(r ApiPatchEtherHostPortReque
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1828,9 +1942,9 @@ func (r ApiPatchEtherNetworkPortRequest) Execute() (*EtherNetworkPort, *http.Res
 /*
 PatchEtherNetworkPort Update a 'ether.NetworkPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEtherNetworkPortRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEtherNetworkPortRequest
 */
 func (a *EtherApiService) PatchEtherNetworkPort(ctx context.Context, moid string) ApiPatchEtherNetworkPortRequest {
 	return ApiPatchEtherNetworkPortRequest{
@@ -1841,7 +1955,8 @@ func (a *EtherApiService) PatchEtherNetworkPort(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return EtherNetworkPort
+//
+//	@return EtherNetworkPort
 func (a *EtherApiService) PatchEtherNetworkPortExecute(r ApiPatchEtherNetworkPortRequest) (*EtherNetworkPort, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -1856,7 +1971,7 @@ func (a *EtherApiService) PatchEtherNetworkPortExecute(r ApiPatchEtherNetworkPor
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/NetworkPorts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1883,7 +1998,7 @@ func (a *EtherApiService) PatchEtherNetworkPortExecute(r ApiPatchEtherNetworkPor
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.etherNetworkPort
@@ -1897,9 +2012,9 @@ func (a *EtherApiService) PatchEtherNetworkPortExecute(r ApiPatchEtherNetworkPor
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1916,6 +2031,7 @@ func (a *EtherApiService) PatchEtherNetworkPortExecute(r ApiPatchEtherNetworkPor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1926,6 +2042,7 @@ func (a *EtherApiService) PatchEtherNetworkPortExecute(r ApiPatchEtherNetworkPor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1936,6 +2053,7 @@ func (a *EtherApiService) PatchEtherNetworkPortExecute(r ApiPatchEtherNetworkPor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1946,6 +2064,7 @@ func (a *EtherApiService) PatchEtherNetworkPortExecute(r ApiPatchEtherNetworkPor
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1955,6 +2074,7 @@ func (a *EtherApiService) PatchEtherNetworkPortExecute(r ApiPatchEtherNetworkPor
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1998,9 +2118,9 @@ func (r ApiPatchEtherPhysicalPortRequest) Execute() (*EtherPhysicalPort, *http.R
 /*
 PatchEtherPhysicalPort Update a 'ether.PhysicalPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchEtherPhysicalPortRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchEtherPhysicalPortRequest
 */
 func (a *EtherApiService) PatchEtherPhysicalPort(ctx context.Context, moid string) ApiPatchEtherPhysicalPortRequest {
 	return ApiPatchEtherPhysicalPortRequest{
@@ -2011,7 +2131,8 @@ func (a *EtherApiService) PatchEtherPhysicalPort(ctx context.Context, moid strin
 }
 
 // Execute executes the request
-//  @return EtherPhysicalPort
+//
+//	@return EtherPhysicalPort
 func (a *EtherApiService) PatchEtherPhysicalPortExecute(r ApiPatchEtherPhysicalPortRequest) (*EtherPhysicalPort, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -2026,7 +2147,7 @@ func (a *EtherApiService) PatchEtherPhysicalPortExecute(r ApiPatchEtherPhysicalP
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/PhysicalPorts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2053,7 +2174,7 @@ func (a *EtherApiService) PatchEtherPhysicalPortExecute(r ApiPatchEtherPhysicalP
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.etherPhysicalPort
@@ -2067,9 +2188,9 @@ func (a *EtherApiService) PatchEtherPhysicalPortExecute(r ApiPatchEtherPhysicalP
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2086,6 +2207,7 @@ func (a *EtherApiService) PatchEtherPhysicalPortExecute(r ApiPatchEtherPhysicalP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2096,6 +2218,7 @@ func (a *EtherApiService) PatchEtherPhysicalPortExecute(r ApiPatchEtherPhysicalP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2106,6 +2229,7 @@ func (a *EtherApiService) PatchEtherPhysicalPortExecute(r ApiPatchEtherPhysicalP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2116,6 +2240,7 @@ func (a *EtherApiService) PatchEtherPhysicalPortExecute(r ApiPatchEtherPhysicalP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2125,6 +2250,7 @@ func (a *EtherApiService) PatchEtherPhysicalPortExecute(r ApiPatchEtherPhysicalP
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2168,9 +2294,9 @@ func (r ApiUpdateEtherHostPortRequest) Execute() (*EtherHostPort, *http.Response
 /*
 UpdateEtherHostPort Update a 'ether.HostPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEtherHostPortRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEtherHostPortRequest
 */
 func (a *EtherApiService) UpdateEtherHostPort(ctx context.Context, moid string) ApiUpdateEtherHostPortRequest {
 	return ApiUpdateEtherHostPortRequest{
@@ -2181,7 +2307,8 @@ func (a *EtherApiService) UpdateEtherHostPort(ctx context.Context, moid string) 
 }
 
 // Execute executes the request
-//  @return EtherHostPort
+//
+//	@return EtherHostPort
 func (a *EtherApiService) UpdateEtherHostPortExecute(r ApiUpdateEtherHostPortRequest) (*EtherHostPort, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2196,7 +2323,7 @@ func (a *EtherApiService) UpdateEtherHostPortExecute(r ApiUpdateEtherHostPortReq
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/HostPorts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2223,7 +2350,7 @@ func (a *EtherApiService) UpdateEtherHostPortExecute(r ApiUpdateEtherHostPortReq
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.etherHostPort
@@ -2237,9 +2364,9 @@ func (a *EtherApiService) UpdateEtherHostPortExecute(r ApiUpdateEtherHostPortReq
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2256,6 +2383,7 @@ func (a *EtherApiService) UpdateEtherHostPortExecute(r ApiUpdateEtherHostPortReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2266,6 +2394,7 @@ func (a *EtherApiService) UpdateEtherHostPortExecute(r ApiUpdateEtherHostPortReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2276,6 +2405,7 @@ func (a *EtherApiService) UpdateEtherHostPortExecute(r ApiUpdateEtherHostPortReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2286,6 +2416,7 @@ func (a *EtherApiService) UpdateEtherHostPortExecute(r ApiUpdateEtherHostPortReq
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2295,6 +2426,7 @@ func (a *EtherApiService) UpdateEtherHostPortExecute(r ApiUpdateEtherHostPortReq
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2338,9 +2470,9 @@ func (r ApiUpdateEtherNetworkPortRequest) Execute() (*EtherNetworkPort, *http.Re
 /*
 UpdateEtherNetworkPort Update a 'ether.NetworkPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEtherNetworkPortRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEtherNetworkPortRequest
 */
 func (a *EtherApiService) UpdateEtherNetworkPort(ctx context.Context, moid string) ApiUpdateEtherNetworkPortRequest {
 	return ApiUpdateEtherNetworkPortRequest{
@@ -2351,7 +2483,8 @@ func (a *EtherApiService) UpdateEtherNetworkPort(ctx context.Context, moid strin
 }
 
 // Execute executes the request
-//  @return EtherNetworkPort
+//
+//	@return EtherNetworkPort
 func (a *EtherApiService) UpdateEtherNetworkPortExecute(r ApiUpdateEtherNetworkPortRequest) (*EtherNetworkPort, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2366,7 +2499,7 @@ func (a *EtherApiService) UpdateEtherNetworkPortExecute(r ApiUpdateEtherNetworkP
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/NetworkPorts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2393,7 +2526,7 @@ func (a *EtherApiService) UpdateEtherNetworkPortExecute(r ApiUpdateEtherNetworkP
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.etherNetworkPort
@@ -2407,9 +2540,9 @@ func (a *EtherApiService) UpdateEtherNetworkPortExecute(r ApiUpdateEtherNetworkP
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2426,6 +2559,7 @@ func (a *EtherApiService) UpdateEtherNetworkPortExecute(r ApiUpdateEtherNetworkP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2436,6 +2570,7 @@ func (a *EtherApiService) UpdateEtherNetworkPortExecute(r ApiUpdateEtherNetworkP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2446,6 +2581,7 @@ func (a *EtherApiService) UpdateEtherNetworkPortExecute(r ApiUpdateEtherNetworkP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2456,6 +2592,7 @@ func (a *EtherApiService) UpdateEtherNetworkPortExecute(r ApiUpdateEtherNetworkP
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2465,6 +2602,7 @@ func (a *EtherApiService) UpdateEtherNetworkPortExecute(r ApiUpdateEtherNetworkP
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2508,9 +2646,9 @@ func (r ApiUpdateEtherPhysicalPortRequest) Execute() (*EtherPhysicalPort, *http.
 /*
 UpdateEtherPhysicalPort Update a 'ether.PhysicalPort' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateEtherPhysicalPortRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateEtherPhysicalPortRequest
 */
 func (a *EtherApiService) UpdateEtherPhysicalPort(ctx context.Context, moid string) ApiUpdateEtherPhysicalPortRequest {
 	return ApiUpdateEtherPhysicalPortRequest{
@@ -2521,7 +2659,8 @@ func (a *EtherApiService) UpdateEtherPhysicalPort(ctx context.Context, moid stri
 }
 
 // Execute executes the request
-//  @return EtherPhysicalPort
+//
+//	@return EtherPhysicalPort
 func (a *EtherApiService) UpdateEtherPhysicalPortExecute(r ApiUpdateEtherPhysicalPortRequest) (*EtherPhysicalPort, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2536,7 +2675,7 @@ func (a *EtherApiService) UpdateEtherPhysicalPortExecute(r ApiUpdateEtherPhysica
 	}
 
 	localVarPath := localBasePath + "/api/v1/ether/PhysicalPorts/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2563,7 +2702,7 @@ func (a *EtherApiService) UpdateEtherPhysicalPortExecute(r ApiUpdateEtherPhysica
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.etherPhysicalPort
@@ -2577,9 +2716,9 @@ func (a *EtherApiService) UpdateEtherPhysicalPortExecute(r ApiUpdateEtherPhysica
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2596,6 +2735,7 @@ func (a *EtherApiService) UpdateEtherPhysicalPortExecute(r ApiUpdateEtherPhysica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2606,6 +2746,7 @@ func (a *EtherApiService) UpdateEtherPhysicalPortExecute(r ApiUpdateEtherPhysica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2616,6 +2757,7 @@ func (a *EtherApiService) UpdateEtherPhysicalPortExecute(r ApiUpdateEtherPhysica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2626,6 +2768,7 @@ func (a *EtherApiService) UpdateEtherPhysicalPortExecute(r ApiUpdateEtherPhysica
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2635,6 +2778,7 @@ func (a *EtherApiService) UpdateEtherPhysicalPortExecute(r ApiUpdateEtherPhysica
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

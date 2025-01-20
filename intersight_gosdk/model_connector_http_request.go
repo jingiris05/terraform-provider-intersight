@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,32 +13,36 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
-// ConnectorHttpRequest A HTTP request sent by a cloud service to be proxied through a device connector.
+// checks if the ConnectorHttpRequest type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ConnectorHttpRequest{}
+
+// ConnectorHttpRequest An HTTP request sent by a cloud service to be proxied through a device connector.
 type ConnectorHttpRequest struct {
 	ConnectorBaseMessage
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// The Target endpoint Moid which is used to fetch the previously persisted Target information in Intersight to create HTTP request along with any authentication info specifed.
+	// The Target endpoint Moid which is used to fetch the previously persisted Target information in Intersight to create HTTP request along with any authentication info specified.
 	AssetTargetMoid *string `json:"AssetTargetMoid,omitempty"`
 	// Contents of the request body to send for PUT/PATCH/POST requests.
 	Body *string `json:"Body,omitempty"`
-	// The timeout for establishing the TCP connection to the target host. If not set the request timeout value is used.
+	// The timeout for establishing the TCP connection to the target host. If not set, the request timeout value is used.
 	DialTimeout *int64 `json:"DialTimeout,omitempty"`
-	// The MO id of the asset.EndpointConnection this request is directed to. If set plugin will insert connection details into the request, including credentials if defined.
+	// The MO id of the asset.EndpointConnection this request is directed to. If set, plugin will insert connection details into the request, including credentials if defined.
 	EndpointMoid *string `json:"EndpointMoid,omitempty"`
-	// Collection of key value pairs to set in the request header.
+	// Collection of key/value pairs to set in the request header.
 	Header interface{} `json:"Header,omitempty"`
 	// The request is for an internal platform API that requires authentication to be inserted by the platform implementation.
 	Internal *bool `json:"Internal,omitempty"`
 	// Method specifies the HTTP method (GET, POST, PUT, etc.). For client requests an empty string means GET.
 	Method *string `json:"Method,omitempty"`
-	// The timeout for the HTTP request to complete, from connection establishment to response body read complete. If not set a default timeout of five minutes is used.
+	// The timeout for the HTTP request to complete, from connection establishment to response body read complete. If not set, a default timeout of four minutes is used.
 	Timeout              *int64               `json:"Timeout,omitempty"`
 	Url                  NullableConnectorUrl `json:"Url,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -93,6 +97,11 @@ func (o *ConnectorHttpRequest) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "connector.HttpRequest" of the ClassId field.
+func (o *ConnectorHttpRequest) GetDefaultClassId() interface{} {
+	return "connector.HttpRequest"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ConnectorHttpRequest) GetObjectType() string {
 	if o == nil {
@@ -117,9 +126,14 @@ func (o *ConnectorHttpRequest) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "connector.HttpRequest" of the ObjectType field.
+func (o *ConnectorHttpRequest) GetDefaultObjectType() interface{} {
+	return "connector.HttpRequest"
+}
+
 // GetAssetTargetMoid returns the AssetTargetMoid field value if set, zero value otherwise.
 func (o *ConnectorHttpRequest) GetAssetTargetMoid() string {
-	if o == nil || o.AssetTargetMoid == nil {
+	if o == nil || IsNil(o.AssetTargetMoid) {
 		var ret string
 		return ret
 	}
@@ -129,7 +143,7 @@ func (o *ConnectorHttpRequest) GetAssetTargetMoid() string {
 // GetAssetTargetMoidOk returns a tuple with the AssetTargetMoid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorHttpRequest) GetAssetTargetMoidOk() (*string, bool) {
-	if o == nil || o.AssetTargetMoid == nil {
+	if o == nil || IsNil(o.AssetTargetMoid) {
 		return nil, false
 	}
 	return o.AssetTargetMoid, true
@@ -137,7 +151,7 @@ func (o *ConnectorHttpRequest) GetAssetTargetMoidOk() (*string, bool) {
 
 // HasAssetTargetMoid returns a boolean if a field has been set.
 func (o *ConnectorHttpRequest) HasAssetTargetMoid() bool {
-	if o != nil && o.AssetTargetMoid != nil {
+	if o != nil && !IsNil(o.AssetTargetMoid) {
 		return true
 	}
 
@@ -151,7 +165,7 @@ func (o *ConnectorHttpRequest) SetAssetTargetMoid(v string) {
 
 // GetBody returns the Body field value if set, zero value otherwise.
 func (o *ConnectorHttpRequest) GetBody() string {
-	if o == nil || o.Body == nil {
+	if o == nil || IsNil(o.Body) {
 		var ret string
 		return ret
 	}
@@ -161,7 +175,7 @@ func (o *ConnectorHttpRequest) GetBody() string {
 // GetBodyOk returns a tuple with the Body field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorHttpRequest) GetBodyOk() (*string, bool) {
-	if o == nil || o.Body == nil {
+	if o == nil || IsNil(o.Body) {
 		return nil, false
 	}
 	return o.Body, true
@@ -169,7 +183,7 @@ func (o *ConnectorHttpRequest) GetBodyOk() (*string, bool) {
 
 // HasBody returns a boolean if a field has been set.
 func (o *ConnectorHttpRequest) HasBody() bool {
-	if o != nil && o.Body != nil {
+	if o != nil && !IsNil(o.Body) {
 		return true
 	}
 
@@ -183,7 +197,7 @@ func (o *ConnectorHttpRequest) SetBody(v string) {
 
 // GetDialTimeout returns the DialTimeout field value if set, zero value otherwise.
 func (o *ConnectorHttpRequest) GetDialTimeout() int64 {
-	if o == nil || o.DialTimeout == nil {
+	if o == nil || IsNil(o.DialTimeout) {
 		var ret int64
 		return ret
 	}
@@ -193,7 +207,7 @@ func (o *ConnectorHttpRequest) GetDialTimeout() int64 {
 // GetDialTimeoutOk returns a tuple with the DialTimeout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorHttpRequest) GetDialTimeoutOk() (*int64, bool) {
-	if o == nil || o.DialTimeout == nil {
+	if o == nil || IsNil(o.DialTimeout) {
 		return nil, false
 	}
 	return o.DialTimeout, true
@@ -201,7 +215,7 @@ func (o *ConnectorHttpRequest) GetDialTimeoutOk() (*int64, bool) {
 
 // HasDialTimeout returns a boolean if a field has been set.
 func (o *ConnectorHttpRequest) HasDialTimeout() bool {
-	if o != nil && o.DialTimeout != nil {
+	if o != nil && !IsNil(o.DialTimeout) {
 		return true
 	}
 
@@ -215,7 +229,7 @@ func (o *ConnectorHttpRequest) SetDialTimeout(v int64) {
 
 // GetEndpointMoid returns the EndpointMoid field value if set, zero value otherwise.
 func (o *ConnectorHttpRequest) GetEndpointMoid() string {
-	if o == nil || o.EndpointMoid == nil {
+	if o == nil || IsNil(o.EndpointMoid) {
 		var ret string
 		return ret
 	}
@@ -225,7 +239,7 @@ func (o *ConnectorHttpRequest) GetEndpointMoid() string {
 // GetEndpointMoidOk returns a tuple with the EndpointMoid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorHttpRequest) GetEndpointMoidOk() (*string, bool) {
-	if o == nil || o.EndpointMoid == nil {
+	if o == nil || IsNil(o.EndpointMoid) {
 		return nil, false
 	}
 	return o.EndpointMoid, true
@@ -233,7 +247,7 @@ func (o *ConnectorHttpRequest) GetEndpointMoidOk() (*string, bool) {
 
 // HasEndpointMoid returns a boolean if a field has been set.
 func (o *ConnectorHttpRequest) HasEndpointMoid() bool {
-	if o != nil && o.EndpointMoid != nil {
+	if o != nil && !IsNil(o.EndpointMoid) {
 		return true
 	}
 
@@ -258,7 +272,7 @@ func (o *ConnectorHttpRequest) GetHeader() interface{} {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConnectorHttpRequest) GetHeaderOk() (*interface{}, bool) {
-	if o == nil || o.Header == nil {
+	if o == nil || IsNil(o.Header) {
 		return nil, false
 	}
 	return &o.Header, true
@@ -266,7 +280,7 @@ func (o *ConnectorHttpRequest) GetHeaderOk() (*interface{}, bool) {
 
 // HasHeader returns a boolean if a field has been set.
 func (o *ConnectorHttpRequest) HasHeader() bool {
-	if o != nil && o.Header != nil {
+	if o != nil && !IsNil(o.Header) {
 		return true
 	}
 
@@ -280,7 +294,7 @@ func (o *ConnectorHttpRequest) SetHeader(v interface{}) {
 
 // GetInternal returns the Internal field value if set, zero value otherwise.
 func (o *ConnectorHttpRequest) GetInternal() bool {
-	if o == nil || o.Internal == nil {
+	if o == nil || IsNil(o.Internal) {
 		var ret bool
 		return ret
 	}
@@ -290,7 +304,7 @@ func (o *ConnectorHttpRequest) GetInternal() bool {
 // GetInternalOk returns a tuple with the Internal field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorHttpRequest) GetInternalOk() (*bool, bool) {
-	if o == nil || o.Internal == nil {
+	if o == nil || IsNil(o.Internal) {
 		return nil, false
 	}
 	return o.Internal, true
@@ -298,7 +312,7 @@ func (o *ConnectorHttpRequest) GetInternalOk() (*bool, bool) {
 
 // HasInternal returns a boolean if a field has been set.
 func (o *ConnectorHttpRequest) HasInternal() bool {
-	if o != nil && o.Internal != nil {
+	if o != nil && !IsNil(o.Internal) {
 		return true
 	}
 
@@ -312,7 +326,7 @@ func (o *ConnectorHttpRequest) SetInternal(v bool) {
 
 // GetMethod returns the Method field value if set, zero value otherwise.
 func (o *ConnectorHttpRequest) GetMethod() string {
-	if o == nil || o.Method == nil {
+	if o == nil || IsNil(o.Method) {
 		var ret string
 		return ret
 	}
@@ -322,7 +336,7 @@ func (o *ConnectorHttpRequest) GetMethod() string {
 // GetMethodOk returns a tuple with the Method field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorHttpRequest) GetMethodOk() (*string, bool) {
-	if o == nil || o.Method == nil {
+	if o == nil || IsNil(o.Method) {
 		return nil, false
 	}
 	return o.Method, true
@@ -330,7 +344,7 @@ func (o *ConnectorHttpRequest) GetMethodOk() (*string, bool) {
 
 // HasMethod returns a boolean if a field has been set.
 func (o *ConnectorHttpRequest) HasMethod() bool {
-	if o != nil && o.Method != nil {
+	if o != nil && !IsNil(o.Method) {
 		return true
 	}
 
@@ -344,7 +358,7 @@ func (o *ConnectorHttpRequest) SetMethod(v string) {
 
 // GetTimeout returns the Timeout field value if set, zero value otherwise.
 func (o *ConnectorHttpRequest) GetTimeout() int64 {
-	if o == nil || o.Timeout == nil {
+	if o == nil || IsNil(o.Timeout) {
 		var ret int64
 		return ret
 	}
@@ -354,7 +368,7 @@ func (o *ConnectorHttpRequest) GetTimeout() int64 {
 // GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorHttpRequest) GetTimeoutOk() (*int64, bool) {
-	if o == nil || o.Timeout == nil {
+	if o == nil || IsNil(o.Timeout) {
 		return nil, false
 	}
 	return o.Timeout, true
@@ -362,7 +376,7 @@ func (o *ConnectorHttpRequest) GetTimeoutOk() (*int64, bool) {
 
 // HasTimeout returns a boolean if a field has been set.
 func (o *ConnectorHttpRequest) HasTimeout() bool {
-	if o != nil && o.Timeout != nil {
+	if o != nil && !IsNil(o.Timeout) {
 		return true
 	}
 
@@ -376,7 +390,7 @@ func (o *ConnectorHttpRequest) SetTimeout(v int64) {
 
 // GetUrl returns the Url field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConnectorHttpRequest) GetUrl() ConnectorUrl {
-	if o == nil || o.Url.Get() == nil {
+	if o == nil || IsNil(o.Url.Get()) {
 		var ret ConnectorUrl
 		return ret
 	}
@@ -418,43 +432,53 @@ func (o *ConnectorHttpRequest) UnsetUrl() {
 }
 
 func (o ConnectorHttpRequest) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ConnectorHttpRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedConnectorBaseMessage, errConnectorBaseMessage := json.Marshal(o.ConnectorBaseMessage)
 	if errConnectorBaseMessage != nil {
-		return []byte{}, errConnectorBaseMessage
+		return map[string]interface{}{}, errConnectorBaseMessage
 	}
 	errConnectorBaseMessage = json.Unmarshal([]byte(serializedConnectorBaseMessage), &toSerialize)
 	if errConnectorBaseMessage != nil {
-		return []byte{}, errConnectorBaseMessage
+		return map[string]interface{}{}, errConnectorBaseMessage
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AssetTargetMoid != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AssetTargetMoid) {
 		toSerialize["AssetTargetMoid"] = o.AssetTargetMoid
 	}
-	if o.Body != nil {
+	if !IsNil(o.Body) {
 		toSerialize["Body"] = o.Body
 	}
-	if o.DialTimeout != nil {
+	if !IsNil(o.DialTimeout) {
 		toSerialize["DialTimeout"] = o.DialTimeout
 	}
-	if o.EndpointMoid != nil {
+	if !IsNil(o.EndpointMoid) {
 		toSerialize["EndpointMoid"] = o.EndpointMoid
 	}
 	if o.Header != nil {
 		toSerialize["Header"] = o.Header
 	}
-	if o.Internal != nil {
+	if !IsNil(o.Internal) {
 		toSerialize["Internal"] = o.Internal
 	}
-	if o.Method != nil {
+	if !IsNil(o.Method) {
 		toSerialize["Method"] = o.Method
 	}
-	if o.Timeout != nil {
+	if !IsNil(o.Timeout) {
 		toSerialize["Timeout"] = o.Timeout
 	}
 	if o.Url.IsSet() {
@@ -465,37 +489,78 @@ func (o ConnectorHttpRequest) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ConnectorHttpRequest) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ConnectorHttpRequest) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ConnectorHttpRequestWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// The Target endpoint Moid which is used to fetch the previously persisted Target information in Intersight to create HTTP request along with any authentication info specifed.
+		// The Target endpoint Moid which is used to fetch the previously persisted Target information in Intersight to create HTTP request along with any authentication info specified.
 		AssetTargetMoid *string `json:"AssetTargetMoid,omitempty"`
 		// Contents of the request body to send for PUT/PATCH/POST requests.
 		Body *string `json:"Body,omitempty"`
-		// The timeout for establishing the TCP connection to the target host. If not set the request timeout value is used.
+		// The timeout for establishing the TCP connection to the target host. If not set, the request timeout value is used.
 		DialTimeout *int64 `json:"DialTimeout,omitempty"`
-		// The MO id of the asset.EndpointConnection this request is directed to. If set plugin will insert connection details into the request, including credentials if defined.
+		// The MO id of the asset.EndpointConnection this request is directed to. If set, plugin will insert connection details into the request, including credentials if defined.
 		EndpointMoid *string `json:"EndpointMoid,omitempty"`
-		// Collection of key value pairs to set in the request header.
+		// Collection of key/value pairs to set in the request header.
 		Header interface{} `json:"Header,omitempty"`
 		// The request is for an internal platform API that requires authentication to be inserted by the platform implementation.
 		Internal *bool `json:"Internal,omitempty"`
 		// Method specifies the HTTP method (GET, POST, PUT, etc.). For client requests an empty string means GET.
 		Method *string `json:"Method,omitempty"`
-		// The timeout for the HTTP request to complete, from connection establishment to response body read complete. If not set a default timeout of five minutes is used.
+		// The timeout for the HTTP request to complete, from connection establishment to response body read complete. If not set, a default timeout of four minutes is used.
 		Timeout *int64               `json:"Timeout,omitempty"`
 		Url     NullableConnectorUrl `json:"Url,omitempty"`
 	}
 
 	varConnectorHttpRequestWithoutEmbeddedStruct := ConnectorHttpRequestWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varConnectorHttpRequestWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varConnectorHttpRequestWithoutEmbeddedStruct)
 	if err == nil {
 		varConnectorHttpRequest := _ConnectorHttpRequest{}
 		varConnectorHttpRequest.ClassId = varConnectorHttpRequestWithoutEmbeddedStruct.ClassId
@@ -516,7 +581,7 @@ func (o *ConnectorHttpRequest) UnmarshalJSON(bytes []byte) (err error) {
 
 	varConnectorHttpRequest := _ConnectorHttpRequest{}
 
-	err = json.Unmarshal(bytes, &varConnectorHttpRequest)
+	err = json.Unmarshal(data, &varConnectorHttpRequest)
 	if err == nil {
 		o.ConnectorBaseMessage = varConnectorHttpRequest.ConnectorBaseMessage
 	} else {
@@ -525,7 +590,7 @@ func (o *ConnectorHttpRequest) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AssetTargetMoid")

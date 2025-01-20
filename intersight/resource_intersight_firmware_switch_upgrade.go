@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -19,7 +21,7 @@ func resourceFirmwareSwitchUpgrade() *schema.Resource {
 		ReadContext:   resourceFirmwareSwitchUpgradeRead,
 		DeleteContext: resourceFirmwareSwitchUpgradeDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -250,9 +252,9 @@ func resourceFirmwareSwitchUpgrade() *schema.Resource {
 							ForceNew:    true,
 						},
 						"upgradeoption": {
-							Description:  "Option to control the upgrade, e.g., sd_upgrade_mount_only - download the image into sd and upgrade wait for the server on-next boot.\n* `sd_upgrade_mount_only` - Direct upgrade SD upgrade mount only.\n* `sd_download_only` - Direct upgrade SD download only.\n* `sd_upgrade_only` - Direct upgrade SD upgrade only.\n* `sd_upgrade_full` - Direct upgrade SD upgrade full.\n* `download_only` - Direct upgrade image download only.\n* `upgrade_full` - The upgrade downloads or mounts the image, and reboots immediately for an upgrade.\n* `upgrade_mount_only` - The upgrade downloads or mounts the image. The upgrade happens in next reboot.\n* `chassis_upgrade_full` - Direct upgrade chassis upgrade full.",
+							Description:  "Option to control the upgrade, e.g., sd_upgrade_mount_only - download the image into sd and upgrade wait for the server on-next boot.\n* `sd_upgrade_mount_only` - Direct upgrade SD upgrade mount only.\n* `sd_download_only` - Direct upgrade SD download only.\n* `sd_upgrade_only` - Direct upgrade SD upgrade only.\n* `sd_upgrade_full` - Direct upgrade SD upgrade full.\n* `download_only` - Direct upgrade image download only.\n* `upgrade_full` - The upgrade downloads or mounts the image, and reboots immediately for an upgrade.\n* `upgrade_mount_only` - The upgrade downloads or mounts the image. The upgrade happens in next reboot.\n* `chassis_upgrade_full` - Direct upgrade chassis upgrade full.\n* `monitor_only` - Direct upgrade monitor progress only.\n* `validate_only` - Validate whether a component is ready for ugprade.\n* `cancel_only` - Cancel pending upgrade only.",
 							Type:         schema.TypeString,
-							ValidateFunc: validation.StringInSlice([]string{"sd_upgrade_mount_only", "sd_download_only", "sd_upgrade_only", "sd_upgrade_full", "download_only", "upgrade_full", "upgrade_mount_only", "chassis_upgrade_full"}, false),
+							ValidateFunc: validation.StringInSlice([]string{"sd_upgrade_mount_only", "sd_download_only", "sd_upgrade_only", "sd_upgrade_full", "download_only", "upgrade_full", "upgrade_mount_only", "chassis_upgrade_full", "monitor_only", "validate_only", "cancel_only"}, false),
 							Optional:     true,
 							Default:      "sd_upgrade_mount_only",
 							ForceNew:     true,
@@ -882,6 +884,13 @@ func resourceFirmwareSwitchUpgrade() *schema.Resource {
 				Optional:    true,
 				ForceNew:    true,
 			},
+			"skip_wait_for_io_path_connectivity": {
+				Description: "The flag to enable or disable the option to wait for IO paths connectivity during the switch firmware upgrade.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				ForceNew:    true,
+			},
 			"status": {
 				Description:  "Status of the upgrade operation.\n* `NONE` - Upgrade status is not populated.\n* `IN_PROGRESS` - The upgrade is in progress.\n* `SUCCESSFUL` - The upgrade successfully completed.\n* `FAILED` - The upgrade shows failed status.\n* `TERMINATED` - The upgrade has been terminated.",
 				Type:         schema.TypeString,
@@ -1086,6 +1095,18 @@ func resourceFirmwareSwitchUpgrade() *schema.Resource {
 								},
 							},
 							ForceNew: true,
+						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}, ForceNew: true,
 						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
@@ -1349,11 +1370,11 @@ func resourceFirmwareSwitchUpgradeCreate(c context.Context, d *schema.ResourceDa
 	}
 
 	if v, ok := d.GetOk("file_server"); ok {
-		p := make([]models.SoftwarerepositoryFileServer, 0, 1)
+		p := make([]models.MoBaseComplexType, 0, 1)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			l := s[i].(map[string]interface{})
-			o := models.NewSoftwarerepositoryFileServerWithDefaults()
+			o := models.NewMoBaseComplexTypeWithDefaults()
 			if v, ok := l["additional_properties"]; ok {
 				{
 					x := []byte(v.(string))
@@ -1663,6 +1684,11 @@ func resourceFirmwareSwitchUpgradeCreate(c context.Context, d *schema.ResourceDa
 		o.SetSkipEstimateImpact(x)
 	}
 
+	if v, ok := d.GetOkExists("skip_wait_for_io_path_connectivity"); ok {
+		x := (v.(bool))
+		o.SetSkipWaitForIoPathConnectivity(x)
+	}
+
 	if v, ok := d.GetOk("status"); ok {
 		x := (v.(string))
 		o.SetStatus(x)
@@ -1718,14 +1744,25 @@ func resourceFirmwareSwitchUpgradeCreate(c context.Context, d *schema.ResourceDa
 		}
 		return diag.Errorf("error occurred while creating FirmwareSwitchUpgrade: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceFirmwareSwitchUpgradeRead(c, d, meta)...)
 }
 
 func resourceFirmwareSwitchUpgradeRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.FirmwareApi.GetFirmwareSwitchUpgradeByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1783,7 +1820,7 @@ func resourceFirmwareSwitchUpgradeRead(c context.Context, d *schema.ResourceData
 		return diag.Errorf("error occurred while setting property EnableFabricEvacuation in FirmwareSwitchUpgrade object: %s", err.Error())
 	}
 
-	if err := d.Set("file_server", flattenMapSoftwarerepositoryFileServer(s.GetFileServer(), d)); err != nil {
+	if err := d.Set("file_server", flattenMapMoBaseComplexType(s.GetFileServer(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property FileServer in FirmwareSwitchUpgrade object: %s", err.Error())
 	}
 
@@ -1829,6 +1866,10 @@ func resourceFirmwareSwitchUpgradeRead(c context.Context, d *schema.ResourceData
 
 	if err := d.Set("skip_estimate_impact", (s.GetSkipEstimateImpact())); err != nil {
 		return diag.Errorf("error occurred while setting property SkipEstimateImpact in FirmwareSwitchUpgrade object: %s", err.Error())
+	}
+
+	if err := d.Set("skip_wait_for_io_path_connectivity", (s.GetSkipWaitForIoPathConnectivity())); err != nil {
+		return diag.Errorf("error occurred while setting property SkipWaitForIoPathConnectivity in FirmwareSwitchUpgrade object: %s", err.Error())
 	}
 
 	if err := d.Set("status", (s.GetStatus())); err != nil {

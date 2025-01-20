@@ -6,6 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "equipment.Transceiver"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "equipment.Transceiver"]
+**AggregatePortId** | Pointer to **int64** | Breakout port member in the Fabric Interconnect. | [optional] [readonly] 
 **CiscoExtendedIdNumber** | Pointer to **string** | The cisco extended Id number state of the pluggable SFP. | [optional] 
 **InterfaceType** | Pointer to **string** | Interface type of transceiver copper or fiber. | [optional] [readonly] 
 **ManufacturerPartNumber** | Pointer to **string** | The manufacturer part number of the pluggable SFP. | [optional] 
@@ -19,10 +20,10 @@ Name | Type | Description | Notes
 **Status** | Pointer to **string** | Status of the pluggable SFP. | [optional] 
 **SwitchId** | Pointer to **string** | Switch Identifier that is local to a cluster. | [optional] [readonly] 
 **Type** | Pointer to **string** | The type of the transceiver. | [optional] [readonly] 
-**EtherHostPort** | Pointer to [**EtherHostPortRelationship**](EtherHostPortRelationship.md) |  | [optional] 
-**EtherPhysicalPort** | Pointer to [**EtherPhysicalPortRelationship**](EtherPhysicalPortRelationship.md) |  | [optional] 
-**FcPhysicalPort** | Pointer to [**FcPhysicalPortRelationship**](FcPhysicalPortRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**EtherHostPort** | Pointer to [**NullableEtherHostPortRelationship**](EtherHostPortRelationship.md) |  | [optional] 
+**EtherPhysicalPort** | Pointer to [**NullableEtherPhysicalPortRelationship**](EtherPhysicalPortRelationship.md) |  | [optional] 
+**FcPhysicalPort** | Pointer to [**NullableFcPhysicalPortRelationship**](FcPhysicalPortRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -82,6 +83,31 @@ and a boolean to check if the value has been set.
 
 SetObjectType sets ObjectType field to given value.
 
+
+### GetAggregatePortId
+
+`func (o *EquipmentTransceiver) GetAggregatePortId() int64`
+
+GetAggregatePortId returns the AggregatePortId field if non-nil, zero value otherwise.
+
+### GetAggregatePortIdOk
+
+`func (o *EquipmentTransceiver) GetAggregatePortIdOk() (*int64, bool)`
+
+GetAggregatePortIdOk returns a tuple with the AggregatePortId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAggregatePortId
+
+`func (o *EquipmentTransceiver) SetAggregatePortId(v int64)`
+
+SetAggregatePortId sets AggregatePortId field to given value.
+
+### HasAggregatePortId
+
+`func (o *EquipmentTransceiver) HasAggregatePortId() bool`
+
+HasAggregatePortId returns a boolean if a field has been set.
 
 ### GetCiscoExtendedIdNumber
 
@@ -433,6 +459,16 @@ SetEtherHostPort sets EtherHostPort field to given value.
 
 HasEtherHostPort returns a boolean if a field has been set.
 
+### SetEtherHostPortNil
+
+`func (o *EquipmentTransceiver) SetEtherHostPortNil(b bool)`
+
+ SetEtherHostPortNil sets the value for EtherHostPort to be an explicit nil
+
+### UnsetEtherHostPort
+`func (o *EquipmentTransceiver) UnsetEtherHostPort()`
+
+UnsetEtherHostPort ensures that no value is present for EtherHostPort, not even an explicit nil
 ### GetEtherPhysicalPort
 
 `func (o *EquipmentTransceiver) GetEtherPhysicalPort() EtherPhysicalPortRelationship`
@@ -458,6 +494,16 @@ SetEtherPhysicalPort sets EtherPhysicalPort field to given value.
 
 HasEtherPhysicalPort returns a boolean if a field has been set.
 
+### SetEtherPhysicalPortNil
+
+`func (o *EquipmentTransceiver) SetEtherPhysicalPortNil(b bool)`
+
+ SetEtherPhysicalPortNil sets the value for EtherPhysicalPort to be an explicit nil
+
+### UnsetEtherPhysicalPort
+`func (o *EquipmentTransceiver) UnsetEtherPhysicalPort()`
+
+UnsetEtherPhysicalPort ensures that no value is present for EtherPhysicalPort, not even an explicit nil
 ### GetFcPhysicalPort
 
 `func (o *EquipmentTransceiver) GetFcPhysicalPort() FcPhysicalPortRelationship`
@@ -483,6 +529,16 @@ SetFcPhysicalPort sets FcPhysicalPort field to given value.
 
 HasFcPhysicalPort returns a boolean if a field has been set.
 
+### SetFcPhysicalPortNil
+
+`func (o *EquipmentTransceiver) SetFcPhysicalPortNil(b bool)`
+
+ SetFcPhysicalPortNil sets the value for FcPhysicalPort to be an explicit nil
+
+### UnsetFcPhysicalPort
+`func (o *EquipmentTransceiver) UnsetFcPhysicalPort()`
+
+UnsetFcPhysicalPort ensures that no value is present for FcPhysicalPort, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *EquipmentTransceiver) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -508,6 +564,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *EquipmentTransceiver) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *EquipmentTransceiver) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceHyperflexClusterNetworkPolicy() *schema.Resource {
 		UpdateContext: resourceHyperflexClusterNetworkPolicyUpdate,
 		DeleteContext: resourceHyperflexClusterNetworkPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -78,6 +80,17 @@ func resourceHyperflexClusterNetworkPolicy() *schema.Resource {
 					},
 				},
 			},
+			"cimc_management_mode": {
+				Description: "The mode configured on the CIMC management interface.\n* `OutOfBand` - The server uses out-of-band management, i.e. management traffic traverses through the management interfaces on the UCS Fabric Interconnects.\n* `InBand` - The server uses in-band management, i.e. management traffic traverses through the data uplink ports on the UCS Fabric Interconnects.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"class_id": {
 				Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
 				Type:        schema.TypeString,
@@ -591,6 +604,17 @@ func resourceHyperflexClusterNetworkPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1200,14 +1224,25 @@ func resourceHyperflexClusterNetworkPolicyCreate(c context.Context, d *schema.Re
 		}
 		return diag.Errorf("error occurred while creating HyperflexClusterNetworkPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceHyperflexClusterNetworkPolicyRead(c, d, meta)...)
 }
 
 func resourceHyperflexClusterNetworkPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.HyperflexApi.GetHyperflexClusterNetworkPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1235,6 +1270,10 @@ func resourceHyperflexClusterNetworkPolicyRead(c context.Context, d *schema.Reso
 
 	if err := d.Set("ancestors", flattenListMoBaseMoRelationship(s.GetAncestors(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Ancestors in HyperflexClusterNetworkPolicy object: %s", err.Error())
+	}
+
+	if err := d.Set("cimc_management_mode", (s.GetCimcManagementMode())); err != nil {
+		return diag.Errorf("error occurred while setting property CimcManagementMode in HyperflexClusterNetworkPolicy object: %s", err.Error())
 	}
 
 	if err := d.Set("class_id", (s.GetClassId())); err != nil {

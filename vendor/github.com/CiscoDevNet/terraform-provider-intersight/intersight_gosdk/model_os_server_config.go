@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the OsServerConfig type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &OsServerConfig{}
 
 // OsServerConfig The server level OS install parameter for the uploaded CSV file.
 type OsServerConfig struct {
@@ -27,12 +31,24 @@ type OsServerConfig struct {
 	AdditionalParameters []OsPlaceHolder   `json:"AdditionalParameters,omitempty"`
 	Answers              NullableOsAnswers `json:"Answers,omitempty"`
 	ErrorMsgs            []string          `json:"ErrorMsgs,omitempty"`
+	// The WWPN Address of the underlying fibre channel interface at the host side used for SAN accesss. Value must be in hexadecimal format xx:xx:xx:xx:xx:xx:xx:xx.  For example, 20:00:D4:C9:3C:35:02:01.
+	InitiatorWwpn *string `json:"InitiatorWwpn,omitempty" validate:"regexp=^$|(^([0-9a-fA-F]{2}:){7}[0-9a-fA-F]{2}$)"`
 	// The target in which OS installation triggered, the value represented is StorageControllerID follwed by PhysicalDisk SerialNumber in case of Physcial disk or VirtualDriveId for virtual drive.
-	InstallTarget             *string                             `json:"InstallTarget,omitempty"`
-	OperatingSystemParameters NullableOsOperatingSystemParameters `json:"OperatingSystemParameters,omitempty"`
-	ProcessedInstallTarget    NullableOsInstallTarget             `json:"ProcessedInstallTarget,omitempty"`
+	InstallTarget *string `json:"InstallTarget,omitempty"`
+	// The Logical Unit Number (LUN) of the install target.
+	LunId *int64 `json:"LunId,omitempty"`
+	// Installation parameters specific to selected OS.
+	OperatingSystemParameters NullableMoBaseComplexType `json:"OperatingSystemParameters,omitempty"`
+	// Install Target upon which Operating System is installed.
+	ProcessedInstallTarget NullableMoBaseComplexType `json:"ProcessedInstallTarget,omitempty"`
 	// The Serial Number of the server.
-	SerialNumber         *string `json:"SerialNumber,omitempty"`
+	SerialNumber *string `json:"SerialNumber,omitempty"`
+	// IQN (iSCSI qualified name) of Storage iSCSI target. Can be up to 255 characters long and has the following format, iqn.yyyy-mm.naming-authority:unique_name.
+	TargetIqn *string `json:"TargetIqn,omitempty"`
+	// The WWPN Address of the underlying fibre channel interface at the target used by the storage. Value must be in hexadecimal format xx:xx:xx:xx:xx:xx:xx:xx.  For example, 51:4F:0C:50:14:1F:AF:01.
+	TargetWwpn *string `json:"TargetWwpn,omitempty" validate:"regexp=^$|(^([0-9a-fA-F]{2}:){7}[0-9a-fA-F]{2}$)"`
+	// MAC address of the VNIC used as iSCSI initiator interface.
+	VnicMac              *string `json:"VnicMac,omitempty" validate:"regexp=^$|^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -85,6 +101,11 @@ func (o *OsServerConfig) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "os.ServerConfig" of the ClassId field.
+func (o *OsServerConfig) GetDefaultClassId() interface{} {
+	return "os.ServerConfig"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *OsServerConfig) GetObjectType() string {
 	if o == nil {
@@ -109,6 +130,11 @@ func (o *OsServerConfig) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "os.ServerConfig" of the ObjectType field.
+func (o *OsServerConfig) GetDefaultObjectType() interface{} {
+	return "os.ServerConfig"
+}
+
 // GetAdditionalParameters returns the AdditionalParameters field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *OsServerConfig) GetAdditionalParameters() []OsPlaceHolder {
 	if o == nil {
@@ -122,7 +148,7 @@ func (o *OsServerConfig) GetAdditionalParameters() []OsPlaceHolder {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *OsServerConfig) GetAdditionalParametersOk() ([]OsPlaceHolder, bool) {
-	if o == nil || o.AdditionalParameters == nil {
+	if o == nil || IsNil(o.AdditionalParameters) {
 		return nil, false
 	}
 	return o.AdditionalParameters, true
@@ -130,7 +156,7 @@ func (o *OsServerConfig) GetAdditionalParametersOk() ([]OsPlaceHolder, bool) {
 
 // HasAdditionalParameters returns a boolean if a field has been set.
 func (o *OsServerConfig) HasAdditionalParameters() bool {
-	if o != nil && o.AdditionalParameters != nil {
+	if o != nil && !IsNil(o.AdditionalParameters) {
 		return true
 	}
 
@@ -144,7 +170,7 @@ func (o *OsServerConfig) SetAdditionalParameters(v []OsPlaceHolder) {
 
 // GetAnswers returns the Answers field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *OsServerConfig) GetAnswers() OsAnswers {
-	if o == nil || o.Answers.Get() == nil {
+	if o == nil || IsNil(o.Answers.Get()) {
 		var ret OsAnswers
 		return ret
 	}
@@ -198,7 +224,7 @@ func (o *OsServerConfig) GetErrorMsgs() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *OsServerConfig) GetErrorMsgsOk() ([]string, bool) {
-	if o == nil || o.ErrorMsgs == nil {
+	if o == nil || IsNil(o.ErrorMsgs) {
 		return nil, false
 	}
 	return o.ErrorMsgs, true
@@ -206,7 +232,7 @@ func (o *OsServerConfig) GetErrorMsgsOk() ([]string, bool) {
 
 // HasErrorMsgs returns a boolean if a field has been set.
 func (o *OsServerConfig) HasErrorMsgs() bool {
-	if o != nil && o.ErrorMsgs != nil {
+	if o != nil && !IsNil(o.ErrorMsgs) {
 		return true
 	}
 
@@ -218,9 +244,41 @@ func (o *OsServerConfig) SetErrorMsgs(v []string) {
 	o.ErrorMsgs = v
 }
 
+// GetInitiatorWwpn returns the InitiatorWwpn field value if set, zero value otherwise.
+func (o *OsServerConfig) GetInitiatorWwpn() string {
+	if o == nil || IsNil(o.InitiatorWwpn) {
+		var ret string
+		return ret
+	}
+	return *o.InitiatorWwpn
+}
+
+// GetInitiatorWwpnOk returns a tuple with the InitiatorWwpn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OsServerConfig) GetInitiatorWwpnOk() (*string, bool) {
+	if o == nil || IsNil(o.InitiatorWwpn) {
+		return nil, false
+	}
+	return o.InitiatorWwpn, true
+}
+
+// HasInitiatorWwpn returns a boolean if a field has been set.
+func (o *OsServerConfig) HasInitiatorWwpn() bool {
+	if o != nil && !IsNil(o.InitiatorWwpn) {
+		return true
+	}
+
+	return false
+}
+
+// SetInitiatorWwpn gets a reference to the given string and assigns it to the InitiatorWwpn field.
+func (o *OsServerConfig) SetInitiatorWwpn(v string) {
+	o.InitiatorWwpn = &v
+}
+
 // GetInstallTarget returns the InstallTarget field value if set, zero value otherwise.
 func (o *OsServerConfig) GetInstallTarget() string {
-	if o == nil || o.InstallTarget == nil {
+	if o == nil || IsNil(o.InstallTarget) {
 		var ret string
 		return ret
 	}
@@ -230,7 +288,7 @@ func (o *OsServerConfig) GetInstallTarget() string {
 // GetInstallTargetOk returns a tuple with the InstallTarget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OsServerConfig) GetInstallTargetOk() (*string, bool) {
-	if o == nil || o.InstallTarget == nil {
+	if o == nil || IsNil(o.InstallTarget) {
 		return nil, false
 	}
 	return o.InstallTarget, true
@@ -238,7 +296,7 @@ func (o *OsServerConfig) GetInstallTargetOk() (*string, bool) {
 
 // HasInstallTarget returns a boolean if a field has been set.
 func (o *OsServerConfig) HasInstallTarget() bool {
-	if o != nil && o.InstallTarget != nil {
+	if o != nil && !IsNil(o.InstallTarget) {
 		return true
 	}
 
@@ -250,10 +308,42 @@ func (o *OsServerConfig) SetInstallTarget(v string) {
 	o.InstallTarget = &v
 }
 
+// GetLunId returns the LunId field value if set, zero value otherwise.
+func (o *OsServerConfig) GetLunId() int64 {
+	if o == nil || IsNil(o.LunId) {
+		var ret int64
+		return ret
+	}
+	return *o.LunId
+}
+
+// GetLunIdOk returns a tuple with the LunId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OsServerConfig) GetLunIdOk() (*int64, bool) {
+	if o == nil || IsNil(o.LunId) {
+		return nil, false
+	}
+	return o.LunId, true
+}
+
+// HasLunId returns a boolean if a field has been set.
+func (o *OsServerConfig) HasLunId() bool {
+	if o != nil && !IsNil(o.LunId) {
+		return true
+	}
+
+	return false
+}
+
+// SetLunId gets a reference to the given int64 and assigns it to the LunId field.
+func (o *OsServerConfig) SetLunId(v int64) {
+	o.LunId = &v
+}
+
 // GetOperatingSystemParameters returns the OperatingSystemParameters field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *OsServerConfig) GetOperatingSystemParameters() OsOperatingSystemParameters {
-	if o == nil || o.OperatingSystemParameters.Get() == nil {
-		var ret OsOperatingSystemParameters
+func (o *OsServerConfig) GetOperatingSystemParameters() MoBaseComplexType {
+	if o == nil || IsNil(o.OperatingSystemParameters.Get()) {
+		var ret MoBaseComplexType
 		return ret
 	}
 	return *o.OperatingSystemParameters.Get()
@@ -262,7 +352,7 @@ func (o *OsServerConfig) GetOperatingSystemParameters() OsOperatingSystemParamet
 // GetOperatingSystemParametersOk returns a tuple with the OperatingSystemParameters field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *OsServerConfig) GetOperatingSystemParametersOk() (*OsOperatingSystemParameters, bool) {
+func (o *OsServerConfig) GetOperatingSystemParametersOk() (*MoBaseComplexType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -278,8 +368,8 @@ func (o *OsServerConfig) HasOperatingSystemParameters() bool {
 	return false
 }
 
-// SetOperatingSystemParameters gets a reference to the given NullableOsOperatingSystemParameters and assigns it to the OperatingSystemParameters field.
-func (o *OsServerConfig) SetOperatingSystemParameters(v OsOperatingSystemParameters) {
+// SetOperatingSystemParameters gets a reference to the given NullableMoBaseComplexType and assigns it to the OperatingSystemParameters field.
+func (o *OsServerConfig) SetOperatingSystemParameters(v MoBaseComplexType) {
 	o.OperatingSystemParameters.Set(&v)
 }
 
@@ -294,9 +384,9 @@ func (o *OsServerConfig) UnsetOperatingSystemParameters() {
 }
 
 // GetProcessedInstallTarget returns the ProcessedInstallTarget field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *OsServerConfig) GetProcessedInstallTarget() OsInstallTarget {
-	if o == nil || o.ProcessedInstallTarget.Get() == nil {
-		var ret OsInstallTarget
+func (o *OsServerConfig) GetProcessedInstallTarget() MoBaseComplexType {
+	if o == nil || IsNil(o.ProcessedInstallTarget.Get()) {
+		var ret MoBaseComplexType
 		return ret
 	}
 	return *o.ProcessedInstallTarget.Get()
@@ -305,7 +395,7 @@ func (o *OsServerConfig) GetProcessedInstallTarget() OsInstallTarget {
 // GetProcessedInstallTargetOk returns a tuple with the ProcessedInstallTarget field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *OsServerConfig) GetProcessedInstallTargetOk() (*OsInstallTarget, bool) {
+func (o *OsServerConfig) GetProcessedInstallTargetOk() (*MoBaseComplexType, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -321,8 +411,8 @@ func (o *OsServerConfig) HasProcessedInstallTarget() bool {
 	return false
 }
 
-// SetProcessedInstallTarget gets a reference to the given NullableOsInstallTarget and assigns it to the ProcessedInstallTarget field.
-func (o *OsServerConfig) SetProcessedInstallTarget(v OsInstallTarget) {
+// SetProcessedInstallTarget gets a reference to the given NullableMoBaseComplexType and assigns it to the ProcessedInstallTarget field.
+func (o *OsServerConfig) SetProcessedInstallTarget(v MoBaseComplexType) {
 	o.ProcessedInstallTarget.Set(&v)
 }
 
@@ -338,7 +428,7 @@ func (o *OsServerConfig) UnsetProcessedInstallTarget() {
 
 // GetSerialNumber returns the SerialNumber field value if set, zero value otherwise.
 func (o *OsServerConfig) GetSerialNumber() string {
-	if o == nil || o.SerialNumber == nil {
+	if o == nil || IsNil(o.SerialNumber) {
 		var ret string
 		return ret
 	}
@@ -348,7 +438,7 @@ func (o *OsServerConfig) GetSerialNumber() string {
 // GetSerialNumberOk returns a tuple with the SerialNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *OsServerConfig) GetSerialNumberOk() (*string, bool) {
-	if o == nil || o.SerialNumber == nil {
+	if o == nil || IsNil(o.SerialNumber) {
 		return nil, false
 	}
 	return o.SerialNumber, true
@@ -356,7 +446,7 @@ func (o *OsServerConfig) GetSerialNumberOk() (*string, bool) {
 
 // HasSerialNumber returns a boolean if a field has been set.
 func (o *OsServerConfig) HasSerialNumber() bool {
-	if o != nil && o.SerialNumber != nil {
+	if o != nil && !IsNil(o.SerialNumber) {
 		return true
 	}
 
@@ -368,22 +458,128 @@ func (o *OsServerConfig) SetSerialNumber(v string) {
 	o.SerialNumber = &v
 }
 
+// GetTargetIqn returns the TargetIqn field value if set, zero value otherwise.
+func (o *OsServerConfig) GetTargetIqn() string {
+	if o == nil || IsNil(o.TargetIqn) {
+		var ret string
+		return ret
+	}
+	return *o.TargetIqn
+}
+
+// GetTargetIqnOk returns a tuple with the TargetIqn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OsServerConfig) GetTargetIqnOk() (*string, bool) {
+	if o == nil || IsNil(o.TargetIqn) {
+		return nil, false
+	}
+	return o.TargetIqn, true
+}
+
+// HasTargetIqn returns a boolean if a field has been set.
+func (o *OsServerConfig) HasTargetIqn() bool {
+	if o != nil && !IsNil(o.TargetIqn) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetIqn gets a reference to the given string and assigns it to the TargetIqn field.
+func (o *OsServerConfig) SetTargetIqn(v string) {
+	o.TargetIqn = &v
+}
+
+// GetTargetWwpn returns the TargetWwpn field value if set, zero value otherwise.
+func (o *OsServerConfig) GetTargetWwpn() string {
+	if o == nil || IsNil(o.TargetWwpn) {
+		var ret string
+		return ret
+	}
+	return *o.TargetWwpn
+}
+
+// GetTargetWwpnOk returns a tuple with the TargetWwpn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OsServerConfig) GetTargetWwpnOk() (*string, bool) {
+	if o == nil || IsNil(o.TargetWwpn) {
+		return nil, false
+	}
+	return o.TargetWwpn, true
+}
+
+// HasTargetWwpn returns a boolean if a field has been set.
+func (o *OsServerConfig) HasTargetWwpn() bool {
+	if o != nil && !IsNil(o.TargetWwpn) {
+		return true
+	}
+
+	return false
+}
+
+// SetTargetWwpn gets a reference to the given string and assigns it to the TargetWwpn field.
+func (o *OsServerConfig) SetTargetWwpn(v string) {
+	o.TargetWwpn = &v
+}
+
+// GetVnicMac returns the VnicMac field value if set, zero value otherwise.
+func (o *OsServerConfig) GetVnicMac() string {
+	if o == nil || IsNil(o.VnicMac) {
+		var ret string
+		return ret
+	}
+	return *o.VnicMac
+}
+
+// GetVnicMacOk returns a tuple with the VnicMac field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *OsServerConfig) GetVnicMacOk() (*string, bool) {
+	if o == nil || IsNil(o.VnicMac) {
+		return nil, false
+	}
+	return o.VnicMac, true
+}
+
+// HasVnicMac returns a boolean if a field has been set.
+func (o *OsServerConfig) HasVnicMac() bool {
+	if o != nil && !IsNil(o.VnicMac) {
+		return true
+	}
+
+	return false
+}
+
+// SetVnicMac gets a reference to the given string and assigns it to the VnicMac field.
+func (o *OsServerConfig) SetVnicMac(v string) {
+	o.VnicMac = &v
+}
+
 func (o OsServerConfig) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o OsServerConfig) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.AdditionalParameters != nil {
 		toSerialize["AdditionalParameters"] = o.AdditionalParameters
 	}
@@ -393,8 +589,14 @@ func (o OsServerConfig) MarshalJSON() ([]byte, error) {
 	if o.ErrorMsgs != nil {
 		toSerialize["ErrorMsgs"] = o.ErrorMsgs
 	}
-	if o.InstallTarget != nil {
+	if !IsNil(o.InitiatorWwpn) {
+		toSerialize["InitiatorWwpn"] = o.InitiatorWwpn
+	}
+	if !IsNil(o.InstallTarget) {
 		toSerialize["InstallTarget"] = o.InstallTarget
+	}
+	if !IsNil(o.LunId) {
+		toSerialize["LunId"] = o.LunId
 	}
 	if o.OperatingSystemParameters.IsSet() {
 		toSerialize["OperatingSystemParameters"] = o.OperatingSystemParameters.Get()
@@ -402,18 +604,68 @@ func (o OsServerConfig) MarshalJSON() ([]byte, error) {
 	if o.ProcessedInstallTarget.IsSet() {
 		toSerialize["ProcessedInstallTarget"] = o.ProcessedInstallTarget.Get()
 	}
-	if o.SerialNumber != nil {
+	if !IsNil(o.SerialNumber) {
 		toSerialize["SerialNumber"] = o.SerialNumber
+	}
+	if !IsNil(o.TargetIqn) {
+		toSerialize["TargetIqn"] = o.TargetIqn
+	}
+	if !IsNil(o.TargetWwpn) {
+		toSerialize["TargetWwpn"] = o.TargetWwpn
+	}
+	if !IsNil(o.VnicMac) {
+		toSerialize["VnicMac"] = o.VnicMac
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *OsServerConfig) UnmarshalJSON(bytes []byte) (err error) {
+func (o *OsServerConfig) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type OsServerConfigWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -422,17 +674,29 @@ func (o *OsServerConfig) UnmarshalJSON(bytes []byte) (err error) {
 		AdditionalParameters []OsPlaceHolder   `json:"AdditionalParameters,omitempty"`
 		Answers              NullableOsAnswers `json:"Answers,omitempty"`
 		ErrorMsgs            []string          `json:"ErrorMsgs,omitempty"`
+		// The WWPN Address of the underlying fibre channel interface at the host side used for SAN accesss. Value must be in hexadecimal format xx:xx:xx:xx:xx:xx:xx:xx.  For example, 20:00:D4:C9:3C:35:02:01.
+		InitiatorWwpn *string `json:"InitiatorWwpn,omitempty" validate:"regexp=^$|(^([0-9a-fA-F]{2}:){7}[0-9a-fA-F]{2}$)"`
 		// The target in which OS installation triggered, the value represented is StorageControllerID follwed by PhysicalDisk SerialNumber in case of Physcial disk or VirtualDriveId for virtual drive.
-		InstallTarget             *string                             `json:"InstallTarget,omitempty"`
-		OperatingSystemParameters NullableOsOperatingSystemParameters `json:"OperatingSystemParameters,omitempty"`
-		ProcessedInstallTarget    NullableOsInstallTarget             `json:"ProcessedInstallTarget,omitempty"`
+		InstallTarget *string `json:"InstallTarget,omitempty"`
+		// The Logical Unit Number (LUN) of the install target.
+		LunId *int64 `json:"LunId,omitempty"`
+		// Installation parameters specific to selected OS.
+		OperatingSystemParameters NullableMoBaseComplexType `json:"OperatingSystemParameters,omitempty"`
+		// Install Target upon which Operating System is installed.
+		ProcessedInstallTarget NullableMoBaseComplexType `json:"ProcessedInstallTarget,omitempty"`
 		// The Serial Number of the server.
 		SerialNumber *string `json:"SerialNumber,omitempty"`
+		// IQN (iSCSI qualified name) of Storage iSCSI target. Can be up to 255 characters long and has the following format, iqn.yyyy-mm.naming-authority:unique_name.
+		TargetIqn *string `json:"TargetIqn,omitempty"`
+		// The WWPN Address of the underlying fibre channel interface at the target used by the storage. Value must be in hexadecimal format xx:xx:xx:xx:xx:xx:xx:xx.  For example, 51:4F:0C:50:14:1F:AF:01.
+		TargetWwpn *string `json:"TargetWwpn,omitempty" validate:"regexp=^$|(^([0-9a-fA-F]{2}:){7}[0-9a-fA-F]{2}$)"`
+		// MAC address of the VNIC used as iSCSI initiator interface.
+		VnicMac *string `json:"VnicMac,omitempty" validate:"regexp=^$|^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$"`
 	}
 
 	varOsServerConfigWithoutEmbeddedStruct := OsServerConfigWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varOsServerConfigWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varOsServerConfigWithoutEmbeddedStruct)
 	if err == nil {
 		varOsServerConfig := _OsServerConfig{}
 		varOsServerConfig.ClassId = varOsServerConfigWithoutEmbeddedStruct.ClassId
@@ -440,10 +704,15 @@ func (o *OsServerConfig) UnmarshalJSON(bytes []byte) (err error) {
 		varOsServerConfig.AdditionalParameters = varOsServerConfigWithoutEmbeddedStruct.AdditionalParameters
 		varOsServerConfig.Answers = varOsServerConfigWithoutEmbeddedStruct.Answers
 		varOsServerConfig.ErrorMsgs = varOsServerConfigWithoutEmbeddedStruct.ErrorMsgs
+		varOsServerConfig.InitiatorWwpn = varOsServerConfigWithoutEmbeddedStruct.InitiatorWwpn
 		varOsServerConfig.InstallTarget = varOsServerConfigWithoutEmbeddedStruct.InstallTarget
+		varOsServerConfig.LunId = varOsServerConfigWithoutEmbeddedStruct.LunId
 		varOsServerConfig.OperatingSystemParameters = varOsServerConfigWithoutEmbeddedStruct.OperatingSystemParameters
 		varOsServerConfig.ProcessedInstallTarget = varOsServerConfigWithoutEmbeddedStruct.ProcessedInstallTarget
 		varOsServerConfig.SerialNumber = varOsServerConfigWithoutEmbeddedStruct.SerialNumber
+		varOsServerConfig.TargetIqn = varOsServerConfigWithoutEmbeddedStruct.TargetIqn
+		varOsServerConfig.TargetWwpn = varOsServerConfigWithoutEmbeddedStruct.TargetWwpn
+		varOsServerConfig.VnicMac = varOsServerConfigWithoutEmbeddedStruct.VnicMac
 		*o = OsServerConfig(varOsServerConfig)
 	} else {
 		return err
@@ -451,7 +720,7 @@ func (o *OsServerConfig) UnmarshalJSON(bytes []byte) (err error) {
 
 	varOsServerConfig := _OsServerConfig{}
 
-	err = json.Unmarshal(bytes, &varOsServerConfig)
+	err = json.Unmarshal(data, &varOsServerConfig)
 	if err == nil {
 		o.MoBaseComplexType = varOsServerConfig.MoBaseComplexType
 	} else {
@@ -460,16 +729,21 @@ func (o *OsServerConfig) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AdditionalParameters")
 		delete(additionalProperties, "Answers")
 		delete(additionalProperties, "ErrorMsgs")
+		delete(additionalProperties, "InitiatorWwpn")
 		delete(additionalProperties, "InstallTarget")
+		delete(additionalProperties, "LunId")
 		delete(additionalProperties, "OperatingSystemParameters")
 		delete(additionalProperties, "ProcessedInstallTarget")
 		delete(additionalProperties, "SerialNumber")
+		delete(additionalProperties, "TargetIqn")
+		delete(additionalProperties, "TargetWwpn")
+		delete(additionalProperties, "VnicMac")
 
 		// remove fields from embedded structs
 		reflectMoBaseComplexType := reflect.ValueOf(o.MoBaseComplexType)

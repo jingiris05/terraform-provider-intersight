@@ -7,7 +7,9 @@ import (
 	"log"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceApplianceBackup() *schema.Resource {
 		ReadContext:   resourceApplianceBackupRead,
 		DeleteContext: resourceApplianceBackupDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account": {
 				Description: "A reference to a iamAccount resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
@@ -194,6 +196,18 @@ func resourceApplianceBackup() *schema.Resource {
 				Optional:     true,
 				ForceNew:     true,
 			},
+			"is_manual": {
+				Description: "If true, represents a manual backup. Else represents a scheduled backup.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}, ForceNew: true,
+			},
 			"is_password_set": {
 				Description: "Indicates whether the value of the 'password' property has been set.",
 				Type:        schema.TypeBool,
@@ -349,9 +363,9 @@ func resourceApplianceBackup() *schema.Resource {
 				ForceNew: true,
 			},
 			"protocol": {
-				Description:  "Communication protocol used by the file server (e.g. scp or sftp).\n* `scp` - Secure Copy Protocol (SCP) to access the file server.\n* `sftp` - SSH File Transfer Protocol (SFTP) to access file server.",
+				Description:  "Communication protocol used by the file server (e.g. scp, sftp, or CIFS).\n* `scp` - Secure Copy Protocol (SCP) to access the file server.\n* `sftp` - SSH File Transfer Protocol (SFTP) to access file server.\n* `cifs` - Common Internet File System (CIFS) Protocol to access file server.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringInSlice([]string{"scp", "sftp"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"scp", "sftp", "cifs"}, false),
 				Optional:     true,
 				Default:      "scp",
 				ForceNew:     true,
@@ -363,9 +377,9 @@ func resourceApplianceBackup() *schema.Resource {
 				ForceNew:    true,
 			},
 			"remote_path": {
-				Description:  "File server directory to copy the file.",
+				Description:  "File server directory or share name to copy the file.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^(/[^/ ]*)+/?$"), ""),
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[^`]+$"), ""),
 				Optional:     true,
 				ForceNew:     true,
 			},
@@ -400,7 +414,7 @@ func resourceApplianceBackup() *schema.Resource {
 				}, ForceNew: true,
 			},
 			"status": {
-				Description: "Status of the backup managed object.\n* `Started` - Backup or restore process has started.\n* `Created` - Backup or restore is in created state.\n* `Failed` - Backup or restore process has failed.\n* `Completed` - Backup or restore process has completed.\n* `Copied` - Backup file has been copied.",
+				Description: "Status of the backup managed object.\n* `Started` - Backup or restore process has started.\n* `Created` - Backup or restore is in created state.\n* `Failed` - Backup or restore process has failed.\n* `Completed` - Backup or restore process has completed.\n* `Copied` - Backup file has been copied.\n* `Cleanup Failed` - Cleanup of the old backup has failed.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -445,7 +459,7 @@ func resourceApplianceBackup() *schema.Resource {
 			"username": {
 				Description:  "Username to authenticate the fileserver.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9_][a-zA-Z0-9_\\.\\-\\+]*$"), ""),
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9_][a-zA-Z0-9_\\.\\@\\\\\\-\\+]*$"), ""),
 				Optional:     true,
 				ForceNew:     true,
 			},
@@ -514,6 +528,18 @@ func resourceApplianceBackup() *schema.Resource {
 								},
 							},
 							ForceNew: true,
+						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}, ForceNew: true,
 						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
@@ -771,14 +797,25 @@ func resourceApplianceBackupCreate(c context.Context, d *schema.ResourceData, me
 		}
 		return diag.Errorf("error occurred while creating ApplianceBackup: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceApplianceBackupRead(c, d, meta)...)
 }
 
 func resourceApplianceBackupRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.ApplianceApi.GetApplianceBackupByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -834,6 +871,10 @@ func resourceApplianceBackupRead(c context.Context, d *schema.ResourceData, meta
 
 	if err := d.Set("filename", (s.GetFilename())); err != nil {
 		return diag.Errorf("error occurred while setting property Filename in ApplianceBackup object: %s", err.Error())
+	}
+
+	if err := d.Set("is_manual", (s.GetIsManual())); err != nil {
+		return diag.Errorf("error occurred while setting property IsManual in ApplianceBackup object: %s", err.Error())
 	}
 
 	if err := d.Set("is_password_set", (s.GetIsPasswordSet())); err != nil {

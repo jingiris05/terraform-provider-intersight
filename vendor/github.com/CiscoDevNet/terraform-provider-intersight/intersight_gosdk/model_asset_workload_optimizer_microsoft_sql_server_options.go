@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the AssetWorkloadOptimizerMicrosoftSqlServerOptions type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AssetWorkloadOptimizerMicrosoftSqlServerOptions{}
 
 // AssetWorkloadOptimizerMicrosoftSqlServerOptions Captures configuration specific to the Microsoft SQL Server target for the Workload Optimizer service.
 type AssetWorkloadOptimizerMicrosoftSqlServerOptions struct {
@@ -26,6 +30,8 @@ type AssetWorkloadOptimizerMicrosoftSqlServerOptions struct {
 	ObjectType string `json:"ObjectType"`
 	// Port that Microsoft SQL Server Browser listens for incoming requests for SQL Server resources and provides information about SQL Server instances that are installed on the computer. When this port is specified, Database will be communicated through the Browser Service with this port instead of default SQLServer port.
 	BrowserServicePort *int64 `json:"BrowserServicePort,omitempty"`
+	// Discovery path to define if its scope target entities or hostname or IP address.
+	DiscoveryPath *string `json:"DiscoveryPath,omitempty"`
 	// Active Directory domain, if required for this account.
 	FullDomainName       *string `json:"FullDomainName,omitempty"`
 	AdditionalProperties map[string]interface{}
@@ -41,6 +47,8 @@ func NewAssetWorkloadOptimizerMicrosoftSqlServerOptions(classId string, objectTy
 	this := AssetWorkloadOptimizerMicrosoftSqlServerOptions{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var discoveryPath string = "targetEntities"
+	this.DiscoveryPath = &discoveryPath
 	return &this
 }
 
@@ -53,6 +61,8 @@ func NewAssetWorkloadOptimizerMicrosoftSqlServerOptionsWithDefaults() *AssetWork
 	this.ClassId = classId
 	var objectType string = "asset.WorkloadOptimizerMicrosoftSqlServerOptions"
 	this.ObjectType = objectType
+	var discoveryPath string = "targetEntities"
+	this.DiscoveryPath = &discoveryPath
 	return &this
 }
 
@@ -80,6 +90,11 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "asset.WorkloadOptimizerMicrosoftSqlServerOptions" of the ClassId field.
+func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetDefaultClassId() interface{} {
+	return "asset.WorkloadOptimizerMicrosoftSqlServerOptions"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetObjectType() string {
 	if o == nil {
@@ -104,9 +119,14 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) SetObjectType(v string
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "asset.WorkloadOptimizerMicrosoftSqlServerOptions" of the ObjectType field.
+func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetDefaultObjectType() interface{} {
+	return "asset.WorkloadOptimizerMicrosoftSqlServerOptions"
+}
+
 // GetBrowserServicePort returns the BrowserServicePort field value if set, zero value otherwise.
 func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetBrowserServicePort() int64 {
-	if o == nil || o.BrowserServicePort == nil {
+	if o == nil || IsNil(o.BrowserServicePort) {
 		var ret int64
 		return ret
 	}
@@ -116,7 +136,7 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetBrowserServicePort(
 // GetBrowserServicePortOk returns a tuple with the BrowserServicePort field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetBrowserServicePortOk() (*int64, bool) {
-	if o == nil || o.BrowserServicePort == nil {
+	if o == nil || IsNil(o.BrowserServicePort) {
 		return nil, false
 	}
 	return o.BrowserServicePort, true
@@ -124,7 +144,7 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetBrowserServicePortO
 
 // HasBrowserServicePort returns a boolean if a field has been set.
 func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) HasBrowserServicePort() bool {
-	if o != nil && o.BrowserServicePort != nil {
+	if o != nil && !IsNil(o.BrowserServicePort) {
 		return true
 	}
 
@@ -136,9 +156,41 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) SetBrowserServicePort(
 	o.BrowserServicePort = &v
 }
 
+// GetDiscoveryPath returns the DiscoveryPath field value if set, zero value otherwise.
+func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetDiscoveryPath() string {
+	if o == nil || IsNil(o.DiscoveryPath) {
+		var ret string
+		return ret
+	}
+	return *o.DiscoveryPath
+}
+
+// GetDiscoveryPathOk returns a tuple with the DiscoveryPath field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetDiscoveryPathOk() (*string, bool) {
+	if o == nil || IsNil(o.DiscoveryPath) {
+		return nil, false
+	}
+	return o.DiscoveryPath, true
+}
+
+// HasDiscoveryPath returns a boolean if a field has been set.
+func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) HasDiscoveryPath() bool {
+	if o != nil && !IsNil(o.DiscoveryPath) {
+		return true
+	}
+
+	return false
+}
+
+// SetDiscoveryPath gets a reference to the given string and assigns it to the DiscoveryPath field.
+func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) SetDiscoveryPath(v string) {
+	o.DiscoveryPath = &v
+}
+
 // GetFullDomainName returns the FullDomainName field value if set, zero value otherwise.
 func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetFullDomainName() string {
-	if o == nil || o.FullDomainName == nil {
+	if o == nil || IsNil(o.FullDomainName) {
 		var ret string
 		return ret
 	}
@@ -148,7 +200,7 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetFullDomainName() st
 // GetFullDomainNameOk returns a tuple with the FullDomainName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetFullDomainNameOk() (*string, bool) {
-	if o == nil || o.FullDomainName == nil {
+	if o == nil || IsNil(o.FullDomainName) {
 		return nil, false
 	}
 	return o.FullDomainName, true
@@ -156,7 +208,7 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) GetFullDomainNameOk() 
 
 // HasFullDomainName returns a boolean if a field has been set.
 func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) HasFullDomainName() bool {
-	if o != nil && o.FullDomainName != nil {
+	if o != nil && !IsNil(o.FullDomainName) {
 		return true
 	}
 
@@ -169,25 +221,38 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) SetFullDomainName(v st
 }
 
 func (o AssetWorkloadOptimizerMicrosoftSqlServerOptions) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o AssetWorkloadOptimizerMicrosoftSqlServerOptions) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedAssetServiceOptions, errAssetServiceOptions := json.Marshal(o.AssetServiceOptions)
 	if errAssetServiceOptions != nil {
-		return []byte{}, errAssetServiceOptions
+		return map[string]interface{}{}, errAssetServiceOptions
 	}
 	errAssetServiceOptions = json.Unmarshal([]byte(serializedAssetServiceOptions), &toSerialize)
 	if errAssetServiceOptions != nil {
-		return []byte{}, errAssetServiceOptions
+		return map[string]interface{}{}, errAssetServiceOptions
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.BrowserServicePort != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.BrowserServicePort) {
 		toSerialize["BrowserServicePort"] = o.BrowserServicePort
 	}
-	if o.FullDomainName != nil {
+	if !IsNil(o.DiscoveryPath) {
+		toSerialize["DiscoveryPath"] = o.DiscoveryPath
+	}
+	if !IsNil(o.FullDomainName) {
 		toSerialize["FullDomainName"] = o.FullDomainName
 	}
 
@@ -195,10 +260,51 @@ func (o AssetWorkloadOptimizerMicrosoftSqlServerOptions) MarshalJSON() ([]byte, 
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type AssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -206,18 +312,21 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) UnmarshalJSON(bytes []
 		ObjectType string `json:"ObjectType"`
 		// Port that Microsoft SQL Server Browser listens for incoming requests for SQL Server resources and provides information about SQL Server instances that are installed on the computer. When this port is specified, Database will be communicated through the Browser Service with this port instead of default SQLServer port.
 		BrowserServicePort *int64 `json:"BrowserServicePort,omitempty"`
+		// Discovery path to define if its scope target entities or hostname or IP address.
+		DiscoveryPath *string `json:"DiscoveryPath,omitempty"`
 		// Active Directory domain, if required for this account.
 		FullDomainName *string `json:"FullDomainName,omitempty"`
 	}
 
 	varAssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct := AssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varAssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varAssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct)
 	if err == nil {
 		varAssetWorkloadOptimizerMicrosoftSqlServerOptions := _AssetWorkloadOptimizerMicrosoftSqlServerOptions{}
 		varAssetWorkloadOptimizerMicrosoftSqlServerOptions.ClassId = varAssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct.ClassId
 		varAssetWorkloadOptimizerMicrosoftSqlServerOptions.ObjectType = varAssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct.ObjectType
 		varAssetWorkloadOptimizerMicrosoftSqlServerOptions.BrowserServicePort = varAssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct.BrowserServicePort
+		varAssetWorkloadOptimizerMicrosoftSqlServerOptions.DiscoveryPath = varAssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct.DiscoveryPath
 		varAssetWorkloadOptimizerMicrosoftSqlServerOptions.FullDomainName = varAssetWorkloadOptimizerMicrosoftSqlServerOptionsWithoutEmbeddedStruct.FullDomainName
 		*o = AssetWorkloadOptimizerMicrosoftSqlServerOptions(varAssetWorkloadOptimizerMicrosoftSqlServerOptions)
 	} else {
@@ -226,7 +335,7 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) UnmarshalJSON(bytes []
 
 	varAssetWorkloadOptimizerMicrosoftSqlServerOptions := _AssetWorkloadOptimizerMicrosoftSqlServerOptions{}
 
-	err = json.Unmarshal(bytes, &varAssetWorkloadOptimizerMicrosoftSqlServerOptions)
+	err = json.Unmarshal(data, &varAssetWorkloadOptimizerMicrosoftSqlServerOptions)
 	if err == nil {
 		o.AssetServiceOptions = varAssetWorkloadOptimizerMicrosoftSqlServerOptions.AssetServiceOptions
 	} else {
@@ -235,10 +344,11 @@ func (o *AssetWorkloadOptimizerMicrosoftSqlServerOptions) UnmarshalJSON(bytes []
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "BrowserServicePort")
+		delete(additionalProperties, "DiscoveryPath")
 		delete(additionalProperties, "FullDomainName")
 
 		// remove fields from embedded structs

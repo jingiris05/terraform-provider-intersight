@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the StorageNetAppStorageVm type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &StorageNetAppStorageVm{}
 
 // StorageNetAppStorageVm NetApp Storage Virtual Machines contain data volumes and one or more Logical Interfaces ( LIFs ) through which they serve data to the clients.
 type StorageNetAppStorageVm struct {
@@ -23,9 +27,10 @@ type StorageNetAppStorageVm struct {
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-	ObjectType            string                                  `json:"ObjectType"`
-	Aggregates            []string                                `json:"Aggregates,omitempty"`
-	AvgPerformanceMetrics *StorageNetAppPerformanceMetricsAverage `json:"AvgPerformanceMetrics,omitempty"`
+	ObjectType string   `json:"ObjectType"`
+	Aggregates []string `json:"Aggregates,omitempty"`
+	// Average performance metrics data for a NetApp storage resource over a given period of time.
+	AvgPerformanceMetrics NullableStorageBasePerformanceMetricsAverage `json:"AvgPerformanceMetrics,omitempty"`
 	// Status for Common Internet File System protocol ( CIFS ) allowed to run on Vservers.
 	CifsEnabled *bool    `json:"CifsEnabled,omitempty"`
 	DnsDomains  []string `json:"DnsDomains,omitempty"`
@@ -33,24 +38,22 @@ type StorageNetAppStorageVm struct {
 	FcpEnabled *bool `json:"FcpEnabled,omitempty"`
 	// IPspace name. IPspaces are distinct IP address spaces in which storage virtual machines (SVMs) reside.
 	Ipspace *string `json:"Ipspace,omitempty"`
+	// Specifies whether the Storage VM is a SnapMirror source Storage VM, using SnapMirror to protect its data.
+	IsProtected *string `json:"IsProtected,omitempty"`
 	// Status for iSCSI protocol allowed to run on Vservers.
 	IscsiEnabled *bool `json:"IscsiEnabled,omitempty"`
 	// Unique identifier of VServer across data center.
 	Key         *string  `json:"Key,omitempty"`
 	NameServers []string `json:"NameServers,omitempty"`
+	// The number of native FPolicy engines enabled on this SVM.
+	NativeFpolicyCount *int64 `json:"NativeFpolicyCount,omitempty"`
 	// Status for Network File System Protocol ( NFS ) allowed to run on  Vservers.
 	NfsEnabled *bool `json:"NfsEnabled,omitempty"`
-	// Status for Network File System Protocol ( NFSv3 ) allowed to run on  Vservers.
-	NfsV3Enabled *bool `json:"NfsV3Enabled,omitempty"`
-	// Status for Network File System Protocol ( NFSv4.1 ) allowed to run on  Vservers.
-	NfsV41Enabled *bool `json:"NfsV41Enabled,omitempty"`
-	// Status for Network File System Protocol ( NFSv4 ) allowed to run on  Vservers.
-	NfsV4Enabled *bool `json:"NfsV4Enabled,omitempty"`
 	// Status for NVME protocol allowed to run on Vservers.
 	NvmeEnabled *bool `json:"NvmeEnabled,omitempty"`
 	// SVM subtype (default, dp_destination, sync_source, or sync_destination). The SVM subtype sync_destination is created automatically when an SVM of subtype sync_source is created on the source MetroCluster cluster.
-	Subtype *string                           `json:"Subtype,omitempty"`
-	Array   *StorageNetAppClusterRelationship `json:"Array,omitempty"`
+	Subtype *string                                  `json:"Subtype,omitempty"`
+	Array   NullableStorageNetAppClusterRelationship `json:"Array,omitempty"`
 	// An array of relationships to storageNetAppAggregate resources.
 	DiskPool []StorageNetAppAggregateRelationship `json:"DiskPool,omitempty"`
 	// An array of relationships to storageNetAppSvmEvent resources.
@@ -107,6 +110,11 @@ func (o *StorageNetAppStorageVm) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "storage.NetAppStorageVm" of the ClassId field.
+func (o *StorageNetAppStorageVm) GetDefaultClassId() interface{} {
+	return "storage.NetAppStorageVm"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *StorageNetAppStorageVm) GetObjectType() string {
 	if o == nil {
@@ -131,6 +139,11 @@ func (o *StorageNetAppStorageVm) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "storage.NetAppStorageVm" of the ObjectType field.
+func (o *StorageNetAppStorageVm) GetDefaultObjectType() interface{} {
+	return "storage.NetAppStorageVm"
+}
+
 // GetAggregates returns the Aggregates field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorageNetAppStorageVm) GetAggregates() []string {
 	if o == nil {
@@ -144,7 +157,7 @@ func (o *StorageNetAppStorageVm) GetAggregates() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppStorageVm) GetAggregatesOk() ([]string, bool) {
-	if o == nil || o.Aggregates == nil {
+	if o == nil || IsNil(o.Aggregates) {
 		return nil, false
 	}
 	return o.Aggregates, true
@@ -152,7 +165,7 @@ func (o *StorageNetAppStorageVm) GetAggregatesOk() ([]string, bool) {
 
 // HasAggregates returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasAggregates() bool {
-	if o != nil && o.Aggregates != nil {
+	if o != nil && !IsNil(o.Aggregates) {
 		return true
 	}
 
@@ -164,41 +177,52 @@ func (o *StorageNetAppStorageVm) SetAggregates(v []string) {
 	o.Aggregates = v
 }
 
-// GetAvgPerformanceMetrics returns the AvgPerformanceMetrics field value if set, zero value otherwise.
-func (o *StorageNetAppStorageVm) GetAvgPerformanceMetrics() StorageNetAppPerformanceMetricsAverage {
-	if o == nil || o.AvgPerformanceMetrics == nil {
-		var ret StorageNetAppPerformanceMetricsAverage
+// GetAvgPerformanceMetrics returns the AvgPerformanceMetrics field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *StorageNetAppStorageVm) GetAvgPerformanceMetrics() StorageBasePerformanceMetricsAverage {
+	if o == nil || IsNil(o.AvgPerformanceMetrics.Get()) {
+		var ret StorageBasePerformanceMetricsAverage
 		return ret
 	}
-	return *o.AvgPerformanceMetrics
+	return *o.AvgPerformanceMetrics.Get()
 }
 
 // GetAvgPerformanceMetricsOk returns a tuple with the AvgPerformanceMetrics field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *StorageNetAppStorageVm) GetAvgPerformanceMetricsOk() (*StorageNetAppPerformanceMetricsAverage, bool) {
-	if o == nil || o.AvgPerformanceMetrics == nil {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *StorageNetAppStorageVm) GetAvgPerformanceMetricsOk() (*StorageBasePerformanceMetricsAverage, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.AvgPerformanceMetrics, true
+	return o.AvgPerformanceMetrics.Get(), o.AvgPerformanceMetrics.IsSet()
 }
 
 // HasAvgPerformanceMetrics returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasAvgPerformanceMetrics() bool {
-	if o != nil && o.AvgPerformanceMetrics != nil {
+	if o != nil && o.AvgPerformanceMetrics.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAvgPerformanceMetrics gets a reference to the given StorageNetAppPerformanceMetricsAverage and assigns it to the AvgPerformanceMetrics field.
-func (o *StorageNetAppStorageVm) SetAvgPerformanceMetrics(v StorageNetAppPerformanceMetricsAverage) {
-	o.AvgPerformanceMetrics = &v
+// SetAvgPerformanceMetrics gets a reference to the given NullableStorageBasePerformanceMetricsAverage and assigns it to the AvgPerformanceMetrics field.
+func (o *StorageNetAppStorageVm) SetAvgPerformanceMetrics(v StorageBasePerformanceMetricsAverage) {
+	o.AvgPerformanceMetrics.Set(&v)
+}
+
+// SetAvgPerformanceMetricsNil sets the value for AvgPerformanceMetrics to be an explicit nil
+func (o *StorageNetAppStorageVm) SetAvgPerformanceMetricsNil() {
+	o.AvgPerformanceMetrics.Set(nil)
+}
+
+// UnsetAvgPerformanceMetrics ensures that no value is present for AvgPerformanceMetrics, not even an explicit nil
+func (o *StorageNetAppStorageVm) UnsetAvgPerformanceMetrics() {
+	o.AvgPerformanceMetrics.Unset()
 }
 
 // GetCifsEnabled returns the CifsEnabled field value if set, zero value otherwise.
 func (o *StorageNetAppStorageVm) GetCifsEnabled() bool {
-	if o == nil || o.CifsEnabled == nil {
+	if o == nil || IsNil(o.CifsEnabled) {
 		var ret bool
 		return ret
 	}
@@ -208,7 +232,7 @@ func (o *StorageNetAppStorageVm) GetCifsEnabled() bool {
 // GetCifsEnabledOk returns a tuple with the CifsEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppStorageVm) GetCifsEnabledOk() (*bool, bool) {
-	if o == nil || o.CifsEnabled == nil {
+	if o == nil || IsNil(o.CifsEnabled) {
 		return nil, false
 	}
 	return o.CifsEnabled, true
@@ -216,7 +240,7 @@ func (o *StorageNetAppStorageVm) GetCifsEnabledOk() (*bool, bool) {
 
 // HasCifsEnabled returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasCifsEnabled() bool {
-	if o != nil && o.CifsEnabled != nil {
+	if o != nil && !IsNil(o.CifsEnabled) {
 		return true
 	}
 
@@ -241,7 +265,7 @@ func (o *StorageNetAppStorageVm) GetDnsDomains() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppStorageVm) GetDnsDomainsOk() ([]string, bool) {
-	if o == nil || o.DnsDomains == nil {
+	if o == nil || IsNil(o.DnsDomains) {
 		return nil, false
 	}
 	return o.DnsDomains, true
@@ -249,7 +273,7 @@ func (o *StorageNetAppStorageVm) GetDnsDomainsOk() ([]string, bool) {
 
 // HasDnsDomains returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasDnsDomains() bool {
-	if o != nil && o.DnsDomains != nil {
+	if o != nil && !IsNil(o.DnsDomains) {
 		return true
 	}
 
@@ -263,7 +287,7 @@ func (o *StorageNetAppStorageVm) SetDnsDomains(v []string) {
 
 // GetFcpEnabled returns the FcpEnabled field value if set, zero value otherwise.
 func (o *StorageNetAppStorageVm) GetFcpEnabled() bool {
-	if o == nil || o.FcpEnabled == nil {
+	if o == nil || IsNil(o.FcpEnabled) {
 		var ret bool
 		return ret
 	}
@@ -273,7 +297,7 @@ func (o *StorageNetAppStorageVm) GetFcpEnabled() bool {
 // GetFcpEnabledOk returns a tuple with the FcpEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppStorageVm) GetFcpEnabledOk() (*bool, bool) {
-	if o == nil || o.FcpEnabled == nil {
+	if o == nil || IsNil(o.FcpEnabled) {
 		return nil, false
 	}
 	return o.FcpEnabled, true
@@ -281,7 +305,7 @@ func (o *StorageNetAppStorageVm) GetFcpEnabledOk() (*bool, bool) {
 
 // HasFcpEnabled returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasFcpEnabled() bool {
-	if o != nil && o.FcpEnabled != nil {
+	if o != nil && !IsNil(o.FcpEnabled) {
 		return true
 	}
 
@@ -295,7 +319,7 @@ func (o *StorageNetAppStorageVm) SetFcpEnabled(v bool) {
 
 // GetIpspace returns the Ipspace field value if set, zero value otherwise.
 func (o *StorageNetAppStorageVm) GetIpspace() string {
-	if o == nil || o.Ipspace == nil {
+	if o == nil || IsNil(o.Ipspace) {
 		var ret string
 		return ret
 	}
@@ -305,7 +329,7 @@ func (o *StorageNetAppStorageVm) GetIpspace() string {
 // GetIpspaceOk returns a tuple with the Ipspace field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppStorageVm) GetIpspaceOk() (*string, bool) {
-	if o == nil || o.Ipspace == nil {
+	if o == nil || IsNil(o.Ipspace) {
 		return nil, false
 	}
 	return o.Ipspace, true
@@ -313,7 +337,7 @@ func (o *StorageNetAppStorageVm) GetIpspaceOk() (*string, bool) {
 
 // HasIpspace returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasIpspace() bool {
-	if o != nil && o.Ipspace != nil {
+	if o != nil && !IsNil(o.Ipspace) {
 		return true
 	}
 
@@ -325,9 +349,41 @@ func (o *StorageNetAppStorageVm) SetIpspace(v string) {
 	o.Ipspace = &v
 }
 
+// GetIsProtected returns the IsProtected field value if set, zero value otherwise.
+func (o *StorageNetAppStorageVm) GetIsProtected() string {
+	if o == nil || IsNil(o.IsProtected) {
+		var ret string
+		return ret
+	}
+	return *o.IsProtected
+}
+
+// GetIsProtectedOk returns a tuple with the IsProtected field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppStorageVm) GetIsProtectedOk() (*string, bool) {
+	if o == nil || IsNil(o.IsProtected) {
+		return nil, false
+	}
+	return o.IsProtected, true
+}
+
+// HasIsProtected returns a boolean if a field has been set.
+func (o *StorageNetAppStorageVm) HasIsProtected() bool {
+	if o != nil && !IsNil(o.IsProtected) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsProtected gets a reference to the given string and assigns it to the IsProtected field.
+func (o *StorageNetAppStorageVm) SetIsProtected(v string) {
+	o.IsProtected = &v
+}
+
 // GetIscsiEnabled returns the IscsiEnabled field value if set, zero value otherwise.
 func (o *StorageNetAppStorageVm) GetIscsiEnabled() bool {
-	if o == nil || o.IscsiEnabled == nil {
+	if o == nil || IsNil(o.IscsiEnabled) {
 		var ret bool
 		return ret
 	}
@@ -337,7 +393,7 @@ func (o *StorageNetAppStorageVm) GetIscsiEnabled() bool {
 // GetIscsiEnabledOk returns a tuple with the IscsiEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppStorageVm) GetIscsiEnabledOk() (*bool, bool) {
-	if o == nil || o.IscsiEnabled == nil {
+	if o == nil || IsNil(o.IscsiEnabled) {
 		return nil, false
 	}
 	return o.IscsiEnabled, true
@@ -345,7 +401,7 @@ func (o *StorageNetAppStorageVm) GetIscsiEnabledOk() (*bool, bool) {
 
 // HasIscsiEnabled returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasIscsiEnabled() bool {
-	if o != nil && o.IscsiEnabled != nil {
+	if o != nil && !IsNil(o.IscsiEnabled) {
 		return true
 	}
 
@@ -359,7 +415,7 @@ func (o *StorageNetAppStorageVm) SetIscsiEnabled(v bool) {
 
 // GetKey returns the Key field value if set, zero value otherwise.
 func (o *StorageNetAppStorageVm) GetKey() string {
-	if o == nil || o.Key == nil {
+	if o == nil || IsNil(o.Key) {
 		var ret string
 		return ret
 	}
@@ -369,7 +425,7 @@ func (o *StorageNetAppStorageVm) GetKey() string {
 // GetKeyOk returns a tuple with the Key field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppStorageVm) GetKeyOk() (*string, bool) {
-	if o == nil || o.Key == nil {
+	if o == nil || IsNil(o.Key) {
 		return nil, false
 	}
 	return o.Key, true
@@ -377,7 +433,7 @@ func (o *StorageNetAppStorageVm) GetKeyOk() (*string, bool) {
 
 // HasKey returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasKey() bool {
-	if o != nil && o.Key != nil {
+	if o != nil && !IsNil(o.Key) {
 		return true
 	}
 
@@ -402,7 +458,7 @@ func (o *StorageNetAppStorageVm) GetNameServers() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppStorageVm) GetNameServersOk() ([]string, bool) {
-	if o == nil || o.NameServers == nil {
+	if o == nil || IsNil(o.NameServers) {
 		return nil, false
 	}
 	return o.NameServers, true
@@ -410,7 +466,7 @@ func (o *StorageNetAppStorageVm) GetNameServersOk() ([]string, bool) {
 
 // HasNameServers returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasNameServers() bool {
-	if o != nil && o.NameServers != nil {
+	if o != nil && !IsNil(o.NameServers) {
 		return true
 	}
 
@@ -422,9 +478,41 @@ func (o *StorageNetAppStorageVm) SetNameServers(v []string) {
 	o.NameServers = v
 }
 
+// GetNativeFpolicyCount returns the NativeFpolicyCount field value if set, zero value otherwise.
+func (o *StorageNetAppStorageVm) GetNativeFpolicyCount() int64 {
+	if o == nil || IsNil(o.NativeFpolicyCount) {
+		var ret int64
+		return ret
+	}
+	return *o.NativeFpolicyCount
+}
+
+// GetNativeFpolicyCountOk returns a tuple with the NativeFpolicyCount field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppStorageVm) GetNativeFpolicyCountOk() (*int64, bool) {
+	if o == nil || IsNil(o.NativeFpolicyCount) {
+		return nil, false
+	}
+	return o.NativeFpolicyCount, true
+}
+
+// HasNativeFpolicyCount returns a boolean if a field has been set.
+func (o *StorageNetAppStorageVm) HasNativeFpolicyCount() bool {
+	if o != nil && !IsNil(o.NativeFpolicyCount) {
+		return true
+	}
+
+	return false
+}
+
+// SetNativeFpolicyCount gets a reference to the given int64 and assigns it to the NativeFpolicyCount field.
+func (o *StorageNetAppStorageVm) SetNativeFpolicyCount(v int64) {
+	o.NativeFpolicyCount = &v
+}
+
 // GetNfsEnabled returns the NfsEnabled field value if set, zero value otherwise.
 func (o *StorageNetAppStorageVm) GetNfsEnabled() bool {
-	if o == nil || o.NfsEnabled == nil {
+	if o == nil || IsNil(o.NfsEnabled) {
 		var ret bool
 		return ret
 	}
@@ -434,7 +522,7 @@ func (o *StorageNetAppStorageVm) GetNfsEnabled() bool {
 // GetNfsEnabledOk returns a tuple with the NfsEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppStorageVm) GetNfsEnabledOk() (*bool, bool) {
-	if o == nil || o.NfsEnabled == nil {
+	if o == nil || IsNil(o.NfsEnabled) {
 		return nil, false
 	}
 	return o.NfsEnabled, true
@@ -442,7 +530,7 @@ func (o *StorageNetAppStorageVm) GetNfsEnabledOk() (*bool, bool) {
 
 // HasNfsEnabled returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasNfsEnabled() bool {
-	if o != nil && o.NfsEnabled != nil {
+	if o != nil && !IsNil(o.NfsEnabled) {
 		return true
 	}
 
@@ -454,105 +542,9 @@ func (o *StorageNetAppStorageVm) SetNfsEnabled(v bool) {
 	o.NfsEnabled = &v
 }
 
-// GetNfsV3Enabled returns the NfsV3Enabled field value if set, zero value otherwise.
-func (o *StorageNetAppStorageVm) GetNfsV3Enabled() bool {
-	if o == nil || o.NfsV3Enabled == nil {
-		var ret bool
-		return ret
-	}
-	return *o.NfsV3Enabled
-}
-
-// GetNfsV3EnabledOk returns a tuple with the NfsV3Enabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *StorageNetAppStorageVm) GetNfsV3EnabledOk() (*bool, bool) {
-	if o == nil || o.NfsV3Enabled == nil {
-		return nil, false
-	}
-	return o.NfsV3Enabled, true
-}
-
-// HasNfsV3Enabled returns a boolean if a field has been set.
-func (o *StorageNetAppStorageVm) HasNfsV3Enabled() bool {
-	if o != nil && o.NfsV3Enabled != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetNfsV3Enabled gets a reference to the given bool and assigns it to the NfsV3Enabled field.
-func (o *StorageNetAppStorageVm) SetNfsV3Enabled(v bool) {
-	o.NfsV3Enabled = &v
-}
-
-// GetNfsV41Enabled returns the NfsV41Enabled field value if set, zero value otherwise.
-func (o *StorageNetAppStorageVm) GetNfsV41Enabled() bool {
-	if o == nil || o.NfsV41Enabled == nil {
-		var ret bool
-		return ret
-	}
-	return *o.NfsV41Enabled
-}
-
-// GetNfsV41EnabledOk returns a tuple with the NfsV41Enabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *StorageNetAppStorageVm) GetNfsV41EnabledOk() (*bool, bool) {
-	if o == nil || o.NfsV41Enabled == nil {
-		return nil, false
-	}
-	return o.NfsV41Enabled, true
-}
-
-// HasNfsV41Enabled returns a boolean if a field has been set.
-func (o *StorageNetAppStorageVm) HasNfsV41Enabled() bool {
-	if o != nil && o.NfsV41Enabled != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetNfsV41Enabled gets a reference to the given bool and assigns it to the NfsV41Enabled field.
-func (o *StorageNetAppStorageVm) SetNfsV41Enabled(v bool) {
-	o.NfsV41Enabled = &v
-}
-
-// GetNfsV4Enabled returns the NfsV4Enabled field value if set, zero value otherwise.
-func (o *StorageNetAppStorageVm) GetNfsV4Enabled() bool {
-	if o == nil || o.NfsV4Enabled == nil {
-		var ret bool
-		return ret
-	}
-	return *o.NfsV4Enabled
-}
-
-// GetNfsV4EnabledOk returns a tuple with the NfsV4Enabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *StorageNetAppStorageVm) GetNfsV4EnabledOk() (*bool, bool) {
-	if o == nil || o.NfsV4Enabled == nil {
-		return nil, false
-	}
-	return o.NfsV4Enabled, true
-}
-
-// HasNfsV4Enabled returns a boolean if a field has been set.
-func (o *StorageNetAppStorageVm) HasNfsV4Enabled() bool {
-	if o != nil && o.NfsV4Enabled != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetNfsV4Enabled gets a reference to the given bool and assigns it to the NfsV4Enabled field.
-func (o *StorageNetAppStorageVm) SetNfsV4Enabled(v bool) {
-	o.NfsV4Enabled = &v
-}
-
 // GetNvmeEnabled returns the NvmeEnabled field value if set, zero value otherwise.
 func (o *StorageNetAppStorageVm) GetNvmeEnabled() bool {
-	if o == nil || o.NvmeEnabled == nil {
+	if o == nil || IsNil(o.NvmeEnabled) {
 		var ret bool
 		return ret
 	}
@@ -562,7 +554,7 @@ func (o *StorageNetAppStorageVm) GetNvmeEnabled() bool {
 // GetNvmeEnabledOk returns a tuple with the NvmeEnabled field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppStorageVm) GetNvmeEnabledOk() (*bool, bool) {
-	if o == nil || o.NvmeEnabled == nil {
+	if o == nil || IsNil(o.NvmeEnabled) {
 		return nil, false
 	}
 	return o.NvmeEnabled, true
@@ -570,7 +562,7 @@ func (o *StorageNetAppStorageVm) GetNvmeEnabledOk() (*bool, bool) {
 
 // HasNvmeEnabled returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasNvmeEnabled() bool {
-	if o != nil && o.NvmeEnabled != nil {
+	if o != nil && !IsNil(o.NvmeEnabled) {
 		return true
 	}
 
@@ -584,7 +576,7 @@ func (o *StorageNetAppStorageVm) SetNvmeEnabled(v bool) {
 
 // GetSubtype returns the Subtype field value if set, zero value otherwise.
 func (o *StorageNetAppStorageVm) GetSubtype() string {
-	if o == nil || o.Subtype == nil {
+	if o == nil || IsNil(o.Subtype) {
 		var ret string
 		return ret
 	}
@@ -594,7 +586,7 @@ func (o *StorageNetAppStorageVm) GetSubtype() string {
 // GetSubtypeOk returns a tuple with the Subtype field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppStorageVm) GetSubtypeOk() (*string, bool) {
-	if o == nil || o.Subtype == nil {
+	if o == nil || IsNil(o.Subtype) {
 		return nil, false
 	}
 	return o.Subtype, true
@@ -602,7 +594,7 @@ func (o *StorageNetAppStorageVm) GetSubtypeOk() (*string, bool) {
 
 // HasSubtype returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasSubtype() bool {
-	if o != nil && o.Subtype != nil {
+	if o != nil && !IsNil(o.Subtype) {
 		return true
 	}
 
@@ -614,36 +606,47 @@ func (o *StorageNetAppStorageVm) SetSubtype(v string) {
 	o.Subtype = &v
 }
 
-// GetArray returns the Array field value if set, zero value otherwise.
+// GetArray returns the Array field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorageNetAppStorageVm) GetArray() StorageNetAppClusterRelationship {
-	if o == nil || o.Array == nil {
+	if o == nil || IsNil(o.Array.Get()) {
 		var ret StorageNetAppClusterRelationship
 		return ret
 	}
-	return *o.Array
+	return *o.Array.Get()
 }
 
 // GetArrayOk returns a tuple with the Array field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppStorageVm) GetArrayOk() (*StorageNetAppClusterRelationship, bool) {
-	if o == nil || o.Array == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Array, true
+	return o.Array.Get(), o.Array.IsSet()
 }
 
 // HasArray returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasArray() bool {
-	if o != nil && o.Array != nil {
+	if o != nil && o.Array.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetArray gets a reference to the given StorageNetAppClusterRelationship and assigns it to the Array field.
+// SetArray gets a reference to the given NullableStorageNetAppClusterRelationship and assigns it to the Array field.
 func (o *StorageNetAppStorageVm) SetArray(v StorageNetAppClusterRelationship) {
-	o.Array = &v
+	o.Array.Set(&v)
+}
+
+// SetArrayNil sets the value for Array to be an explicit nil
+func (o *StorageNetAppStorageVm) SetArrayNil() {
+	o.Array.Set(nil)
+}
+
+// UnsetArray ensures that no value is present for Array, not even an explicit nil
+func (o *StorageNetAppStorageVm) UnsetArray() {
+	o.Array.Unset()
 }
 
 // GetDiskPool returns the DiskPool field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -659,7 +662,7 @@ func (o *StorageNetAppStorageVm) GetDiskPool() []StorageNetAppAggregateRelations
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppStorageVm) GetDiskPoolOk() ([]StorageNetAppAggregateRelationship, bool) {
-	if o == nil || o.DiskPool == nil {
+	if o == nil || IsNil(o.DiskPool) {
 		return nil, false
 	}
 	return o.DiskPool, true
@@ -667,7 +670,7 @@ func (o *StorageNetAppStorageVm) GetDiskPoolOk() ([]StorageNetAppAggregateRelati
 
 // HasDiskPool returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasDiskPool() bool {
-	if o != nil && o.DiskPool != nil {
+	if o != nil && !IsNil(o.DiskPool) {
 		return true
 	}
 
@@ -692,7 +695,7 @@ func (o *StorageNetAppStorageVm) GetEvents() []StorageNetAppSvmEventRelationship
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppStorageVm) GetEventsOk() ([]StorageNetAppSvmEventRelationship, bool) {
-	if o == nil || o.Events == nil {
+	if o == nil || IsNil(o.Events) {
 		return nil, false
 	}
 	return o.Events, true
@@ -700,7 +703,7 @@ func (o *StorageNetAppStorageVm) GetEventsOk() ([]StorageNetAppSvmEventRelations
 
 // HasEvents returns a boolean if a field has been set.
 func (o *StorageNetAppStorageVm) HasEvents() bool {
-	if o != nil && o.Events != nil {
+	if o != nil && !IsNil(o.Events) {
 		return true
 	}
 
@@ -713,68 +716,75 @@ func (o *StorageNetAppStorageVm) SetEvents(v []StorageNetAppSvmEventRelationship
 }
 
 func (o StorageNetAppStorageVm) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o StorageNetAppStorageVm) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedStorageBaseTenant, errStorageBaseTenant := json.Marshal(o.StorageBaseTenant)
 	if errStorageBaseTenant != nil {
-		return []byte{}, errStorageBaseTenant
+		return map[string]interface{}{}, errStorageBaseTenant
 	}
 	errStorageBaseTenant = json.Unmarshal([]byte(serializedStorageBaseTenant), &toSerialize)
 	if errStorageBaseTenant != nil {
-		return []byte{}, errStorageBaseTenant
+		return map[string]interface{}{}, errStorageBaseTenant
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.Aggregates != nil {
 		toSerialize["Aggregates"] = o.Aggregates
 	}
-	if o.AvgPerformanceMetrics != nil {
-		toSerialize["AvgPerformanceMetrics"] = o.AvgPerformanceMetrics
+	if o.AvgPerformanceMetrics.IsSet() {
+		toSerialize["AvgPerformanceMetrics"] = o.AvgPerformanceMetrics.Get()
 	}
-	if o.CifsEnabled != nil {
+	if !IsNil(o.CifsEnabled) {
 		toSerialize["CifsEnabled"] = o.CifsEnabled
 	}
 	if o.DnsDomains != nil {
 		toSerialize["DnsDomains"] = o.DnsDomains
 	}
-	if o.FcpEnabled != nil {
+	if !IsNil(o.FcpEnabled) {
 		toSerialize["FcpEnabled"] = o.FcpEnabled
 	}
-	if o.Ipspace != nil {
+	if !IsNil(o.Ipspace) {
 		toSerialize["Ipspace"] = o.Ipspace
 	}
-	if o.IscsiEnabled != nil {
+	if !IsNil(o.IsProtected) {
+		toSerialize["IsProtected"] = o.IsProtected
+	}
+	if !IsNil(o.IscsiEnabled) {
 		toSerialize["IscsiEnabled"] = o.IscsiEnabled
 	}
-	if o.Key != nil {
+	if !IsNil(o.Key) {
 		toSerialize["Key"] = o.Key
 	}
 	if o.NameServers != nil {
 		toSerialize["NameServers"] = o.NameServers
 	}
-	if o.NfsEnabled != nil {
+	if !IsNil(o.NativeFpolicyCount) {
+		toSerialize["NativeFpolicyCount"] = o.NativeFpolicyCount
+	}
+	if !IsNil(o.NfsEnabled) {
 		toSerialize["NfsEnabled"] = o.NfsEnabled
 	}
-	if o.NfsV3Enabled != nil {
-		toSerialize["NfsV3Enabled"] = o.NfsV3Enabled
-	}
-	if o.NfsV41Enabled != nil {
-		toSerialize["NfsV41Enabled"] = o.NfsV41Enabled
-	}
-	if o.NfsV4Enabled != nil {
-		toSerialize["NfsV4Enabled"] = o.NfsV4Enabled
-	}
-	if o.NvmeEnabled != nil {
+	if !IsNil(o.NvmeEnabled) {
 		toSerialize["NvmeEnabled"] = o.NvmeEnabled
 	}
-	if o.Subtype != nil {
+	if !IsNil(o.Subtype) {
 		toSerialize["Subtype"] = o.Subtype
 	}
-	if o.Array != nil {
-		toSerialize["Array"] = o.Array
+	if o.Array.IsSet() {
+		toSerialize["Array"] = o.Array.Get()
 	}
 	if o.DiskPool != nil {
 		toSerialize["DiskPool"] = o.DiskPool
@@ -787,17 +797,59 @@ func (o StorageNetAppStorageVm) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *StorageNetAppStorageVm) UnmarshalJSON(bytes []byte) (err error) {
+func (o *StorageNetAppStorageVm) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type StorageNetAppStorageVmWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
-		ObjectType            string                                  `json:"ObjectType"`
-		Aggregates            []string                                `json:"Aggregates,omitempty"`
-		AvgPerformanceMetrics *StorageNetAppPerformanceMetricsAverage `json:"AvgPerformanceMetrics,omitempty"`
+		ObjectType string   `json:"ObjectType"`
+		Aggregates []string `json:"Aggregates,omitempty"`
+		// Average performance metrics data for a NetApp storage resource over a given period of time.
+		AvgPerformanceMetrics NullableStorageBasePerformanceMetricsAverage `json:"AvgPerformanceMetrics,omitempty"`
 		// Status for Common Internet File System protocol ( CIFS ) allowed to run on Vservers.
 		CifsEnabled *bool    `json:"CifsEnabled,omitempty"`
 		DnsDomains  []string `json:"DnsDomains,omitempty"`
@@ -805,24 +857,22 @@ func (o *StorageNetAppStorageVm) UnmarshalJSON(bytes []byte) (err error) {
 		FcpEnabled *bool `json:"FcpEnabled,omitempty"`
 		// IPspace name. IPspaces are distinct IP address spaces in which storage virtual machines (SVMs) reside.
 		Ipspace *string `json:"Ipspace,omitempty"`
+		// Specifies whether the Storage VM is a SnapMirror source Storage VM, using SnapMirror to protect its data.
+		IsProtected *string `json:"IsProtected,omitempty"`
 		// Status for iSCSI protocol allowed to run on Vservers.
 		IscsiEnabled *bool `json:"IscsiEnabled,omitempty"`
 		// Unique identifier of VServer across data center.
 		Key         *string  `json:"Key,omitempty"`
 		NameServers []string `json:"NameServers,omitempty"`
+		// The number of native FPolicy engines enabled on this SVM.
+		NativeFpolicyCount *int64 `json:"NativeFpolicyCount,omitempty"`
 		// Status for Network File System Protocol ( NFS ) allowed to run on  Vservers.
 		NfsEnabled *bool `json:"NfsEnabled,omitempty"`
-		// Status for Network File System Protocol ( NFSv3 ) allowed to run on  Vservers.
-		NfsV3Enabled *bool `json:"NfsV3Enabled,omitempty"`
-		// Status for Network File System Protocol ( NFSv4.1 ) allowed to run on  Vservers.
-		NfsV41Enabled *bool `json:"NfsV41Enabled,omitempty"`
-		// Status for Network File System Protocol ( NFSv4 ) allowed to run on  Vservers.
-		NfsV4Enabled *bool `json:"NfsV4Enabled,omitempty"`
 		// Status for NVME protocol allowed to run on Vservers.
 		NvmeEnabled *bool `json:"NvmeEnabled,omitempty"`
 		// SVM subtype (default, dp_destination, sync_source, or sync_destination). The SVM subtype sync_destination is created automatically when an SVM of subtype sync_source is created on the source MetroCluster cluster.
-		Subtype *string                           `json:"Subtype,omitempty"`
-		Array   *StorageNetAppClusterRelationship `json:"Array,omitempty"`
+		Subtype *string                                  `json:"Subtype,omitempty"`
+		Array   NullableStorageNetAppClusterRelationship `json:"Array,omitempty"`
 		// An array of relationships to storageNetAppAggregate resources.
 		DiskPool []StorageNetAppAggregateRelationship `json:"DiskPool,omitempty"`
 		// An array of relationships to storageNetAppSvmEvent resources.
@@ -831,7 +881,7 @@ func (o *StorageNetAppStorageVm) UnmarshalJSON(bytes []byte) (err error) {
 
 	varStorageNetAppStorageVmWithoutEmbeddedStruct := StorageNetAppStorageVmWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppStorageVmWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varStorageNetAppStorageVmWithoutEmbeddedStruct)
 	if err == nil {
 		varStorageNetAppStorageVm := _StorageNetAppStorageVm{}
 		varStorageNetAppStorageVm.ClassId = varStorageNetAppStorageVmWithoutEmbeddedStruct.ClassId
@@ -842,13 +892,12 @@ func (o *StorageNetAppStorageVm) UnmarshalJSON(bytes []byte) (err error) {
 		varStorageNetAppStorageVm.DnsDomains = varStorageNetAppStorageVmWithoutEmbeddedStruct.DnsDomains
 		varStorageNetAppStorageVm.FcpEnabled = varStorageNetAppStorageVmWithoutEmbeddedStruct.FcpEnabled
 		varStorageNetAppStorageVm.Ipspace = varStorageNetAppStorageVmWithoutEmbeddedStruct.Ipspace
+		varStorageNetAppStorageVm.IsProtected = varStorageNetAppStorageVmWithoutEmbeddedStruct.IsProtected
 		varStorageNetAppStorageVm.IscsiEnabled = varStorageNetAppStorageVmWithoutEmbeddedStruct.IscsiEnabled
 		varStorageNetAppStorageVm.Key = varStorageNetAppStorageVmWithoutEmbeddedStruct.Key
 		varStorageNetAppStorageVm.NameServers = varStorageNetAppStorageVmWithoutEmbeddedStruct.NameServers
+		varStorageNetAppStorageVm.NativeFpolicyCount = varStorageNetAppStorageVmWithoutEmbeddedStruct.NativeFpolicyCount
 		varStorageNetAppStorageVm.NfsEnabled = varStorageNetAppStorageVmWithoutEmbeddedStruct.NfsEnabled
-		varStorageNetAppStorageVm.NfsV3Enabled = varStorageNetAppStorageVmWithoutEmbeddedStruct.NfsV3Enabled
-		varStorageNetAppStorageVm.NfsV41Enabled = varStorageNetAppStorageVmWithoutEmbeddedStruct.NfsV41Enabled
-		varStorageNetAppStorageVm.NfsV4Enabled = varStorageNetAppStorageVmWithoutEmbeddedStruct.NfsV4Enabled
 		varStorageNetAppStorageVm.NvmeEnabled = varStorageNetAppStorageVmWithoutEmbeddedStruct.NvmeEnabled
 		varStorageNetAppStorageVm.Subtype = varStorageNetAppStorageVmWithoutEmbeddedStruct.Subtype
 		varStorageNetAppStorageVm.Array = varStorageNetAppStorageVmWithoutEmbeddedStruct.Array
@@ -861,7 +910,7 @@ func (o *StorageNetAppStorageVm) UnmarshalJSON(bytes []byte) (err error) {
 
 	varStorageNetAppStorageVm := _StorageNetAppStorageVm{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppStorageVm)
+	err = json.Unmarshal(data, &varStorageNetAppStorageVm)
 	if err == nil {
 		o.StorageBaseTenant = varStorageNetAppStorageVm.StorageBaseTenant
 	} else {
@@ -870,7 +919,7 @@ func (o *StorageNetAppStorageVm) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Aggregates")
@@ -879,13 +928,12 @@ func (o *StorageNetAppStorageVm) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "DnsDomains")
 		delete(additionalProperties, "FcpEnabled")
 		delete(additionalProperties, "Ipspace")
+		delete(additionalProperties, "IsProtected")
 		delete(additionalProperties, "IscsiEnabled")
 		delete(additionalProperties, "Key")
 		delete(additionalProperties, "NameServers")
+		delete(additionalProperties, "NativeFpolicyCount")
 		delete(additionalProperties, "NfsEnabled")
-		delete(additionalProperties, "NfsV3Enabled")
-		delete(additionalProperties, "NfsV41Enabled")
-		delete(additionalProperties, "NfsV4Enabled")
 		delete(additionalProperties, "NvmeEnabled")
 		delete(additionalProperties, "Subtype")
 		delete(additionalProperties, "Array")

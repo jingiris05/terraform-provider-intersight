@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the HyperflexServerFirmwareVersionInfo type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &HyperflexServerFirmwareVersionInfo{}
 
 // HyperflexServerFirmwareVersionInfo The firmware version details for UCS servers.
 type HyperflexServerFirmwareVersionInfo struct {
@@ -27,7 +31,7 @@ type HyperflexServerFirmwareVersionInfo struct {
 	// The platform type for UCS server. * `M5` - M5 generation of UCS server. * `M3` - M3 generation of UCS server. * `M4` - M4 generation of UCS server. * `M6` - M6 generation of UCS server.
 	ServerPlatform *string `json:"ServerPlatform,omitempty"`
 	// The server firmware bundle version.
-	Version              *string `json:"Version,omitempty"`
+	Version              *string `json:"Version,omitempty" validate:"regexp=(^3\\\\.[1-9]\\\\([1-9][a-z]\\\\)$|^[4-9]\\\\.[0-9]\\\\([1-9][a-z]\\\\)$|^[4-9]\\\\.[0-9]\\\\([0-9](\\\\.[0-9]+|[a-z]).*\\\\)$)"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -84,6 +88,11 @@ func (o *HyperflexServerFirmwareVersionInfo) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "hyperflex.ServerFirmwareVersionInfo" of the ClassId field.
+func (o *HyperflexServerFirmwareVersionInfo) GetDefaultClassId() interface{} {
+	return "hyperflex.ServerFirmwareVersionInfo"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *HyperflexServerFirmwareVersionInfo) GetObjectType() string {
 	if o == nil {
@@ -108,9 +117,14 @@ func (o *HyperflexServerFirmwareVersionInfo) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "hyperflex.ServerFirmwareVersionInfo" of the ObjectType field.
+func (o *HyperflexServerFirmwareVersionInfo) GetDefaultObjectType() interface{} {
+	return "hyperflex.ServerFirmwareVersionInfo"
+}
+
 // GetServerPlatform returns the ServerPlatform field value if set, zero value otherwise.
 func (o *HyperflexServerFirmwareVersionInfo) GetServerPlatform() string {
-	if o == nil || o.ServerPlatform == nil {
+	if o == nil || IsNil(o.ServerPlatform) {
 		var ret string
 		return ret
 	}
@@ -120,7 +134,7 @@ func (o *HyperflexServerFirmwareVersionInfo) GetServerPlatform() string {
 // GetServerPlatformOk returns a tuple with the ServerPlatform field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexServerFirmwareVersionInfo) GetServerPlatformOk() (*string, bool) {
-	if o == nil || o.ServerPlatform == nil {
+	if o == nil || IsNil(o.ServerPlatform) {
 		return nil, false
 	}
 	return o.ServerPlatform, true
@@ -128,7 +142,7 @@ func (o *HyperflexServerFirmwareVersionInfo) GetServerPlatformOk() (*string, boo
 
 // HasServerPlatform returns a boolean if a field has been set.
 func (o *HyperflexServerFirmwareVersionInfo) HasServerPlatform() bool {
-	if o != nil && o.ServerPlatform != nil {
+	if o != nil && !IsNil(o.ServerPlatform) {
 		return true
 	}
 
@@ -142,7 +156,7 @@ func (o *HyperflexServerFirmwareVersionInfo) SetServerPlatform(v string) {
 
 // GetVersion returns the Version field value if set, zero value otherwise.
 func (o *HyperflexServerFirmwareVersionInfo) GetVersion() string {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		var ret string
 		return ret
 	}
@@ -152,7 +166,7 @@ func (o *HyperflexServerFirmwareVersionInfo) GetVersion() string {
 // GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *HyperflexServerFirmwareVersionInfo) GetVersionOk() (*string, bool) {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		return nil, false
 	}
 	return o.Version, true
@@ -160,7 +174,7 @@ func (o *HyperflexServerFirmwareVersionInfo) GetVersionOk() (*string, bool) {
 
 // HasVersion returns a boolean if a field has been set.
 func (o *HyperflexServerFirmwareVersionInfo) HasVersion() bool {
-	if o != nil && o.Version != nil {
+	if o != nil && !IsNil(o.Version) {
 		return true
 	}
 
@@ -173,25 +187,35 @@ func (o *HyperflexServerFirmwareVersionInfo) SetVersion(v string) {
 }
 
 func (o HyperflexServerFirmwareVersionInfo) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o HyperflexServerFirmwareVersionInfo) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.ServerPlatform != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.ServerPlatform) {
 		toSerialize["ServerPlatform"] = o.ServerPlatform
 	}
-	if o.Version != nil {
+	if !IsNil(o.Version) {
 		toSerialize["Version"] = o.Version
 	}
 
@@ -199,10 +223,51 @@ func (o HyperflexServerFirmwareVersionInfo) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *HyperflexServerFirmwareVersionInfo) UnmarshalJSON(bytes []byte) (err error) {
+func (o *HyperflexServerFirmwareVersionInfo) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type HyperflexServerFirmwareVersionInfoWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -211,12 +276,12 @@ func (o *HyperflexServerFirmwareVersionInfo) UnmarshalJSON(bytes []byte) (err er
 		// The platform type for UCS server. * `M5` - M5 generation of UCS server. * `M3` - M3 generation of UCS server. * `M4` - M4 generation of UCS server. * `M6` - M6 generation of UCS server.
 		ServerPlatform *string `json:"ServerPlatform,omitempty"`
 		// The server firmware bundle version.
-		Version *string `json:"Version,omitempty"`
+		Version *string `json:"Version,omitempty" validate:"regexp=(^3\\\\.[1-9]\\\\([1-9][a-z]\\\\)$|^[4-9]\\\\.[0-9]\\\\([1-9][a-z]\\\\)$|^[4-9]\\\\.[0-9]\\\\([0-9](\\\\.[0-9]+|[a-z]).*\\\\)$)"`
 	}
 
 	varHyperflexServerFirmwareVersionInfoWithoutEmbeddedStruct := HyperflexServerFirmwareVersionInfoWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varHyperflexServerFirmwareVersionInfoWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varHyperflexServerFirmwareVersionInfoWithoutEmbeddedStruct)
 	if err == nil {
 		varHyperflexServerFirmwareVersionInfo := _HyperflexServerFirmwareVersionInfo{}
 		varHyperflexServerFirmwareVersionInfo.ClassId = varHyperflexServerFirmwareVersionInfoWithoutEmbeddedStruct.ClassId
@@ -230,7 +295,7 @@ func (o *HyperflexServerFirmwareVersionInfo) UnmarshalJSON(bytes []byte) (err er
 
 	varHyperflexServerFirmwareVersionInfo := _HyperflexServerFirmwareVersionInfo{}
 
-	err = json.Unmarshal(bytes, &varHyperflexServerFirmwareVersionInfo)
+	err = json.Unmarshal(data, &varHyperflexServerFirmwareVersionInfo)
 	if err == nil {
 		o.MoBaseComplexType = varHyperflexServerFirmwareVersionInfo.MoBaseComplexType
 	} else {
@@ -239,7 +304,7 @@ func (o *HyperflexServerFirmwareVersionInfo) UnmarshalJSON(bytes []byte) (err er
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ServerPlatform")

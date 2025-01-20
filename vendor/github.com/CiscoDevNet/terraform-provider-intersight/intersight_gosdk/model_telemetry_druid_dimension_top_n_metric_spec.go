@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,13 +13,17 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 )
+
+// checks if the TelemetryDruidDimensionTopNMetricSpec type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &TelemetryDruidDimensionTopNMetricSpec{}
 
 // TelemetryDruidDimensionTopNMetricSpec This metric specification sorts TopN results by dimension value, using one of the sorting orders.
 type TelemetryDruidDimensionTopNMetricSpec struct {
 	// The dimension spec type.
 	Type string `json:"type"`
-	// Specifies the sorting order. It can be one of the following values. \"lexicographic\", \"alphanumeric\", \"numeric\", \"strlen\". * lexicographic - Sorts values by converting Strings to their UTF-8 byte array representations and comparing lexicographically, byte-by-byte. * alphanumeric - Suitable for strings with both numeric and non-numeric content, e.g. \"file12 sorts after file2\". See https://github.com/amjjd/java-alphanum for more details on how this ordering sorts values. This ordering is not suitable for numbers with decimal points or negative numbers. * numeric - Sorts values as numbers, supports integers and floating point values. Negative values are supported. This sorting order will try to parse all string values as numbers. Unparseable values are treated as nulls, and nulls precede numbers. When comparing two unparseable values (e.g., \"hello\" and \"world\"), this ordering will sort by comparing the unparsed strings lexicographically. * strlen - Sorts values by the their string lengths. When there is a tie, this comparator falls back to using the String compareTo method. * version - Sorts values as versions, e.g. \"10.0 sorts after 9.0\", \"1.0.0-SNAPSHOT sorts after 1.0.0\".
+	// Specifies the sorting order. It can be one of the following values. \"lexicographic\", \"alphanumeric\", \"numeric\", \"strlen\". * lexicographic - Sorts values by converting Strings to their UTF-8 byte array representations and comparing lexicographically, byte-by-byte. * alphanumeric - Suitable for strings with both numeric and non-numeric content, e.g., \"file12 sorts after file2\". See https://github.com/amjjd/java-alphanum for more details on how this ordering sorts values. This ordering is not suitable for numbers with decimal points or negative numbers. * numeric - Sorts values as numbers, supports integers and floating point values. Negative values are supported. This sorting order will try to parse all string values as numbers. Unparseable values are treated as nulls, and nulls precede numbers. When comparing two unparseable values (e.g., \"hello\" and \"world\"), this ordering will sort by comparing the unparsed strings lexicographically. * strlen - Sorts values by the their string lengths. When there is a tie, this comparator falls back to using the String compareTo method. * version - Sorts values as versions, e.g., \"10.0 sorts after 9.0\", \"1.0.0-SNAPSHOT sorts after 1.0.0\".
 	Ordering *string `json:"ordering,omitempty"`
 	// The starting point of the sort. For example, if a previousStop value is 'b', all values before 'b' are discarded. This field can be used to paginate through all the dimension values.
 	PreviousStop         *string `json:"previousStop,omitempty"`
@@ -76,7 +80,7 @@ func (o *TelemetryDruidDimensionTopNMetricSpec) SetType(v string) {
 
 // GetOrdering returns the Ordering field value if set, zero value otherwise.
 func (o *TelemetryDruidDimensionTopNMetricSpec) GetOrdering() string {
-	if o == nil || o.Ordering == nil {
+	if o == nil || IsNil(o.Ordering) {
 		var ret string
 		return ret
 	}
@@ -86,7 +90,7 @@ func (o *TelemetryDruidDimensionTopNMetricSpec) GetOrdering() string {
 // GetOrderingOk returns a tuple with the Ordering field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TelemetryDruidDimensionTopNMetricSpec) GetOrderingOk() (*string, bool) {
-	if o == nil || o.Ordering == nil {
+	if o == nil || IsNil(o.Ordering) {
 		return nil, false
 	}
 	return o.Ordering, true
@@ -94,7 +98,7 @@ func (o *TelemetryDruidDimensionTopNMetricSpec) GetOrderingOk() (*string, bool) 
 
 // HasOrdering returns a boolean if a field has been set.
 func (o *TelemetryDruidDimensionTopNMetricSpec) HasOrdering() bool {
-	if o != nil && o.Ordering != nil {
+	if o != nil && !IsNil(o.Ordering) {
 		return true
 	}
 
@@ -108,7 +112,7 @@ func (o *TelemetryDruidDimensionTopNMetricSpec) SetOrdering(v string) {
 
 // GetPreviousStop returns the PreviousStop field value if set, zero value otherwise.
 func (o *TelemetryDruidDimensionTopNMetricSpec) GetPreviousStop() string {
-	if o == nil || o.PreviousStop == nil {
+	if o == nil || IsNil(o.PreviousStop) {
 		var ret string
 		return ret
 	}
@@ -118,7 +122,7 @@ func (o *TelemetryDruidDimensionTopNMetricSpec) GetPreviousStop() string {
 // GetPreviousStopOk returns a tuple with the PreviousStop field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TelemetryDruidDimensionTopNMetricSpec) GetPreviousStopOk() (*string, bool) {
-	if o == nil || o.PreviousStop == nil {
+	if o == nil || IsNil(o.PreviousStop) {
 		return nil, false
 	}
 	return o.PreviousStop, true
@@ -126,7 +130,7 @@ func (o *TelemetryDruidDimensionTopNMetricSpec) GetPreviousStopOk() (*string, bo
 
 // HasPreviousStop returns a boolean if a field has been set.
 func (o *TelemetryDruidDimensionTopNMetricSpec) HasPreviousStop() bool {
-	if o != nil && o.PreviousStop != nil {
+	if o != nil && !IsNil(o.PreviousStop) {
 		return true
 	}
 
@@ -139,14 +143,20 @@ func (o *TelemetryDruidDimensionTopNMetricSpec) SetPreviousStop(v string) {
 }
 
 func (o TelemetryDruidDimensionTopNMetricSpec) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if true {
-		toSerialize["type"] = o.Type
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
 	}
-	if o.Ordering != nil {
+	return json.Marshal(toSerialize)
+}
+
+func (o TelemetryDruidDimensionTopNMetricSpec) ToMap() (map[string]interface{}, error) {
+	toSerialize := map[string]interface{}{}
+	toSerialize["type"] = o.Type
+	if !IsNil(o.Ordering) {
 		toSerialize["ordering"] = o.Ordering
 	}
-	if o.PreviousStop != nil {
+	if !IsNil(o.PreviousStop) {
 		toSerialize["previousStop"] = o.PreviousStop
 	}
 
@@ -154,19 +164,60 @@ func (o TelemetryDruidDimensionTopNMetricSpec) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *TelemetryDruidDimensionTopNMetricSpec) UnmarshalJSON(bytes []byte) (err error) {
+func (o *TelemetryDruidDimensionTopNMetricSpec) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"type",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	varTelemetryDruidDimensionTopNMetricSpec := _TelemetryDruidDimensionTopNMetricSpec{}
 
-	if err = json.Unmarshal(bytes, &varTelemetryDruidDimensionTopNMetricSpec); err == nil {
-		*o = TelemetryDruidDimensionTopNMetricSpec(varTelemetryDruidDimensionTopNMetricSpec)
+	err = json.Unmarshal(data, &varTelemetryDruidDimensionTopNMetricSpec)
+
+	if err != nil {
+		return err
 	}
+
+	*o = TelemetryDruidDimensionTopNMetricSpec(varTelemetryDruidDimensionTopNMetricSpec)
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "type")
 		delete(additionalProperties, "ordering")
 		delete(additionalProperties, "previousStop")

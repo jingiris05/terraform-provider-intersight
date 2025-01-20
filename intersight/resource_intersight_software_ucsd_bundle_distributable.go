@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceSoftwareUcsdBundleDistributable() *schema.Resource {
 		UpdateContext: resourceSoftwareUcsdBundleDistributableUpdate,
 		DeleteContext: resourceSoftwareUcsdBundleDistributableDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -295,6 +297,17 @@ func resourceSoftwareUcsdBundleDistributable() *schema.Resource {
 			"download_count": {
 				Description: "The number of times this file has been downloaded from the local repository. It is used by the repository monitoring process to determine the files that are to be evicted from the cache.",
 				Type:        schema.TypeInt,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
+			"feature_source": {
+				Description: "The name of the feature to which the uploaded file belongs.\n* `System` - This indicates system initiated file uploads.\n* `OpenAPIImport` - This indicates an OpenAPI file upload.\n* `PartnerIntegrationImport` - This indicates a Partner-Integration Appliance user file uploads.",
+				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
@@ -780,6 +793,17 @@ func resourceSoftwareUcsdBundleDistributable() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1188,11 +1212,11 @@ func resourceSoftwareUcsdBundleDistributableCreate(c context.Context, d *schema.
 	}
 
 	if v, ok := d.GetOk("nr_source"); ok {
-		p := make([]models.SoftwarerepositoryFileServer, 0, 1)
+		p := make([]models.MoBaseComplexType, 0, 1)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			l := s[i].(map[string]interface{})
-			o := models.NewSoftwarerepositoryFileServerWithDefaults()
+			o := models.NewMoBaseComplexTypeWithDefaults()
 			if v, ok := l["additional_properties"]; ok {
 				{
 					x := []byte(v.(string))
@@ -1286,14 +1310,25 @@ func resourceSoftwareUcsdBundleDistributableCreate(c context.Context, d *schema.
 		}
 		return diag.Errorf("error occurred while creating SoftwareUcsdBundleDistributable: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceSoftwareUcsdBundleDistributableRead(c, d, meta)...)
 }
 
 func resourceSoftwareUcsdBundleDistributableRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.SoftwareApi.GetSoftwareUcsdBundleDistributableByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1357,6 +1392,10 @@ func resourceSoftwareUcsdBundleDistributableRead(c context.Context, d *schema.Re
 
 	if err := d.Set("download_count", (s.GetDownloadCount())); err != nil {
 		return diag.Errorf("error occurred while setting property DownloadCount in SoftwareUcsdBundleDistributable object: %s", err.Error())
+	}
+
+	if err := d.Set("feature_source", (s.GetFeatureSource())); err != nil {
+		return diag.Errorf("error occurred while setting property FeatureSource in SoftwareUcsdBundleDistributable object: %s", err.Error())
 	}
 
 	if err := d.Set("guid", (s.GetGuid())); err != nil {
@@ -1471,7 +1510,7 @@ func resourceSoftwareUcsdBundleDistributableRead(c context.Context, d *schema.Re
 		return diag.Errorf("error occurred while setting property SoftwareTypeId in SoftwareUcsdBundleDistributable object: %s", err.Error())
 	}
 
-	if err := d.Set("nr_source", flattenMapSoftwarerepositoryFileServer(s.GetSource(), d)); err != nil {
+	if err := d.Set("nr_source", flattenMapMoBaseComplexType(s.GetSource(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Source in SoftwareUcsdBundleDistributable object: %s", err.Error())
 	}
 
@@ -1838,11 +1877,11 @@ func resourceSoftwareUcsdBundleDistributableUpdate(c context.Context, d *schema.
 
 	if d.HasChange("nr_source") {
 		v := d.Get("nr_source")
-		p := make([]models.SoftwarerepositoryFileServer, 0, 1)
+		p := make([]models.MoBaseComplexType, 0, 1)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			l := s[i].(map[string]interface{})
-			o := &models.SoftwarerepositoryFileServer{}
+			o := &models.MoBaseComplexType{}
 			if v, ok := l["additional_properties"]; ok {
 				{
 					x := []byte(v.(string))

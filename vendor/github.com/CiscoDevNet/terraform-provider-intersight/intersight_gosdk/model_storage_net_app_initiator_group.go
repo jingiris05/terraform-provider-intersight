@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the StorageNetAppInitiatorGroup type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &StorageNetAppInitiatorGroup{}
 
 // StorageNetAppInitiatorGroup NetApp Initiator Group specifies host access to LUNs on the storage system.
 type StorageNetAppInitiatorGroup struct {
@@ -26,9 +30,11 @@ type StorageNetAppInitiatorGroup struct {
 	ObjectType string `json:"ObjectType"`
 	// Initiator group protocol. * `FCP` - Fibre channel initiator type which contains WWN of an HBA on the host. * `iSCSI` - An iSCSI initiator type used by the host. * `mixed` - For systems using both FC and iSCSI connections to the same LUN, create two igroups, one for FC and one for iSCSI. Then map the LUN to both igroups.
 	Protocol *string `json:"Protocol,omitempty"`
+	// The storage virtual machine name for the initiator group.
+	SvmName *string `json:"SvmName,omitempty"`
 	// Universally unique identifier of the LUN.
-	Uuid                 *string                             `json:"Uuid,omitempty"`
-	Tenant               *StorageNetAppStorageVmRelationship `json:"Tenant,omitempty"`
+	Uuid                 *string                                    `json:"Uuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+	Tenant               NullableStorageNetAppStorageVmRelationship `json:"Tenant,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -81,6 +87,11 @@ func (o *StorageNetAppInitiatorGroup) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "storage.NetAppInitiatorGroup" of the ClassId field.
+func (o *StorageNetAppInitiatorGroup) GetDefaultClassId() interface{} {
+	return "storage.NetAppInitiatorGroup"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *StorageNetAppInitiatorGroup) GetObjectType() string {
 	if o == nil {
@@ -105,9 +116,14 @@ func (o *StorageNetAppInitiatorGroup) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "storage.NetAppInitiatorGroup" of the ObjectType field.
+func (o *StorageNetAppInitiatorGroup) GetDefaultObjectType() interface{} {
+	return "storage.NetAppInitiatorGroup"
+}
+
 // GetProtocol returns the Protocol field value if set, zero value otherwise.
 func (o *StorageNetAppInitiatorGroup) GetProtocol() string {
-	if o == nil || o.Protocol == nil {
+	if o == nil || IsNil(o.Protocol) {
 		var ret string
 		return ret
 	}
@@ -117,7 +133,7 @@ func (o *StorageNetAppInitiatorGroup) GetProtocol() string {
 // GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppInitiatorGroup) GetProtocolOk() (*string, bool) {
-	if o == nil || o.Protocol == nil {
+	if o == nil || IsNil(o.Protocol) {
 		return nil, false
 	}
 	return o.Protocol, true
@@ -125,7 +141,7 @@ func (o *StorageNetAppInitiatorGroup) GetProtocolOk() (*string, bool) {
 
 // HasProtocol returns a boolean if a field has been set.
 func (o *StorageNetAppInitiatorGroup) HasProtocol() bool {
-	if o != nil && o.Protocol != nil {
+	if o != nil && !IsNil(o.Protocol) {
 		return true
 	}
 
@@ -137,9 +153,41 @@ func (o *StorageNetAppInitiatorGroup) SetProtocol(v string) {
 	o.Protocol = &v
 }
 
+// GetSvmName returns the SvmName field value if set, zero value otherwise.
+func (o *StorageNetAppInitiatorGroup) GetSvmName() string {
+	if o == nil || IsNil(o.SvmName) {
+		var ret string
+		return ret
+	}
+	return *o.SvmName
+}
+
+// GetSvmNameOk returns a tuple with the SvmName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppInitiatorGroup) GetSvmNameOk() (*string, bool) {
+	if o == nil || IsNil(o.SvmName) {
+		return nil, false
+	}
+	return o.SvmName, true
+}
+
+// HasSvmName returns a boolean if a field has been set.
+func (o *StorageNetAppInitiatorGroup) HasSvmName() bool {
+	if o != nil && !IsNil(o.SvmName) {
+		return true
+	}
+
+	return false
+}
+
+// SetSvmName gets a reference to the given string and assigns it to the SvmName field.
+func (o *StorageNetAppInitiatorGroup) SetSvmName(v string) {
+	o.SvmName = &v
+}
+
 // GetUuid returns the Uuid field value if set, zero value otherwise.
 func (o *StorageNetAppInitiatorGroup) GetUuid() string {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		var ret string
 		return ret
 	}
@@ -149,7 +197,7 @@ func (o *StorageNetAppInitiatorGroup) GetUuid() string {
 // GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppInitiatorGroup) GetUuidOk() (*string, bool) {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		return nil, false
 	}
 	return o.Uuid, true
@@ -157,7 +205,7 @@ func (o *StorageNetAppInitiatorGroup) GetUuidOk() (*string, bool) {
 
 // HasUuid returns a boolean if a field has been set.
 func (o *StorageNetAppInitiatorGroup) HasUuid() bool {
-	if o != nil && o.Uuid != nil {
+	if o != nil && !IsNil(o.Uuid) {
 		return true
 	}
 
@@ -169,72 +217,137 @@ func (o *StorageNetAppInitiatorGroup) SetUuid(v string) {
 	o.Uuid = &v
 }
 
-// GetTenant returns the Tenant field value if set, zero value otherwise.
+// GetTenant returns the Tenant field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorageNetAppInitiatorGroup) GetTenant() StorageNetAppStorageVmRelationship {
-	if o == nil || o.Tenant == nil {
+	if o == nil || IsNil(o.Tenant.Get()) {
 		var ret StorageNetAppStorageVmRelationship
 		return ret
 	}
-	return *o.Tenant
+	return *o.Tenant.Get()
 }
 
 // GetTenantOk returns a tuple with the Tenant field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppInitiatorGroup) GetTenantOk() (*StorageNetAppStorageVmRelationship, bool) {
-	if o == nil || o.Tenant == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Tenant, true
+	return o.Tenant.Get(), o.Tenant.IsSet()
 }
 
 // HasTenant returns a boolean if a field has been set.
 func (o *StorageNetAppInitiatorGroup) HasTenant() bool {
-	if o != nil && o.Tenant != nil {
+	if o != nil && o.Tenant.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetTenant gets a reference to the given StorageNetAppStorageVmRelationship and assigns it to the Tenant field.
+// SetTenant gets a reference to the given NullableStorageNetAppStorageVmRelationship and assigns it to the Tenant field.
 func (o *StorageNetAppInitiatorGroup) SetTenant(v StorageNetAppStorageVmRelationship) {
-	o.Tenant = &v
+	o.Tenant.Set(&v)
+}
+
+// SetTenantNil sets the value for Tenant to be an explicit nil
+func (o *StorageNetAppInitiatorGroup) SetTenantNil() {
+	o.Tenant.Set(nil)
+}
+
+// UnsetTenant ensures that no value is present for Tenant, not even an explicit nil
+func (o *StorageNetAppInitiatorGroup) UnsetTenant() {
+	o.Tenant.Unset()
 }
 
 func (o StorageNetAppInitiatorGroup) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o StorageNetAppInitiatorGroup) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedStorageBaseHost, errStorageBaseHost := json.Marshal(o.StorageBaseHost)
 	if errStorageBaseHost != nil {
-		return []byte{}, errStorageBaseHost
+		return map[string]interface{}{}, errStorageBaseHost
 	}
 	errStorageBaseHost = json.Unmarshal([]byte(serializedStorageBaseHost), &toSerialize)
 	if errStorageBaseHost != nil {
-		return []byte{}, errStorageBaseHost
+		return map[string]interface{}{}, errStorageBaseHost
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.Protocol != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.Protocol) {
 		toSerialize["Protocol"] = o.Protocol
 	}
-	if o.Uuid != nil {
+	if !IsNil(o.SvmName) {
+		toSerialize["SvmName"] = o.SvmName
+	}
+	if !IsNil(o.Uuid) {
 		toSerialize["Uuid"] = o.Uuid
 	}
-	if o.Tenant != nil {
-		toSerialize["Tenant"] = o.Tenant
+	if o.Tenant.IsSet() {
+		toSerialize["Tenant"] = o.Tenant.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *StorageNetAppInitiatorGroup) UnmarshalJSON(bytes []byte) (err error) {
+func (o *StorageNetAppInitiatorGroup) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type StorageNetAppInitiatorGroupWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -242,19 +355,22 @@ func (o *StorageNetAppInitiatorGroup) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// Initiator group protocol. * `FCP` - Fibre channel initiator type which contains WWN of an HBA on the host. * `iSCSI` - An iSCSI initiator type used by the host. * `mixed` - For systems using both FC and iSCSI connections to the same LUN, create two igroups, one for FC and one for iSCSI. Then map the LUN to both igroups.
 		Protocol *string `json:"Protocol,omitempty"`
+		// The storage virtual machine name for the initiator group.
+		SvmName *string `json:"SvmName,omitempty"`
 		// Universally unique identifier of the LUN.
-		Uuid   *string                             `json:"Uuid,omitempty"`
-		Tenant *StorageNetAppStorageVmRelationship `json:"Tenant,omitempty"`
+		Uuid   *string                                    `json:"Uuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+		Tenant NullableStorageNetAppStorageVmRelationship `json:"Tenant,omitempty"`
 	}
 
 	varStorageNetAppInitiatorGroupWithoutEmbeddedStruct := StorageNetAppInitiatorGroupWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppInitiatorGroupWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varStorageNetAppInitiatorGroupWithoutEmbeddedStruct)
 	if err == nil {
 		varStorageNetAppInitiatorGroup := _StorageNetAppInitiatorGroup{}
 		varStorageNetAppInitiatorGroup.ClassId = varStorageNetAppInitiatorGroupWithoutEmbeddedStruct.ClassId
 		varStorageNetAppInitiatorGroup.ObjectType = varStorageNetAppInitiatorGroupWithoutEmbeddedStruct.ObjectType
 		varStorageNetAppInitiatorGroup.Protocol = varStorageNetAppInitiatorGroupWithoutEmbeddedStruct.Protocol
+		varStorageNetAppInitiatorGroup.SvmName = varStorageNetAppInitiatorGroupWithoutEmbeddedStruct.SvmName
 		varStorageNetAppInitiatorGroup.Uuid = varStorageNetAppInitiatorGroupWithoutEmbeddedStruct.Uuid
 		varStorageNetAppInitiatorGroup.Tenant = varStorageNetAppInitiatorGroupWithoutEmbeddedStruct.Tenant
 		*o = StorageNetAppInitiatorGroup(varStorageNetAppInitiatorGroup)
@@ -264,7 +380,7 @@ func (o *StorageNetAppInitiatorGroup) UnmarshalJSON(bytes []byte) (err error) {
 
 	varStorageNetAppInitiatorGroup := _StorageNetAppInitiatorGroup{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppInitiatorGroup)
+	err = json.Unmarshal(data, &varStorageNetAppInitiatorGroup)
 	if err == nil {
 		o.StorageBaseHost = varStorageNetAppInitiatorGroup.StorageBaseHost
 	} else {
@@ -273,10 +389,11 @@ func (o *StorageNetAppInitiatorGroup) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Protocol")
+		delete(additionalProperties, "SvmName")
 		delete(additionalProperties, "Uuid")
 		delete(additionalProperties, "Tenant")
 

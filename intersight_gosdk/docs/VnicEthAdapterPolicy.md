@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **AdvancedFilter** | Pointer to **bool** | Enables advanced filtering on the interface. | [optional] [default to false]
 **ArfsSettings** | Pointer to [**NullableVnicArfsSettings**](VnicArfsSettings.md) |  | [optional] 
 **CompletionQueueSettings** | Pointer to [**NullableVnicCompletionQueueSettings**](VnicCompletionQueueSettings.md) |  | [optional] 
+**EtherChannelPinningEnabled** | Pointer to **bool** | Enables EtherChannel Pinning to combine multiple physical links between two network switches into a single logical link. Transmit Queue Count should be at least 2 to enable ether channel pinning. | [optional] [default to false]
 **GeneveEnabled** | Pointer to **bool** | GENEVE offload protocol allows you to create logical networks that span physical network boundaries by allowing any information to be encoded in a packet and passed between tunnel endpoints. | [optional] [default to false]
 **InterruptScaling** | Pointer to **bool** | Enables Interrupt Scaling on the interface. | [optional] [default to false]
 **InterruptSettings** | Pointer to [**NullableVnicEthInterruptSettings**](VnicEthInterruptSettings.md) |  | [optional] 
@@ -22,7 +23,7 @@ Name | Type | Description | Notes
 **TxQueueSettings** | Pointer to [**NullableVnicEthTxQueueSettings**](VnicEthTxQueueSettings.md) |  | [optional] 
 **UplinkFailbackTimeout** | Pointer to **int64** | Uplink Failback Timeout in seconds when uplink failover is enabled for a vNIC. After a vNIC has started using its secondary interface, this setting controls how long the primary interface must be available before the system resumes using the primary interface for the vNIC. | [optional] [default to 5]
 **VxlanSettings** | Pointer to [**NullableVnicVxlanSettings**](VnicVxlanSettings.md) |  | [optional] 
-**Organization** | Pointer to [**OrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
+**Organization** | Pointer to [**NullableOrganizationOrganizationRelationship**](OrganizationOrganizationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -178,6 +179,31 @@ HasCompletionQueueSettings returns a boolean if a field has been set.
 `func (o *VnicEthAdapterPolicy) UnsetCompletionQueueSettings()`
 
 UnsetCompletionQueueSettings ensures that no value is present for CompletionQueueSettings, not even an explicit nil
+### GetEtherChannelPinningEnabled
+
+`func (o *VnicEthAdapterPolicy) GetEtherChannelPinningEnabled() bool`
+
+GetEtherChannelPinningEnabled returns the EtherChannelPinningEnabled field if non-nil, zero value otherwise.
+
+### GetEtherChannelPinningEnabledOk
+
+`func (o *VnicEthAdapterPolicy) GetEtherChannelPinningEnabledOk() (*bool, bool)`
+
+GetEtherChannelPinningEnabledOk returns a tuple with the EtherChannelPinningEnabled field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetEtherChannelPinningEnabled
+
+`func (o *VnicEthAdapterPolicy) SetEtherChannelPinningEnabled(v bool)`
+
+SetEtherChannelPinningEnabled sets EtherChannelPinningEnabled field to given value.
+
+### HasEtherChannelPinningEnabled
+
+`func (o *VnicEthAdapterPolicy) HasEtherChannelPinningEnabled() bool`
+
+HasEtherChannelPinningEnabled returns a boolean if a field has been set.
+
 ### GetGeneveEnabled
 
 `func (o *VnicEthAdapterPolicy) GetGeneveEnabled() bool`
@@ -618,6 +644,16 @@ SetOrganization sets Organization field to given value.
 
 HasOrganization returns a boolean if a field has been set.
 
+### SetOrganizationNil
+
+`func (o *VnicEthAdapterPolicy) SetOrganizationNil(b bool)`
+
+ SetOrganizationNil sets the value for Organization to be an explicit nil
+
+### UnsetOrganization
+`func (o *VnicEthAdapterPolicy) UnsetOrganization()`
+
+UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceHyperflexHealthCheckDefinition() *schema.Resource {
 		UpdateContext: resourceHyperflexHealthCheckDefinitionUpdate,
 		DeleteContext: resourceHyperflexHealthCheckDefinitionDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -480,7 +482,7 @@ func resourceHyperflexHealthCheckDefinition() *schema.Resource {
 					return
 				}},
 			"supported_hypervisor_type": {
-				Description: "Hypervisor type that the Health Check is supported on (All, if it is hypervisor agnostic).\n* `All` - The Health Check is hypervisor-agnostic.\n* `ESXi` - The Health Check is supported only on Vmware ESXi hypervisor of any version.\n* `` - The Health Check is supported only on Cisco HyperFlexAp platform.\n* `IWE` - The Health Check is supported only on Cisco IWE platform.\n* `HyperV` - The Health Check is supported only on Microsoft HyperV hypervisor.",
+				Description: "Hypervisor type that the Health Check is supported on (All, if it is hypervisor agnostic).\n* `All` - The Health Check is hypervisor-agnostic.\n* `ESXi` - The Health Check is supported only on Vmware ESXi hypervisor of any version.\n* `HyperV` - The Health Check is supported only on Microsoft HyperV hypervisor.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -518,9 +520,9 @@ func resourceHyperflexHealthCheckDefinition() *schema.Resource {
 				},
 			},
 			"target_execution_type": {
-				Description:  "Indicates whether the health check is executed only on the leader node, or on all nodes in the HyperFlex cluster.\n* `EXECUTE_ON_LEADER_NODE` - Execute the health check script only on the HyperFlex cluster's leader node.\n* `EXECUTE_ON_ALL_NODES` - Execute health check on all nodes and aggregate the results.\n* `EXECUTE_ON_ALL_NODES_AND_AGGREGATE` - Execute the health check on all Nodes and perform custom aggregation.",
+				Description:  "Indicates whether the health check is executed only on the leader node, or on all nodes in the HyperFlex cluster.\n* `EXECUTE_ON_LEADER_NODE` - Execute the health check script only on the HyperFlex cluster's leader node.\n* `EXECUTE_ON_ALL_NODES` - Execute health check on all nodes and aggregate the results.\n* `EXECUTE_ON_ALL_NODES_AND_AGGREGATE` - Execute the health check on all Nodes and perform custom aggregation.\n* `EXECUTE_ON_CURRENT_NODE` - The HyperFlex health check is executed on the node which receives the request.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringInSlice([]string{"EXECUTE_ON_LEADER_NODE", "EXECUTE_ON_ALL_NODES", "EXECUTE_ON_ALL_NODES_AND_AGGREGATE"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"EXECUTE_ON_LEADER_NODE", "EXECUTE_ON_ALL_NODES", "EXECUTE_ON_ALL_NODES_AND_AGGREGATE", "EXECUTE_ON_CURRENT_NODE"}, false),
 				Optional:     true,
 				Default:      "EXECUTE_ON_LEADER_NODE",
 			},
@@ -595,6 +597,17 @@ func resourceHyperflexHealthCheckDefinition() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -863,14 +876,25 @@ func resourceHyperflexHealthCheckDefinitionCreate(c context.Context, d *schema.R
 		}
 		return diag.Errorf("error occurred while creating HyperflexHealthCheckDefinition: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceHyperflexHealthCheckDefinitionRead(c, d, meta)...)
 }
 
 func resourceHyperflexHealthCheckDefinitionRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.HyperflexApi.GetHyperflexHealthCheckDefinitionByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

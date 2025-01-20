@@ -6,11 +6,12 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "oauth.AccessToken"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "oauth.AccessToken"]
-**ApiType** | Pointer to **string** | Type of OAuth Api. For example, Smart-licensing-API. * &#x60;Unknown&#x60; - Unknown is the default API type. * &#x60;SmartLicensing-API&#x60; - Smart licensing API type. | [optional] [default to "Unknown"]
+**ApiType** | Pointer to **string** | Type of OAuth Api. For example, Smart-licensing-API. * &#x60;Unknown&#x60; - Unknown is the default API type. * &#x60;SmartLicensing-API&#x60; - Smart licensing API type. * &#x60;CommerceEstimate-API&#x60; - Commerce Estimate API type. | [optional] [default to "Unknown"]
 **Expiry** | Pointer to **time.Time** | The date and time when the access token expires. | [optional] [readonly] 
 **Issuer** | Pointer to **string** | Issuer of OAuth access token. | [optional] [readonly] 
 **RefreshExpiry** | Pointer to **time.Time** | The date and time when the refresh token expires. | [optional] [readonly] 
-**Account** | Pointer to [**IamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
+**TokenOwner** | Pointer to **string** | The moid of the owner of the access token. | [optional] [readonly] 
+**Account** | Pointer to [**NullableIamAccountRelationship**](IamAccountRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -171,6 +172,31 @@ SetRefreshExpiry sets RefreshExpiry field to given value.
 
 HasRefreshExpiry returns a boolean if a field has been set.
 
+### GetTokenOwner
+
+`func (o *OauthAccessToken) GetTokenOwner() string`
+
+GetTokenOwner returns the TokenOwner field if non-nil, zero value otherwise.
+
+### GetTokenOwnerOk
+
+`func (o *OauthAccessToken) GetTokenOwnerOk() (*string, bool)`
+
+GetTokenOwnerOk returns a tuple with the TokenOwner field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTokenOwner
+
+`func (o *OauthAccessToken) SetTokenOwner(v string)`
+
+SetTokenOwner sets TokenOwner field to given value.
+
+### HasTokenOwner
+
+`func (o *OauthAccessToken) HasTokenOwner() bool`
+
+HasTokenOwner returns a boolean if a field has been set.
+
 ### GetAccount
 
 `func (o *OauthAccessToken) GetAccount() IamAccountRelationship`
@@ -196,6 +222,16 @@ SetAccount sets Account field to given value.
 
 HasAccount returns a boolean if a field has been set.
 
+### SetAccountNil
+
+`func (o *OauthAccessToken) SetAccountNil(b bool)`
+
+ SetAccountNil sets the value for Account to be an explicit nil
+
+### UnsetAccount
+`func (o *OauthAccessToken) UnsetAccount()`
+
+UnsetAccount ensures that no value is present for Account, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -36,9 +36,9 @@ func (r ApiGetGraphicsCardByMoidRequest) Execute() (*GraphicsCard, *http.Respons
 /*
 GetGraphicsCardByMoid Read a 'graphics.Card' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetGraphicsCardByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetGraphicsCardByMoidRequest
 */
 func (a *GraphicsApiService) GetGraphicsCardByMoid(ctx context.Context, moid string) ApiGetGraphicsCardByMoidRequest {
 	return ApiGetGraphicsCardByMoidRequest{
@@ -49,7 +49,8 @@ func (a *GraphicsApiService) GetGraphicsCardByMoid(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return GraphicsCard
+//
+//	@return GraphicsCard
 func (a *GraphicsApiService) GetGraphicsCardByMoidExecute(r ApiGetGraphicsCardByMoidRequest) (*GraphicsCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -64,7 +65,7 @@ func (a *GraphicsApiService) GetGraphicsCardByMoidExecute(r ApiGetGraphicsCardBy
 	}
 
 	localVarPath := localBasePath + "/api/v1/graphics/Cards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -97,9 +98,9 @@ func (a *GraphicsApiService) GetGraphicsCardByMoidExecute(r ApiGetGraphicsCardBy
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -116,6 +117,7 @@ func (a *GraphicsApiService) GetGraphicsCardByMoidExecute(r ApiGetGraphicsCardBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -126,6 +128,7 @@ func (a *GraphicsApiService) GetGraphicsCardByMoidExecute(r ApiGetGraphicsCardBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -136,6 +139,7 @@ func (a *GraphicsApiService) GetGraphicsCardByMoidExecute(r ApiGetGraphicsCardBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -146,6 +150,7 @@ func (a *GraphicsApiService) GetGraphicsCardByMoidExecute(r ApiGetGraphicsCardBy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -155,6 +160,7 @@ func (a *GraphicsApiService) GetGraphicsCardByMoidExecute(r ApiGetGraphicsCardBy
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -223,7 +229,7 @@ func (r ApiGetGraphicsCardListRequest) Expand(expand string) ApiGetGraphicsCardL
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetGraphicsCardListRequest) Apply(apply string) ApiGetGraphicsCardListRequest {
 	r.apply = &apply
 	return r
@@ -260,8 +266,8 @@ func (r ApiGetGraphicsCardListRequest) Execute() (*GraphicsCardResponse, *http.R
 /*
 GetGraphicsCardList Read a 'graphics.Card' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetGraphicsCardListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetGraphicsCardListRequest
 */
 func (a *GraphicsApiService) GetGraphicsCardList(ctx context.Context) ApiGetGraphicsCardListRequest {
 	return ApiGetGraphicsCardListRequest{
@@ -271,7 +277,8 @@ func (a *GraphicsApiService) GetGraphicsCardList(ctx context.Context) ApiGetGrap
 }
 
 // Execute executes the request
-//  @return GraphicsCardResponse
+//
+//	@return GraphicsCardResponse
 func (a *GraphicsApiService) GetGraphicsCardListExecute(r ApiGetGraphicsCardListRequest) (*GraphicsCardResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -292,37 +299,52 @@ func (a *GraphicsApiService) GetGraphicsCardListExecute(r ApiGetGraphicsCardList
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -351,9 +373,9 @@ func (a *GraphicsApiService) GetGraphicsCardListExecute(r ApiGetGraphicsCardList
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -370,6 +392,7 @@ func (a *GraphicsApiService) GetGraphicsCardListExecute(r ApiGetGraphicsCardList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -380,6 +403,7 @@ func (a *GraphicsApiService) GetGraphicsCardListExecute(r ApiGetGraphicsCardList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -390,6 +414,7 @@ func (a *GraphicsApiService) GetGraphicsCardListExecute(r ApiGetGraphicsCardList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -400,6 +425,7 @@ func (a *GraphicsApiService) GetGraphicsCardListExecute(r ApiGetGraphicsCardList
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -409,6 +435,7 @@ func (a *GraphicsApiService) GetGraphicsCardListExecute(r ApiGetGraphicsCardList
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -438,9 +465,9 @@ func (r ApiGetGraphicsControllerByMoidRequest) Execute() (*GraphicsController, *
 /*
 GetGraphicsControllerByMoid Read a 'graphics.Controller' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetGraphicsControllerByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetGraphicsControllerByMoidRequest
 */
 func (a *GraphicsApiService) GetGraphicsControllerByMoid(ctx context.Context, moid string) ApiGetGraphicsControllerByMoidRequest {
 	return ApiGetGraphicsControllerByMoidRequest{
@@ -451,7 +478,8 @@ func (a *GraphicsApiService) GetGraphicsControllerByMoid(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return GraphicsController
+//
+//	@return GraphicsController
 func (a *GraphicsApiService) GetGraphicsControllerByMoidExecute(r ApiGetGraphicsControllerByMoidRequest) (*GraphicsController, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -466,7 +494,7 @@ func (a *GraphicsApiService) GetGraphicsControllerByMoidExecute(r ApiGetGraphics
 	}
 
 	localVarPath := localBasePath + "/api/v1/graphics/Controllers/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -499,9 +527,9 @@ func (a *GraphicsApiService) GetGraphicsControllerByMoidExecute(r ApiGetGraphics
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -518,6 +546,7 @@ func (a *GraphicsApiService) GetGraphicsControllerByMoidExecute(r ApiGetGraphics
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -528,6 +557,7 @@ func (a *GraphicsApiService) GetGraphicsControllerByMoidExecute(r ApiGetGraphics
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -538,6 +568,7 @@ func (a *GraphicsApiService) GetGraphicsControllerByMoidExecute(r ApiGetGraphics
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -548,6 +579,7 @@ func (a *GraphicsApiService) GetGraphicsControllerByMoidExecute(r ApiGetGraphics
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -557,6 +589,7 @@ func (a *GraphicsApiService) GetGraphicsControllerByMoidExecute(r ApiGetGraphics
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -625,7 +658,7 @@ func (r ApiGetGraphicsControllerListRequest) Expand(expand string) ApiGetGraphic
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetGraphicsControllerListRequest) Apply(apply string) ApiGetGraphicsControllerListRequest {
 	r.apply = &apply
 	return r
@@ -662,8 +695,8 @@ func (r ApiGetGraphicsControllerListRequest) Execute() (*GraphicsControllerRespo
 /*
 GetGraphicsControllerList Read a 'graphics.Controller' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetGraphicsControllerListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetGraphicsControllerListRequest
 */
 func (a *GraphicsApiService) GetGraphicsControllerList(ctx context.Context) ApiGetGraphicsControllerListRequest {
 	return ApiGetGraphicsControllerListRequest{
@@ -673,7 +706,8 @@ func (a *GraphicsApiService) GetGraphicsControllerList(ctx context.Context) ApiG
 }
 
 // Execute executes the request
-//  @return GraphicsControllerResponse
+//
+//	@return GraphicsControllerResponse
 func (a *GraphicsApiService) GetGraphicsControllerListExecute(r ApiGetGraphicsControllerListRequest) (*GraphicsControllerResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -694,37 +728,52 @@ func (a *GraphicsApiService) GetGraphicsControllerListExecute(r ApiGetGraphicsCo
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -753,9 +802,9 @@ func (a *GraphicsApiService) GetGraphicsControllerListExecute(r ApiGetGraphicsCo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -772,6 +821,7 @@ func (a *GraphicsApiService) GetGraphicsControllerListExecute(r ApiGetGraphicsCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -782,6 +832,7 @@ func (a *GraphicsApiService) GetGraphicsControllerListExecute(r ApiGetGraphicsCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -792,6 +843,7 @@ func (a *GraphicsApiService) GetGraphicsControllerListExecute(r ApiGetGraphicsCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -802,6 +854,7 @@ func (a *GraphicsApiService) GetGraphicsControllerListExecute(r ApiGetGraphicsCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -811,6 +864,7 @@ func (a *GraphicsApiService) GetGraphicsControllerListExecute(r ApiGetGraphicsCo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -854,9 +908,9 @@ func (r ApiPatchGraphicsCardRequest) Execute() (*GraphicsCard, *http.Response, e
 /*
 PatchGraphicsCard Update a 'graphics.Card' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchGraphicsCardRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchGraphicsCardRequest
 */
 func (a *GraphicsApiService) PatchGraphicsCard(ctx context.Context, moid string) ApiPatchGraphicsCardRequest {
 	return ApiPatchGraphicsCardRequest{
@@ -867,7 +921,8 @@ func (a *GraphicsApiService) PatchGraphicsCard(ctx context.Context, moid string)
 }
 
 // Execute executes the request
-//  @return GraphicsCard
+//
+//	@return GraphicsCard
 func (a *GraphicsApiService) PatchGraphicsCardExecute(r ApiPatchGraphicsCardRequest) (*GraphicsCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -882,7 +937,7 @@ func (a *GraphicsApiService) PatchGraphicsCardExecute(r ApiPatchGraphicsCardRequ
 	}
 
 	localVarPath := localBasePath + "/api/v1/graphics/Cards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -909,7 +964,7 @@ func (a *GraphicsApiService) PatchGraphicsCardExecute(r ApiPatchGraphicsCardRequ
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.graphicsCard
@@ -923,9 +978,9 @@ func (a *GraphicsApiService) PatchGraphicsCardExecute(r ApiPatchGraphicsCardRequ
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -942,6 +997,7 @@ func (a *GraphicsApiService) PatchGraphicsCardExecute(r ApiPatchGraphicsCardRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -952,6 +1008,7 @@ func (a *GraphicsApiService) PatchGraphicsCardExecute(r ApiPatchGraphicsCardRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -962,6 +1019,7 @@ func (a *GraphicsApiService) PatchGraphicsCardExecute(r ApiPatchGraphicsCardRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -972,6 +1030,7 @@ func (a *GraphicsApiService) PatchGraphicsCardExecute(r ApiPatchGraphicsCardRequ
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -981,6 +1040,7 @@ func (a *GraphicsApiService) PatchGraphicsCardExecute(r ApiPatchGraphicsCardRequ
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1024,9 +1084,9 @@ func (r ApiPatchGraphicsControllerRequest) Execute() (*GraphicsController, *http
 /*
 PatchGraphicsController Update a 'graphics.Controller' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchGraphicsControllerRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchGraphicsControllerRequest
 */
 func (a *GraphicsApiService) PatchGraphicsController(ctx context.Context, moid string) ApiPatchGraphicsControllerRequest {
 	return ApiPatchGraphicsControllerRequest{
@@ -1037,7 +1097,8 @@ func (a *GraphicsApiService) PatchGraphicsController(ctx context.Context, moid s
 }
 
 // Execute executes the request
-//  @return GraphicsController
+//
+//	@return GraphicsController
 func (a *GraphicsApiService) PatchGraphicsControllerExecute(r ApiPatchGraphicsControllerRequest) (*GraphicsController, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -1052,7 +1113,7 @@ func (a *GraphicsApiService) PatchGraphicsControllerExecute(r ApiPatchGraphicsCo
 	}
 
 	localVarPath := localBasePath + "/api/v1/graphics/Controllers/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1079,7 +1140,7 @@ func (a *GraphicsApiService) PatchGraphicsControllerExecute(r ApiPatchGraphicsCo
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.graphicsController
@@ -1093,9 +1154,9 @@ func (a *GraphicsApiService) PatchGraphicsControllerExecute(r ApiPatchGraphicsCo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1112,6 +1173,7 @@ func (a *GraphicsApiService) PatchGraphicsControllerExecute(r ApiPatchGraphicsCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1122,6 +1184,7 @@ func (a *GraphicsApiService) PatchGraphicsControllerExecute(r ApiPatchGraphicsCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1132,6 +1195,7 @@ func (a *GraphicsApiService) PatchGraphicsControllerExecute(r ApiPatchGraphicsCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1142,6 +1206,7 @@ func (a *GraphicsApiService) PatchGraphicsControllerExecute(r ApiPatchGraphicsCo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1151,6 +1216,7 @@ func (a *GraphicsApiService) PatchGraphicsControllerExecute(r ApiPatchGraphicsCo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1194,9 +1260,9 @@ func (r ApiUpdateGraphicsCardRequest) Execute() (*GraphicsCard, *http.Response, 
 /*
 UpdateGraphicsCard Update a 'graphics.Card' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateGraphicsCardRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateGraphicsCardRequest
 */
 func (a *GraphicsApiService) UpdateGraphicsCard(ctx context.Context, moid string) ApiUpdateGraphicsCardRequest {
 	return ApiUpdateGraphicsCardRequest{
@@ -1207,7 +1273,8 @@ func (a *GraphicsApiService) UpdateGraphicsCard(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return GraphicsCard
+//
+//	@return GraphicsCard
 func (a *GraphicsApiService) UpdateGraphicsCardExecute(r ApiUpdateGraphicsCardRequest) (*GraphicsCard, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1222,7 +1289,7 @@ func (a *GraphicsApiService) UpdateGraphicsCardExecute(r ApiUpdateGraphicsCardRe
 	}
 
 	localVarPath := localBasePath + "/api/v1/graphics/Cards/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1249,7 +1316,7 @@ func (a *GraphicsApiService) UpdateGraphicsCardExecute(r ApiUpdateGraphicsCardRe
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.graphicsCard
@@ -1263,9 +1330,9 @@ func (a *GraphicsApiService) UpdateGraphicsCardExecute(r ApiUpdateGraphicsCardRe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1282,6 +1349,7 @@ func (a *GraphicsApiService) UpdateGraphicsCardExecute(r ApiUpdateGraphicsCardRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1292,6 +1360,7 @@ func (a *GraphicsApiService) UpdateGraphicsCardExecute(r ApiUpdateGraphicsCardRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1302,6 +1371,7 @@ func (a *GraphicsApiService) UpdateGraphicsCardExecute(r ApiUpdateGraphicsCardRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1312,6 +1382,7 @@ func (a *GraphicsApiService) UpdateGraphicsCardExecute(r ApiUpdateGraphicsCardRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1321,6 +1392,7 @@ func (a *GraphicsApiService) UpdateGraphicsCardExecute(r ApiUpdateGraphicsCardRe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1364,9 +1436,9 @@ func (r ApiUpdateGraphicsControllerRequest) Execute() (*GraphicsController, *htt
 /*
 UpdateGraphicsController Update a 'graphics.Controller' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateGraphicsControllerRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateGraphicsControllerRequest
 */
 func (a *GraphicsApiService) UpdateGraphicsController(ctx context.Context, moid string) ApiUpdateGraphicsControllerRequest {
 	return ApiUpdateGraphicsControllerRequest{
@@ -1377,7 +1449,8 @@ func (a *GraphicsApiService) UpdateGraphicsController(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return GraphicsController
+//
+//	@return GraphicsController
 func (a *GraphicsApiService) UpdateGraphicsControllerExecute(r ApiUpdateGraphicsControllerRequest) (*GraphicsController, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1392,7 +1465,7 @@ func (a *GraphicsApiService) UpdateGraphicsControllerExecute(r ApiUpdateGraphics
 	}
 
 	localVarPath := localBasePath + "/api/v1/graphics/Controllers/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -1419,7 +1492,7 @@ func (a *GraphicsApiService) UpdateGraphicsControllerExecute(r ApiUpdateGraphics
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.graphicsController
@@ -1433,9 +1506,9 @@ func (a *GraphicsApiService) UpdateGraphicsControllerExecute(r ApiUpdateGraphics
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1452,6 +1525,7 @@ func (a *GraphicsApiService) UpdateGraphicsControllerExecute(r ApiUpdateGraphics
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1462,6 +1536,7 @@ func (a *GraphicsApiService) UpdateGraphicsControllerExecute(r ApiUpdateGraphics
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1472,6 +1547,7 @@ func (a *GraphicsApiService) UpdateGraphicsControllerExecute(r ApiUpdateGraphics
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1482,6 +1558,7 @@ func (a *GraphicsApiService) UpdateGraphicsControllerExecute(r ApiUpdateGraphics
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1491,6 +1568,7 @@ func (a *GraphicsApiService) UpdateGraphicsControllerExecute(r ApiUpdateGraphics
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

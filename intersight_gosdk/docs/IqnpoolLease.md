@@ -6,11 +6,15 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "iqnpool.Lease"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "iqnpool.Lease"]
-**IqnAddress** | Pointer to **string** | IQN address allocated for pool-based allocation \&quot;prefix+suffix+number\&quot;. | [optional] 
-**AssignedToEntity** | Pointer to [**MoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
-**Pool** | Pointer to [**IqnpoolPoolRelationship**](IqnpoolPoolRelationship.md) |  | [optional] 
-**PoolMember** | Pointer to [**IqnpoolPoolMemberRelationship**](IqnpoolPoolMemberRelationship.md) |  | [optional] 
-**Universe** | Pointer to [**IqnpoolUniverseRelationship**](IqnpoolUniverseRelationship.md) |  | [optional] 
+**IqnAddress** | Pointer to **string** | IQN address allocated for pool-based allocation. It is constructed as &lt;prefix&gt;:&lt;suffix&gt;:&lt;number&gt;. | [optional] 
+**IqnNumber** | Pointer to **int64** | Number of the IQN address. IQN Address is constructed as &lt;prefix&gt;:&lt;suffix&gt;:&lt;number&gt;. | [optional] [readonly] 
+**IqnPrefix** | Pointer to **string** | Prefix of the IQN address. IQN Address is constructed as &lt;prefix&gt;:&lt;suffix&gt;:&lt;number&gt;. | [optional] [readonly] 
+**IqnSuffix** | Pointer to **string** | Suffix of the IQN address. IQN Address is constructed as &lt;prefix&gt;:&lt;suffix&gt;:&lt;number&gt;. | [optional] [readonly] 
+**Reservation** | Pointer to [**NullablePoolReservationReference**](PoolReservationReference.md) | The reference to the reservation object. | [optional] 
+**AssignedToEntity** | Pointer to [**NullableMoBaseMoRelationship**](MoBaseMoRelationship.md) |  | [optional] 
+**Pool** | Pointer to [**NullableIqnpoolPoolRelationship**](IqnpoolPoolRelationship.md) |  | [optional] 
+**PoolMember** | Pointer to [**NullableIqnpoolPoolMemberRelationship**](IqnpoolPoolMemberRelationship.md) |  | [optional] 
+**Universe** | Pointer to [**NullableIqnpoolUniverseRelationship**](IqnpoolUniverseRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -96,6 +100,116 @@ SetIqnAddress sets IqnAddress field to given value.
 
 HasIqnAddress returns a boolean if a field has been set.
 
+### GetIqnNumber
+
+`func (o *IqnpoolLease) GetIqnNumber() int64`
+
+GetIqnNumber returns the IqnNumber field if non-nil, zero value otherwise.
+
+### GetIqnNumberOk
+
+`func (o *IqnpoolLease) GetIqnNumberOk() (*int64, bool)`
+
+GetIqnNumberOk returns a tuple with the IqnNumber field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIqnNumber
+
+`func (o *IqnpoolLease) SetIqnNumber(v int64)`
+
+SetIqnNumber sets IqnNumber field to given value.
+
+### HasIqnNumber
+
+`func (o *IqnpoolLease) HasIqnNumber() bool`
+
+HasIqnNumber returns a boolean if a field has been set.
+
+### GetIqnPrefix
+
+`func (o *IqnpoolLease) GetIqnPrefix() string`
+
+GetIqnPrefix returns the IqnPrefix field if non-nil, zero value otherwise.
+
+### GetIqnPrefixOk
+
+`func (o *IqnpoolLease) GetIqnPrefixOk() (*string, bool)`
+
+GetIqnPrefixOk returns a tuple with the IqnPrefix field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIqnPrefix
+
+`func (o *IqnpoolLease) SetIqnPrefix(v string)`
+
+SetIqnPrefix sets IqnPrefix field to given value.
+
+### HasIqnPrefix
+
+`func (o *IqnpoolLease) HasIqnPrefix() bool`
+
+HasIqnPrefix returns a boolean if a field has been set.
+
+### GetIqnSuffix
+
+`func (o *IqnpoolLease) GetIqnSuffix() string`
+
+GetIqnSuffix returns the IqnSuffix field if non-nil, zero value otherwise.
+
+### GetIqnSuffixOk
+
+`func (o *IqnpoolLease) GetIqnSuffixOk() (*string, bool)`
+
+GetIqnSuffixOk returns a tuple with the IqnSuffix field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIqnSuffix
+
+`func (o *IqnpoolLease) SetIqnSuffix(v string)`
+
+SetIqnSuffix sets IqnSuffix field to given value.
+
+### HasIqnSuffix
+
+`func (o *IqnpoolLease) HasIqnSuffix() bool`
+
+HasIqnSuffix returns a boolean if a field has been set.
+
+### GetReservation
+
+`func (o *IqnpoolLease) GetReservation() PoolReservationReference`
+
+GetReservation returns the Reservation field if non-nil, zero value otherwise.
+
+### GetReservationOk
+
+`func (o *IqnpoolLease) GetReservationOk() (*PoolReservationReference, bool)`
+
+GetReservationOk returns a tuple with the Reservation field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetReservation
+
+`func (o *IqnpoolLease) SetReservation(v PoolReservationReference)`
+
+SetReservation sets Reservation field to given value.
+
+### HasReservation
+
+`func (o *IqnpoolLease) HasReservation() bool`
+
+HasReservation returns a boolean if a field has been set.
+
+### SetReservationNil
+
+`func (o *IqnpoolLease) SetReservationNil(b bool)`
+
+ SetReservationNil sets the value for Reservation to be an explicit nil
+
+### UnsetReservation
+`func (o *IqnpoolLease) UnsetReservation()`
+
+UnsetReservation ensures that no value is present for Reservation, not even an explicit nil
 ### GetAssignedToEntity
 
 `func (o *IqnpoolLease) GetAssignedToEntity() MoBaseMoRelationship`
@@ -121,6 +235,16 @@ SetAssignedToEntity sets AssignedToEntity field to given value.
 
 HasAssignedToEntity returns a boolean if a field has been set.
 
+### SetAssignedToEntityNil
+
+`func (o *IqnpoolLease) SetAssignedToEntityNil(b bool)`
+
+ SetAssignedToEntityNil sets the value for AssignedToEntity to be an explicit nil
+
+### UnsetAssignedToEntity
+`func (o *IqnpoolLease) UnsetAssignedToEntity()`
+
+UnsetAssignedToEntity ensures that no value is present for AssignedToEntity, not even an explicit nil
 ### GetPool
 
 `func (o *IqnpoolLease) GetPool() IqnpoolPoolRelationship`
@@ -146,6 +270,16 @@ SetPool sets Pool field to given value.
 
 HasPool returns a boolean if a field has been set.
 
+### SetPoolNil
+
+`func (o *IqnpoolLease) SetPoolNil(b bool)`
+
+ SetPoolNil sets the value for Pool to be an explicit nil
+
+### UnsetPool
+`func (o *IqnpoolLease) UnsetPool()`
+
+UnsetPool ensures that no value is present for Pool, not even an explicit nil
 ### GetPoolMember
 
 `func (o *IqnpoolLease) GetPoolMember() IqnpoolPoolMemberRelationship`
@@ -171,6 +305,16 @@ SetPoolMember sets PoolMember field to given value.
 
 HasPoolMember returns a boolean if a field has been set.
 
+### SetPoolMemberNil
+
+`func (o *IqnpoolLease) SetPoolMemberNil(b bool)`
+
+ SetPoolMemberNil sets the value for PoolMember to be an explicit nil
+
+### UnsetPoolMember
+`func (o *IqnpoolLease) UnsetPoolMember()`
+
+UnsetPoolMember ensures that no value is present for PoolMember, not even an explicit nil
 ### GetUniverse
 
 `func (o *IqnpoolLease) GetUniverse() IqnpoolUniverseRelationship`
@@ -196,6 +340,16 @@ SetUniverse sets Universe field to given value.
 
 HasUniverse returns a boolean if a field has been set.
 
+### SetUniverseNil
+
+`func (o *IqnpoolLease) SetUniverseNil(b bool)`
+
+ SetUniverseNil sets the value for Universe to be an explicit nil
+
+### UnsetUniverse
+`func (o *IqnpoolLease) UnsetUniverse()`
+
+UnsetUniverse ensures that no value is present for Universe, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

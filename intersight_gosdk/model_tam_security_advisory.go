@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the TamSecurityAdvisory type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &TamSecurityAdvisory{}
 
 // TamSecurityAdvisory Intersight representation of a Cisco PSIRT (https://tools.cisco.com/security/center/publicationListing.x) advisory definition. It includes the description of the security advisory and a corresponding reference to the published advisory. It also includes the Intersight data sources needed to evaluate the applicability of this advisory for relevant Intersight managed objects. A PSIRT definition is evaluated against all managed object referenced using the included data sources. Only Cisco TAC and Intersight devops engineers have the ability to create PSIRT definitions in Intersight.
 type TamSecurityAdvisory struct {
@@ -38,8 +42,11 @@ type TamSecurityAdvisory struct {
 	DateUpdated *time.Time `json:"DateUpdated,omitempty"`
 	// CVSS version 3 environmental score for the security Advisory.
 	EnvironmentalScore *float32 `json:"EnvironmentalScore,omitempty"`
+	// Orion pod on which this advisory should process. * `tier1` - Advisory processing will be taken care in first advisory driver of multinode cluster. * `tier2` - Advisory processing will be taken care in second advisory driver of multinode cluster.
+	ExecuteOnPod *string `json:"ExecuteOnPod,omitempty"`
 	// A link to an external URL describing security Advisory in more details.
-	ExternalUrl *string `json:"ExternalUrl,omitempty"`
+	ExternalUrl  *string  `json:"ExternalUrl,omitempty" validate:"regexp=^$|^(?:http(s)?:\\/\\/)?[\\\\w.-]+(?:\\\\.[\\\\w\\\\.-]+)+[\\\\w\\\\-\\\\._~:\\/?#[\\\\]@!\\\\$&'\\\\(\\\\)\\\\*\\\\+,;=.]+$"`
+	OtherRefUrls []string `json:"OtherRefUrls,omitempty"`
 	// Recommended action to resolve the security advisory.
 	Recommendation *string `json:"Recommendation,omitempty"`
 	// Cisco assigned status of the published advisory based on whether the investigation is complete or on-going. * `interim` - The Cisco investigation for the advisory is ongoing. Cisco will issue revisions to the advisory when additional information, including fixed software release data, becomes available. * `final` - Cisco has completed its evaluation of the vulnerability described in the advisory. There will be no further updates unless there is a material change in the nature of the vulnerability.
@@ -49,8 +56,8 @@ type TamSecurityAdvisory struct {
 	// Cisco assigned advisory version after latest revision.
 	Version *string `json:"Version,omitempty"`
 	// Workarounds available for the advisory.
-	Workaround           *string                               `json:"Workaround,omitempty"`
-	Organization         *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+	Workaround           *string                                      `json:"Workaround,omitempty"`
+	Organization         NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -66,6 +73,8 @@ func NewTamSecurityAdvisory(classId string, objectType string) *TamSecurityAdvis
 	this.ObjectType = objectType
 	var state string = "ready"
 	this.State = &state
+	var executeOnPod string = "tier1"
+	this.ExecuteOnPod = &executeOnPod
 	var status string = "interim"
 	this.Status = &status
 	return &this
@@ -80,6 +89,8 @@ func NewTamSecurityAdvisoryWithDefaults() *TamSecurityAdvisory {
 	this.ClassId = classId
 	var objectType string = "tam.SecurityAdvisory"
 	this.ObjectType = objectType
+	var executeOnPod string = "tier1"
+	this.ExecuteOnPod = &executeOnPod
 	var status string = "interim"
 	this.Status = &status
 	return &this
@@ -109,6 +120,11 @@ func (o *TamSecurityAdvisory) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "tam.SecurityAdvisory" of the ClassId field.
+func (o *TamSecurityAdvisory) GetDefaultClassId() interface{} {
+	return "tam.SecurityAdvisory"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *TamSecurityAdvisory) GetObjectType() string {
 	if o == nil {
@@ -133,6 +149,11 @@ func (o *TamSecurityAdvisory) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "tam.SecurityAdvisory" of the ObjectType field.
+func (o *TamSecurityAdvisory) GetDefaultObjectType() interface{} {
+	return "tam.SecurityAdvisory"
+}
+
 // GetActions returns the Actions field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *TamSecurityAdvisory) GetActions() []TamAction {
 	if o == nil {
@@ -146,7 +167,7 @@ func (o *TamSecurityAdvisory) GetActions() []TamAction {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *TamSecurityAdvisory) GetActionsOk() ([]TamAction, bool) {
-	if o == nil || o.Actions == nil {
+	if o == nil || IsNil(o.Actions) {
 		return nil, false
 	}
 	return o.Actions, true
@@ -154,7 +175,7 @@ func (o *TamSecurityAdvisory) GetActionsOk() ([]TamAction, bool) {
 
 // HasActions returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasActions() bool {
-	if o != nil && o.Actions != nil {
+	if o != nil && !IsNil(o.Actions) {
 		return true
 	}
 
@@ -168,7 +189,7 @@ func (o *TamSecurityAdvisory) SetActions(v []TamAction) {
 
 // GetAdvisoryId returns the AdvisoryId field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetAdvisoryId() string {
-	if o == nil || o.AdvisoryId == nil {
+	if o == nil || IsNil(o.AdvisoryId) {
 		var ret string
 		return ret
 	}
@@ -178,7 +199,7 @@ func (o *TamSecurityAdvisory) GetAdvisoryId() string {
 // GetAdvisoryIdOk returns a tuple with the AdvisoryId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetAdvisoryIdOk() (*string, bool) {
-	if o == nil || o.AdvisoryId == nil {
+	if o == nil || IsNil(o.AdvisoryId) {
 		return nil, false
 	}
 	return o.AdvisoryId, true
@@ -186,7 +207,7 @@ func (o *TamSecurityAdvisory) GetAdvisoryIdOk() (*string, bool) {
 
 // HasAdvisoryId returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasAdvisoryId() bool {
-	if o != nil && o.AdvisoryId != nil {
+	if o != nil && !IsNil(o.AdvisoryId) {
 		return true
 	}
 
@@ -211,7 +232,7 @@ func (o *TamSecurityAdvisory) GetApiDataSources() []TamApiDataSource {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *TamSecurityAdvisory) GetApiDataSourcesOk() ([]TamApiDataSource, bool) {
-	if o == nil || o.ApiDataSources == nil {
+	if o == nil || IsNil(o.ApiDataSources) {
 		return nil, false
 	}
 	return o.ApiDataSources, true
@@ -219,7 +240,7 @@ func (o *TamSecurityAdvisory) GetApiDataSourcesOk() ([]TamApiDataSource, bool) {
 
 // HasApiDataSources returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasApiDataSources() bool {
-	if o != nil && o.ApiDataSources != nil {
+	if o != nil && !IsNil(o.ApiDataSources) {
 		return true
 	}
 
@@ -233,7 +254,7 @@ func (o *TamSecurityAdvisory) SetApiDataSources(v []TamApiDataSource) {
 
 // GetBaseScore returns the BaseScore field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetBaseScore() float32 {
-	if o == nil || o.BaseScore == nil {
+	if o == nil || IsNil(o.BaseScore) {
 		var ret float32
 		return ret
 	}
@@ -243,7 +264,7 @@ func (o *TamSecurityAdvisory) GetBaseScore() float32 {
 // GetBaseScoreOk returns a tuple with the BaseScore field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetBaseScoreOk() (*float32, bool) {
-	if o == nil || o.BaseScore == nil {
+	if o == nil || IsNil(o.BaseScore) {
 		return nil, false
 	}
 	return o.BaseScore, true
@@ -251,7 +272,7 @@ func (o *TamSecurityAdvisory) GetBaseScoreOk() (*float32, bool) {
 
 // HasBaseScore returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasBaseScore() bool {
-	if o != nil && o.BaseScore != nil {
+	if o != nil && !IsNil(o.BaseScore) {
 		return true
 	}
 
@@ -276,7 +297,7 @@ func (o *TamSecurityAdvisory) GetCveIds() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *TamSecurityAdvisory) GetCveIdsOk() ([]string, bool) {
-	if o == nil || o.CveIds == nil {
+	if o == nil || IsNil(o.CveIds) {
 		return nil, false
 	}
 	return o.CveIds, true
@@ -284,7 +305,7 @@ func (o *TamSecurityAdvisory) GetCveIdsOk() ([]string, bool) {
 
 // HasCveIds returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasCveIds() bool {
-	if o != nil && o.CveIds != nil {
+	if o != nil && !IsNil(o.CveIds) {
 		return true
 	}
 
@@ -298,7 +319,7 @@ func (o *TamSecurityAdvisory) SetCveIds(v []string) {
 
 // GetDatePublished returns the DatePublished field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetDatePublished() time.Time {
-	if o == nil || o.DatePublished == nil {
+	if o == nil || IsNil(o.DatePublished) {
 		var ret time.Time
 		return ret
 	}
@@ -308,7 +329,7 @@ func (o *TamSecurityAdvisory) GetDatePublished() time.Time {
 // GetDatePublishedOk returns a tuple with the DatePublished field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetDatePublishedOk() (*time.Time, bool) {
-	if o == nil || o.DatePublished == nil {
+	if o == nil || IsNil(o.DatePublished) {
 		return nil, false
 	}
 	return o.DatePublished, true
@@ -316,7 +337,7 @@ func (o *TamSecurityAdvisory) GetDatePublishedOk() (*time.Time, bool) {
 
 // HasDatePublished returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasDatePublished() bool {
-	if o != nil && o.DatePublished != nil {
+	if o != nil && !IsNil(o.DatePublished) {
 		return true
 	}
 
@@ -330,7 +351,7 @@ func (o *TamSecurityAdvisory) SetDatePublished(v time.Time) {
 
 // GetDateUpdated returns the DateUpdated field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetDateUpdated() time.Time {
-	if o == nil || o.DateUpdated == nil {
+	if o == nil || IsNil(o.DateUpdated) {
 		var ret time.Time
 		return ret
 	}
@@ -340,7 +361,7 @@ func (o *TamSecurityAdvisory) GetDateUpdated() time.Time {
 // GetDateUpdatedOk returns a tuple with the DateUpdated field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetDateUpdatedOk() (*time.Time, bool) {
-	if o == nil || o.DateUpdated == nil {
+	if o == nil || IsNil(o.DateUpdated) {
 		return nil, false
 	}
 	return o.DateUpdated, true
@@ -348,7 +369,7 @@ func (o *TamSecurityAdvisory) GetDateUpdatedOk() (*time.Time, bool) {
 
 // HasDateUpdated returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasDateUpdated() bool {
-	if o != nil && o.DateUpdated != nil {
+	if o != nil && !IsNil(o.DateUpdated) {
 		return true
 	}
 
@@ -362,7 +383,7 @@ func (o *TamSecurityAdvisory) SetDateUpdated(v time.Time) {
 
 // GetEnvironmentalScore returns the EnvironmentalScore field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetEnvironmentalScore() float32 {
-	if o == nil || o.EnvironmentalScore == nil {
+	if o == nil || IsNil(o.EnvironmentalScore) {
 		var ret float32
 		return ret
 	}
@@ -372,7 +393,7 @@ func (o *TamSecurityAdvisory) GetEnvironmentalScore() float32 {
 // GetEnvironmentalScoreOk returns a tuple with the EnvironmentalScore field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetEnvironmentalScoreOk() (*float32, bool) {
-	if o == nil || o.EnvironmentalScore == nil {
+	if o == nil || IsNil(o.EnvironmentalScore) {
 		return nil, false
 	}
 	return o.EnvironmentalScore, true
@@ -380,7 +401,7 @@ func (o *TamSecurityAdvisory) GetEnvironmentalScoreOk() (*float32, bool) {
 
 // HasEnvironmentalScore returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasEnvironmentalScore() bool {
-	if o != nil && o.EnvironmentalScore != nil {
+	if o != nil && !IsNil(o.EnvironmentalScore) {
 		return true
 	}
 
@@ -392,9 +413,41 @@ func (o *TamSecurityAdvisory) SetEnvironmentalScore(v float32) {
 	o.EnvironmentalScore = &v
 }
 
+// GetExecuteOnPod returns the ExecuteOnPod field value if set, zero value otherwise.
+func (o *TamSecurityAdvisory) GetExecuteOnPod() string {
+	if o == nil || IsNil(o.ExecuteOnPod) {
+		var ret string
+		return ret
+	}
+	return *o.ExecuteOnPod
+}
+
+// GetExecuteOnPodOk returns a tuple with the ExecuteOnPod field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TamSecurityAdvisory) GetExecuteOnPodOk() (*string, bool) {
+	if o == nil || IsNil(o.ExecuteOnPod) {
+		return nil, false
+	}
+	return o.ExecuteOnPod, true
+}
+
+// HasExecuteOnPod returns a boolean if a field has been set.
+func (o *TamSecurityAdvisory) HasExecuteOnPod() bool {
+	if o != nil && !IsNil(o.ExecuteOnPod) {
+		return true
+	}
+
+	return false
+}
+
+// SetExecuteOnPod gets a reference to the given string and assigns it to the ExecuteOnPod field.
+func (o *TamSecurityAdvisory) SetExecuteOnPod(v string) {
+	o.ExecuteOnPod = &v
+}
+
 // GetExternalUrl returns the ExternalUrl field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetExternalUrl() string {
-	if o == nil || o.ExternalUrl == nil {
+	if o == nil || IsNil(o.ExternalUrl) {
 		var ret string
 		return ret
 	}
@@ -404,7 +457,7 @@ func (o *TamSecurityAdvisory) GetExternalUrl() string {
 // GetExternalUrlOk returns a tuple with the ExternalUrl field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetExternalUrlOk() (*string, bool) {
-	if o == nil || o.ExternalUrl == nil {
+	if o == nil || IsNil(o.ExternalUrl) {
 		return nil, false
 	}
 	return o.ExternalUrl, true
@@ -412,7 +465,7 @@ func (o *TamSecurityAdvisory) GetExternalUrlOk() (*string, bool) {
 
 // HasExternalUrl returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasExternalUrl() bool {
-	if o != nil && o.ExternalUrl != nil {
+	if o != nil && !IsNil(o.ExternalUrl) {
 		return true
 	}
 
@@ -424,9 +477,42 @@ func (o *TamSecurityAdvisory) SetExternalUrl(v string) {
 	o.ExternalUrl = &v
 }
 
+// GetOtherRefUrls returns the OtherRefUrls field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *TamSecurityAdvisory) GetOtherRefUrls() []string {
+	if o == nil {
+		var ret []string
+		return ret
+	}
+	return o.OtherRefUrls
+}
+
+// GetOtherRefUrlsOk returns a tuple with the OtherRefUrls field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *TamSecurityAdvisory) GetOtherRefUrlsOk() ([]string, bool) {
+	if o == nil || IsNil(o.OtherRefUrls) {
+		return nil, false
+	}
+	return o.OtherRefUrls, true
+}
+
+// HasOtherRefUrls returns a boolean if a field has been set.
+func (o *TamSecurityAdvisory) HasOtherRefUrls() bool {
+	if o != nil && !IsNil(o.OtherRefUrls) {
+		return true
+	}
+
+	return false
+}
+
+// SetOtherRefUrls gets a reference to the given []string and assigns it to the OtherRefUrls field.
+func (o *TamSecurityAdvisory) SetOtherRefUrls(v []string) {
+	o.OtherRefUrls = v
+}
+
 // GetRecommendation returns the Recommendation field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetRecommendation() string {
-	if o == nil || o.Recommendation == nil {
+	if o == nil || IsNil(o.Recommendation) {
 		var ret string
 		return ret
 	}
@@ -436,7 +522,7 @@ func (o *TamSecurityAdvisory) GetRecommendation() string {
 // GetRecommendationOk returns a tuple with the Recommendation field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetRecommendationOk() (*string, bool) {
-	if o == nil || o.Recommendation == nil {
+	if o == nil || IsNil(o.Recommendation) {
 		return nil, false
 	}
 	return o.Recommendation, true
@@ -444,7 +530,7 @@ func (o *TamSecurityAdvisory) GetRecommendationOk() (*string, bool) {
 
 // HasRecommendation returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasRecommendation() bool {
-	if o != nil && o.Recommendation != nil {
+	if o != nil && !IsNil(o.Recommendation) {
 		return true
 	}
 
@@ -458,7 +544,7 @@ func (o *TamSecurityAdvisory) SetRecommendation(v string) {
 
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetStatus() string {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
@@ -468,7 +554,7 @@ func (o *TamSecurityAdvisory) GetStatus() string {
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetStatusOk() (*string, bool) {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
 	return o.Status, true
@@ -476,7 +562,7 @@ func (o *TamSecurityAdvisory) GetStatusOk() (*string, bool) {
 
 // HasStatus returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasStatus() bool {
-	if o != nil && o.Status != nil {
+	if o != nil && !IsNil(o.Status) {
 		return true
 	}
 
@@ -490,7 +576,7 @@ func (o *TamSecurityAdvisory) SetStatus(v string) {
 
 // GetTemporalScore returns the TemporalScore field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetTemporalScore() float32 {
-	if o == nil || o.TemporalScore == nil {
+	if o == nil || IsNil(o.TemporalScore) {
 		var ret float32
 		return ret
 	}
@@ -500,7 +586,7 @@ func (o *TamSecurityAdvisory) GetTemporalScore() float32 {
 // GetTemporalScoreOk returns a tuple with the TemporalScore field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetTemporalScoreOk() (*float32, bool) {
-	if o == nil || o.TemporalScore == nil {
+	if o == nil || IsNil(o.TemporalScore) {
 		return nil, false
 	}
 	return o.TemporalScore, true
@@ -508,7 +594,7 @@ func (o *TamSecurityAdvisory) GetTemporalScoreOk() (*float32, bool) {
 
 // HasTemporalScore returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasTemporalScore() bool {
-	if o != nil && o.TemporalScore != nil {
+	if o != nil && !IsNil(o.TemporalScore) {
 		return true
 	}
 
@@ -522,7 +608,7 @@ func (o *TamSecurityAdvisory) SetTemporalScore(v float32) {
 
 // GetVersion returns the Version field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetVersion() string {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		var ret string
 		return ret
 	}
@@ -532,7 +618,7 @@ func (o *TamSecurityAdvisory) GetVersion() string {
 // GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetVersionOk() (*string, bool) {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		return nil, false
 	}
 	return o.Version, true
@@ -540,7 +626,7 @@ func (o *TamSecurityAdvisory) GetVersionOk() (*string, bool) {
 
 // HasVersion returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasVersion() bool {
-	if o != nil && o.Version != nil {
+	if o != nil && !IsNil(o.Version) {
 		return true
 	}
 
@@ -554,7 +640,7 @@ func (o *TamSecurityAdvisory) SetVersion(v string) {
 
 // GetWorkaround returns the Workaround field value if set, zero value otherwise.
 func (o *TamSecurityAdvisory) GetWorkaround() string {
-	if o == nil || o.Workaround == nil {
+	if o == nil || IsNil(o.Workaround) {
 		var ret string
 		return ret
 	}
@@ -564,7 +650,7 @@ func (o *TamSecurityAdvisory) GetWorkaround() string {
 // GetWorkaroundOk returns a tuple with the Workaround field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *TamSecurityAdvisory) GetWorkaroundOk() (*string, bool) {
-	if o == nil || o.Workaround == nil {
+	if o == nil || IsNil(o.Workaround) {
 		return nil, false
 	}
 	return o.Workaround, true
@@ -572,7 +658,7 @@ func (o *TamSecurityAdvisory) GetWorkaroundOk() (*string, bool) {
 
 // HasWorkaround returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasWorkaround() bool {
-	if o != nil && o.Workaround != nil {
+	if o != nil && !IsNil(o.Workaround) {
 		return true
 	}
 
@@ -584,108 +670,176 @@ func (o *TamSecurityAdvisory) SetWorkaround(v string) {
 	o.Workaround = &v
 }
 
-// GetOrganization returns the Organization field value if set, zero value otherwise.
+// GetOrganization returns the Organization field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *TamSecurityAdvisory) GetOrganization() OrganizationOrganizationRelationship {
-	if o == nil || o.Organization == nil {
+	if o == nil || IsNil(o.Organization.Get()) {
 		var ret OrganizationOrganizationRelationship
 		return ret
 	}
-	return *o.Organization
+	return *o.Organization.Get()
 }
 
 // GetOrganizationOk returns a tuple with the Organization field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *TamSecurityAdvisory) GetOrganizationOk() (*OrganizationOrganizationRelationship, bool) {
-	if o == nil || o.Organization == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Organization, true
+	return o.Organization.Get(), o.Organization.IsSet()
 }
 
 // HasOrganization returns a boolean if a field has been set.
 func (o *TamSecurityAdvisory) HasOrganization() bool {
-	if o != nil && o.Organization != nil {
+	if o != nil && o.Organization.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetOrganization gets a reference to the given OrganizationOrganizationRelationship and assigns it to the Organization field.
+// SetOrganization gets a reference to the given NullableOrganizationOrganizationRelationship and assigns it to the Organization field.
 func (o *TamSecurityAdvisory) SetOrganization(v OrganizationOrganizationRelationship) {
-	o.Organization = &v
+	o.Organization.Set(&v)
+}
+
+// SetOrganizationNil sets the value for Organization to be an explicit nil
+func (o *TamSecurityAdvisory) SetOrganizationNil() {
+	o.Organization.Set(nil)
+}
+
+// UnsetOrganization ensures that no value is present for Organization, not even an explicit nil
+func (o *TamSecurityAdvisory) UnsetOrganization() {
+	o.Organization.Unset()
 }
 
 func (o TamSecurityAdvisory) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o TamSecurityAdvisory) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedTamBaseAdvisory, errTamBaseAdvisory := json.Marshal(o.TamBaseAdvisory)
 	if errTamBaseAdvisory != nil {
-		return []byte{}, errTamBaseAdvisory
+		return map[string]interface{}{}, errTamBaseAdvisory
 	}
 	errTamBaseAdvisory = json.Unmarshal([]byte(serializedTamBaseAdvisory), &toSerialize)
 	if errTamBaseAdvisory != nil {
-		return []byte{}, errTamBaseAdvisory
+		return map[string]interface{}{}, errTamBaseAdvisory
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.Actions != nil {
 		toSerialize["Actions"] = o.Actions
 	}
-	if o.AdvisoryId != nil {
+	if !IsNil(o.AdvisoryId) {
 		toSerialize["AdvisoryId"] = o.AdvisoryId
 	}
 	if o.ApiDataSources != nil {
 		toSerialize["ApiDataSources"] = o.ApiDataSources
 	}
-	if o.BaseScore != nil {
+	if !IsNil(o.BaseScore) {
 		toSerialize["BaseScore"] = o.BaseScore
 	}
 	if o.CveIds != nil {
 		toSerialize["CveIds"] = o.CveIds
 	}
-	if o.DatePublished != nil {
+	if !IsNil(o.DatePublished) {
 		toSerialize["DatePublished"] = o.DatePublished
 	}
-	if o.DateUpdated != nil {
+	if !IsNil(o.DateUpdated) {
 		toSerialize["DateUpdated"] = o.DateUpdated
 	}
-	if o.EnvironmentalScore != nil {
+	if !IsNil(o.EnvironmentalScore) {
 		toSerialize["EnvironmentalScore"] = o.EnvironmentalScore
 	}
-	if o.ExternalUrl != nil {
+	if !IsNil(o.ExecuteOnPod) {
+		toSerialize["ExecuteOnPod"] = o.ExecuteOnPod
+	}
+	if !IsNil(o.ExternalUrl) {
 		toSerialize["ExternalUrl"] = o.ExternalUrl
 	}
-	if o.Recommendation != nil {
+	if o.OtherRefUrls != nil {
+		toSerialize["OtherRefUrls"] = o.OtherRefUrls
+	}
+	if !IsNil(o.Recommendation) {
 		toSerialize["Recommendation"] = o.Recommendation
 	}
-	if o.Status != nil {
+	if !IsNil(o.Status) {
 		toSerialize["Status"] = o.Status
 	}
-	if o.TemporalScore != nil {
+	if !IsNil(o.TemporalScore) {
 		toSerialize["TemporalScore"] = o.TemporalScore
 	}
-	if o.Version != nil {
+	if !IsNil(o.Version) {
 		toSerialize["Version"] = o.Version
 	}
-	if o.Workaround != nil {
+	if !IsNil(o.Workaround) {
 		toSerialize["Workaround"] = o.Workaround
 	}
-	if o.Organization != nil {
-		toSerialize["Organization"] = o.Organization
+	if o.Organization.IsSet() {
+		toSerialize["Organization"] = o.Organization.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *TamSecurityAdvisory) UnmarshalJSON(bytes []byte) (err error) {
+func (o *TamSecurityAdvisory) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type TamSecurityAdvisoryWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -704,8 +858,11 @@ func (o *TamSecurityAdvisory) UnmarshalJSON(bytes []byte) (err error) {
 		DateUpdated *time.Time `json:"DateUpdated,omitempty"`
 		// CVSS version 3 environmental score for the security Advisory.
 		EnvironmentalScore *float32 `json:"EnvironmentalScore,omitempty"`
+		// Orion pod on which this advisory should process. * `tier1` - Advisory processing will be taken care in first advisory driver of multinode cluster. * `tier2` - Advisory processing will be taken care in second advisory driver of multinode cluster.
+		ExecuteOnPod *string `json:"ExecuteOnPod,omitempty"`
 		// A link to an external URL describing security Advisory in more details.
-		ExternalUrl *string `json:"ExternalUrl,omitempty"`
+		ExternalUrl  *string  `json:"ExternalUrl,omitempty" validate:"regexp=^$|^(?:http(s)?:\\/\\/)?[\\\\w.-]+(?:\\\\.[\\\\w\\\\.-]+)+[\\\\w\\\\-\\\\._~:\\/?#[\\\\]@!\\\\$&'\\\\(\\\\)\\\\*\\\\+,;=.]+$"`
+		OtherRefUrls []string `json:"OtherRefUrls,omitempty"`
 		// Recommended action to resolve the security advisory.
 		Recommendation *string `json:"Recommendation,omitempty"`
 		// Cisco assigned status of the published advisory based on whether the investigation is complete or on-going. * `interim` - The Cisco investigation for the advisory is ongoing. Cisco will issue revisions to the advisory when additional information, including fixed software release data, becomes available. * `final` - Cisco has completed its evaluation of the vulnerability described in the advisory. There will be no further updates unless there is a material change in the nature of the vulnerability.
@@ -715,13 +872,13 @@ func (o *TamSecurityAdvisory) UnmarshalJSON(bytes []byte) (err error) {
 		// Cisco assigned advisory version after latest revision.
 		Version *string `json:"Version,omitempty"`
 		// Workarounds available for the advisory.
-		Workaround   *string                               `json:"Workaround,omitempty"`
-		Organization *OrganizationOrganizationRelationship `json:"Organization,omitempty"`
+		Workaround   *string                                      `json:"Workaround,omitempty"`
+		Organization NullableOrganizationOrganizationRelationship `json:"Organization,omitempty"`
 	}
 
 	varTamSecurityAdvisoryWithoutEmbeddedStruct := TamSecurityAdvisoryWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varTamSecurityAdvisoryWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varTamSecurityAdvisoryWithoutEmbeddedStruct)
 	if err == nil {
 		varTamSecurityAdvisory := _TamSecurityAdvisory{}
 		varTamSecurityAdvisory.ClassId = varTamSecurityAdvisoryWithoutEmbeddedStruct.ClassId
@@ -734,7 +891,9 @@ func (o *TamSecurityAdvisory) UnmarshalJSON(bytes []byte) (err error) {
 		varTamSecurityAdvisory.DatePublished = varTamSecurityAdvisoryWithoutEmbeddedStruct.DatePublished
 		varTamSecurityAdvisory.DateUpdated = varTamSecurityAdvisoryWithoutEmbeddedStruct.DateUpdated
 		varTamSecurityAdvisory.EnvironmentalScore = varTamSecurityAdvisoryWithoutEmbeddedStruct.EnvironmentalScore
+		varTamSecurityAdvisory.ExecuteOnPod = varTamSecurityAdvisoryWithoutEmbeddedStruct.ExecuteOnPod
 		varTamSecurityAdvisory.ExternalUrl = varTamSecurityAdvisoryWithoutEmbeddedStruct.ExternalUrl
+		varTamSecurityAdvisory.OtherRefUrls = varTamSecurityAdvisoryWithoutEmbeddedStruct.OtherRefUrls
 		varTamSecurityAdvisory.Recommendation = varTamSecurityAdvisoryWithoutEmbeddedStruct.Recommendation
 		varTamSecurityAdvisory.Status = varTamSecurityAdvisoryWithoutEmbeddedStruct.Status
 		varTamSecurityAdvisory.TemporalScore = varTamSecurityAdvisoryWithoutEmbeddedStruct.TemporalScore
@@ -748,7 +907,7 @@ func (o *TamSecurityAdvisory) UnmarshalJSON(bytes []byte) (err error) {
 
 	varTamSecurityAdvisory := _TamSecurityAdvisory{}
 
-	err = json.Unmarshal(bytes, &varTamSecurityAdvisory)
+	err = json.Unmarshal(data, &varTamSecurityAdvisory)
 	if err == nil {
 		o.TamBaseAdvisory = varTamSecurityAdvisory.TamBaseAdvisory
 	} else {
@@ -757,7 +916,7 @@ func (o *TamSecurityAdvisory) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Actions")
@@ -768,7 +927,9 @@ func (o *TamSecurityAdvisory) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "DatePublished")
 		delete(additionalProperties, "DateUpdated")
 		delete(additionalProperties, "EnvironmentalScore")
+		delete(additionalProperties, "ExecuteOnPod")
 		delete(additionalProperties, "ExternalUrl")
+		delete(additionalProperties, "OtherRefUrls")
 		delete(additionalProperties, "Recommendation")
 		delete(additionalProperties, "Status")
 		delete(additionalProperties, "TemporalScore")

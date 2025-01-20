@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the KubernetesClusterCertificateConfiguration type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &KubernetesClusterCertificateConfiguration{}
 
 // KubernetesClusterCertificateConfiguration Certifcate and key configuration for Kubernetes cluster creation.
 type KubernetesClusterCertificateConfiguration struct {
@@ -93,6 +97,11 @@ func (o *KubernetesClusterCertificateConfiguration) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "kubernetes.ClusterCertificateConfiguration" of the ClassId field.
+func (o *KubernetesClusterCertificateConfiguration) GetDefaultClassId() interface{} {
+	return "kubernetes.ClusterCertificateConfiguration"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *KubernetesClusterCertificateConfiguration) GetObjectType() string {
 	if o == nil {
@@ -117,9 +126,14 @@ func (o *KubernetesClusterCertificateConfiguration) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "kubernetes.ClusterCertificateConfiguration" of the ObjectType field.
+func (o *KubernetesClusterCertificateConfiguration) GetDefaultObjectType() interface{} {
+	return "kubernetes.ClusterCertificateConfiguration"
+}
+
 // GetCaCert returns the CaCert field value if set, zero value otherwise.
 func (o *KubernetesClusterCertificateConfiguration) GetCaCert() string {
-	if o == nil || o.CaCert == nil {
+	if o == nil || IsNil(o.CaCert) {
 		var ret string
 		return ret
 	}
@@ -129,7 +143,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetCaCert() string {
 // GetCaCertOk returns a tuple with the CaCert field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *KubernetesClusterCertificateConfiguration) GetCaCertOk() (*string, bool) {
-	if o == nil || o.CaCert == nil {
+	if o == nil || IsNil(o.CaCert) {
 		return nil, false
 	}
 	return o.CaCert, true
@@ -137,7 +151,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetCaCertOk() (*string, bool
 
 // HasCaCert returns a boolean if a field has been set.
 func (o *KubernetesClusterCertificateConfiguration) HasCaCert() bool {
-	if o != nil && o.CaCert != nil {
+	if o != nil && !IsNil(o.CaCert) {
 		return true
 	}
 
@@ -151,7 +165,7 @@ func (o *KubernetesClusterCertificateConfiguration) SetCaCert(v string) {
 
 // GetCaKey returns the CaKey field value if set, zero value otherwise.
 func (o *KubernetesClusterCertificateConfiguration) GetCaKey() string {
-	if o == nil || o.CaKey == nil {
+	if o == nil || IsNil(o.CaKey) {
 		var ret string
 		return ret
 	}
@@ -161,7 +175,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetCaKey() string {
 // GetCaKeyOk returns a tuple with the CaKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *KubernetesClusterCertificateConfiguration) GetCaKeyOk() (*string, bool) {
-	if o == nil || o.CaKey == nil {
+	if o == nil || IsNil(o.CaKey) {
 		return nil, false
 	}
 	return o.CaKey, true
@@ -169,7 +183,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetCaKeyOk() (*string, bool)
 
 // HasCaKey returns a boolean if a field has been set.
 func (o *KubernetesClusterCertificateConfiguration) HasCaKey() bool {
-	if o != nil && o.CaKey != nil {
+	if o != nil && !IsNil(o.CaKey) {
 		return true
 	}
 
@@ -183,7 +197,7 @@ func (o *KubernetesClusterCertificateConfiguration) SetCaKey(v string) {
 
 // GetEtcdCert returns the EtcdCert field value if set, zero value otherwise.
 func (o *KubernetesClusterCertificateConfiguration) GetEtcdCert() string {
-	if o == nil || o.EtcdCert == nil {
+	if o == nil || IsNil(o.EtcdCert) {
 		var ret string
 		return ret
 	}
@@ -193,7 +207,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetEtcdCert() string {
 // GetEtcdCertOk returns a tuple with the EtcdCert field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *KubernetesClusterCertificateConfiguration) GetEtcdCertOk() (*string, bool) {
-	if o == nil || o.EtcdCert == nil {
+	if o == nil || IsNil(o.EtcdCert) {
 		return nil, false
 	}
 	return o.EtcdCert, true
@@ -201,7 +215,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetEtcdCertOk() (*string, bo
 
 // HasEtcdCert returns a boolean if a field has been set.
 func (o *KubernetesClusterCertificateConfiguration) HasEtcdCert() bool {
-	if o != nil && o.EtcdCert != nil {
+	if o != nil && !IsNil(o.EtcdCert) {
 		return true
 	}
 
@@ -226,7 +240,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetEtcdEncryptionKey() []str
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *KubernetesClusterCertificateConfiguration) GetEtcdEncryptionKeyOk() ([]string, bool) {
-	if o == nil || o.EtcdEncryptionKey == nil {
+	if o == nil || IsNil(o.EtcdEncryptionKey) {
 		return nil, false
 	}
 	return o.EtcdEncryptionKey, true
@@ -234,7 +248,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetEtcdEncryptionKeyOk() ([]
 
 // HasEtcdEncryptionKey returns a boolean if a field has been set.
 func (o *KubernetesClusterCertificateConfiguration) HasEtcdEncryptionKey() bool {
-	if o != nil && o.EtcdEncryptionKey != nil {
+	if o != nil && !IsNil(o.EtcdEncryptionKey) {
 		return true
 	}
 
@@ -248,7 +262,7 @@ func (o *KubernetesClusterCertificateConfiguration) SetEtcdEncryptionKey(v []str
 
 // GetEtcdKey returns the EtcdKey field value if set, zero value otherwise.
 func (o *KubernetesClusterCertificateConfiguration) GetEtcdKey() string {
-	if o == nil || o.EtcdKey == nil {
+	if o == nil || IsNil(o.EtcdKey) {
 		var ret string
 		return ret
 	}
@@ -258,7 +272,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetEtcdKey() string {
 // GetEtcdKeyOk returns a tuple with the EtcdKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *KubernetesClusterCertificateConfiguration) GetEtcdKeyOk() (*string, bool) {
-	if o == nil || o.EtcdKey == nil {
+	if o == nil || IsNil(o.EtcdKey) {
 		return nil, false
 	}
 	return o.EtcdKey, true
@@ -266,7 +280,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetEtcdKeyOk() (*string, boo
 
 // HasEtcdKey returns a boolean if a field has been set.
 func (o *KubernetesClusterCertificateConfiguration) HasEtcdKey() bool {
-	if o != nil && o.EtcdKey != nil {
+	if o != nil && !IsNil(o.EtcdKey) {
 		return true
 	}
 
@@ -280,7 +294,7 @@ func (o *KubernetesClusterCertificateConfiguration) SetEtcdKey(v string) {
 
 // GetFrontProxyCert returns the FrontProxyCert field value if set, zero value otherwise.
 func (o *KubernetesClusterCertificateConfiguration) GetFrontProxyCert() string {
-	if o == nil || o.FrontProxyCert == nil {
+	if o == nil || IsNil(o.FrontProxyCert) {
 		var ret string
 		return ret
 	}
@@ -290,7 +304,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetFrontProxyCert() string {
 // GetFrontProxyCertOk returns a tuple with the FrontProxyCert field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *KubernetesClusterCertificateConfiguration) GetFrontProxyCertOk() (*string, bool) {
-	if o == nil || o.FrontProxyCert == nil {
+	if o == nil || IsNil(o.FrontProxyCert) {
 		return nil, false
 	}
 	return o.FrontProxyCert, true
@@ -298,7 +312,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetFrontProxyCertOk() (*stri
 
 // HasFrontProxyCert returns a boolean if a field has been set.
 func (o *KubernetesClusterCertificateConfiguration) HasFrontProxyCert() bool {
-	if o != nil && o.FrontProxyCert != nil {
+	if o != nil && !IsNil(o.FrontProxyCert) {
 		return true
 	}
 
@@ -312,7 +326,7 @@ func (o *KubernetesClusterCertificateConfiguration) SetFrontProxyCert(v string) 
 
 // GetFrontProxyKey returns the FrontProxyKey field value if set, zero value otherwise.
 func (o *KubernetesClusterCertificateConfiguration) GetFrontProxyKey() string {
-	if o == nil || o.FrontProxyKey == nil {
+	if o == nil || IsNil(o.FrontProxyKey) {
 		var ret string
 		return ret
 	}
@@ -322,7 +336,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetFrontProxyKey() string {
 // GetFrontProxyKeyOk returns a tuple with the FrontProxyKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *KubernetesClusterCertificateConfiguration) GetFrontProxyKeyOk() (*string, bool) {
-	if o == nil || o.FrontProxyKey == nil {
+	if o == nil || IsNil(o.FrontProxyKey) {
 		return nil, false
 	}
 	return o.FrontProxyKey, true
@@ -330,7 +344,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetFrontProxyKeyOk() (*strin
 
 // HasFrontProxyKey returns a boolean if a field has been set.
 func (o *KubernetesClusterCertificateConfiguration) HasFrontProxyKey() bool {
-	if o != nil && o.FrontProxyKey != nil {
+	if o != nil && !IsNil(o.FrontProxyKey) {
 		return true
 	}
 
@@ -344,7 +358,7 @@ func (o *KubernetesClusterCertificateConfiguration) SetFrontProxyKey(v string) {
 
 // GetSaPrivateKey returns the SaPrivateKey field value if set, zero value otherwise.
 func (o *KubernetesClusterCertificateConfiguration) GetSaPrivateKey() string {
-	if o == nil || o.SaPrivateKey == nil {
+	if o == nil || IsNil(o.SaPrivateKey) {
 		var ret string
 		return ret
 	}
@@ -354,7 +368,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetSaPrivateKey() string {
 // GetSaPrivateKeyOk returns a tuple with the SaPrivateKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *KubernetesClusterCertificateConfiguration) GetSaPrivateKeyOk() (*string, bool) {
-	if o == nil || o.SaPrivateKey == nil {
+	if o == nil || IsNil(o.SaPrivateKey) {
 		return nil, false
 	}
 	return o.SaPrivateKey, true
@@ -362,7 +376,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetSaPrivateKeyOk() (*string
 
 // HasSaPrivateKey returns a boolean if a field has been set.
 func (o *KubernetesClusterCertificateConfiguration) HasSaPrivateKey() bool {
-	if o != nil && o.SaPrivateKey != nil {
+	if o != nil && !IsNil(o.SaPrivateKey) {
 		return true
 	}
 
@@ -376,7 +390,7 @@ func (o *KubernetesClusterCertificateConfiguration) SetSaPrivateKey(v string) {
 
 // GetSaPublicKey returns the SaPublicKey field value if set, zero value otherwise.
 func (o *KubernetesClusterCertificateConfiguration) GetSaPublicKey() string {
-	if o == nil || o.SaPublicKey == nil {
+	if o == nil || IsNil(o.SaPublicKey) {
 		var ret string
 		return ret
 	}
@@ -386,7 +400,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetSaPublicKey() string {
 // GetSaPublicKeyOk returns a tuple with the SaPublicKey field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *KubernetesClusterCertificateConfiguration) GetSaPublicKeyOk() (*string, bool) {
-	if o == nil || o.SaPublicKey == nil {
+	if o == nil || IsNil(o.SaPublicKey) {
 		return nil, false
 	}
 	return o.SaPublicKey, true
@@ -394,7 +408,7 @@ func (o *KubernetesClusterCertificateConfiguration) GetSaPublicKeyOk() (*string,
 
 // HasSaPublicKey returns a boolean if a field has been set.
 func (o *KubernetesClusterCertificateConfiguration) HasSaPublicKey() bool {
-	if o != nil && o.SaPublicKey != nil {
+	if o != nil && !IsNil(o.SaPublicKey) {
 		return true
 	}
 
@@ -407,46 +421,56 @@ func (o *KubernetesClusterCertificateConfiguration) SetSaPublicKey(v string) {
 }
 
 func (o KubernetesClusterCertificateConfiguration) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o KubernetesClusterCertificateConfiguration) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.CaCert != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.CaCert) {
 		toSerialize["CaCert"] = o.CaCert
 	}
-	if o.CaKey != nil {
+	if !IsNil(o.CaKey) {
 		toSerialize["CaKey"] = o.CaKey
 	}
-	if o.EtcdCert != nil {
+	if !IsNil(o.EtcdCert) {
 		toSerialize["EtcdCert"] = o.EtcdCert
 	}
 	if o.EtcdEncryptionKey != nil {
 		toSerialize["EtcdEncryptionKey"] = o.EtcdEncryptionKey
 	}
-	if o.EtcdKey != nil {
+	if !IsNil(o.EtcdKey) {
 		toSerialize["EtcdKey"] = o.EtcdKey
 	}
-	if o.FrontProxyCert != nil {
+	if !IsNil(o.FrontProxyCert) {
 		toSerialize["FrontProxyCert"] = o.FrontProxyCert
 	}
-	if o.FrontProxyKey != nil {
+	if !IsNil(o.FrontProxyKey) {
 		toSerialize["FrontProxyKey"] = o.FrontProxyKey
 	}
-	if o.SaPrivateKey != nil {
+	if !IsNil(o.SaPrivateKey) {
 		toSerialize["SaPrivateKey"] = o.SaPrivateKey
 	}
-	if o.SaPublicKey != nil {
+	if !IsNil(o.SaPublicKey) {
 		toSerialize["SaPublicKey"] = o.SaPublicKey
 	}
 
@@ -454,10 +478,51 @@ func (o KubernetesClusterCertificateConfiguration) MarshalJSON() ([]byte, error)
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *KubernetesClusterCertificateConfiguration) UnmarshalJSON(bytes []byte) (err error) {
+func (o *KubernetesClusterCertificateConfiguration) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type KubernetesClusterCertificateConfigurationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -484,7 +549,7 @@ func (o *KubernetesClusterCertificateConfiguration) UnmarshalJSON(bytes []byte) 
 
 	varKubernetesClusterCertificateConfigurationWithoutEmbeddedStruct := KubernetesClusterCertificateConfigurationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varKubernetesClusterCertificateConfigurationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varKubernetesClusterCertificateConfigurationWithoutEmbeddedStruct)
 	if err == nil {
 		varKubernetesClusterCertificateConfiguration := _KubernetesClusterCertificateConfiguration{}
 		varKubernetesClusterCertificateConfiguration.ClassId = varKubernetesClusterCertificateConfigurationWithoutEmbeddedStruct.ClassId
@@ -505,7 +570,7 @@ func (o *KubernetesClusterCertificateConfiguration) UnmarshalJSON(bytes []byte) 
 
 	varKubernetesClusterCertificateConfiguration := _KubernetesClusterCertificateConfiguration{}
 
-	err = json.Unmarshal(bytes, &varKubernetesClusterCertificateConfiguration)
+	err = json.Unmarshal(data, &varKubernetesClusterCertificateConfiguration)
 	if err == nil {
 		o.MoBaseComplexType = varKubernetesClusterCertificateConfiguration.MoBaseComplexType
 	} else {
@@ -514,7 +579,7 @@ func (o *KubernetesClusterCertificateConfiguration) UnmarshalJSON(bytes []byte) 
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "CaCert")

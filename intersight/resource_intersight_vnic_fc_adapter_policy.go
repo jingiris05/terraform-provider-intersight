@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceVnicFcAdapterPolicy() *schema.Resource {
 		UpdateContext: resourceVnicFcAdapterPolicyUpdate,
 		DeleteContext: resourceVnicFcAdapterPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -268,9 +270,9 @@ func resourceVnicFcAdapterPolicy() *schema.Resource {
 				Default:      512,
 			},
 			"lun_count": {
-				Description:  "The maximum number of LUNs that the Fibre Channel driver will export or show. The maximum number of LUNs is usually controlled by the operating system running on the server.",
+				Description:  "The maximum number of LUNs that the Fibre Channel driver will export or show. The maximum number of LUNs is usually controlled by the operating system running on the server. Lun Count value can exceed 1024 only for vHBA of type 'FC Initiator' and on servers having supported firmware version.",
 				Type:         schema.TypeInt,
-				ValidateFunc: validation.IntBetween(1, 1024),
+				ValidateFunc: validation.IntBetween(1, 4096),
 				Optional:     true,
 				Default:      1024,
 			},
@@ -527,7 +529,7 @@ func resourceVnicFcAdapterPolicy() *schema.Resource {
 							Default:     "vnic.FcQueueSettings",
 						},
 						"ring_size": {
-							Description:  "The number of descriptors in each queue.",
+							Description:  "The number of descriptors in each queue. The maximum value for Transmit queue is 128 and for Receive queue is 2048.",
 							Type:         schema.TypeInt,
 							ValidateFunc: validation.IntAtLeast(64),
 							Optional:     true,
@@ -655,7 +657,7 @@ func resourceVnicFcAdapterPolicy() *schema.Resource {
 							Default:     "vnic.FcQueueSettings",
 						},
 						"ring_size": {
-							Description:  "The number of descriptors in each queue.",
+							Description:  "The number of descriptors in each queue. The maximum value for Transmit queue is 128 and for Receive queue is 2048.",
 							Type:         schema.TypeInt,
 							ValidateFunc: validation.IntAtLeast(64),
 							Optional:     true,
@@ -722,6 +724,17 @@ func resourceVnicFcAdapterPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1256,14 +1269,25 @@ func resourceVnicFcAdapterPolicyCreate(c context.Context, d *schema.ResourceData
 		}
 		return diag.Errorf("error occurred while creating VnicFcAdapterPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceVnicFcAdapterPolicyRead(c, d, meta)...)
 }
 
 func resourceVnicFcAdapterPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.VnicApi.GetVnicFcAdapterPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

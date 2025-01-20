@@ -3,12 +3,12 @@ subcategory: "hyperflex"
 layout: "intersight"
 page_title: "Intersight: intersight_hyperflex_ext_iscsi_storage_policy"
 description: |-
-        A policy specifying external storage connectivity information via Fabric attached FCoE storage.
+        A policy specifying external storage connectivity information via Fabric attached iSCSI storage.
 
 ---
 
 # Resource: intersight_hyperflex_ext_iscsi_storage_policy
-A policy specifying external storage connectivity information via Fabric attached FCoE storage.
+A policy specifying external storage connectivity information via Fabric attached iSCSI storage.
 ## Usage Example
 ### Resource Creation
 
@@ -36,7 +36,7 @@ resource "intersight_hyperflex_ext_iscsi_storage_policy" "hyperflex_ext_iscsi_st
 ## Argument Reference
 The following arguments are supported:
 * `account_moid`:(string)(ReadOnly) The Account ID for this managed object. 
-* `admin_state`:(bool) Enable or disable external FCoE storage configuration. 
+* `admin_state`:(bool) Enable or disable external iSCSI storage configuration. 
 * `ancestors`:(Array)(ReadOnly) An array of relationships to moBaseMo resources. 
 This complex property has following sub-properties:
   + `moid`:(string) The Moid of the referenced REST resource. 
@@ -50,12 +50,12 @@ This complex property has following sub-properties:
 * `create_time`:(string)(ReadOnly) The time when this managed object was created. 
 * `description`:(string) Description of the policy. 
 * `domain_group_moid`:(string)(ReadOnly) The DomainGroup ID for this managed object. 
-* `exta_traffic`:(HashMap) - VLAN for the primary Fabric Interconnect external FCoE storage traffic. 
+* `exta_traffic`:(HashMap) - VLAN for the primary Fabric Interconnect external iSCSI storage traffic. 
 This complex property has following sub-properties:
   + `name`:(string) The name of the VLAN.The name can be from 1 to 32 characters long and can contain a combination of alphanumeric characters, underscores, and hyphens. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `vlan_id`:(int) The ID of the named VLAN. An ID of 0 means the traffic is untagged.The ID can be any number between 0 and 4095, inclusive. 
-* `extb_traffic`:(HashMap) - VLAN for the secondary Fabric Interconnect external FCoE storage traffic. 
+* `extb_traffic`:(HashMap) - VLAN for the secondary Fabric Interconnect external iSCSI storage traffic. 
 This complex property has following sub-properties:
   + `name`:(string) The name of the VLAN.The name can be from 1 to 32 characters long and can contain a combination of alphanumeric characters, underscores, and hyphens. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
@@ -92,6 +92,7 @@ This complex property has following sub-properties:
     + `moid`:(string) The Moid of the referenced REST resource. 
     + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
     + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+  + `marked_for_deletion`:(bool)(ReadOnly) The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `ref_mo`:(HashMap) -(ReadOnly) A reference to the original Managed Object. 
 This complex property has following sub-properties:

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceSyslogPolicy() *schema.Resource {
 		UpdateContext: resourceSyslogPolicyUpdate,
 		DeleteContext: resourceSyslogPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -368,6 +370,17 @@ func resourceSyslogPolicy() *schema.Resource {
 							Optional:    true,
 							Default:     true,
 						},
+						"facility": {
+							Description: "This component represents the process of the system which created the message.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"hostname": {
 							Description: "Hostname or IP Address of the syslog server where log should be stored.",
 							Type:        schema.TypeString,
@@ -400,6 +413,17 @@ func resourceSyslogPolicy() *schema.Resource {
 							Optional:     true,
 							Default:      "udp",
 						},
+						"vrf_name": {
+							Description: "VRF name used by the syslog server.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 					},
 				},
 			},
@@ -499,6 +523,17 @@ func resourceSyslogPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -845,8 +880,16 @@ func resourceSyslogPolicyCreate(c context.Context, d *schema.ResourceData, meta 
 		}
 		return diag.Errorf("error occurred while creating SyslogPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceSyslogPolicyRead(c, d, meta)...)
 }
 func detachSyslogPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -874,6 +917,9 @@ func detachSyslogPolicyProfiles(d *schema.ResourceData, meta interface{}) diag.D
 func resourceSyslogPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.SyslogApi.GetSyslogPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

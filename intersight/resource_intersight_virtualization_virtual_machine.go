@@ -5,9 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -22,7 +23,7 @@ func resourceVirtualizationVirtualMachine() *schema.Resource {
 		UpdateContext: resourceVirtualizationVirtualMachineUpdate,
 		DeleteContext: resourceVirtualizationVirtualMachineDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -357,7 +358,7 @@ func resourceVirtualizationVirtualMachine() *schema.Resource {
 			"cpu": {
 				Description:  "Number of vCPUs to be allocated to virtual machine. The upper limit depends on the hypervisor.",
 				Type:         schema.TypeInt,
-				ValidateFunc: validation.IntBetween(1, 1024),
+				ValidateFunc: validation.IntAtLeast(1),
 				Optional:     true,
 			},
 			"create_time": {
@@ -430,62 +431,6 @@ func resourceVirtualizationVirtualMachine() *schema.Resource {
 							ValidateFunc: validation.StringInSlice([]string{"hdd", "cdrom"}, false),
 							Optional:     true,
 							Default:      "hdd",
-						},
-						"virtual_disk": {
-							Description: "Virtual disk configuration.",
-							Type:        schema.TypeList,
-							MaxItems:    1,
-							Optional:    true,
-							ConfigMode:  schema.SchemaConfigModeAttr,
-							Computed:    true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"additional_properties": {
-										Type:             schema.TypeString,
-										Optional:         true,
-										DiffSuppressFunc: SuppressDiffAdditionProps,
-									},
-									"capacity": {
-										Description: "Disk capacity to be provided with units example - 10Gi.",
-										Type:        schema.TypeString,
-										Optional:    true,
-									},
-									"class_id": {
-										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
-										Type:        schema.TypeString,
-										Optional:    true,
-										Default:     "virtualization.VirtualDiskConfig",
-									},
-									"mode": {
-										Description:  "File mode of the disk, example - Filesystem, Block.\n* `Block` - It is a Block virtual disk.\n* `Filesystem` - It is a File system virtual disk.\n* `` - Disk mode is either unknown or not supported.",
-										Type:         schema.TypeString,
-										ValidateFunc: validation.StringInSlice([]string{"Block", "Filesystem", ""}, false),
-										Optional:     true,
-										Default:      "Block",
-									},
-									"object_type": {
-										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
-										Type:        schema.TypeString,
-										Optional:    true,
-										Default:     "virtualization.VirtualDiskConfig",
-									},
-									"source_certs": {
-										Description: "Base64 encoded CA certificates of the https source to check against.",
-										Type:        schema.TypeString,
-										Optional:    true,
-									},
-									"source_disk_to_clone": {
-										Description: "Source disk name from where the clone is done.",
-										Type:        schema.TypeString,
-										Optional:    true,
-									},
-									"source_file_path": {
-										Description: "Disk image source for the virtual machine.",
-										Type:        schema.TypeString,
-										Optional:    true,
-									},
-								},
-							},
 						},
 						"virtual_disk_reference": {
 							Description: "Name of the existing virtual disk to be attached to the Virtual Machine.",
@@ -607,7 +552,7 @@ func resourceVirtualizationVirtualMachine() *schema.Resource {
 				Optional:    true,
 			},
 			"hypervisor_type": {
-				Description: "Identifies the broad product type of the hypervisor but without any version information. It is here to easily identify the type of the virtual machine. There are other entities (Host, Cluster, etc.) that can be indirectly used to determine the hypervisor but a direct attribute makes it easier to work with.\n* `ESXi` - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version.\n* `HyperFlexAp` - The hypervisor of the virtualization platform is Cisco HyperFlex Application Platform.\n* `IWE` - The hypervisor of the virtualization platform is Cisco Intersight Workload Engine.\n* `Hyper-V` - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V.\n* `Unknown` - The hypervisor running on the HyperFlex cluster is not known.",
+				Description: "Identifies the broad product type of the hypervisor but without any version information. It is here to easily identify the type of the virtual machine. There are other entities (Host, Cluster, etc.) that can be indirectly used to determine the hypervisor but a direct attribute makes it easier to work with.\n* `ESXi` - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version.\n* `Hyper-V` - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V.\n* `Unknown` - The hypervisor running on the HyperFlex cluster is not known.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -657,16 +602,6 @@ func resourceVirtualizationVirtualMachine() *schema.Resource {
 							Type:        schema.TypeBool,
 							Optional:    true,
 						},
-						"ip_forwarding_enabled": {
-							Description: "Set to true, if IP forwarding is enabled on the NIC.",
-							Type:        schema.TypeBool,
-							Optional:    true,
-						},
-						"ipv6_address": {
-							Description: "Set to true, if IPv6 address should be allocated for the NIC.",
-							Type:        schema.TypeBool,
-							Optional:    true,
-						},
 						"mac_address": {
 							Description:  "Virtual machine network mac address.",
 							Type:         schema.TypeString,
@@ -678,93 +613,11 @@ func resourceVirtualizationVirtualMachine() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 						},
-						"network_id": {
-							Description: "Identity of the network to which this network interface belongs.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
-						"nic_id": {
-							Description: "Identity of the network interface.",
-							Type:        schema.TypeString,
-							Optional:    true,
-						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
 							Optional:    true,
 							Default:     "virtualization.NetworkInterface",
-						},
-						"order": {
-							Description: "Order of the NIC attachment to the VM.",
-							Type:        schema.TypeInt,
-							Optional:    true,
-						},
-						"private_ip_allocation_mode": {
-							Description:  "Allocation mode for NIC addresses e.g. DHCP or static.\n* `DHCP` - Dynamic IP address allocation using DHCP protocol.\n* `STATIC_IP` - Assign fixed / static IPs to resources for use.\n* `IPAM_CALLOUT` - Use callout scripts to query cloud IP allocation tools to assign network parameters.\n* `PREALLOCATE_IP` - Allows the cloud infrastructure IP allocation to be dynamically provided before the server boots up.",
-							Type:         schema.TypeString,
-							ValidateFunc: validation.StringInSlice([]string{"DHCP", "STATIC_IP", "IPAM_CALLOUT", "PREALLOCATE_IP"}, false),
-							Optional:     true,
-							Default:      "DHCP",
-						},
-						"public_ip_allocate": {
-							Description: "Set to true, if public IP should be allocated for the NIC.",
-							Type:        schema.TypeBool,
-							Optional:    true,
-						},
-						"security_groups": {
-							Type:       schema.TypeList,
-							Optional:   true,
-							ConfigMode: schema.SchemaConfigModeAttr,
-							Computed:   true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							}},
-						"static_ip_address": {
-							Type:       schema.TypeList,
-							Optional:   true,
-							ConfigMode: schema.SchemaConfigModeAttr,
-							Computed:   true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"additional_properties": {
-										Type:             schema.TypeString,
-										Optional:         true,
-										DiffSuppressFunc: SuppressDiffAdditionProps,
-									},
-									"class_id": {
-										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
-										Type:        schema.TypeString,
-										Optional:    true,
-										Default:     "virtualization.IpAddressInfo",
-									},
-									"gateway_ip": {
-										Description: "IP address of the device on network which forwards local traffic to other networks.",
-										Type:        schema.TypeString,
-										Optional:    true,
-									},
-									"ip_address": {
-										Description: "An IP address is a 32-bit number. It uniquely identifies a host in given network.",
-										Type:        schema.TypeString,
-										Optional:    true,
-									},
-									"object_type": {
-										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
-										Type:        schema.TypeString,
-										Optional:    true,
-										Default:     "virtualization.IpAddressInfo",
-									},
-									"subnet_mask": {
-										Description: "A 32 bit number which helps to identify the host and rest of the network.",
-										Type:        schema.TypeString,
-										Optional:    true,
-									},
-								},
-							},
-						},
-						"subnet_id": {
-							Description: "Subnet identifier for the NIC.",
-							Type:        schema.TypeString,
-							Optional:    true,
 						},
 					},
 				},
@@ -859,9 +712,9 @@ func resourceVirtualizationVirtualMachine() *schema.Resource {
 				},
 			},
 			"memory": {
-				Description:  "Virtual machine memory in mebi bytes (one mebibyte 1MiB is 1048576 bytes, and 1KiB is 1024 bytes). Input must be a whole number and scientific notation is not acceptable. For example, enter 1730 and not 1.73e03. The limit of 4177920 translates to 3.9TiB.",
+				Description:  "Virtual machine memory in mebi bytes (one mebibyte, 1MiB, is 1048576 bytes, and 1KiB is 1024 bytes). Input must be a whole number and scientific notation is not acceptable. For example, enter 1730 and not 1.73e03. No upper limit is enforced because hypervisors increase the limit in every release.",
 				Type:         schema.TypeInt,
-				ValidateFunc: validation.IntBetween(1, 4177920),
+				ValidateFunc: validation.IntAtLeast(1),
 				Optional:     true,
 			},
 			"mod_time": {
@@ -1132,6 +985,17 @@ func resourceVirtualizationVirtualMachine() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1535,68 +1399,6 @@ func resourceVirtualizationVirtualMachineCreate(c context.Context, d *schema.Res
 					o.SetType(x)
 				}
 			}
-			if v, ok := l["virtual_disk"]; ok {
-				{
-					p := make([]models.VirtualizationVirtualDiskConfig, 0, 1)
-					s := v.([]interface{})
-					for i := 0; i < len(s); i++ {
-						l := s[i].(map[string]interface{})
-						o := models.NewVirtualizationVirtualDiskConfigWithDefaults()
-						if v, ok := l["additional_properties"]; ok {
-							{
-								x := []byte(v.(string))
-								var x1 interface{}
-								err := json.Unmarshal(x, &x1)
-								if err == nil && x1 != nil {
-									o.AdditionalProperties = x1.(map[string]interface{})
-								}
-							}
-						}
-						if v, ok := l["capacity"]; ok {
-							{
-								x := (v.(string))
-								o.SetCapacity(x)
-							}
-						}
-						o.SetClassId("virtualization.VirtualDiskConfig")
-						if v, ok := l["mode"]; ok {
-							{
-								x := (v.(string))
-								o.SetMode(x)
-							}
-						}
-						if v, ok := l["object_type"]; ok {
-							{
-								x := (v.(string))
-								o.SetObjectType(x)
-							}
-						}
-						if v, ok := l["source_certs"]; ok {
-							{
-								x := (v.(string))
-								o.SetSourceCerts(x)
-							}
-						}
-						if v, ok := l["source_disk_to_clone"]; ok {
-							{
-								x := (v.(string))
-								o.SetSourceDiskToClone(x)
-							}
-						}
-						if v, ok := l["source_file_path"]; ok {
-							{
-								x := (v.(string))
-								o.SetSourceFilePath(x)
-							}
-						}
-						p = append(p, *o)
-					}
-					if len(p) > 0 {
-						x := p[0]
-						o.SetVirtualDisk(x)
-					}
-				}
-			}
 			if v, ok := l["virtual_disk_reference"]; ok {
 				{
 					x := (v.(string))
@@ -1757,18 +1559,6 @@ func resourceVirtualizationVirtualMachineCreate(c context.Context, d *schema.Res
 					o.SetDirectPathIo(x)
 				}
 			}
-			if v, ok := l["ip_forwarding_enabled"]; ok {
-				{
-					x := (v.(bool))
-					o.SetIpForwardingEnabled(x)
-				}
-			}
-			if v, ok := l["ipv6_address"]; ok {
-				{
-					x := (v.(bool))
-					o.SetIpv6Address(x)
-				}
-			}
 			if v, ok := l["mac_address"]; ok {
 				{
 					x := (v.(string))
@@ -1781,109 +1571,10 @@ func resourceVirtualizationVirtualMachineCreate(c context.Context, d *schema.Res
 					o.SetName(x)
 				}
 			}
-			if v, ok := l["network_id"]; ok {
-				{
-					x := (v.(string))
-					o.SetNetworkId(x)
-				}
-			}
-			if v, ok := l["nic_id"]; ok {
-				{
-					x := (v.(string))
-					o.SetNicId(x)
-				}
-			}
 			if v, ok := l["object_type"]; ok {
 				{
 					x := (v.(string))
 					o.SetObjectType(x)
-				}
-			}
-			if v, ok := l["order"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetOrder(x)
-				}
-			}
-			if v, ok := l["private_ip_allocation_mode"]; ok {
-				{
-					x := (v.(string))
-					o.SetPrivateIpAllocationMode(x)
-				}
-			}
-			if v, ok := l["public_ip_allocate"]; ok {
-				{
-					x := (v.(bool))
-					o.SetPublicIpAllocate(x)
-				}
-			}
-			if v, ok := l["security_groups"]; ok {
-				{
-					x := make([]string, 0)
-					y := reflect.ValueOf(v)
-					for i := 0; i < y.Len(); i++ {
-						if y.Index(i).Interface() != nil {
-							x = append(x, y.Index(i).Interface().(string))
-						}
-					}
-					if len(x) > 0 {
-						o.SetSecurityGroups(x)
-					}
-				}
-			}
-			if v, ok := l["static_ip_address"]; ok {
-				{
-					x := make([]models.VirtualizationIpAddressInfo, 0)
-					s := v.([]interface{})
-					for i := 0; i < len(s); i++ {
-						o := models.NewVirtualizationIpAddressInfoWithDefaults()
-						l := s[i].(map[string]interface{})
-						if v, ok := l["additional_properties"]; ok {
-							{
-								x := []byte(v.(string))
-								var x1 interface{}
-								err := json.Unmarshal(x, &x1)
-								if err == nil && x1 != nil {
-									o.AdditionalProperties = x1.(map[string]interface{})
-								}
-							}
-						}
-						o.SetClassId("virtualization.IpAddressInfo")
-						if v, ok := l["gateway_ip"]; ok {
-							{
-								x := (v.(string))
-								o.SetGatewayIp(x)
-							}
-						}
-						if v, ok := l["ip_address"]; ok {
-							{
-								x := (v.(string))
-								o.SetIpAddress(x)
-							}
-						}
-						if v, ok := l["object_type"]; ok {
-							{
-								x := (v.(string))
-								o.SetObjectType(x)
-							}
-						}
-						if v, ok := l["subnet_mask"]; ok {
-							{
-								x := (v.(string))
-								o.SetSubnetMask(x)
-							}
-						}
-						x = append(x, *o)
-					}
-					if len(x) > 0 {
-						o.SetStaticIpAddress(x)
-					}
-				}
-			}
-			if v, ok := l["subnet_id"]; ok {
-				{
-					x := (v.(string))
-					o.SetSubnetId(x)
 				}
 			}
 			x = append(x, *o)
@@ -2029,11 +1720,11 @@ func resourceVirtualizationVirtualMachineCreate(c context.Context, d *schema.Res
 	}
 
 	if v, ok := d.GetOk("vm_config"); ok {
-		p := make([]models.VirtualizationBaseVmConfiguration, 0, 1)
+		p := make([]models.MoBaseComplexType, 0, 1)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			l := s[i].(map[string]interface{})
-			o := models.NewVirtualizationBaseVmConfigurationWithDefaults()
+			o := models.NewMoBaseComplexTypeWithDefaults()
 			if v, ok := l["additional_properties"]; ok {
 				{
 					x := []byte(v.(string))
@@ -2069,8 +1760,13 @@ func resourceVirtualizationVirtualMachineCreate(c context.Context, d *schema.Res
 		}
 		return diag.Errorf("error occurred while creating VirtualizationVirtualMachine: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
 	var waitForCompletion bool
 	if v, ok := d.GetOk("wait_for_completion"); ok {
 		waitForCompletion = v.(bool)
@@ -2120,12 +1816,18 @@ func resourceVirtualizationVirtualMachineCreate(c context.Context, d *schema.Res
 			}
 		}
 	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceVirtualizationVirtualMachineRead(c, d, meta)...)
 }
 
 func resourceVirtualizationVirtualMachineRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.VirtualizationApi.GetVirtualizationVirtualMachineByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -2299,7 +2001,7 @@ func resourceVirtualizationVirtualMachineRead(c context.Context, d *schema.Resou
 		return diag.Errorf("error occurred while setting property VersionContext in VirtualizationVirtualMachine object: %s", err.Error())
 	}
 
-	if err := d.Set("vm_config", flattenMapVirtualizationBaseVmConfiguration(s.GetVmConfig(), d)); err != nil {
+	if err := d.Set("vm_config", flattenMapMoBaseComplexType(s.GetVmConfig(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property VmConfig in VirtualizationVirtualMachine object: %s", err.Error())
 	}
 
@@ -2560,68 +2262,6 @@ func resourceVirtualizationVirtualMachineUpdate(c context.Context, d *schema.Res
 					o.SetType(x)
 				}
 			}
-			if v, ok := l["virtual_disk"]; ok {
-				{
-					p := make([]models.VirtualizationVirtualDiskConfig, 0, 1)
-					s := v.([]interface{})
-					for i := 0; i < len(s); i++ {
-						l := s[i].(map[string]interface{})
-						o := models.NewVirtualizationVirtualDiskConfigWithDefaults()
-						if v, ok := l["additional_properties"]; ok {
-							{
-								x := []byte(v.(string))
-								var x1 interface{}
-								err := json.Unmarshal(x, &x1)
-								if err == nil && x1 != nil {
-									o.AdditionalProperties = x1.(map[string]interface{})
-								}
-							}
-						}
-						if v, ok := l["capacity"]; ok {
-							{
-								x := (v.(string))
-								o.SetCapacity(x)
-							}
-						}
-						o.SetClassId("virtualization.VirtualDiskConfig")
-						if v, ok := l["mode"]; ok {
-							{
-								x := (v.(string))
-								o.SetMode(x)
-							}
-						}
-						if v, ok := l["object_type"]; ok {
-							{
-								x := (v.(string))
-								o.SetObjectType(x)
-							}
-						}
-						if v, ok := l["source_certs"]; ok {
-							{
-								x := (v.(string))
-								o.SetSourceCerts(x)
-							}
-						}
-						if v, ok := l["source_disk_to_clone"]; ok {
-							{
-								x := (v.(string))
-								o.SetSourceDiskToClone(x)
-							}
-						}
-						if v, ok := l["source_file_path"]; ok {
-							{
-								x := (v.(string))
-								o.SetSourceFilePath(x)
-							}
-						}
-						p = append(p, *o)
-					}
-					if len(p) > 0 {
-						x := p[0]
-						o.SetVirtualDisk(x)
-					}
-				}
-			}
 			if v, ok := l["virtual_disk_reference"]; ok {
 				{
 					x := (v.(string))
@@ -2784,18 +2424,6 @@ func resourceVirtualizationVirtualMachineUpdate(c context.Context, d *schema.Res
 					o.SetDirectPathIo(x)
 				}
 			}
-			if v, ok := l["ip_forwarding_enabled"]; ok {
-				{
-					x := (v.(bool))
-					o.SetIpForwardingEnabled(x)
-				}
-			}
-			if v, ok := l["ipv6_address"]; ok {
-				{
-					x := (v.(bool))
-					o.SetIpv6Address(x)
-				}
-			}
 			if v, ok := l["mac_address"]; ok {
 				{
 					x := (v.(string))
@@ -2808,109 +2436,10 @@ func resourceVirtualizationVirtualMachineUpdate(c context.Context, d *schema.Res
 					o.SetName(x)
 				}
 			}
-			if v, ok := l["network_id"]; ok {
-				{
-					x := (v.(string))
-					o.SetNetworkId(x)
-				}
-			}
-			if v, ok := l["nic_id"]; ok {
-				{
-					x := (v.(string))
-					o.SetNicId(x)
-				}
-			}
 			if v, ok := l["object_type"]; ok {
 				{
 					x := (v.(string))
 					o.SetObjectType(x)
-				}
-			}
-			if v, ok := l["order"]; ok {
-				{
-					x := int64(v.(int))
-					o.SetOrder(x)
-				}
-			}
-			if v, ok := l["private_ip_allocation_mode"]; ok {
-				{
-					x := (v.(string))
-					o.SetPrivateIpAllocationMode(x)
-				}
-			}
-			if v, ok := l["public_ip_allocate"]; ok {
-				{
-					x := (v.(bool))
-					o.SetPublicIpAllocate(x)
-				}
-			}
-			if v, ok := l["security_groups"]; ok {
-				{
-					x := make([]string, 0)
-					y := reflect.ValueOf(v)
-					for i := 0; i < y.Len(); i++ {
-						if y.Index(i).Interface() != nil {
-							x = append(x, y.Index(i).Interface().(string))
-						}
-					}
-					if len(x) > 0 {
-						o.SetSecurityGroups(x)
-					}
-				}
-			}
-			if v, ok := l["static_ip_address"]; ok {
-				{
-					x := make([]models.VirtualizationIpAddressInfo, 0)
-					s := v.([]interface{})
-					for i := 0; i < len(s); i++ {
-						o := models.NewVirtualizationIpAddressInfoWithDefaults()
-						l := s[i].(map[string]interface{})
-						if v, ok := l["additional_properties"]; ok {
-							{
-								x := []byte(v.(string))
-								var x1 interface{}
-								err := json.Unmarshal(x, &x1)
-								if err == nil && x1 != nil {
-									o.AdditionalProperties = x1.(map[string]interface{})
-								}
-							}
-						}
-						o.SetClassId("virtualization.IpAddressInfo")
-						if v, ok := l["gateway_ip"]; ok {
-							{
-								x := (v.(string))
-								o.SetGatewayIp(x)
-							}
-						}
-						if v, ok := l["ip_address"]; ok {
-							{
-								x := (v.(string))
-								o.SetIpAddress(x)
-							}
-						}
-						if v, ok := l["object_type"]; ok {
-							{
-								x := (v.(string))
-								o.SetObjectType(x)
-							}
-						}
-						if v, ok := l["subnet_mask"]; ok {
-							{
-								x := (v.(string))
-								o.SetSubnetMask(x)
-							}
-						}
-						x = append(x, *o)
-					}
-					if len(x) > 0 {
-						o.SetStaticIpAddress(x)
-					}
-				}
-			}
-			if v, ok := l["subnet_id"]; ok {
-				{
-					x := (v.(string))
-					o.SetSubnetId(x)
 				}
 			}
 			x = append(x, *o)
@@ -3059,11 +2588,11 @@ func resourceVirtualizationVirtualMachineUpdate(c context.Context, d *schema.Res
 
 	if d.HasChange("vm_config") {
 		v := d.Get("vm_config")
-		p := make([]models.VirtualizationBaseVmConfiguration, 0, 1)
+		p := make([]models.MoBaseComplexType, 0, 1)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			l := s[i].(map[string]interface{})
-			o := &models.VirtualizationBaseVmConfiguration{}
+			o := &models.MoBaseComplexType{}
 			if v, ok := l["additional_properties"]; ok {
 				{
 					x := []byte(v.(string))

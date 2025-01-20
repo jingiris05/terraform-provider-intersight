@@ -7,18 +7,25 @@ Name | Type | Description | Notes
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "storage.NetAppCluster"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "storage.NetAppCluster"]
 **AutoSupport** | Pointer to [**NullableStorageNetAppAutoSupport**](StorageNetAppAutoSupport.md) |  | [optional] 
-**AvgPerformanceMetrics** | Pointer to [**StorageNetAppPerformanceMetricsAverage**](StorageNetAppPerformanceMetricsAverage.md) |  | [optional] 
+**AvgPerformanceMetrics** | Pointer to [**NullableStorageBasePerformanceMetricsAverage**](StorageBasePerformanceMetricsAverage.md) | Average performance metrics data for a NetApp storage resource over a given period of time. | [optional] 
 **ClusterEfficiency** | Pointer to [**NullableStorageNetAppStorageClusterEfficiency**](StorageNetAppStorageClusterEfficiency.md) |  | [optional] 
 **ClusterHealthStatus** | Pointer to **string** | The health status of the cluster. Possible states are ok, ok-with-suppressed, degraded, and unreachable. * &#x60;Unreachable&#x60; - Cluster status is unreachable. * &#x60;OK&#x60; - Cluster status is either ok or ok-with-suppressed. * &#x60;Degraded&#x60; - Cluster status is degraded. | [optional] [readonly] [default to "Unreachable"]
+**DefaultAdminLocked** | Pointer to **bool** | Indicates whether the default admin user is locked out. | [optional] [readonly] 
 **DnsDomains** | Pointer to **[]string** |  | [optional] 
+**FipsCompliant** | Pointer to **bool** | Indicates whether or not the software FIPS mode is enabled on the cluster. | [optional] [readonly] 
+**InsecureCiphers** | Pointer to **int64** | Number of SVMs on the cluster that use insecure ciphers. | [optional] [readonly] 
 **Key** | Pointer to **string** | Unique identifier of NetApp Cluster across data center. | [optional] [readonly] 
 **Location** | Pointer to **string** | Location of the storage controller. | [optional] [readonly] 
-**ManagementAddress** | Pointer to **string** | FQDN or IP Address of Storage Cluster. | [optional] [readonly] 
+**ManagementAddress** | Pointer to **[]string** |  | [optional] 
 **NameServers** | Pointer to **[]string** |  | [optional] 
 **NtpServers** | Pointer to **[]string** |  | [optional] 
+**RshEnabled** | Pointer to **bool** | Indicates whether or not rsh is enabled on the cluster. | [optional] [readonly] 
 **TelnetEnabled** | Pointer to **bool** | Indicates whether or not telnet is enabled on the cluster. | [optional] [readonly] 
+**VersionGeneration** | Pointer to **int64** | The generation portion of the version. | [optional] [readonly] 
+**VersionMajor** | Pointer to **int64** | The major portion of the version. | [optional] [readonly] 
+**VersionMinor** | Pointer to **int64** | The minor portion of the version. | [optional] [readonly] 
 **Events** | Pointer to [**[]StorageNetAppClusterEventRelationship**](StorageNetAppClusterEventRelationship.md) | An array of relationships to storageNetAppClusterEvent resources. | [optional] [readonly] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -116,20 +123,20 @@ HasAutoSupport returns a boolean if a field has been set.
 UnsetAutoSupport ensures that no value is present for AutoSupport, not even an explicit nil
 ### GetAvgPerformanceMetrics
 
-`func (o *StorageNetAppCluster) GetAvgPerformanceMetrics() StorageNetAppPerformanceMetricsAverage`
+`func (o *StorageNetAppCluster) GetAvgPerformanceMetrics() StorageBasePerformanceMetricsAverage`
 
 GetAvgPerformanceMetrics returns the AvgPerformanceMetrics field if non-nil, zero value otherwise.
 
 ### GetAvgPerformanceMetricsOk
 
-`func (o *StorageNetAppCluster) GetAvgPerformanceMetricsOk() (*StorageNetAppPerformanceMetricsAverage, bool)`
+`func (o *StorageNetAppCluster) GetAvgPerformanceMetricsOk() (*StorageBasePerformanceMetricsAverage, bool)`
 
 GetAvgPerformanceMetricsOk returns a tuple with the AvgPerformanceMetrics field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetAvgPerformanceMetrics
 
-`func (o *StorageNetAppCluster) SetAvgPerformanceMetrics(v StorageNetAppPerformanceMetricsAverage)`
+`func (o *StorageNetAppCluster) SetAvgPerformanceMetrics(v StorageBasePerformanceMetricsAverage)`
 
 SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
@@ -139,6 +146,16 @@ SetAvgPerformanceMetrics sets AvgPerformanceMetrics field to given value.
 
 HasAvgPerformanceMetrics returns a boolean if a field has been set.
 
+### SetAvgPerformanceMetricsNil
+
+`func (o *StorageNetAppCluster) SetAvgPerformanceMetricsNil(b bool)`
+
+ SetAvgPerformanceMetricsNil sets the value for AvgPerformanceMetrics to be an explicit nil
+
+### UnsetAvgPerformanceMetrics
+`func (o *StorageNetAppCluster) UnsetAvgPerformanceMetrics()`
+
+UnsetAvgPerformanceMetrics ensures that no value is present for AvgPerformanceMetrics, not even an explicit nil
 ### GetClusterEfficiency
 
 `func (o *StorageNetAppCluster) GetClusterEfficiency() StorageNetAppStorageClusterEfficiency`
@@ -199,6 +216,31 @@ SetClusterHealthStatus sets ClusterHealthStatus field to given value.
 
 HasClusterHealthStatus returns a boolean if a field has been set.
 
+### GetDefaultAdminLocked
+
+`func (o *StorageNetAppCluster) GetDefaultAdminLocked() bool`
+
+GetDefaultAdminLocked returns the DefaultAdminLocked field if non-nil, zero value otherwise.
+
+### GetDefaultAdminLockedOk
+
+`func (o *StorageNetAppCluster) GetDefaultAdminLockedOk() (*bool, bool)`
+
+GetDefaultAdminLockedOk returns a tuple with the DefaultAdminLocked field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetDefaultAdminLocked
+
+`func (o *StorageNetAppCluster) SetDefaultAdminLocked(v bool)`
+
+SetDefaultAdminLocked sets DefaultAdminLocked field to given value.
+
+### HasDefaultAdminLocked
+
+`func (o *StorageNetAppCluster) HasDefaultAdminLocked() bool`
+
+HasDefaultAdminLocked returns a boolean if a field has been set.
+
 ### GetDnsDomains
 
 `func (o *StorageNetAppCluster) GetDnsDomains() []string`
@@ -234,6 +276,56 @@ HasDnsDomains returns a boolean if a field has been set.
 `func (o *StorageNetAppCluster) UnsetDnsDomains()`
 
 UnsetDnsDomains ensures that no value is present for DnsDomains, not even an explicit nil
+### GetFipsCompliant
+
+`func (o *StorageNetAppCluster) GetFipsCompliant() bool`
+
+GetFipsCompliant returns the FipsCompliant field if non-nil, zero value otherwise.
+
+### GetFipsCompliantOk
+
+`func (o *StorageNetAppCluster) GetFipsCompliantOk() (*bool, bool)`
+
+GetFipsCompliantOk returns a tuple with the FipsCompliant field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFipsCompliant
+
+`func (o *StorageNetAppCluster) SetFipsCompliant(v bool)`
+
+SetFipsCompliant sets FipsCompliant field to given value.
+
+### HasFipsCompliant
+
+`func (o *StorageNetAppCluster) HasFipsCompliant() bool`
+
+HasFipsCompliant returns a boolean if a field has been set.
+
+### GetInsecureCiphers
+
+`func (o *StorageNetAppCluster) GetInsecureCiphers() int64`
+
+GetInsecureCiphers returns the InsecureCiphers field if non-nil, zero value otherwise.
+
+### GetInsecureCiphersOk
+
+`func (o *StorageNetAppCluster) GetInsecureCiphersOk() (*int64, bool)`
+
+GetInsecureCiphersOk returns a tuple with the InsecureCiphers field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetInsecureCiphers
+
+`func (o *StorageNetAppCluster) SetInsecureCiphers(v int64)`
+
+SetInsecureCiphers sets InsecureCiphers field to given value.
+
+### HasInsecureCiphers
+
+`func (o *StorageNetAppCluster) HasInsecureCiphers() bool`
+
+HasInsecureCiphers returns a boolean if a field has been set.
+
 ### GetKey
 
 `func (o *StorageNetAppCluster) GetKey() string`
@@ -286,20 +378,20 @@ HasLocation returns a boolean if a field has been set.
 
 ### GetManagementAddress
 
-`func (o *StorageNetAppCluster) GetManagementAddress() string`
+`func (o *StorageNetAppCluster) GetManagementAddress() []string`
 
 GetManagementAddress returns the ManagementAddress field if non-nil, zero value otherwise.
 
 ### GetManagementAddressOk
 
-`func (o *StorageNetAppCluster) GetManagementAddressOk() (*string, bool)`
+`func (o *StorageNetAppCluster) GetManagementAddressOk() (*[]string, bool)`
 
 GetManagementAddressOk returns a tuple with the ManagementAddress field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetManagementAddress
 
-`func (o *StorageNetAppCluster) SetManagementAddress(v string)`
+`func (o *StorageNetAppCluster) SetManagementAddress(v []string)`
 
 SetManagementAddress sets ManagementAddress field to given value.
 
@@ -309,6 +401,16 @@ SetManagementAddress sets ManagementAddress field to given value.
 
 HasManagementAddress returns a boolean if a field has been set.
 
+### SetManagementAddressNil
+
+`func (o *StorageNetAppCluster) SetManagementAddressNil(b bool)`
+
+ SetManagementAddressNil sets the value for ManagementAddress to be an explicit nil
+
+### UnsetManagementAddress
+`func (o *StorageNetAppCluster) UnsetManagementAddress()`
+
+UnsetManagementAddress ensures that no value is present for ManagementAddress, not even an explicit nil
 ### GetNameServers
 
 `func (o *StorageNetAppCluster) GetNameServers() []string`
@@ -379,6 +481,31 @@ HasNtpServers returns a boolean if a field has been set.
 `func (o *StorageNetAppCluster) UnsetNtpServers()`
 
 UnsetNtpServers ensures that no value is present for NtpServers, not even an explicit nil
+### GetRshEnabled
+
+`func (o *StorageNetAppCluster) GetRshEnabled() bool`
+
+GetRshEnabled returns the RshEnabled field if non-nil, zero value otherwise.
+
+### GetRshEnabledOk
+
+`func (o *StorageNetAppCluster) GetRshEnabledOk() (*bool, bool)`
+
+GetRshEnabledOk returns a tuple with the RshEnabled field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRshEnabled
+
+`func (o *StorageNetAppCluster) SetRshEnabled(v bool)`
+
+SetRshEnabled sets RshEnabled field to given value.
+
+### HasRshEnabled
+
+`func (o *StorageNetAppCluster) HasRshEnabled() bool`
+
+HasRshEnabled returns a boolean if a field has been set.
+
 ### GetTelnetEnabled
 
 `func (o *StorageNetAppCluster) GetTelnetEnabled() bool`
@@ -403,6 +530,81 @@ SetTelnetEnabled sets TelnetEnabled field to given value.
 `func (o *StorageNetAppCluster) HasTelnetEnabled() bool`
 
 HasTelnetEnabled returns a boolean if a field has been set.
+
+### GetVersionGeneration
+
+`func (o *StorageNetAppCluster) GetVersionGeneration() int64`
+
+GetVersionGeneration returns the VersionGeneration field if non-nil, zero value otherwise.
+
+### GetVersionGenerationOk
+
+`func (o *StorageNetAppCluster) GetVersionGenerationOk() (*int64, bool)`
+
+GetVersionGenerationOk returns a tuple with the VersionGeneration field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVersionGeneration
+
+`func (o *StorageNetAppCluster) SetVersionGeneration(v int64)`
+
+SetVersionGeneration sets VersionGeneration field to given value.
+
+### HasVersionGeneration
+
+`func (o *StorageNetAppCluster) HasVersionGeneration() bool`
+
+HasVersionGeneration returns a boolean if a field has been set.
+
+### GetVersionMajor
+
+`func (o *StorageNetAppCluster) GetVersionMajor() int64`
+
+GetVersionMajor returns the VersionMajor field if non-nil, zero value otherwise.
+
+### GetVersionMajorOk
+
+`func (o *StorageNetAppCluster) GetVersionMajorOk() (*int64, bool)`
+
+GetVersionMajorOk returns a tuple with the VersionMajor field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVersionMajor
+
+`func (o *StorageNetAppCluster) SetVersionMajor(v int64)`
+
+SetVersionMajor sets VersionMajor field to given value.
+
+### HasVersionMajor
+
+`func (o *StorageNetAppCluster) HasVersionMajor() bool`
+
+HasVersionMajor returns a boolean if a field has been set.
+
+### GetVersionMinor
+
+`func (o *StorageNetAppCluster) GetVersionMinor() int64`
+
+GetVersionMinor returns the VersionMinor field if non-nil, zero value otherwise.
+
+### GetVersionMinorOk
+
+`func (o *StorageNetAppCluster) GetVersionMinorOk() (*int64, bool)`
+
+GetVersionMinorOk returns a tuple with the VersionMinor field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetVersionMinor
+
+`func (o *StorageNetAppCluster) SetVersionMinor(v int64)`
+
+SetVersionMinor sets VersionMinor field to given value.
+
+### HasVersionMinor
+
+`func (o *StorageNetAppCluster) HasVersionMinor() bool`
+
+HasVersionMinor returns a boolean if a field has been set.
 
 ### GetEvents
 
@@ -464,6 +666,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *StorageNetAppCluster) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *StorageNetAppCluster) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

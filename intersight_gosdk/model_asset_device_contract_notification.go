@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,10 +13,14 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
 )
+
+// checks if the AssetDeviceContractNotification type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &AssetDeviceContractNotification{}
 
 // AssetDeviceContractNotification Appliances use this object to send request to cloud to compute contract status. Cloud uses this to send the contract status response back to appliance.
 type AssetDeviceContractNotification struct {
@@ -42,6 +46,8 @@ type AssetDeviceContractNotification struct {
 	IsValid *bool `json:"IsValid,omitempty"`
 	// Item type of this specific Cisco device. example \"Chassis\".
 	ItemType *string `json:"ItemType,omitempty"`
+	// The last date of hardware support for this device.
+	LastDateOfSupport *time.Time `json:"LastDateOfSupport,omitempty"`
 	// Maintenance purchase order number for the Cisco device.
 	MaintenancePurchaseOrderNumber *string `json:"MaintenancePurchaseOrderNumber,omitempty"`
 	// Maintenance sales order number for the Cisco device.
@@ -69,8 +75,8 @@ type AssetDeviceContractNotification struct {
 	// End date for the warranty that covers the Cisco device.
 	WarrantyEndDate *string `json:"WarrantyEndDate,omitempty"`
 	// Type of warranty that covers the Cisco device.
-	WarrantyType         *string                              `json:"WarrantyType,omitempty"`
-	RegisteredDevice     *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	WarrantyType         *string                                     `json:"WarrantyType,omitempty"`
+	RegisteredDevice     NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -139,6 +145,11 @@ func (o *AssetDeviceContractNotification) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "asset.DeviceContractNotification" of the ClassId field.
+func (o *AssetDeviceContractNotification) GetDefaultClassId() interface{} {
+	return "asset.DeviceContractNotification"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *AssetDeviceContractNotification) GetObjectType() string {
 	if o == nil {
@@ -163,9 +174,14 @@ func (o *AssetDeviceContractNotification) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "asset.DeviceContractNotification" of the ObjectType field.
+func (o *AssetDeviceContractNotification) GetDefaultObjectType() interface{} {
+	return "asset.DeviceContractNotification"
+}
+
 // GetContract returns the Contract field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractNotification) GetContract() AssetContractInformation {
-	if o == nil || o.Contract.Get() == nil {
+	if o == nil || IsNil(o.Contract.Get()) {
 		var ret AssetContractInformation
 		return ret
 	}
@@ -208,7 +224,7 @@ func (o *AssetDeviceContractNotification) UnsetContract() {
 
 // GetContractStatus returns the ContractStatus field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetContractStatus() string {
-	if o == nil || o.ContractStatus == nil {
+	if o == nil || IsNil(o.ContractStatus) {
 		var ret string
 		return ret
 	}
@@ -218,7 +234,7 @@ func (o *AssetDeviceContractNotification) GetContractStatus() string {
 // GetContractStatusOk returns a tuple with the ContractStatus field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetContractStatusOk() (*string, bool) {
-	if o == nil || o.ContractStatus == nil {
+	if o == nil || IsNil(o.ContractStatus) {
 		return nil, false
 	}
 	return o.ContractStatus, true
@@ -226,7 +242,7 @@ func (o *AssetDeviceContractNotification) GetContractStatusOk() (*string, bool) 
 
 // HasContractStatus returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasContractStatus() bool {
-	if o != nil && o.ContractStatus != nil {
+	if o != nil && !IsNil(o.ContractStatus) {
 		return true
 	}
 
@@ -240,7 +256,7 @@ func (o *AssetDeviceContractNotification) SetContractStatus(v string) {
 
 // GetContractStatusReason returns the ContractStatusReason field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetContractStatusReason() string {
-	if o == nil || o.ContractStatusReason == nil {
+	if o == nil || IsNil(o.ContractStatusReason) {
 		var ret string
 		return ret
 	}
@@ -250,7 +266,7 @@ func (o *AssetDeviceContractNotification) GetContractStatusReason() string {
 // GetContractStatusReasonOk returns a tuple with the ContractStatusReason field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetContractStatusReasonOk() (*string, bool) {
-	if o == nil || o.ContractStatusReason == nil {
+	if o == nil || IsNil(o.ContractStatusReason) {
 		return nil, false
 	}
 	return o.ContractStatusReason, true
@@ -258,7 +274,7 @@ func (o *AssetDeviceContractNotification) GetContractStatusReasonOk() (*string, 
 
 // HasContractStatusReason returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasContractStatusReason() bool {
-	if o != nil && o.ContractStatusReason != nil {
+	if o != nil && !IsNil(o.ContractStatusReason) {
 		return true
 	}
 
@@ -272,7 +288,7 @@ func (o *AssetDeviceContractNotification) SetContractStatusReason(v string) {
 
 // GetContractUpdatedTime returns the ContractUpdatedTime field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetContractUpdatedTime() time.Time {
-	if o == nil || o.ContractUpdatedTime == nil {
+	if o == nil || IsNil(o.ContractUpdatedTime) {
 		var ret time.Time
 		return ret
 	}
@@ -282,7 +298,7 @@ func (o *AssetDeviceContractNotification) GetContractUpdatedTime() time.Time {
 // GetContractUpdatedTimeOk returns a tuple with the ContractUpdatedTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetContractUpdatedTimeOk() (*time.Time, bool) {
-	if o == nil || o.ContractUpdatedTime == nil {
+	if o == nil || IsNil(o.ContractUpdatedTime) {
 		return nil, false
 	}
 	return o.ContractUpdatedTime, true
@@ -290,7 +306,7 @@ func (o *AssetDeviceContractNotification) GetContractUpdatedTimeOk() (*time.Time
 
 // HasContractUpdatedTime returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasContractUpdatedTime() bool {
-	if o != nil && o.ContractUpdatedTime != nil {
+	if o != nil && !IsNil(o.ContractUpdatedTime) {
 		return true
 	}
 
@@ -304,7 +320,7 @@ func (o *AssetDeviceContractNotification) SetContractUpdatedTime(v time.Time) {
 
 // GetCoveredProductLineEndDate returns the CoveredProductLineEndDate field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetCoveredProductLineEndDate() string {
-	if o == nil || o.CoveredProductLineEndDate == nil {
+	if o == nil || IsNil(o.CoveredProductLineEndDate) {
 		var ret string
 		return ret
 	}
@@ -314,7 +330,7 @@ func (o *AssetDeviceContractNotification) GetCoveredProductLineEndDate() string 
 // GetCoveredProductLineEndDateOk returns a tuple with the CoveredProductLineEndDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetCoveredProductLineEndDateOk() (*string, bool) {
-	if o == nil || o.CoveredProductLineEndDate == nil {
+	if o == nil || IsNil(o.CoveredProductLineEndDate) {
 		return nil, false
 	}
 	return o.CoveredProductLineEndDate, true
@@ -322,7 +338,7 @@ func (o *AssetDeviceContractNotification) GetCoveredProductLineEndDateOk() (*str
 
 // HasCoveredProductLineEndDate returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasCoveredProductLineEndDate() bool {
-	if o != nil && o.CoveredProductLineEndDate != nil {
+	if o != nil && !IsNil(o.CoveredProductLineEndDate) {
 		return true
 	}
 
@@ -336,7 +352,7 @@ func (o *AssetDeviceContractNotification) SetCoveredProductLineEndDate(v string)
 
 // GetDeviceId returns the DeviceId field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetDeviceId() string {
-	if o == nil || o.DeviceId == nil {
+	if o == nil || IsNil(o.DeviceId) {
 		var ret string
 		return ret
 	}
@@ -346,7 +362,7 @@ func (o *AssetDeviceContractNotification) GetDeviceId() string {
 // GetDeviceIdOk returns a tuple with the DeviceId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetDeviceIdOk() (*string, bool) {
-	if o == nil || o.DeviceId == nil {
+	if o == nil || IsNil(o.DeviceId) {
 		return nil, false
 	}
 	return o.DeviceId, true
@@ -354,7 +370,7 @@ func (o *AssetDeviceContractNotification) GetDeviceIdOk() (*string, bool) {
 
 // HasDeviceId returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasDeviceId() bool {
-	if o != nil && o.DeviceId != nil {
+	if o != nil && !IsNil(o.DeviceId) {
 		return true
 	}
 
@@ -368,7 +384,7 @@ func (o *AssetDeviceContractNotification) SetDeviceId(v string) {
 
 // GetEndCustomer returns the EndCustomer field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractNotification) GetEndCustomer() AssetCustomerInformation {
-	if o == nil || o.EndCustomer.Get() == nil {
+	if o == nil || IsNil(o.EndCustomer.Get()) {
 		var ret AssetCustomerInformation
 		return ret
 	}
@@ -411,7 +427,7 @@ func (o *AssetDeviceContractNotification) UnsetEndCustomer() {
 
 // GetEndUserGlobalUltimate returns the EndUserGlobalUltimate field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractNotification) GetEndUserGlobalUltimate() AssetGlobalUltimate {
-	if o == nil || o.EndUserGlobalUltimate.Get() == nil {
+	if o == nil || IsNil(o.EndUserGlobalUltimate.Get()) {
 		var ret AssetGlobalUltimate
 		return ret
 	}
@@ -454,7 +470,7 @@ func (o *AssetDeviceContractNotification) UnsetEndUserGlobalUltimate() {
 
 // GetIsValid returns the IsValid field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetIsValid() bool {
-	if o == nil || o.IsValid == nil {
+	if o == nil || IsNil(o.IsValid) {
 		var ret bool
 		return ret
 	}
@@ -464,7 +480,7 @@ func (o *AssetDeviceContractNotification) GetIsValid() bool {
 // GetIsValidOk returns a tuple with the IsValid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetIsValidOk() (*bool, bool) {
-	if o == nil || o.IsValid == nil {
+	if o == nil || IsNil(o.IsValid) {
 		return nil, false
 	}
 	return o.IsValid, true
@@ -472,7 +488,7 @@ func (o *AssetDeviceContractNotification) GetIsValidOk() (*bool, bool) {
 
 // HasIsValid returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasIsValid() bool {
-	if o != nil && o.IsValid != nil {
+	if o != nil && !IsNil(o.IsValid) {
 		return true
 	}
 
@@ -486,7 +502,7 @@ func (o *AssetDeviceContractNotification) SetIsValid(v bool) {
 
 // GetItemType returns the ItemType field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetItemType() string {
-	if o == nil || o.ItemType == nil {
+	if o == nil || IsNil(o.ItemType) {
 		var ret string
 		return ret
 	}
@@ -496,7 +512,7 @@ func (o *AssetDeviceContractNotification) GetItemType() string {
 // GetItemTypeOk returns a tuple with the ItemType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetItemTypeOk() (*string, bool) {
-	if o == nil || o.ItemType == nil {
+	if o == nil || IsNil(o.ItemType) {
 		return nil, false
 	}
 	return o.ItemType, true
@@ -504,7 +520,7 @@ func (o *AssetDeviceContractNotification) GetItemTypeOk() (*string, bool) {
 
 // HasItemType returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasItemType() bool {
-	if o != nil && o.ItemType != nil {
+	if o != nil && !IsNil(o.ItemType) {
 		return true
 	}
 
@@ -516,9 +532,41 @@ func (o *AssetDeviceContractNotification) SetItemType(v string) {
 	o.ItemType = &v
 }
 
+// GetLastDateOfSupport returns the LastDateOfSupport field value if set, zero value otherwise.
+func (o *AssetDeviceContractNotification) GetLastDateOfSupport() time.Time {
+	if o == nil || IsNil(o.LastDateOfSupport) {
+		var ret time.Time
+		return ret
+	}
+	return *o.LastDateOfSupport
+}
+
+// GetLastDateOfSupportOk returns a tuple with the LastDateOfSupport field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *AssetDeviceContractNotification) GetLastDateOfSupportOk() (*time.Time, bool) {
+	if o == nil || IsNil(o.LastDateOfSupport) {
+		return nil, false
+	}
+	return o.LastDateOfSupport, true
+}
+
+// HasLastDateOfSupport returns a boolean if a field has been set.
+func (o *AssetDeviceContractNotification) HasLastDateOfSupport() bool {
+	if o != nil && !IsNil(o.LastDateOfSupport) {
+		return true
+	}
+
+	return false
+}
+
+// SetLastDateOfSupport gets a reference to the given time.Time and assigns it to the LastDateOfSupport field.
+func (o *AssetDeviceContractNotification) SetLastDateOfSupport(v time.Time) {
+	o.LastDateOfSupport = &v
+}
+
 // GetMaintenancePurchaseOrderNumber returns the MaintenancePurchaseOrderNumber field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetMaintenancePurchaseOrderNumber() string {
-	if o == nil || o.MaintenancePurchaseOrderNumber == nil {
+	if o == nil || IsNil(o.MaintenancePurchaseOrderNumber) {
 		var ret string
 		return ret
 	}
@@ -528,7 +576,7 @@ func (o *AssetDeviceContractNotification) GetMaintenancePurchaseOrderNumber() st
 // GetMaintenancePurchaseOrderNumberOk returns a tuple with the MaintenancePurchaseOrderNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetMaintenancePurchaseOrderNumberOk() (*string, bool) {
-	if o == nil || o.MaintenancePurchaseOrderNumber == nil {
+	if o == nil || IsNil(o.MaintenancePurchaseOrderNumber) {
 		return nil, false
 	}
 	return o.MaintenancePurchaseOrderNumber, true
@@ -536,7 +584,7 @@ func (o *AssetDeviceContractNotification) GetMaintenancePurchaseOrderNumberOk() 
 
 // HasMaintenancePurchaseOrderNumber returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasMaintenancePurchaseOrderNumber() bool {
-	if o != nil && o.MaintenancePurchaseOrderNumber != nil {
+	if o != nil && !IsNil(o.MaintenancePurchaseOrderNumber) {
 		return true
 	}
 
@@ -550,7 +598,7 @@ func (o *AssetDeviceContractNotification) SetMaintenancePurchaseOrderNumber(v st
 
 // GetMaintenanceSalesOrderNumber returns the MaintenanceSalesOrderNumber field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetMaintenanceSalesOrderNumber() string {
-	if o == nil || o.MaintenanceSalesOrderNumber == nil {
+	if o == nil || IsNil(o.MaintenanceSalesOrderNumber) {
 		var ret string
 		return ret
 	}
@@ -560,7 +608,7 @@ func (o *AssetDeviceContractNotification) GetMaintenanceSalesOrderNumber() strin
 // GetMaintenanceSalesOrderNumberOk returns a tuple with the MaintenanceSalesOrderNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetMaintenanceSalesOrderNumberOk() (*string, bool) {
-	if o == nil || o.MaintenanceSalesOrderNumber == nil {
+	if o == nil || IsNil(o.MaintenanceSalesOrderNumber) {
 		return nil, false
 	}
 	return o.MaintenanceSalesOrderNumber, true
@@ -568,7 +616,7 @@ func (o *AssetDeviceContractNotification) GetMaintenanceSalesOrderNumberOk() (*s
 
 // HasMaintenanceSalesOrderNumber returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasMaintenanceSalesOrderNumber() bool {
-	if o != nil && o.MaintenanceSalesOrderNumber != nil {
+	if o != nil && !IsNil(o.MaintenanceSalesOrderNumber) {
 		return true
 	}
 
@@ -582,7 +630,7 @@ func (o *AssetDeviceContractNotification) SetMaintenanceSalesOrderNumber(v strin
 
 // GetProduct returns the Product field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractNotification) GetProduct() AssetProductInformation {
-	if o == nil || o.Product.Get() == nil {
+	if o == nil || IsNil(o.Product.Get()) {
 		var ret AssetProductInformation
 		return ret
 	}
@@ -625,7 +673,7 @@ func (o *AssetDeviceContractNotification) UnsetProduct() {
 
 // GetPurchaseOrderNumber returns the PurchaseOrderNumber field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetPurchaseOrderNumber() string {
-	if o == nil || o.PurchaseOrderNumber == nil {
+	if o == nil || IsNil(o.PurchaseOrderNumber) {
 		var ret string
 		return ret
 	}
@@ -635,7 +683,7 @@ func (o *AssetDeviceContractNotification) GetPurchaseOrderNumber() string {
 // GetPurchaseOrderNumberOk returns a tuple with the PurchaseOrderNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetPurchaseOrderNumberOk() (*string, bool) {
-	if o == nil || o.PurchaseOrderNumber == nil {
+	if o == nil || IsNil(o.PurchaseOrderNumber) {
 		return nil, false
 	}
 	return o.PurchaseOrderNumber, true
@@ -643,7 +691,7 @@ func (o *AssetDeviceContractNotification) GetPurchaseOrderNumberOk() (*string, b
 
 // HasPurchaseOrderNumber returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasPurchaseOrderNumber() bool {
-	if o != nil && o.PurchaseOrderNumber != nil {
+	if o != nil && !IsNil(o.PurchaseOrderNumber) {
 		return true
 	}
 
@@ -657,7 +705,7 @@ func (o *AssetDeviceContractNotification) SetPurchaseOrderNumber(v string) {
 
 // GetResellerGlobalUltimate returns the ResellerGlobalUltimate field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractNotification) GetResellerGlobalUltimate() AssetGlobalUltimate {
-	if o == nil || o.ResellerGlobalUltimate.Get() == nil {
+	if o == nil || IsNil(o.ResellerGlobalUltimate.Get()) {
 		var ret AssetGlobalUltimate
 		return ret
 	}
@@ -700,7 +748,7 @@ func (o *AssetDeviceContractNotification) UnsetResellerGlobalUltimate() {
 
 // GetSalesOrderNumber returns the SalesOrderNumber field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetSalesOrderNumber() string {
-	if o == nil || o.SalesOrderNumber == nil {
+	if o == nil || IsNil(o.SalesOrderNumber) {
 		var ret string
 		return ret
 	}
@@ -710,7 +758,7 @@ func (o *AssetDeviceContractNotification) GetSalesOrderNumber() string {
 // GetSalesOrderNumberOk returns a tuple with the SalesOrderNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetSalesOrderNumberOk() (*string, bool) {
-	if o == nil || o.SalesOrderNumber == nil {
+	if o == nil || IsNil(o.SalesOrderNumber) {
 		return nil, false
 	}
 	return o.SalesOrderNumber, true
@@ -718,7 +766,7 @@ func (o *AssetDeviceContractNotification) GetSalesOrderNumberOk() (*string, bool
 
 // HasSalesOrderNumber returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasSalesOrderNumber() bool {
-	if o != nil && o.SalesOrderNumber != nil {
+	if o != nil && !IsNil(o.SalesOrderNumber) {
 		return true
 	}
 
@@ -732,7 +780,7 @@ func (o *AssetDeviceContractNotification) SetSalesOrderNumber(v string) {
 
 // GetServiceDescription returns the ServiceDescription field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetServiceDescription() string {
-	if o == nil || o.ServiceDescription == nil {
+	if o == nil || IsNil(o.ServiceDescription) {
 		var ret string
 		return ret
 	}
@@ -742,7 +790,7 @@ func (o *AssetDeviceContractNotification) GetServiceDescription() string {
 // GetServiceDescriptionOk returns a tuple with the ServiceDescription field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetServiceDescriptionOk() (*string, bool) {
-	if o == nil || o.ServiceDescription == nil {
+	if o == nil || IsNil(o.ServiceDescription) {
 		return nil, false
 	}
 	return o.ServiceDescription, true
@@ -750,7 +798,7 @@ func (o *AssetDeviceContractNotification) GetServiceDescriptionOk() (*string, bo
 
 // HasServiceDescription returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasServiceDescription() bool {
-	if o != nil && o.ServiceDescription != nil {
+	if o != nil && !IsNil(o.ServiceDescription) {
 		return true
 	}
 
@@ -764,7 +812,7 @@ func (o *AssetDeviceContractNotification) SetServiceDescription(v string) {
 
 // GetServiceEndDate returns the ServiceEndDate field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetServiceEndDate() time.Time {
-	if o == nil || o.ServiceEndDate == nil {
+	if o == nil || IsNil(o.ServiceEndDate) {
 		var ret time.Time
 		return ret
 	}
@@ -774,7 +822,7 @@ func (o *AssetDeviceContractNotification) GetServiceEndDate() time.Time {
 // GetServiceEndDateOk returns a tuple with the ServiceEndDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetServiceEndDateOk() (*time.Time, bool) {
-	if o == nil || o.ServiceEndDate == nil {
+	if o == nil || IsNil(o.ServiceEndDate) {
 		return nil, false
 	}
 	return o.ServiceEndDate, true
@@ -782,7 +830,7 @@ func (o *AssetDeviceContractNotification) GetServiceEndDateOk() (*time.Time, boo
 
 // HasServiceEndDate returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasServiceEndDate() bool {
-	if o != nil && o.ServiceEndDate != nil {
+	if o != nil && !IsNil(o.ServiceEndDate) {
 		return true
 	}
 
@@ -796,7 +844,7 @@ func (o *AssetDeviceContractNotification) SetServiceEndDate(v time.Time) {
 
 // GetServiceLevel returns the ServiceLevel field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetServiceLevel() string {
-	if o == nil || o.ServiceLevel == nil {
+	if o == nil || IsNil(o.ServiceLevel) {
 		var ret string
 		return ret
 	}
@@ -806,7 +854,7 @@ func (o *AssetDeviceContractNotification) GetServiceLevel() string {
 // GetServiceLevelOk returns a tuple with the ServiceLevel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetServiceLevelOk() (*string, bool) {
-	if o == nil || o.ServiceLevel == nil {
+	if o == nil || IsNil(o.ServiceLevel) {
 		return nil, false
 	}
 	return o.ServiceLevel, true
@@ -814,7 +862,7 @@ func (o *AssetDeviceContractNotification) GetServiceLevelOk() (*string, bool) {
 
 // HasServiceLevel returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasServiceLevel() bool {
-	if o != nil && o.ServiceLevel != nil {
+	if o != nil && !IsNil(o.ServiceLevel) {
 		return true
 	}
 
@@ -828,7 +876,7 @@ func (o *AssetDeviceContractNotification) SetServiceLevel(v string) {
 
 // GetServiceSku returns the ServiceSku field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetServiceSku() string {
-	if o == nil || o.ServiceSku == nil {
+	if o == nil || IsNil(o.ServiceSku) {
 		var ret string
 		return ret
 	}
@@ -838,7 +886,7 @@ func (o *AssetDeviceContractNotification) GetServiceSku() string {
 // GetServiceSkuOk returns a tuple with the ServiceSku field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetServiceSkuOk() (*string, bool) {
-	if o == nil || o.ServiceSku == nil {
+	if o == nil || IsNil(o.ServiceSku) {
 		return nil, false
 	}
 	return o.ServiceSku, true
@@ -846,7 +894,7 @@ func (o *AssetDeviceContractNotification) GetServiceSkuOk() (*string, bool) {
 
 // HasServiceSku returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasServiceSku() bool {
-	if o != nil && o.ServiceSku != nil {
+	if o != nil && !IsNil(o.ServiceSku) {
 		return true
 	}
 
@@ -860,7 +908,7 @@ func (o *AssetDeviceContractNotification) SetServiceSku(v string) {
 
 // GetServiceStartDate returns the ServiceStartDate field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetServiceStartDate() time.Time {
-	if o == nil || o.ServiceStartDate == nil {
+	if o == nil || IsNil(o.ServiceStartDate) {
 		var ret time.Time
 		return ret
 	}
@@ -870,7 +918,7 @@ func (o *AssetDeviceContractNotification) GetServiceStartDate() time.Time {
 // GetServiceStartDateOk returns a tuple with the ServiceStartDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetServiceStartDateOk() (*time.Time, bool) {
-	if o == nil || o.ServiceStartDate == nil {
+	if o == nil || IsNil(o.ServiceStartDate) {
 		return nil, false
 	}
 	return o.ServiceStartDate, true
@@ -878,7 +926,7 @@ func (o *AssetDeviceContractNotification) GetServiceStartDateOk() (*time.Time, b
 
 // HasServiceStartDate returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasServiceStartDate() bool {
-	if o != nil && o.ServiceStartDate != nil {
+	if o != nil && !IsNil(o.ServiceStartDate) {
 		return true
 	}
 
@@ -892,7 +940,7 @@ func (o *AssetDeviceContractNotification) SetServiceStartDate(v time.Time) {
 
 // GetStateContract returns the StateContract field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetStateContract() string {
-	if o == nil || o.StateContract == nil {
+	if o == nil || IsNil(o.StateContract) {
 		var ret string
 		return ret
 	}
@@ -902,7 +950,7 @@ func (o *AssetDeviceContractNotification) GetStateContract() string {
 // GetStateContractOk returns a tuple with the StateContract field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetStateContractOk() (*string, bool) {
-	if o == nil || o.StateContract == nil {
+	if o == nil || IsNil(o.StateContract) {
 		return nil, false
 	}
 	return o.StateContract, true
@@ -910,7 +958,7 @@ func (o *AssetDeviceContractNotification) GetStateContractOk() (*string, bool) {
 
 // HasStateContract returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasStateContract() bool {
-	if o != nil && o.StateContract != nil {
+	if o != nil && !IsNil(o.StateContract) {
 		return true
 	}
 
@@ -924,7 +972,7 @@ func (o *AssetDeviceContractNotification) SetStateContract(v string) {
 
 // GetStateSn2Info returns the StateSn2Info field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetStateSn2Info() string {
-	if o == nil || o.StateSn2Info == nil {
+	if o == nil || IsNil(o.StateSn2Info) {
 		var ret string
 		return ret
 	}
@@ -934,7 +982,7 @@ func (o *AssetDeviceContractNotification) GetStateSn2Info() string {
 // GetStateSn2InfoOk returns a tuple with the StateSn2Info field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetStateSn2InfoOk() (*string, bool) {
-	if o == nil || o.StateSn2Info == nil {
+	if o == nil || IsNil(o.StateSn2Info) {
 		return nil, false
 	}
 	return o.StateSn2Info, true
@@ -942,7 +990,7 @@ func (o *AssetDeviceContractNotification) GetStateSn2InfoOk() (*string, bool) {
 
 // HasStateSn2Info returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasStateSn2Info() bool {
-	if o != nil && o.StateSn2Info != nil {
+	if o != nil && !IsNil(o.StateSn2Info) {
 		return true
 	}
 
@@ -956,7 +1004,7 @@ func (o *AssetDeviceContractNotification) SetStateSn2Info(v string) {
 
 // GetWarrantyEndDate returns the WarrantyEndDate field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetWarrantyEndDate() string {
-	if o == nil || o.WarrantyEndDate == nil {
+	if o == nil || IsNil(o.WarrantyEndDate) {
 		var ret string
 		return ret
 	}
@@ -966,7 +1014,7 @@ func (o *AssetDeviceContractNotification) GetWarrantyEndDate() string {
 // GetWarrantyEndDateOk returns a tuple with the WarrantyEndDate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetWarrantyEndDateOk() (*string, bool) {
-	if o == nil || o.WarrantyEndDate == nil {
+	if o == nil || IsNil(o.WarrantyEndDate) {
 		return nil, false
 	}
 	return o.WarrantyEndDate, true
@@ -974,7 +1022,7 @@ func (o *AssetDeviceContractNotification) GetWarrantyEndDateOk() (*string, bool)
 
 // HasWarrantyEndDate returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasWarrantyEndDate() bool {
-	if o != nil && o.WarrantyEndDate != nil {
+	if o != nil && !IsNil(o.WarrantyEndDate) {
 		return true
 	}
 
@@ -988,7 +1036,7 @@ func (o *AssetDeviceContractNotification) SetWarrantyEndDate(v string) {
 
 // GetWarrantyType returns the WarrantyType field value if set, zero value otherwise.
 func (o *AssetDeviceContractNotification) GetWarrantyType() string {
-	if o == nil || o.WarrantyType == nil {
+	if o == nil || IsNil(o.WarrantyType) {
 		var ret string
 		return ret
 	}
@@ -998,7 +1046,7 @@ func (o *AssetDeviceContractNotification) GetWarrantyType() string {
 // GetWarrantyTypeOk returns a tuple with the WarrantyType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *AssetDeviceContractNotification) GetWarrantyTypeOk() (*string, bool) {
-	if o == nil || o.WarrantyType == nil {
+	if o == nil || IsNil(o.WarrantyType) {
 		return nil, false
 	}
 	return o.WarrantyType, true
@@ -1006,7 +1054,7 @@ func (o *AssetDeviceContractNotification) GetWarrantyTypeOk() (*string, bool) {
 
 // HasWarrantyType returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasWarrantyType() bool {
-	if o != nil && o.WarrantyType != nil {
+	if o != nil && !IsNil(o.WarrantyType) {
 		return true
 	}
 
@@ -1018,70 +1066,91 @@ func (o *AssetDeviceContractNotification) SetWarrantyType(v string) {
 	o.WarrantyType = &v
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *AssetDeviceContractNotification) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
 		var ret AssetDeviceRegistrationRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.RegisteredDevice.Get()
 }
 
 // GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *AssetDeviceContractNotification) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
 }
 
 // HasRegisteredDevice returns a boolean if a field has been set.
 func (o *AssetDeviceContractNotification) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+	if o != nil && o.RegisteredDevice.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *AssetDeviceContractNotification) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
+}
+
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *AssetDeviceContractNotification) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *AssetDeviceContractNotification) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
 }
 
 func (o AssetDeviceContractNotification) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o AssetDeviceContractNotification) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
 	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
 	if errMoBaseMo != nil {
-		return []byte{}, errMoBaseMo
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.Contract.IsSet() {
 		toSerialize["Contract"] = o.Contract.Get()
 	}
-	if o.ContractStatus != nil {
+	if !IsNil(o.ContractStatus) {
 		toSerialize["ContractStatus"] = o.ContractStatus
 	}
-	if o.ContractStatusReason != nil {
+	if !IsNil(o.ContractStatusReason) {
 		toSerialize["ContractStatusReason"] = o.ContractStatusReason
 	}
-	if o.ContractUpdatedTime != nil {
+	if !IsNil(o.ContractUpdatedTime) {
 		toSerialize["ContractUpdatedTime"] = o.ContractUpdatedTime
 	}
-	if o.CoveredProductLineEndDate != nil {
+	if !IsNil(o.CoveredProductLineEndDate) {
 		toSerialize["CoveredProductLineEndDate"] = o.CoveredProductLineEndDate
 	}
-	if o.DeviceId != nil {
+	if !IsNil(o.DeviceId) {
 		toSerialize["DeviceId"] = o.DeviceId
 	}
 	if o.EndCustomer.IsSet() {
@@ -1090,69 +1159,113 @@ func (o AssetDeviceContractNotification) MarshalJSON() ([]byte, error) {
 	if o.EndUserGlobalUltimate.IsSet() {
 		toSerialize["EndUserGlobalUltimate"] = o.EndUserGlobalUltimate.Get()
 	}
-	if o.IsValid != nil {
+	if !IsNil(o.IsValid) {
 		toSerialize["IsValid"] = o.IsValid
 	}
-	if o.ItemType != nil {
+	if !IsNil(o.ItemType) {
 		toSerialize["ItemType"] = o.ItemType
 	}
-	if o.MaintenancePurchaseOrderNumber != nil {
+	if !IsNil(o.LastDateOfSupport) {
+		toSerialize["LastDateOfSupport"] = o.LastDateOfSupport
+	}
+	if !IsNil(o.MaintenancePurchaseOrderNumber) {
 		toSerialize["MaintenancePurchaseOrderNumber"] = o.MaintenancePurchaseOrderNumber
 	}
-	if o.MaintenanceSalesOrderNumber != nil {
+	if !IsNil(o.MaintenanceSalesOrderNumber) {
 		toSerialize["MaintenanceSalesOrderNumber"] = o.MaintenanceSalesOrderNumber
 	}
 	if o.Product.IsSet() {
 		toSerialize["Product"] = o.Product.Get()
 	}
-	if o.PurchaseOrderNumber != nil {
+	if !IsNil(o.PurchaseOrderNumber) {
 		toSerialize["PurchaseOrderNumber"] = o.PurchaseOrderNumber
 	}
 	if o.ResellerGlobalUltimate.IsSet() {
 		toSerialize["ResellerGlobalUltimate"] = o.ResellerGlobalUltimate.Get()
 	}
-	if o.SalesOrderNumber != nil {
+	if !IsNil(o.SalesOrderNumber) {
 		toSerialize["SalesOrderNumber"] = o.SalesOrderNumber
 	}
-	if o.ServiceDescription != nil {
+	if !IsNil(o.ServiceDescription) {
 		toSerialize["ServiceDescription"] = o.ServiceDescription
 	}
-	if o.ServiceEndDate != nil {
+	if !IsNil(o.ServiceEndDate) {
 		toSerialize["ServiceEndDate"] = o.ServiceEndDate
 	}
-	if o.ServiceLevel != nil {
+	if !IsNil(o.ServiceLevel) {
 		toSerialize["ServiceLevel"] = o.ServiceLevel
 	}
-	if o.ServiceSku != nil {
+	if !IsNil(o.ServiceSku) {
 		toSerialize["ServiceSku"] = o.ServiceSku
 	}
-	if o.ServiceStartDate != nil {
+	if !IsNil(o.ServiceStartDate) {
 		toSerialize["ServiceStartDate"] = o.ServiceStartDate
 	}
-	if o.StateContract != nil {
+	if !IsNil(o.StateContract) {
 		toSerialize["StateContract"] = o.StateContract
 	}
-	if o.StateSn2Info != nil {
+	if !IsNil(o.StateSn2Info) {
 		toSerialize["StateSn2Info"] = o.StateSn2Info
 	}
-	if o.WarrantyEndDate != nil {
+	if !IsNil(o.WarrantyEndDate) {
 		toSerialize["WarrantyEndDate"] = o.WarrantyEndDate
 	}
-	if o.WarrantyType != nil {
+	if !IsNil(o.WarrantyType) {
 		toSerialize["WarrantyType"] = o.WarrantyType
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *AssetDeviceContractNotification) UnmarshalJSON(bytes []byte) (err error) {
+func (o *AssetDeviceContractNotification) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type AssetDeviceContractNotificationWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -1175,6 +1288,8 @@ func (o *AssetDeviceContractNotification) UnmarshalJSON(bytes []byte) (err error
 		IsValid *bool `json:"IsValid,omitempty"`
 		// Item type of this specific Cisco device. example \"Chassis\".
 		ItemType *string `json:"ItemType,omitempty"`
+		// The last date of hardware support for this device.
+		LastDateOfSupport *time.Time `json:"LastDateOfSupport,omitempty"`
 		// Maintenance purchase order number for the Cisco device.
 		MaintenancePurchaseOrderNumber *string `json:"MaintenancePurchaseOrderNumber,omitempty"`
 		// Maintenance sales order number for the Cisco device.
@@ -1202,13 +1317,13 @@ func (o *AssetDeviceContractNotification) UnmarshalJSON(bytes []byte) (err error
 		// End date for the warranty that covers the Cisco device.
 		WarrantyEndDate *string `json:"WarrantyEndDate,omitempty"`
 		// Type of warranty that covers the Cisco device.
-		WarrantyType     *string                              `json:"WarrantyType,omitempty"`
-		RegisteredDevice *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		WarrantyType     *string                                     `json:"WarrantyType,omitempty"`
+		RegisteredDevice NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	}
 
 	varAssetDeviceContractNotificationWithoutEmbeddedStruct := AssetDeviceContractNotificationWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varAssetDeviceContractNotificationWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varAssetDeviceContractNotificationWithoutEmbeddedStruct)
 	if err == nil {
 		varAssetDeviceContractNotification := _AssetDeviceContractNotification{}
 		varAssetDeviceContractNotification.ClassId = varAssetDeviceContractNotificationWithoutEmbeddedStruct.ClassId
@@ -1223,6 +1338,7 @@ func (o *AssetDeviceContractNotification) UnmarshalJSON(bytes []byte) (err error
 		varAssetDeviceContractNotification.EndUserGlobalUltimate = varAssetDeviceContractNotificationWithoutEmbeddedStruct.EndUserGlobalUltimate
 		varAssetDeviceContractNotification.IsValid = varAssetDeviceContractNotificationWithoutEmbeddedStruct.IsValid
 		varAssetDeviceContractNotification.ItemType = varAssetDeviceContractNotificationWithoutEmbeddedStruct.ItemType
+		varAssetDeviceContractNotification.LastDateOfSupport = varAssetDeviceContractNotificationWithoutEmbeddedStruct.LastDateOfSupport
 		varAssetDeviceContractNotification.MaintenancePurchaseOrderNumber = varAssetDeviceContractNotificationWithoutEmbeddedStruct.MaintenancePurchaseOrderNumber
 		varAssetDeviceContractNotification.MaintenanceSalesOrderNumber = varAssetDeviceContractNotificationWithoutEmbeddedStruct.MaintenanceSalesOrderNumber
 		varAssetDeviceContractNotification.Product = varAssetDeviceContractNotificationWithoutEmbeddedStruct.Product
@@ -1246,7 +1362,7 @@ func (o *AssetDeviceContractNotification) UnmarshalJSON(bytes []byte) (err error
 
 	varAssetDeviceContractNotification := _AssetDeviceContractNotification{}
 
-	err = json.Unmarshal(bytes, &varAssetDeviceContractNotification)
+	err = json.Unmarshal(data, &varAssetDeviceContractNotification)
 	if err == nil {
 		o.MoBaseMo = varAssetDeviceContractNotification.MoBaseMo
 	} else {
@@ -1255,7 +1371,7 @@ func (o *AssetDeviceContractNotification) UnmarshalJSON(bytes []byte) (err error
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "Contract")
@@ -1268,6 +1384,7 @@ func (o *AssetDeviceContractNotification) UnmarshalJSON(bytes []byte) (err error
 		delete(additionalProperties, "EndUserGlobalUltimate")
 		delete(additionalProperties, "IsValid")
 		delete(additionalProperties, "ItemType")
+		delete(additionalProperties, "LastDateOfSupport")
 		delete(additionalProperties, "MaintenancePurchaseOrderNumber")
 		delete(additionalProperties, "MaintenanceSalesOrderNumber")
 		delete(additionalProperties, "Product")

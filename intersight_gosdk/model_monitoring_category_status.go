@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the MonitoringCategoryStatus type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &MonitoringCategoryStatus{}
 
 // MonitoringCategoryStatus Status of an Intersight category such as 'Licensing' with additional details. Several categories and their respective status is reported as part of the health status API.
 type MonitoringCategoryStatus struct {
@@ -27,7 +31,7 @@ type MonitoringCategoryStatus struct {
 	// Name of the category for which status is being reported (for e.g. 'Licensing', 'Advisories').
 	CategoryLabel *string `json:"CategoryLabel,omitempty"`
 	// Link to the corresponding category specific page in Intersight to get additional information and troubleshoot. for e.g. 'Alarms' category would have the deeplink as 'https://intersight.com/an/cond/alarms/active'.
-	Deeplink *string `json:"Deeplink,omitempty"`
+	Deeplink *string `json:"Deeplink,omitempty" validate:"regexp=^$|^(?:http(s)?:\\/\\/)?[\\\\w.-]+(?:\\\\.[\\\\w\\\\.-]+)+[\\\\w\\\\-\\\\._~:\\/?#[\\\\]@!\\\\$&'\\\\(\\\\)\\\\*\\\\+,;=.]+$"`
 	// Additional information regarding category status that may be displayed in UI related to the category status. Optional and currently unused.
 	Details *string `json:"Details,omitempty"`
 	// Additional parameter to be used for traceability and troubleshooting, currently unused.
@@ -47,8 +51,6 @@ func NewMonitoringCategoryStatus(classId string, objectType string) *MonitoringC
 	this := MonitoringCategoryStatus{}
 	this.ClassId = classId
 	this.ObjectType = objectType
-	var status string = "Unknown"
-	this.Status = &status
 	return &this
 }
 
@@ -61,8 +63,6 @@ func NewMonitoringCategoryStatusWithDefaults() *MonitoringCategoryStatus {
 	this.ClassId = classId
 	var objectType string = "monitoring.CategoryStatus"
 	this.ObjectType = objectType
-	var status string = "Unknown"
-	this.Status = &status
 	return &this
 }
 
@@ -90,6 +90,11 @@ func (o *MonitoringCategoryStatus) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "monitoring.CategoryStatus" of the ClassId field.
+func (o *MonitoringCategoryStatus) GetDefaultClassId() interface{} {
+	return "monitoring.CategoryStatus"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *MonitoringCategoryStatus) GetObjectType() string {
 	if o == nil {
@@ -114,9 +119,14 @@ func (o *MonitoringCategoryStatus) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "monitoring.CategoryStatus" of the ObjectType field.
+func (o *MonitoringCategoryStatus) GetDefaultObjectType() interface{} {
+	return "monitoring.CategoryStatus"
+}
+
 // GetCategoryLabel returns the CategoryLabel field value if set, zero value otherwise.
 func (o *MonitoringCategoryStatus) GetCategoryLabel() string {
-	if o == nil || o.CategoryLabel == nil {
+	if o == nil || IsNil(o.CategoryLabel) {
 		var ret string
 		return ret
 	}
@@ -126,7 +136,7 @@ func (o *MonitoringCategoryStatus) GetCategoryLabel() string {
 // GetCategoryLabelOk returns a tuple with the CategoryLabel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MonitoringCategoryStatus) GetCategoryLabelOk() (*string, bool) {
-	if o == nil || o.CategoryLabel == nil {
+	if o == nil || IsNil(o.CategoryLabel) {
 		return nil, false
 	}
 	return o.CategoryLabel, true
@@ -134,7 +144,7 @@ func (o *MonitoringCategoryStatus) GetCategoryLabelOk() (*string, bool) {
 
 // HasCategoryLabel returns a boolean if a field has been set.
 func (o *MonitoringCategoryStatus) HasCategoryLabel() bool {
-	if o != nil && o.CategoryLabel != nil {
+	if o != nil && !IsNil(o.CategoryLabel) {
 		return true
 	}
 
@@ -148,7 +158,7 @@ func (o *MonitoringCategoryStatus) SetCategoryLabel(v string) {
 
 // GetDeeplink returns the Deeplink field value if set, zero value otherwise.
 func (o *MonitoringCategoryStatus) GetDeeplink() string {
-	if o == nil || o.Deeplink == nil {
+	if o == nil || IsNil(o.Deeplink) {
 		var ret string
 		return ret
 	}
@@ -158,7 +168,7 @@ func (o *MonitoringCategoryStatus) GetDeeplink() string {
 // GetDeeplinkOk returns a tuple with the Deeplink field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MonitoringCategoryStatus) GetDeeplinkOk() (*string, bool) {
-	if o == nil || o.Deeplink == nil {
+	if o == nil || IsNil(o.Deeplink) {
 		return nil, false
 	}
 	return o.Deeplink, true
@@ -166,7 +176,7 @@ func (o *MonitoringCategoryStatus) GetDeeplinkOk() (*string, bool) {
 
 // HasDeeplink returns a boolean if a field has been set.
 func (o *MonitoringCategoryStatus) HasDeeplink() bool {
-	if o != nil && o.Deeplink != nil {
+	if o != nil && !IsNil(o.Deeplink) {
 		return true
 	}
 
@@ -180,7 +190,7 @@ func (o *MonitoringCategoryStatus) SetDeeplink(v string) {
 
 // GetDetails returns the Details field value if set, zero value otherwise.
 func (o *MonitoringCategoryStatus) GetDetails() string {
-	if o == nil || o.Details == nil {
+	if o == nil || IsNil(o.Details) {
 		var ret string
 		return ret
 	}
@@ -190,7 +200,7 @@ func (o *MonitoringCategoryStatus) GetDetails() string {
 // GetDetailsOk returns a tuple with the Details field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MonitoringCategoryStatus) GetDetailsOk() (*string, bool) {
-	if o == nil || o.Details == nil {
+	if o == nil || IsNil(o.Details) {
 		return nil, false
 	}
 	return o.Details, true
@@ -198,7 +208,7 @@ func (o *MonitoringCategoryStatus) GetDetailsOk() (*string, bool) {
 
 // HasDetails returns a boolean if a field has been set.
 func (o *MonitoringCategoryStatus) HasDetails() bool {
-	if o != nil && o.Details != nil {
+	if o != nil && !IsNil(o.Details) {
 		return true
 	}
 
@@ -212,7 +222,7 @@ func (o *MonitoringCategoryStatus) SetDetails(v string) {
 
 // GetSourceId returns the SourceId field value if set, zero value otherwise.
 func (o *MonitoringCategoryStatus) GetSourceId() string {
-	if o == nil || o.SourceId == nil {
+	if o == nil || IsNil(o.SourceId) {
 		var ret string
 		return ret
 	}
@@ -222,7 +232,7 @@ func (o *MonitoringCategoryStatus) GetSourceId() string {
 // GetSourceIdOk returns a tuple with the SourceId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MonitoringCategoryStatus) GetSourceIdOk() (*string, bool) {
-	if o == nil || o.SourceId == nil {
+	if o == nil || IsNil(o.SourceId) {
 		return nil, false
 	}
 	return o.SourceId, true
@@ -230,7 +240,7 @@ func (o *MonitoringCategoryStatus) GetSourceIdOk() (*string, bool) {
 
 // HasSourceId returns a boolean if a field has been set.
 func (o *MonitoringCategoryStatus) HasSourceId() bool {
-	if o != nil && o.SourceId != nil {
+	if o != nil && !IsNil(o.SourceId) {
 		return true
 	}
 
@@ -244,7 +254,7 @@ func (o *MonitoringCategoryStatus) SetSourceId(v string) {
 
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *MonitoringCategoryStatus) GetStatus() string {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
@@ -254,7 +264,7 @@ func (o *MonitoringCategoryStatus) GetStatus() string {
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *MonitoringCategoryStatus) GetStatusOk() (*string, bool) {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
 	return o.Status, true
@@ -262,7 +272,7 @@ func (o *MonitoringCategoryStatus) GetStatusOk() (*string, bool) {
 
 // HasStatus returns a boolean if a field has been set.
 func (o *MonitoringCategoryStatus) HasStatus() bool {
-	if o != nil && o.Status != nil {
+	if o != nil && !IsNil(o.Status) {
 		return true
 	}
 
@@ -275,34 +285,44 @@ func (o *MonitoringCategoryStatus) SetStatus(v string) {
 }
 
 func (o MonitoringCategoryStatus) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o MonitoringCategoryStatus) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.CategoryLabel != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.CategoryLabel) {
 		toSerialize["CategoryLabel"] = o.CategoryLabel
 	}
-	if o.Deeplink != nil {
+	if !IsNil(o.Deeplink) {
 		toSerialize["Deeplink"] = o.Deeplink
 	}
-	if o.Details != nil {
+	if !IsNil(o.Details) {
 		toSerialize["Details"] = o.Details
 	}
-	if o.SourceId != nil {
+	if !IsNil(o.SourceId) {
 		toSerialize["SourceId"] = o.SourceId
 	}
-	if o.Status != nil {
+	if !IsNil(o.Status) {
 		toSerialize["Status"] = o.Status
 	}
 
@@ -310,10 +330,51 @@ func (o MonitoringCategoryStatus) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *MonitoringCategoryStatus) UnmarshalJSON(bytes []byte) (err error) {
+func (o *MonitoringCategoryStatus) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type MonitoringCategoryStatusWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -322,7 +383,7 @@ func (o *MonitoringCategoryStatus) UnmarshalJSON(bytes []byte) (err error) {
 		// Name of the category for which status is being reported (for e.g. 'Licensing', 'Advisories').
 		CategoryLabel *string `json:"CategoryLabel,omitempty"`
 		// Link to the corresponding category specific page in Intersight to get additional information and troubleshoot. for e.g. 'Alarms' category would have the deeplink as 'https://intersight.com/an/cond/alarms/active'.
-		Deeplink *string `json:"Deeplink,omitempty"`
+		Deeplink *string `json:"Deeplink,omitempty" validate:"regexp=^$|^(?:http(s)?:\\/\\/)?[\\\\w.-]+(?:\\\\.[\\\\w\\\\.-]+)+[\\\\w\\\\-\\\\._~:\\/?#[\\\\]@!\\\\$&'\\\\(\\\\)\\\\*\\\\+,;=.]+$"`
 		// Additional information regarding category status that may be displayed in UI related to the category status. Optional and currently unused.
 		Details *string `json:"Details,omitempty"`
 		// Additional parameter to be used for traceability and troubleshooting, currently unused.
@@ -333,7 +394,7 @@ func (o *MonitoringCategoryStatus) UnmarshalJSON(bytes []byte) (err error) {
 
 	varMonitoringCategoryStatusWithoutEmbeddedStruct := MonitoringCategoryStatusWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varMonitoringCategoryStatusWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varMonitoringCategoryStatusWithoutEmbeddedStruct)
 	if err == nil {
 		varMonitoringCategoryStatus := _MonitoringCategoryStatus{}
 		varMonitoringCategoryStatus.ClassId = varMonitoringCategoryStatusWithoutEmbeddedStruct.ClassId
@@ -350,7 +411,7 @@ func (o *MonitoringCategoryStatus) UnmarshalJSON(bytes []byte) (err error) {
 
 	varMonitoringCategoryStatus := _MonitoringCategoryStatus{}
 
-	err = json.Unmarshal(bytes, &varMonitoringCategoryStatus)
+	err = json.Unmarshal(data, &varMonitoringCategoryStatus)
 	if err == nil {
 		o.MoBaseComplexType = varMonitoringCategoryStatus.MoBaseComplexType
 	} else {
@@ -359,7 +420,7 @@ func (o *MonitoringCategoryStatus) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "CategoryLabel")

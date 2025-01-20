@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -14,7 +14,7 @@ package intersight
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -56,8 +56,8 @@ func (r ApiCreateVnicEthAdapterPolicyRequest) Execute() (*VnicEthAdapterPolicy, 
 /*
 CreateVnicEthAdapterPolicy Create a 'vnic.EthAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicEthAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicEthAdapterPolicyRequest
 */
 func (a *VnicApiService) CreateVnicEthAdapterPolicy(ctx context.Context) ApiCreateVnicEthAdapterPolicyRequest {
 	return ApiCreateVnicEthAdapterPolicyRequest{
@@ -67,7 +67,8 @@ func (a *VnicApiService) CreateVnicEthAdapterPolicy(ctx context.Context) ApiCrea
 }
 
 // Execute executes the request
-//  @return VnicEthAdapterPolicy
+//
+//	@return VnicEthAdapterPolicy
 func (a *VnicApiService) CreateVnicEthAdapterPolicyExecute(r ApiCreateVnicEthAdapterPolicyRequest) (*VnicEthAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -108,10 +109,10 @@ func (a *VnicApiService) CreateVnicEthAdapterPolicyExecute(r ApiCreateVnicEthAda
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthAdapterPolicy
@@ -125,9 +126,9 @@ func (a *VnicApiService) CreateVnicEthAdapterPolicyExecute(r ApiCreateVnicEthAda
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -144,6 +145,7 @@ func (a *VnicApiService) CreateVnicEthAdapterPolicyExecute(r ApiCreateVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -154,6 +156,7 @@ func (a *VnicApiService) CreateVnicEthAdapterPolicyExecute(r ApiCreateVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -164,6 +167,7 @@ func (a *VnicApiService) CreateVnicEthAdapterPolicyExecute(r ApiCreateVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -174,6 +178,7 @@ func (a *VnicApiService) CreateVnicEthAdapterPolicyExecute(r ApiCreateVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -183,6 +188,7 @@ func (a *VnicApiService) CreateVnicEthAdapterPolicyExecute(r ApiCreateVnicEthAda
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -232,8 +238,8 @@ func (r ApiCreateVnicEthIfRequest) Execute() (*VnicEthIf, *http.Response, error)
 /*
 CreateVnicEthIf Create a 'vnic.EthIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicEthIfRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicEthIfRequest
 */
 func (a *VnicApiService) CreateVnicEthIf(ctx context.Context) ApiCreateVnicEthIfRequest {
 	return ApiCreateVnicEthIfRequest{
@@ -243,7 +249,8 @@ func (a *VnicApiService) CreateVnicEthIf(ctx context.Context) ApiCreateVnicEthIf
 }
 
 // Execute executes the request
-//  @return VnicEthIf
+//
+//	@return VnicEthIf
 func (a *VnicApiService) CreateVnicEthIfExecute(r ApiCreateVnicEthIfRequest) (*VnicEthIf, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -284,10 +291,10 @@ func (a *VnicApiService) CreateVnicEthIfExecute(r ApiCreateVnicEthIfRequest) (*V
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthIf
@@ -301,9 +308,9 @@ func (a *VnicApiService) CreateVnicEthIfExecute(r ApiCreateVnicEthIfRequest) (*V
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -320,6 +327,7 @@ func (a *VnicApiService) CreateVnicEthIfExecute(r ApiCreateVnicEthIfRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -330,6 +338,7 @@ func (a *VnicApiService) CreateVnicEthIfExecute(r ApiCreateVnicEthIfRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -340,6 +349,7 @@ func (a *VnicApiService) CreateVnicEthIfExecute(r ApiCreateVnicEthIfRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -350,6 +360,7 @@ func (a *VnicApiService) CreateVnicEthIfExecute(r ApiCreateVnicEthIfRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -359,6 +370,7 @@ func (a *VnicApiService) CreateVnicEthIfExecute(r ApiCreateVnicEthIfRequest) (*V
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -408,8 +420,8 @@ func (r ApiCreateVnicEthNetworkPolicyRequest) Execute() (*VnicEthNetworkPolicy, 
 /*
 CreateVnicEthNetworkPolicy Create a 'vnic.EthNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicEthNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicEthNetworkPolicyRequest
 */
 func (a *VnicApiService) CreateVnicEthNetworkPolicy(ctx context.Context) ApiCreateVnicEthNetworkPolicyRequest {
 	return ApiCreateVnicEthNetworkPolicyRequest{
@@ -419,7 +431,8 @@ func (a *VnicApiService) CreateVnicEthNetworkPolicy(ctx context.Context) ApiCrea
 }
 
 // Execute executes the request
-//  @return VnicEthNetworkPolicy
+//
+//	@return VnicEthNetworkPolicy
 func (a *VnicApiService) CreateVnicEthNetworkPolicyExecute(r ApiCreateVnicEthNetworkPolicyRequest) (*VnicEthNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -460,10 +473,10 @@ func (a *VnicApiService) CreateVnicEthNetworkPolicyExecute(r ApiCreateVnicEthNet
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthNetworkPolicy
@@ -477,9 +490,9 @@ func (a *VnicApiService) CreateVnicEthNetworkPolicyExecute(r ApiCreateVnicEthNet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -496,6 +509,7 @@ func (a *VnicApiService) CreateVnicEthNetworkPolicyExecute(r ApiCreateVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -506,6 +520,7 @@ func (a *VnicApiService) CreateVnicEthNetworkPolicyExecute(r ApiCreateVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -516,6 +531,7 @@ func (a *VnicApiService) CreateVnicEthNetworkPolicyExecute(r ApiCreateVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -526,6 +542,7 @@ func (a *VnicApiService) CreateVnicEthNetworkPolicyExecute(r ApiCreateVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -535,6 +552,7 @@ func (a *VnicApiService) CreateVnicEthNetworkPolicyExecute(r ApiCreateVnicEthNet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -584,8 +602,8 @@ func (r ApiCreateVnicEthQosPolicyRequest) Execute() (*VnicEthQosPolicy, *http.Re
 /*
 CreateVnicEthQosPolicy Create a 'vnic.EthQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicEthQosPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicEthQosPolicyRequest
 */
 func (a *VnicApiService) CreateVnicEthQosPolicy(ctx context.Context) ApiCreateVnicEthQosPolicyRequest {
 	return ApiCreateVnicEthQosPolicyRequest{
@@ -595,7 +613,8 @@ func (a *VnicApiService) CreateVnicEthQosPolicy(ctx context.Context) ApiCreateVn
 }
 
 // Execute executes the request
-//  @return VnicEthQosPolicy
+//
+//	@return VnicEthQosPolicy
 func (a *VnicApiService) CreateVnicEthQosPolicyExecute(r ApiCreateVnicEthQosPolicyRequest) (*VnicEthQosPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -636,10 +655,10 @@ func (a *VnicApiService) CreateVnicEthQosPolicyExecute(r ApiCreateVnicEthQosPoli
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthQosPolicy
@@ -653,9 +672,9 @@ func (a *VnicApiService) CreateVnicEthQosPolicyExecute(r ApiCreateVnicEthQosPoli
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -672,6 +691,7 @@ func (a *VnicApiService) CreateVnicEthQosPolicyExecute(r ApiCreateVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -682,6 +702,7 @@ func (a *VnicApiService) CreateVnicEthQosPolicyExecute(r ApiCreateVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -692,6 +713,7 @@ func (a *VnicApiService) CreateVnicEthQosPolicyExecute(r ApiCreateVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -702,6 +724,7 @@ func (a *VnicApiService) CreateVnicEthQosPolicyExecute(r ApiCreateVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -711,6 +734,7 @@ func (a *VnicApiService) CreateVnicEthQosPolicyExecute(r ApiCreateVnicEthQosPoli
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -760,8 +784,8 @@ func (r ApiCreateVnicFcAdapterPolicyRequest) Execute() (*VnicFcAdapterPolicy, *h
 /*
 CreateVnicFcAdapterPolicy Create a 'vnic.FcAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicFcAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicFcAdapterPolicyRequest
 */
 func (a *VnicApiService) CreateVnicFcAdapterPolicy(ctx context.Context) ApiCreateVnicFcAdapterPolicyRequest {
 	return ApiCreateVnicFcAdapterPolicyRequest{
@@ -771,7 +795,8 @@ func (a *VnicApiService) CreateVnicFcAdapterPolicy(ctx context.Context) ApiCreat
 }
 
 // Execute executes the request
-//  @return VnicFcAdapterPolicy
+//
+//	@return VnicFcAdapterPolicy
 func (a *VnicApiService) CreateVnicFcAdapterPolicyExecute(r ApiCreateVnicFcAdapterPolicyRequest) (*VnicFcAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -812,10 +837,10 @@ func (a *VnicApiService) CreateVnicFcAdapterPolicyExecute(r ApiCreateVnicFcAdapt
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcAdapterPolicy
@@ -829,9 +854,9 @@ func (a *VnicApiService) CreateVnicFcAdapterPolicyExecute(r ApiCreateVnicFcAdapt
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -848,6 +873,7 @@ func (a *VnicApiService) CreateVnicFcAdapterPolicyExecute(r ApiCreateVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -858,6 +884,7 @@ func (a *VnicApiService) CreateVnicFcAdapterPolicyExecute(r ApiCreateVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -868,6 +895,7 @@ func (a *VnicApiService) CreateVnicFcAdapterPolicyExecute(r ApiCreateVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -878,6 +906,7 @@ func (a *VnicApiService) CreateVnicFcAdapterPolicyExecute(r ApiCreateVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -887,6 +916,7 @@ func (a *VnicApiService) CreateVnicFcAdapterPolicyExecute(r ApiCreateVnicFcAdapt
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -936,8 +966,8 @@ func (r ApiCreateVnicFcIfRequest) Execute() (*VnicFcIf, *http.Response, error) {
 /*
 CreateVnicFcIf Create a 'vnic.FcIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicFcIfRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicFcIfRequest
 */
 func (a *VnicApiService) CreateVnicFcIf(ctx context.Context) ApiCreateVnicFcIfRequest {
 	return ApiCreateVnicFcIfRequest{
@@ -947,7 +977,8 @@ func (a *VnicApiService) CreateVnicFcIf(ctx context.Context) ApiCreateVnicFcIfRe
 }
 
 // Execute executes the request
-//  @return VnicFcIf
+//
+//	@return VnicFcIf
 func (a *VnicApiService) CreateVnicFcIfExecute(r ApiCreateVnicFcIfRequest) (*VnicFcIf, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -988,10 +1019,10 @@ func (a *VnicApiService) CreateVnicFcIfExecute(r ApiCreateVnicFcIfRequest) (*Vni
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcIf
@@ -1005,9 +1036,9 @@ func (a *VnicApiService) CreateVnicFcIfExecute(r ApiCreateVnicFcIfRequest) (*Vni
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1024,6 +1055,7 @@ func (a *VnicApiService) CreateVnicFcIfExecute(r ApiCreateVnicFcIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1034,6 +1066,7 @@ func (a *VnicApiService) CreateVnicFcIfExecute(r ApiCreateVnicFcIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1044,6 +1077,7 @@ func (a *VnicApiService) CreateVnicFcIfExecute(r ApiCreateVnicFcIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1054,6 +1088,7 @@ func (a *VnicApiService) CreateVnicFcIfExecute(r ApiCreateVnicFcIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1063,6 +1098,7 @@ func (a *VnicApiService) CreateVnicFcIfExecute(r ApiCreateVnicFcIfRequest) (*Vni
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1112,8 +1148,8 @@ func (r ApiCreateVnicFcNetworkPolicyRequest) Execute() (*VnicFcNetworkPolicy, *h
 /*
 CreateVnicFcNetworkPolicy Create a 'vnic.FcNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicFcNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicFcNetworkPolicyRequest
 */
 func (a *VnicApiService) CreateVnicFcNetworkPolicy(ctx context.Context) ApiCreateVnicFcNetworkPolicyRequest {
 	return ApiCreateVnicFcNetworkPolicyRequest{
@@ -1123,7 +1159,8 @@ func (a *VnicApiService) CreateVnicFcNetworkPolicy(ctx context.Context) ApiCreat
 }
 
 // Execute executes the request
-//  @return VnicFcNetworkPolicy
+//
+//	@return VnicFcNetworkPolicy
 func (a *VnicApiService) CreateVnicFcNetworkPolicyExecute(r ApiCreateVnicFcNetworkPolicyRequest) (*VnicFcNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1164,10 +1201,10 @@ func (a *VnicApiService) CreateVnicFcNetworkPolicyExecute(r ApiCreateVnicFcNetwo
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcNetworkPolicy
@@ -1181,9 +1218,9 @@ func (a *VnicApiService) CreateVnicFcNetworkPolicyExecute(r ApiCreateVnicFcNetwo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1200,6 +1237,7 @@ func (a *VnicApiService) CreateVnicFcNetworkPolicyExecute(r ApiCreateVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1210,6 +1248,7 @@ func (a *VnicApiService) CreateVnicFcNetworkPolicyExecute(r ApiCreateVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1220,6 +1259,7 @@ func (a *VnicApiService) CreateVnicFcNetworkPolicyExecute(r ApiCreateVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1230,6 +1270,7 @@ func (a *VnicApiService) CreateVnicFcNetworkPolicyExecute(r ApiCreateVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1239,6 +1280,7 @@ func (a *VnicApiService) CreateVnicFcNetworkPolicyExecute(r ApiCreateVnicFcNetwo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1288,8 +1330,8 @@ func (r ApiCreateVnicFcQosPolicyRequest) Execute() (*VnicFcQosPolicy, *http.Resp
 /*
 CreateVnicFcQosPolicy Create a 'vnic.FcQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicFcQosPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicFcQosPolicyRequest
 */
 func (a *VnicApiService) CreateVnicFcQosPolicy(ctx context.Context) ApiCreateVnicFcQosPolicyRequest {
 	return ApiCreateVnicFcQosPolicyRequest{
@@ -1299,7 +1341,8 @@ func (a *VnicApiService) CreateVnicFcQosPolicy(ctx context.Context) ApiCreateVni
 }
 
 // Execute executes the request
-//  @return VnicFcQosPolicy
+//
+//	@return VnicFcQosPolicy
 func (a *VnicApiService) CreateVnicFcQosPolicyExecute(r ApiCreateVnicFcQosPolicyRequest) (*VnicFcQosPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1340,10 +1383,10 @@ func (a *VnicApiService) CreateVnicFcQosPolicyExecute(r ApiCreateVnicFcQosPolicy
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcQosPolicy
@@ -1357,9 +1400,9 @@ func (a *VnicApiService) CreateVnicFcQosPolicyExecute(r ApiCreateVnicFcQosPolicy
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1376,6 +1419,7 @@ func (a *VnicApiService) CreateVnicFcQosPolicyExecute(r ApiCreateVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1386,6 +1430,7 @@ func (a *VnicApiService) CreateVnicFcQosPolicyExecute(r ApiCreateVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1396,6 +1441,7 @@ func (a *VnicApiService) CreateVnicFcQosPolicyExecute(r ApiCreateVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1406,6 +1452,7 @@ func (a *VnicApiService) CreateVnicFcQosPolicyExecute(r ApiCreateVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1415,6 +1462,7 @@ func (a *VnicApiService) CreateVnicFcQosPolicyExecute(r ApiCreateVnicFcQosPolicy
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1464,8 +1512,8 @@ func (r ApiCreateVnicIscsiAdapterPolicyRequest) Execute() (*VnicIscsiAdapterPoli
 /*
 CreateVnicIscsiAdapterPolicy Create a 'vnic.IscsiAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicIscsiAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicIscsiAdapterPolicyRequest
 */
 func (a *VnicApiService) CreateVnicIscsiAdapterPolicy(ctx context.Context) ApiCreateVnicIscsiAdapterPolicyRequest {
 	return ApiCreateVnicIscsiAdapterPolicyRequest{
@@ -1475,7 +1523,8 @@ func (a *VnicApiService) CreateVnicIscsiAdapterPolicy(ctx context.Context) ApiCr
 }
 
 // Execute executes the request
-//  @return VnicIscsiAdapterPolicy
+//
+//	@return VnicIscsiAdapterPolicy
 func (a *VnicApiService) CreateVnicIscsiAdapterPolicyExecute(r ApiCreateVnicIscsiAdapterPolicyRequest) (*VnicIscsiAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1516,10 +1565,10 @@ func (a *VnicApiService) CreateVnicIscsiAdapterPolicyExecute(r ApiCreateVnicIscs
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicIscsiAdapterPolicy
@@ -1533,9 +1582,9 @@ func (a *VnicApiService) CreateVnicIscsiAdapterPolicyExecute(r ApiCreateVnicIscs
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1552,6 +1601,7 @@ func (a *VnicApiService) CreateVnicIscsiAdapterPolicyExecute(r ApiCreateVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1562,6 +1612,7 @@ func (a *VnicApiService) CreateVnicIscsiAdapterPolicyExecute(r ApiCreateVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1572,6 +1623,7 @@ func (a *VnicApiService) CreateVnicIscsiAdapterPolicyExecute(r ApiCreateVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1582,6 +1634,7 @@ func (a *VnicApiService) CreateVnicIscsiAdapterPolicyExecute(r ApiCreateVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1591,6 +1644,7 @@ func (a *VnicApiService) CreateVnicIscsiAdapterPolicyExecute(r ApiCreateVnicIscs
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1640,8 +1694,8 @@ func (r ApiCreateVnicIscsiBootPolicyRequest) Execute() (*VnicIscsiBootPolicy, *h
 /*
 CreateVnicIscsiBootPolicy Create a 'vnic.IscsiBootPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicIscsiBootPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicIscsiBootPolicyRequest
 */
 func (a *VnicApiService) CreateVnicIscsiBootPolicy(ctx context.Context) ApiCreateVnicIscsiBootPolicyRequest {
 	return ApiCreateVnicIscsiBootPolicyRequest{
@@ -1651,7 +1705,8 @@ func (a *VnicApiService) CreateVnicIscsiBootPolicy(ctx context.Context) ApiCreat
 }
 
 // Execute executes the request
-//  @return VnicIscsiBootPolicy
+//
+//	@return VnicIscsiBootPolicy
 func (a *VnicApiService) CreateVnicIscsiBootPolicyExecute(r ApiCreateVnicIscsiBootPolicyRequest) (*VnicIscsiBootPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1692,10 +1747,10 @@ func (a *VnicApiService) CreateVnicIscsiBootPolicyExecute(r ApiCreateVnicIscsiBo
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicIscsiBootPolicy
@@ -1709,9 +1764,9 @@ func (a *VnicApiService) CreateVnicIscsiBootPolicyExecute(r ApiCreateVnicIscsiBo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1728,6 +1783,7 @@ func (a *VnicApiService) CreateVnicIscsiBootPolicyExecute(r ApiCreateVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1738,6 +1794,7 @@ func (a *VnicApiService) CreateVnicIscsiBootPolicyExecute(r ApiCreateVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1748,6 +1805,7 @@ func (a *VnicApiService) CreateVnicIscsiBootPolicyExecute(r ApiCreateVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1758,6 +1816,7 @@ func (a *VnicApiService) CreateVnicIscsiBootPolicyExecute(r ApiCreateVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1767,6 +1826,7 @@ func (a *VnicApiService) CreateVnicIscsiBootPolicyExecute(r ApiCreateVnicIscsiBo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1816,8 +1876,8 @@ func (r ApiCreateVnicIscsiStaticTargetPolicyRequest) Execute() (*VnicIscsiStatic
 /*
 CreateVnicIscsiStaticTargetPolicy Create a 'vnic.IscsiStaticTargetPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicIscsiStaticTargetPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicIscsiStaticTargetPolicyRequest
 */
 func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicy(ctx context.Context) ApiCreateVnicIscsiStaticTargetPolicyRequest {
 	return ApiCreateVnicIscsiStaticTargetPolicyRequest{
@@ -1827,7 +1887,8 @@ func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicy(ctx context.Context) 
 }
 
 // Execute executes the request
-//  @return VnicIscsiStaticTargetPolicy
+//
+//	@return VnicIscsiStaticTargetPolicy
 func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicyExecute(r ApiCreateVnicIscsiStaticTargetPolicyRequest) (*VnicIscsiStaticTargetPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -1868,10 +1929,10 @@ func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicyExecute(r ApiCreateVni
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicIscsiStaticTargetPolicy
@@ -1885,9 +1946,9 @@ func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicyExecute(r ApiCreateVni
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -1904,6 +1965,7 @@ func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicyExecute(r ApiCreateVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1914,6 +1976,7 @@ func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicyExecute(r ApiCreateVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1924,6 +1987,7 @@ func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicyExecute(r ApiCreateVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1934,6 +1998,7 @@ func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicyExecute(r ApiCreateVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -1943,6 +2008,7 @@ func (a *VnicApiService) CreateVnicIscsiStaticTargetPolicyExecute(r ApiCreateVni
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -1992,8 +2058,8 @@ func (r ApiCreateVnicLanConnectivityPolicyRequest) Execute() (*VnicLanConnectivi
 /*
 CreateVnicLanConnectivityPolicy Create a 'vnic.LanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicLanConnectivityPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicLanConnectivityPolicyRequest
 */
 func (a *VnicApiService) CreateVnicLanConnectivityPolicy(ctx context.Context) ApiCreateVnicLanConnectivityPolicyRequest {
 	return ApiCreateVnicLanConnectivityPolicyRequest{
@@ -2003,7 +2069,8 @@ func (a *VnicApiService) CreateVnicLanConnectivityPolicy(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return VnicLanConnectivityPolicy
+//
+//	@return VnicLanConnectivityPolicy
 func (a *VnicApiService) CreateVnicLanConnectivityPolicyExecute(r ApiCreateVnicLanConnectivityPolicyRequest) (*VnicLanConnectivityPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2044,10 +2111,10 @@ func (a *VnicApiService) CreateVnicLanConnectivityPolicyExecute(r ApiCreateVnicL
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicLanConnectivityPolicy
@@ -2061,9 +2128,9 @@ func (a *VnicApiService) CreateVnicLanConnectivityPolicyExecute(r ApiCreateVnicL
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2080,6 +2147,7 @@ func (a *VnicApiService) CreateVnicLanConnectivityPolicyExecute(r ApiCreateVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2090,6 +2158,7 @@ func (a *VnicApiService) CreateVnicLanConnectivityPolicyExecute(r ApiCreateVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2100,6 +2169,7 @@ func (a *VnicApiService) CreateVnicLanConnectivityPolicyExecute(r ApiCreateVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2110,6 +2180,7 @@ func (a *VnicApiService) CreateVnicLanConnectivityPolicyExecute(r ApiCreateVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2119,6 +2190,7 @@ func (a *VnicApiService) CreateVnicLanConnectivityPolicyExecute(r ApiCreateVnicL
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2168,8 +2240,8 @@ func (r ApiCreateVnicSanConnectivityPolicyRequest) Execute() (*VnicSanConnectivi
 /*
 CreateVnicSanConnectivityPolicy Create a 'vnic.SanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiCreateVnicSanConnectivityPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicSanConnectivityPolicyRequest
 */
 func (a *VnicApiService) CreateVnicSanConnectivityPolicy(ctx context.Context) ApiCreateVnicSanConnectivityPolicyRequest {
 	return ApiCreateVnicSanConnectivityPolicyRequest{
@@ -2179,7 +2251,8 @@ func (a *VnicApiService) CreateVnicSanConnectivityPolicy(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return VnicSanConnectivityPolicy
+//
+//	@return VnicSanConnectivityPolicy
 func (a *VnicApiService) CreateVnicSanConnectivityPolicyExecute(r ApiCreateVnicSanConnectivityPolicyRequest) (*VnicSanConnectivityPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -2220,10 +2293,10 @@ func (a *VnicApiService) CreateVnicSanConnectivityPolicyExecute(r ApiCreateVnicS
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	if r.ifNoneMatch != nil {
-		localVarHeaderParams["If-None-Match"] = parameterToString(*r.ifNoneMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicSanConnectivityPolicy
@@ -2237,9 +2310,9 @@ func (a *VnicApiService) CreateVnicSanConnectivityPolicyExecute(r ApiCreateVnicS
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -2256,6 +2329,7 @@ func (a *VnicApiService) CreateVnicSanConnectivityPolicyExecute(r ApiCreateVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2266,6 +2340,7 @@ func (a *VnicApiService) CreateVnicSanConnectivityPolicyExecute(r ApiCreateVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2276,6 +2351,7 @@ func (a *VnicApiService) CreateVnicSanConnectivityPolicyExecute(r ApiCreateVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2286,6 +2362,7 @@ func (a *VnicApiService) CreateVnicSanConnectivityPolicyExecute(r ApiCreateVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -2295,6 +2372,371 @@ func (a *VnicApiService) CreateVnicSanConnectivityPolicyExecute(r ApiCreateVnicS
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCreateVnicVhbaTemplateRequest struct {
+	ctx              context.Context
+	ApiService       *VnicApiService
+	vnicVhbaTemplate *VnicVhbaTemplate
+	ifMatch          *string
+	ifNoneMatch      *string
+}
+
+// The &#39;vnic.VhbaTemplate&#39; resource to create.
+func (r ApiCreateVnicVhbaTemplateRequest) VnicVhbaTemplate(vnicVhbaTemplate VnicVhbaTemplate) ApiCreateVnicVhbaTemplateRequest {
+	r.vnicVhbaTemplate = &vnicVhbaTemplate
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiCreateVnicVhbaTemplateRequest) IfMatch(ifMatch string) ApiCreateVnicVhbaTemplateRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+// For methods that apply server-side changes, If-None-Match used with the * value can be used to create a resource not known to exist, guaranteeing that another resource creation didn&#39;t happen before, losing the data of the previous put. The request will be processed only if the eventually existing resource&#39;s ETag doesn&#39;t match any of the values listed. Otherwise, the status code 412 (Precondition Failed) is used. The asterisk is a special value representing any resource. It is only useful when creating a resource, usually with PUT, to check if another resource with the identity has already been created before. The comparison with the stored ETag uses the weak comparison algorithm, meaning two resources are considered identical if the content is equivalent - they don&#39;t have to be identical byte for byte.
+func (r ApiCreateVnicVhbaTemplateRequest) IfNoneMatch(ifNoneMatch string) ApiCreateVnicVhbaTemplateRequest {
+	r.ifNoneMatch = &ifNoneMatch
+	return r
+}
+
+func (r ApiCreateVnicVhbaTemplateRequest) Execute() (*VnicVhbaTemplate, *http.Response, error) {
+	return r.ApiService.CreateVnicVhbaTemplateExecute(r)
+}
+
+/*
+CreateVnicVhbaTemplate Create a 'vnic.VhbaTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicVhbaTemplateRequest
+*/
+func (a *VnicApiService) CreateVnicVhbaTemplate(ctx context.Context) ApiCreateVnicVhbaTemplateRequest {
+	return ApiCreateVnicVhbaTemplateRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVhbaTemplate
+func (a *VnicApiService) CreateVnicVhbaTemplateExecute(r ApiCreateVnicVhbaTemplateRequest) (*VnicVhbaTemplate, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVhbaTemplate
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.CreateVnicVhbaTemplate")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VhbaTemplates"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.vnicVhbaTemplate == nil {
+		return localVarReturnValue, nil, reportError("vnicVhbaTemplate is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	if r.ifNoneMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.vnicVhbaTemplate
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiCreateVnicVnicTemplateRequest struct {
+	ctx              context.Context
+	ApiService       *VnicApiService
+	vnicVnicTemplate *VnicVnicTemplate
+	ifMatch          *string
+	ifNoneMatch      *string
+}
+
+// The &#39;vnic.VnicTemplate&#39; resource to create.
+func (r ApiCreateVnicVnicTemplateRequest) VnicVnicTemplate(vnicVnicTemplate VnicVnicTemplate) ApiCreateVnicVnicTemplateRequest {
+	r.vnicVnicTemplate = &vnicVnicTemplate
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiCreateVnicVnicTemplateRequest) IfMatch(ifMatch string) ApiCreateVnicVnicTemplateRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+// For methods that apply server-side changes, If-None-Match used with the * value can be used to create a resource not known to exist, guaranteeing that another resource creation didn&#39;t happen before, losing the data of the previous put. The request will be processed only if the eventually existing resource&#39;s ETag doesn&#39;t match any of the values listed. Otherwise, the status code 412 (Precondition Failed) is used. The asterisk is a special value representing any resource. It is only useful when creating a resource, usually with PUT, to check if another resource with the identity has already been created before. The comparison with the stored ETag uses the weak comparison algorithm, meaning two resources are considered identical if the content is equivalent - they don&#39;t have to be identical byte for byte.
+func (r ApiCreateVnicVnicTemplateRequest) IfNoneMatch(ifNoneMatch string) ApiCreateVnicVnicTemplateRequest {
+	r.ifNoneMatch = &ifNoneMatch
+	return r
+}
+
+func (r ApiCreateVnicVnicTemplateRequest) Execute() (*VnicVnicTemplate, *http.Response, error) {
+	return r.ApiService.CreateVnicVnicTemplateExecute(r)
+}
+
+/*
+CreateVnicVnicTemplate Create a 'vnic.VnicTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiCreateVnicVnicTemplateRequest
+*/
+func (a *VnicApiService) CreateVnicVnicTemplate(ctx context.Context) ApiCreateVnicVnicTemplateRequest {
+	return ApiCreateVnicVnicTemplateRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVnicTemplate
+func (a *VnicApiService) CreateVnicVnicTemplateExecute(r ApiCreateVnicVnicTemplateRequest) (*VnicVnicTemplate, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVnicTemplate
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.CreateVnicVnicTemplate")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VnicTemplates"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.vnicVnicTemplate == nil {
+		return localVarReturnValue, nil, reportError("vnicVnicTemplate is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	if r.ifNoneMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-None-Match", r.ifNoneMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.vnicVnicTemplate
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -2324,9 +2766,9 @@ func (r ApiDeleteVnicEthAdapterPolicyRequest) Execute() (*http.Response, error) 
 /*
 DeleteVnicEthAdapterPolicy Delete a 'vnic.EthAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicEthAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicEthAdapterPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicEthAdapterPolicy(ctx context.Context, moid string) ApiDeleteVnicEthAdapterPolicyRequest {
 	return ApiDeleteVnicEthAdapterPolicyRequest{
@@ -2350,7 +2792,7 @@ func (a *VnicApiService) DeleteVnicEthAdapterPolicyExecute(r ApiDeleteVnicEthAda
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2383,9 +2825,9 @@ func (a *VnicApiService) DeleteVnicEthAdapterPolicyExecute(r ApiDeleteVnicEthAda
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2402,6 +2844,7 @@ func (a *VnicApiService) DeleteVnicEthAdapterPolicyExecute(r ApiDeleteVnicEthAda
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2412,6 +2855,7 @@ func (a *VnicApiService) DeleteVnicEthAdapterPolicyExecute(r ApiDeleteVnicEthAda
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2422,6 +2866,7 @@ func (a *VnicApiService) DeleteVnicEthAdapterPolicyExecute(r ApiDeleteVnicEthAda
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2432,6 +2877,7 @@ func (a *VnicApiService) DeleteVnicEthAdapterPolicyExecute(r ApiDeleteVnicEthAda
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2441,6 +2887,7 @@ func (a *VnicApiService) DeleteVnicEthAdapterPolicyExecute(r ApiDeleteVnicEthAda
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2461,9 +2908,9 @@ func (r ApiDeleteVnicEthIfRequest) Execute() (*http.Response, error) {
 /*
 DeleteVnicEthIf Delete a 'vnic.EthIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicEthIfRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicEthIfRequest
 */
 func (a *VnicApiService) DeleteVnicEthIf(ctx context.Context, moid string) ApiDeleteVnicEthIfRequest {
 	return ApiDeleteVnicEthIfRequest{
@@ -2487,7 +2934,7 @@ func (a *VnicApiService) DeleteVnicEthIfExecute(r ApiDeleteVnicEthIfRequest) (*h
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthIfs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2520,9 +2967,9 @@ func (a *VnicApiService) DeleteVnicEthIfExecute(r ApiDeleteVnicEthIfRequest) (*h
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2539,6 +2986,7 @@ func (a *VnicApiService) DeleteVnicEthIfExecute(r ApiDeleteVnicEthIfRequest) (*h
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2549,6 +2997,7 @@ func (a *VnicApiService) DeleteVnicEthIfExecute(r ApiDeleteVnicEthIfRequest) (*h
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2559,6 +3008,7 @@ func (a *VnicApiService) DeleteVnicEthIfExecute(r ApiDeleteVnicEthIfRequest) (*h
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2569,6 +3019,7 @@ func (a *VnicApiService) DeleteVnicEthIfExecute(r ApiDeleteVnicEthIfRequest) (*h
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2578,6 +3029,7 @@ func (a *VnicApiService) DeleteVnicEthIfExecute(r ApiDeleteVnicEthIfRequest) (*h
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2598,9 +3050,9 @@ func (r ApiDeleteVnicEthNetworkPolicyRequest) Execute() (*http.Response, error) 
 /*
 DeleteVnicEthNetworkPolicy Delete a 'vnic.EthNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicEthNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicEthNetworkPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicEthNetworkPolicy(ctx context.Context, moid string) ApiDeleteVnicEthNetworkPolicyRequest {
 	return ApiDeleteVnicEthNetworkPolicyRequest{
@@ -2624,7 +3076,7 @@ func (a *VnicApiService) DeleteVnicEthNetworkPolicyExecute(r ApiDeleteVnicEthNet
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthNetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2657,9 +3109,9 @@ func (a *VnicApiService) DeleteVnicEthNetworkPolicyExecute(r ApiDeleteVnicEthNet
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2676,6 +3128,7 @@ func (a *VnicApiService) DeleteVnicEthNetworkPolicyExecute(r ApiDeleteVnicEthNet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2686,6 +3139,7 @@ func (a *VnicApiService) DeleteVnicEthNetworkPolicyExecute(r ApiDeleteVnicEthNet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2696,6 +3150,7 @@ func (a *VnicApiService) DeleteVnicEthNetworkPolicyExecute(r ApiDeleteVnicEthNet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2706,6 +3161,7 @@ func (a *VnicApiService) DeleteVnicEthNetworkPolicyExecute(r ApiDeleteVnicEthNet
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2715,6 +3171,7 @@ func (a *VnicApiService) DeleteVnicEthNetworkPolicyExecute(r ApiDeleteVnicEthNet
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2735,9 +3192,9 @@ func (r ApiDeleteVnicEthQosPolicyRequest) Execute() (*http.Response, error) {
 /*
 DeleteVnicEthQosPolicy Delete a 'vnic.EthQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicEthQosPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicEthQosPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicEthQosPolicy(ctx context.Context, moid string) ApiDeleteVnicEthQosPolicyRequest {
 	return ApiDeleteVnicEthQosPolicyRequest{
@@ -2761,7 +3218,7 @@ func (a *VnicApiService) DeleteVnicEthQosPolicyExecute(r ApiDeleteVnicEthQosPoli
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthQosPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2794,9 +3251,9 @@ func (a *VnicApiService) DeleteVnicEthQosPolicyExecute(r ApiDeleteVnicEthQosPoli
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2813,6 +3270,7 @@ func (a *VnicApiService) DeleteVnicEthQosPolicyExecute(r ApiDeleteVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2823,6 +3281,7 @@ func (a *VnicApiService) DeleteVnicEthQosPolicyExecute(r ApiDeleteVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2833,6 +3292,7 @@ func (a *VnicApiService) DeleteVnicEthQosPolicyExecute(r ApiDeleteVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2843,6 +3303,7 @@ func (a *VnicApiService) DeleteVnicEthQosPolicyExecute(r ApiDeleteVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2852,6 +3313,7 @@ func (a *VnicApiService) DeleteVnicEthQosPolicyExecute(r ApiDeleteVnicEthQosPoli
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -2872,9 +3334,9 @@ func (r ApiDeleteVnicFcAdapterPolicyRequest) Execute() (*http.Response, error) {
 /*
 DeleteVnicFcAdapterPolicy Delete a 'vnic.FcAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicFcAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicFcAdapterPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicFcAdapterPolicy(ctx context.Context, moid string) ApiDeleteVnicFcAdapterPolicyRequest {
 	return ApiDeleteVnicFcAdapterPolicyRequest{
@@ -2898,7 +3360,7 @@ func (a *VnicApiService) DeleteVnicFcAdapterPolicyExecute(r ApiDeleteVnicFcAdapt
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -2931,9 +3393,9 @@ func (a *VnicApiService) DeleteVnicFcAdapterPolicyExecute(r ApiDeleteVnicFcAdapt
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -2950,6 +3412,7 @@ func (a *VnicApiService) DeleteVnicFcAdapterPolicyExecute(r ApiDeleteVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2960,6 +3423,7 @@ func (a *VnicApiService) DeleteVnicFcAdapterPolicyExecute(r ApiDeleteVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2970,6 +3434,7 @@ func (a *VnicApiService) DeleteVnicFcAdapterPolicyExecute(r ApiDeleteVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2980,6 +3445,7 @@ func (a *VnicApiService) DeleteVnicFcAdapterPolicyExecute(r ApiDeleteVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -2989,6 +3455,7 @@ func (a *VnicApiService) DeleteVnicFcAdapterPolicyExecute(r ApiDeleteVnicFcAdapt
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -3009,9 +3476,9 @@ func (r ApiDeleteVnicFcIfRequest) Execute() (*http.Response, error) {
 /*
 DeleteVnicFcIf Delete a 'vnic.FcIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicFcIfRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicFcIfRequest
 */
 func (a *VnicApiService) DeleteVnicFcIf(ctx context.Context, moid string) ApiDeleteVnicFcIfRequest {
 	return ApiDeleteVnicFcIfRequest{
@@ -3035,7 +3502,7 @@ func (a *VnicApiService) DeleteVnicFcIfExecute(r ApiDeleteVnicFcIfRequest) (*htt
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcIfs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3068,9 +3535,9 @@ func (a *VnicApiService) DeleteVnicFcIfExecute(r ApiDeleteVnicFcIfRequest) (*htt
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -3087,6 +3554,7 @@ func (a *VnicApiService) DeleteVnicFcIfExecute(r ApiDeleteVnicFcIfRequest) (*htt
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3097,6 +3565,7 @@ func (a *VnicApiService) DeleteVnicFcIfExecute(r ApiDeleteVnicFcIfRequest) (*htt
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3107,6 +3576,7 @@ func (a *VnicApiService) DeleteVnicFcIfExecute(r ApiDeleteVnicFcIfRequest) (*htt
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3117,6 +3587,7 @@ func (a *VnicApiService) DeleteVnicFcIfExecute(r ApiDeleteVnicFcIfRequest) (*htt
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3126,6 +3597,7 @@ func (a *VnicApiService) DeleteVnicFcIfExecute(r ApiDeleteVnicFcIfRequest) (*htt
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -3146,9 +3618,9 @@ func (r ApiDeleteVnicFcNetworkPolicyRequest) Execute() (*http.Response, error) {
 /*
 DeleteVnicFcNetworkPolicy Delete a 'vnic.FcNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicFcNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicFcNetworkPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicFcNetworkPolicy(ctx context.Context, moid string) ApiDeleteVnicFcNetworkPolicyRequest {
 	return ApiDeleteVnicFcNetworkPolicyRequest{
@@ -3172,7 +3644,7 @@ func (a *VnicApiService) DeleteVnicFcNetworkPolicyExecute(r ApiDeleteVnicFcNetwo
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcNetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3205,9 +3677,9 @@ func (a *VnicApiService) DeleteVnicFcNetworkPolicyExecute(r ApiDeleteVnicFcNetwo
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -3224,6 +3696,7 @@ func (a *VnicApiService) DeleteVnicFcNetworkPolicyExecute(r ApiDeleteVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3234,6 +3707,7 @@ func (a *VnicApiService) DeleteVnicFcNetworkPolicyExecute(r ApiDeleteVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3244,6 +3718,7 @@ func (a *VnicApiService) DeleteVnicFcNetworkPolicyExecute(r ApiDeleteVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3254,6 +3729,7 @@ func (a *VnicApiService) DeleteVnicFcNetworkPolicyExecute(r ApiDeleteVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3263,6 +3739,7 @@ func (a *VnicApiService) DeleteVnicFcNetworkPolicyExecute(r ApiDeleteVnicFcNetwo
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -3283,9 +3760,9 @@ func (r ApiDeleteVnicFcQosPolicyRequest) Execute() (*http.Response, error) {
 /*
 DeleteVnicFcQosPolicy Delete a 'vnic.FcQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicFcQosPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicFcQosPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicFcQosPolicy(ctx context.Context, moid string) ApiDeleteVnicFcQosPolicyRequest {
 	return ApiDeleteVnicFcQosPolicyRequest{
@@ -3309,7 +3786,7 @@ func (a *VnicApiService) DeleteVnicFcQosPolicyExecute(r ApiDeleteVnicFcQosPolicy
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcQosPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3342,9 +3819,9 @@ func (a *VnicApiService) DeleteVnicFcQosPolicyExecute(r ApiDeleteVnicFcQosPolicy
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -3361,6 +3838,7 @@ func (a *VnicApiService) DeleteVnicFcQosPolicyExecute(r ApiDeleteVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3371,6 +3849,7 @@ func (a *VnicApiService) DeleteVnicFcQosPolicyExecute(r ApiDeleteVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3381,6 +3860,7 @@ func (a *VnicApiService) DeleteVnicFcQosPolicyExecute(r ApiDeleteVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3391,6 +3871,7 @@ func (a *VnicApiService) DeleteVnicFcQosPolicyExecute(r ApiDeleteVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3400,6 +3881,7 @@ func (a *VnicApiService) DeleteVnicFcQosPolicyExecute(r ApiDeleteVnicFcQosPolicy
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -3420,9 +3902,9 @@ func (r ApiDeleteVnicIscsiAdapterPolicyRequest) Execute() (*http.Response, error
 /*
 DeleteVnicIscsiAdapterPolicy Delete a 'vnic.IscsiAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicIscsiAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicIscsiAdapterPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicIscsiAdapterPolicy(ctx context.Context, moid string) ApiDeleteVnicIscsiAdapterPolicyRequest {
 	return ApiDeleteVnicIscsiAdapterPolicyRequest{
@@ -3446,7 +3928,7 @@ func (a *VnicApiService) DeleteVnicIscsiAdapterPolicyExecute(r ApiDeleteVnicIscs
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3479,9 +3961,9 @@ func (a *VnicApiService) DeleteVnicIscsiAdapterPolicyExecute(r ApiDeleteVnicIscs
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -3498,6 +3980,7 @@ func (a *VnicApiService) DeleteVnicIscsiAdapterPolicyExecute(r ApiDeleteVnicIscs
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3508,6 +3991,7 @@ func (a *VnicApiService) DeleteVnicIscsiAdapterPolicyExecute(r ApiDeleteVnicIscs
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3518,6 +4002,7 @@ func (a *VnicApiService) DeleteVnicIscsiAdapterPolicyExecute(r ApiDeleteVnicIscs
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3528,6 +4013,7 @@ func (a *VnicApiService) DeleteVnicIscsiAdapterPolicyExecute(r ApiDeleteVnicIscs
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3537,6 +4023,7 @@ func (a *VnicApiService) DeleteVnicIscsiAdapterPolicyExecute(r ApiDeleteVnicIscs
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -3557,9 +4044,9 @@ func (r ApiDeleteVnicIscsiBootPolicyRequest) Execute() (*http.Response, error) {
 /*
 DeleteVnicIscsiBootPolicy Delete a 'vnic.IscsiBootPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicIscsiBootPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicIscsiBootPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicIscsiBootPolicy(ctx context.Context, moid string) ApiDeleteVnicIscsiBootPolicyRequest {
 	return ApiDeleteVnicIscsiBootPolicyRequest{
@@ -3583,7 +4070,7 @@ func (a *VnicApiService) DeleteVnicIscsiBootPolicyExecute(r ApiDeleteVnicIscsiBo
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiBootPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3616,9 +4103,9 @@ func (a *VnicApiService) DeleteVnicIscsiBootPolicyExecute(r ApiDeleteVnicIscsiBo
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -3635,6 +4122,7 @@ func (a *VnicApiService) DeleteVnicIscsiBootPolicyExecute(r ApiDeleteVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3645,6 +4133,7 @@ func (a *VnicApiService) DeleteVnicIscsiBootPolicyExecute(r ApiDeleteVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3655,6 +4144,7 @@ func (a *VnicApiService) DeleteVnicIscsiBootPolicyExecute(r ApiDeleteVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3665,6 +4155,7 @@ func (a *VnicApiService) DeleteVnicIscsiBootPolicyExecute(r ApiDeleteVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3674,6 +4165,7 @@ func (a *VnicApiService) DeleteVnicIscsiBootPolicyExecute(r ApiDeleteVnicIscsiBo
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -3694,9 +4186,9 @@ func (r ApiDeleteVnicIscsiStaticTargetPolicyRequest) Execute() (*http.Response, 
 /*
 DeleteVnicIscsiStaticTargetPolicy Delete a 'vnic.IscsiStaticTargetPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicIscsiStaticTargetPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicIscsiStaticTargetPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicIscsiStaticTargetPolicy(ctx context.Context, moid string) ApiDeleteVnicIscsiStaticTargetPolicyRequest {
 	return ApiDeleteVnicIscsiStaticTargetPolicyRequest{
@@ -3720,7 +4212,7 @@ func (a *VnicApiService) DeleteVnicIscsiStaticTargetPolicyExecute(r ApiDeleteVni
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiStaticTargetPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3753,9 +4245,9 @@ func (a *VnicApiService) DeleteVnicIscsiStaticTargetPolicyExecute(r ApiDeleteVni
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -3772,6 +4264,7 @@ func (a *VnicApiService) DeleteVnicIscsiStaticTargetPolicyExecute(r ApiDeleteVni
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3782,6 +4275,7 @@ func (a *VnicApiService) DeleteVnicIscsiStaticTargetPolicyExecute(r ApiDeleteVni
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3792,6 +4286,7 @@ func (a *VnicApiService) DeleteVnicIscsiStaticTargetPolicyExecute(r ApiDeleteVni
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3802,6 +4297,7 @@ func (a *VnicApiService) DeleteVnicIscsiStaticTargetPolicyExecute(r ApiDeleteVni
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3811,6 +4307,7 @@ func (a *VnicApiService) DeleteVnicIscsiStaticTargetPolicyExecute(r ApiDeleteVni
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -3831,9 +4328,9 @@ func (r ApiDeleteVnicLanConnectivityPolicyRequest) Execute() (*http.Response, er
 /*
 DeleteVnicLanConnectivityPolicy Delete a 'vnic.LanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicLanConnectivityPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicLanConnectivityPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicLanConnectivityPolicy(ctx context.Context, moid string) ApiDeleteVnicLanConnectivityPolicyRequest {
 	return ApiDeleteVnicLanConnectivityPolicyRequest{
@@ -3857,7 +4354,7 @@ func (a *VnicApiService) DeleteVnicLanConnectivityPolicyExecute(r ApiDeleteVnicL
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/LanConnectivityPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -3890,9 +4387,9 @@ func (a *VnicApiService) DeleteVnicLanConnectivityPolicyExecute(r ApiDeleteVnicL
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -3909,6 +4406,7 @@ func (a *VnicApiService) DeleteVnicLanConnectivityPolicyExecute(r ApiDeleteVnicL
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3919,6 +4417,7 @@ func (a *VnicApiService) DeleteVnicLanConnectivityPolicyExecute(r ApiDeleteVnicL
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3929,6 +4428,7 @@ func (a *VnicApiService) DeleteVnicLanConnectivityPolicyExecute(r ApiDeleteVnicL
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3939,6 +4439,7 @@ func (a *VnicApiService) DeleteVnicLanConnectivityPolicyExecute(r ApiDeleteVnicL
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -3948,6 +4449,7 @@ func (a *VnicApiService) DeleteVnicLanConnectivityPolicyExecute(r ApiDeleteVnicL
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -3968,9 +4470,9 @@ func (r ApiDeleteVnicSanConnectivityPolicyRequest) Execute() (*http.Response, er
 /*
 DeleteVnicSanConnectivityPolicy Delete a 'vnic.SanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiDeleteVnicSanConnectivityPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicSanConnectivityPolicyRequest
 */
 func (a *VnicApiService) DeleteVnicSanConnectivityPolicy(ctx context.Context, moid string) ApiDeleteVnicSanConnectivityPolicyRequest {
 	return ApiDeleteVnicSanConnectivityPolicyRequest{
@@ -3994,7 +4496,7 @@ func (a *VnicApiService) DeleteVnicSanConnectivityPolicyExecute(r ApiDeleteVnicS
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/SanConnectivityPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4027,9 +4529,9 @@ func (a *VnicApiService) DeleteVnicSanConnectivityPolicyExecute(r ApiDeleteVnicS
 		return localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarHTTPResponse, err
 	}
@@ -4046,6 +4548,7 @@ func (a *VnicApiService) DeleteVnicSanConnectivityPolicyExecute(r ApiDeleteVnicS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4056,6 +4559,7 @@ func (a *VnicApiService) DeleteVnicSanConnectivityPolicyExecute(r ApiDeleteVnicS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4066,6 +4570,7 @@ func (a *VnicApiService) DeleteVnicSanConnectivityPolicyExecute(r ApiDeleteVnicS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4076,6 +4581,7 @@ func (a *VnicApiService) DeleteVnicSanConnectivityPolicyExecute(r ApiDeleteVnicS
 				newErr.error = err.Error()
 				return localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarHTTPResponse, newErr
 		}
@@ -4085,6 +4591,291 @@ func (a *VnicApiService) DeleteVnicSanConnectivityPolicyExecute(r ApiDeleteVnicS
 			newErr.error = err.Error()
 			return localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiDeleteVnicVhbaTemplateRequest struct {
+	ctx        context.Context
+	ApiService *VnicApiService
+	moid       string
+}
+
+func (r ApiDeleteVnicVhbaTemplateRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeleteVnicVhbaTemplateExecute(r)
+}
+
+/*
+DeleteVnicVhbaTemplate Delete a 'vnic.VhbaTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicVhbaTemplateRequest
+*/
+func (a *VnicApiService) DeleteVnicVhbaTemplate(ctx context.Context, moid string) ApiDeleteVnicVhbaTemplateRequest {
+	return ApiDeleteVnicVhbaTemplateRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+func (a *VnicApiService) DeleteVnicVhbaTemplateExecute(r ApiDeleteVnicVhbaTemplateRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.DeleteVnicVhbaTemplate")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VhbaTemplates/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiDeleteVnicVnicTemplateRequest struct {
+	ctx        context.Context
+	ApiService *VnicApiService
+	moid       string
+}
+
+func (r ApiDeleteVnicVnicTemplateRequest) Execute() (*http.Response, error) {
+	return r.ApiService.DeleteVnicVnicTemplateExecute(r)
+}
+
+/*
+DeleteVnicVnicTemplate Delete a 'vnic.VnicTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiDeleteVnicVnicTemplateRequest
+*/
+func (a *VnicApiService) DeleteVnicVnicTemplate(ctx context.Context, moid string) ApiDeleteVnicVnicTemplateRequest {
+	return ApiDeleteVnicVnicTemplateRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+func (a *VnicApiService) DeleteVnicVnicTemplateExecute(r ApiDeleteVnicVnicTemplateRequest) (*http.Response, error) {
+	var (
+		localVarHTTPMethod = http.MethodDelete
+		localVarPostBody   interface{}
+		formFiles          []formFile
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.DeleteVnicVnicTemplate")
+	if err != nil {
+		return nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VnicTemplates/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarHTTPResponse, newErr
 	}
@@ -4105,9 +4896,9 @@ func (r ApiGetVnicEthAdapterPolicyByMoidRequest) Execute() (*VnicEthAdapterPolic
 /*
 GetVnicEthAdapterPolicyByMoid Read a 'vnic.EthAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthAdapterPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthAdapterPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthAdapterPolicyByMoid(ctx context.Context, moid string) ApiGetVnicEthAdapterPolicyByMoidRequest {
 	return ApiGetVnicEthAdapterPolicyByMoidRequest{
@@ -4118,7 +4909,8 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyByMoid(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return VnicEthAdapterPolicy
+//
+//	@return VnicEthAdapterPolicy
 func (a *VnicApiService) GetVnicEthAdapterPolicyByMoidExecute(r ApiGetVnicEthAdapterPolicyByMoidRequest) (*VnicEthAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4133,7 +4925,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyByMoidExecute(r ApiGetVnicEthAda
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4166,9 +4958,9 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyByMoidExecute(r ApiGetVnicEthAda
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4185,6 +4977,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyByMoidExecute(r ApiGetVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4195,6 +4988,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyByMoidExecute(r ApiGetVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4205,6 +4999,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyByMoidExecute(r ApiGetVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4215,6 +5010,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyByMoidExecute(r ApiGetVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4224,6 +5020,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyByMoidExecute(r ApiGetVnicEthAda
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4253,9 +5050,9 @@ func (r ApiGetVnicEthAdapterPolicyInventoryByMoidRequest) Execute() (*VnicEthAda
 /*
 GetVnicEthAdapterPolicyInventoryByMoid Read a 'vnic.EthAdapterPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthAdapterPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthAdapterPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicEthAdapterPolicyInventoryByMoidRequest {
 	return ApiGetVnicEthAdapterPolicyInventoryByMoidRequest{
@@ -4266,7 +5063,8 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return VnicEthAdapterPolicyInventory
+//
+//	@return VnicEthAdapterPolicyInventory
 func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoidExecute(r ApiGetVnicEthAdapterPolicyInventoryByMoidRequest) (*VnicEthAdapterPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4281,7 +5079,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoidExecute(r ApiGetV
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthAdapterPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4314,9 +5112,9 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoidExecute(r ApiGetV
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4333,6 +5131,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoidExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4343,6 +5142,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoidExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4353,6 +5153,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoidExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4363,6 +5164,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoidExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4372,6 +5174,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryByMoidExecute(r ApiGetV
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4440,7 +5243,7 @@ func (r ApiGetVnicEthAdapterPolicyInventoryListRequest) Expand(expand string) Ap
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthAdapterPolicyInventoryListRequest) Apply(apply string) ApiGetVnicEthAdapterPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -4477,8 +5280,8 @@ func (r ApiGetVnicEthAdapterPolicyInventoryListRequest) Execute() (*VnicEthAdapt
 /*
 GetVnicEthAdapterPolicyInventoryList Read a 'vnic.EthAdapterPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthAdapterPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthAdapterPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryList(ctx context.Context) ApiGetVnicEthAdapterPolicyInventoryListRequest {
 	return ApiGetVnicEthAdapterPolicyInventoryListRequest{
@@ -4488,7 +5291,8 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return VnicEthAdapterPolicyInventoryResponse
+//
+//	@return VnicEthAdapterPolicyInventoryResponse
 func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryListExecute(r ApiGetVnicEthAdapterPolicyInventoryListRequest) (*VnicEthAdapterPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4509,37 +5313,52 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryListExecute(r ApiGetVni
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4568,9 +5387,9 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryListExecute(r ApiGetVni
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4587,6 +5406,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryListExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4597,6 +5417,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryListExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4607,6 +5428,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryListExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4617,6 +5439,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryListExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4626,6 +5449,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyInventoryListExecute(r ApiGetVni
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4694,7 +5518,7 @@ func (r ApiGetVnicEthAdapterPolicyListRequest) Expand(expand string) ApiGetVnicE
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthAdapterPolicyListRequest) Apply(apply string) ApiGetVnicEthAdapterPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -4731,8 +5555,8 @@ func (r ApiGetVnicEthAdapterPolicyListRequest) Execute() (*VnicEthAdapterPolicyR
 /*
 GetVnicEthAdapterPolicyList Read a 'vnic.EthAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthAdapterPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthAdapterPolicyListRequest
 */
 func (a *VnicApiService) GetVnicEthAdapterPolicyList(ctx context.Context) ApiGetVnicEthAdapterPolicyListRequest {
 	return ApiGetVnicEthAdapterPolicyListRequest{
@@ -4742,7 +5566,8 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyList(ctx context.Context) ApiGet
 }
 
 // Execute executes the request
-//  @return VnicEthAdapterPolicyResponse
+//
+//	@return VnicEthAdapterPolicyResponse
 func (a *VnicApiService) GetVnicEthAdapterPolicyListExecute(r ApiGetVnicEthAdapterPolicyListRequest) (*VnicEthAdapterPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4763,37 +5588,52 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyListExecute(r ApiGetVnicEthAdapt
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -4822,9 +5662,9 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyListExecute(r ApiGetVnicEthAdapt
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4841,6 +5681,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyListExecute(r ApiGetVnicEthAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4851,6 +5692,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyListExecute(r ApiGetVnicEthAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4861,6 +5703,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyListExecute(r ApiGetVnicEthAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4871,6 +5714,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyListExecute(r ApiGetVnicEthAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4880,6 +5724,7 @@ func (a *VnicApiService) GetVnicEthAdapterPolicyListExecute(r ApiGetVnicEthAdapt
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -4909,9 +5754,9 @@ func (r ApiGetVnicEthIfByMoidRequest) Execute() (*VnicEthIf, *http.Response, err
 /*
 GetVnicEthIfByMoid Read a 'vnic.EthIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthIfByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthIfByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthIfByMoid(ctx context.Context, moid string) ApiGetVnicEthIfByMoidRequest {
 	return ApiGetVnicEthIfByMoidRequest{
@@ -4922,7 +5767,8 @@ func (a *VnicApiService) GetVnicEthIfByMoid(ctx context.Context, moid string) Ap
 }
 
 // Execute executes the request
-//  @return VnicEthIf
+//
+//	@return VnicEthIf
 func (a *VnicApiService) GetVnicEthIfByMoidExecute(r ApiGetVnicEthIfByMoidRequest) (*VnicEthIf, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -4937,7 +5783,7 @@ func (a *VnicApiService) GetVnicEthIfByMoidExecute(r ApiGetVnicEthIfByMoidReques
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthIfs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -4970,9 +5816,9 @@ func (a *VnicApiService) GetVnicEthIfByMoidExecute(r ApiGetVnicEthIfByMoidReques
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -4989,6 +5835,7 @@ func (a *VnicApiService) GetVnicEthIfByMoidExecute(r ApiGetVnicEthIfByMoidReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -4999,6 +5846,7 @@ func (a *VnicApiService) GetVnicEthIfByMoidExecute(r ApiGetVnicEthIfByMoidReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5009,6 +5857,7 @@ func (a *VnicApiService) GetVnicEthIfByMoidExecute(r ApiGetVnicEthIfByMoidReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5019,6 +5868,7 @@ func (a *VnicApiService) GetVnicEthIfByMoidExecute(r ApiGetVnicEthIfByMoidReques
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5028,6 +5878,7 @@ func (a *VnicApiService) GetVnicEthIfByMoidExecute(r ApiGetVnicEthIfByMoidReques
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5057,9 +5908,9 @@ func (r ApiGetVnicEthIfInventoryByMoidRequest) Execute() (*VnicEthIfInventory, *
 /*
 GetVnicEthIfInventoryByMoid Read a 'vnic.EthIfInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthIfInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthIfInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthIfInventoryByMoid(ctx context.Context, moid string) ApiGetVnicEthIfInventoryByMoidRequest {
 	return ApiGetVnicEthIfInventoryByMoidRequest{
@@ -5070,7 +5921,8 @@ func (a *VnicApiService) GetVnicEthIfInventoryByMoid(ctx context.Context, moid s
 }
 
 // Execute executes the request
-//  @return VnicEthIfInventory
+//
+//	@return VnicEthIfInventory
 func (a *VnicApiService) GetVnicEthIfInventoryByMoidExecute(r ApiGetVnicEthIfInventoryByMoidRequest) (*VnicEthIfInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5085,7 +5937,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryByMoidExecute(r ApiGetVnicEthIfInv
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthIfInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5118,9 +5970,9 @@ func (a *VnicApiService) GetVnicEthIfInventoryByMoidExecute(r ApiGetVnicEthIfInv
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5137,6 +5989,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryByMoidExecute(r ApiGetVnicEthIfInv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5147,6 +6000,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryByMoidExecute(r ApiGetVnicEthIfInv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5157,6 +6011,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryByMoidExecute(r ApiGetVnicEthIfInv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5167,6 +6022,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryByMoidExecute(r ApiGetVnicEthIfInv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5176,6 +6032,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryByMoidExecute(r ApiGetVnicEthIfInv
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5244,7 +6101,7 @@ func (r ApiGetVnicEthIfInventoryListRequest) Expand(expand string) ApiGetVnicEth
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthIfInventoryListRequest) Apply(apply string) ApiGetVnicEthIfInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -5281,8 +6138,8 @@ func (r ApiGetVnicEthIfInventoryListRequest) Execute() (*VnicEthIfInventoryRespo
 /*
 GetVnicEthIfInventoryList Read a 'vnic.EthIfInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthIfInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthIfInventoryListRequest
 */
 func (a *VnicApiService) GetVnicEthIfInventoryList(ctx context.Context) ApiGetVnicEthIfInventoryListRequest {
 	return ApiGetVnicEthIfInventoryListRequest{
@@ -5292,7 +6149,8 @@ func (a *VnicApiService) GetVnicEthIfInventoryList(ctx context.Context) ApiGetVn
 }
 
 // Execute executes the request
-//  @return VnicEthIfInventoryResponse
+//
+//	@return VnicEthIfInventoryResponse
 func (a *VnicApiService) GetVnicEthIfInventoryListExecute(r ApiGetVnicEthIfInventoryListRequest) (*VnicEthIfInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5313,37 +6171,52 @@ func (a *VnicApiService) GetVnicEthIfInventoryListExecute(r ApiGetVnicEthIfInven
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5372,9 +6245,9 @@ func (a *VnicApiService) GetVnicEthIfInventoryListExecute(r ApiGetVnicEthIfInven
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5391,6 +6264,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryListExecute(r ApiGetVnicEthIfInven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5401,6 +6275,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryListExecute(r ApiGetVnicEthIfInven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5411,6 +6286,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryListExecute(r ApiGetVnicEthIfInven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5421,6 +6297,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryListExecute(r ApiGetVnicEthIfInven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5430,6 +6307,7 @@ func (a *VnicApiService) GetVnicEthIfInventoryListExecute(r ApiGetVnicEthIfInven
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5498,7 +6376,7 @@ func (r ApiGetVnicEthIfListRequest) Expand(expand string) ApiGetVnicEthIfListReq
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthIfListRequest) Apply(apply string) ApiGetVnicEthIfListRequest {
 	r.apply = &apply
 	return r
@@ -5535,8 +6413,8 @@ func (r ApiGetVnicEthIfListRequest) Execute() (*VnicEthIfResponse, *http.Respons
 /*
 GetVnicEthIfList Read a 'vnic.EthIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthIfListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthIfListRequest
 */
 func (a *VnicApiService) GetVnicEthIfList(ctx context.Context) ApiGetVnicEthIfListRequest {
 	return ApiGetVnicEthIfListRequest{
@@ -5546,7 +6424,8 @@ func (a *VnicApiService) GetVnicEthIfList(ctx context.Context) ApiGetVnicEthIfLi
 }
 
 // Execute executes the request
-//  @return VnicEthIfResponse
+//
+//	@return VnicEthIfResponse
 func (a *VnicApiService) GetVnicEthIfListExecute(r ApiGetVnicEthIfListRequest) (*VnicEthIfResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5567,37 +6446,52 @@ func (a *VnicApiService) GetVnicEthIfListExecute(r ApiGetVnicEthIfListRequest) (
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -5626,9 +6520,9 @@ func (a *VnicApiService) GetVnicEthIfListExecute(r ApiGetVnicEthIfListRequest) (
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5645,6 +6539,7 @@ func (a *VnicApiService) GetVnicEthIfListExecute(r ApiGetVnicEthIfListRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5655,6 +6550,7 @@ func (a *VnicApiService) GetVnicEthIfListExecute(r ApiGetVnicEthIfListRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5665,6 +6561,7 @@ func (a *VnicApiService) GetVnicEthIfListExecute(r ApiGetVnicEthIfListRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5675,6 +6572,7 @@ func (a *VnicApiService) GetVnicEthIfListExecute(r ApiGetVnicEthIfListRequest) (
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5684,6 +6582,7 @@ func (a *VnicApiService) GetVnicEthIfListExecute(r ApiGetVnicEthIfListRequest) (
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5713,9 +6612,9 @@ func (r ApiGetVnicEthNetworkPolicyByMoidRequest) Execute() (*VnicEthNetworkPolic
 /*
 GetVnicEthNetworkPolicyByMoid Read a 'vnic.EthNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthNetworkPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthNetworkPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthNetworkPolicyByMoid(ctx context.Context, moid string) ApiGetVnicEthNetworkPolicyByMoidRequest {
 	return ApiGetVnicEthNetworkPolicyByMoidRequest{
@@ -5726,7 +6625,8 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyByMoid(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return VnicEthNetworkPolicy
+//
+//	@return VnicEthNetworkPolicy
 func (a *VnicApiService) GetVnicEthNetworkPolicyByMoidExecute(r ApiGetVnicEthNetworkPolicyByMoidRequest) (*VnicEthNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5741,7 +6641,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyByMoidExecute(r ApiGetVnicEthNet
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthNetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5774,9 +6674,9 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyByMoidExecute(r ApiGetVnicEthNet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5793,6 +6693,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyByMoidExecute(r ApiGetVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5803,6 +6704,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyByMoidExecute(r ApiGetVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5813,6 +6715,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyByMoidExecute(r ApiGetVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5823,6 +6726,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyByMoidExecute(r ApiGetVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5832,6 +6736,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyByMoidExecute(r ApiGetVnicEthNet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -5861,9 +6766,9 @@ func (r ApiGetVnicEthNetworkPolicyInventoryByMoidRequest) Execute() (*VnicEthNet
 /*
 GetVnicEthNetworkPolicyInventoryByMoid Read a 'vnic.EthNetworkPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthNetworkPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthNetworkPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicEthNetworkPolicyInventoryByMoidRequest {
 	return ApiGetVnicEthNetworkPolicyInventoryByMoidRequest{
@@ -5874,7 +6779,8 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoid(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return VnicEthNetworkPolicyInventory
+//
+//	@return VnicEthNetworkPolicyInventory
 func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoidExecute(r ApiGetVnicEthNetworkPolicyInventoryByMoidRequest) (*VnicEthNetworkPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -5889,7 +6795,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoidExecute(r ApiGetV
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthNetworkPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -5922,9 +6828,9 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoidExecute(r ApiGetV
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -5941,6 +6847,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoidExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5951,6 +6858,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoidExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5961,6 +6869,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoidExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5971,6 +6880,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoidExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -5980,6 +6890,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryByMoidExecute(r ApiGetV
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6048,7 +6959,7 @@ func (r ApiGetVnicEthNetworkPolicyInventoryListRequest) Expand(expand string) Ap
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthNetworkPolicyInventoryListRequest) Apply(apply string) ApiGetVnicEthNetworkPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -6085,8 +6996,8 @@ func (r ApiGetVnicEthNetworkPolicyInventoryListRequest) Execute() (*VnicEthNetwo
 /*
 GetVnicEthNetworkPolicyInventoryList Read a 'vnic.EthNetworkPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthNetworkPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthNetworkPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryList(ctx context.Context) ApiGetVnicEthNetworkPolicyInventoryListRequest {
 	return ApiGetVnicEthNetworkPolicyInventoryListRequest{
@@ -6096,7 +7007,8 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryList(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return VnicEthNetworkPolicyInventoryResponse
+//
+//	@return VnicEthNetworkPolicyInventoryResponse
 func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryListExecute(r ApiGetVnicEthNetworkPolicyInventoryListRequest) (*VnicEthNetworkPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6117,37 +7029,52 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryListExecute(r ApiGetVni
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -6176,9 +7103,9 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryListExecute(r ApiGetVni
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6195,6 +7122,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryListExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6205,6 +7133,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryListExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6215,6 +7144,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryListExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6225,6 +7155,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryListExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6234,6 +7165,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyInventoryListExecute(r ApiGetVni
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6302,7 +7234,7 @@ func (r ApiGetVnicEthNetworkPolicyListRequest) Expand(expand string) ApiGetVnicE
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthNetworkPolicyListRequest) Apply(apply string) ApiGetVnicEthNetworkPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -6339,8 +7271,8 @@ func (r ApiGetVnicEthNetworkPolicyListRequest) Execute() (*VnicEthNetworkPolicyR
 /*
 GetVnicEthNetworkPolicyList Read a 'vnic.EthNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthNetworkPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthNetworkPolicyListRequest
 */
 func (a *VnicApiService) GetVnicEthNetworkPolicyList(ctx context.Context) ApiGetVnicEthNetworkPolicyListRequest {
 	return ApiGetVnicEthNetworkPolicyListRequest{
@@ -6350,7 +7282,8 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyList(ctx context.Context) ApiGet
 }
 
 // Execute executes the request
-//  @return VnicEthNetworkPolicyResponse
+//
+//	@return VnicEthNetworkPolicyResponse
 func (a *VnicApiService) GetVnicEthNetworkPolicyListExecute(r ApiGetVnicEthNetworkPolicyListRequest) (*VnicEthNetworkPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6371,37 +7304,52 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyListExecute(r ApiGetVnicEthNetwo
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -6430,9 +7378,9 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyListExecute(r ApiGetVnicEthNetwo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6449,6 +7397,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyListExecute(r ApiGetVnicEthNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6459,6 +7408,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyListExecute(r ApiGetVnicEthNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6469,6 +7419,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyListExecute(r ApiGetVnicEthNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6479,6 +7430,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyListExecute(r ApiGetVnicEthNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6488,6 +7440,7 @@ func (a *VnicApiService) GetVnicEthNetworkPolicyListExecute(r ApiGetVnicEthNetwo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6517,9 +7470,9 @@ func (r ApiGetVnicEthQosPolicyByMoidRequest) Execute() (*VnicEthQosPolicy, *http
 /*
 GetVnicEthQosPolicyByMoid Read a 'vnic.EthQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthQosPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthQosPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthQosPolicyByMoid(ctx context.Context, moid string) ApiGetVnicEthQosPolicyByMoidRequest {
 	return ApiGetVnicEthQosPolicyByMoidRequest{
@@ -6530,7 +7483,8 @@ func (a *VnicApiService) GetVnicEthQosPolicyByMoid(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return VnicEthQosPolicy
+//
+//	@return VnicEthQosPolicy
 func (a *VnicApiService) GetVnicEthQosPolicyByMoidExecute(r ApiGetVnicEthQosPolicyByMoidRequest) (*VnicEthQosPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6545,7 +7499,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyByMoidExecute(r ApiGetVnicEthQosPoli
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthQosPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6578,9 +7532,9 @@ func (a *VnicApiService) GetVnicEthQosPolicyByMoidExecute(r ApiGetVnicEthQosPoli
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6597,6 +7551,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyByMoidExecute(r ApiGetVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6607,6 +7562,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyByMoidExecute(r ApiGetVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6617,6 +7573,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyByMoidExecute(r ApiGetVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6627,6 +7584,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyByMoidExecute(r ApiGetVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6636,6 +7594,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyByMoidExecute(r ApiGetVnicEthQosPoli
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6665,9 +7624,9 @@ func (r ApiGetVnicEthQosPolicyInventoryByMoidRequest) Execute() (*VnicEthQosPoli
 /*
 GetVnicEthQosPolicyInventoryByMoid Read a 'vnic.EthQosPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthQosPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthQosPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicEthQosPolicyInventoryByMoidRequest {
 	return ApiGetVnicEthQosPolicyInventoryByMoidRequest{
@@ -6678,7 +7637,8 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return VnicEthQosPolicyInventory
+//
+//	@return VnicEthQosPolicyInventory
 func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoidExecute(r ApiGetVnicEthQosPolicyInventoryByMoidRequest) (*VnicEthQosPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6693,7 +7653,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoidExecute(r ApiGetVnicE
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthQosPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -6726,9 +7686,9 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoidExecute(r ApiGetVnicE
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6745,6 +7705,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoidExecute(r ApiGetVnicE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6755,6 +7716,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoidExecute(r ApiGetVnicE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6765,6 +7727,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoidExecute(r ApiGetVnicE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6775,6 +7738,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoidExecute(r ApiGetVnicE
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -6784,6 +7748,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryByMoidExecute(r ApiGetVnicE
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -6852,7 +7817,7 @@ func (r ApiGetVnicEthQosPolicyInventoryListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthQosPolicyInventoryListRequest) Apply(apply string) ApiGetVnicEthQosPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -6889,8 +7854,8 @@ func (r ApiGetVnicEthQosPolicyInventoryListRequest) Execute() (*VnicEthQosPolicy
 /*
 GetVnicEthQosPolicyInventoryList Read a 'vnic.EthQosPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthQosPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthQosPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicEthQosPolicyInventoryList(ctx context.Context) ApiGetVnicEthQosPolicyInventoryListRequest {
 	return ApiGetVnicEthQosPolicyInventoryListRequest{
@@ -6900,7 +7865,8 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return VnicEthQosPolicyInventoryResponse
+//
+//	@return VnicEthQosPolicyInventoryResponse
 func (a *VnicApiService) GetVnicEthQosPolicyInventoryListExecute(r ApiGetVnicEthQosPolicyInventoryListRequest) (*VnicEthQosPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -6921,37 +7887,52 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryListExecute(r ApiGetVnicEth
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -6980,9 +7961,9 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryListExecute(r ApiGetVnicEth
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -6999,6 +7980,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryListExecute(r ApiGetVnicEth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7009,6 +7991,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryListExecute(r ApiGetVnicEth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7019,6 +8002,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryListExecute(r ApiGetVnicEth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7029,6 +8013,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryListExecute(r ApiGetVnicEth
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7038,6 +8023,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyInventoryListExecute(r ApiGetVnicEth
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7106,7 +8092,7 @@ func (r ApiGetVnicEthQosPolicyListRequest) Expand(expand string) ApiGetVnicEthQo
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthQosPolicyListRequest) Apply(apply string) ApiGetVnicEthQosPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -7143,8 +8129,8 @@ func (r ApiGetVnicEthQosPolicyListRequest) Execute() (*VnicEthQosPolicyResponse,
 /*
 GetVnicEthQosPolicyList Read a 'vnic.EthQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthQosPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthQosPolicyListRequest
 */
 func (a *VnicApiService) GetVnicEthQosPolicyList(ctx context.Context) ApiGetVnicEthQosPolicyListRequest {
 	return ApiGetVnicEthQosPolicyListRequest{
@@ -7154,7 +8140,8 @@ func (a *VnicApiService) GetVnicEthQosPolicyList(ctx context.Context) ApiGetVnic
 }
 
 // Execute executes the request
-//  @return VnicEthQosPolicyResponse
+//
+//	@return VnicEthQosPolicyResponse
 func (a *VnicApiService) GetVnicEthQosPolicyListExecute(r ApiGetVnicEthQosPolicyListRequest) (*VnicEthQosPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7175,37 +8162,52 @@ func (a *VnicApiService) GetVnicEthQosPolicyListExecute(r ApiGetVnicEthQosPolicy
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -7234,9 +8236,9 @@ func (a *VnicApiService) GetVnicEthQosPolicyListExecute(r ApiGetVnicEthQosPolicy
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7253,6 +8255,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyListExecute(r ApiGetVnicEthQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7263,6 +8266,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyListExecute(r ApiGetVnicEthQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7273,6 +8277,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyListExecute(r ApiGetVnicEthQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7283,6 +8288,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyListExecute(r ApiGetVnicEthQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7292,6 +8298,7 @@ func (a *VnicApiService) GetVnicEthQosPolicyListExecute(r ApiGetVnicEthQosPolicy
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7321,9 +8328,9 @@ func (r ApiGetVnicEthVethInventoryByMoidRequest) Execute() (*VnicEthVethInventor
 /*
 GetVnicEthVethInventoryByMoid Read a 'vnic.EthVethInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthVethInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthVethInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthVethInventoryByMoid(ctx context.Context, moid string) ApiGetVnicEthVethInventoryByMoidRequest {
 	return ApiGetVnicEthVethInventoryByMoidRequest{
@@ -7334,7 +8341,8 @@ func (a *VnicApiService) GetVnicEthVethInventoryByMoid(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return VnicEthVethInventory
+//
+//	@return VnicEthVethInventory
 func (a *VnicApiService) GetVnicEthVethInventoryByMoidExecute(r ApiGetVnicEthVethInventoryByMoidRequest) (*VnicEthVethInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7349,7 +8357,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryByMoidExecute(r ApiGetVnicEthVet
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthVethInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7382,9 +8390,9 @@ func (a *VnicApiService) GetVnicEthVethInventoryByMoidExecute(r ApiGetVnicEthVet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7401,6 +8409,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryByMoidExecute(r ApiGetVnicEthVet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7411,6 +8420,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryByMoidExecute(r ApiGetVnicEthVet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7421,6 +8431,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryByMoidExecute(r ApiGetVnicEthVet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7431,6 +8442,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryByMoidExecute(r ApiGetVnicEthVet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7440,6 +8452,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryByMoidExecute(r ApiGetVnicEthVet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7508,7 +8521,7 @@ func (r ApiGetVnicEthVethInventoryListRequest) Expand(expand string) ApiGetVnicE
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthVethInventoryListRequest) Apply(apply string) ApiGetVnicEthVethInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -7545,8 +8558,8 @@ func (r ApiGetVnicEthVethInventoryListRequest) Execute() (*VnicEthVethInventoryR
 /*
 GetVnicEthVethInventoryList Read a 'vnic.EthVethInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthVethInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthVethInventoryListRequest
 */
 func (a *VnicApiService) GetVnicEthVethInventoryList(ctx context.Context) ApiGetVnicEthVethInventoryListRequest {
 	return ApiGetVnicEthVethInventoryListRequest{
@@ -7556,7 +8569,8 @@ func (a *VnicApiService) GetVnicEthVethInventoryList(ctx context.Context) ApiGet
 }
 
 // Execute executes the request
-//  @return VnicEthVethInventoryResponse
+//
+//	@return VnicEthVethInventoryResponse
 func (a *VnicApiService) GetVnicEthVethInventoryListExecute(r ApiGetVnicEthVethInventoryListRequest) (*VnicEthVethInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7577,37 +8591,52 @@ func (a *VnicApiService) GetVnicEthVethInventoryListExecute(r ApiGetVnicEthVethI
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -7636,9 +8665,9 @@ func (a *VnicApiService) GetVnicEthVethInventoryListExecute(r ApiGetVnicEthVethI
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7655,6 +8684,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryListExecute(r ApiGetVnicEthVethI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7665,6 +8695,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryListExecute(r ApiGetVnicEthVethI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7675,6 +8706,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryListExecute(r ApiGetVnicEthVethI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7685,6 +8717,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryListExecute(r ApiGetVnicEthVethI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7694,6 +8727,7 @@ func (a *VnicApiService) GetVnicEthVethInventoryListExecute(r ApiGetVnicEthVethI
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7723,9 +8757,9 @@ func (r ApiGetVnicEthVnicInventoryByMoidRequest) Execute() (*VnicEthVnicInventor
 /*
 GetVnicEthVnicInventoryByMoid Read a 'vnic.EthVnicInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicEthVnicInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicEthVnicInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicEthVnicInventoryByMoid(ctx context.Context, moid string) ApiGetVnicEthVnicInventoryByMoidRequest {
 	return ApiGetVnicEthVnicInventoryByMoidRequest{
@@ -7736,7 +8770,8 @@ func (a *VnicApiService) GetVnicEthVnicInventoryByMoid(ctx context.Context, moid
 }
 
 // Execute executes the request
-//  @return VnicEthVnicInventory
+//
+//	@return VnicEthVnicInventory
 func (a *VnicApiService) GetVnicEthVnicInventoryByMoidExecute(r ApiGetVnicEthVnicInventoryByMoidRequest) (*VnicEthVnicInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7751,7 +8786,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryByMoidExecute(r ApiGetVnicEthVni
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthVnicInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -7784,9 +8819,9 @@ func (a *VnicApiService) GetVnicEthVnicInventoryByMoidExecute(r ApiGetVnicEthVni
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -7803,6 +8838,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryByMoidExecute(r ApiGetVnicEthVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7813,6 +8849,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryByMoidExecute(r ApiGetVnicEthVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7823,6 +8860,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryByMoidExecute(r ApiGetVnicEthVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7833,6 +8871,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryByMoidExecute(r ApiGetVnicEthVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -7842,6 +8881,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryByMoidExecute(r ApiGetVnicEthVni
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -7910,7 +8950,7 @@ func (r ApiGetVnicEthVnicInventoryListRequest) Expand(expand string) ApiGetVnicE
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicEthVnicInventoryListRequest) Apply(apply string) ApiGetVnicEthVnicInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -7947,8 +8987,8 @@ func (r ApiGetVnicEthVnicInventoryListRequest) Execute() (*VnicEthVnicInventoryR
 /*
 GetVnicEthVnicInventoryList Read a 'vnic.EthVnicInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicEthVnicInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicEthVnicInventoryListRequest
 */
 func (a *VnicApiService) GetVnicEthVnicInventoryList(ctx context.Context) ApiGetVnicEthVnicInventoryListRequest {
 	return ApiGetVnicEthVnicInventoryListRequest{
@@ -7958,7 +8998,8 @@ func (a *VnicApiService) GetVnicEthVnicInventoryList(ctx context.Context) ApiGet
 }
 
 // Execute executes the request
-//  @return VnicEthVnicInventoryResponse
+//
+//	@return VnicEthVnicInventoryResponse
 func (a *VnicApiService) GetVnicEthVnicInventoryListExecute(r ApiGetVnicEthVnicInventoryListRequest) (*VnicEthVnicInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -7979,37 +9020,52 @@ func (a *VnicApiService) GetVnicEthVnicInventoryListExecute(r ApiGetVnicEthVnicI
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8038,9 +9094,9 @@ func (a *VnicApiService) GetVnicEthVnicInventoryListExecute(r ApiGetVnicEthVnicI
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8057,6 +9113,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryListExecute(r ApiGetVnicEthVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8067,6 +9124,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryListExecute(r ApiGetVnicEthVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8077,6 +9135,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryListExecute(r ApiGetVnicEthVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8087,6 +9146,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryListExecute(r ApiGetVnicEthVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8096,6 +9156,7 @@ func (a *VnicApiService) GetVnicEthVnicInventoryListExecute(r ApiGetVnicEthVnicI
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8125,9 +9186,9 @@ func (r ApiGetVnicFcAdapterPolicyByMoidRequest) Execute() (*VnicFcAdapterPolicy,
 /*
 GetVnicFcAdapterPolicyByMoid Read a 'vnic.FcAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcAdapterPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcAdapterPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcAdapterPolicyByMoid(ctx context.Context, moid string) ApiGetVnicFcAdapterPolicyByMoidRequest {
 	return ApiGetVnicFcAdapterPolicyByMoidRequest{
@@ -8138,7 +9199,8 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyByMoid(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return VnicFcAdapterPolicy
+//
+//	@return VnicFcAdapterPolicy
 func (a *VnicApiService) GetVnicFcAdapterPolicyByMoidExecute(r ApiGetVnicFcAdapterPolicyByMoidRequest) (*VnicFcAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8153,7 +9215,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyByMoidExecute(r ApiGetVnicFcAdapt
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8186,9 +9248,9 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyByMoidExecute(r ApiGetVnicFcAdapt
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8205,6 +9267,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyByMoidExecute(r ApiGetVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8215,6 +9278,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyByMoidExecute(r ApiGetVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8225,6 +9289,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyByMoidExecute(r ApiGetVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8235,6 +9300,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyByMoidExecute(r ApiGetVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8244,6 +9310,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyByMoidExecute(r ApiGetVnicFcAdapt
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8273,9 +9340,9 @@ func (r ApiGetVnicFcAdapterPolicyInventoryByMoidRequest) Execute() (*VnicFcAdapt
 /*
 GetVnicFcAdapterPolicyInventoryByMoid Read a 'vnic.FcAdapterPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcAdapterPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcAdapterPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicFcAdapterPolicyInventoryByMoidRequest {
 	return ApiGetVnicFcAdapterPolicyInventoryByMoidRequest{
@@ -8286,7 +9353,8 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoid(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return VnicFcAdapterPolicyInventory
+//
+//	@return VnicFcAdapterPolicyInventory
 func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoidExecute(r ApiGetVnicFcAdapterPolicyInventoryByMoidRequest) (*VnicFcAdapterPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8301,7 +9369,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoidExecute(r ApiGetVn
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcAdapterPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8334,9 +9402,9 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoidExecute(r ApiGetVn
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8353,6 +9421,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8363,6 +9432,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8373,6 +9443,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8383,6 +9454,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8392,6 +9464,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryByMoidExecute(r ApiGetVn
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8460,7 +9533,7 @@ func (r ApiGetVnicFcAdapterPolicyInventoryListRequest) Expand(expand string) Api
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcAdapterPolicyInventoryListRequest) Apply(apply string) ApiGetVnicFcAdapterPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -8497,8 +9570,8 @@ func (r ApiGetVnicFcAdapterPolicyInventoryListRequest) Execute() (*VnicFcAdapter
 /*
 GetVnicFcAdapterPolicyInventoryList Read a 'vnic.FcAdapterPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcAdapterPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcAdapterPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryList(ctx context.Context) ApiGetVnicFcAdapterPolicyInventoryListRequest {
 	return ApiGetVnicFcAdapterPolicyInventoryListRequest{
@@ -8508,7 +9581,8 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryList(ctx context.Context
 }
 
 // Execute executes the request
-//  @return VnicFcAdapterPolicyInventoryResponse
+//
+//	@return VnicFcAdapterPolicyInventoryResponse
 func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryListExecute(r ApiGetVnicFcAdapterPolicyInventoryListRequest) (*VnicFcAdapterPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8529,37 +9603,52 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryListExecute(r ApiGetVnic
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8588,9 +9677,9 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryListExecute(r ApiGetVnic
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8607,6 +9696,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8617,6 +9707,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8627,6 +9718,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8637,6 +9729,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8646,6 +9739,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyInventoryListExecute(r ApiGetVnic
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8714,7 +9808,7 @@ func (r ApiGetVnicFcAdapterPolicyListRequest) Expand(expand string) ApiGetVnicFc
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcAdapterPolicyListRequest) Apply(apply string) ApiGetVnicFcAdapterPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -8751,8 +9845,8 @@ func (r ApiGetVnicFcAdapterPolicyListRequest) Execute() (*VnicFcAdapterPolicyRes
 /*
 GetVnicFcAdapterPolicyList Read a 'vnic.FcAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcAdapterPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcAdapterPolicyListRequest
 */
 func (a *VnicApiService) GetVnicFcAdapterPolicyList(ctx context.Context) ApiGetVnicFcAdapterPolicyListRequest {
 	return ApiGetVnicFcAdapterPolicyListRequest{
@@ -8762,7 +9856,8 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyList(ctx context.Context) ApiGetV
 }
 
 // Execute executes the request
-//  @return VnicFcAdapterPolicyResponse
+//
+//	@return VnicFcAdapterPolicyResponse
 func (a *VnicApiService) GetVnicFcAdapterPolicyListExecute(r ApiGetVnicFcAdapterPolicyListRequest) (*VnicFcAdapterPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8783,37 +9878,52 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyListExecute(r ApiGetVnicFcAdapter
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -8842,9 +9952,9 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyListExecute(r ApiGetVnicFcAdapter
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -8861,6 +9971,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyListExecute(r ApiGetVnicFcAdapter
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8871,6 +9982,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyListExecute(r ApiGetVnicFcAdapter
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8881,6 +9993,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyListExecute(r ApiGetVnicFcAdapter
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8891,6 +10004,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyListExecute(r ApiGetVnicFcAdapter
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -8900,6 +10014,7 @@ func (a *VnicApiService) GetVnicFcAdapterPolicyListExecute(r ApiGetVnicFcAdapter
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -8929,9 +10044,9 @@ func (r ApiGetVnicFcIfByMoidRequest) Execute() (*VnicFcIf, *http.Response, error
 /*
 GetVnicFcIfByMoid Read a 'vnic.FcIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcIfByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcIfByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcIfByMoid(ctx context.Context, moid string) ApiGetVnicFcIfByMoidRequest {
 	return ApiGetVnicFcIfByMoidRequest{
@@ -8942,7 +10057,8 @@ func (a *VnicApiService) GetVnicFcIfByMoid(ctx context.Context, moid string) Api
 }
 
 // Execute executes the request
-//  @return VnicFcIf
+//
+//	@return VnicFcIf
 func (a *VnicApiService) GetVnicFcIfByMoidExecute(r ApiGetVnicFcIfByMoidRequest) (*VnicFcIf, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -8957,7 +10073,7 @@ func (a *VnicApiService) GetVnicFcIfByMoidExecute(r ApiGetVnicFcIfByMoidRequest)
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcIfs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -8990,9 +10106,9 @@ func (a *VnicApiService) GetVnicFcIfByMoidExecute(r ApiGetVnicFcIfByMoidRequest)
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9009,6 +10125,7 @@ func (a *VnicApiService) GetVnicFcIfByMoidExecute(r ApiGetVnicFcIfByMoidRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9019,6 +10136,7 @@ func (a *VnicApiService) GetVnicFcIfByMoidExecute(r ApiGetVnicFcIfByMoidRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9029,6 +10147,7 @@ func (a *VnicApiService) GetVnicFcIfByMoidExecute(r ApiGetVnicFcIfByMoidRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9039,6 +10158,7 @@ func (a *VnicApiService) GetVnicFcIfByMoidExecute(r ApiGetVnicFcIfByMoidRequest)
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9048,6 +10168,7 @@ func (a *VnicApiService) GetVnicFcIfByMoidExecute(r ApiGetVnicFcIfByMoidRequest)
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9077,9 +10198,9 @@ func (r ApiGetVnicFcIfInventoryByMoidRequest) Execute() (*VnicFcIfInventory, *ht
 /*
 GetVnicFcIfInventoryByMoid Read a 'vnic.FcIfInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcIfInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcIfInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcIfInventoryByMoid(ctx context.Context, moid string) ApiGetVnicFcIfInventoryByMoidRequest {
 	return ApiGetVnicFcIfInventoryByMoidRequest{
@@ -9090,7 +10211,8 @@ func (a *VnicApiService) GetVnicFcIfInventoryByMoid(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return VnicFcIfInventory
+//
+//	@return VnicFcIfInventory
 func (a *VnicApiService) GetVnicFcIfInventoryByMoidExecute(r ApiGetVnicFcIfInventoryByMoidRequest) (*VnicFcIfInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9105,7 +10227,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryByMoidExecute(r ApiGetVnicFcIfInven
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcIfInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9138,9 +10260,9 @@ func (a *VnicApiService) GetVnicFcIfInventoryByMoidExecute(r ApiGetVnicFcIfInven
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9157,6 +10279,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryByMoidExecute(r ApiGetVnicFcIfInven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9167,6 +10290,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryByMoidExecute(r ApiGetVnicFcIfInven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9177,6 +10301,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryByMoidExecute(r ApiGetVnicFcIfInven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9187,6 +10312,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryByMoidExecute(r ApiGetVnicFcIfInven
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9196,6 +10322,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryByMoidExecute(r ApiGetVnicFcIfInven
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9264,7 +10391,7 @@ func (r ApiGetVnicFcIfInventoryListRequest) Expand(expand string) ApiGetVnicFcIf
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcIfInventoryListRequest) Apply(apply string) ApiGetVnicFcIfInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -9301,8 +10428,8 @@ func (r ApiGetVnicFcIfInventoryListRequest) Execute() (*VnicFcIfInventoryRespons
 /*
 GetVnicFcIfInventoryList Read a 'vnic.FcIfInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcIfInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcIfInventoryListRequest
 */
 func (a *VnicApiService) GetVnicFcIfInventoryList(ctx context.Context) ApiGetVnicFcIfInventoryListRequest {
 	return ApiGetVnicFcIfInventoryListRequest{
@@ -9312,7 +10439,8 @@ func (a *VnicApiService) GetVnicFcIfInventoryList(ctx context.Context) ApiGetVni
 }
 
 // Execute executes the request
-//  @return VnicFcIfInventoryResponse
+//
+//	@return VnicFcIfInventoryResponse
 func (a *VnicApiService) GetVnicFcIfInventoryListExecute(r ApiGetVnicFcIfInventoryListRequest) (*VnicFcIfInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9333,37 +10461,52 @@ func (a *VnicApiService) GetVnicFcIfInventoryListExecute(r ApiGetVnicFcIfInvento
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9392,9 +10535,9 @@ func (a *VnicApiService) GetVnicFcIfInventoryListExecute(r ApiGetVnicFcIfInvento
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9411,6 +10554,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryListExecute(r ApiGetVnicFcIfInvento
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9421,6 +10565,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryListExecute(r ApiGetVnicFcIfInvento
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9431,6 +10576,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryListExecute(r ApiGetVnicFcIfInvento
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9441,6 +10587,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryListExecute(r ApiGetVnicFcIfInvento
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9450,6 +10597,7 @@ func (a *VnicApiService) GetVnicFcIfInventoryListExecute(r ApiGetVnicFcIfInvento
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9518,7 +10666,7 @@ func (r ApiGetVnicFcIfListRequest) Expand(expand string) ApiGetVnicFcIfListReque
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcIfListRequest) Apply(apply string) ApiGetVnicFcIfListRequest {
 	r.apply = &apply
 	return r
@@ -9555,8 +10703,8 @@ func (r ApiGetVnicFcIfListRequest) Execute() (*VnicFcIfResponse, *http.Response,
 /*
 GetVnicFcIfList Read a 'vnic.FcIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcIfListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcIfListRequest
 */
 func (a *VnicApiService) GetVnicFcIfList(ctx context.Context) ApiGetVnicFcIfListRequest {
 	return ApiGetVnicFcIfListRequest{
@@ -9566,7 +10714,8 @@ func (a *VnicApiService) GetVnicFcIfList(ctx context.Context) ApiGetVnicFcIfList
 }
 
 // Execute executes the request
-//  @return VnicFcIfResponse
+//
+//	@return VnicFcIfResponse
 func (a *VnicApiService) GetVnicFcIfListExecute(r ApiGetVnicFcIfListRequest) (*VnicFcIfResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9587,37 +10736,52 @@ func (a *VnicApiService) GetVnicFcIfListExecute(r ApiGetVnicFcIfListRequest) (*V
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -9646,9 +10810,9 @@ func (a *VnicApiService) GetVnicFcIfListExecute(r ApiGetVnicFcIfListRequest) (*V
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9665,6 +10829,7 @@ func (a *VnicApiService) GetVnicFcIfListExecute(r ApiGetVnicFcIfListRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9675,6 +10840,7 @@ func (a *VnicApiService) GetVnicFcIfListExecute(r ApiGetVnicFcIfListRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9685,6 +10851,7 @@ func (a *VnicApiService) GetVnicFcIfListExecute(r ApiGetVnicFcIfListRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9695,6 +10862,7 @@ func (a *VnicApiService) GetVnicFcIfListExecute(r ApiGetVnicFcIfListRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9704,6 +10872,7 @@ func (a *VnicApiService) GetVnicFcIfListExecute(r ApiGetVnicFcIfListRequest) (*V
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9733,9 +10902,9 @@ func (r ApiGetVnicFcNetworkPolicyByMoidRequest) Execute() (*VnicFcNetworkPolicy,
 /*
 GetVnicFcNetworkPolicyByMoid Read a 'vnic.FcNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcNetworkPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcNetworkPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcNetworkPolicyByMoid(ctx context.Context, moid string) ApiGetVnicFcNetworkPolicyByMoidRequest {
 	return ApiGetVnicFcNetworkPolicyByMoidRequest{
@@ -9746,7 +10915,8 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyByMoid(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return VnicFcNetworkPolicy
+//
+//	@return VnicFcNetworkPolicy
 func (a *VnicApiService) GetVnicFcNetworkPolicyByMoidExecute(r ApiGetVnicFcNetworkPolicyByMoidRequest) (*VnicFcNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9761,7 +10931,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyByMoidExecute(r ApiGetVnicFcNetwo
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcNetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9794,9 +10964,9 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyByMoidExecute(r ApiGetVnicFcNetwo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9813,6 +10983,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyByMoidExecute(r ApiGetVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9823,6 +10994,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyByMoidExecute(r ApiGetVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9833,6 +11005,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyByMoidExecute(r ApiGetVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9843,6 +11016,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyByMoidExecute(r ApiGetVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9852,6 +11026,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyByMoidExecute(r ApiGetVnicFcNetwo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -9881,9 +11056,9 @@ func (r ApiGetVnicFcNetworkPolicyInventoryByMoidRequest) Execute() (*VnicFcNetwo
 /*
 GetVnicFcNetworkPolicyInventoryByMoid Read a 'vnic.FcNetworkPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcNetworkPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcNetworkPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicFcNetworkPolicyInventoryByMoidRequest {
 	return ApiGetVnicFcNetworkPolicyInventoryByMoidRequest{
@@ -9894,7 +11069,8 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoid(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return VnicFcNetworkPolicyInventory
+//
+//	@return VnicFcNetworkPolicyInventory
 func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoidExecute(r ApiGetVnicFcNetworkPolicyInventoryByMoidRequest) (*VnicFcNetworkPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -9909,7 +11085,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoidExecute(r ApiGetVn
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcNetworkPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -9942,9 +11118,9 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoidExecute(r ApiGetVn
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -9961,6 +11137,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9971,6 +11148,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9981,6 +11159,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -9991,6 +11170,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10000,6 +11180,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryByMoidExecute(r ApiGetVn
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10068,7 +11249,7 @@ func (r ApiGetVnicFcNetworkPolicyInventoryListRequest) Expand(expand string) Api
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcNetworkPolicyInventoryListRequest) Apply(apply string) ApiGetVnicFcNetworkPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -10105,8 +11286,8 @@ func (r ApiGetVnicFcNetworkPolicyInventoryListRequest) Execute() (*VnicFcNetwork
 /*
 GetVnicFcNetworkPolicyInventoryList Read a 'vnic.FcNetworkPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcNetworkPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcNetworkPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryList(ctx context.Context) ApiGetVnicFcNetworkPolicyInventoryListRequest {
 	return ApiGetVnicFcNetworkPolicyInventoryListRequest{
@@ -10116,7 +11297,8 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryList(ctx context.Context
 }
 
 // Execute executes the request
-//  @return VnicFcNetworkPolicyInventoryResponse
+//
+//	@return VnicFcNetworkPolicyInventoryResponse
 func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryListExecute(r ApiGetVnicFcNetworkPolicyInventoryListRequest) (*VnicFcNetworkPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10137,37 +11319,52 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryListExecute(r ApiGetVnic
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10196,9 +11393,9 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryListExecute(r ApiGetVnic
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10215,6 +11412,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10225,6 +11423,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10235,6 +11434,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10245,6 +11445,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10254,6 +11455,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyInventoryListExecute(r ApiGetVnic
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10322,7 +11524,7 @@ func (r ApiGetVnicFcNetworkPolicyListRequest) Expand(expand string) ApiGetVnicFc
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcNetworkPolicyListRequest) Apply(apply string) ApiGetVnicFcNetworkPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -10359,8 +11561,8 @@ func (r ApiGetVnicFcNetworkPolicyListRequest) Execute() (*VnicFcNetworkPolicyRes
 /*
 GetVnicFcNetworkPolicyList Read a 'vnic.FcNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcNetworkPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcNetworkPolicyListRequest
 */
 func (a *VnicApiService) GetVnicFcNetworkPolicyList(ctx context.Context) ApiGetVnicFcNetworkPolicyListRequest {
 	return ApiGetVnicFcNetworkPolicyListRequest{
@@ -10370,7 +11572,8 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyList(ctx context.Context) ApiGetV
 }
 
 // Execute executes the request
-//  @return VnicFcNetworkPolicyResponse
+//
+//	@return VnicFcNetworkPolicyResponse
 func (a *VnicApiService) GetVnicFcNetworkPolicyListExecute(r ApiGetVnicFcNetworkPolicyListRequest) (*VnicFcNetworkPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10391,37 +11594,52 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyListExecute(r ApiGetVnicFcNetwork
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -10450,9 +11668,9 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyListExecute(r ApiGetVnicFcNetwork
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10469,6 +11687,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyListExecute(r ApiGetVnicFcNetwork
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10479,6 +11698,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyListExecute(r ApiGetVnicFcNetwork
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10489,6 +11709,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyListExecute(r ApiGetVnicFcNetwork
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10499,6 +11720,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyListExecute(r ApiGetVnicFcNetwork
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10508,6 +11730,7 @@ func (a *VnicApiService) GetVnicFcNetworkPolicyListExecute(r ApiGetVnicFcNetwork
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10537,9 +11760,9 @@ func (r ApiGetVnicFcQosPolicyByMoidRequest) Execute() (*VnicFcQosPolicy, *http.R
 /*
 GetVnicFcQosPolicyByMoid Read a 'vnic.FcQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcQosPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcQosPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcQosPolicyByMoid(ctx context.Context, moid string) ApiGetVnicFcQosPolicyByMoidRequest {
 	return ApiGetVnicFcQosPolicyByMoidRequest{
@@ -10550,7 +11773,8 @@ func (a *VnicApiService) GetVnicFcQosPolicyByMoid(ctx context.Context, moid stri
 }
 
 // Execute executes the request
-//  @return VnicFcQosPolicy
+//
+//	@return VnicFcQosPolicy
 func (a *VnicApiService) GetVnicFcQosPolicyByMoidExecute(r ApiGetVnicFcQosPolicyByMoidRequest) (*VnicFcQosPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10565,7 +11789,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyByMoidExecute(r ApiGetVnicFcQosPolicy
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcQosPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10598,9 +11822,9 @@ func (a *VnicApiService) GetVnicFcQosPolicyByMoidExecute(r ApiGetVnicFcQosPolicy
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10617,6 +11841,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyByMoidExecute(r ApiGetVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10627,6 +11852,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyByMoidExecute(r ApiGetVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10637,6 +11863,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyByMoidExecute(r ApiGetVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10647,6 +11874,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyByMoidExecute(r ApiGetVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10656,6 +11884,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyByMoidExecute(r ApiGetVnicFcQosPolicy
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10685,9 +11914,9 @@ func (r ApiGetVnicFcQosPolicyInventoryByMoidRequest) Execute() (*VnicFcQosPolicy
 /*
 GetVnicFcQosPolicyInventoryByMoid Read a 'vnic.FcQosPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcQosPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcQosPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicFcQosPolicyInventoryByMoidRequest {
 	return ApiGetVnicFcQosPolicyInventoryByMoidRequest{
@@ -10698,7 +11927,8 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoid(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return VnicFcQosPolicyInventory
+//
+//	@return VnicFcQosPolicyInventory
 func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoidExecute(r ApiGetVnicFcQosPolicyInventoryByMoidRequest) (*VnicFcQosPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10713,7 +11943,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoidExecute(r ApiGetVnicFc
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcQosPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -10746,9 +11976,9 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoidExecute(r ApiGetVnicFc
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -10765,6 +11995,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoidExecute(r ApiGetVnicFc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10775,6 +12006,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoidExecute(r ApiGetVnicFc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10785,6 +12017,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoidExecute(r ApiGetVnicFc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10795,6 +12028,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoidExecute(r ApiGetVnicFc
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -10804,6 +12038,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryByMoidExecute(r ApiGetVnicFc
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -10872,7 +12107,7 @@ func (r ApiGetVnicFcQosPolicyInventoryListRequest) Expand(expand string) ApiGetV
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcQosPolicyInventoryListRequest) Apply(apply string) ApiGetVnicFcQosPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -10909,8 +12144,8 @@ func (r ApiGetVnicFcQosPolicyInventoryListRequest) Execute() (*VnicFcQosPolicyIn
 /*
 GetVnicFcQosPolicyInventoryList Read a 'vnic.FcQosPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcQosPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcQosPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicFcQosPolicyInventoryList(ctx context.Context) ApiGetVnicFcQosPolicyInventoryListRequest {
 	return ApiGetVnicFcQosPolicyInventoryListRequest{
@@ -10920,7 +12155,8 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryList(ctx context.Context) Ap
 }
 
 // Execute executes the request
-//  @return VnicFcQosPolicyInventoryResponse
+//
+//	@return VnicFcQosPolicyInventoryResponse
 func (a *VnicApiService) GetVnicFcQosPolicyInventoryListExecute(r ApiGetVnicFcQosPolicyInventoryListRequest) (*VnicFcQosPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -10941,37 +12177,52 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryListExecute(r ApiGetVnicFcQo
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -11000,9 +12251,9 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryListExecute(r ApiGetVnicFcQo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11019,6 +12270,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryListExecute(r ApiGetVnicFcQo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11029,6 +12281,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryListExecute(r ApiGetVnicFcQo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11039,6 +12292,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryListExecute(r ApiGetVnicFcQo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11049,6 +12303,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryListExecute(r ApiGetVnicFcQo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11058,6 +12313,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyInventoryListExecute(r ApiGetVnicFcQo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11126,7 +12382,7 @@ func (r ApiGetVnicFcQosPolicyListRequest) Expand(expand string) ApiGetVnicFcQosP
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcQosPolicyListRequest) Apply(apply string) ApiGetVnicFcQosPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -11163,8 +12419,8 @@ func (r ApiGetVnicFcQosPolicyListRequest) Execute() (*VnicFcQosPolicyResponse, *
 /*
 GetVnicFcQosPolicyList Read a 'vnic.FcQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcQosPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcQosPolicyListRequest
 */
 func (a *VnicApiService) GetVnicFcQosPolicyList(ctx context.Context) ApiGetVnicFcQosPolicyListRequest {
 	return ApiGetVnicFcQosPolicyListRequest{
@@ -11174,7 +12430,8 @@ func (a *VnicApiService) GetVnicFcQosPolicyList(ctx context.Context) ApiGetVnicF
 }
 
 // Execute executes the request
-//  @return VnicFcQosPolicyResponse
+//
+//	@return VnicFcQosPolicyResponse
 func (a *VnicApiService) GetVnicFcQosPolicyListExecute(r ApiGetVnicFcQosPolicyListRequest) (*VnicFcQosPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11195,37 +12452,52 @@ func (a *VnicApiService) GetVnicFcQosPolicyListExecute(r ApiGetVnicFcQosPolicyLi
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -11254,9 +12526,9 @@ func (a *VnicApiService) GetVnicFcQosPolicyListExecute(r ApiGetVnicFcQosPolicyLi
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11273,6 +12545,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyListExecute(r ApiGetVnicFcQosPolicyLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11283,6 +12556,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyListExecute(r ApiGetVnicFcQosPolicyLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11293,6 +12567,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyListExecute(r ApiGetVnicFcQosPolicyLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11303,6 +12578,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyListExecute(r ApiGetVnicFcQosPolicyLi
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11312,6 +12588,7 @@ func (a *VnicApiService) GetVnicFcQosPolicyListExecute(r ApiGetVnicFcQosPolicyLi
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11341,9 +12618,9 @@ func (r ApiGetVnicFcVethInventoryByMoidRequest) Execute() (*VnicFcVethInventory,
 /*
 GetVnicFcVethInventoryByMoid Read a 'vnic.FcVethInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcVethInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcVethInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcVethInventoryByMoid(ctx context.Context, moid string) ApiGetVnicFcVethInventoryByMoidRequest {
 	return ApiGetVnicFcVethInventoryByMoidRequest{
@@ -11354,7 +12631,8 @@ func (a *VnicApiService) GetVnicFcVethInventoryByMoid(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return VnicFcVethInventory
+//
+//	@return VnicFcVethInventory
 func (a *VnicApiService) GetVnicFcVethInventoryByMoidExecute(r ApiGetVnicFcVethInventoryByMoidRequest) (*VnicFcVethInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11369,7 +12647,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryByMoidExecute(r ApiGetVnicFcVethI
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcVethInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11402,9 +12680,9 @@ func (a *VnicApiService) GetVnicFcVethInventoryByMoidExecute(r ApiGetVnicFcVethI
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11421,6 +12699,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryByMoidExecute(r ApiGetVnicFcVethI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11431,6 +12710,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryByMoidExecute(r ApiGetVnicFcVethI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11441,6 +12721,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryByMoidExecute(r ApiGetVnicFcVethI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11451,6 +12732,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryByMoidExecute(r ApiGetVnicFcVethI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11460,6 +12742,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryByMoidExecute(r ApiGetVnicFcVethI
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11528,7 +12811,7 @@ func (r ApiGetVnicFcVethInventoryListRequest) Expand(expand string) ApiGetVnicFc
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcVethInventoryListRequest) Apply(apply string) ApiGetVnicFcVethInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -11565,8 +12848,8 @@ func (r ApiGetVnicFcVethInventoryListRequest) Execute() (*VnicFcVethInventoryRes
 /*
 GetVnicFcVethInventoryList Read a 'vnic.FcVethInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcVethInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcVethInventoryListRequest
 */
 func (a *VnicApiService) GetVnicFcVethInventoryList(ctx context.Context) ApiGetVnicFcVethInventoryListRequest {
 	return ApiGetVnicFcVethInventoryListRequest{
@@ -11576,7 +12859,8 @@ func (a *VnicApiService) GetVnicFcVethInventoryList(ctx context.Context) ApiGetV
 }
 
 // Execute executes the request
-//  @return VnicFcVethInventoryResponse
+//
+//	@return VnicFcVethInventoryResponse
 func (a *VnicApiService) GetVnicFcVethInventoryListExecute(r ApiGetVnicFcVethInventoryListRequest) (*VnicFcVethInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11597,37 +12881,52 @@ func (a *VnicApiService) GetVnicFcVethInventoryListExecute(r ApiGetVnicFcVethInv
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -11656,9 +12955,9 @@ func (a *VnicApiService) GetVnicFcVethInventoryListExecute(r ApiGetVnicFcVethInv
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11675,6 +12974,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryListExecute(r ApiGetVnicFcVethInv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11685,6 +12985,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryListExecute(r ApiGetVnicFcVethInv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11695,6 +12996,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryListExecute(r ApiGetVnicFcVethInv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11705,6 +13007,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryListExecute(r ApiGetVnicFcVethInv
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11714,6 +13017,7 @@ func (a *VnicApiService) GetVnicFcVethInventoryListExecute(r ApiGetVnicFcVethInv
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11743,9 +13047,9 @@ func (r ApiGetVnicFcVhbaPolicyInventoryByMoidRequest) Execute() (*VnicFcVhbaPoli
 /*
 GetVnicFcVhbaPolicyInventoryByMoid Read a 'vnic.FcVhbaPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicFcVhbaPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicFcVhbaPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicFcVhbaPolicyInventoryByMoidRequest {
 	return ApiGetVnicFcVhbaPolicyInventoryByMoidRequest{
@@ -11756,7 +13060,8 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return VnicFcVhbaPolicyInventory
+//
+//	@return VnicFcVhbaPolicyInventory
 func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoidExecute(r ApiGetVnicFcVhbaPolicyInventoryByMoidRequest) (*VnicFcVhbaPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11771,7 +13076,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoidExecute(r ApiGetVnicF
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcVhbaPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -11804,9 +13109,9 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoidExecute(r ApiGetVnicF
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -11823,6 +13128,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoidExecute(r ApiGetVnicF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11833,6 +13139,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoidExecute(r ApiGetVnicF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11843,6 +13150,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoidExecute(r ApiGetVnicF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11853,6 +13161,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoidExecute(r ApiGetVnicF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -11862,6 +13171,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryByMoidExecute(r ApiGetVnicF
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -11930,7 +13240,7 @@ func (r ApiGetVnicFcVhbaPolicyInventoryListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicFcVhbaPolicyInventoryListRequest) Apply(apply string) ApiGetVnicFcVhbaPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -11967,8 +13277,8 @@ func (r ApiGetVnicFcVhbaPolicyInventoryListRequest) Execute() (*VnicFcVhbaPolicy
 /*
 GetVnicFcVhbaPolicyInventoryList Read a 'vnic.FcVhbaPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicFcVhbaPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicFcVhbaPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryList(ctx context.Context) ApiGetVnicFcVhbaPolicyInventoryListRequest {
 	return ApiGetVnicFcVhbaPolicyInventoryListRequest{
@@ -11978,7 +13288,8 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return VnicFcVhbaPolicyInventoryResponse
+//
+//	@return VnicFcVhbaPolicyInventoryResponse
 func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryListExecute(r ApiGetVnicFcVhbaPolicyInventoryListRequest) (*VnicFcVhbaPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -11999,37 +13310,52 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryListExecute(r ApiGetVnicFcV
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -12058,9 +13384,9 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryListExecute(r ApiGetVnicFcV
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12077,6 +13403,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryListExecute(r ApiGetVnicFcV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12087,6 +13414,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryListExecute(r ApiGetVnicFcV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12097,6 +13425,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryListExecute(r ApiGetVnicFcV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12107,6 +13436,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryListExecute(r ApiGetVnicFcV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12116,6 +13446,7 @@ func (a *VnicApiService) GetVnicFcVhbaPolicyInventoryListExecute(r ApiGetVnicFcV
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12145,9 +13476,9 @@ func (r ApiGetVnicIscsiAdapterPolicyByMoidRequest) Execute() (*VnicIscsiAdapterP
 /*
 GetVnicIscsiAdapterPolicyByMoid Read a 'vnic.IscsiAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicIscsiAdapterPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicIscsiAdapterPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoid(ctx context.Context, moid string) ApiGetVnicIscsiAdapterPolicyByMoidRequest {
 	return ApiGetVnicIscsiAdapterPolicyByMoidRequest{
@@ -12158,7 +13489,8 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoid(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return VnicIscsiAdapterPolicy
+//
+//	@return VnicIscsiAdapterPolicy
 func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoidExecute(r ApiGetVnicIscsiAdapterPolicyByMoidRequest) (*VnicIscsiAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12173,7 +13505,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoidExecute(r ApiGetVnicIscs
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12206,9 +13538,9 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoidExecute(r ApiGetVnicIscs
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12225,6 +13557,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoidExecute(r ApiGetVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12235,6 +13568,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoidExecute(r ApiGetVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12245,6 +13579,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoidExecute(r ApiGetVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12255,6 +13590,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoidExecute(r ApiGetVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12264,6 +13600,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyByMoidExecute(r ApiGetVnicIscs
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12293,9 +13630,9 @@ func (r ApiGetVnicIscsiAdapterPolicyInventoryByMoidRequest) Execute() (*VnicIscs
 /*
 GetVnicIscsiAdapterPolicyInventoryByMoid Read a 'vnic.IscsiAdapterPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicIscsiAdapterPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicIscsiAdapterPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicIscsiAdapterPolicyInventoryByMoidRequest {
 	return ApiGetVnicIscsiAdapterPolicyInventoryByMoidRequest{
@@ -12306,7 +13643,8 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoid(ctx context.Co
 }
 
 // Execute executes the request
-//  @return VnicIscsiAdapterPolicyInventory
+//
+//	@return VnicIscsiAdapterPolicyInventory
 func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoidExecute(r ApiGetVnicIscsiAdapterPolicyInventoryByMoidRequest) (*VnicIscsiAdapterPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12321,7 +13659,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoidExecute(r ApiGe
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiAdapterPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -12354,9 +13692,9 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoidExecute(r ApiGe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12373,6 +13711,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12383,6 +13722,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12393,6 +13733,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12403,6 +13744,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoidExecute(r ApiGe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12412,6 +13754,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryByMoidExecute(r ApiGe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12480,7 +13823,7 @@ func (r ApiGetVnicIscsiAdapterPolicyInventoryListRequest) Expand(expand string) 
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicIscsiAdapterPolicyInventoryListRequest) Apply(apply string) ApiGetVnicIscsiAdapterPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -12517,8 +13860,8 @@ func (r ApiGetVnicIscsiAdapterPolicyInventoryListRequest) Execute() (*VnicIscsiA
 /*
 GetVnicIscsiAdapterPolicyInventoryList Read a 'vnic.IscsiAdapterPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicIscsiAdapterPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicIscsiAdapterPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryList(ctx context.Context) ApiGetVnicIscsiAdapterPolicyInventoryListRequest {
 	return ApiGetVnicIscsiAdapterPolicyInventoryListRequest{
@@ -12528,7 +13871,8 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryList(ctx context.Cont
 }
 
 // Execute executes the request
-//  @return VnicIscsiAdapterPolicyInventoryResponse
+//
+//	@return VnicIscsiAdapterPolicyInventoryResponse
 func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryListExecute(r ApiGetVnicIscsiAdapterPolicyInventoryListRequest) (*VnicIscsiAdapterPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12549,37 +13893,52 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryListExecute(r ApiGetV
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -12608,9 +13967,9 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryListExecute(r ApiGetV
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12627,6 +13986,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryListExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12637,6 +13997,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryListExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12647,6 +14008,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryListExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12657,6 +14019,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryListExecute(r ApiGetV
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12666,6 +14029,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyInventoryListExecute(r ApiGetV
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12734,7 +14098,7 @@ func (r ApiGetVnicIscsiAdapterPolicyListRequest) Expand(expand string) ApiGetVni
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicIscsiAdapterPolicyListRequest) Apply(apply string) ApiGetVnicIscsiAdapterPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -12771,8 +14135,8 @@ func (r ApiGetVnicIscsiAdapterPolicyListRequest) Execute() (*VnicIscsiAdapterPol
 /*
 GetVnicIscsiAdapterPolicyList Read a 'vnic.IscsiAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicIscsiAdapterPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicIscsiAdapterPolicyListRequest
 */
 func (a *VnicApiService) GetVnicIscsiAdapterPolicyList(ctx context.Context) ApiGetVnicIscsiAdapterPolicyListRequest {
 	return ApiGetVnicIscsiAdapterPolicyListRequest{
@@ -12782,7 +14146,8 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyList(ctx context.Context) ApiG
 }
 
 // Execute executes the request
-//  @return VnicIscsiAdapterPolicyResponse
+//
+//	@return VnicIscsiAdapterPolicyResponse
 func (a *VnicApiService) GetVnicIscsiAdapterPolicyListExecute(r ApiGetVnicIscsiAdapterPolicyListRequest) (*VnicIscsiAdapterPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12803,37 +14168,52 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyListExecute(r ApiGetVnicIscsiA
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -12862,9 +14242,9 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyListExecute(r ApiGetVnicIscsiA
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -12881,6 +14261,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyListExecute(r ApiGetVnicIscsiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12891,6 +14272,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyListExecute(r ApiGetVnicIscsiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12901,6 +14283,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyListExecute(r ApiGetVnicIscsiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12911,6 +14294,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyListExecute(r ApiGetVnicIscsiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -12920,6 +14304,7 @@ func (a *VnicApiService) GetVnicIscsiAdapterPolicyListExecute(r ApiGetVnicIscsiA
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -12949,9 +14334,9 @@ func (r ApiGetVnicIscsiBootPolicyByMoidRequest) Execute() (*VnicIscsiBootPolicy,
 /*
 GetVnicIscsiBootPolicyByMoid Read a 'vnic.IscsiBootPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicIscsiBootPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicIscsiBootPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicIscsiBootPolicyByMoid(ctx context.Context, moid string) ApiGetVnicIscsiBootPolicyByMoidRequest {
 	return ApiGetVnicIscsiBootPolicyByMoidRequest{
@@ -12962,7 +14347,8 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyByMoid(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return VnicIscsiBootPolicy
+//
+//	@return VnicIscsiBootPolicy
 func (a *VnicApiService) GetVnicIscsiBootPolicyByMoidExecute(r ApiGetVnicIscsiBootPolicyByMoidRequest) (*VnicIscsiBootPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -12977,7 +14363,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyByMoidExecute(r ApiGetVnicIscsiBo
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiBootPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13010,9 +14396,9 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyByMoidExecute(r ApiGetVnicIscsiBo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13029,6 +14415,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyByMoidExecute(r ApiGetVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13039,6 +14426,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyByMoidExecute(r ApiGetVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13049,6 +14437,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyByMoidExecute(r ApiGetVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13059,6 +14448,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyByMoidExecute(r ApiGetVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13068,6 +14458,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyByMoidExecute(r ApiGetVnicIscsiBo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13097,9 +14488,9 @@ func (r ApiGetVnicIscsiBootPolicyInventoryByMoidRequest) Execute() (*VnicIscsiBo
 /*
 GetVnicIscsiBootPolicyInventoryByMoid Read a 'vnic.IscsiBootPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicIscsiBootPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicIscsiBootPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicIscsiBootPolicyInventoryByMoidRequest {
 	return ApiGetVnicIscsiBootPolicyInventoryByMoidRequest{
@@ -13110,7 +14501,8 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoid(ctx context.Conte
 }
 
 // Execute executes the request
-//  @return VnicIscsiBootPolicyInventory
+//
+//	@return VnicIscsiBootPolicyInventory
 func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoidExecute(r ApiGetVnicIscsiBootPolicyInventoryByMoidRequest) (*VnicIscsiBootPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13125,7 +14517,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoidExecute(r ApiGetVn
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiBootPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13158,9 +14550,9 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoidExecute(r ApiGetVn
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13177,6 +14569,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13187,6 +14580,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13197,6 +14591,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13207,6 +14602,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoidExecute(r ApiGetVn
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13216,6 +14612,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryByMoidExecute(r ApiGetVn
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13284,7 +14681,7 @@ func (r ApiGetVnicIscsiBootPolicyInventoryListRequest) Expand(expand string) Api
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicIscsiBootPolicyInventoryListRequest) Apply(apply string) ApiGetVnicIscsiBootPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -13321,8 +14718,8 @@ func (r ApiGetVnicIscsiBootPolicyInventoryListRequest) Execute() (*VnicIscsiBoot
 /*
 GetVnicIscsiBootPolicyInventoryList Read a 'vnic.IscsiBootPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicIscsiBootPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicIscsiBootPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryList(ctx context.Context) ApiGetVnicIscsiBootPolicyInventoryListRequest {
 	return ApiGetVnicIscsiBootPolicyInventoryListRequest{
@@ -13332,7 +14729,8 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryList(ctx context.Context
 }
 
 // Execute executes the request
-//  @return VnicIscsiBootPolicyInventoryResponse
+//
+//	@return VnicIscsiBootPolicyInventoryResponse
 func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryListExecute(r ApiGetVnicIscsiBootPolicyInventoryListRequest) (*VnicIscsiBootPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13353,37 +14751,52 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryListExecute(r ApiGetVnic
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -13412,9 +14825,9 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryListExecute(r ApiGetVnic
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13431,6 +14844,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13441,6 +14855,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13451,6 +14866,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13461,6 +14877,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryListExecute(r ApiGetVnic
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13470,6 +14887,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyInventoryListExecute(r ApiGetVnic
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13538,7 +14956,7 @@ func (r ApiGetVnicIscsiBootPolicyListRequest) Expand(expand string) ApiGetVnicIs
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicIscsiBootPolicyListRequest) Apply(apply string) ApiGetVnicIscsiBootPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -13575,8 +14993,8 @@ func (r ApiGetVnicIscsiBootPolicyListRequest) Execute() (*VnicIscsiBootPolicyRes
 /*
 GetVnicIscsiBootPolicyList Read a 'vnic.IscsiBootPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicIscsiBootPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicIscsiBootPolicyListRequest
 */
 func (a *VnicApiService) GetVnicIscsiBootPolicyList(ctx context.Context) ApiGetVnicIscsiBootPolicyListRequest {
 	return ApiGetVnicIscsiBootPolicyListRequest{
@@ -13586,7 +15004,8 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyList(ctx context.Context) ApiGetV
 }
 
 // Execute executes the request
-//  @return VnicIscsiBootPolicyResponse
+//
+//	@return VnicIscsiBootPolicyResponse
 func (a *VnicApiService) GetVnicIscsiBootPolicyListExecute(r ApiGetVnicIscsiBootPolicyListRequest) (*VnicIscsiBootPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13607,37 +15026,52 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyListExecute(r ApiGetVnicIscsiBoot
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -13666,9 +15100,9 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyListExecute(r ApiGetVnicIscsiBoot
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13685,6 +15119,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyListExecute(r ApiGetVnicIscsiBoot
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13695,6 +15130,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyListExecute(r ApiGetVnicIscsiBoot
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13705,6 +15141,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyListExecute(r ApiGetVnicIscsiBoot
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13715,6 +15152,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyListExecute(r ApiGetVnicIscsiBoot
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13724,6 +15162,7 @@ func (a *VnicApiService) GetVnicIscsiBootPolicyListExecute(r ApiGetVnicIscsiBoot
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13753,9 +15192,9 @@ func (r ApiGetVnicIscsiStaticTargetPolicyByMoidRequest) Execute() (*VnicIscsiSta
 /*
 GetVnicIscsiStaticTargetPolicyByMoid Read a 'vnic.IscsiStaticTargetPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicIscsiStaticTargetPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicIscsiStaticTargetPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoid(ctx context.Context, moid string) ApiGetVnicIscsiStaticTargetPolicyByMoidRequest {
 	return ApiGetVnicIscsiStaticTargetPolicyByMoidRequest{
@@ -13766,7 +15205,8 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoid(ctx context.Contex
 }
 
 // Execute executes the request
-//  @return VnicIscsiStaticTargetPolicy
+//
+//	@return VnicIscsiStaticTargetPolicy
 func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoidExecute(r ApiGetVnicIscsiStaticTargetPolicyByMoidRequest) (*VnicIscsiStaticTargetPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13781,7 +15221,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoidExecute(r ApiGetVni
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiStaticTargetPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13814,9 +15254,9 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoidExecute(r ApiGetVni
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13833,6 +15273,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoidExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13843,6 +15284,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoidExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13853,6 +15295,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoidExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13863,6 +15306,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoidExecute(r ApiGetVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13872,6 +15316,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyByMoidExecute(r ApiGetVni
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -13901,9 +15346,9 @@ func (r ApiGetVnicIscsiStaticTargetPolicyInventoryByMoidRequest) Execute() (*Vni
 /*
 GetVnicIscsiStaticTargetPolicyInventoryByMoid Read a 'vnic.IscsiStaticTargetPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicIscsiStaticTargetPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicIscsiStaticTargetPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicIscsiStaticTargetPolicyInventoryByMoidRequest {
 	return ApiGetVnicIscsiStaticTargetPolicyInventoryByMoidRequest{
@@ -13914,7 +15359,8 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoid(ctx conte
 }
 
 // Execute executes the request
-//  @return VnicIscsiStaticTargetPolicyInventory
+//
+//	@return VnicIscsiStaticTargetPolicyInventory
 func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoidExecute(r ApiGetVnicIscsiStaticTargetPolicyInventoryByMoidRequest) (*VnicIscsiStaticTargetPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -13929,7 +15375,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoidExecute(r 
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiStaticTargetPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -13962,9 +15408,9 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoidExecute(r 
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -13981,6 +15427,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoidExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -13991,6 +15438,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoidExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14001,6 +15449,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoidExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14011,6 +15460,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoidExecute(r 
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14020,6 +15470,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryByMoidExecute(r 
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14088,7 +15539,7 @@ func (r ApiGetVnicIscsiStaticTargetPolicyInventoryListRequest) Expand(expand str
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicIscsiStaticTargetPolicyInventoryListRequest) Apply(apply string) ApiGetVnicIscsiStaticTargetPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -14125,8 +15576,8 @@ func (r ApiGetVnicIscsiStaticTargetPolicyInventoryListRequest) Execute() (*VnicI
 /*
 GetVnicIscsiStaticTargetPolicyInventoryList Read a 'vnic.IscsiStaticTargetPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicIscsiStaticTargetPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicIscsiStaticTargetPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryList(ctx context.Context) ApiGetVnicIscsiStaticTargetPolicyInventoryListRequest {
 	return ApiGetVnicIscsiStaticTargetPolicyInventoryListRequest{
@@ -14136,7 +15587,8 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryList(ctx context
 }
 
 // Execute executes the request
-//  @return VnicIscsiStaticTargetPolicyInventoryResponse
+//
+//	@return VnicIscsiStaticTargetPolicyInventoryResponse
 func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryListExecute(r ApiGetVnicIscsiStaticTargetPolicyInventoryListRequest) (*VnicIscsiStaticTargetPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14157,37 +15609,52 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryListExecute(r Ap
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -14216,9 +15683,9 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryListExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14235,6 +15702,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14245,6 +15713,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14255,6 +15724,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14265,6 +15735,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryListExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14274,6 +15745,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyInventoryListExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14342,7 +15814,7 @@ func (r ApiGetVnicIscsiStaticTargetPolicyListRequest) Expand(expand string) ApiG
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicIscsiStaticTargetPolicyListRequest) Apply(apply string) ApiGetVnicIscsiStaticTargetPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -14379,8 +15851,8 @@ func (r ApiGetVnicIscsiStaticTargetPolicyListRequest) Execute() (*VnicIscsiStati
 /*
 GetVnicIscsiStaticTargetPolicyList Read a 'vnic.IscsiStaticTargetPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicIscsiStaticTargetPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicIscsiStaticTargetPolicyListRequest
 */
 func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyList(ctx context.Context) ApiGetVnicIscsiStaticTargetPolicyListRequest {
 	return ApiGetVnicIscsiStaticTargetPolicyListRequest{
@@ -14390,7 +15862,8 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyList(ctx context.Context)
 }
 
 // Execute executes the request
-//  @return VnicIscsiStaticTargetPolicyResponse
+//
+//	@return VnicIscsiStaticTargetPolicyResponse
 func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyListExecute(r ApiGetVnicIscsiStaticTargetPolicyListRequest) (*VnicIscsiStaticTargetPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14411,37 +15884,52 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyListExecute(r ApiGetVnicI
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -14470,9 +15958,9 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyListExecute(r ApiGetVnicI
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14489,6 +15977,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyListExecute(r ApiGetVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14499,6 +15988,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyListExecute(r ApiGetVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14509,6 +15999,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyListExecute(r ApiGetVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14519,6 +16010,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyListExecute(r ApiGetVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14528,6 +16020,7 @@ func (a *VnicApiService) GetVnicIscsiStaticTargetPolicyListExecute(r ApiGetVnicI
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14557,9 +16050,9 @@ func (r ApiGetVnicLanConnectivityPolicyByMoidRequest) Execute() (*VnicLanConnect
 /*
 GetVnicLanConnectivityPolicyByMoid Read a 'vnic.LanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicLanConnectivityPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicLanConnectivityPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoid(ctx context.Context, moid string) ApiGetVnicLanConnectivityPolicyByMoidRequest {
 	return ApiGetVnicLanConnectivityPolicyByMoidRequest{
@@ -14570,7 +16063,8 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return VnicLanConnectivityPolicy
+//
+//	@return VnicLanConnectivityPolicy
 func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoidExecute(r ApiGetVnicLanConnectivityPolicyByMoidRequest) (*VnicLanConnectivityPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14585,7 +16079,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoidExecute(r ApiGetVnicL
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/LanConnectivityPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14618,9 +16112,9 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoidExecute(r ApiGetVnicL
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14637,6 +16131,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoidExecute(r ApiGetVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14647,6 +16142,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoidExecute(r ApiGetVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14657,6 +16153,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoidExecute(r ApiGetVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14667,6 +16164,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoidExecute(r ApiGetVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14676,6 +16174,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyByMoidExecute(r ApiGetVnicL
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14705,9 +16204,9 @@ func (r ApiGetVnicLanConnectivityPolicyInventoryByMoidRequest) Execute() (*VnicL
 /*
 GetVnicLanConnectivityPolicyInventoryByMoid Read a 'vnic.LanConnectivityPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicLanConnectivityPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicLanConnectivityPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicLanConnectivityPolicyInventoryByMoidRequest {
 	return ApiGetVnicLanConnectivityPolicyInventoryByMoidRequest{
@@ -14718,7 +16217,8 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoid(ctx context
 }
 
 // Execute executes the request
-//  @return VnicLanConnectivityPolicyInventory
+//
+//	@return VnicLanConnectivityPolicyInventory
 func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoidExecute(r ApiGetVnicLanConnectivityPolicyInventoryByMoidRequest) (*VnicLanConnectivityPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14733,7 +16233,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoidExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/LanConnectivityPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -14766,9 +16266,9 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoidExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -14785,6 +16285,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14795,6 +16296,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14805,6 +16307,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14815,6 +16318,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -14824,6 +16328,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryByMoidExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -14892,7 +16397,7 @@ func (r ApiGetVnicLanConnectivityPolicyInventoryListRequest) Expand(expand strin
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicLanConnectivityPolicyInventoryListRequest) Apply(apply string) ApiGetVnicLanConnectivityPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -14929,8 +16434,8 @@ func (r ApiGetVnicLanConnectivityPolicyInventoryListRequest) Execute() (*VnicLan
 /*
 GetVnicLanConnectivityPolicyInventoryList Read a 'vnic.LanConnectivityPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicLanConnectivityPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicLanConnectivityPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryList(ctx context.Context) ApiGetVnicLanConnectivityPolicyInventoryListRequest {
 	return ApiGetVnicLanConnectivityPolicyInventoryListRequest{
@@ -14940,7 +16445,8 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryList(ctx context.C
 }
 
 // Execute executes the request
-//  @return VnicLanConnectivityPolicyInventoryResponse
+//
+//	@return VnicLanConnectivityPolicyInventoryResponse
 func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryListExecute(r ApiGetVnicLanConnectivityPolicyInventoryListRequest) (*VnicLanConnectivityPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -14961,37 +16467,52 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryListExecute(r ApiG
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -15020,9 +16541,9 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryListExecute(r ApiG
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15039,6 +16560,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15049,6 +16571,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15059,6 +16582,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15069,6 +16593,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15078,6 +16603,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyInventoryListExecute(r ApiG
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15146,7 +16672,7 @@ func (r ApiGetVnicLanConnectivityPolicyListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicLanConnectivityPolicyListRequest) Apply(apply string) ApiGetVnicLanConnectivityPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -15183,8 +16709,8 @@ func (r ApiGetVnicLanConnectivityPolicyListRequest) Execute() (*VnicLanConnectiv
 /*
 GetVnicLanConnectivityPolicyList Read a 'vnic.LanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicLanConnectivityPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicLanConnectivityPolicyListRequest
 */
 func (a *VnicApiService) GetVnicLanConnectivityPolicyList(ctx context.Context) ApiGetVnicLanConnectivityPolicyListRequest {
 	return ApiGetVnicLanConnectivityPolicyListRequest{
@@ -15194,7 +16720,8 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return VnicLanConnectivityPolicyResponse
+//
+//	@return VnicLanConnectivityPolicyResponse
 func (a *VnicApiService) GetVnicLanConnectivityPolicyListExecute(r ApiGetVnicLanConnectivityPolicyListRequest) (*VnicLanConnectivityPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15215,37 +16742,52 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyListExecute(r ApiGetVnicLan
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -15274,9 +16816,9 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyListExecute(r ApiGetVnicLan
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15293,6 +16835,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyListExecute(r ApiGetVnicLan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15303,6 +16846,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyListExecute(r ApiGetVnicLan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15313,6 +16857,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyListExecute(r ApiGetVnicLan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15323,6 +16868,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyListExecute(r ApiGetVnicLan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15332,6 +16878,7 @@ func (a *VnicApiService) GetVnicLanConnectivityPolicyListExecute(r ApiGetVnicLan
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15361,9 +16908,9 @@ func (r ApiGetVnicLcpStatusByMoidRequest) Execute() (*VnicLcpStatus, *http.Respo
 /*
 GetVnicLcpStatusByMoid Read a 'vnic.LcpStatus' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicLcpStatusByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicLcpStatusByMoidRequest
 */
 func (a *VnicApiService) GetVnicLcpStatusByMoid(ctx context.Context, moid string) ApiGetVnicLcpStatusByMoidRequest {
 	return ApiGetVnicLcpStatusByMoidRequest{
@@ -15374,7 +16921,8 @@ func (a *VnicApiService) GetVnicLcpStatusByMoid(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return VnicLcpStatus
+//
+//	@return VnicLcpStatus
 func (a *VnicApiService) GetVnicLcpStatusByMoidExecute(r ApiGetVnicLcpStatusByMoidRequest) (*VnicLcpStatus, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15389,7 +16937,7 @@ func (a *VnicApiService) GetVnicLcpStatusByMoidExecute(r ApiGetVnicLcpStatusByMo
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/LcpStatuses/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15422,9 +16970,9 @@ func (a *VnicApiService) GetVnicLcpStatusByMoidExecute(r ApiGetVnicLcpStatusByMo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15441,6 +16989,7 @@ func (a *VnicApiService) GetVnicLcpStatusByMoidExecute(r ApiGetVnicLcpStatusByMo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15451,6 +17000,7 @@ func (a *VnicApiService) GetVnicLcpStatusByMoidExecute(r ApiGetVnicLcpStatusByMo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15461,6 +17011,7 @@ func (a *VnicApiService) GetVnicLcpStatusByMoidExecute(r ApiGetVnicLcpStatusByMo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15471,6 +17022,7 @@ func (a *VnicApiService) GetVnicLcpStatusByMoidExecute(r ApiGetVnicLcpStatusByMo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15480,6 +17032,7 @@ func (a *VnicApiService) GetVnicLcpStatusByMoidExecute(r ApiGetVnicLcpStatusByMo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15548,7 +17101,7 @@ func (r ApiGetVnicLcpStatusListRequest) Expand(expand string) ApiGetVnicLcpStatu
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicLcpStatusListRequest) Apply(apply string) ApiGetVnicLcpStatusListRequest {
 	r.apply = &apply
 	return r
@@ -15585,8 +17138,8 @@ func (r ApiGetVnicLcpStatusListRequest) Execute() (*VnicLcpStatusResponse, *http
 /*
 GetVnicLcpStatusList Read a 'vnic.LcpStatus' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicLcpStatusListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicLcpStatusListRequest
 */
 func (a *VnicApiService) GetVnicLcpStatusList(ctx context.Context) ApiGetVnicLcpStatusListRequest {
 	return ApiGetVnicLcpStatusListRequest{
@@ -15596,7 +17149,8 @@ func (a *VnicApiService) GetVnicLcpStatusList(ctx context.Context) ApiGetVnicLcp
 }
 
 // Execute executes the request
-//  @return VnicLcpStatusResponse
+//
+//	@return VnicLcpStatusResponse
 func (a *VnicApiService) GetVnicLcpStatusListExecute(r ApiGetVnicLcpStatusListRequest) (*VnicLcpStatusResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15617,37 +17171,52 @@ func (a *VnicApiService) GetVnicLcpStatusListExecute(r ApiGetVnicLcpStatusListRe
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -15676,9 +17245,9 @@ func (a *VnicApiService) GetVnicLcpStatusListExecute(r ApiGetVnicLcpStatusListRe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15695,6 +17264,7 @@ func (a *VnicApiService) GetVnicLcpStatusListExecute(r ApiGetVnicLcpStatusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15705,6 +17275,7 @@ func (a *VnicApiService) GetVnicLcpStatusListExecute(r ApiGetVnicLcpStatusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15715,6 +17286,7 @@ func (a *VnicApiService) GetVnicLcpStatusListExecute(r ApiGetVnicLcpStatusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15725,6 +17297,7 @@ func (a *VnicApiService) GetVnicLcpStatusListExecute(r ApiGetVnicLcpStatusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15734,6 +17307,7 @@ func (a *VnicApiService) GetVnicLcpStatusListExecute(r ApiGetVnicLcpStatusListRe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15763,9 +17337,9 @@ func (r ApiGetVnicSanConnectivityPolicyByMoidRequest) Execute() (*VnicSanConnect
 /*
 GetVnicSanConnectivityPolicyByMoid Read a 'vnic.SanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicSanConnectivityPolicyByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicSanConnectivityPolicyByMoidRequest
 */
 func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoid(ctx context.Context, moid string) ApiGetVnicSanConnectivityPolicyByMoidRequest {
 	return ApiGetVnicSanConnectivityPolicyByMoidRequest{
@@ -15776,7 +17350,8 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoid(ctx context.Context,
 }
 
 // Execute executes the request
-//  @return VnicSanConnectivityPolicy
+//
+//	@return VnicSanConnectivityPolicy
 func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoidExecute(r ApiGetVnicSanConnectivityPolicyByMoidRequest) (*VnicSanConnectivityPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15791,7 +17366,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoidExecute(r ApiGetVnicS
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/SanConnectivityPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15824,9 +17399,9 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoidExecute(r ApiGetVnicS
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15843,6 +17418,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoidExecute(r ApiGetVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15853,6 +17429,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoidExecute(r ApiGetVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15863,6 +17440,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoidExecute(r ApiGetVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15873,6 +17451,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoidExecute(r ApiGetVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -15882,6 +17461,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyByMoidExecute(r ApiGetVnicS
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -15911,9 +17491,9 @@ func (r ApiGetVnicSanConnectivityPolicyInventoryByMoidRequest) Execute() (*VnicS
 /*
 GetVnicSanConnectivityPolicyInventoryByMoid Read a 'vnic.SanConnectivityPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicSanConnectivityPolicyInventoryByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicSanConnectivityPolicyInventoryByMoidRequest
 */
 func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoid(ctx context.Context, moid string) ApiGetVnicSanConnectivityPolicyInventoryByMoidRequest {
 	return ApiGetVnicSanConnectivityPolicyInventoryByMoidRequest{
@@ -15924,7 +17504,8 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoid(ctx context
 }
 
 // Execute executes the request
-//  @return VnicSanConnectivityPolicyInventory
+//
+//	@return VnicSanConnectivityPolicyInventory
 func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoidExecute(r ApiGetVnicSanConnectivityPolicyInventoryByMoidRequest) (*VnicSanConnectivityPolicyInventory, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -15939,7 +17520,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoidExecute(r Ap
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/SanConnectivityPolicyInventories/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -15972,9 +17553,9 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoidExecute(r Ap
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -15991,6 +17572,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16001,6 +17583,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16011,6 +17594,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16021,6 +17605,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoidExecute(r Ap
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16030,6 +17615,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryByMoidExecute(r Ap
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16098,7 +17684,7 @@ func (r ApiGetVnicSanConnectivityPolicyInventoryListRequest) Expand(expand strin
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicSanConnectivityPolicyInventoryListRequest) Apply(apply string) ApiGetVnicSanConnectivityPolicyInventoryListRequest {
 	r.apply = &apply
 	return r
@@ -16135,8 +17721,8 @@ func (r ApiGetVnicSanConnectivityPolicyInventoryListRequest) Execute() (*VnicSan
 /*
 GetVnicSanConnectivityPolicyInventoryList Read a 'vnic.SanConnectivityPolicyInventory' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicSanConnectivityPolicyInventoryListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicSanConnectivityPolicyInventoryListRequest
 */
 func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryList(ctx context.Context) ApiGetVnicSanConnectivityPolicyInventoryListRequest {
 	return ApiGetVnicSanConnectivityPolicyInventoryListRequest{
@@ -16146,7 +17732,8 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryList(ctx context.C
 }
 
 // Execute executes the request
-//  @return VnicSanConnectivityPolicyInventoryResponse
+//
+//	@return VnicSanConnectivityPolicyInventoryResponse
 func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryListExecute(r ApiGetVnicSanConnectivityPolicyInventoryListRequest) (*VnicSanConnectivityPolicyInventoryResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16167,37 +17754,52 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryListExecute(r ApiG
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -16226,9 +17828,9 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryListExecute(r ApiG
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16245,6 +17847,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16255,6 +17858,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16265,6 +17869,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16275,6 +17880,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryListExecute(r ApiG
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16284,6 +17890,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyInventoryListExecute(r ApiG
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16352,7 +17959,7 @@ func (r ApiGetVnicSanConnectivityPolicyListRequest) Expand(expand string) ApiGet
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicSanConnectivityPolicyListRequest) Apply(apply string) ApiGetVnicSanConnectivityPolicyListRequest {
 	r.apply = &apply
 	return r
@@ -16389,8 +17996,8 @@ func (r ApiGetVnicSanConnectivityPolicyListRequest) Execute() (*VnicSanConnectiv
 /*
 GetVnicSanConnectivityPolicyList Read a 'vnic.SanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicSanConnectivityPolicyListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicSanConnectivityPolicyListRequest
 */
 func (a *VnicApiService) GetVnicSanConnectivityPolicyList(ctx context.Context) ApiGetVnicSanConnectivityPolicyListRequest {
 	return ApiGetVnicSanConnectivityPolicyListRequest{
@@ -16400,7 +18007,8 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyList(ctx context.Context) A
 }
 
 // Execute executes the request
-//  @return VnicSanConnectivityPolicyResponse
+//
+//	@return VnicSanConnectivityPolicyResponse
 func (a *VnicApiService) GetVnicSanConnectivityPolicyListExecute(r ApiGetVnicSanConnectivityPolicyListRequest) (*VnicSanConnectivityPolicyResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16421,37 +18029,52 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyListExecute(r ApiGetVnicSan
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -16480,9 +18103,9 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyListExecute(r ApiGetVnicSan
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16499,6 +18122,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyListExecute(r ApiGetVnicSan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16509,6 +18133,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyListExecute(r ApiGetVnicSan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16519,6 +18144,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyListExecute(r ApiGetVnicSan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16529,6 +18155,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyListExecute(r ApiGetVnicSan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16538,6 +18165,7 @@ func (a *VnicApiService) GetVnicSanConnectivityPolicyListExecute(r ApiGetVnicSan
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16567,9 +18195,9 @@ func (r ApiGetVnicScpStatusByMoidRequest) Execute() (*VnicScpStatus, *http.Respo
 /*
 GetVnicScpStatusByMoid Read a 'vnic.ScpStatus' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiGetVnicScpStatusByMoidRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicScpStatusByMoidRequest
 */
 func (a *VnicApiService) GetVnicScpStatusByMoid(ctx context.Context, moid string) ApiGetVnicScpStatusByMoidRequest {
 	return ApiGetVnicScpStatusByMoidRequest{
@@ -16580,7 +18208,8 @@ func (a *VnicApiService) GetVnicScpStatusByMoid(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return VnicScpStatus
+//
+//	@return VnicScpStatus
 func (a *VnicApiService) GetVnicScpStatusByMoidExecute(r ApiGetVnicScpStatusByMoidRequest) (*VnicScpStatus, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16595,7 +18224,7 @@ func (a *VnicApiService) GetVnicScpStatusByMoidExecute(r ApiGetVnicScpStatusByMo
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/ScpStatuses/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -16628,9 +18257,9 @@ func (a *VnicApiService) GetVnicScpStatusByMoidExecute(r ApiGetVnicScpStatusByMo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16647,6 +18276,7 @@ func (a *VnicApiService) GetVnicScpStatusByMoidExecute(r ApiGetVnicScpStatusByMo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16657,6 +18287,7 @@ func (a *VnicApiService) GetVnicScpStatusByMoidExecute(r ApiGetVnicScpStatusByMo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16667,6 +18298,7 @@ func (a *VnicApiService) GetVnicScpStatusByMoidExecute(r ApiGetVnicScpStatusByMo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16677,6 +18309,7 @@ func (a *VnicApiService) GetVnicScpStatusByMoidExecute(r ApiGetVnicScpStatusByMo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16686,6 +18319,7 @@ func (a *VnicApiService) GetVnicScpStatusByMoidExecute(r ApiGetVnicScpStatusByMo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16754,7 +18388,7 @@ func (r ApiGetVnicScpStatusListRequest) Expand(expand string) ApiGetVnicScpStatu
 	return r
 }
 
-// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e. the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
 func (r ApiGetVnicScpStatusListRequest) Apply(apply string) ApiGetVnicScpStatusListRequest {
 	r.apply = &apply
 	return r
@@ -16791,8 +18425,8 @@ func (r ApiGetVnicScpStatusListRequest) Execute() (*VnicScpStatusResponse, *http
 /*
 GetVnicScpStatusList Read a 'vnic.ScpStatus' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @return ApiGetVnicScpStatusListRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicScpStatusListRequest
 */
 func (a *VnicApiService) GetVnicScpStatusList(ctx context.Context) ApiGetVnicScpStatusListRequest {
 	return ApiGetVnicScpStatusListRequest{
@@ -16802,7 +18436,8 @@ func (a *VnicApiService) GetVnicScpStatusList(ctx context.Context) ApiGetVnicScp
 }
 
 // Execute executes the request
-//  @return VnicScpStatusResponse
+//
+//	@return VnicScpStatusResponse
 func (a *VnicApiService) GetVnicScpStatusListExecute(r ApiGetVnicScpStatusListRequest) (*VnicScpStatusResponse, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodGet
@@ -16823,37 +18458,52 @@ func (a *VnicApiService) GetVnicScpStatusListExecute(r ApiGetVnicScpStatusListRe
 	localVarFormParams := url.Values{}
 
 	if r.filter != nil {
-		localVarQueryParams.Add("$filter", parameterToString(*r.filter, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
 	}
 	if r.orderby != nil {
-		localVarQueryParams.Add("$orderby", parameterToString(*r.orderby, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
 	}
 	if r.top != nil {
-		localVarQueryParams.Add("$top", parameterToString(*r.top, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
 	}
 	if r.skip != nil {
-		localVarQueryParams.Add("$skip", parameterToString(*r.skip, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
 	}
 	if r.select_ != nil {
-		localVarQueryParams.Add("$select", parameterToString(*r.select_, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
 	}
 	if r.expand != nil {
-		localVarQueryParams.Add("$expand", parameterToString(*r.expand, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
 	}
 	if r.apply != nil {
-		localVarQueryParams.Add("$apply", parameterToString(*r.apply, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
 	}
 	if r.count != nil {
-		localVarQueryParams.Add("$count", parameterToString(*r.count, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
 	}
 	if r.inlinecount != nil {
-		localVarQueryParams.Add("$inlinecount", parameterToString(*r.inlinecount, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
 	}
 	if r.at != nil {
-		localVarQueryParams.Add("at", parameterToString(*r.at, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
 	}
 	if r.tags != nil {
-		localVarQueryParams.Add("tags", parameterToString(*r.tags, ""))
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -16882,9 +18532,9 @@ func (a *VnicApiService) GetVnicScpStatusListExecute(r ApiGetVnicScpStatusListRe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -16901,6 +18551,7 @@ func (a *VnicApiService) GetVnicScpStatusListExecute(r ApiGetVnicScpStatusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16911,6 +18562,7 @@ func (a *VnicApiService) GetVnicScpStatusListExecute(r ApiGetVnicScpStatusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16921,6 +18573,7 @@ func (a *VnicApiService) GetVnicScpStatusListExecute(r ApiGetVnicScpStatusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16931,6 +18584,7 @@ func (a *VnicApiService) GetVnicScpStatusListExecute(r ApiGetVnicScpStatusListRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -16940,6 +18594,865 @@ func (a *VnicApiService) GetVnicScpStatusListExecute(r ApiGetVnicScpStatusListRe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetVnicVhbaTemplateByMoidRequest struct {
+	ctx        context.Context
+	ApiService *VnicApiService
+	moid       string
+}
+
+func (r ApiGetVnicVhbaTemplateByMoidRequest) Execute() (*VnicVhbaTemplate, *http.Response, error) {
+	return r.ApiService.GetVnicVhbaTemplateByMoidExecute(r)
+}
+
+/*
+GetVnicVhbaTemplateByMoid Read a 'vnic.VhbaTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicVhbaTemplateByMoidRequest
+*/
+func (a *VnicApiService) GetVnicVhbaTemplateByMoid(ctx context.Context, moid string) ApiGetVnicVhbaTemplateByMoidRequest {
+	return ApiGetVnicVhbaTemplateByMoidRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVhbaTemplate
+func (a *VnicApiService) GetVnicVhbaTemplateByMoidExecute(r ApiGetVnicVhbaTemplateByMoidRequest) (*VnicVhbaTemplate, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVhbaTemplate
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.GetVnicVhbaTemplateByMoid")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VhbaTemplates/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetVnicVhbaTemplateListRequest struct {
+	ctx         context.Context
+	ApiService  *VnicApiService
+	filter      *string
+	orderby     *string
+	top         *int32
+	skip        *int32
+	select_     *string
+	expand      *string
+	apply       *string
+	count       *bool
+	inlinecount *string
+	at          *string
+	tags        *string
+}
+
+// Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
+func (r ApiGetVnicVhbaTemplateListRequest) Filter(filter string) ApiGetVnicVhbaTemplateListRequest {
+	r.filter = &filter
+	return r
+}
+
+// Determines what properties are used to sort the collection of resources.
+func (r ApiGetVnicVhbaTemplateListRequest) Orderby(orderby string) ApiGetVnicVhbaTemplateListRequest {
+	r.orderby = &orderby
+	return r
+}
+
+// Specifies the maximum number of resources to return in the response.
+func (r ApiGetVnicVhbaTemplateListRequest) Top(top int32) ApiGetVnicVhbaTemplateListRequest {
+	r.top = &top
+	return r
+}
+
+// Specifies the number of resources to skip in the response.
+func (r ApiGetVnicVhbaTemplateListRequest) Skip(skip int32) ApiGetVnicVhbaTemplateListRequest {
+	r.skip = &skip
+	return r
+}
+
+// Specifies a subset of properties to return.
+func (r ApiGetVnicVhbaTemplateListRequest) Select_(select_ string) ApiGetVnicVhbaTemplateListRequest {
+	r.select_ = &select_
+	return r
+}
+
+// Specify additional attributes or related resources to return in addition to the primary resources.
+func (r ApiGetVnicVhbaTemplateListRequest) Expand(expand string) ApiGetVnicVhbaTemplateListRequest {
+	r.expand = &expand
+	return r
+}
+
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetVnicVhbaTemplateListRequest) Apply(apply string) ApiGetVnicVhbaTemplateListRequest {
+	r.apply = &apply
+	return r
+}
+
+// The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
+func (r ApiGetVnicVhbaTemplateListRequest) Count(count bool) ApiGetVnicVhbaTemplateListRequest {
+	r.count = &count
+	return r
+}
+
+// The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+func (r ApiGetVnicVhbaTemplateListRequest) Inlinecount(inlinecount string) ApiGetVnicVhbaTemplateListRequest {
+	r.inlinecount = &inlinecount
+	return r
+}
+
+// Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
+func (r ApiGetVnicVhbaTemplateListRequest) At(at string) ApiGetVnicVhbaTemplateListRequest {
+	r.at = &at
+	return r
+}
+
+// The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
+func (r ApiGetVnicVhbaTemplateListRequest) Tags(tags string) ApiGetVnicVhbaTemplateListRequest {
+	r.tags = &tags
+	return r
+}
+
+func (r ApiGetVnicVhbaTemplateListRequest) Execute() (*VnicVhbaTemplateResponse, *http.Response, error) {
+	return r.ApiService.GetVnicVhbaTemplateListExecute(r)
+}
+
+/*
+GetVnicVhbaTemplateList Read a 'vnic.VhbaTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicVhbaTemplateListRequest
+*/
+func (a *VnicApiService) GetVnicVhbaTemplateList(ctx context.Context) ApiGetVnicVhbaTemplateListRequest {
+	return ApiGetVnicVhbaTemplateListRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVhbaTemplateResponse
+func (a *VnicApiService) GetVnicVhbaTemplateListExecute(r ApiGetVnicVhbaTemplateListRequest) (*VnicVhbaTemplateResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVhbaTemplateResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.GetVnicVhbaTemplateList")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VhbaTemplates"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.filter != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
+	}
+	if r.orderby != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
+	}
+	if r.top != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
+	}
+	if r.select_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
+	}
+	if r.expand != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
+	}
+	if r.apply != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
+	}
+	if r.inlinecount != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
+	}
+	if r.at != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetVnicVnicTemplateByMoidRequest struct {
+	ctx        context.Context
+	ApiService *VnicApiService
+	moid       string
+}
+
+func (r ApiGetVnicVnicTemplateByMoidRequest) Execute() (*VnicVnicTemplate, *http.Response, error) {
+	return r.ApiService.GetVnicVnicTemplateByMoidExecute(r)
+}
+
+/*
+GetVnicVnicTemplateByMoid Read a 'vnic.VnicTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiGetVnicVnicTemplateByMoidRequest
+*/
+func (a *VnicApiService) GetVnicVnicTemplateByMoid(ctx context.Context, moid string) ApiGetVnicVnicTemplateByMoidRequest {
+	return ApiGetVnicVnicTemplateByMoidRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVnicTemplate
+func (a *VnicApiService) GetVnicVnicTemplateByMoidExecute(r ApiGetVnicVnicTemplateByMoidRequest) (*VnicVnicTemplate, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVnicTemplate
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.GetVnicVnicTemplateByMoid")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VnicTemplates/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiGetVnicVnicTemplateListRequest struct {
+	ctx         context.Context
+	ApiService  *VnicApiService
+	filter      *string
+	orderby     *string
+	top         *int32
+	skip        *int32
+	select_     *string
+	expand      *string
+	apply       *string
+	count       *bool
+	inlinecount *string
+	at          *string
+	tags        *string
+}
+
+// Filter criteria for the resources to return. A URI with a $filter query option identifies a subset of the entries from the Collection of Entries. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the $filter option. The expression language that is used in $filter queries supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false).
+func (r ApiGetVnicVnicTemplateListRequest) Filter(filter string) ApiGetVnicVnicTemplateListRequest {
+	r.filter = &filter
+	return r
+}
+
+// Determines what properties are used to sort the collection of resources.
+func (r ApiGetVnicVnicTemplateListRequest) Orderby(orderby string) ApiGetVnicVnicTemplateListRequest {
+	r.orderby = &orderby
+	return r
+}
+
+// Specifies the maximum number of resources to return in the response.
+func (r ApiGetVnicVnicTemplateListRequest) Top(top int32) ApiGetVnicVnicTemplateListRequest {
+	r.top = &top
+	return r
+}
+
+// Specifies the number of resources to skip in the response.
+func (r ApiGetVnicVnicTemplateListRequest) Skip(skip int32) ApiGetVnicVnicTemplateListRequest {
+	r.skip = &skip
+	return r
+}
+
+// Specifies a subset of properties to return.
+func (r ApiGetVnicVnicTemplateListRequest) Select_(select_ string) ApiGetVnicVnicTemplateListRequest {
+	r.select_ = &select_
+	return r
+}
+
+// Specify additional attributes or related resources to return in addition to the primary resources.
+func (r ApiGetVnicVnicTemplateListRequest) Expand(expand string) ApiGetVnicVnicTemplateListRequest {
+	r.expand = &expand
+	return r
+}
+
+// Specify one or more transformation operations to perform aggregation on the resources. The transformations are processed in order with the output from a transformation being used as input for the subsequent transformation. The \&quot;$apply\&quot; query takes a sequence of set transformations, separated by forward slashes to express that they are consecutively applied, i.e., the result of each transformation is the input to the next transformation. Supported aggregation methods are \&quot;aggregate\&quot; and \&quot;groupby\&quot;. The **aggregate** transformation takes a comma-separated list of one or more aggregate expressions as parameters and returns a result set with a single instance, representing the aggregated value for all instances in the input set. The **groupby** transformation takes one or two parameters and 1. Splits the initial set into subsets where all instances in a subset have the same values for the grouping properties specified in the first parameter, 2. Applies set transformations to each subset according to the second parameter, resulting in a new set of potentially different structure and cardinality, 3. Ensures that the instances in the result set contain all grouping properties with the correct values for the group, 4. Concatenates the intermediate result sets into one result set. A groupby transformation affects the structure of the result set.
+func (r ApiGetVnicVnicTemplateListRequest) Apply(apply string) ApiGetVnicVnicTemplateListRequest {
+	r.apply = &apply
+	return r
+}
+
+// The $count query specifies the service should return the count of the matching resources, instead of returning the resources.
+func (r ApiGetVnicVnicTemplateListRequest) Count(count bool) ApiGetVnicVnicTemplateListRequest {
+	r.count = &count
+	return r
+}
+
+// The $inlinecount query option allows clients to request an inline count of the matching resources included with the resources in the response.
+func (r ApiGetVnicVnicTemplateListRequest) Inlinecount(inlinecount string) ApiGetVnicVnicTemplateListRequest {
+	r.inlinecount = &inlinecount
+	return r
+}
+
+// Similar to \&quot;$filter\&quot;, but \&quot;at\&quot; is specifically used to filter versioning information properties for resources to return. A URI with an \&quot;at\&quot; Query Option identifies a subset of the Entries from the Collection of Entries identified by the Resource Path section of the URI. The subset is determined by selecting only the Entries that satisfy the predicate expression specified by the query option. The expression language that is used in at operators supports references to properties and literals. The literal values can be strings enclosed in single quotes, numbers and boolean values (true or false) or any of the additional literal representations shown in the Abstract Type System section.
+func (r ApiGetVnicVnicTemplateListRequest) At(at string) ApiGetVnicVnicTemplateListRequest {
+	r.at = &at
+	return r
+}
+
+// The &#39;tags&#39; parameter is used to request a summary of the Tag utilization for this resource. When the &#39;tags&#39; parameter is specified, the response provides a list of tag keys, the number of times the key has been used across all documents, and the tag values that have been assigned to the tag key.
+func (r ApiGetVnicVnicTemplateListRequest) Tags(tags string) ApiGetVnicVnicTemplateListRequest {
+	r.tags = &tags
+	return r
+}
+
+func (r ApiGetVnicVnicTemplateListRequest) Execute() (*VnicVnicTemplateResponse, *http.Response, error) {
+	return r.ApiService.GetVnicVnicTemplateListExecute(r)
+}
+
+/*
+GetVnicVnicTemplateList Read a 'vnic.VnicTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@return ApiGetVnicVnicTemplateListRequest
+*/
+func (a *VnicApiService) GetVnicVnicTemplateList(ctx context.Context) ApiGetVnicVnicTemplateListRequest {
+	return ApiGetVnicVnicTemplateListRequest{
+		ApiService: a,
+		ctx:        ctx,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVnicTemplateResponse
+func (a *VnicApiService) GetVnicVnicTemplateListExecute(r ApiGetVnicVnicTemplateListRequest) (*VnicVnicTemplateResponse, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVnicTemplateResponse
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.GetVnicVnicTemplateList")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VnicTemplates"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+
+	if r.filter != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$filter", r.filter, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.filter = &defaultValue
+	}
+	if r.orderby != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$orderby", r.orderby, "form", "")
+	}
+	if r.top != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$top", r.top, "form", "")
+	} else {
+		var defaultValue int32 = 100
+		r.top = &defaultValue
+	}
+	if r.skip != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$skip", r.skip, "form", "")
+	} else {
+		var defaultValue int32 = 0
+		r.skip = &defaultValue
+	}
+	if r.select_ != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$select", r.select_, "form", "")
+	} else {
+		var defaultValue string = ""
+		r.select_ = &defaultValue
+	}
+	if r.expand != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$expand", r.expand, "form", "")
+	}
+	if r.apply != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$apply", r.apply, "form", "")
+	}
+	if r.count != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$count", r.count, "form", "")
+	}
+	if r.inlinecount != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "$inlinecount", r.inlinecount, "form", "")
+	} else {
+		var defaultValue string = "allpages"
+		r.inlinecount = &defaultValue
+	}
+	if r.at != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "at", r.at, "form", "")
+	}
+	if r.tags != nil {
+		parameterAddToHeaderOrQuery(localVarQueryParams, "tags", r.tags, "form", "")
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -16983,9 +19496,9 @@ func (r ApiPatchVnicEthAdapterPolicyRequest) Execute() (*VnicEthAdapterPolicy, *
 /*
 PatchVnicEthAdapterPolicy Update a 'vnic.EthAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicEthAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicEthAdapterPolicyRequest
 */
 func (a *VnicApiService) PatchVnicEthAdapterPolicy(ctx context.Context, moid string) ApiPatchVnicEthAdapterPolicyRequest {
 	return ApiPatchVnicEthAdapterPolicyRequest{
@@ -16996,7 +19509,8 @@ func (a *VnicApiService) PatchVnicEthAdapterPolicy(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return VnicEthAdapterPolicy
+//
+//	@return VnicEthAdapterPolicy
 func (a *VnicApiService) PatchVnicEthAdapterPolicyExecute(r ApiPatchVnicEthAdapterPolicyRequest) (*VnicEthAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -17011,7 +19525,7 @@ func (a *VnicApiService) PatchVnicEthAdapterPolicyExecute(r ApiPatchVnicEthAdapt
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17038,7 +19552,7 @@ func (a *VnicApiService) PatchVnicEthAdapterPolicyExecute(r ApiPatchVnicEthAdapt
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthAdapterPolicy
@@ -17052,9 +19566,9 @@ func (a *VnicApiService) PatchVnicEthAdapterPolicyExecute(r ApiPatchVnicEthAdapt
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17071,6 +19585,7 @@ func (a *VnicApiService) PatchVnicEthAdapterPolicyExecute(r ApiPatchVnicEthAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17081,6 +19596,7 @@ func (a *VnicApiService) PatchVnicEthAdapterPolicyExecute(r ApiPatchVnicEthAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17091,6 +19607,7 @@ func (a *VnicApiService) PatchVnicEthAdapterPolicyExecute(r ApiPatchVnicEthAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17101,6 +19618,7 @@ func (a *VnicApiService) PatchVnicEthAdapterPolicyExecute(r ApiPatchVnicEthAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17110,6 +19628,7 @@ func (a *VnicApiService) PatchVnicEthAdapterPolicyExecute(r ApiPatchVnicEthAdapt
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17153,9 +19672,9 @@ func (r ApiPatchVnicEthIfRequest) Execute() (*VnicEthIf, *http.Response, error) 
 /*
 PatchVnicEthIf Update a 'vnic.EthIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicEthIfRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicEthIfRequest
 */
 func (a *VnicApiService) PatchVnicEthIf(ctx context.Context, moid string) ApiPatchVnicEthIfRequest {
 	return ApiPatchVnicEthIfRequest{
@@ -17166,7 +19685,8 @@ func (a *VnicApiService) PatchVnicEthIf(ctx context.Context, moid string) ApiPat
 }
 
 // Execute executes the request
-//  @return VnicEthIf
+//
+//	@return VnicEthIf
 func (a *VnicApiService) PatchVnicEthIfExecute(r ApiPatchVnicEthIfRequest) (*VnicEthIf, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -17181,7 +19701,7 @@ func (a *VnicApiService) PatchVnicEthIfExecute(r ApiPatchVnicEthIfRequest) (*Vni
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthIfs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17208,7 +19728,7 @@ func (a *VnicApiService) PatchVnicEthIfExecute(r ApiPatchVnicEthIfRequest) (*Vni
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthIf
@@ -17222,9 +19742,9 @@ func (a *VnicApiService) PatchVnicEthIfExecute(r ApiPatchVnicEthIfRequest) (*Vni
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17241,6 +19761,7 @@ func (a *VnicApiService) PatchVnicEthIfExecute(r ApiPatchVnicEthIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17251,6 +19772,7 @@ func (a *VnicApiService) PatchVnicEthIfExecute(r ApiPatchVnicEthIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17261,6 +19783,7 @@ func (a *VnicApiService) PatchVnicEthIfExecute(r ApiPatchVnicEthIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17271,6 +19794,7 @@ func (a *VnicApiService) PatchVnicEthIfExecute(r ApiPatchVnicEthIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17280,6 +19804,7 @@ func (a *VnicApiService) PatchVnicEthIfExecute(r ApiPatchVnicEthIfRequest) (*Vni
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17323,9 +19848,9 @@ func (r ApiPatchVnicEthNetworkPolicyRequest) Execute() (*VnicEthNetworkPolicy, *
 /*
 PatchVnicEthNetworkPolicy Update a 'vnic.EthNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicEthNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicEthNetworkPolicyRequest
 */
 func (a *VnicApiService) PatchVnicEthNetworkPolicy(ctx context.Context, moid string) ApiPatchVnicEthNetworkPolicyRequest {
 	return ApiPatchVnicEthNetworkPolicyRequest{
@@ -17336,7 +19861,8 @@ func (a *VnicApiService) PatchVnicEthNetworkPolicy(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return VnicEthNetworkPolicy
+//
+//	@return VnicEthNetworkPolicy
 func (a *VnicApiService) PatchVnicEthNetworkPolicyExecute(r ApiPatchVnicEthNetworkPolicyRequest) (*VnicEthNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -17351,7 +19877,7 @@ func (a *VnicApiService) PatchVnicEthNetworkPolicyExecute(r ApiPatchVnicEthNetwo
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthNetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17378,7 +19904,7 @@ func (a *VnicApiService) PatchVnicEthNetworkPolicyExecute(r ApiPatchVnicEthNetwo
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthNetworkPolicy
@@ -17392,9 +19918,9 @@ func (a *VnicApiService) PatchVnicEthNetworkPolicyExecute(r ApiPatchVnicEthNetwo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17411,6 +19937,7 @@ func (a *VnicApiService) PatchVnicEthNetworkPolicyExecute(r ApiPatchVnicEthNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17421,6 +19948,7 @@ func (a *VnicApiService) PatchVnicEthNetworkPolicyExecute(r ApiPatchVnicEthNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17431,6 +19959,7 @@ func (a *VnicApiService) PatchVnicEthNetworkPolicyExecute(r ApiPatchVnicEthNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17441,6 +19970,7 @@ func (a *VnicApiService) PatchVnicEthNetworkPolicyExecute(r ApiPatchVnicEthNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17450,6 +19980,7 @@ func (a *VnicApiService) PatchVnicEthNetworkPolicyExecute(r ApiPatchVnicEthNetwo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17493,9 +20024,9 @@ func (r ApiPatchVnicEthQosPolicyRequest) Execute() (*VnicEthQosPolicy, *http.Res
 /*
 PatchVnicEthQosPolicy Update a 'vnic.EthQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicEthQosPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicEthQosPolicyRequest
 */
 func (a *VnicApiService) PatchVnicEthQosPolicy(ctx context.Context, moid string) ApiPatchVnicEthQosPolicyRequest {
 	return ApiPatchVnicEthQosPolicyRequest{
@@ -17506,7 +20037,8 @@ func (a *VnicApiService) PatchVnicEthQosPolicy(ctx context.Context, moid string)
 }
 
 // Execute executes the request
-//  @return VnicEthQosPolicy
+//
+//	@return VnicEthQosPolicy
 func (a *VnicApiService) PatchVnicEthQosPolicyExecute(r ApiPatchVnicEthQosPolicyRequest) (*VnicEthQosPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -17521,7 +20053,7 @@ func (a *VnicApiService) PatchVnicEthQosPolicyExecute(r ApiPatchVnicEthQosPolicy
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthQosPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17548,7 +20080,7 @@ func (a *VnicApiService) PatchVnicEthQosPolicyExecute(r ApiPatchVnicEthQosPolicy
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthQosPolicy
@@ -17562,9 +20094,9 @@ func (a *VnicApiService) PatchVnicEthQosPolicyExecute(r ApiPatchVnicEthQosPolicy
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17581,6 +20113,7 @@ func (a *VnicApiService) PatchVnicEthQosPolicyExecute(r ApiPatchVnicEthQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17591,6 +20124,7 @@ func (a *VnicApiService) PatchVnicEthQosPolicyExecute(r ApiPatchVnicEthQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17601,6 +20135,7 @@ func (a *VnicApiService) PatchVnicEthQosPolicyExecute(r ApiPatchVnicEthQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17611,6 +20146,7 @@ func (a *VnicApiService) PatchVnicEthQosPolicyExecute(r ApiPatchVnicEthQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17620,6 +20156,7 @@ func (a *VnicApiService) PatchVnicEthQosPolicyExecute(r ApiPatchVnicEthQosPolicy
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17663,9 +20200,9 @@ func (r ApiPatchVnicFcAdapterPolicyRequest) Execute() (*VnicFcAdapterPolicy, *ht
 /*
 PatchVnicFcAdapterPolicy Update a 'vnic.FcAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicFcAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicFcAdapterPolicyRequest
 */
 func (a *VnicApiService) PatchVnicFcAdapterPolicy(ctx context.Context, moid string) ApiPatchVnicFcAdapterPolicyRequest {
 	return ApiPatchVnicFcAdapterPolicyRequest{
@@ -17676,7 +20213,8 @@ func (a *VnicApiService) PatchVnicFcAdapterPolicy(ctx context.Context, moid stri
 }
 
 // Execute executes the request
-//  @return VnicFcAdapterPolicy
+//
+//	@return VnicFcAdapterPolicy
 func (a *VnicApiService) PatchVnicFcAdapterPolicyExecute(r ApiPatchVnicFcAdapterPolicyRequest) (*VnicFcAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -17691,7 +20229,7 @@ func (a *VnicApiService) PatchVnicFcAdapterPolicyExecute(r ApiPatchVnicFcAdapter
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17718,7 +20256,7 @@ func (a *VnicApiService) PatchVnicFcAdapterPolicyExecute(r ApiPatchVnicFcAdapter
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcAdapterPolicy
@@ -17732,9 +20270,9 @@ func (a *VnicApiService) PatchVnicFcAdapterPolicyExecute(r ApiPatchVnicFcAdapter
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17751,6 +20289,7 @@ func (a *VnicApiService) PatchVnicFcAdapterPolicyExecute(r ApiPatchVnicFcAdapter
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17761,6 +20300,7 @@ func (a *VnicApiService) PatchVnicFcAdapterPolicyExecute(r ApiPatchVnicFcAdapter
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17771,6 +20311,7 @@ func (a *VnicApiService) PatchVnicFcAdapterPolicyExecute(r ApiPatchVnicFcAdapter
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17781,6 +20322,7 @@ func (a *VnicApiService) PatchVnicFcAdapterPolicyExecute(r ApiPatchVnicFcAdapter
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17790,6 +20332,7 @@ func (a *VnicApiService) PatchVnicFcAdapterPolicyExecute(r ApiPatchVnicFcAdapter
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -17833,9 +20376,9 @@ func (r ApiPatchVnicFcIfRequest) Execute() (*VnicFcIf, *http.Response, error) {
 /*
 PatchVnicFcIf Update a 'vnic.FcIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicFcIfRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicFcIfRequest
 */
 func (a *VnicApiService) PatchVnicFcIf(ctx context.Context, moid string) ApiPatchVnicFcIfRequest {
 	return ApiPatchVnicFcIfRequest{
@@ -17846,7 +20389,8 @@ func (a *VnicApiService) PatchVnicFcIf(ctx context.Context, moid string) ApiPatc
 }
 
 // Execute executes the request
-//  @return VnicFcIf
+//
+//	@return VnicFcIf
 func (a *VnicApiService) PatchVnicFcIfExecute(r ApiPatchVnicFcIfRequest) (*VnicFcIf, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -17861,7 +20405,7 @@ func (a *VnicApiService) PatchVnicFcIfExecute(r ApiPatchVnicFcIfRequest) (*VnicF
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcIfs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -17888,7 +20432,7 @@ func (a *VnicApiService) PatchVnicFcIfExecute(r ApiPatchVnicFcIfRequest) (*VnicF
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcIf
@@ -17902,9 +20446,9 @@ func (a *VnicApiService) PatchVnicFcIfExecute(r ApiPatchVnicFcIfRequest) (*VnicF
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -17921,6 +20465,7 @@ func (a *VnicApiService) PatchVnicFcIfExecute(r ApiPatchVnicFcIfRequest) (*VnicF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17931,6 +20476,7 @@ func (a *VnicApiService) PatchVnicFcIfExecute(r ApiPatchVnicFcIfRequest) (*VnicF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17941,6 +20487,7 @@ func (a *VnicApiService) PatchVnicFcIfExecute(r ApiPatchVnicFcIfRequest) (*VnicF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17951,6 +20498,7 @@ func (a *VnicApiService) PatchVnicFcIfExecute(r ApiPatchVnicFcIfRequest) (*VnicF
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -17960,6 +20508,7 @@ func (a *VnicApiService) PatchVnicFcIfExecute(r ApiPatchVnicFcIfRequest) (*VnicF
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18003,9 +20552,9 @@ func (r ApiPatchVnicFcNetworkPolicyRequest) Execute() (*VnicFcNetworkPolicy, *ht
 /*
 PatchVnicFcNetworkPolicy Update a 'vnic.FcNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicFcNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicFcNetworkPolicyRequest
 */
 func (a *VnicApiService) PatchVnicFcNetworkPolicy(ctx context.Context, moid string) ApiPatchVnicFcNetworkPolicyRequest {
 	return ApiPatchVnicFcNetworkPolicyRequest{
@@ -18016,7 +20565,8 @@ func (a *VnicApiService) PatchVnicFcNetworkPolicy(ctx context.Context, moid stri
 }
 
 // Execute executes the request
-//  @return VnicFcNetworkPolicy
+//
+//	@return VnicFcNetworkPolicy
 func (a *VnicApiService) PatchVnicFcNetworkPolicyExecute(r ApiPatchVnicFcNetworkPolicyRequest) (*VnicFcNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -18031,7 +20581,7 @@ func (a *VnicApiService) PatchVnicFcNetworkPolicyExecute(r ApiPatchVnicFcNetwork
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcNetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18058,7 +20608,7 @@ func (a *VnicApiService) PatchVnicFcNetworkPolicyExecute(r ApiPatchVnicFcNetwork
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcNetworkPolicy
@@ -18072,9 +20622,9 @@ func (a *VnicApiService) PatchVnicFcNetworkPolicyExecute(r ApiPatchVnicFcNetwork
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18091,6 +20641,7 @@ func (a *VnicApiService) PatchVnicFcNetworkPolicyExecute(r ApiPatchVnicFcNetwork
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18101,6 +20652,7 @@ func (a *VnicApiService) PatchVnicFcNetworkPolicyExecute(r ApiPatchVnicFcNetwork
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18111,6 +20663,7 @@ func (a *VnicApiService) PatchVnicFcNetworkPolicyExecute(r ApiPatchVnicFcNetwork
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18121,6 +20674,7 @@ func (a *VnicApiService) PatchVnicFcNetworkPolicyExecute(r ApiPatchVnicFcNetwork
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18130,6 +20684,7 @@ func (a *VnicApiService) PatchVnicFcNetworkPolicyExecute(r ApiPatchVnicFcNetwork
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18173,9 +20728,9 @@ func (r ApiPatchVnicFcQosPolicyRequest) Execute() (*VnicFcQosPolicy, *http.Respo
 /*
 PatchVnicFcQosPolicy Update a 'vnic.FcQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicFcQosPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicFcQosPolicyRequest
 */
 func (a *VnicApiService) PatchVnicFcQosPolicy(ctx context.Context, moid string) ApiPatchVnicFcQosPolicyRequest {
 	return ApiPatchVnicFcQosPolicyRequest{
@@ -18186,7 +20741,8 @@ func (a *VnicApiService) PatchVnicFcQosPolicy(ctx context.Context, moid string) 
 }
 
 // Execute executes the request
-//  @return VnicFcQosPolicy
+//
+//	@return VnicFcQosPolicy
 func (a *VnicApiService) PatchVnicFcQosPolicyExecute(r ApiPatchVnicFcQosPolicyRequest) (*VnicFcQosPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -18201,7 +20757,7 @@ func (a *VnicApiService) PatchVnicFcQosPolicyExecute(r ApiPatchVnicFcQosPolicyRe
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcQosPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18228,7 +20784,7 @@ func (a *VnicApiService) PatchVnicFcQosPolicyExecute(r ApiPatchVnicFcQosPolicyRe
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcQosPolicy
@@ -18242,9 +20798,9 @@ func (a *VnicApiService) PatchVnicFcQosPolicyExecute(r ApiPatchVnicFcQosPolicyRe
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18261,6 +20817,7 @@ func (a *VnicApiService) PatchVnicFcQosPolicyExecute(r ApiPatchVnicFcQosPolicyRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18271,6 +20828,7 @@ func (a *VnicApiService) PatchVnicFcQosPolicyExecute(r ApiPatchVnicFcQosPolicyRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18281,6 +20839,7 @@ func (a *VnicApiService) PatchVnicFcQosPolicyExecute(r ApiPatchVnicFcQosPolicyRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18291,6 +20850,7 @@ func (a *VnicApiService) PatchVnicFcQosPolicyExecute(r ApiPatchVnicFcQosPolicyRe
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18300,6 +20860,7 @@ func (a *VnicApiService) PatchVnicFcQosPolicyExecute(r ApiPatchVnicFcQosPolicyRe
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18343,9 +20904,9 @@ func (r ApiPatchVnicIscsiAdapterPolicyRequest) Execute() (*VnicIscsiAdapterPolic
 /*
 PatchVnicIscsiAdapterPolicy Update a 'vnic.IscsiAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicIscsiAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicIscsiAdapterPolicyRequest
 */
 func (a *VnicApiService) PatchVnicIscsiAdapterPolicy(ctx context.Context, moid string) ApiPatchVnicIscsiAdapterPolicyRequest {
 	return ApiPatchVnicIscsiAdapterPolicyRequest{
@@ -18356,7 +20917,8 @@ func (a *VnicApiService) PatchVnicIscsiAdapterPolicy(ctx context.Context, moid s
 }
 
 // Execute executes the request
-//  @return VnicIscsiAdapterPolicy
+//
+//	@return VnicIscsiAdapterPolicy
 func (a *VnicApiService) PatchVnicIscsiAdapterPolicyExecute(r ApiPatchVnicIscsiAdapterPolicyRequest) (*VnicIscsiAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -18371,7 +20933,7 @@ func (a *VnicApiService) PatchVnicIscsiAdapterPolicyExecute(r ApiPatchVnicIscsiA
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18398,7 +20960,7 @@ func (a *VnicApiService) PatchVnicIscsiAdapterPolicyExecute(r ApiPatchVnicIscsiA
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicIscsiAdapterPolicy
@@ -18412,9 +20974,9 @@ func (a *VnicApiService) PatchVnicIscsiAdapterPolicyExecute(r ApiPatchVnicIscsiA
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18431,6 +20993,7 @@ func (a *VnicApiService) PatchVnicIscsiAdapterPolicyExecute(r ApiPatchVnicIscsiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18441,6 +21004,7 @@ func (a *VnicApiService) PatchVnicIscsiAdapterPolicyExecute(r ApiPatchVnicIscsiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18451,6 +21015,7 @@ func (a *VnicApiService) PatchVnicIscsiAdapterPolicyExecute(r ApiPatchVnicIscsiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18461,6 +21026,7 @@ func (a *VnicApiService) PatchVnicIscsiAdapterPolicyExecute(r ApiPatchVnicIscsiA
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18470,6 +21036,7 @@ func (a *VnicApiService) PatchVnicIscsiAdapterPolicyExecute(r ApiPatchVnicIscsiA
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18513,9 +21080,9 @@ func (r ApiPatchVnicIscsiBootPolicyRequest) Execute() (*VnicIscsiBootPolicy, *ht
 /*
 PatchVnicIscsiBootPolicy Update a 'vnic.IscsiBootPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicIscsiBootPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicIscsiBootPolicyRequest
 */
 func (a *VnicApiService) PatchVnicIscsiBootPolicy(ctx context.Context, moid string) ApiPatchVnicIscsiBootPolicyRequest {
 	return ApiPatchVnicIscsiBootPolicyRequest{
@@ -18526,7 +21093,8 @@ func (a *VnicApiService) PatchVnicIscsiBootPolicy(ctx context.Context, moid stri
 }
 
 // Execute executes the request
-//  @return VnicIscsiBootPolicy
+//
+//	@return VnicIscsiBootPolicy
 func (a *VnicApiService) PatchVnicIscsiBootPolicyExecute(r ApiPatchVnicIscsiBootPolicyRequest) (*VnicIscsiBootPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -18541,7 +21109,7 @@ func (a *VnicApiService) PatchVnicIscsiBootPolicyExecute(r ApiPatchVnicIscsiBoot
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiBootPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18568,7 +21136,7 @@ func (a *VnicApiService) PatchVnicIscsiBootPolicyExecute(r ApiPatchVnicIscsiBoot
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicIscsiBootPolicy
@@ -18582,9 +21150,9 @@ func (a *VnicApiService) PatchVnicIscsiBootPolicyExecute(r ApiPatchVnicIscsiBoot
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18601,6 +21169,7 @@ func (a *VnicApiService) PatchVnicIscsiBootPolicyExecute(r ApiPatchVnicIscsiBoot
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18611,6 +21180,7 @@ func (a *VnicApiService) PatchVnicIscsiBootPolicyExecute(r ApiPatchVnicIscsiBoot
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18621,6 +21191,7 @@ func (a *VnicApiService) PatchVnicIscsiBootPolicyExecute(r ApiPatchVnicIscsiBoot
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18631,6 +21202,7 @@ func (a *VnicApiService) PatchVnicIscsiBootPolicyExecute(r ApiPatchVnicIscsiBoot
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18640,6 +21212,7 @@ func (a *VnicApiService) PatchVnicIscsiBootPolicyExecute(r ApiPatchVnicIscsiBoot
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18683,9 +21256,9 @@ func (r ApiPatchVnicIscsiStaticTargetPolicyRequest) Execute() (*VnicIscsiStaticT
 /*
 PatchVnicIscsiStaticTargetPolicy Update a 'vnic.IscsiStaticTargetPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicIscsiStaticTargetPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicIscsiStaticTargetPolicyRequest
 */
 func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicy(ctx context.Context, moid string) ApiPatchVnicIscsiStaticTargetPolicyRequest {
 	return ApiPatchVnicIscsiStaticTargetPolicyRequest{
@@ -18696,7 +21269,8 @@ func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicy(ctx context.Context, m
 }
 
 // Execute executes the request
-//  @return VnicIscsiStaticTargetPolicy
+//
+//	@return VnicIscsiStaticTargetPolicy
 func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicyExecute(r ApiPatchVnicIscsiStaticTargetPolicyRequest) (*VnicIscsiStaticTargetPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -18711,7 +21285,7 @@ func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicyExecute(r ApiPatchVnicI
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiStaticTargetPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18738,7 +21312,7 @@ func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicyExecute(r ApiPatchVnicI
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicIscsiStaticTargetPolicy
@@ -18752,9 +21326,9 @@ func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicyExecute(r ApiPatchVnicI
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18771,6 +21345,7 @@ func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicyExecute(r ApiPatchVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18781,6 +21356,7 @@ func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicyExecute(r ApiPatchVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18791,6 +21367,7 @@ func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicyExecute(r ApiPatchVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18801,6 +21378,7 @@ func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicyExecute(r ApiPatchVnicI
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18810,6 +21388,7 @@ func (a *VnicApiService) PatchVnicIscsiStaticTargetPolicyExecute(r ApiPatchVnicI
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -18853,9 +21432,9 @@ func (r ApiPatchVnicLanConnectivityPolicyRequest) Execute() (*VnicLanConnectivit
 /*
 PatchVnicLanConnectivityPolicy Update a 'vnic.LanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicLanConnectivityPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicLanConnectivityPolicyRequest
 */
 func (a *VnicApiService) PatchVnicLanConnectivityPolicy(ctx context.Context, moid string) ApiPatchVnicLanConnectivityPolicyRequest {
 	return ApiPatchVnicLanConnectivityPolicyRequest{
@@ -18866,7 +21445,8 @@ func (a *VnicApiService) PatchVnicLanConnectivityPolicy(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return VnicLanConnectivityPolicy
+//
+//	@return VnicLanConnectivityPolicy
 func (a *VnicApiService) PatchVnicLanConnectivityPolicyExecute(r ApiPatchVnicLanConnectivityPolicyRequest) (*VnicLanConnectivityPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -18881,7 +21461,7 @@ func (a *VnicApiService) PatchVnicLanConnectivityPolicyExecute(r ApiPatchVnicLan
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/LanConnectivityPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -18908,7 +21488,7 @@ func (a *VnicApiService) PatchVnicLanConnectivityPolicyExecute(r ApiPatchVnicLan
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicLanConnectivityPolicy
@@ -18922,9 +21502,9 @@ func (a *VnicApiService) PatchVnicLanConnectivityPolicyExecute(r ApiPatchVnicLan
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -18941,6 +21521,7 @@ func (a *VnicApiService) PatchVnicLanConnectivityPolicyExecute(r ApiPatchVnicLan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18951,6 +21532,7 @@ func (a *VnicApiService) PatchVnicLanConnectivityPolicyExecute(r ApiPatchVnicLan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18961,6 +21543,7 @@ func (a *VnicApiService) PatchVnicLanConnectivityPolicyExecute(r ApiPatchVnicLan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18971,6 +21554,7 @@ func (a *VnicApiService) PatchVnicLanConnectivityPolicyExecute(r ApiPatchVnicLan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -18980,6 +21564,7 @@ func (a *VnicApiService) PatchVnicLanConnectivityPolicyExecute(r ApiPatchVnicLan
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19023,9 +21608,9 @@ func (r ApiPatchVnicSanConnectivityPolicyRequest) Execute() (*VnicSanConnectivit
 /*
 PatchVnicSanConnectivityPolicy Update a 'vnic.SanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiPatchVnicSanConnectivityPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicSanConnectivityPolicyRequest
 */
 func (a *VnicApiService) PatchVnicSanConnectivityPolicy(ctx context.Context, moid string) ApiPatchVnicSanConnectivityPolicyRequest {
 	return ApiPatchVnicSanConnectivityPolicyRequest{
@@ -19036,7 +21621,8 @@ func (a *VnicApiService) PatchVnicSanConnectivityPolicy(ctx context.Context, moi
 }
 
 // Execute executes the request
-//  @return VnicSanConnectivityPolicy
+//
+//	@return VnicSanConnectivityPolicy
 func (a *VnicApiService) PatchVnicSanConnectivityPolicyExecute(r ApiPatchVnicSanConnectivityPolicyRequest) (*VnicSanConnectivityPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPatch
@@ -19051,7 +21637,7 @@ func (a *VnicApiService) PatchVnicSanConnectivityPolicyExecute(r ApiPatchVnicSan
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/SanConnectivityPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19078,7 +21664,7 @@ func (a *VnicApiService) PatchVnicSanConnectivityPolicyExecute(r ApiPatchVnicSan
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicSanConnectivityPolicy
@@ -19092,9 +21678,9 @@ func (a *VnicApiService) PatchVnicSanConnectivityPolicyExecute(r ApiPatchVnicSan
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19111,6 +21697,7 @@ func (a *VnicApiService) PatchVnicSanConnectivityPolicyExecute(r ApiPatchVnicSan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19121,6 +21708,7 @@ func (a *VnicApiService) PatchVnicSanConnectivityPolicyExecute(r ApiPatchVnicSan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19131,6 +21719,7 @@ func (a *VnicApiService) PatchVnicSanConnectivityPolicyExecute(r ApiPatchVnicSan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19141,6 +21730,7 @@ func (a *VnicApiService) PatchVnicSanConnectivityPolicyExecute(r ApiPatchVnicSan
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19150,6 +21740,359 @@ func (a *VnicApiService) PatchVnicSanConnectivityPolicyExecute(r ApiPatchVnicSan
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiPatchVnicVhbaTemplateRequest struct {
+	ctx              context.Context
+	ApiService       *VnicApiService
+	moid             string
+	vnicVhbaTemplate *VnicVhbaTemplate
+	ifMatch          *string
+}
+
+// The &#39;vnic.VhbaTemplate&#39; resource to update.
+func (r ApiPatchVnicVhbaTemplateRequest) VnicVhbaTemplate(vnicVhbaTemplate VnicVhbaTemplate) ApiPatchVnicVhbaTemplateRequest {
+	r.vnicVhbaTemplate = &vnicVhbaTemplate
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiPatchVnicVhbaTemplateRequest) IfMatch(ifMatch string) ApiPatchVnicVhbaTemplateRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiPatchVnicVhbaTemplateRequest) Execute() (*VnicVhbaTemplate, *http.Response, error) {
+	return r.ApiService.PatchVnicVhbaTemplateExecute(r)
+}
+
+/*
+PatchVnicVhbaTemplate Update a 'vnic.VhbaTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicVhbaTemplateRequest
+*/
+func (a *VnicApiService) PatchVnicVhbaTemplate(ctx context.Context, moid string) ApiPatchVnicVhbaTemplateRequest {
+	return ApiPatchVnicVhbaTemplateRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVhbaTemplate
+func (a *VnicApiService) PatchVnicVhbaTemplateExecute(r ApiPatchVnicVhbaTemplateRequest) (*VnicVhbaTemplate, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVhbaTemplate
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.PatchVnicVhbaTemplate")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VhbaTemplates/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.vnicVhbaTemplate == nil {
+		return localVarReturnValue, nil, reportError("vnicVhbaTemplate is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.vnicVhbaTemplate
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiPatchVnicVnicTemplateRequest struct {
+	ctx              context.Context
+	ApiService       *VnicApiService
+	moid             string
+	vnicVnicTemplate *VnicVnicTemplate
+	ifMatch          *string
+}
+
+// The &#39;vnic.VnicTemplate&#39; resource to update.
+func (r ApiPatchVnicVnicTemplateRequest) VnicVnicTemplate(vnicVnicTemplate VnicVnicTemplate) ApiPatchVnicVnicTemplateRequest {
+	r.vnicVnicTemplate = &vnicVnicTemplate
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiPatchVnicVnicTemplateRequest) IfMatch(ifMatch string) ApiPatchVnicVnicTemplateRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiPatchVnicVnicTemplateRequest) Execute() (*VnicVnicTemplate, *http.Response, error) {
+	return r.ApiService.PatchVnicVnicTemplateExecute(r)
+}
+
+/*
+PatchVnicVnicTemplate Update a 'vnic.VnicTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiPatchVnicVnicTemplateRequest
+*/
+func (a *VnicApiService) PatchVnicVnicTemplate(ctx context.Context, moid string) ApiPatchVnicVnicTemplateRequest {
+	return ApiPatchVnicVnicTemplateRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVnicTemplate
+func (a *VnicApiService) PatchVnicVnicTemplateExecute(r ApiPatchVnicVnicTemplateRequest) (*VnicVnicTemplate, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPatch
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVnicTemplate
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.PatchVnicVnicTemplate")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VnicTemplates/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.vnicVnicTemplate == nil {
+		return localVarReturnValue, nil, reportError("vnicVnicTemplate is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.vnicVnicTemplate
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19193,9 +22136,9 @@ func (r ApiUpdateVnicEthAdapterPolicyRequest) Execute() (*VnicEthAdapterPolicy, 
 /*
 UpdateVnicEthAdapterPolicy Update a 'vnic.EthAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicEthAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicEthAdapterPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicEthAdapterPolicy(ctx context.Context, moid string) ApiUpdateVnicEthAdapterPolicyRequest {
 	return ApiUpdateVnicEthAdapterPolicyRequest{
@@ -19206,7 +22149,8 @@ func (a *VnicApiService) UpdateVnicEthAdapterPolicy(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return VnicEthAdapterPolicy
+//
+//	@return VnicEthAdapterPolicy
 func (a *VnicApiService) UpdateVnicEthAdapterPolicyExecute(r ApiUpdateVnicEthAdapterPolicyRequest) (*VnicEthAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -19221,7 +22165,7 @@ func (a *VnicApiService) UpdateVnicEthAdapterPolicyExecute(r ApiUpdateVnicEthAda
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19248,7 +22192,7 @@ func (a *VnicApiService) UpdateVnicEthAdapterPolicyExecute(r ApiUpdateVnicEthAda
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthAdapterPolicy
@@ -19262,9 +22206,9 @@ func (a *VnicApiService) UpdateVnicEthAdapterPolicyExecute(r ApiUpdateVnicEthAda
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19281,6 +22225,7 @@ func (a *VnicApiService) UpdateVnicEthAdapterPolicyExecute(r ApiUpdateVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19291,6 +22236,7 @@ func (a *VnicApiService) UpdateVnicEthAdapterPolicyExecute(r ApiUpdateVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19301,6 +22247,7 @@ func (a *VnicApiService) UpdateVnicEthAdapterPolicyExecute(r ApiUpdateVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19311,6 +22258,7 @@ func (a *VnicApiService) UpdateVnicEthAdapterPolicyExecute(r ApiUpdateVnicEthAda
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19320,6 +22268,7 @@ func (a *VnicApiService) UpdateVnicEthAdapterPolicyExecute(r ApiUpdateVnicEthAda
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19363,9 +22312,9 @@ func (r ApiUpdateVnicEthIfRequest) Execute() (*VnicEthIf, *http.Response, error)
 /*
 UpdateVnicEthIf Update a 'vnic.EthIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicEthIfRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicEthIfRequest
 */
 func (a *VnicApiService) UpdateVnicEthIf(ctx context.Context, moid string) ApiUpdateVnicEthIfRequest {
 	return ApiUpdateVnicEthIfRequest{
@@ -19376,7 +22325,8 @@ func (a *VnicApiService) UpdateVnicEthIf(ctx context.Context, moid string) ApiUp
 }
 
 // Execute executes the request
-//  @return VnicEthIf
+//
+//	@return VnicEthIf
 func (a *VnicApiService) UpdateVnicEthIfExecute(r ApiUpdateVnicEthIfRequest) (*VnicEthIf, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -19391,7 +22341,7 @@ func (a *VnicApiService) UpdateVnicEthIfExecute(r ApiUpdateVnicEthIfRequest) (*V
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthIfs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19418,7 +22368,7 @@ func (a *VnicApiService) UpdateVnicEthIfExecute(r ApiUpdateVnicEthIfRequest) (*V
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthIf
@@ -19432,9 +22382,9 @@ func (a *VnicApiService) UpdateVnicEthIfExecute(r ApiUpdateVnicEthIfRequest) (*V
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19451,6 +22401,7 @@ func (a *VnicApiService) UpdateVnicEthIfExecute(r ApiUpdateVnicEthIfRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19461,6 +22412,7 @@ func (a *VnicApiService) UpdateVnicEthIfExecute(r ApiUpdateVnicEthIfRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19471,6 +22423,7 @@ func (a *VnicApiService) UpdateVnicEthIfExecute(r ApiUpdateVnicEthIfRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19481,6 +22434,7 @@ func (a *VnicApiService) UpdateVnicEthIfExecute(r ApiUpdateVnicEthIfRequest) (*V
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19490,6 +22444,7 @@ func (a *VnicApiService) UpdateVnicEthIfExecute(r ApiUpdateVnicEthIfRequest) (*V
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19533,9 +22488,9 @@ func (r ApiUpdateVnicEthNetworkPolicyRequest) Execute() (*VnicEthNetworkPolicy, 
 /*
 UpdateVnicEthNetworkPolicy Update a 'vnic.EthNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicEthNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicEthNetworkPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicEthNetworkPolicy(ctx context.Context, moid string) ApiUpdateVnicEthNetworkPolicyRequest {
 	return ApiUpdateVnicEthNetworkPolicyRequest{
@@ -19546,7 +22501,8 @@ func (a *VnicApiService) UpdateVnicEthNetworkPolicy(ctx context.Context, moid st
 }
 
 // Execute executes the request
-//  @return VnicEthNetworkPolicy
+//
+//	@return VnicEthNetworkPolicy
 func (a *VnicApiService) UpdateVnicEthNetworkPolicyExecute(r ApiUpdateVnicEthNetworkPolicyRequest) (*VnicEthNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -19561,7 +22517,7 @@ func (a *VnicApiService) UpdateVnicEthNetworkPolicyExecute(r ApiUpdateVnicEthNet
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthNetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19588,7 +22544,7 @@ func (a *VnicApiService) UpdateVnicEthNetworkPolicyExecute(r ApiUpdateVnicEthNet
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthNetworkPolicy
@@ -19602,9 +22558,9 @@ func (a *VnicApiService) UpdateVnicEthNetworkPolicyExecute(r ApiUpdateVnicEthNet
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19621,6 +22577,7 @@ func (a *VnicApiService) UpdateVnicEthNetworkPolicyExecute(r ApiUpdateVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19631,6 +22588,7 @@ func (a *VnicApiService) UpdateVnicEthNetworkPolicyExecute(r ApiUpdateVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19641,6 +22599,7 @@ func (a *VnicApiService) UpdateVnicEthNetworkPolicyExecute(r ApiUpdateVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19651,6 +22610,7 @@ func (a *VnicApiService) UpdateVnicEthNetworkPolicyExecute(r ApiUpdateVnicEthNet
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19660,6 +22620,7 @@ func (a *VnicApiService) UpdateVnicEthNetworkPolicyExecute(r ApiUpdateVnicEthNet
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19703,9 +22664,9 @@ func (r ApiUpdateVnicEthQosPolicyRequest) Execute() (*VnicEthQosPolicy, *http.Re
 /*
 UpdateVnicEthQosPolicy Update a 'vnic.EthQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicEthQosPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicEthQosPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicEthQosPolicy(ctx context.Context, moid string) ApiUpdateVnicEthQosPolicyRequest {
 	return ApiUpdateVnicEthQosPolicyRequest{
@@ -19716,7 +22677,8 @@ func (a *VnicApiService) UpdateVnicEthQosPolicy(ctx context.Context, moid string
 }
 
 // Execute executes the request
-//  @return VnicEthQosPolicy
+//
+//	@return VnicEthQosPolicy
 func (a *VnicApiService) UpdateVnicEthQosPolicyExecute(r ApiUpdateVnicEthQosPolicyRequest) (*VnicEthQosPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -19731,7 +22693,7 @@ func (a *VnicApiService) UpdateVnicEthQosPolicyExecute(r ApiUpdateVnicEthQosPoli
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/EthQosPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19758,7 +22720,7 @@ func (a *VnicApiService) UpdateVnicEthQosPolicyExecute(r ApiUpdateVnicEthQosPoli
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicEthQosPolicy
@@ -19772,9 +22734,9 @@ func (a *VnicApiService) UpdateVnicEthQosPolicyExecute(r ApiUpdateVnicEthQosPoli
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19791,6 +22753,7 @@ func (a *VnicApiService) UpdateVnicEthQosPolicyExecute(r ApiUpdateVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19801,6 +22764,7 @@ func (a *VnicApiService) UpdateVnicEthQosPolicyExecute(r ApiUpdateVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19811,6 +22775,7 @@ func (a *VnicApiService) UpdateVnicEthQosPolicyExecute(r ApiUpdateVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19821,6 +22786,7 @@ func (a *VnicApiService) UpdateVnicEthQosPolicyExecute(r ApiUpdateVnicEthQosPoli
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19830,6 +22796,7 @@ func (a *VnicApiService) UpdateVnicEthQosPolicyExecute(r ApiUpdateVnicEthQosPoli
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -19873,9 +22840,9 @@ func (r ApiUpdateVnicFcAdapterPolicyRequest) Execute() (*VnicFcAdapterPolicy, *h
 /*
 UpdateVnicFcAdapterPolicy Update a 'vnic.FcAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicFcAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicFcAdapterPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicFcAdapterPolicy(ctx context.Context, moid string) ApiUpdateVnicFcAdapterPolicyRequest {
 	return ApiUpdateVnicFcAdapterPolicyRequest{
@@ -19886,7 +22853,8 @@ func (a *VnicApiService) UpdateVnicFcAdapterPolicy(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return VnicFcAdapterPolicy
+//
+//	@return VnicFcAdapterPolicy
 func (a *VnicApiService) UpdateVnicFcAdapterPolicyExecute(r ApiUpdateVnicFcAdapterPolicyRequest) (*VnicFcAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -19901,7 +22869,7 @@ func (a *VnicApiService) UpdateVnicFcAdapterPolicyExecute(r ApiUpdateVnicFcAdapt
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -19928,7 +22896,7 @@ func (a *VnicApiService) UpdateVnicFcAdapterPolicyExecute(r ApiUpdateVnicFcAdapt
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcAdapterPolicy
@@ -19942,9 +22910,9 @@ func (a *VnicApiService) UpdateVnicFcAdapterPolicyExecute(r ApiUpdateVnicFcAdapt
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -19961,6 +22929,7 @@ func (a *VnicApiService) UpdateVnicFcAdapterPolicyExecute(r ApiUpdateVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19971,6 +22940,7 @@ func (a *VnicApiService) UpdateVnicFcAdapterPolicyExecute(r ApiUpdateVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19981,6 +22951,7 @@ func (a *VnicApiService) UpdateVnicFcAdapterPolicyExecute(r ApiUpdateVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -19991,6 +22962,7 @@ func (a *VnicApiService) UpdateVnicFcAdapterPolicyExecute(r ApiUpdateVnicFcAdapt
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20000,6 +22972,7 @@ func (a *VnicApiService) UpdateVnicFcAdapterPolicyExecute(r ApiUpdateVnicFcAdapt
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20043,9 +23016,9 @@ func (r ApiUpdateVnicFcIfRequest) Execute() (*VnicFcIf, *http.Response, error) {
 /*
 UpdateVnicFcIf Update a 'vnic.FcIf' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicFcIfRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicFcIfRequest
 */
 func (a *VnicApiService) UpdateVnicFcIf(ctx context.Context, moid string) ApiUpdateVnicFcIfRequest {
 	return ApiUpdateVnicFcIfRequest{
@@ -20056,7 +23029,8 @@ func (a *VnicApiService) UpdateVnicFcIf(ctx context.Context, moid string) ApiUpd
 }
 
 // Execute executes the request
-//  @return VnicFcIf
+//
+//	@return VnicFcIf
 func (a *VnicApiService) UpdateVnicFcIfExecute(r ApiUpdateVnicFcIfRequest) (*VnicFcIf, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -20071,7 +23045,7 @@ func (a *VnicApiService) UpdateVnicFcIfExecute(r ApiUpdateVnicFcIfRequest) (*Vni
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcIfs/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20098,7 +23072,7 @@ func (a *VnicApiService) UpdateVnicFcIfExecute(r ApiUpdateVnicFcIfRequest) (*Vni
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcIf
@@ -20112,9 +23086,9 @@ func (a *VnicApiService) UpdateVnicFcIfExecute(r ApiUpdateVnicFcIfRequest) (*Vni
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20131,6 +23105,7 @@ func (a *VnicApiService) UpdateVnicFcIfExecute(r ApiUpdateVnicFcIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20141,6 +23116,7 @@ func (a *VnicApiService) UpdateVnicFcIfExecute(r ApiUpdateVnicFcIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20151,6 +23127,7 @@ func (a *VnicApiService) UpdateVnicFcIfExecute(r ApiUpdateVnicFcIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20161,6 +23138,7 @@ func (a *VnicApiService) UpdateVnicFcIfExecute(r ApiUpdateVnicFcIfRequest) (*Vni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20170,6 +23148,7 @@ func (a *VnicApiService) UpdateVnicFcIfExecute(r ApiUpdateVnicFcIfRequest) (*Vni
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20213,9 +23192,9 @@ func (r ApiUpdateVnicFcNetworkPolicyRequest) Execute() (*VnicFcNetworkPolicy, *h
 /*
 UpdateVnicFcNetworkPolicy Update a 'vnic.FcNetworkPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicFcNetworkPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicFcNetworkPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicFcNetworkPolicy(ctx context.Context, moid string) ApiUpdateVnicFcNetworkPolicyRequest {
 	return ApiUpdateVnicFcNetworkPolicyRequest{
@@ -20226,7 +23205,8 @@ func (a *VnicApiService) UpdateVnicFcNetworkPolicy(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return VnicFcNetworkPolicy
+//
+//	@return VnicFcNetworkPolicy
 func (a *VnicApiService) UpdateVnicFcNetworkPolicyExecute(r ApiUpdateVnicFcNetworkPolicyRequest) (*VnicFcNetworkPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -20241,7 +23221,7 @@ func (a *VnicApiService) UpdateVnicFcNetworkPolicyExecute(r ApiUpdateVnicFcNetwo
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcNetworkPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20268,7 +23248,7 @@ func (a *VnicApiService) UpdateVnicFcNetworkPolicyExecute(r ApiUpdateVnicFcNetwo
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcNetworkPolicy
@@ -20282,9 +23262,9 @@ func (a *VnicApiService) UpdateVnicFcNetworkPolicyExecute(r ApiUpdateVnicFcNetwo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20301,6 +23281,7 @@ func (a *VnicApiService) UpdateVnicFcNetworkPolicyExecute(r ApiUpdateVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20311,6 +23292,7 @@ func (a *VnicApiService) UpdateVnicFcNetworkPolicyExecute(r ApiUpdateVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20321,6 +23303,7 @@ func (a *VnicApiService) UpdateVnicFcNetworkPolicyExecute(r ApiUpdateVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20331,6 +23314,7 @@ func (a *VnicApiService) UpdateVnicFcNetworkPolicyExecute(r ApiUpdateVnicFcNetwo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20340,6 +23324,7 @@ func (a *VnicApiService) UpdateVnicFcNetworkPolicyExecute(r ApiUpdateVnicFcNetwo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20383,9 +23368,9 @@ func (r ApiUpdateVnicFcQosPolicyRequest) Execute() (*VnicFcQosPolicy, *http.Resp
 /*
 UpdateVnicFcQosPolicy Update a 'vnic.FcQosPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicFcQosPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicFcQosPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicFcQosPolicy(ctx context.Context, moid string) ApiUpdateVnicFcQosPolicyRequest {
 	return ApiUpdateVnicFcQosPolicyRequest{
@@ -20396,7 +23381,8 @@ func (a *VnicApiService) UpdateVnicFcQosPolicy(ctx context.Context, moid string)
 }
 
 // Execute executes the request
-//  @return VnicFcQosPolicy
+//
+//	@return VnicFcQosPolicy
 func (a *VnicApiService) UpdateVnicFcQosPolicyExecute(r ApiUpdateVnicFcQosPolicyRequest) (*VnicFcQosPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -20411,7 +23397,7 @@ func (a *VnicApiService) UpdateVnicFcQosPolicyExecute(r ApiUpdateVnicFcQosPolicy
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/FcQosPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20438,7 +23424,7 @@ func (a *VnicApiService) UpdateVnicFcQosPolicyExecute(r ApiUpdateVnicFcQosPolicy
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicFcQosPolicy
@@ -20452,9 +23438,9 @@ func (a *VnicApiService) UpdateVnicFcQosPolicyExecute(r ApiUpdateVnicFcQosPolicy
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20471,6 +23457,7 @@ func (a *VnicApiService) UpdateVnicFcQosPolicyExecute(r ApiUpdateVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20481,6 +23468,7 @@ func (a *VnicApiService) UpdateVnicFcQosPolicyExecute(r ApiUpdateVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20491,6 +23479,7 @@ func (a *VnicApiService) UpdateVnicFcQosPolicyExecute(r ApiUpdateVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20501,6 +23490,7 @@ func (a *VnicApiService) UpdateVnicFcQosPolicyExecute(r ApiUpdateVnicFcQosPolicy
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20510,6 +23500,7 @@ func (a *VnicApiService) UpdateVnicFcQosPolicyExecute(r ApiUpdateVnicFcQosPolicy
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20553,9 +23544,9 @@ func (r ApiUpdateVnicIscsiAdapterPolicyRequest) Execute() (*VnicIscsiAdapterPoli
 /*
 UpdateVnicIscsiAdapterPolicy Update a 'vnic.IscsiAdapterPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicIscsiAdapterPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicIscsiAdapterPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicIscsiAdapterPolicy(ctx context.Context, moid string) ApiUpdateVnicIscsiAdapterPolicyRequest {
 	return ApiUpdateVnicIscsiAdapterPolicyRequest{
@@ -20566,7 +23557,8 @@ func (a *VnicApiService) UpdateVnicIscsiAdapterPolicy(ctx context.Context, moid 
 }
 
 // Execute executes the request
-//  @return VnicIscsiAdapterPolicy
+//
+//	@return VnicIscsiAdapterPolicy
 func (a *VnicApiService) UpdateVnicIscsiAdapterPolicyExecute(r ApiUpdateVnicIscsiAdapterPolicyRequest) (*VnicIscsiAdapterPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -20581,7 +23573,7 @@ func (a *VnicApiService) UpdateVnicIscsiAdapterPolicyExecute(r ApiUpdateVnicIscs
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiAdapterPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20608,7 +23600,7 @@ func (a *VnicApiService) UpdateVnicIscsiAdapterPolicyExecute(r ApiUpdateVnicIscs
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicIscsiAdapterPolicy
@@ -20622,9 +23614,9 @@ func (a *VnicApiService) UpdateVnicIscsiAdapterPolicyExecute(r ApiUpdateVnicIscs
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20641,6 +23633,7 @@ func (a *VnicApiService) UpdateVnicIscsiAdapterPolicyExecute(r ApiUpdateVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20651,6 +23644,7 @@ func (a *VnicApiService) UpdateVnicIscsiAdapterPolicyExecute(r ApiUpdateVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20661,6 +23655,7 @@ func (a *VnicApiService) UpdateVnicIscsiAdapterPolicyExecute(r ApiUpdateVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20671,6 +23666,7 @@ func (a *VnicApiService) UpdateVnicIscsiAdapterPolicyExecute(r ApiUpdateVnicIscs
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20680,6 +23676,7 @@ func (a *VnicApiService) UpdateVnicIscsiAdapterPolicyExecute(r ApiUpdateVnicIscs
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20723,9 +23720,9 @@ func (r ApiUpdateVnicIscsiBootPolicyRequest) Execute() (*VnicIscsiBootPolicy, *h
 /*
 UpdateVnicIscsiBootPolicy Update a 'vnic.IscsiBootPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicIscsiBootPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicIscsiBootPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicIscsiBootPolicy(ctx context.Context, moid string) ApiUpdateVnicIscsiBootPolicyRequest {
 	return ApiUpdateVnicIscsiBootPolicyRequest{
@@ -20736,7 +23733,8 @@ func (a *VnicApiService) UpdateVnicIscsiBootPolicy(ctx context.Context, moid str
 }
 
 // Execute executes the request
-//  @return VnicIscsiBootPolicy
+//
+//	@return VnicIscsiBootPolicy
 func (a *VnicApiService) UpdateVnicIscsiBootPolicyExecute(r ApiUpdateVnicIscsiBootPolicyRequest) (*VnicIscsiBootPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -20751,7 +23749,7 @@ func (a *VnicApiService) UpdateVnicIscsiBootPolicyExecute(r ApiUpdateVnicIscsiBo
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiBootPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20778,7 +23776,7 @@ func (a *VnicApiService) UpdateVnicIscsiBootPolicyExecute(r ApiUpdateVnicIscsiBo
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicIscsiBootPolicy
@@ -20792,9 +23790,9 @@ func (a *VnicApiService) UpdateVnicIscsiBootPolicyExecute(r ApiUpdateVnicIscsiBo
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20811,6 +23809,7 @@ func (a *VnicApiService) UpdateVnicIscsiBootPolicyExecute(r ApiUpdateVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20821,6 +23820,7 @@ func (a *VnicApiService) UpdateVnicIscsiBootPolicyExecute(r ApiUpdateVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20831,6 +23831,7 @@ func (a *VnicApiService) UpdateVnicIscsiBootPolicyExecute(r ApiUpdateVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20841,6 +23842,7 @@ func (a *VnicApiService) UpdateVnicIscsiBootPolicyExecute(r ApiUpdateVnicIscsiBo
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20850,6 +23852,7 @@ func (a *VnicApiService) UpdateVnicIscsiBootPolicyExecute(r ApiUpdateVnicIscsiBo
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -20893,9 +23896,9 @@ func (r ApiUpdateVnicIscsiStaticTargetPolicyRequest) Execute() (*VnicIscsiStatic
 /*
 UpdateVnicIscsiStaticTargetPolicy Update a 'vnic.IscsiStaticTargetPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicIscsiStaticTargetPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicIscsiStaticTargetPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicy(ctx context.Context, moid string) ApiUpdateVnicIscsiStaticTargetPolicyRequest {
 	return ApiUpdateVnicIscsiStaticTargetPolicyRequest{
@@ -20906,7 +23909,8 @@ func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicy(ctx context.Context, 
 }
 
 // Execute executes the request
-//  @return VnicIscsiStaticTargetPolicy
+//
+//	@return VnicIscsiStaticTargetPolicy
 func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicyExecute(r ApiUpdateVnicIscsiStaticTargetPolicyRequest) (*VnicIscsiStaticTargetPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -20921,7 +23925,7 @@ func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicyExecute(r ApiUpdateVni
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/IscsiStaticTargetPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -20948,7 +23952,7 @@ func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicyExecute(r ApiUpdateVni
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicIscsiStaticTargetPolicy
@@ -20962,9 +23966,9 @@ func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicyExecute(r ApiUpdateVni
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -20981,6 +23985,7 @@ func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicyExecute(r ApiUpdateVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -20991,6 +23996,7 @@ func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicyExecute(r ApiUpdateVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21001,6 +24007,7 @@ func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicyExecute(r ApiUpdateVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21011,6 +24018,7 @@ func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicyExecute(r ApiUpdateVni
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21020,6 +24028,7 @@ func (a *VnicApiService) UpdateVnicIscsiStaticTargetPolicyExecute(r ApiUpdateVni
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21063,9 +24072,9 @@ func (r ApiUpdateVnicLanConnectivityPolicyRequest) Execute() (*VnicLanConnectivi
 /*
 UpdateVnicLanConnectivityPolicy Update a 'vnic.LanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicLanConnectivityPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicLanConnectivityPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicLanConnectivityPolicy(ctx context.Context, moid string) ApiUpdateVnicLanConnectivityPolicyRequest {
 	return ApiUpdateVnicLanConnectivityPolicyRequest{
@@ -21076,7 +24085,8 @@ func (a *VnicApiService) UpdateVnicLanConnectivityPolicy(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return VnicLanConnectivityPolicy
+//
+//	@return VnicLanConnectivityPolicy
 func (a *VnicApiService) UpdateVnicLanConnectivityPolicyExecute(r ApiUpdateVnicLanConnectivityPolicyRequest) (*VnicLanConnectivityPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -21091,7 +24101,7 @@ func (a *VnicApiService) UpdateVnicLanConnectivityPolicyExecute(r ApiUpdateVnicL
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/LanConnectivityPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21118,7 +24128,7 @@ func (a *VnicApiService) UpdateVnicLanConnectivityPolicyExecute(r ApiUpdateVnicL
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicLanConnectivityPolicy
@@ -21132,9 +24142,9 @@ func (a *VnicApiService) UpdateVnicLanConnectivityPolicyExecute(r ApiUpdateVnicL
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21151,6 +24161,7 @@ func (a *VnicApiService) UpdateVnicLanConnectivityPolicyExecute(r ApiUpdateVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21161,6 +24172,7 @@ func (a *VnicApiService) UpdateVnicLanConnectivityPolicyExecute(r ApiUpdateVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21171,6 +24183,7 @@ func (a *VnicApiService) UpdateVnicLanConnectivityPolicyExecute(r ApiUpdateVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21181,6 +24194,7 @@ func (a *VnicApiService) UpdateVnicLanConnectivityPolicyExecute(r ApiUpdateVnicL
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21190,6 +24204,7 @@ func (a *VnicApiService) UpdateVnicLanConnectivityPolicyExecute(r ApiUpdateVnicL
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
@@ -21233,9 +24248,9 @@ func (r ApiUpdateVnicSanConnectivityPolicyRequest) Execute() (*VnicSanConnectivi
 /*
 UpdateVnicSanConnectivityPolicy Update a 'vnic.SanConnectivityPolicy' resource.
 
- @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
- @param moid The unique Moid identifier of a resource instance.
- @return ApiUpdateVnicSanConnectivityPolicyRequest
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicSanConnectivityPolicyRequest
 */
 func (a *VnicApiService) UpdateVnicSanConnectivityPolicy(ctx context.Context, moid string) ApiUpdateVnicSanConnectivityPolicyRequest {
 	return ApiUpdateVnicSanConnectivityPolicyRequest{
@@ -21246,7 +24261,8 @@ func (a *VnicApiService) UpdateVnicSanConnectivityPolicy(ctx context.Context, mo
 }
 
 // Execute executes the request
-//  @return VnicSanConnectivityPolicy
+//
+//	@return VnicSanConnectivityPolicy
 func (a *VnicApiService) UpdateVnicSanConnectivityPolicyExecute(r ApiUpdateVnicSanConnectivityPolicyRequest) (*VnicSanConnectivityPolicy, *http.Response, error) {
 	var (
 		localVarHTTPMethod  = http.MethodPost
@@ -21261,7 +24277,7 @@ func (a *VnicApiService) UpdateVnicSanConnectivityPolicyExecute(r ApiUpdateVnicS
 	}
 
 	localVarPath := localBasePath + "/api/v1/vnic/SanConnectivityPolicies/{Moid}"
-	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterToString(r.moid, "")), -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
@@ -21288,7 +24304,7 @@ func (a *VnicApiService) UpdateVnicSanConnectivityPolicyExecute(r ApiUpdateVnicS
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	if r.ifMatch != nil {
-		localVarHeaderParams["If-Match"] = parameterToString(*r.ifMatch, "")
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
 	}
 	// body params
 	localVarPostBody = r.vnicSanConnectivityPolicy
@@ -21302,9 +24318,9 @@ func (a *VnicApiService) UpdateVnicSanConnectivityPolicyExecute(r ApiUpdateVnicS
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
 
-	localVarBody, err := ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
 	localVarHTTPResponse.Body.Close()
-	localVarHTTPResponse.Body = ioutil.NopCloser(bytes.NewBuffer(localVarBody))
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
 	if err != nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -21321,6 +24337,7 @@ func (a *VnicApiService) UpdateVnicSanConnectivityPolicyExecute(r ApiUpdateVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21331,6 +24348,7 @@ func (a *VnicApiService) UpdateVnicSanConnectivityPolicyExecute(r ApiUpdateVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21341,6 +24359,7 @@ func (a *VnicApiService) UpdateVnicSanConnectivityPolicyExecute(r ApiUpdateVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21351,6 +24370,7 @@ func (a *VnicApiService) UpdateVnicSanConnectivityPolicyExecute(r ApiUpdateVnicS
 				newErr.error = err.Error()
 				return localVarReturnValue, localVarHTTPResponse, newErr
 			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 			newErr.model = v
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
@@ -21360,6 +24380,359 @@ func (a *VnicApiService) UpdateVnicSanConnectivityPolicyExecute(r ApiUpdateVnicS
 			newErr.error = err.Error()
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateVnicVhbaTemplateRequest struct {
+	ctx              context.Context
+	ApiService       *VnicApiService
+	moid             string
+	vnicVhbaTemplate *VnicVhbaTemplate
+	ifMatch          *string
+}
+
+// The &#39;vnic.VhbaTemplate&#39; resource to update.
+func (r ApiUpdateVnicVhbaTemplateRequest) VnicVhbaTemplate(vnicVhbaTemplate VnicVhbaTemplate) ApiUpdateVnicVhbaTemplateRequest {
+	r.vnicVhbaTemplate = &vnicVhbaTemplate
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiUpdateVnicVhbaTemplateRequest) IfMatch(ifMatch string) ApiUpdateVnicVhbaTemplateRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiUpdateVnicVhbaTemplateRequest) Execute() (*VnicVhbaTemplate, *http.Response, error) {
+	return r.ApiService.UpdateVnicVhbaTemplateExecute(r)
+}
+
+/*
+UpdateVnicVhbaTemplate Update a 'vnic.VhbaTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicVhbaTemplateRequest
+*/
+func (a *VnicApiService) UpdateVnicVhbaTemplate(ctx context.Context, moid string) ApiUpdateVnicVhbaTemplateRequest {
+	return ApiUpdateVnicVhbaTemplateRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVhbaTemplate
+func (a *VnicApiService) UpdateVnicVhbaTemplateExecute(r ApiUpdateVnicVhbaTemplateRequest) (*VnicVhbaTemplate, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVhbaTemplate
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.UpdateVnicVhbaTemplate")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VhbaTemplates/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.vnicVhbaTemplate == nil {
+		return localVarReturnValue, nil, reportError("vnicVhbaTemplate is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.vnicVhbaTemplate
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+		newErr.model = v
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateVnicVnicTemplateRequest struct {
+	ctx              context.Context
+	ApiService       *VnicApiService
+	moid             string
+	vnicVnicTemplate *VnicVnicTemplate
+	ifMatch          *string
+}
+
+// The &#39;vnic.VnicTemplate&#39; resource to update.
+func (r ApiUpdateVnicVnicTemplateRequest) VnicVnicTemplate(vnicVnicTemplate VnicVnicTemplate) ApiUpdateVnicVnicTemplateRequest {
+	r.vnicVnicTemplate = &vnicVnicTemplate
+	return r
+}
+
+// For methods that apply server-side changes, and in particular for PUT, If-Match can be used to prevent the lost update problem. It can check if the modification of a resource that the user wants to upload will not override another change that has been done since the original resource was fetched. If the request cannot be fulfilled, the 412 (Precondition Failed) response is returned. When modifying a resource using POST or PUT, the If-Match header must be set to the value of the resource ModTime property after which no lost update problem should occur. For example, a client send a GET request to obtain a resource, which includes the ModTime property. The ModTime indicates the last time the resource was created or modified. The client then sends a POST or PUT request with the If-Match header set to the ModTime property of the resource as obtained in the GET request.
+func (r ApiUpdateVnicVnicTemplateRequest) IfMatch(ifMatch string) ApiUpdateVnicVnicTemplateRequest {
+	r.ifMatch = &ifMatch
+	return r
+}
+
+func (r ApiUpdateVnicVnicTemplateRequest) Execute() (*VnicVnicTemplate, *http.Response, error) {
+	return r.ApiService.UpdateVnicVnicTemplateExecute(r)
+}
+
+/*
+UpdateVnicVnicTemplate Update a 'vnic.VnicTemplate' resource.
+
+	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+	@param moid The unique Moid identifier of a resource instance.
+	@return ApiUpdateVnicVnicTemplateRequest
+*/
+func (a *VnicApiService) UpdateVnicVnicTemplate(ctx context.Context, moid string) ApiUpdateVnicVnicTemplateRequest {
+	return ApiUpdateVnicVnicTemplateRequest{
+		ApiService: a,
+		ctx:        ctx,
+		moid:       moid,
+	}
+}
+
+// Execute executes the request
+//
+//	@return VnicVnicTemplate
+func (a *VnicApiService) UpdateVnicVnicTemplateExecute(r ApiUpdateVnicVnicTemplateRequest) (*VnicVnicTemplate, *http.Response, error) {
+	var (
+		localVarHTTPMethod  = http.MethodPost
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue *VnicVnicTemplate
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "VnicApiService.UpdateVnicVnicTemplate")
+	if err != nil {
+		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/api/v1/vnic/VnicTemplates/{Moid}"
+	localVarPath = strings.Replace(localVarPath, "{"+"Moid"+"}", url.PathEscape(parameterValueToString(r.moid, "moid")), -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := url.Values{}
+	localVarFormParams := url.Values{}
+	if r.vnicVnicTemplate == nil {
+		return localVarReturnValue, nil, reportError("vnicVnicTemplate is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json", "application/json-patch+json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	if r.ifMatch != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "If-Match", r.ifMatch, "simple", "")
+	}
+	// body params
+	localVarPostBody = r.vnicVnicTemplate
+	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := io.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	localVarHTTPResponse.Body = io.NopCloser(bytes.NewBuffer(localVarBody))
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := &GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		if localVarHTTPResponse.StatusCode == 400 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 401 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 403 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 404 {
+			var v Error
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+			newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+			newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		var v Error
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
 		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}

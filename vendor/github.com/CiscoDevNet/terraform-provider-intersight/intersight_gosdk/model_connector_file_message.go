@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,20 +13,24 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
-// ConnectorFileMessage Message carries file operations to perform on the platforms file system. Cloud services can send message to open and write to files on the connector platforms file system. Writes to a file can be buffered across many 'FileContent' messages, the file plugin will append to an open file as it receives file content until a close message is received. If any operation fails (such as a file write returns error) an error will be returned to the cloud service and a best effort to close and remove the file will be made (if the file was previously opened).
+// checks if the ConnectorFileMessage type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ConnectorFileMessage{}
+
+// ConnectorFileMessage Message carries file operations to perform on the platform's file system. Cloud services can send a message to open and write to files on the connector platform's file system. Writes to a file can be buffered across many 'FileContent' messages, the file plugin will append to an open file as it receives file content until a close message is received. If any operation fails (such as a file write returns error), an error will be returned to the cloud service and a best effort to close and remove the file will be made (if the file was previously opened).
 type ConnectorFileMessage struct {
 	ConnectorBaseMessage
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// Message type carrying the file operation to perform. * `OpenFile` - Open a file for write to on the platforms file system. Must be the first message sent to the plugin when writing files, attempting to write to or close a file that has not been opened will return error. If file does not exist file will be created, if it does exist file will be truncated. If the files parent directory does not exist an error will be returned. * `FileContent` - Carries content to write to an open file. The complete file content can be buffered across many FileContent messages, with each subsequent message received appending to the end of the file. If the total size of FileContent messages exceeds the file size limit of 5MB the plugin will return error and remove the opened file. * `CloseFile` - Close the file. Close message must be sent at the end of file transfer. If no close is sent and no input is received after a timeout of 10 minutes the file will be removed. After a CloseFile is received no further FileContent messages will be accepted and will return error. * `DeleteFile` - Delete a file from the filesystem. If the file does not exist operation is a no-op and no error is returned. File must be within one of the platforms allowed writable directories. * `ListDir` - Open a directory and return a list of files in the directory. Does not recursively walk subdirectories, returns only the top level files in the directory. Output will be a list of json encoded FileInfos. * `` - Open a file and read the contents into a response message. The response message body is the entire contents of the file with no encoding or compression. If the file does not exist an error will be returned. If the size of the file exceeds 500KB an error will be returned without reading any file contents. * `PopulateRemoteTemplateFile` - Populates data driven template file with input values to generate textual output. Inputs are - the path of the template file on the device and values to populate. An error will be returned if the file does not exist or if there is an error while executing the templates. * `GetFreeSpace` - Check the disk space availability of folder and returns the free disk space in percentage. Output will be a list of encoded FileInfos.
+	// Message type carrying the file operation to perform. * `OpenFile` - Open a file for writing to on the platform's file system. Must be the first message sent to the plugin when writing files, attempting to write to or close a file that has not been opened will return error. If a file does not exist, it will be created, if it does exist, the file will be truncated. If the file's parent directory does not exist, an error will be returned. * `FileContent` - Carries content to write to an open file. The complete file content can be buffered across many FileContent messages, with each subsequent message received appending to the end of the file. If the total size of FileContent messages exceeds the file size limit of 5MB, the plugin will return an error and remove the opened file. * `CloseFile` - Close the file. Close message must be sent at the end of file transfer. If no close message is sent and no input is received after a timeout of 10 minutes, the file will be removed. After a CloseFile is received, no further FileContent messages will be accepted and will return error. * `DeleteFile` - Delete a file from the filesystem. If the file does not exist, operation is a no-op and no error is returned. The file must be within one of the platform's allowed writable directories. * `ListDir` - Open a directory and return a list of files in the directory. Does not recursively walk subdirectories, returns only the top level files in the directory. Output will be a list of json encoded FileInfos. * `` - Open a file and read the contents into a response message. The response message body is the entire contents of the file with no encoding or compression. If the file does not exist, an error will be returned. If the size of the file exceeds 500KB, an error will be returned without reading any file contents. * `PopulateRemoteTemplateFile` - Populates data driven template file with input values to generate textual output. Inputs are the path of the template file on the device and values to populate. An error will be returned if the file does not exist or if there is an error while executing the templates. * `GetFreeSpace` - Checks the disk space availability of folder and returns the free disk space in percentage. Output will be a list of encoded FileInfos.
 	MsgType *string `json:"MsgType,omitempty"`
-	// The absolute path of the file to open on the platforms file system. Must be a sub-directory of a directory defined within the platform configurations WriteableDirectories. The file system device to write to must also have sufficient free space to write to (<75% full). Must be set for each message that is sent.
+	// The absolute path of the file to open on the platform's file system. Must be a sub-directory of a directory defined within the platform configuration's WriteableDirectories. The file system device to write to must also have sufficient free space to write to (<75% full). Must be set for each message that is sent.
 	Path *string `json:"Path,omitempty"`
 	// The stream of bytes to write to file when message type is FileContent. Ignored for OpenFile and CloseFile messages. This field holds the input values (key-value pairs) to be populated in the template file when message type is PopulateTemplateFile.
 	Stream               *string `json:"Stream,omitempty"`
@@ -86,6 +90,11 @@ func (o *ConnectorFileMessage) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "connector.FileMessage" of the ClassId field.
+func (o *ConnectorFileMessage) GetDefaultClassId() interface{} {
+	return "connector.FileMessage"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ConnectorFileMessage) GetObjectType() string {
 	if o == nil {
@@ -110,9 +119,14 @@ func (o *ConnectorFileMessage) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "connector.FileMessage" of the ObjectType field.
+func (o *ConnectorFileMessage) GetDefaultObjectType() interface{} {
+	return "connector.FileMessage"
+}
+
 // GetMsgType returns the MsgType field value if set, zero value otherwise.
 func (o *ConnectorFileMessage) GetMsgType() string {
-	if o == nil || o.MsgType == nil {
+	if o == nil || IsNil(o.MsgType) {
 		var ret string
 		return ret
 	}
@@ -122,7 +136,7 @@ func (o *ConnectorFileMessage) GetMsgType() string {
 // GetMsgTypeOk returns a tuple with the MsgType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorFileMessage) GetMsgTypeOk() (*string, bool) {
-	if o == nil || o.MsgType == nil {
+	if o == nil || IsNil(o.MsgType) {
 		return nil, false
 	}
 	return o.MsgType, true
@@ -130,7 +144,7 @@ func (o *ConnectorFileMessage) GetMsgTypeOk() (*string, bool) {
 
 // HasMsgType returns a boolean if a field has been set.
 func (o *ConnectorFileMessage) HasMsgType() bool {
-	if o != nil && o.MsgType != nil {
+	if o != nil && !IsNil(o.MsgType) {
 		return true
 	}
 
@@ -144,7 +158,7 @@ func (o *ConnectorFileMessage) SetMsgType(v string) {
 
 // GetPath returns the Path field value if set, zero value otherwise.
 func (o *ConnectorFileMessage) GetPath() string {
-	if o == nil || o.Path == nil {
+	if o == nil || IsNil(o.Path) {
 		var ret string
 		return ret
 	}
@@ -154,7 +168,7 @@ func (o *ConnectorFileMessage) GetPath() string {
 // GetPathOk returns a tuple with the Path field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorFileMessage) GetPathOk() (*string, bool) {
-	if o == nil || o.Path == nil {
+	if o == nil || IsNil(o.Path) {
 		return nil, false
 	}
 	return o.Path, true
@@ -162,7 +176,7 @@ func (o *ConnectorFileMessage) GetPathOk() (*string, bool) {
 
 // HasPath returns a boolean if a field has been set.
 func (o *ConnectorFileMessage) HasPath() bool {
-	if o != nil && o.Path != nil {
+	if o != nil && !IsNil(o.Path) {
 		return true
 	}
 
@@ -176,7 +190,7 @@ func (o *ConnectorFileMessage) SetPath(v string) {
 
 // GetStream returns the Stream field value if set, zero value otherwise.
 func (o *ConnectorFileMessage) GetStream() string {
-	if o == nil || o.Stream == nil {
+	if o == nil || IsNil(o.Stream) {
 		var ret string
 		return ret
 	}
@@ -186,7 +200,7 @@ func (o *ConnectorFileMessage) GetStream() string {
 // GetStreamOk returns a tuple with the Stream field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorFileMessage) GetStreamOk() (*string, bool) {
-	if o == nil || o.Stream == nil {
+	if o == nil || IsNil(o.Stream) {
 		return nil, false
 	}
 	return o.Stream, true
@@ -194,7 +208,7 @@ func (o *ConnectorFileMessage) GetStreamOk() (*string, bool) {
 
 // HasStream returns a boolean if a field has been set.
 func (o *ConnectorFileMessage) HasStream() bool {
-	if o != nil && o.Stream != nil {
+	if o != nil && !IsNil(o.Stream) {
 		return true
 	}
 
@@ -207,28 +221,38 @@ func (o *ConnectorFileMessage) SetStream(v string) {
 }
 
 func (o ConnectorFileMessage) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ConnectorFileMessage) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedConnectorBaseMessage, errConnectorBaseMessage := json.Marshal(o.ConnectorBaseMessage)
 	if errConnectorBaseMessage != nil {
-		return []byte{}, errConnectorBaseMessage
+		return map[string]interface{}{}, errConnectorBaseMessage
 	}
 	errConnectorBaseMessage = json.Unmarshal([]byte(serializedConnectorBaseMessage), &toSerialize)
 	if errConnectorBaseMessage != nil {
-		return []byte{}, errConnectorBaseMessage
+		return map[string]interface{}{}, errConnectorBaseMessage
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.MsgType != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.MsgType) {
 		toSerialize["MsgType"] = o.MsgType
 	}
-	if o.Path != nil {
+	if !IsNil(o.Path) {
 		toSerialize["Path"] = o.Path
 	}
-	if o.Stream != nil {
+	if !IsNil(o.Stream) {
 		toSerialize["Stream"] = o.Stream
 	}
 
@@ -236,18 +260,59 @@ func (o ConnectorFileMessage) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ConnectorFileMessage) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ConnectorFileMessage) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ConnectorFileMessageWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// Message type carrying the file operation to perform. * `OpenFile` - Open a file for write to on the platforms file system. Must be the first message sent to the plugin when writing files, attempting to write to or close a file that has not been opened will return error. If file does not exist file will be created, if it does exist file will be truncated. If the files parent directory does not exist an error will be returned. * `FileContent` - Carries content to write to an open file. The complete file content can be buffered across many FileContent messages, with each subsequent message received appending to the end of the file. If the total size of FileContent messages exceeds the file size limit of 5MB the plugin will return error and remove the opened file. * `CloseFile` - Close the file. Close message must be sent at the end of file transfer. If no close is sent and no input is received after a timeout of 10 minutes the file will be removed. After a CloseFile is received no further FileContent messages will be accepted and will return error. * `DeleteFile` - Delete a file from the filesystem. If the file does not exist operation is a no-op and no error is returned. File must be within one of the platforms allowed writable directories. * `ListDir` - Open a directory and return a list of files in the directory. Does not recursively walk subdirectories, returns only the top level files in the directory. Output will be a list of json encoded FileInfos. * `` - Open a file and read the contents into a response message. The response message body is the entire contents of the file with no encoding or compression. If the file does not exist an error will be returned. If the size of the file exceeds 500KB an error will be returned without reading any file contents. * `PopulateRemoteTemplateFile` - Populates data driven template file with input values to generate textual output. Inputs are - the path of the template file on the device and values to populate. An error will be returned if the file does not exist or if there is an error while executing the templates. * `GetFreeSpace` - Check the disk space availability of folder and returns the free disk space in percentage. Output will be a list of encoded FileInfos.
+		// Message type carrying the file operation to perform. * `OpenFile` - Open a file for writing to on the platform's file system. Must be the first message sent to the plugin when writing files, attempting to write to or close a file that has not been opened will return error. If a file does not exist, it will be created, if it does exist, the file will be truncated. If the file's parent directory does not exist, an error will be returned. * `FileContent` - Carries content to write to an open file. The complete file content can be buffered across many FileContent messages, with each subsequent message received appending to the end of the file. If the total size of FileContent messages exceeds the file size limit of 5MB, the plugin will return an error and remove the opened file. * `CloseFile` - Close the file. Close message must be sent at the end of file transfer. If no close message is sent and no input is received after a timeout of 10 minutes, the file will be removed. After a CloseFile is received, no further FileContent messages will be accepted and will return error. * `DeleteFile` - Delete a file from the filesystem. If the file does not exist, operation is a no-op and no error is returned. The file must be within one of the platform's allowed writable directories. * `ListDir` - Open a directory and return a list of files in the directory. Does not recursively walk subdirectories, returns only the top level files in the directory. Output will be a list of json encoded FileInfos. * `` - Open a file and read the contents into a response message. The response message body is the entire contents of the file with no encoding or compression. If the file does not exist, an error will be returned. If the size of the file exceeds 500KB, an error will be returned without reading any file contents. * `PopulateRemoteTemplateFile` - Populates data driven template file with input values to generate textual output. Inputs are the path of the template file on the device and values to populate. An error will be returned if the file does not exist or if there is an error while executing the templates. * `GetFreeSpace` - Checks the disk space availability of folder and returns the free disk space in percentage. Output will be a list of encoded FileInfos.
 		MsgType *string `json:"MsgType,omitempty"`
-		// The absolute path of the file to open on the platforms file system. Must be a sub-directory of a directory defined within the platform configurations WriteableDirectories. The file system device to write to must also have sufficient free space to write to (<75% full). Must be set for each message that is sent.
+		// The absolute path of the file to open on the platform's file system. Must be a sub-directory of a directory defined within the platform configuration's WriteableDirectories. The file system device to write to must also have sufficient free space to write to (<75% full). Must be set for each message that is sent.
 		Path *string `json:"Path,omitempty"`
 		// The stream of bytes to write to file when message type is FileContent. Ignored for OpenFile and CloseFile messages. This field holds the input values (key-value pairs) to be populated in the template file when message type is PopulateTemplateFile.
 		Stream *string `json:"Stream,omitempty"`
@@ -255,7 +320,7 @@ func (o *ConnectorFileMessage) UnmarshalJSON(bytes []byte) (err error) {
 
 	varConnectorFileMessageWithoutEmbeddedStruct := ConnectorFileMessageWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varConnectorFileMessageWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varConnectorFileMessageWithoutEmbeddedStruct)
 	if err == nil {
 		varConnectorFileMessage := _ConnectorFileMessage{}
 		varConnectorFileMessage.ClassId = varConnectorFileMessageWithoutEmbeddedStruct.ClassId
@@ -270,7 +335,7 @@ func (o *ConnectorFileMessage) UnmarshalJSON(bytes []byte) (err error) {
 
 	varConnectorFileMessage := _ConnectorFileMessage{}
 
-	err = json.Unmarshal(bytes, &varConnectorFileMessage)
+	err = json.Unmarshal(data, &varConnectorFileMessage)
 	if err == nil {
 		o.ConnectorBaseMessage = varConnectorFileMessage.ConnectorBaseMessage
 	} else {
@@ -279,7 +344,7 @@ func (o *ConnectorFileMessage) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "MsgType")

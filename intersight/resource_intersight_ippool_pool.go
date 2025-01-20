@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceIppoolPool() *schema.Resource {
 		UpdateContext: resourceIppoolPoolUpdate,
 		DeleteContext: resourceIppoolPoolDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -79,7 +81,7 @@ func resourceIppoolPool() *schema.Resource {
 				},
 			},
 			"assigned": {
-				Description: "Number of IDs that are currently assigned.",
+				Description: "Number of IDs that are currently assigned (in use).",
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Computed:    true,
@@ -130,6 +132,11 @@ func resourceIppoolPool() *schema.Resource {
 					}
 					return
 				}},
+			"enable_block_level_subnet_config": {
+				Description: "Enables subnet configuration at the block level.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+			},
 			"ip_v4_blocks": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -153,6 +160,59 @@ func resourceIppoolPool() *schema.Resource {
 							Type:         schema.TypeString,
 							ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"), ""),
 							Optional:     true,
+						},
+						"ip_v4_config": {
+							Description: "Netmask, Gateway and DNS settings for IPv4 addresses.",
+							Type:        schema.TypeList,
+							MaxItems:    1,
+							Optional:    true,
+							ConfigMode:  schema.SchemaConfigModeAttr,
+							Computed:    true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"additional_properties": {
+										Type:             schema.TypeString,
+										Optional:         true,
+										DiffSuppressFunc: SuppressDiffAdditionProps,
+									},
+									"class_id": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "ippool.IpV4Config",
+									},
+									"gateway": {
+										Description:  "IP address of the default IPv4 gateway.",
+										Type:         schema.TypeString,
+										ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"), ""),
+										Optional:     true,
+									},
+									"netmask": {
+										Description:  "A subnet mask is a 32-bit number that masks an IP address and divides the IP address into network address and host address.",
+										Type:         schema.TypeString,
+										ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^(((255\\.){3}(255|254|252|248|240|224|192|128|0+))|((255\\.){2}(255|254|252|248|240|224|192|128|0+)\\.0)|((255\\.)(255|254|252|248|240|224|192|128|0+)(\\.0+){2})|((255|254|252|248|240|224|192|128|0+)(\\.0+){3}))$"), ""),
+										Optional:     true,
+									},
+									"object_type": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "ippool.IpV4Config",
+									},
+									"primary_dns": {
+										Description:  "IP Address of the primary Domain Name System (DNS) server.",
+										Type:         schema.TypeString,
+										ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"), ""),
+										Optional:     true,
+									},
+									"secondary_dns": {
+										Description:  "IP Address of the secondary Domain Name System (DNS) server.",
+										Type:         schema.TypeString,
+										ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"), ""),
+										Optional:     true,
+									},
+								},
+							},
 						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
@@ -263,6 +323,59 @@ func resourceIppoolPool() *schema.Resource {
 							Type:         schema.TypeString,
 							ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^(([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{0,4}|:[0-9A-Fa-f]{1,4})?|(:[0-9A-Fa-f]{1,4}){0,2})|(:[0-9A-Fa-f]{1,4}){0,3})|(:[0-9A-Fa-f]{1,4}){0,4})|:(:[0-9A-Fa-f]{1,4}){0,5})((:[0-9A-Fa-f]{1,4}){2}|:(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])(\\.(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])){3})|(([0-9A-Fa-f]{1,4}:){1,6}|:):[0-9A-Fa-f]{0,4}|([0-9A-Fa-f]{1,4}:){7}:)$"), ""),
 							Optional:     true,
+						},
+						"ip_v6_config": {
+							Description: "Netmask, Gateway and DNS settings for IPv6 addresses.",
+							Type:        schema.TypeList,
+							MaxItems:    1,
+							Optional:    true,
+							ConfigMode:  schema.SchemaConfigModeAttr,
+							Computed:    true,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									"additional_properties": {
+										Type:             schema.TypeString,
+										Optional:         true,
+										DiffSuppressFunc: SuppressDiffAdditionProps,
+									},
+									"class_id": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "ippool.IpV6Config",
+									},
+									"gateway": {
+										Description:  "IP address of the default IPv6 gateway.",
+										Type:         schema.TypeString,
+										ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^(([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{0,4}|:[0-9A-Fa-f]{1,4})?|(:[0-9A-Fa-f]{1,4}){0,2})|(:[0-9A-Fa-f]{1,4}){0,3})|(:[0-9A-Fa-f]{1,4}){0,4})|:(:[0-9A-Fa-f]{1,4}){0,5})((:[0-9A-Fa-f]{1,4}){2}|:(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])(\\.(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])){3})|(([0-9A-Fa-f]{1,4}:){1,6}|:):[0-9A-Fa-f]{0,4}|([0-9A-Fa-f]{1,4}:){7}:)$"), ""),
+										Optional:     true,
+									},
+									"object_type": {
+										Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+										Type:        schema.TypeString,
+										Optional:    true,
+										Default:     "ippool.IpV6Config",
+									},
+									"prefix": {
+										Description:  "A prefix length which masks the  IP address and divides the IP address into network address and host address.",
+										Type:         schema.TypeInt,
+										ValidateFunc: validation.IntBetween(0, 127),
+										Optional:     true,
+									},
+									"primary_dns": {
+										Description:  "IP Address of the primary Domain Name System (DNS) server.",
+										Type:         schema.TypeString,
+										ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^(([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{0,4}|:[0-9A-Fa-f]{1,4})?|(:[0-9A-Fa-f]{1,4}){0,2})|(:[0-9A-Fa-f]{1,4}){0,3})|(:[0-9A-Fa-f]{1,4}){0,4})|:(:[0-9A-Fa-f]{1,4}){0,5})((:[0-9A-Fa-f]{1,4}){2}|:(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])(\\.(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])){3})|(([0-9A-Fa-f]{1,4}:){1,6}|:):[0-9A-Fa-f]{0,4}|([0-9A-Fa-f]{1,4}:){7}:)$"), ""),
+										Optional:     true,
+									},
+									"secondary_dns": {
+										Description:  "IP Address of the secondary Domain Name System (DNS) server.",
+										Type:         schema.TypeString,
+										ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^(([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:([0-9A-Fa-f]{1,4}:[0-9A-Fa-f]{0,4}|:[0-9A-Fa-f]{1,4})?|(:[0-9A-Fa-f]{1,4}){0,2})|(:[0-9A-Fa-f]{1,4}){0,3})|(:[0-9A-Fa-f]{1,4}){0,4})|:(:[0-9A-Fa-f]{1,4}){0,5})((:[0-9A-Fa-f]{1,4}){2}|:(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])(\\.(25[0-5]|(2[0-4]|1[0-9]|[1-9])?[0-9])){3})|(([0-9A-Fa-f]{1,4}:){1,6}|:):[0-9A-Fa-f]{0,4}|([0-9A-Fa-f]{1,4}:){7}:)$"), ""),
+										Optional:     true,
+									},
+								},
+							},
 						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
@@ -496,6 +609,56 @@ func resourceIppoolPool() *schema.Resource {
 					},
 				},
 			},
+			"reservations": {
+				Description: "An array of relationships to ippoolReservation resources.",
+				Type:        schema.TypeList,
+				Optional:    true,
+				ConfigMode:  schema.SchemaConfigModeAttr,
+				Computed:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"additional_properties": {
+							Type:             schema.TypeString,
+							Optional:         true,
+							DiffSuppressFunc: SuppressDiffAdditionProps,
+						},
+						"class_id": {
+							Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Default:     "mo.MoRef",
+						},
+						"moid": {
+							Description: "The Moid of the referenced REST resource.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+						},
+						"object_type": {
+							Description: "The fully-qualified name of the remote type referred by this relationship.",
+							Type:        schema.TypeString,
+							Optional:    true,
+							Computed:    true,
+						},
+						"selector": {
+							Description: "An OData $filter expression which describes the REST resource to be referenced. This field may\nbe set instead of 'moid' by clients.\n1. If 'moid' is set this field is ignored.\n1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of the\nresource matching the filter expression and populates it in the MoRef that is part of the object\ninstance being inserted/updated to fulfill the REST request.\nAn error is returned if the filter matches zero or more than one REST resource.\nAn example filter string is: Serial eq '3AA8B7T11'.",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+					},
+				},
+			},
+			"reserved": {
+				Description: "Number of IDs that are currently reserved (and not in use).",
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"shadow_pools": {
 				Description: "An array of relationships to ippoolShadowPool resources.",
 				Type:        schema.TypeList,
@@ -686,6 +849,17 @@ func resourceIppoolPool() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -799,6 +973,11 @@ func resourceIppoolPoolCreate(c context.Context, d *schema.ResourceData, meta in
 		o.SetDescription(x)
 	}
 
+	if v, ok := d.GetOkExists("enable_block_level_subnet_config"); ok {
+		x := (v.(bool))
+		o.SetEnableBlockLevelSubnetConfig(x)
+	}
+
 	if v, ok := d.GetOk("ip_v4_blocks"); ok {
 		x := make([]models.IppoolIpV4Block, 0)
 		s := v.([]interface{})
@@ -820,6 +999,62 @@ func resourceIppoolPoolCreate(c context.Context, d *schema.ResourceData, meta in
 				{
 					x := (v.(string))
 					o.SetFrom(x)
+				}
+			}
+			if v, ok := l["ip_v4_config"]; ok {
+				{
+					p := make([]models.IppoolIpV4Config, 0, 1)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						l := s[i].(map[string]interface{})
+						o := models.NewIppoolIpV4ConfigWithDefaults()
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("ippool.IpV4Config")
+						if v, ok := l["gateway"]; ok {
+							{
+								x := (v.(string))
+								o.SetGateway(x)
+							}
+						}
+						if v, ok := l["netmask"]; ok {
+							{
+								x := (v.(string))
+								o.SetNetmask(x)
+							}
+						}
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["primary_dns"]; ok {
+							{
+								x := (v.(string))
+								o.SetPrimaryDns(x)
+							}
+						}
+						if v, ok := l["secondary_dns"]; ok {
+							{
+								x := (v.(string))
+								o.SetSecondaryDns(x)
+							}
+						}
+						p = append(p, *o)
+					}
+					if len(p) > 0 {
+						x := p[0]
+						o.SetIpV4Config(x)
+					}
 				}
 			}
 			if v, ok := l["object_type"]; ok {
@@ -923,6 +1158,62 @@ func resourceIppoolPoolCreate(c context.Context, d *schema.ResourceData, meta in
 				{
 					x := (v.(string))
 					o.SetFrom(x)
+				}
+			}
+			if v, ok := l["ip_v6_config"]; ok {
+				{
+					p := make([]models.IppoolIpV6Config, 0, 1)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						l := s[i].(map[string]interface{})
+						o := models.NewIppoolIpV6ConfigWithDefaults()
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("ippool.IpV6Config")
+						if v, ok := l["gateway"]; ok {
+							{
+								x := (v.(string))
+								o.SetGateway(x)
+							}
+						}
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["prefix"]; ok {
+							{
+								x := int64(v.(int))
+								o.SetPrefix(x)
+							}
+						}
+						if v, ok := l["primary_dns"]; ok {
+							{
+								x := (v.(string))
+								o.SetPrimaryDns(x)
+							}
+						}
+						if v, ok := l["secondary_dns"]; ok {
+							{
+								x := (v.(string))
+								o.SetSecondaryDns(x)
+							}
+						}
+						p = append(p, *o)
+					}
+					if len(p) > 0 {
+						x := p[0]
+						o.SetIpV6Config(x)
+					}
 				}
 			}
 			if v, ok := l["object_type"]; ok {
@@ -1060,6 +1351,48 @@ func resourceIppoolPoolCreate(c context.Context, d *schema.ResourceData, meta in
 		}
 	}
 
+	if v, ok := d.GetOk("reservations"); ok {
+		x := make([]models.IppoolReservationRelationship, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := models.NewMoMoRefWithDefaults()
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("mo.MoRef")
+			if v, ok := l["moid"]; ok {
+				{
+					x := (v.(string))
+					o.SetMoid(x)
+				}
+			}
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["selector"]; ok {
+				{
+					x := (v.(string))
+					o.SetSelector(x)
+				}
+			}
+			x = append(x, models.MoMoRefAsIppoolReservationRelationship(o))
+		}
+		if len(x) > 0 {
+			o.SetReservations(x)
+		}
+	}
+
 	if v, ok := d.GetOk("tags"); ok {
 		x := make([]models.MoTag, 0)
 		s := v.([]interface{})
@@ -1105,14 +1438,25 @@ func resourceIppoolPoolCreate(c context.Context, d *schema.ResourceData, meta in
 		}
 		return diag.Errorf("error occurred while creating IppoolPool: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceIppoolPoolRead(c, d, meta)...)
 }
 
 func resourceIppoolPoolRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.IppoolApi.GetIppoolPoolByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1166,6 +1510,10 @@ func resourceIppoolPoolRead(c context.Context, d *schema.ResourceData, meta inte
 		return diag.Errorf("error occurred while setting property DomainGroupMoid in IppoolPool object: %s", err.Error())
 	}
 
+	if err := d.Set("enable_block_level_subnet_config", (s.GetEnableBlockLevelSubnetConfig())); err != nil {
+		return diag.Errorf("error occurred while setting property EnableBlockLevelSubnetConfig in IppoolPool object: %s", err.Error())
+	}
+
 	if err := d.Set("ip_v4_blocks", flattenListIppoolIpV4Block(s.GetIpV4Blocks(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property IpV4Blocks in IppoolPool object: %s", err.Error())
 	}
@@ -1212,6 +1560,14 @@ func resourceIppoolPoolRead(c context.Context, d *schema.ResourceData, meta inte
 
 	if err := d.Set("permission_resources", flattenListMoBaseMoRelationship(s.GetPermissionResources(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property PermissionResources in IppoolPool object: %s", err.Error())
+	}
+
+	if err := d.Set("reservations", flattenListIppoolReservationRelationship(s.GetReservations(), d)); err != nil {
+		return diag.Errorf("error occurred while setting property Reservations in IppoolPool object: %s", err.Error())
+	}
+
+	if err := d.Set("reserved", (s.GetReserved())); err != nil {
+		return diag.Errorf("error occurred while setting property Reserved in IppoolPool object: %s", err.Error())
 	}
 
 	if err := d.Set("shadow_pools", flattenListIppoolShadowPoolRelationship(s.GetShadowPools(), d)); err != nil {
@@ -1285,6 +1641,12 @@ func resourceIppoolPoolUpdate(c context.Context, d *schema.ResourceData, meta in
 		o.SetDescription(x)
 	}
 
+	if d.HasChange("enable_block_level_subnet_config") {
+		v := d.Get("enable_block_level_subnet_config")
+		x := (v.(bool))
+		o.SetEnableBlockLevelSubnetConfig(x)
+	}
+
 	if d.HasChange("ip_v4_blocks") {
 		v := d.Get("ip_v4_blocks")
 		x := make([]models.IppoolIpV4Block, 0)
@@ -1307,6 +1669,62 @@ func resourceIppoolPoolUpdate(c context.Context, d *schema.ResourceData, meta in
 				{
 					x := (v.(string))
 					o.SetFrom(x)
+				}
+			}
+			if v, ok := l["ip_v4_config"]; ok {
+				{
+					p := make([]models.IppoolIpV4Config, 0, 1)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						l := s[i].(map[string]interface{})
+						o := models.NewIppoolIpV4ConfigWithDefaults()
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("ippool.IpV4Config")
+						if v, ok := l["gateway"]; ok {
+							{
+								x := (v.(string))
+								o.SetGateway(x)
+							}
+						}
+						if v, ok := l["netmask"]; ok {
+							{
+								x := (v.(string))
+								o.SetNetmask(x)
+							}
+						}
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["primary_dns"]; ok {
+							{
+								x := (v.(string))
+								o.SetPrimaryDns(x)
+							}
+						}
+						if v, ok := l["secondary_dns"]; ok {
+							{
+								x := (v.(string))
+								o.SetSecondaryDns(x)
+							}
+						}
+						p = append(p, *o)
+					}
+					if len(p) > 0 {
+						x := p[0]
+						o.SetIpV4Config(x)
+					}
 				}
 			}
 			if v, ok := l["object_type"]; ok {
@@ -1410,6 +1828,62 @@ func resourceIppoolPoolUpdate(c context.Context, d *schema.ResourceData, meta in
 				{
 					x := (v.(string))
 					o.SetFrom(x)
+				}
+			}
+			if v, ok := l["ip_v6_config"]; ok {
+				{
+					p := make([]models.IppoolIpV6Config, 0, 1)
+					s := v.([]interface{})
+					for i := 0; i < len(s); i++ {
+						l := s[i].(map[string]interface{})
+						o := models.NewIppoolIpV6ConfigWithDefaults()
+						if v, ok := l["additional_properties"]; ok {
+							{
+								x := []byte(v.(string))
+								var x1 interface{}
+								err := json.Unmarshal(x, &x1)
+								if err == nil && x1 != nil {
+									o.AdditionalProperties = x1.(map[string]interface{})
+								}
+							}
+						}
+						o.SetClassId("ippool.IpV6Config")
+						if v, ok := l["gateway"]; ok {
+							{
+								x := (v.(string))
+								o.SetGateway(x)
+							}
+						}
+						if v, ok := l["object_type"]; ok {
+							{
+								x := (v.(string))
+								o.SetObjectType(x)
+							}
+						}
+						if v, ok := l["prefix"]; ok {
+							{
+								x := int64(v.(int))
+								o.SetPrefix(x)
+							}
+						}
+						if v, ok := l["primary_dns"]; ok {
+							{
+								x := (v.(string))
+								o.SetPrimaryDns(x)
+							}
+						}
+						if v, ok := l["secondary_dns"]; ok {
+							{
+								x := (v.(string))
+								o.SetSecondaryDns(x)
+							}
+						}
+						p = append(p, *o)
+					}
+					if len(p) > 0 {
+						x := p[0]
+						o.SetIpV6Config(x)
+					}
 				}
 			}
 			if v, ok := l["object_type"]; ok {
@@ -1547,6 +2021,47 @@ func resourceIppoolPoolUpdate(c context.Context, d *schema.ResourceData, meta in
 			x := p[0]
 			o.SetOrganization(x)
 		}
+	}
+
+	if d.HasChange("reservations") {
+		v := d.Get("reservations")
+		x := make([]models.IppoolReservationRelationship, 0)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			o := &models.MoMoRef{}
+			l := s[i].(map[string]interface{})
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("mo.MoRef")
+			if v, ok := l["moid"]; ok {
+				{
+					x := (v.(string))
+					o.SetMoid(x)
+				}
+			}
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["selector"]; ok {
+				{
+					x := (v.(string))
+					o.SetSelector(x)
+				}
+			}
+			x = append(x, models.MoMoRefAsIppoolReservationRelationship(o))
+		}
+		o.SetReservations(x)
 	}
 
 	if d.HasChange("tags") {

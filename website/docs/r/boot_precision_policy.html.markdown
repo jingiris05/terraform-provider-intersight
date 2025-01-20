@@ -70,7 +70,9 @@ This complex property has following sub-properties:
   + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
 * `boot_devices`:(Array)
 This complex property has following sub-properties:
-  + `additional_properties`:(JSON as string) - Additional Properties as per object type, can be added as JSON using `jsonencode()`. Allowed Types are: [boot.Iscsi](#bootIscsi)
+  + `additional_properties`:(JSON as string) - Additional Properties as per object type, can be added as JSON using `jsonencode()`. Allowed Types are: [boot.FlexMmc](#bootFlexMmc)
+[boot.Http](#bootHttp)
+[boot.Iscsi](#bootIscsi)
 [boot.LocalCdd](#bootLocalCdd)
 [boot.LocalDisk](#bootLocalDisk)
 [boot.Nvme](#bootNvme)
@@ -84,7 +86,7 @@ This complex property has following sub-properties:
   + `enabled`:(bool) Specifies if the boot device is enabled or disabled. 
   + `name`:(string) A name that helps identify a boot device. It can be any string that adheres to the following constraints. It should start and end with an alphanumeric character. It can have underscores and hyphens. It cannot be more than 30 characters. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property.The enum values provides the list of concrete types that can be instantiated from this abstract type. 
-* `configured_boot_mode`:(string) Sets the BIOS boot mode. UEFI uses the GUID Partition Table (GPT) whereas Legacy mode uses the Master Boot Record (MBR) partitioning scheme. To apply this setting, Please reboot the server.* `Legacy` - Legacy mode refers to the traditional process of booting from BIOS. Legacy mode uses the Master Boot Record (MBR) to locate the bootloader.* `Uefi` - UEFI mode uses the GUID Partition Table (GPT) to locate EFI Service Partitions to boot from. 
+* `configured_boot_mode`:(string) Sets the BIOS boot mode. UEFI uses the GUID Partition Table (GPT) whereas Legacy mode uses the MBR partitioning scheme. To apply this setting, Please reboot the server.* `Uefi` - UEFI mode uses the GUID Partition Table (GPT) to locate EFI Service Partitions to boot from.* `Legacy` - Legacy mode refers to the traditional process of booting from BIOS. Legacy mode uses the MBR to locate the bootloader. 
 * `create_time`:(string)(ReadOnly) The time when this managed object was created. 
 * `description`:(string) Description of the policy. 
 * `domain_group_moid`:(string)(ReadOnly) The DomainGroup ID for this managed object. 
@@ -126,6 +128,7 @@ This complex property has following sub-properties:
     + `moid`:(string) The Moid of the referenced REST resource. 
     + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
     + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
+  + `marked_for_deletion`:(bool)(ReadOnly) The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy. 
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `ref_mo`:(HashMap) -(ReadOnly) A reference to the original Managed Object. 
 This complex property has following sub-properties:
@@ -144,6 +147,36 @@ $ terraform import intersight_boot_precision_policy.example 1234567890987654321a
 ```
 ## Allowed Types in `AdditionalProperties`
  
+### [boot.FlexMmc](#argument-reference)
+Device type used when booting from FlexMMC device.
+* `subtype`:(string) The subtype for the selected device type.* `None` - No sub type for FlexMMC boot device.* `flexmmc-mapped-dvd` - Use of FlexMMC DVD as subtype for embedded storage.* `flexmmc-mapped-hdd` - Use of FlexMMC HDD as subtype for embedded storage. 
+
+### [boot.Http](#argument-reference)
+Device type used in boot policy to boot from HTTP device.
+* `interface_name`:(string) The name of the underlying virtual ethernet interface used by the HTTP boot device. 
+* `interface_source`:(string) Lists the supported Interface Source for HTTP device. Supported values are \ name\  and \ mac\ .* `name` - Use interface name to select virtual ethernet interface.* `mac` - Use MAC address to select virtual ethernet interface.* `port` - Use port to select virtual ethernet interface. 
+* `ip_config_type`:(string) The IP config type to use during the HTTP boot process. For DHCP configuration, the IP address, DNS server, netmask and gateway details are obtained from DHCP server. For static configuration, please provide the IP address, DNS server, netmask, and gateway details.* `DHCP` - The type of the IP config is DHCP.* `Static` - The type of the IP config is Static. 
+* `ip_type`:(string) The IP address family type to use during the HTTP boot process.* `IPv4` - The type of the IP address is IPv4.* `IPv6` - The type of the IP address is IPv6. 
+* `mac_address`:(string) The MAC Address of the underlying virtual ethernet interface used by the HTTP boot device. 
+* `port`:(int) The Port ID of the adapter on which the underlying virtual ethernet interface is present. If no port is specified, the default value is -1. Supported values are 0 to 255. 
+* `protocol`:(string) Protocol to be used for HTTP boot. HTTPS require root certificate for authentication.* `HTTPS` - Secure HTTP protocol, certificate required for authentication.* `HTTP` - HTTP protocol without security certificate requirement. 
+* `slot`:(string) The slot ID of the adapter on which the underlying virtual ethernet interface is present. Supported values are ( 1 - 255, \ MLOM\ , \ L\ , \ L1\ , \ L2\ , \ OCP\ ). 
+* `static_ip_v4_settings`:(HashMap) - The static IP config settings to use during the HTTP boot process. 
+This complex property has following sub-properties:
+  + `dns_ip`:(string) IP address of DNS server. 
+  + `gateway_ip`:(string) IP address of default gateway. 
+  + `ip`:(string) Ipv4 static Internet Protocol address. 
+  + `network_mask`:(string) Network mask of the IP address. 
+  + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+* `static_ip_v6_settings`:(HashMap) - The static IP config settings to use during the HTTP boot process. 
+This complex property has following sub-properties:
+  + `dns_ip`:(string) IP address of DNS server. 
+  + `gateway_ip`:(string) IP address of default gateway. 
+  + `ip`:(string) Ipv6 static Internet Protocol address. 
+  + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
+  + `prefix_length`:(int) A prefix length which masks the IP address and divides the IP address into network address and host address. 
+* `uri`:(string) Boot resource location in URI format. 
+
 ### [boot.Iscsi](#argument-reference)
 Device type used when booting from iSCSI boot device.
 * `bootloader`:(HashMap) - Details of the bootloader to be used during iSCSI boot. 
@@ -191,10 +224,10 @@ This complex property has following sub-properties:
 ### [boot.Pxe](#argument-reference)
 Device type used when booting from a PXE boot device.
 * `interface_name`:(string) The name of the underlying virtual ethernet interface used by the PXE boot device. 
-* `interface_source`:(string) Lists the supported Interface Source for PXE device. Supported values are \ name\  and \ mac\ .* `name` - Use interface name to select virtual ethernet interface.* `mac` - Use MAC address to select virtual ethernet interface.* `port` - Use port to select virtual ethernet interface. 
+* `interface_source`:(string) Lists the supported methods to provide network boot device configuration. Supported values are \ name\  and \ mac\ .* `name` - Use interface name to select virtual ethernet interface.* `mac` - Use MAC address to select virtual ethernet interface.* `port` - Use port to select virtual ethernet interface. 
 * `ip_type`:(string) The IP Address family type to use during the PXE Boot process.* `None` - Default value if IpType is not specified.* `IPv4` - The IPv4 address family type.* `IPv6` - The IPv6 address family type. 
 * `mac_address`:(string) The MAC Address of the underlying virtual ethernet interface used by the PXE boot device. 
-* `port`:(int) The Port ID of the adapter on which the underlying virtual ethernet interface is present. If no port is specified, the default value is -1. Supported values are -1 to 255. 
+* `port`:(int) The Port ID of the adapter on which the underlying virtual ethernet interface is present. If no port is specified, the default value is -1. Supported values are 0 to 255. 
 * `slot`:(string) The slot ID of the adapter on which the underlying virtual ethernet interface is present. Supported values are ( 1 - 255, \ MLOM\ , \ L\ , \ L1\ , \ L2\ , \ OCP\ ). 
 
 ### [boot.San](#argument-reference)
@@ -206,7 +239,7 @@ This complex property has following sub-properties:
   + `object_type`:(string) The fully-qualified name of the instantiated, concrete type.The value should be the same as the 'ClassId' property. 
   + `path`:(string) Path to the bootloader image. 
 * `interface_name`:(string) The name of the underlying vHBA interface to be used by the SAN boot device. 
-* `lun`:(int) The Logical Unit Number (LUN) of the device. 
+* `lun`:(int) The Logical Unit Number (LUN) of the device. For SAN boot configuration to be deployed on a server with 1300 family of Cisco VIC adapters, the recommendation is for the boot LUN to be numbered as 0 to ensure that LUN is mounted as the first disk from which the server boots. 
 * `slot`:(string) Slot ID of the device. Supported values are ( 1 - 255, \ MLOM\ , \ L1\ , \ L2\  ). 
 * `wwpn`:(string) The WWPN Address of the underlying fibre channel interface used by the SAN boot device. Value must be in hexadecimal format xx:xx:xx:xx:xx:xx:xx:xx. 
 

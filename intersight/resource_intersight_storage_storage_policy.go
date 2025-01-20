@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceStorageStoragePolicy() *schema.Resource {
 		UpdateContext: resourceStorageStoragePolicyUpdate,
 		DeleteContext: resourceStorageStoragePolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -95,10 +97,23 @@ func resourceStorageStoragePolicy() *schema.Resource {
 					}
 					return
 				}},
+			"default_drive_mode": {
+				Description:  "All unconfigured drives will move to the selected state on deployment. Newly inserted drives will move to the selected state. Select Unconfigured Good option to retain the existing configuration. Select JBOD to move the unconfigured drives to JBOD state. Select RAID0 to create a RAID0 virtual drive on each of the unconfigured drives. If JBOD is selected, unconfigured drives will move to JBOD state on host reboot. This setting is applicable only to selected set of controllers on FI attached servers.\n* `UnconfiguredGood` - Newly inserted drives or on reboot, drives will remain the same state.\n* `Jbod` - Newly inserted drives or on reboot, drives will automatically move to JBOD state if drive state was UnconfiguredGood.\n* `RAID0` - Newly inserted drives or on reboot, virtual drives will be created, respective drives will move to Online state.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringInSlice([]string{"UnconfiguredGood", "Jbod", "RAID0"}, false),
+				Optional:     true,
+				Default:      "UnconfiguredGood",
+			},
 			"description": {
 				Description:  "Description of the policy.",
 				Type:         schema.TypeString,
 				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9]+[\\x00-\\xFF]*$"), ""), StringLenMaximum(1024)),
+				Optional:     true,
+			},
+			"direct_attached_nvme_slots": {
+				Description:  "Only U.3 NVMe drives has to be specified, entered slots will be moved to Direct attached mode. Allowed slots are 1-4, 101-104. Allowed value is a comma or hyphen separated number range.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^((\\d+\\-\\d+)|(\\d+))(,((\\d+\\-\\d+)|(\\d+)))*$"), ""),
 				Optional:     true,
 			},
 			"domain_group_moid": {
@@ -189,6 +204,13 @@ func resourceStorageStoragePolicy() *schema.Resource {
 							Type:        schema.TypeBool,
 							Optional:    true,
 							Default:     false,
+						},
+						"name": {
+							Description:  "The name of the virtual drive. The name can be between 1 and 15 alphanumeric characters. Spaces or any special characters other than - (hyphen) and _ (underscore) are not allowed. This field will be pre-populated with the default or user configured value which can be edited.",
+							Type:         schema.TypeString,
+							ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^[a-zA-Z0-9\\-_]*$"), ""), StringLenMaximum(15)),
+							Optional:     true,
+							Default:      "MStorBootVd",
 						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
@@ -423,7 +445,7 @@ func resourceStorageStoragePolicy() *schema.Resource {
 							Optional:     true,
 						},
 						"drive_slots_list": {
-							Description: "The list of drive slots where RAID0 virtual drives must be created (comma seperated).",
+							Description: "The list of drive slots where RAID0 virtual drives must be created (comma separated).",
 							Type:        schema.TypeString,
 							Optional:    true,
 							Computed:    true,
@@ -512,6 +534,18 @@ func resourceStorageStoragePolicy() *schema.Resource {
 					},
 				},
 			},
+			"raid_attached_nvme_slots": {
+				Description:  "Only U.3 NVMe drives has to be specified, entered slots will be moved to RAID attached mode. Allowed slots are 1-4, 101-104. Allowed value is a comma or hyphen separated number range.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^((\\d+\\-\\d+)|(\\d+))(,((\\d+\\-\\d+)|(\\d+)))*$"), ""),
+				Optional:     true,
+			},
+			"secure_jbods": {
+				Description:  "JBOD drives specified in this slot range will be encrypted. Allowed values are 'ALL', or a comma or hyphen separated number range. Sample format is ALL or 1, 3 or 4-6, 8. Setting the value to 'ALL' will encrypt all the unused UnconfigureGood/JBOD disks.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringMatch(regexp.MustCompile("^$|^((((\\d+\\-\\d+)|(\\d+))(,((\\d+\\-\\d+)|(\\d+)))*)|(a|A)(l|L)(l|L))$"), ""),
+				Optional:     true,
+			},
 			"shared_scope": {
 				Description: "Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.\nObjects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs.",
 				Type:        schema.TypeString,
@@ -551,14 +585,14 @@ func resourceStorageStoragePolicy() *schema.Resource {
 				},
 			},
 			"unused_disks_state": {
-				Description:  "State to which disks, not used in this policy, are to be moved. NoChange will not change the drive state.\n* `NoChange` - Drive state will not be modified by Storage Policy.\n* `UnconfiguredGood` - Unconfigured good state -ready to be added in a RAID group.\n* `Jbod` - JBOD state where the disks start showing up to Host OS.",
+				Description:  "State to which drives, not used in this policy, are to be moved. NoChange will not change the drive state. No Change must be selected if Default Drive State is set to JBOD or RAID0.\n* `NoChange` - Drive state will not be modified by Storage Policy.\n* `UnconfiguredGood` - Unconfigured good state -ready to be added in a RAID group.\n* `Jbod` - JBOD state where the disks start showing up to Host OS.",
 				Type:         schema.TypeString,
 				ValidateFunc: validation.StringInSlice([]string{"NoChange", "UnconfiguredGood", "Jbod"}, false),
 				Optional:     true,
 				Default:      "NoChange",
 			},
 			"use_jbod_for_vd_creation": {
-				Description: "Disks in JBOD State are used to create virtual drives.",
+				Description: "Disks in JBOD State are used to create virtual drives. This setting must be disabled if Default Drive State is set to JBOD.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 			},
@@ -620,6 +654,17 @@ func resourceStorageStoragePolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -723,9 +768,19 @@ func resourceStorageStoragePolicyCreate(c context.Context, d *schema.ResourceDat
 
 	o.SetClassId("storage.StoragePolicy")
 
+	if v, ok := d.GetOk("default_drive_mode"); ok {
+		x := (v.(string))
+		o.SetDefaultDriveMode(x)
+	}
+
 	if v, ok := d.GetOk("description"); ok {
 		x := (v.(string))
 		o.SetDescription(x)
+	}
+
+	if v, ok := d.GetOk("direct_attached_nvme_slots"); ok {
+		x := (v.(string))
+		o.SetDirectAttachedNvmeSlots(x)
 	}
 
 	if v, ok := d.GetOk("drive_group"); ok {
@@ -802,6 +857,12 @@ func resourceStorageStoragePolicyCreate(c context.Context, d *schema.ResourceDat
 				{
 					x := (v.(bool))
 					o.SetEnable(x)
+				}
+			}
+			if v, ok := l["name"]; ok {
+				{
+					x := (v.(string))
+					o.SetName(x)
 				}
 			}
 			if v, ok := l["object_type"]; ok {
@@ -1020,6 +1081,16 @@ func resourceStorageStoragePolicyCreate(c context.Context, d *schema.ResourceDat
 		}
 	}
 
+	if v, ok := d.GetOk("raid_attached_nvme_slots"); ok {
+		x := (v.(string))
+		o.SetRaidAttachedNvmeSlots(x)
+	}
+
+	if v, ok := d.GetOk("secure_jbods"); ok {
+		x := (v.(string))
+		o.SetSecureJbods(x)
+	}
+
 	if v, ok := d.GetOk("tags"); ok {
 		x := make([]models.MoTag, 0)
 		s := v.([]interface{})
@@ -1075,8 +1146,16 @@ func resourceStorageStoragePolicyCreate(c context.Context, d *schema.ResourceDat
 		}
 		return diag.Errorf("error occurred while creating StorageStoragePolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceStorageStoragePolicyRead(c, d, meta)...)
 }
 func detachStorageStoragePolicyProfiles(d *schema.ResourceData, meta interface{}) diag.Diagnostics {
@@ -1104,6 +1183,9 @@ func detachStorageStoragePolicyProfiles(d *schema.ResourceData, meta interface{}
 func resourceStorageStoragePolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.StorageApi.GetStorageStoragePolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -1141,8 +1223,16 @@ func resourceStorageStoragePolicyRead(c context.Context, d *schema.ResourceData,
 		return diag.Errorf("error occurred while setting property CreateTime in StorageStoragePolicy object: %s", err.Error())
 	}
 
+	if err := d.Set("default_drive_mode", (s.GetDefaultDriveMode())); err != nil {
+		return diag.Errorf("error occurred while setting property DefaultDriveMode in StorageStoragePolicy object: %s", err.Error())
+	}
+
 	if err := d.Set("description", (s.GetDescription())); err != nil {
 		return diag.Errorf("error occurred while setting property Description in StorageStoragePolicy object: %s", err.Error())
+	}
+
+	if err := d.Set("direct_attached_nvme_slots", (s.GetDirectAttachedNvmeSlots())); err != nil {
+		return diag.Errorf("error occurred while setting property DirectAttachedNvmeSlots in StorageStoragePolicy object: %s", err.Error())
 	}
 
 	if err := d.Set("domain_group_moid", (s.GetDomainGroupMoid())); err != nil {
@@ -1201,6 +1291,14 @@ func resourceStorageStoragePolicyRead(c context.Context, d *schema.ResourceData,
 		return diag.Errorf("error occurred while setting property Raid0Drive in StorageStoragePolicy object: %s", err.Error())
 	}
 
+	if err := d.Set("raid_attached_nvme_slots", (s.GetRaidAttachedNvmeSlots())); err != nil {
+		return diag.Errorf("error occurred while setting property RaidAttachedNvmeSlots in StorageStoragePolicy object: %s", err.Error())
+	}
+
+	if err := d.Set("secure_jbods", (s.GetSecureJbods())); err != nil {
+		return diag.Errorf("error occurred while setting property SecureJbods in StorageStoragePolicy object: %s", err.Error())
+	}
+
 	if err := d.Set("shared_scope", (s.GetSharedScope())); err != nil {
 		return diag.Errorf("error occurred while setting property SharedScope in StorageStoragePolicy object: %s", err.Error())
 	}
@@ -1244,10 +1342,22 @@ func resourceStorageStoragePolicyUpdate(c context.Context, d *schema.ResourceDat
 
 	o.SetClassId("storage.StoragePolicy")
 
+	if d.HasChange("default_drive_mode") {
+		v := d.Get("default_drive_mode")
+		x := (v.(string))
+		o.SetDefaultDriveMode(x)
+	}
+
 	if d.HasChange("description") {
 		v := d.Get("description")
 		x := (v.(string))
 		o.SetDescription(x)
+	}
+
+	if d.HasChange("direct_attached_nvme_slots") {
+		v := d.Get("direct_attached_nvme_slots")
+		x := (v.(string))
+		o.SetDirectAttachedNvmeSlots(x)
 	}
 
 	if d.HasChange("drive_group") {
@@ -1325,6 +1435,12 @@ func resourceStorageStoragePolicyUpdate(c context.Context, d *schema.ResourceDat
 				{
 					x := (v.(bool))
 					o.SetEnable(x)
+				}
+			}
+			if v, ok := l["name"]; ok {
+				{
+					x := (v.(string))
+					o.SetName(x)
 				}
 			}
 			if v, ok := l["object_type"]; ok {
@@ -1544,6 +1660,18 @@ func resourceStorageStoragePolicyUpdate(c context.Context, d *schema.ResourceDat
 			x := p[0]
 			o.SetRaid0Drive(x)
 		}
+	}
+
+	if d.HasChange("raid_attached_nvme_slots") {
+		v := d.Get("raid_attached_nvme_slots")
+		x := (v.(string))
+		o.SetRaidAttachedNvmeSlots(x)
+	}
+
+	if d.HasChange("secure_jbods") {
+		v := d.Get("secure_jbods")
+		x := (v.(string))
+		o.SetSecureJbods(x)
 	}
 
 	if d.HasChange("tags") {

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceFabricFcNetworkPolicy() *schema.Resource {
 		UpdateContext: resourceFabricFcNetworkPolicyUpdate,
 		DeleteContext: resourceFabricFcNetworkPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -276,7 +278,7 @@ func resourceFabricFcNetworkPolicy() *schema.Resource {
 				},
 			},
 			"profiles": {
-				Description: "An array of relationships to fabricSwitchProfile resources.",
+				Description: "An array of relationships to fabricBaseSwitchProfile resources.",
 				Type:        schema.TypeList,
 				Optional:    true,
 				ConfigMode:  schema.SchemaConfigModeAttr,
@@ -410,6 +412,17 @@ func resourceFabricFcNetworkPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -579,7 +592,7 @@ func resourceFabricFcNetworkPolicyCreate(c context.Context, d *schema.ResourceDa
 	}
 
 	if v, ok := d.GetOk("profiles"); ok {
-		x := make([]models.FabricSwitchProfileRelationship, 0)
+		x := make([]models.FabricBaseSwitchProfileRelationship, 0)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			o := models.NewMoMoRefWithDefaults()
@@ -613,7 +626,7 @@ func resourceFabricFcNetworkPolicyCreate(c context.Context, d *schema.ResourceDa
 					o.SetSelector(x)
 				}
 			}
-			x = append(x, models.MoMoRefAsFabricSwitchProfileRelationship(o))
+			x = append(x, models.MoMoRefAsFabricBaseSwitchProfileRelationship(o))
 		}
 		if len(x) > 0 {
 			o.SetProfiles(x)
@@ -665,14 +678,25 @@ func resourceFabricFcNetworkPolicyCreate(c context.Context, d *schema.ResourceDa
 		}
 		return diag.Errorf("error occurred while creating FabricFcNetworkPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceFabricFcNetworkPolicyRead(c, d, meta)...)
 }
 
 func resourceFabricFcNetworkPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.FabricApi.GetFabricFcNetworkPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -754,7 +778,7 @@ func resourceFabricFcNetworkPolicyRead(c context.Context, d *schema.ResourceData
 		return diag.Errorf("error occurred while setting property PermissionResources in FabricFcNetworkPolicy object: %s", err.Error())
 	}
 
-	if err := d.Set("profiles", flattenListFabricSwitchProfileRelationship(s.GetProfiles(), d)); err != nil {
+	if err := d.Set("profiles", flattenListFabricBaseSwitchProfileRelationship(s.GetProfiles(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Profiles in FabricFcNetworkPolicy object: %s", err.Error())
 	}
 
@@ -865,7 +889,7 @@ func resourceFabricFcNetworkPolicyUpdate(c context.Context, d *schema.ResourceDa
 
 	if d.HasChange("profiles") {
 		v := d.Get("profiles")
-		x := make([]models.FabricSwitchProfileRelationship, 0)
+		x := make([]models.FabricBaseSwitchProfileRelationship, 0)
 		s := v.([]interface{})
 		for i := 0; i < len(s); i++ {
 			o := &models.MoMoRef{}
@@ -899,7 +923,7 @@ func resourceFabricFcNetworkPolicyUpdate(c context.Context, d *schema.ResourceDa
 					o.SetSelector(x)
 				}
 			}
-			x = append(x, models.MoMoRefAsFabricSwitchProfileRelationship(o))
+			x = append(x, models.MoMoRefAsFabricBaseSwitchProfileRelationship(o))
 		}
 		o.SetProfiles(x)
 	}

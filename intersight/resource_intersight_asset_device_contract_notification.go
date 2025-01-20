@@ -21,7 +21,7 @@ func resourceAssetDeviceContractNotification() *schema.Resource {
 		ReadContext:   resourceAssetDeviceContractNotificationRead,
 		DeleteContext: resourceAssetDeviceContractNotificationDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -717,6 +717,12 @@ func resourceAssetDeviceContractNotification() *schema.Resource {
 			},
 			"item_type": {
 				Description: "Item type of this specific Cisco device. example \"Chassis\".",
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+			},
+			"last_date_of_support": {
+				Description: "The last date of hardware support for this device.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				ForceNew:    true,
@@ -1552,6 +1558,18 @@ func resourceAssetDeviceContractNotification() *schema.Resource {
 							},
 							ForceNew: true,
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}, ForceNew: true,
+						},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -1804,6 +1822,11 @@ func resourceAssetDeviceContractNotificationCreate(c context.Context, d *schema.
 	if v, ok := d.GetOk("item_type"); ok {
 		x := (v.(string))
 		o.SetItemType(x)
+	}
+
+	if v, ok := d.GetOk("last_date_of_support"); ok {
+		x, _ := time.Parse(time.RFC1123, v.(string))
+		o.SetLastDateOfSupport(x)
 	}
 
 	if v, ok := d.GetOk("maintenance_purchase_order_number"); ok {

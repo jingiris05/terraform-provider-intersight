@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceIamLdapProvider() *schema.Resource {
 		UpdateContext: resourceIamLdapProviderUpdate,
 		DeleteContext: resourceIamLdapProviderDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -306,6 +308,13 @@ func resourceIamLdapProvider() *schema.Resource {
 					},
 				},
 			},
+			"vendor": {
+				Description:  "LDAP server vendor type used for authentication.\n* `OpenLDAP` - Open source LDAP server for remote authentication.\n* `MSAD` - Microsoft active directory for remote authentication.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringInSlice([]string{"OpenLDAP", "MSAD"}, false),
+				Optional:     true,
+				Default:      "OpenLDAP",
+			},
 			"version_context": {
 				Description: "The versioning info for this managed object.",
 				Type:        schema.TypeList,
@@ -364,6 +373,17 @@ func resourceIamLdapProvider() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -562,6 +582,11 @@ func resourceIamLdapProviderCreate(c context.Context, d *schema.ResourceData, me
 		}
 	}
 
+	if v, ok := d.GetOk("vendor"); ok {
+		x := (v.(string))
+		o.SetVendor(x)
+	}
+
 	r := conn.ApiClient.IamApi.CreateIamLdapProvider(conn.ctx).IamLdapProvider(*o)
 	resultMo, _, responseErr := r.Execute()
 	if responseErr != nil {
@@ -572,14 +597,25 @@ func resourceIamLdapProviderCreate(c context.Context, d *schema.ResourceData, me
 		}
 		return diag.Errorf("error occurred while creating IamLdapProvider: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceIamLdapProviderRead(c, d, meta)...)
 }
 
 func resourceIamLdapProviderRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.IamApi.GetIamLdapProviderByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -663,6 +699,10 @@ func resourceIamLdapProviderRead(c context.Context, d *schema.ResourceData, meta
 
 	if err := d.Set("tags", flattenListMoTag(s.GetTags(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Tags in IamLdapProvider object: %s", err.Error())
+	}
+
+	if err := d.Set("vendor", (s.GetVendor())); err != nil {
+		return diag.Errorf("error occurred while setting property Vendor in IamLdapProvider object: %s", err.Error())
 	}
 
 	if err := d.Set("version_context", flattenMapMoVersionContext(s.GetVersionContext(), d)); err != nil {
@@ -788,6 +828,12 @@ func resourceIamLdapProviderUpdate(c context.Context, d *schema.ResourceData, me
 			x = append(x, *o)
 		}
 		o.SetTags(x)
+	}
+
+	if d.HasChange("vendor") {
+		v := d.Get("vendor")
+		x := (v.(string))
+		o.SetVendor(x)
 	}
 
 	r := conn.ApiClient.IamApi.UpdateIamLdapProvider(conn.ctx, d.Id()).IamLdapProvider(*o)

@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +22,7 @@ func resourceSoftwarerepositoryAuthorization() *schema.Resource {
 		UpdateContext: resourceSoftwarerepositoryAuthorizationUpdate,
 		DeleteContext: resourceSoftwarerepositoryAuthorizationDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account": {
 				Description: "A reference to a iamAccount resource.\nWhen the $expand query parameter is specified, the referenced resource is returned inline.",
@@ -145,8 +147,8 @@ func resourceSoftwarerepositoryAuthorization() *schema.Resource {
 					}
 					return
 				}},
-			"is_password_set": {
-				Description: "Indicates whether the value of the 'password' property has been set.",
+			"is_asdv4_alarm_dismissed": {
+				Description: "The state of the alarm dismissal for the 'IsAsdDialogDismissed' alarm.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Computed:    true,
@@ -156,8 +158,8 @@ func resourceSoftwarerepositoryAuthorization() *schema.Resource {
 					}
 					return
 				}},
-			"is_user_id_set": {
-				Description: "Indicates whether the value of the 'userId' property has been set.",
+			"is_password_set": {
+				Description: "Indicates whether the value of the 'password' property has been set.",
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Computed:    true,
@@ -333,6 +335,17 @@ func resourceSoftwarerepositoryAuthorization() *schema.Resource {
 				Type:        schema.TypeString,
 				Optional:    true,
 			},
+			"nr_version": {
+				Description: "The Automated Software Distribution version of the authorization MO.\n* `V3` - The client is running Automated Software Distribution V3.\n* `V4` - The client is running Automated Software Distribution V4.",
+				Type:        schema.TypeString,
+				Optional:    true,
+				Computed:    true,
+				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+					if val != nil {
+						warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+					}
+					return
+				}},
 			"version_context": {
 				Description: "The versioning info for this managed object.",
 				Type:        schema.TypeList,
@@ -391,6 +404,17 @@ func resourceSoftwarerepositoryAuthorization() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -561,14 +585,25 @@ func resourceSoftwarerepositoryAuthorizationCreate(c context.Context, d *schema.
 		}
 		return diag.Errorf("error occurred while creating SoftwarerepositoryAuthorization: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceSoftwarerepositoryAuthorizationRead(c, d, meta)...)
 }
 
 func resourceSoftwarerepositoryAuthorizationRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.SoftwarerepositoryApi.GetSoftwarerepositoryAuthorizationByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -614,12 +649,12 @@ func resourceSoftwarerepositoryAuthorizationRead(c context.Context, d *schema.Re
 		return diag.Errorf("error occurred while setting property DomainGroupMoid in SoftwarerepositoryAuthorization object: %s", err.Error())
 	}
 
-	if err := d.Set("is_password_set", (s.GetIsPasswordSet())); err != nil {
-		return diag.Errorf("error occurred while setting property IsPasswordSet in SoftwarerepositoryAuthorization object: %s", err.Error())
+	if err := d.Set("is_asdv4_alarm_dismissed", (s.GetIsAsdv4AlarmDismissed())); err != nil {
+		return diag.Errorf("error occurred while setting property IsAsdv4AlarmDismissed in SoftwarerepositoryAuthorization object: %s", err.Error())
 	}
 
-	if err := d.Set("is_user_id_set", (s.GetIsUserIdSet())); err != nil {
-		return diag.Errorf("error occurred while setting property IsUserIdSet in SoftwarerepositoryAuthorization object: %s", err.Error())
+	if err := d.Set("is_password_set", (s.GetIsPasswordSet())); err != nil {
+		return diag.Errorf("error occurred while setting property IsPasswordSet in SoftwarerepositoryAuthorization object: %s", err.Error())
 	}
 
 	if err := d.Set("mod_time", (s.GetModTime()).String()); err != nil {
@@ -656,6 +691,14 @@ func resourceSoftwarerepositoryAuthorizationRead(c context.Context, d *schema.Re
 
 	if err := d.Set("tags", flattenListMoTag(s.GetTags(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Tags in SoftwarerepositoryAuthorization object: %s", err.Error())
+	}
+
+	if err := d.Set("user_id", (s.GetUserId())); err != nil {
+		return diag.Errorf("error occurred while setting property UserId in SoftwarerepositoryAuthorization object: %s", err.Error())
+	}
+
+	if err := d.Set("nr_version", (s.GetVersion())); err != nil {
+		return diag.Errorf("error occurred while setting property Version in SoftwarerepositoryAuthorization object: %s", err.Error())
 	}
 
 	if err := d.Set("version_context", flattenMapMoVersionContext(s.GetVersionContext(), d)); err != nil {

@@ -6,9 +6,11 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **ClassId** | **string** | The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data. | [default to "iam.SsoSessionAttributes"]
 **ObjectType** | **string** | The fully-qualified name of the instantiated, concrete type. The value should be the same as the &#39;ClassId&#39; property. | [default to "iam.SsoSessionAttributes"]
+**AllowSwitchRoleOrAccount** | Pointer to **bool** | Captures if the user is allowed to switch roles or accounts after login and is used by UI to show/hide Switch Role Or Account option. It is set to true when Intersight identifies that the user has multiple roles or accounts during login based on user attributes and Intersight account IAM configuration. For IdP initiated SSO logins, this field is always set to false. Any changes to user roles or accounts after a session is created will not change this field. If switch role/account option is selected, user is re-authenticated with IdP and user roles and accounts are identified and AllowSwitchRoleOrAccount property is updated accordingly. | [optional] [readonly] 
 **IdpSessionExpiration** | Pointer to **string** | SAML SessionNotOnOrAfter attribute sent by IdP in the assertion. IdP uses this to control for how long SP session maybe. SP does not issue SLO if the session is not valid. | [optional] [readonly] 
 **IdpSessionIndex** | Pointer to **string** | SAML SessionIndex attribute sent by IdP in the assertion. This has to be sent back to IdP in LogoutRequest. | [optional] [readonly] 
 **IsIdpInitiatedSso** | Pointer to **bool** | Sign-in is SP-Intitiated or IdP-Intitiated. | [optional] [readonly] 
+**IsPartialAccountsListed** | Pointer to **bool** | Select Account Page shows partial list of accounts when processing data from some regions fails. | [optional] [readonly] 
 **SubjectName** | Pointer to **string** | SAML Subject NameID attribute sent by IdP in the assertion. This has to be sent back to IdP in LogoutRequest. | [optional] [readonly] 
 
 ## Methods
@@ -69,6 +71,31 @@ and a boolean to check if the value has been set.
 
 SetObjectType sets ObjectType field to given value.
 
+
+### GetAllowSwitchRoleOrAccount
+
+`func (o *IamSsoSessionAttributes) GetAllowSwitchRoleOrAccount() bool`
+
+GetAllowSwitchRoleOrAccount returns the AllowSwitchRoleOrAccount field if non-nil, zero value otherwise.
+
+### GetAllowSwitchRoleOrAccountOk
+
+`func (o *IamSsoSessionAttributes) GetAllowSwitchRoleOrAccountOk() (*bool, bool)`
+
+GetAllowSwitchRoleOrAccountOk returns a tuple with the AllowSwitchRoleOrAccount field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetAllowSwitchRoleOrAccount
+
+`func (o *IamSsoSessionAttributes) SetAllowSwitchRoleOrAccount(v bool)`
+
+SetAllowSwitchRoleOrAccount sets AllowSwitchRoleOrAccount field to given value.
+
+### HasAllowSwitchRoleOrAccount
+
+`func (o *IamSsoSessionAttributes) HasAllowSwitchRoleOrAccount() bool`
+
+HasAllowSwitchRoleOrAccount returns a boolean if a field has been set.
 
 ### GetIdpSessionExpiration
 
@@ -144,6 +171,31 @@ SetIsIdpInitiatedSso sets IsIdpInitiatedSso field to given value.
 `func (o *IamSsoSessionAttributes) HasIsIdpInitiatedSso() bool`
 
 HasIsIdpInitiatedSso returns a boolean if a field has been set.
+
+### GetIsPartialAccountsListed
+
+`func (o *IamSsoSessionAttributes) GetIsPartialAccountsListed() bool`
+
+GetIsPartialAccountsListed returns the IsPartialAccountsListed field if non-nil, zero value otherwise.
+
+### GetIsPartialAccountsListedOk
+
+`func (o *IamSsoSessionAttributes) GetIsPartialAccountsListedOk() (*bool, bool)`
+
+GetIsPartialAccountsListedOk returns a tuple with the IsPartialAccountsListed field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetIsPartialAccountsListed
+
+`func (o *IamSsoSessionAttributes) SetIsPartialAccountsListed(v bool)`
+
+SetIsPartialAccountsListed sets IsPartialAccountsListed field to given value.
+
+### HasIsPartialAccountsListed
+
+`func (o *IamSsoSessionAttributes) HasIsPartialAccountsListed() bool`
+
+HasIsPartialAccountsListed returns a boolean if a field has been set.
 
 ### GetSubjectName
 

@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the StorageNetAppBaseDisk type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &StorageNetAppBaseDisk{}
 
 // StorageNetAppBaseDisk NetApp base disk is a storage array disk.
 type StorageNetAppBaseDisk struct {
@@ -26,6 +30,8 @@ type StorageNetAppBaseDisk struct {
 	ObjectType string `json:"ObjectType"`
 	// The NetApp base disk model.
 	BaseDiskModel *string `json:"BaseDiskModel,omitempty"`
+	// Unique identity of the device.
+	ClusterUuid *string `json:"ClusterUuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
 	// Supported container type for NetApp disk. * `Unknown` - Default container type is currently unknown. * `Aggregate` - Disk is used as a physical disk in an aggregate. * `Broken` - Disk is in a broken pool. * `Label Maintenance` - Disk is in online label maintenance list. * `Foreign` - Array LUN has been marked foreign. * `Maintenance` - Disk is in maintenance center. * `Mediator` - A mediator disk is a disk used on non-shared HA systems hosted by an external node which is used to communicate the viability of the storage failover between non-shared HA nodes. * `Shared` - Disk is partitioned or in a storage pool. * `Remote` - Disk belongs to a remote cluster. * `Spare` - The disk is a spare disk. * `Unassigned` - Disk ownership has not been assigned. * `Unsupported` - The disk is not supported.
 	ContainerType *string `json:"ContainerType,omitempty"`
 	// NetApp base disk shelf bay.
@@ -40,12 +46,14 @@ type StorageNetAppBaseDisk struct {
 	DiskShelfName *string `json:"DiskShelfName,omitempty"`
 	// The type of the NetApp disk. * `Unknown` - Default unknown disk type. * `SSDNVM` - Solid state disk with Non-Volatile Memory Express protocol enabled. * `ATA` - Advanced Technology Attachment is a type of disk drive that integrates the drive controller directly on the drive itself. * `FCAL` - For the FC-AL disk connection type, disk shelves are connected to the controller in a loop. * `BSAS` - Bridged SAS-SATA disks with added hardware to enable them to be plugged into a SAS-connected storage shelf. * `FSAS` - Near Line SAS. NL-SAS drives are enterprise SATA drives with a SAS interface, head, media, and rotational speed of traditional enterprise-class SATA drives with the fully capable SAS interface typical for classic SAS drives. * `LUN` - Logical Unit Number refers to a logical disk. * `SAS` - Storage disk with serial attached SCSI. * `MSATA` - SATA disk in multi-disk carrier storage shelf. * `SSD` - Storage disk with Solid state disk. * `VMDISK` - Virtual machine Data Disk.
 	DiskType *string `json:"DiskType,omitempty"`
+	// The node name for the disk.
+	NodeName *string `json:"NodeName,omitempty"`
 	// Current state of the NetApp disk. * `Present` - Storage disk state type is present. * `Copy` - Storage disk state type is copy. * `Broken` - Storage disk state type is broken. * `Maintenance` - Storage disk state type is maintenance. * `Partner` - Storage disk state type is partner. * `Pending` - Storage disk state type is pending. * `Reconstructing` - Storage disk state type is reconstructing. * `Removed` - Storage disk state type is removed. * `Spare` - Storage disk state type is spare. * `Unfail` - Storage disk state type is unfail. * `Zeroing` - Storage disk state type is zeroing.
 	State *string `json:"State,omitempty"`
 	// Universally unique identifier of the NetApp Disk.
-	Uuid            *string                           `json:"Uuid,omitempty"`
-	Array           *StorageNetAppClusterRelationship `json:"Array,omitempty"`
-	ArrayController *StorageNetAppNodeRelationship    `json:"ArrayController,omitempty"`
+	Uuid            *string                                  `json:"Uuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+	Array           NullableStorageNetAppClusterRelationship `json:"Array,omitempty"`
+	ArrayController NullableStorageNetAppNodeRelationship    `json:"ArrayController,omitempty"`
 	// An array of relationships to storageNetAppAggregate resources.
 	DiskPool []StorageNetAppAggregateRelationship `json:"DiskPool,omitempty"`
 	// An array of relationships to storageNetAppDiskEvent resources.
@@ -102,6 +110,11 @@ func (o *StorageNetAppBaseDisk) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "storage.NetAppBaseDisk" of the ClassId field.
+func (o *StorageNetAppBaseDisk) GetDefaultClassId() interface{} {
+	return "storage.NetAppBaseDisk"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *StorageNetAppBaseDisk) GetObjectType() string {
 	if o == nil {
@@ -126,9 +139,14 @@ func (o *StorageNetAppBaseDisk) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "storage.NetAppBaseDisk" of the ObjectType field.
+func (o *StorageNetAppBaseDisk) GetDefaultObjectType() interface{} {
+	return "storage.NetAppBaseDisk"
+}
+
 // GetBaseDiskModel returns the BaseDiskModel field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetBaseDiskModel() string {
-	if o == nil || o.BaseDiskModel == nil {
+	if o == nil || IsNil(o.BaseDiskModel) {
 		var ret string
 		return ret
 	}
@@ -138,7 +156,7 @@ func (o *StorageNetAppBaseDisk) GetBaseDiskModel() string {
 // GetBaseDiskModelOk returns a tuple with the BaseDiskModel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetBaseDiskModelOk() (*string, bool) {
-	if o == nil || o.BaseDiskModel == nil {
+	if o == nil || IsNil(o.BaseDiskModel) {
 		return nil, false
 	}
 	return o.BaseDiskModel, true
@@ -146,7 +164,7 @@ func (o *StorageNetAppBaseDisk) GetBaseDiskModelOk() (*string, bool) {
 
 // HasBaseDiskModel returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasBaseDiskModel() bool {
-	if o != nil && o.BaseDiskModel != nil {
+	if o != nil && !IsNil(o.BaseDiskModel) {
 		return true
 	}
 
@@ -158,9 +176,41 @@ func (o *StorageNetAppBaseDisk) SetBaseDiskModel(v string) {
 	o.BaseDiskModel = &v
 }
 
+// GetClusterUuid returns the ClusterUuid field value if set, zero value otherwise.
+func (o *StorageNetAppBaseDisk) GetClusterUuid() string {
+	if o == nil || IsNil(o.ClusterUuid) {
+		var ret string
+		return ret
+	}
+	return *o.ClusterUuid
+}
+
+// GetClusterUuidOk returns a tuple with the ClusterUuid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppBaseDisk) GetClusterUuidOk() (*string, bool) {
+	if o == nil || IsNil(o.ClusterUuid) {
+		return nil, false
+	}
+	return o.ClusterUuid, true
+}
+
+// HasClusterUuid returns a boolean if a field has been set.
+func (o *StorageNetAppBaseDisk) HasClusterUuid() bool {
+	if o != nil && !IsNil(o.ClusterUuid) {
+		return true
+	}
+
+	return false
+}
+
+// SetClusterUuid gets a reference to the given string and assigns it to the ClusterUuid field.
+func (o *StorageNetAppBaseDisk) SetClusterUuid(v string) {
+	o.ClusterUuid = &v
+}
+
 // GetContainerType returns the ContainerType field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetContainerType() string {
-	if o == nil || o.ContainerType == nil {
+	if o == nil || IsNil(o.ContainerType) {
 		var ret string
 		return ret
 	}
@@ -170,7 +220,7 @@ func (o *StorageNetAppBaseDisk) GetContainerType() string {
 // GetContainerTypeOk returns a tuple with the ContainerType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetContainerTypeOk() (*string, bool) {
-	if o == nil || o.ContainerType == nil {
+	if o == nil || IsNil(o.ContainerType) {
 		return nil, false
 	}
 	return o.ContainerType, true
@@ -178,7 +228,7 @@ func (o *StorageNetAppBaseDisk) GetContainerTypeOk() (*string, bool) {
 
 // HasContainerType returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasContainerType() bool {
-	if o != nil && o.ContainerType != nil {
+	if o != nil && !IsNil(o.ContainerType) {
 		return true
 	}
 
@@ -192,7 +242,7 @@ func (o *StorageNetAppBaseDisk) SetContainerType(v string) {
 
 // GetDiskBay returns the DiskBay field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetDiskBay() int64 {
-	if o == nil || o.DiskBay == nil {
+	if o == nil || IsNil(o.DiskBay) {
 		var ret int64
 		return ret
 	}
@@ -202,7 +252,7 @@ func (o *StorageNetAppBaseDisk) GetDiskBay() int64 {
 // GetDiskBayOk returns a tuple with the DiskBay field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetDiskBayOk() (*int64, bool) {
-	if o == nil || o.DiskBay == nil {
+	if o == nil || IsNil(o.DiskBay) {
 		return nil, false
 	}
 	return o.DiskBay, true
@@ -210,7 +260,7 @@ func (o *StorageNetAppBaseDisk) GetDiskBayOk() (*int64, bool) {
 
 // HasDiskBay returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasDiskBay() bool {
-	if o != nil && o.DiskBay != nil {
+	if o != nil && !IsNil(o.DiskBay) {
 		return true
 	}
 
@@ -224,7 +274,7 @@ func (o *StorageNetAppBaseDisk) SetDiskBay(v int64) {
 
 // GetDiskSerialNumber returns the DiskSerialNumber field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetDiskSerialNumber() string {
-	if o == nil || o.DiskSerialNumber == nil {
+	if o == nil || IsNil(o.DiskSerialNumber) {
 		var ret string
 		return ret
 	}
@@ -234,7 +284,7 @@ func (o *StorageNetAppBaseDisk) GetDiskSerialNumber() string {
 // GetDiskSerialNumberOk returns a tuple with the DiskSerialNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetDiskSerialNumberOk() (*string, bool) {
-	if o == nil || o.DiskSerialNumber == nil {
+	if o == nil || IsNil(o.DiskSerialNumber) {
 		return nil, false
 	}
 	return o.DiskSerialNumber, true
@@ -242,7 +292,7 @@ func (o *StorageNetAppBaseDisk) GetDiskSerialNumberOk() (*string, bool) {
 
 // HasDiskSerialNumber returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasDiskSerialNumber() bool {
-	if o != nil && o.DiskSerialNumber != nil {
+	if o != nil && !IsNil(o.DiskSerialNumber) {
 		return true
 	}
 
@@ -256,7 +306,7 @@ func (o *StorageNetAppBaseDisk) SetDiskSerialNumber(v string) {
 
 // GetDiskShelfId returns the DiskShelfId field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetDiskShelfId() string {
-	if o == nil || o.DiskShelfId == nil {
+	if o == nil || IsNil(o.DiskShelfId) {
 		var ret string
 		return ret
 	}
@@ -266,7 +316,7 @@ func (o *StorageNetAppBaseDisk) GetDiskShelfId() string {
 // GetDiskShelfIdOk returns a tuple with the DiskShelfId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetDiskShelfIdOk() (*string, bool) {
-	if o == nil || o.DiskShelfId == nil {
+	if o == nil || IsNil(o.DiskShelfId) {
 		return nil, false
 	}
 	return o.DiskShelfId, true
@@ -274,7 +324,7 @@ func (o *StorageNetAppBaseDisk) GetDiskShelfIdOk() (*string, bool) {
 
 // HasDiskShelfId returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasDiskShelfId() bool {
-	if o != nil && o.DiskShelfId != nil {
+	if o != nil && !IsNil(o.DiskShelfId) {
 		return true
 	}
 
@@ -288,7 +338,7 @@ func (o *StorageNetAppBaseDisk) SetDiskShelfId(v string) {
 
 // GetDiskShelfModel returns the DiskShelfModel field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetDiskShelfModel() string {
-	if o == nil || o.DiskShelfModel == nil {
+	if o == nil || IsNil(o.DiskShelfModel) {
 		var ret string
 		return ret
 	}
@@ -298,7 +348,7 @@ func (o *StorageNetAppBaseDisk) GetDiskShelfModel() string {
 // GetDiskShelfModelOk returns a tuple with the DiskShelfModel field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetDiskShelfModelOk() (*string, bool) {
-	if o == nil || o.DiskShelfModel == nil {
+	if o == nil || IsNil(o.DiskShelfModel) {
 		return nil, false
 	}
 	return o.DiskShelfModel, true
@@ -306,7 +356,7 @@ func (o *StorageNetAppBaseDisk) GetDiskShelfModelOk() (*string, bool) {
 
 // HasDiskShelfModel returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasDiskShelfModel() bool {
-	if o != nil && o.DiskShelfModel != nil {
+	if o != nil && !IsNil(o.DiskShelfModel) {
 		return true
 	}
 
@@ -320,7 +370,7 @@ func (o *StorageNetAppBaseDisk) SetDiskShelfModel(v string) {
 
 // GetDiskShelfName returns the DiskShelfName field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetDiskShelfName() string {
-	if o == nil || o.DiskShelfName == nil {
+	if o == nil || IsNil(o.DiskShelfName) {
 		var ret string
 		return ret
 	}
@@ -330,7 +380,7 @@ func (o *StorageNetAppBaseDisk) GetDiskShelfName() string {
 // GetDiskShelfNameOk returns a tuple with the DiskShelfName field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetDiskShelfNameOk() (*string, bool) {
-	if o == nil || o.DiskShelfName == nil {
+	if o == nil || IsNil(o.DiskShelfName) {
 		return nil, false
 	}
 	return o.DiskShelfName, true
@@ -338,7 +388,7 @@ func (o *StorageNetAppBaseDisk) GetDiskShelfNameOk() (*string, bool) {
 
 // HasDiskShelfName returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasDiskShelfName() bool {
-	if o != nil && o.DiskShelfName != nil {
+	if o != nil && !IsNil(o.DiskShelfName) {
 		return true
 	}
 
@@ -352,7 +402,7 @@ func (o *StorageNetAppBaseDisk) SetDiskShelfName(v string) {
 
 // GetDiskType returns the DiskType field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetDiskType() string {
-	if o == nil || o.DiskType == nil {
+	if o == nil || IsNil(o.DiskType) {
 		var ret string
 		return ret
 	}
@@ -362,7 +412,7 @@ func (o *StorageNetAppBaseDisk) GetDiskType() string {
 // GetDiskTypeOk returns a tuple with the DiskType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetDiskTypeOk() (*string, bool) {
-	if o == nil || o.DiskType == nil {
+	if o == nil || IsNil(o.DiskType) {
 		return nil, false
 	}
 	return o.DiskType, true
@@ -370,7 +420,7 @@ func (o *StorageNetAppBaseDisk) GetDiskTypeOk() (*string, bool) {
 
 // HasDiskType returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasDiskType() bool {
-	if o != nil && o.DiskType != nil {
+	if o != nil && !IsNil(o.DiskType) {
 		return true
 	}
 
@@ -382,9 +432,41 @@ func (o *StorageNetAppBaseDisk) SetDiskType(v string) {
 	o.DiskType = &v
 }
 
+// GetNodeName returns the NodeName field value if set, zero value otherwise.
+func (o *StorageNetAppBaseDisk) GetNodeName() string {
+	if o == nil || IsNil(o.NodeName) {
+		var ret string
+		return ret
+	}
+	return *o.NodeName
+}
+
+// GetNodeNameOk returns a tuple with the NodeName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *StorageNetAppBaseDisk) GetNodeNameOk() (*string, bool) {
+	if o == nil || IsNil(o.NodeName) {
+		return nil, false
+	}
+	return o.NodeName, true
+}
+
+// HasNodeName returns a boolean if a field has been set.
+func (o *StorageNetAppBaseDisk) HasNodeName() bool {
+	if o != nil && !IsNil(o.NodeName) {
+		return true
+	}
+
+	return false
+}
+
+// SetNodeName gets a reference to the given string and assigns it to the NodeName field.
+func (o *StorageNetAppBaseDisk) SetNodeName(v string) {
+	o.NodeName = &v
+}
+
 // GetState returns the State field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetState() string {
-	if o == nil || o.State == nil {
+	if o == nil || IsNil(o.State) {
 		var ret string
 		return ret
 	}
@@ -394,7 +476,7 @@ func (o *StorageNetAppBaseDisk) GetState() string {
 // GetStateOk returns a tuple with the State field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetStateOk() (*string, bool) {
-	if o == nil || o.State == nil {
+	if o == nil || IsNil(o.State) {
 		return nil, false
 	}
 	return o.State, true
@@ -402,7 +484,7 @@ func (o *StorageNetAppBaseDisk) GetStateOk() (*string, bool) {
 
 // HasState returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasState() bool {
-	if o != nil && o.State != nil {
+	if o != nil && !IsNil(o.State) {
 		return true
 	}
 
@@ -416,7 +498,7 @@ func (o *StorageNetAppBaseDisk) SetState(v string) {
 
 // GetUuid returns the Uuid field value if set, zero value otherwise.
 func (o *StorageNetAppBaseDisk) GetUuid() string {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		var ret string
 		return ret
 	}
@@ -426,7 +508,7 @@ func (o *StorageNetAppBaseDisk) GetUuid() string {
 // GetUuidOk returns a tuple with the Uuid field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *StorageNetAppBaseDisk) GetUuidOk() (*string, bool) {
-	if o == nil || o.Uuid == nil {
+	if o == nil || IsNil(o.Uuid) {
 		return nil, false
 	}
 	return o.Uuid, true
@@ -434,7 +516,7 @@ func (o *StorageNetAppBaseDisk) GetUuidOk() (*string, bool) {
 
 // HasUuid returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasUuid() bool {
-	if o != nil && o.Uuid != nil {
+	if o != nil && !IsNil(o.Uuid) {
 		return true
 	}
 
@@ -446,68 +528,90 @@ func (o *StorageNetAppBaseDisk) SetUuid(v string) {
 	o.Uuid = &v
 }
 
-// GetArray returns the Array field value if set, zero value otherwise.
+// GetArray returns the Array field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorageNetAppBaseDisk) GetArray() StorageNetAppClusterRelationship {
-	if o == nil || o.Array == nil {
+	if o == nil || IsNil(o.Array.Get()) {
 		var ret StorageNetAppClusterRelationship
 		return ret
 	}
-	return *o.Array
+	return *o.Array.Get()
 }
 
 // GetArrayOk returns a tuple with the Array field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppBaseDisk) GetArrayOk() (*StorageNetAppClusterRelationship, bool) {
-	if o == nil || o.Array == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.Array, true
+	return o.Array.Get(), o.Array.IsSet()
 }
 
 // HasArray returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasArray() bool {
-	if o != nil && o.Array != nil {
+	if o != nil && o.Array.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetArray gets a reference to the given StorageNetAppClusterRelationship and assigns it to the Array field.
+// SetArray gets a reference to the given NullableStorageNetAppClusterRelationship and assigns it to the Array field.
 func (o *StorageNetAppBaseDisk) SetArray(v StorageNetAppClusterRelationship) {
-	o.Array = &v
+	o.Array.Set(&v)
 }
 
-// GetArrayController returns the ArrayController field value if set, zero value otherwise.
+// SetArrayNil sets the value for Array to be an explicit nil
+func (o *StorageNetAppBaseDisk) SetArrayNil() {
+	o.Array.Set(nil)
+}
+
+// UnsetArray ensures that no value is present for Array, not even an explicit nil
+func (o *StorageNetAppBaseDisk) UnsetArray() {
+	o.Array.Unset()
+}
+
+// GetArrayController returns the ArrayController field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *StorageNetAppBaseDisk) GetArrayController() StorageNetAppNodeRelationship {
-	if o == nil || o.ArrayController == nil {
+	if o == nil || IsNil(o.ArrayController.Get()) {
 		var ret StorageNetAppNodeRelationship
 		return ret
 	}
-	return *o.ArrayController
+	return *o.ArrayController.Get()
 }
 
 // GetArrayControllerOk returns a tuple with the ArrayController field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppBaseDisk) GetArrayControllerOk() (*StorageNetAppNodeRelationship, bool) {
-	if o == nil || o.ArrayController == nil {
+	if o == nil {
 		return nil, false
 	}
-	return o.ArrayController, true
+	return o.ArrayController.Get(), o.ArrayController.IsSet()
 }
 
 // HasArrayController returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasArrayController() bool {
-	if o != nil && o.ArrayController != nil {
+	if o != nil && o.ArrayController.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetArrayController gets a reference to the given StorageNetAppNodeRelationship and assigns it to the ArrayController field.
+// SetArrayController gets a reference to the given NullableStorageNetAppNodeRelationship and assigns it to the ArrayController field.
 func (o *StorageNetAppBaseDisk) SetArrayController(v StorageNetAppNodeRelationship) {
-	o.ArrayController = &v
+	o.ArrayController.Set(&v)
+}
+
+// SetArrayControllerNil sets the value for ArrayController to be an explicit nil
+func (o *StorageNetAppBaseDisk) SetArrayControllerNil() {
+	o.ArrayController.Set(nil)
+}
+
+// UnsetArrayController ensures that no value is present for ArrayController, not even an explicit nil
+func (o *StorageNetAppBaseDisk) UnsetArrayController() {
+	o.ArrayController.Unset()
 }
 
 // GetDiskPool returns the DiskPool field value if set, zero value otherwise (both if not set or set to explicit null).
@@ -523,7 +627,7 @@ func (o *StorageNetAppBaseDisk) GetDiskPool() []StorageNetAppAggregateRelationsh
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppBaseDisk) GetDiskPoolOk() ([]StorageNetAppAggregateRelationship, bool) {
-	if o == nil || o.DiskPool == nil {
+	if o == nil || IsNil(o.DiskPool) {
 		return nil, false
 	}
 	return o.DiskPool, true
@@ -531,7 +635,7 @@ func (o *StorageNetAppBaseDisk) GetDiskPoolOk() ([]StorageNetAppAggregateRelatio
 
 // HasDiskPool returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasDiskPool() bool {
-	if o != nil && o.DiskPool != nil {
+	if o != nil && !IsNil(o.DiskPool) {
 		return true
 	}
 
@@ -556,7 +660,7 @@ func (o *StorageNetAppBaseDisk) GetEvents() []StorageNetAppDiskEventRelationship
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *StorageNetAppBaseDisk) GetEventsOk() ([]StorageNetAppDiskEventRelationship, bool) {
-	if o == nil || o.Events == nil {
+	if o == nil || IsNil(o.Events) {
 		return nil, false
 	}
 	return o.Events, true
@@ -564,7 +668,7 @@ func (o *StorageNetAppBaseDisk) GetEventsOk() ([]StorageNetAppDiskEventRelations
 
 // HasEvents returns a boolean if a field has been set.
 func (o *StorageNetAppBaseDisk) HasEvents() bool {
-	if o != nil && o.Events != nil {
+	if o != nil && !IsNil(o.Events) {
 		return true
 	}
 
@@ -577,56 +681,72 @@ func (o *StorageNetAppBaseDisk) SetEvents(v []StorageNetAppDiskEventRelationship
 }
 
 func (o StorageNetAppBaseDisk) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o StorageNetAppBaseDisk) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedStorageBaseArrayDisk, errStorageBaseArrayDisk := json.Marshal(o.StorageBaseArrayDisk)
 	if errStorageBaseArrayDisk != nil {
-		return []byte{}, errStorageBaseArrayDisk
+		return map[string]interface{}{}, errStorageBaseArrayDisk
 	}
 	errStorageBaseArrayDisk = json.Unmarshal([]byte(serializedStorageBaseArrayDisk), &toSerialize)
 	if errStorageBaseArrayDisk != nil {
-		return []byte{}, errStorageBaseArrayDisk
+		return map[string]interface{}{}, errStorageBaseArrayDisk
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.BaseDiskModel != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.BaseDiskModel) {
 		toSerialize["BaseDiskModel"] = o.BaseDiskModel
 	}
-	if o.ContainerType != nil {
+	if !IsNil(o.ClusterUuid) {
+		toSerialize["ClusterUuid"] = o.ClusterUuid
+	}
+	if !IsNil(o.ContainerType) {
 		toSerialize["ContainerType"] = o.ContainerType
 	}
-	if o.DiskBay != nil {
+	if !IsNil(o.DiskBay) {
 		toSerialize["DiskBay"] = o.DiskBay
 	}
-	if o.DiskSerialNumber != nil {
+	if !IsNil(o.DiskSerialNumber) {
 		toSerialize["DiskSerialNumber"] = o.DiskSerialNumber
 	}
-	if o.DiskShelfId != nil {
+	if !IsNil(o.DiskShelfId) {
 		toSerialize["DiskShelfId"] = o.DiskShelfId
 	}
-	if o.DiskShelfModel != nil {
+	if !IsNil(o.DiskShelfModel) {
 		toSerialize["DiskShelfModel"] = o.DiskShelfModel
 	}
-	if o.DiskShelfName != nil {
+	if !IsNil(o.DiskShelfName) {
 		toSerialize["DiskShelfName"] = o.DiskShelfName
 	}
-	if o.DiskType != nil {
+	if !IsNil(o.DiskType) {
 		toSerialize["DiskType"] = o.DiskType
 	}
-	if o.State != nil {
+	if !IsNil(o.NodeName) {
+		toSerialize["NodeName"] = o.NodeName
+	}
+	if !IsNil(o.State) {
 		toSerialize["State"] = o.State
 	}
-	if o.Uuid != nil {
+	if !IsNil(o.Uuid) {
 		toSerialize["Uuid"] = o.Uuid
 	}
-	if o.Array != nil {
-		toSerialize["Array"] = o.Array
+	if o.Array.IsSet() {
+		toSerialize["Array"] = o.Array.Get()
 	}
-	if o.ArrayController != nil {
-		toSerialize["ArrayController"] = o.ArrayController
+	if o.ArrayController.IsSet() {
+		toSerialize["ArrayController"] = o.ArrayController.Get()
 	}
 	if o.DiskPool != nil {
 		toSerialize["DiskPool"] = o.DiskPool
@@ -639,10 +759,51 @@ func (o StorageNetAppBaseDisk) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *StorageNetAppBaseDisk) UnmarshalJSON(bytes []byte) (err error) {
+func (o *StorageNetAppBaseDisk) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type StorageNetAppBaseDiskWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -650,6 +811,8 @@ func (o *StorageNetAppBaseDisk) UnmarshalJSON(bytes []byte) (err error) {
 		ObjectType string `json:"ObjectType"`
 		// The NetApp base disk model.
 		BaseDiskModel *string `json:"BaseDiskModel,omitempty"`
+		// Unique identity of the device.
+		ClusterUuid *string `json:"ClusterUuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
 		// Supported container type for NetApp disk. * `Unknown` - Default container type is currently unknown. * `Aggregate` - Disk is used as a physical disk in an aggregate. * `Broken` - Disk is in a broken pool. * `Label Maintenance` - Disk is in online label maintenance list. * `Foreign` - Array LUN has been marked foreign. * `Maintenance` - Disk is in maintenance center. * `Mediator` - A mediator disk is a disk used on non-shared HA systems hosted by an external node which is used to communicate the viability of the storage failover between non-shared HA nodes. * `Shared` - Disk is partitioned or in a storage pool. * `Remote` - Disk belongs to a remote cluster. * `Spare` - The disk is a spare disk. * `Unassigned` - Disk ownership has not been assigned. * `Unsupported` - The disk is not supported.
 		ContainerType *string `json:"ContainerType,omitempty"`
 		// NetApp base disk shelf bay.
@@ -664,12 +827,14 @@ func (o *StorageNetAppBaseDisk) UnmarshalJSON(bytes []byte) (err error) {
 		DiskShelfName *string `json:"DiskShelfName,omitempty"`
 		// The type of the NetApp disk. * `Unknown` - Default unknown disk type. * `SSDNVM` - Solid state disk with Non-Volatile Memory Express protocol enabled. * `ATA` - Advanced Technology Attachment is a type of disk drive that integrates the drive controller directly on the drive itself. * `FCAL` - For the FC-AL disk connection type, disk shelves are connected to the controller in a loop. * `BSAS` - Bridged SAS-SATA disks with added hardware to enable them to be plugged into a SAS-connected storage shelf. * `FSAS` - Near Line SAS. NL-SAS drives are enterprise SATA drives with a SAS interface, head, media, and rotational speed of traditional enterprise-class SATA drives with the fully capable SAS interface typical for classic SAS drives. * `LUN` - Logical Unit Number refers to a logical disk. * `SAS` - Storage disk with serial attached SCSI. * `MSATA` - SATA disk in multi-disk carrier storage shelf. * `SSD` - Storage disk with Solid state disk. * `VMDISK` - Virtual machine Data Disk.
 		DiskType *string `json:"DiskType,omitempty"`
+		// The node name for the disk.
+		NodeName *string `json:"NodeName,omitempty"`
 		// Current state of the NetApp disk. * `Present` - Storage disk state type is present. * `Copy` - Storage disk state type is copy. * `Broken` - Storage disk state type is broken. * `Maintenance` - Storage disk state type is maintenance. * `Partner` - Storage disk state type is partner. * `Pending` - Storage disk state type is pending. * `Reconstructing` - Storage disk state type is reconstructing. * `Removed` - Storage disk state type is removed. * `Spare` - Storage disk state type is spare. * `Unfail` - Storage disk state type is unfail. * `Zeroing` - Storage disk state type is zeroing.
 		State *string `json:"State,omitempty"`
 		// Universally unique identifier of the NetApp Disk.
-		Uuid            *string                           `json:"Uuid,omitempty"`
-		Array           *StorageNetAppClusterRelationship `json:"Array,omitempty"`
-		ArrayController *StorageNetAppNodeRelationship    `json:"ArrayController,omitempty"`
+		Uuid            *string                                  `json:"Uuid,omitempty" validate:"regexp=^$|^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"`
+		Array           NullableStorageNetAppClusterRelationship `json:"Array,omitempty"`
+		ArrayController NullableStorageNetAppNodeRelationship    `json:"ArrayController,omitempty"`
 		// An array of relationships to storageNetAppAggregate resources.
 		DiskPool []StorageNetAppAggregateRelationship `json:"DiskPool,omitempty"`
 		// An array of relationships to storageNetAppDiskEvent resources.
@@ -678,12 +843,13 @@ func (o *StorageNetAppBaseDisk) UnmarshalJSON(bytes []byte) (err error) {
 
 	varStorageNetAppBaseDiskWithoutEmbeddedStruct := StorageNetAppBaseDiskWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppBaseDiskWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varStorageNetAppBaseDiskWithoutEmbeddedStruct)
 	if err == nil {
 		varStorageNetAppBaseDisk := _StorageNetAppBaseDisk{}
 		varStorageNetAppBaseDisk.ClassId = varStorageNetAppBaseDiskWithoutEmbeddedStruct.ClassId
 		varStorageNetAppBaseDisk.ObjectType = varStorageNetAppBaseDiskWithoutEmbeddedStruct.ObjectType
 		varStorageNetAppBaseDisk.BaseDiskModel = varStorageNetAppBaseDiskWithoutEmbeddedStruct.BaseDiskModel
+		varStorageNetAppBaseDisk.ClusterUuid = varStorageNetAppBaseDiskWithoutEmbeddedStruct.ClusterUuid
 		varStorageNetAppBaseDisk.ContainerType = varStorageNetAppBaseDiskWithoutEmbeddedStruct.ContainerType
 		varStorageNetAppBaseDisk.DiskBay = varStorageNetAppBaseDiskWithoutEmbeddedStruct.DiskBay
 		varStorageNetAppBaseDisk.DiskSerialNumber = varStorageNetAppBaseDiskWithoutEmbeddedStruct.DiskSerialNumber
@@ -691,6 +857,7 @@ func (o *StorageNetAppBaseDisk) UnmarshalJSON(bytes []byte) (err error) {
 		varStorageNetAppBaseDisk.DiskShelfModel = varStorageNetAppBaseDiskWithoutEmbeddedStruct.DiskShelfModel
 		varStorageNetAppBaseDisk.DiskShelfName = varStorageNetAppBaseDiskWithoutEmbeddedStruct.DiskShelfName
 		varStorageNetAppBaseDisk.DiskType = varStorageNetAppBaseDiskWithoutEmbeddedStruct.DiskType
+		varStorageNetAppBaseDisk.NodeName = varStorageNetAppBaseDiskWithoutEmbeddedStruct.NodeName
 		varStorageNetAppBaseDisk.State = varStorageNetAppBaseDiskWithoutEmbeddedStruct.State
 		varStorageNetAppBaseDisk.Uuid = varStorageNetAppBaseDiskWithoutEmbeddedStruct.Uuid
 		varStorageNetAppBaseDisk.Array = varStorageNetAppBaseDiskWithoutEmbeddedStruct.Array
@@ -704,7 +871,7 @@ func (o *StorageNetAppBaseDisk) UnmarshalJSON(bytes []byte) (err error) {
 
 	varStorageNetAppBaseDisk := _StorageNetAppBaseDisk{}
 
-	err = json.Unmarshal(bytes, &varStorageNetAppBaseDisk)
+	err = json.Unmarshal(data, &varStorageNetAppBaseDisk)
 	if err == nil {
 		o.StorageBaseArrayDisk = varStorageNetAppBaseDisk.StorageBaseArrayDisk
 	} else {
@@ -713,10 +880,11 @@ func (o *StorageNetAppBaseDisk) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "BaseDiskModel")
+		delete(additionalProperties, "ClusterUuid")
 		delete(additionalProperties, "ContainerType")
 		delete(additionalProperties, "DiskBay")
 		delete(additionalProperties, "DiskSerialNumber")
@@ -724,6 +892,7 @@ func (o *StorageNetAppBaseDisk) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "DiskShelfModel")
 		delete(additionalProperties, "DiskShelfName")
 		delete(additionalProperties, "DiskType")
+		delete(additionalProperties, "NodeName")
 		delete(additionalProperties, "State")
 		delete(additionalProperties, "Uuid")
 		delete(additionalProperties, "Array")

@@ -9,23 +9,30 @@ Name | Type | Description | Notes
 **AdminLocatorLedState** | Pointer to **string** | User configured state of the locator LED for the server. * &#x60;None&#x60; - No operation property for locator led. * &#x60;On&#x60; - The Locator Led is turned on. * &#x60;Off&#x60; - The Locator Led is turned off. | [optional] [default to "None"]
 **AdminPowerState** | Pointer to **string** | User configured power state of the server. * &#x60;Policy&#x60; - Power state is set to the default value in the policy. * &#x60;PowerOn&#x60; - Power state of the server is set to On. * &#x60;PowerOff&#x60; - Power state is the server set to Off. * &#x60;PowerCycle&#x60; - Power state the server is reset. * &#x60;HardReset&#x60; - Power state the server is hard reset. * &#x60;Shutdown&#x60; - Operating system on the server is shut down. * &#x60;Reboot&#x60; - Power state of IMC is rebooted. | [optional] [default to "Policy"]
 **CertificatesAction** | Pointer to [**NullableCertificatemanagementCertificateBase**](CertificatemanagementCertificateBase.md) |  | [optional] 
+**ClearSel** | Pointer to **string** | Clear system event log on a server. * &#x60;Ready&#x60; - Clear system event log operation is allowed on the server in this state. * &#x60;Clear&#x60; - Trigger a clear system event log operation on a server. | [optional] [default to "Ready"]
 **CmosReset** | Pointer to **string** | The allowed actions on the CMOS Reset. * &#x60;Ready&#x60; - CMOS Reset operation is allowed to be done on the server in this state. * &#x60;Pending&#x60; - The identifier to state that the previous CMOS Reset operation on this server has not completed due to a pending power cycle. CMOS Reset operation cannot be done on the server when in this state. * &#x60;Reset&#x60; - The value that the UI/API needs to provide to trigger a CMOS Reset operation on a server. | [optional] [default to "Ready"]
+**CollectSel** | Pointer to **string** | Collect system event log from a server. * &#x60;Ready&#x60; - Collect system event log operation is allowed on the server in this state. * &#x60;Collect&#x60; - Trigger a collect system event log operation on a server. | [optional] [default to "Ready"]
 **ConfigState** | Pointer to **string** | The configured state of these settings in the target server. The value is any one of Applied, Applying, Failed. Applied - This state denotes that the settings are applied successfully in the target server. Applying - This state denotes that the settings are being applied in the target server. Failed - This state denotes that the settings could not be applied in the target server. * &#x60;Applied&#x60; - User configured settings are in applied state. * &#x60;Applying&#x60; - User settings are being applied on the target server. * &#x60;Scheduled&#x60; - User configured settings are scheduled to be applied. * &#x60;Failed&#x60; - User configured settings could not be applied. | [optional] [readonly] [default to "Applied"]
-**FrontPanelLockState** | Pointer to **string** | The allowed actions on the Front Panel Lock. * &#x60;Unlock&#x60; - Front Panel of the server is set to Unlocked state. * &#x60;Lock&#x60; - Front Panel of the server is set to Locked state. | [optional] [default to "Unlock"]
+**FrontPanelLockState** | Pointer to **string** | The allowed actions on the Front Panel Lock. * &#x60;None&#x60; - Front Panel of the server is set to None state. It is required so that the next frontPanelLockState operation can be triggered. * &#x60;Lock&#x60; - Front Panel of the server is set to Locked state. * &#x60;Unlock&#x60; - Front Panel of the server is set to Unlocked state. | [optional] [default to "None"]
+**HostInitConfiguration** | Pointer to **string** | The JSON formatted host initialization configuration containing the basic information for doing an initial boot. The information will be sent to CIMC and stored in host-init.json file on the server. The stored file can only be access using IPMI tool on the host OS. | [optional] 
 **KvmReset** | Pointer to **string** | The allowed actions on the vKVM Reset. * &#x60;Ready&#x60; - Reset vKVM operation is allowed to be done on the server in this state. * &#x60;Reset&#x60; - The value that the UI/API needs to provide to trigger a Reset vKVM operation on a server. | [optional] [default to "Ready"]
 **Name** | Pointer to **string** | The property used to identify the name of the server it is associated with. | [optional] [readonly] 
 **OneTimeBootDevice** | Pointer to **string** | The name of the device chosen by user for configuring One-Time Boot device. | [optional] 
 **PersistentMemoryOperation** | Pointer to [**NullableComputePersistentMemoryOperation**](ComputePersistentMemoryOperation.md) |  | [optional] 
+**PersonalitySetting** | Pointer to [**NullableComputePersonalitySetting**](ComputePersonalitySetting.md) |  | [optional] 
+**ResetMemoryErrors** | Pointer to **string** | Reset Correctable and Uncorrectable ECC errors on all the DIMMs present in the server. * &#x60;Ready&#x60; - Reset memory errors operation is allowed on the server in this state. * &#x60;Reset&#x60; - Trigger reset memory errors operation on a server. | [optional] [default to "Ready"]
 **ServerConfig** | Pointer to [**NullableComputeServerConfig**](ComputeServerConfig.md) |  | [optional] 
 **ServerOpStatus** | Pointer to [**[]ComputeServerOpStatus**](ComputeServerOpStatus.md) |  | [optional] 
 **StorageControllerOperation** | Pointer to [**NullableComputeStorageControllerOperation**](ComputeStorageControllerOperation.md) |  | [optional] 
 **StoragePhysicalDriveOperation** | Pointer to [**NullableComputeStoragePhysicalDriveOperation**](ComputeStoragePhysicalDriveOperation.md) |  | [optional] 
+**StorageUtilityImageOperation** | Pointer to [**NullableComputeStorageUtilityImageOperation**](ComputeStorageUtilityImageOperation.md) |  | [optional] 
 **StorageVirtualDriveOperation** | Pointer to [**NullableComputeStorageVirtualDriveOperation**](ComputeStorageVirtualDriveOperation.md) |  | [optional] 
+**TpmReset** | Pointer to **string** | Clear the configuration of TPM chip in the server. * &#x60;None&#x60; - Perform no action on the TPM. * &#x60;ClearTpm&#x60; - Clear the configuration and restore factory defaults of TPM chip in the server. | [optional] [default to "None"]
 **TunneledKvmState** | Pointer to **string** | By default, the tunneled vKVM property appears in Ready state. The property can be configured by performing allowed actions. Once the property is configured, it reverts to Ready state. * &#x60;Ready&#x60; - Tunneled vKVM is ready to be configured on the server. * &#x60;Enable&#x60; - Tunneled vKVM is enabled for the server. * &#x60;Disable&#x60; - Tunneled vKVM is disabled for the server. | [optional] [default to "Ready"]
-**LocatorLed** | Pointer to [**EquipmentLocatorLedRelationship**](EquipmentLocatorLedRelationship.md) |  | [optional] 
-**RegisteredDevice** | Pointer to [**AssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
-**RunningWorkflow** | Pointer to [**WorkflowWorkflowInfoRelationship**](WorkflowWorkflowInfoRelationship.md) |  | [optional] 
-**Server** | Pointer to [**ComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
+**LocatorLed** | Pointer to [**NullableEquipmentLocatorLedRelationship**](EquipmentLocatorLedRelationship.md) |  | [optional] 
+**RegisteredDevice** | Pointer to [**NullableAssetDeviceRegistrationRelationship**](AssetDeviceRegistrationRelationship.md) |  | [optional] 
+**RunningWorkflow** | Pointer to [**NullableWorkflowWorkflowInfoRelationship**](WorkflowWorkflowInfoRelationship.md) |  | [optional] 
+**Server** | Pointer to [**NullableComputePhysicalRelationship**](ComputePhysicalRelationship.md) |  | [optional] 
 
 ## Methods
 
@@ -171,6 +178,31 @@ HasCertificatesAction returns a boolean if a field has been set.
 `func (o *ComputeServerSetting) UnsetCertificatesAction()`
 
 UnsetCertificatesAction ensures that no value is present for CertificatesAction, not even an explicit nil
+### GetClearSel
+
+`func (o *ComputeServerSetting) GetClearSel() string`
+
+GetClearSel returns the ClearSel field if non-nil, zero value otherwise.
+
+### GetClearSelOk
+
+`func (o *ComputeServerSetting) GetClearSelOk() (*string, bool)`
+
+GetClearSelOk returns a tuple with the ClearSel field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetClearSel
+
+`func (o *ComputeServerSetting) SetClearSel(v string)`
+
+SetClearSel sets ClearSel field to given value.
+
+### HasClearSel
+
+`func (o *ComputeServerSetting) HasClearSel() bool`
+
+HasClearSel returns a boolean if a field has been set.
+
 ### GetCmosReset
 
 `func (o *ComputeServerSetting) GetCmosReset() string`
@@ -195,6 +227,31 @@ SetCmosReset sets CmosReset field to given value.
 `func (o *ComputeServerSetting) HasCmosReset() bool`
 
 HasCmosReset returns a boolean if a field has been set.
+
+### GetCollectSel
+
+`func (o *ComputeServerSetting) GetCollectSel() string`
+
+GetCollectSel returns the CollectSel field if non-nil, zero value otherwise.
+
+### GetCollectSelOk
+
+`func (o *ComputeServerSetting) GetCollectSelOk() (*string, bool)`
+
+GetCollectSelOk returns a tuple with the CollectSel field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCollectSel
+
+`func (o *ComputeServerSetting) SetCollectSel(v string)`
+
+SetCollectSel sets CollectSel field to given value.
+
+### HasCollectSel
+
+`func (o *ComputeServerSetting) HasCollectSel() bool`
+
+HasCollectSel returns a boolean if a field has been set.
 
 ### GetConfigState
 
@@ -245,6 +302,31 @@ SetFrontPanelLockState sets FrontPanelLockState field to given value.
 `func (o *ComputeServerSetting) HasFrontPanelLockState() bool`
 
 HasFrontPanelLockState returns a boolean if a field has been set.
+
+### GetHostInitConfiguration
+
+`func (o *ComputeServerSetting) GetHostInitConfiguration() string`
+
+GetHostInitConfiguration returns the HostInitConfiguration field if non-nil, zero value otherwise.
+
+### GetHostInitConfigurationOk
+
+`func (o *ComputeServerSetting) GetHostInitConfigurationOk() (*string, bool)`
+
+GetHostInitConfigurationOk returns a tuple with the HostInitConfiguration field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetHostInitConfiguration
+
+`func (o *ComputeServerSetting) SetHostInitConfiguration(v string)`
+
+SetHostInitConfiguration sets HostInitConfiguration field to given value.
+
+### HasHostInitConfiguration
+
+`func (o *ComputeServerSetting) HasHostInitConfiguration() bool`
+
+HasHostInitConfiguration returns a boolean if a field has been set.
 
 ### GetKvmReset
 
@@ -356,6 +438,66 @@ HasPersistentMemoryOperation returns a boolean if a field has been set.
 `func (o *ComputeServerSetting) UnsetPersistentMemoryOperation()`
 
 UnsetPersistentMemoryOperation ensures that no value is present for PersistentMemoryOperation, not even an explicit nil
+### GetPersonalitySetting
+
+`func (o *ComputeServerSetting) GetPersonalitySetting() ComputePersonalitySetting`
+
+GetPersonalitySetting returns the PersonalitySetting field if non-nil, zero value otherwise.
+
+### GetPersonalitySettingOk
+
+`func (o *ComputeServerSetting) GetPersonalitySettingOk() (*ComputePersonalitySetting, bool)`
+
+GetPersonalitySettingOk returns a tuple with the PersonalitySetting field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPersonalitySetting
+
+`func (o *ComputeServerSetting) SetPersonalitySetting(v ComputePersonalitySetting)`
+
+SetPersonalitySetting sets PersonalitySetting field to given value.
+
+### HasPersonalitySetting
+
+`func (o *ComputeServerSetting) HasPersonalitySetting() bool`
+
+HasPersonalitySetting returns a boolean if a field has been set.
+
+### SetPersonalitySettingNil
+
+`func (o *ComputeServerSetting) SetPersonalitySettingNil(b bool)`
+
+ SetPersonalitySettingNil sets the value for PersonalitySetting to be an explicit nil
+
+### UnsetPersonalitySetting
+`func (o *ComputeServerSetting) UnsetPersonalitySetting()`
+
+UnsetPersonalitySetting ensures that no value is present for PersonalitySetting, not even an explicit nil
+### GetResetMemoryErrors
+
+`func (o *ComputeServerSetting) GetResetMemoryErrors() string`
+
+GetResetMemoryErrors returns the ResetMemoryErrors field if non-nil, zero value otherwise.
+
+### GetResetMemoryErrorsOk
+
+`func (o *ComputeServerSetting) GetResetMemoryErrorsOk() (*string, bool)`
+
+GetResetMemoryErrorsOk returns a tuple with the ResetMemoryErrors field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetResetMemoryErrors
+
+`func (o *ComputeServerSetting) SetResetMemoryErrors(v string)`
+
+SetResetMemoryErrors sets ResetMemoryErrors field to given value.
+
+### HasResetMemoryErrors
+
+`func (o *ComputeServerSetting) HasResetMemoryErrors() bool`
+
+HasResetMemoryErrors returns a boolean if a field has been set.
+
 ### GetServerConfig
 
 `func (o *ComputeServerSetting) GetServerConfig() ComputeServerConfig`
@@ -496,6 +638,41 @@ HasStoragePhysicalDriveOperation returns a boolean if a field has been set.
 `func (o *ComputeServerSetting) UnsetStoragePhysicalDriveOperation()`
 
 UnsetStoragePhysicalDriveOperation ensures that no value is present for StoragePhysicalDriveOperation, not even an explicit nil
+### GetStorageUtilityImageOperation
+
+`func (o *ComputeServerSetting) GetStorageUtilityImageOperation() ComputeStorageUtilityImageOperation`
+
+GetStorageUtilityImageOperation returns the StorageUtilityImageOperation field if non-nil, zero value otherwise.
+
+### GetStorageUtilityImageOperationOk
+
+`func (o *ComputeServerSetting) GetStorageUtilityImageOperationOk() (*ComputeStorageUtilityImageOperation, bool)`
+
+GetStorageUtilityImageOperationOk returns a tuple with the StorageUtilityImageOperation field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetStorageUtilityImageOperation
+
+`func (o *ComputeServerSetting) SetStorageUtilityImageOperation(v ComputeStorageUtilityImageOperation)`
+
+SetStorageUtilityImageOperation sets StorageUtilityImageOperation field to given value.
+
+### HasStorageUtilityImageOperation
+
+`func (o *ComputeServerSetting) HasStorageUtilityImageOperation() bool`
+
+HasStorageUtilityImageOperation returns a boolean if a field has been set.
+
+### SetStorageUtilityImageOperationNil
+
+`func (o *ComputeServerSetting) SetStorageUtilityImageOperationNil(b bool)`
+
+ SetStorageUtilityImageOperationNil sets the value for StorageUtilityImageOperation to be an explicit nil
+
+### UnsetStorageUtilityImageOperation
+`func (o *ComputeServerSetting) UnsetStorageUtilityImageOperation()`
+
+UnsetStorageUtilityImageOperation ensures that no value is present for StorageUtilityImageOperation, not even an explicit nil
 ### GetStorageVirtualDriveOperation
 
 `func (o *ComputeServerSetting) GetStorageVirtualDriveOperation() ComputeStorageVirtualDriveOperation`
@@ -531,6 +708,31 @@ HasStorageVirtualDriveOperation returns a boolean if a field has been set.
 `func (o *ComputeServerSetting) UnsetStorageVirtualDriveOperation()`
 
 UnsetStorageVirtualDriveOperation ensures that no value is present for StorageVirtualDriveOperation, not even an explicit nil
+### GetTpmReset
+
+`func (o *ComputeServerSetting) GetTpmReset() string`
+
+GetTpmReset returns the TpmReset field if non-nil, zero value otherwise.
+
+### GetTpmResetOk
+
+`func (o *ComputeServerSetting) GetTpmResetOk() (*string, bool)`
+
+GetTpmResetOk returns a tuple with the TpmReset field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetTpmReset
+
+`func (o *ComputeServerSetting) SetTpmReset(v string)`
+
+SetTpmReset sets TpmReset field to given value.
+
+### HasTpmReset
+
+`func (o *ComputeServerSetting) HasTpmReset() bool`
+
+HasTpmReset returns a boolean if a field has been set.
+
 ### GetTunneledKvmState
 
 `func (o *ComputeServerSetting) GetTunneledKvmState() string`
@@ -581,6 +783,16 @@ SetLocatorLed sets LocatorLed field to given value.
 
 HasLocatorLed returns a boolean if a field has been set.
 
+### SetLocatorLedNil
+
+`func (o *ComputeServerSetting) SetLocatorLedNil(b bool)`
+
+ SetLocatorLedNil sets the value for LocatorLed to be an explicit nil
+
+### UnsetLocatorLed
+`func (o *ComputeServerSetting) UnsetLocatorLed()`
+
+UnsetLocatorLed ensures that no value is present for LocatorLed, not even an explicit nil
 ### GetRegisteredDevice
 
 `func (o *ComputeServerSetting) GetRegisteredDevice() AssetDeviceRegistrationRelationship`
@@ -606,6 +818,16 @@ SetRegisteredDevice sets RegisteredDevice field to given value.
 
 HasRegisteredDevice returns a boolean if a field has been set.
 
+### SetRegisteredDeviceNil
+
+`func (o *ComputeServerSetting) SetRegisteredDeviceNil(b bool)`
+
+ SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+
+### UnsetRegisteredDevice
+`func (o *ComputeServerSetting) UnsetRegisteredDevice()`
+
+UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
 ### GetRunningWorkflow
 
 `func (o *ComputeServerSetting) GetRunningWorkflow() WorkflowWorkflowInfoRelationship`
@@ -631,6 +853,16 @@ SetRunningWorkflow sets RunningWorkflow field to given value.
 
 HasRunningWorkflow returns a boolean if a field has been set.
 
+### SetRunningWorkflowNil
+
+`func (o *ComputeServerSetting) SetRunningWorkflowNil(b bool)`
+
+ SetRunningWorkflowNil sets the value for RunningWorkflow to be an explicit nil
+
+### UnsetRunningWorkflow
+`func (o *ComputeServerSetting) UnsetRunningWorkflow()`
+
+UnsetRunningWorkflow ensures that no value is present for RunningWorkflow, not even an explicit nil
 ### GetServer
 
 `func (o *ComputeServerSetting) GetServer() ComputePhysicalRelationship`
@@ -656,6 +888,16 @@ SetServer sets Server field to given value.
 
 HasServer returns a boolean if a field has been set.
 
+### SetServerNil
+
+`func (o *ComputeServerSetting) SetServerNil(b bool)`
+
+ SetServerNil sets the value for Server to be an explicit nil
+
+### UnsetServer
+`func (o *ComputeServerSetting) UnsetServer()`
+
+UnsetServer ensures that no value is present for Server, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

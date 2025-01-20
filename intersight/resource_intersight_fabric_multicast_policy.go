@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceFabricMulticastPolicy() *schema.Resource {
 		UpdateContext: resourceFabricMulticastPolicyUpdate,
 		DeleteContext: resourceFabricMulticastPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -307,6 +309,13 @@ func resourceFabricMulticastPolicy() *schema.Resource {
 				Optional:     true,
 				Default:      "Enabled",
 			},
+			"src_ip_proxy": {
+				Description:  "Administrative state of the IGMP source IP proxy for this VLAN.\n* `Enabled` - Admin configured Enabled State.\n* `Disabled` - Admin configured Disabled State.",
+				Type:         schema.TypeString,
+				ValidateFunc: validation.StringInSlice([]string{"Enabled", "Disabled"}, false),
+				Optional:     true,
+				Default:      "Enabled",
+			},
 			"tags": {
 				Type:       schema.TypeList,
 				Optional:   true,
@@ -392,6 +401,17 @@ func resourceFabricMulticastPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -575,6 +595,11 @@ func resourceFabricMulticastPolicyCreate(c context.Context, d *schema.ResourceDa
 		o.SetSnoopingState(x)
 	}
 
+	if v, ok := d.GetOk("src_ip_proxy"); ok {
+		x := (v.(string))
+		o.SetSrcIpProxy(x)
+	}
+
 	if v, ok := d.GetOk("tags"); ok {
 		x := make([]models.MoTag, 0)
 		s := v.([]interface{})
@@ -620,14 +645,25 @@ func resourceFabricMulticastPolicyCreate(c context.Context, d *schema.ResourceDa
 		}
 		return diag.Errorf("error occurred while creating FabricMulticastPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceFabricMulticastPolicyRead(c, d, meta)...)
 }
 
 func resourceFabricMulticastPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.FabricApi.GetFabricMulticastPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -723,6 +759,10 @@ func resourceFabricMulticastPolicyRead(c context.Context, d *schema.ResourceData
 
 	if err := d.Set("snooping_state", (s.GetSnoopingState())); err != nil {
 		return diag.Errorf("error occurred while setting property SnoopingState in FabricMulticastPolicy object: %s", err.Error())
+	}
+
+	if err := d.Set("src_ip_proxy", (s.GetSrcIpProxy())); err != nil {
+		return diag.Errorf("error occurred while setting property SrcIpProxy in FabricMulticastPolicy object: %s", err.Error())
 	}
 
 	if err := d.Set("tags", flattenListMoTag(s.GetTags(), d)); err != nil {
@@ -842,6 +882,12 @@ func resourceFabricMulticastPolicyUpdate(c context.Context, d *schema.ResourceDa
 		v := d.Get("snooping_state")
 		x := (v.(string))
 		o.SetSnoopingState(x)
+	}
+
+	if d.HasChange("src_ip_proxy") {
+		v := d.Get("src_ip_proxy")
+		x := (v.(string))
+		o.SetSrcIpProxy(x)
 	}
 
 	if d.HasChange("tags") {

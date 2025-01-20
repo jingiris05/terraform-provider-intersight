@@ -5,7 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"reflect"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -20,7 +23,7 @@ func resourceCapabilityIoCardDescriptor() *schema.Resource {
 		UpdateContext: resourceCapabilityIoCardDescriptorUpdate,
 		DeleteContext: resourceCapabilityIoCardDescriptorDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -76,6 +79,11 @@ func resourceCapabilityIoCardDescriptor() *schema.Resource {
 						},
 					},
 				},
+			},
+			"bif_port_num": {
+				Description: "Identifies the bif port number for the iocard module.",
+				Type:        schema.TypeInt,
+				Optional:    true,
 			},
 			"capabilities": {
 				Description: "An array of relationships to capabilityCapability resources.",
@@ -149,6 +157,12 @@ func resourceCapabilityIoCardDescriptor() *schema.Resource {
 					}
 					return
 				}},
+			"is_ucsx_direct_io_card": {
+				Description: "Identifies whether the iocard module is a part of the UCSX Direct chassis.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+			},
 			"mod_time": {
 				Description: "The time when this managed object was last modified.",
 				Type:        schema.TypeString,
@@ -171,6 +185,17 @@ func resourceCapabilityIoCardDescriptor() *schema.Resource {
 				Optional:    true,
 				Computed:    true,
 				ForceNew:    true,
+			},
+			"native_hif_port_channel_required": {
+				Description: "Identifies whether host port-channel is required to be configured for the iocard module.",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     true,
+			},
+			"native_speed_master_port_num": {
+				Description: "Primary port number for native speed configuration for the iocard module.",
+				Type:        schema.TypeInt,
+				Optional:    true,
 			},
 			"num_hif_ports": {
 				Description: "Number of hif ports per blade for the iocard module.",
@@ -320,6 +345,14 @@ func resourceCapabilityIoCardDescriptor() *schema.Resource {
 				Optional:     true,
 				Default:      "inline",
 			},
+			"unsupported_policies": {
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
+				Computed:   true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				}},
 			"vendor": {
 				Description: "The vendor of the endpoint, for which this capability information is applicable.",
 				Type:        schema.TypeString,
@@ -388,6 +421,17 @@ func resourceCapabilityIoCardDescriptor() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -489,6 +533,11 @@ func resourceCapabilityIoCardDescriptorCreate(c context.Context, d *schema.Resou
 		}
 	}
 
+	if v, ok := d.GetOkExists("bif_port_num"); ok {
+		x := int64(v.(int))
+		o.SetBifPortNum(x)
+	}
+
 	if v, ok := d.GetOk("capabilities"); ok {
 		x := make([]models.CapabilityCapabilityRelationship, 0)
 		s := v.([]interface{})
@@ -538,6 +587,11 @@ func resourceCapabilityIoCardDescriptorCreate(c context.Context, d *schema.Resou
 		o.SetDescription(x)
 	}
 
+	if v, ok := d.GetOkExists("is_ucsx_direct_io_card"); ok {
+		x := (v.(bool))
+		o.SetIsUcsxDirectIoCard(x)
+	}
+
 	if v, ok := d.GetOk("model"); ok {
 		x := (v.(string))
 		o.SetModel(x)
@@ -546,6 +600,16 @@ func resourceCapabilityIoCardDescriptorCreate(c context.Context, d *schema.Resou
 	if v, ok := d.GetOk("moid"); ok {
 		x := (v.(string))
 		o.SetMoid(x)
+	}
+
+	if v, ok := d.GetOkExists("native_hif_port_channel_required"); ok {
+		x := (v.(bool))
+		o.SetNativeHifPortChannelRequired(x)
+	}
+
+	if v, ok := d.GetOkExists("native_speed_master_port_num"); ok {
+		x := int64(v.(int))
+		o.SetNativeSpeedMasterPortNum(x)
 	}
 
 	if v, ok := d.GetOkExists("num_hif_ports"); ok {
@@ -600,6 +664,19 @@ func resourceCapabilityIoCardDescriptorCreate(c context.Context, d *schema.Resou
 		o.SetUifConnectivity(x)
 	}
 
+	if v, ok := d.GetOk("unsupported_policies"); ok {
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		if len(x) > 0 {
+			o.SetUnsupportedPolicies(x)
+		}
+	}
+
 	if v, ok := d.GetOk("vendor"); ok {
 		x := (v.(string))
 		o.SetVendor(x)
@@ -620,14 +697,25 @@ func resourceCapabilityIoCardDescriptorCreate(c context.Context, d *schema.Resou
 		}
 		return diag.Errorf("error occurred while creating CapabilityIoCardDescriptor: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceCapabilityIoCardDescriptorRead(c, d, meta)...)
 }
 
 func resourceCapabilityIoCardDescriptorRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.CapabilityApi.GetCapabilityIoCardDescriptorByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -657,6 +745,10 @@ func resourceCapabilityIoCardDescriptorRead(c context.Context, d *schema.Resourc
 		return diag.Errorf("error occurred while setting property Ancestors in CapabilityIoCardDescriptor object: %s", err.Error())
 	}
 
+	if err := d.Set("bif_port_num", (s.GetBifPortNum())); err != nil {
+		return diag.Errorf("error occurred while setting property BifPortNum in CapabilityIoCardDescriptor object: %s", err.Error())
+	}
+
 	if err := d.Set("capabilities", flattenListCapabilityCapabilityRelationship(s.GetCapabilities(), d)); err != nil {
 		return diag.Errorf("error occurred while setting property Capabilities in CapabilityIoCardDescriptor object: %s", err.Error())
 	}
@@ -677,6 +769,10 @@ func resourceCapabilityIoCardDescriptorRead(c context.Context, d *schema.Resourc
 		return diag.Errorf("error occurred while setting property DomainGroupMoid in CapabilityIoCardDescriptor object: %s", err.Error())
 	}
 
+	if err := d.Set("is_ucsx_direct_io_card", (s.GetIsUcsxDirectIoCard())); err != nil {
+		return diag.Errorf("error occurred while setting property IsUcsxDirectIoCard in CapabilityIoCardDescriptor object: %s", err.Error())
+	}
+
 	if err := d.Set("mod_time", (s.GetModTime()).String()); err != nil {
 		return diag.Errorf("error occurred while setting property ModTime in CapabilityIoCardDescriptor object: %s", err.Error())
 	}
@@ -687,6 +783,14 @@ func resourceCapabilityIoCardDescriptorRead(c context.Context, d *schema.Resourc
 
 	if err := d.Set("moid", (s.GetMoid())); err != nil {
 		return diag.Errorf("error occurred while setting property Moid in CapabilityIoCardDescriptor object: %s", err.Error())
+	}
+
+	if err := d.Set("native_hif_port_channel_required", (s.GetNativeHifPortChannelRequired())); err != nil {
+		return diag.Errorf("error occurred while setting property NativeHifPortChannelRequired in CapabilityIoCardDescriptor object: %s", err.Error())
+	}
+
+	if err := d.Set("native_speed_master_port_num", (s.GetNativeSpeedMasterPortNum())); err != nil {
+		return diag.Errorf("error occurred while setting property NativeSpeedMasterPortNum in CapabilityIoCardDescriptor object: %s", err.Error())
 	}
 
 	if err := d.Set("num_hif_ports", (s.GetNumHifPorts())); err != nil {
@@ -725,6 +829,10 @@ func resourceCapabilityIoCardDescriptorRead(c context.Context, d *schema.Resourc
 		return diag.Errorf("error occurred while setting property UifConnectivity in CapabilityIoCardDescriptor object: %s", err.Error())
 	}
 
+	if err := d.Set("unsupported_policies", (s.GetUnsupportedPolicies())); err != nil {
+		return diag.Errorf("error occurred while setting property UnsupportedPolicies in CapabilityIoCardDescriptor object: %s", err.Error())
+	}
+
 	if err := d.Set("vendor", (s.GetVendor())); err != nil {
 		return diag.Errorf("error occurred while setting property Vendor in CapabilityIoCardDescriptor object: %s", err.Error())
 	}
@@ -756,6 +864,12 @@ func resourceCapabilityIoCardDescriptorUpdate(c context.Context, d *schema.Resou
 		if err == nil && x1 != nil {
 			o.AdditionalProperties = x1.(map[string]interface{})
 		}
+	}
+
+	if d.HasChange("bif_port_num") {
+		v := d.Get("bif_port_num")
+		x := int64(v.(int))
+		o.SetBifPortNum(x)
 	}
 
 	if d.HasChange("capabilities") {
@@ -807,6 +921,12 @@ func resourceCapabilityIoCardDescriptorUpdate(c context.Context, d *schema.Resou
 		o.SetDescription(x)
 	}
 
+	if d.HasChange("is_ucsx_direct_io_card") {
+		v := d.Get("is_ucsx_direct_io_card")
+		x := (v.(bool))
+		o.SetIsUcsxDirectIoCard(x)
+	}
+
 	if d.HasChange("model") {
 		v := d.Get("model")
 		x := (v.(string))
@@ -817,6 +937,18 @@ func resourceCapabilityIoCardDescriptorUpdate(c context.Context, d *schema.Resou
 		v := d.Get("moid")
 		x := (v.(string))
 		o.SetMoid(x)
+	}
+
+	if d.HasChange("native_hif_port_channel_required") {
+		v := d.Get("native_hif_port_channel_required")
+		x := (v.(bool))
+		o.SetNativeHifPortChannelRequired(x)
+	}
+
+	if d.HasChange("native_speed_master_port_num") {
+		v := d.Get("native_speed_master_port_num")
+		x := int64(v.(int))
+		o.SetNativeSpeedMasterPortNum(x)
 	}
 
 	if d.HasChange("num_hif_ports") {
@@ -871,6 +1003,18 @@ func resourceCapabilityIoCardDescriptorUpdate(c context.Context, d *schema.Resou
 		v := d.Get("uif_connectivity")
 		x := (v.(string))
 		o.SetUifConnectivity(x)
+	}
+
+	if d.HasChange("unsupported_policies") {
+		v := d.Get("unsupported_policies")
+		x := make([]string, 0)
+		y := reflect.ValueOf(v)
+		for i := 0; i < y.Len(); i++ {
+			if y.Index(i).Interface() != nil {
+				x = append(x, y.Index(i).Interface().(string))
+			}
+		}
+		o.SetUnsupportedPolicies(x)
 	}
 
 	if d.HasChange("vendor") {

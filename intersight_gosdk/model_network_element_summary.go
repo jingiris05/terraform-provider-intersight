@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,33 +13,41 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
+// checks if the NetworkElementSummary type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &NetworkElementSummary{}
+
 // NetworkElementSummary View MO which aggregates information pertaining to a network element from mutiple MOs.
 type NetworkElementSummary struct {
-	ViewsView
+	MoBaseMo
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 	ClassId string `json:"ClassId"`
 	// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 	ObjectType string `json:"ObjectType"`
-	// Administratively configured state of Fabric Evacuation feature, for this switch.
+	// Administratively configured state of Fabric Evacuation feature, for this switch. * `` - Evacuation state of the switch is unknown. * `enabled` - Evacuation state of the switch is enabled. * `disabled` - Evacuation state of the switch is disabled. * `applying` - Evacuation state of the switch when evacuation is in progress. * `on` - Evacuation state of the switch is enabled. * `off` - Evacuation state of the switch is disabled. * `N/A` - Evacuation state of the switch is not applicable.
 	AdminEvacState *string `json:"AdminEvacState,omitempty"`
 	// The administrative state of the network Element inband management interface.
 	AdminInbandInterfaceState *string                     `json:"AdminInbandInterfaceState,omitempty"`
 	AlarmSummary              NullableComputeAlarmSummary `json:"AlarmSummary,omitempty"`
 	// Available memory (un-used) on this switch platform.
 	AvailableMemory *string `json:"AvailableMemory,omitempty"`
+	// Running firmware bundle information.
+	BundleVersion *string `json:"BundleVersion,omitempty"`
 	// Chassis IP of the switch.
 	Chassis *string `json:"Chassis,omitempty"`
 	// Configuration modified timestamp of the switch.
 	ConfModTs *string `json:"ConfModTs,omitempty"`
 	// Configuration modified backup timestamp of the switch.
 	ConfModTsBackup *string `json:"ConfModTsBackup,omitempty"`
+	// Connection status of the switch.
+	ConnectionStatus *string `json:"ConnectionStatus,omitempty"`
 	// The default domain name configured on the switch.
-	DefaultDomain *string `json:"DefaultDomain,omitempty"`
-	// The database identifier of the registered device of an object.
+	DefaultDomain *string `json:"DefaultDomain,omitempty" validate:"regexp=^$|^[a-zA-Z0-9]+([-.]{1}[a-zA-Z0-9]+)*$"`
+	// The MoId of the registered device that coresponds to the server.
 	DeviceMoId *string `json:"DeviceMoId,omitempty"`
 	// The Distinguished Name unambiguously identifies an object in the system.
 	Dn *string `json:"Dn,omitempty"`
@@ -48,7 +56,7 @@ type NetworkElementSummary struct {
 	EthernetMode *string `json:"EthernetMode,omitempty"`
 	// The user configured Ethernet operational mode for this switch (End-Host or Switching). * `end-host` - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * `switch` - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode.
 	EthernetSwitchingMode *string `json:"EthernetSwitchingMode,omitempty"`
-	// The fault summary of the network Element out-of-band management interface.
+	// The fault summary for the server.
 	// Deprecated
 	FaultSummary *int64 `json:"FaultSummary,omitempty"`
 	// The user configured FC operational mode for this switch (End-Host or Switching).
@@ -58,6 +66,10 @@ type NetworkElementSummary struct {
 	FcSwitchingMode *string `json:"FcSwitchingMode,omitempty"`
 	// Running firmware information.
 	Firmware *string `json:"Firmware,omitempty"`
+	// Running firmware information.
+	FirmwareVersion *string `json:"FirmwareVersion,omitempty"`
+	// The flag to check vulnerability with secure boot technology.
+	FpgaUpgradeNeeded *bool `json:"FpgaUpgradeNeeded,omitempty"`
 	// The IP address of the network Element inband management interface.
 	InbandIpAddress *string `json:"InbandIpAddress,omitempty"`
 	// The default gateway of the network Element inband management interface.
@@ -66,13 +78,17 @@ type NetworkElementSummary struct {
 	InbandIpMask *string `json:"InbandIpMask,omitempty"`
 	// The VLAN ID of the network Element inband management interface.
 	InbandVlan *int64 `json:"InbandVlan,omitempty"`
+	// The intercluster link state of the switch. * `Unknown` - The operational state of the link is not known. * `Up` - The operational state of the link is up. * `Down` - The operational state of the link is down. * `Degraded` - The link is operational but degraded. This state is applicable to port channels when any one of the member links is down.
+	InterClusterLinkState *string `json:"InterClusterLinkState,omitempty"`
 	// IP version 4 address is saved in this property.
 	Ipv4Address *string `json:"Ipv4Address,omitempty"`
+	// This field indicates the compute status of the catalog values for the associated component or hardware.
+	IsUpgraded *bool `json:"IsUpgraded,omitempty"`
 	// The management mode of the fabric interconnect. * `IntersightStandalone` - Intersight Standalone mode of operation. * `UCSM` - Unified Computing System Manager mode of operation. * `Intersight` - Intersight managed mode of operation.
 	ManagementMode *string `json:"ManagementMode,omitempty"`
 	// This field identifies the model of the given component.
 	Model *string `json:"Model,omitempty"`
-	// Name of the ElementSummary object is saved in this property.
+	// The admin configured name of the system.
 	Name *string `json:"Name,omitempty"`
 	// Total number of Ethernet ports.
 	NumEtherPorts *int64 `json:"NumEtherPorts,omitempty"`
@@ -88,7 +104,7 @@ type NetworkElementSummary struct {
 	NumFcPortsConfigured *int64 `json:"NumFcPortsConfigured,omitempty"`
 	// Total number of FC ports which are UP.
 	NumFcPortsLinkUp *int64 `json:"NumFcPortsLinkUp,omitempty"`
-	// Operational state of the Fabric Evacuation feature, for this switch.
+	// Operational state of the Fabric Evacuation feature, for this switch. * `` - Evacuation state of the switch is unknown. * `enabled` - Evacuation state of the switch is enabled. * `disabled` - Evacuation state of the switch is disabled. * `applying` - Evacuation state of the switch when evacuation is in progress. * `on` - Evacuation state of the switch is enabled. * `off` - Evacuation state of the switch is disabled. * `N/A` - Evacuation state of the switch is not applicable.
 	OperEvacState *string `json:"OperEvacState,omitempty"`
 	// The switch's current overall operational/health state.
 	Operability *string `json:"Operability,omitempty"`
@@ -116,18 +132,22 @@ type NetworkElementSummary struct {
 	PartNumber *string `json:"PartNumber,omitempty"`
 	// This field identifies the presence (equipped) or absence of the given component.
 	Presence *string `json:"Presence,omitempty"`
-	// This field identifies the revision of the given component.
+	// The reserved VLAN start ID of the Network Element. A block of 128 VLANs are reserved for internal use and cannot be used for carrying network traffic.
+	ReservedVlanStartId *int64 `json:"ReservedVlanStartId,omitempty"`
+	// The product revision of the switch.
 	Revision *string `json:"Revision,omitempty"`
 	// The Relative Name uniquely identifies an object within a given context.
 	Rn *string `json:"Rn,omitempty"`
 	// This field identifies the serial of the given component.
 	Serial *string `json:"Serial,omitempty"`
-	// The source object type of this view MO.
+	// Stores the source object type used to fill the properties of this object.
 	SourceObjectType *string `json:"SourceObjectType,omitempty"`
 	// The status of the switch.
 	Status *string `json:"Status,omitempty"`
 	// The Switch Id of the network Element.
 	SwitchId *string `json:"SwitchId,omitempty"`
+	// The name of switch profile associated with the switch.
+	SwitchProfileName *string `json:"SwitchProfileName,omitempty"`
 	// The Switch type that the network element is a part of. * `FabricInterconnect` - The default Switch type of UCSM and IMM mode devices. * `NexusDevice` - Switch type of Nexus devices. * `MDSDevice` - Switch type of Nexus MDS devices.
 	SwitchType *string `json:"SwitchType,omitempty"`
 	// System up time of the switch.
@@ -136,11 +156,14 @@ type NetworkElementSummary struct {
 	Thermal *string `json:"Thermal,omitempty"`
 	// Total available memory on this switch platform.
 	TotalMemory *int64 `json:"TotalMemory,omitempty"`
+	// The user defined label assigned to the server.
+	UserLabel *string `json:"UserLabel,omitempty"`
 	// This field identifies the vendor of the given component.
 	Vendor *string `json:"Vendor,omitempty"`
-	// Version holds the firmware version related information.
-	Version              *string                              `json:"Version,omitempty"`
-	RegisteredDevice     *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+	// Firmware version of the switch.
+	Version              *string                                     `json:"Version,omitempty"`
+	InventoryParent      NullableMoBaseMoRelationship                `json:"InventoryParent,omitempty"`
+	RegisteredDevice     NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
 
@@ -154,6 +177,8 @@ func NewNetworkElementSummary(classId string, objectType string) *NetworkElement
 	this := NetworkElementSummary{}
 	this.ClassId = classId
 	this.ObjectType = objectType
+	var thermal string = "unknown"
+	this.Thermal = &thermal
 	return &this
 }
 
@@ -166,6 +191,8 @@ func NewNetworkElementSummaryWithDefaults() *NetworkElementSummary {
 	this.ClassId = classId
 	var objectType string = "network.ElementSummary"
 	this.ObjectType = objectType
+	var thermal string = "unknown"
+	this.Thermal = &thermal
 	return &this
 }
 
@@ -193,6 +220,11 @@ func (o *NetworkElementSummary) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "network.ElementSummary" of the ClassId field.
+func (o *NetworkElementSummary) GetDefaultClassId() interface{} {
+	return "network.ElementSummary"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *NetworkElementSummary) GetObjectType() string {
 	if o == nil {
@@ -217,9 +249,14 @@ func (o *NetworkElementSummary) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "network.ElementSummary" of the ObjectType field.
+func (o *NetworkElementSummary) GetDefaultObjectType() interface{} {
+	return "network.ElementSummary"
+}
+
 // GetAdminEvacState returns the AdminEvacState field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetAdminEvacState() string {
-	if o == nil || o.AdminEvacState == nil {
+	if o == nil || IsNil(o.AdminEvacState) {
 		var ret string
 		return ret
 	}
@@ -229,7 +266,7 @@ func (o *NetworkElementSummary) GetAdminEvacState() string {
 // GetAdminEvacStateOk returns a tuple with the AdminEvacState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetAdminEvacStateOk() (*string, bool) {
-	if o == nil || o.AdminEvacState == nil {
+	if o == nil || IsNil(o.AdminEvacState) {
 		return nil, false
 	}
 	return o.AdminEvacState, true
@@ -237,7 +274,7 @@ func (o *NetworkElementSummary) GetAdminEvacStateOk() (*string, bool) {
 
 // HasAdminEvacState returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasAdminEvacState() bool {
-	if o != nil && o.AdminEvacState != nil {
+	if o != nil && !IsNil(o.AdminEvacState) {
 		return true
 	}
 
@@ -251,7 +288,7 @@ func (o *NetworkElementSummary) SetAdminEvacState(v string) {
 
 // GetAdminInbandInterfaceState returns the AdminInbandInterfaceState field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetAdminInbandInterfaceState() string {
-	if o == nil || o.AdminInbandInterfaceState == nil {
+	if o == nil || IsNil(o.AdminInbandInterfaceState) {
 		var ret string
 		return ret
 	}
@@ -261,7 +298,7 @@ func (o *NetworkElementSummary) GetAdminInbandInterfaceState() string {
 // GetAdminInbandInterfaceStateOk returns a tuple with the AdminInbandInterfaceState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetAdminInbandInterfaceStateOk() (*string, bool) {
-	if o == nil || o.AdminInbandInterfaceState == nil {
+	if o == nil || IsNil(o.AdminInbandInterfaceState) {
 		return nil, false
 	}
 	return o.AdminInbandInterfaceState, true
@@ -269,7 +306,7 @@ func (o *NetworkElementSummary) GetAdminInbandInterfaceStateOk() (*string, bool)
 
 // HasAdminInbandInterfaceState returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasAdminInbandInterfaceState() bool {
-	if o != nil && o.AdminInbandInterfaceState != nil {
+	if o != nil && !IsNil(o.AdminInbandInterfaceState) {
 		return true
 	}
 
@@ -283,7 +320,7 @@ func (o *NetworkElementSummary) SetAdminInbandInterfaceState(v string) {
 
 // GetAlarmSummary returns the AlarmSummary field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *NetworkElementSummary) GetAlarmSummary() ComputeAlarmSummary {
-	if o == nil || o.AlarmSummary.Get() == nil {
+	if o == nil || IsNil(o.AlarmSummary.Get()) {
 		var ret ComputeAlarmSummary
 		return ret
 	}
@@ -326,7 +363,7 @@ func (o *NetworkElementSummary) UnsetAlarmSummary() {
 
 // GetAvailableMemory returns the AvailableMemory field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetAvailableMemory() string {
-	if o == nil || o.AvailableMemory == nil {
+	if o == nil || IsNil(o.AvailableMemory) {
 		var ret string
 		return ret
 	}
@@ -336,7 +373,7 @@ func (o *NetworkElementSummary) GetAvailableMemory() string {
 // GetAvailableMemoryOk returns a tuple with the AvailableMemory field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetAvailableMemoryOk() (*string, bool) {
-	if o == nil || o.AvailableMemory == nil {
+	if o == nil || IsNil(o.AvailableMemory) {
 		return nil, false
 	}
 	return o.AvailableMemory, true
@@ -344,7 +381,7 @@ func (o *NetworkElementSummary) GetAvailableMemoryOk() (*string, bool) {
 
 // HasAvailableMemory returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasAvailableMemory() bool {
-	if o != nil && o.AvailableMemory != nil {
+	if o != nil && !IsNil(o.AvailableMemory) {
 		return true
 	}
 
@@ -356,9 +393,41 @@ func (o *NetworkElementSummary) SetAvailableMemory(v string) {
 	o.AvailableMemory = &v
 }
 
+// GetBundleVersion returns the BundleVersion field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetBundleVersion() string {
+	if o == nil || IsNil(o.BundleVersion) {
+		var ret string
+		return ret
+	}
+	return *o.BundleVersion
+}
+
+// GetBundleVersionOk returns a tuple with the BundleVersion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetBundleVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.BundleVersion) {
+		return nil, false
+	}
+	return o.BundleVersion, true
+}
+
+// HasBundleVersion returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasBundleVersion() bool {
+	if o != nil && !IsNil(o.BundleVersion) {
+		return true
+	}
+
+	return false
+}
+
+// SetBundleVersion gets a reference to the given string and assigns it to the BundleVersion field.
+func (o *NetworkElementSummary) SetBundleVersion(v string) {
+	o.BundleVersion = &v
+}
+
 // GetChassis returns the Chassis field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetChassis() string {
-	if o == nil || o.Chassis == nil {
+	if o == nil || IsNil(o.Chassis) {
 		var ret string
 		return ret
 	}
@@ -368,7 +437,7 @@ func (o *NetworkElementSummary) GetChassis() string {
 // GetChassisOk returns a tuple with the Chassis field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetChassisOk() (*string, bool) {
-	if o == nil || o.Chassis == nil {
+	if o == nil || IsNil(o.Chassis) {
 		return nil, false
 	}
 	return o.Chassis, true
@@ -376,7 +445,7 @@ func (o *NetworkElementSummary) GetChassisOk() (*string, bool) {
 
 // HasChassis returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasChassis() bool {
-	if o != nil && o.Chassis != nil {
+	if o != nil && !IsNil(o.Chassis) {
 		return true
 	}
 
@@ -390,7 +459,7 @@ func (o *NetworkElementSummary) SetChassis(v string) {
 
 // GetConfModTs returns the ConfModTs field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetConfModTs() string {
-	if o == nil || o.ConfModTs == nil {
+	if o == nil || IsNil(o.ConfModTs) {
 		var ret string
 		return ret
 	}
@@ -400,7 +469,7 @@ func (o *NetworkElementSummary) GetConfModTs() string {
 // GetConfModTsOk returns a tuple with the ConfModTs field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetConfModTsOk() (*string, bool) {
-	if o == nil || o.ConfModTs == nil {
+	if o == nil || IsNil(o.ConfModTs) {
 		return nil, false
 	}
 	return o.ConfModTs, true
@@ -408,7 +477,7 @@ func (o *NetworkElementSummary) GetConfModTsOk() (*string, bool) {
 
 // HasConfModTs returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasConfModTs() bool {
-	if o != nil && o.ConfModTs != nil {
+	if o != nil && !IsNil(o.ConfModTs) {
 		return true
 	}
 
@@ -422,7 +491,7 @@ func (o *NetworkElementSummary) SetConfModTs(v string) {
 
 // GetConfModTsBackup returns the ConfModTsBackup field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetConfModTsBackup() string {
-	if o == nil || o.ConfModTsBackup == nil {
+	if o == nil || IsNil(o.ConfModTsBackup) {
 		var ret string
 		return ret
 	}
@@ -432,7 +501,7 @@ func (o *NetworkElementSummary) GetConfModTsBackup() string {
 // GetConfModTsBackupOk returns a tuple with the ConfModTsBackup field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetConfModTsBackupOk() (*string, bool) {
-	if o == nil || o.ConfModTsBackup == nil {
+	if o == nil || IsNil(o.ConfModTsBackup) {
 		return nil, false
 	}
 	return o.ConfModTsBackup, true
@@ -440,7 +509,7 @@ func (o *NetworkElementSummary) GetConfModTsBackupOk() (*string, bool) {
 
 // HasConfModTsBackup returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasConfModTsBackup() bool {
-	if o != nil && o.ConfModTsBackup != nil {
+	if o != nil && !IsNil(o.ConfModTsBackup) {
 		return true
 	}
 
@@ -452,9 +521,41 @@ func (o *NetworkElementSummary) SetConfModTsBackup(v string) {
 	o.ConfModTsBackup = &v
 }
 
+// GetConnectionStatus returns the ConnectionStatus field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetConnectionStatus() string {
+	if o == nil || IsNil(o.ConnectionStatus) {
+		var ret string
+		return ret
+	}
+	return *o.ConnectionStatus
+}
+
+// GetConnectionStatusOk returns a tuple with the ConnectionStatus field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetConnectionStatusOk() (*string, bool) {
+	if o == nil || IsNil(o.ConnectionStatus) {
+		return nil, false
+	}
+	return o.ConnectionStatus, true
+}
+
+// HasConnectionStatus returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasConnectionStatus() bool {
+	if o != nil && !IsNil(o.ConnectionStatus) {
+		return true
+	}
+
+	return false
+}
+
+// SetConnectionStatus gets a reference to the given string and assigns it to the ConnectionStatus field.
+func (o *NetworkElementSummary) SetConnectionStatus(v string) {
+	o.ConnectionStatus = &v
+}
+
 // GetDefaultDomain returns the DefaultDomain field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetDefaultDomain() string {
-	if o == nil || o.DefaultDomain == nil {
+	if o == nil || IsNil(o.DefaultDomain) {
 		var ret string
 		return ret
 	}
@@ -464,7 +565,7 @@ func (o *NetworkElementSummary) GetDefaultDomain() string {
 // GetDefaultDomainOk returns a tuple with the DefaultDomain field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetDefaultDomainOk() (*string, bool) {
-	if o == nil || o.DefaultDomain == nil {
+	if o == nil || IsNil(o.DefaultDomain) {
 		return nil, false
 	}
 	return o.DefaultDomain, true
@@ -472,7 +573,7 @@ func (o *NetworkElementSummary) GetDefaultDomainOk() (*string, bool) {
 
 // HasDefaultDomain returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasDefaultDomain() bool {
-	if o != nil && o.DefaultDomain != nil {
+	if o != nil && !IsNil(o.DefaultDomain) {
 		return true
 	}
 
@@ -486,7 +587,7 @@ func (o *NetworkElementSummary) SetDefaultDomain(v string) {
 
 // GetDeviceMoId returns the DeviceMoId field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetDeviceMoId() string {
-	if o == nil || o.DeviceMoId == nil {
+	if o == nil || IsNil(o.DeviceMoId) {
 		var ret string
 		return ret
 	}
@@ -496,7 +597,7 @@ func (o *NetworkElementSummary) GetDeviceMoId() string {
 // GetDeviceMoIdOk returns a tuple with the DeviceMoId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetDeviceMoIdOk() (*string, bool) {
-	if o == nil || o.DeviceMoId == nil {
+	if o == nil || IsNil(o.DeviceMoId) {
 		return nil, false
 	}
 	return o.DeviceMoId, true
@@ -504,7 +605,7 @@ func (o *NetworkElementSummary) GetDeviceMoIdOk() (*string, bool) {
 
 // HasDeviceMoId returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasDeviceMoId() bool {
-	if o != nil && o.DeviceMoId != nil {
+	if o != nil && !IsNil(o.DeviceMoId) {
 		return true
 	}
 
@@ -518,7 +619,7 @@ func (o *NetworkElementSummary) SetDeviceMoId(v string) {
 
 // GetDn returns the Dn field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetDn() string {
-	if o == nil || o.Dn == nil {
+	if o == nil || IsNil(o.Dn) {
 		var ret string
 		return ret
 	}
@@ -528,7 +629,7 @@ func (o *NetworkElementSummary) GetDn() string {
 // GetDnOk returns a tuple with the Dn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetDnOk() (*string, bool) {
-	if o == nil || o.Dn == nil {
+	if o == nil || IsNil(o.Dn) {
 		return nil, false
 	}
 	return o.Dn, true
@@ -536,7 +637,7 @@ func (o *NetworkElementSummary) GetDnOk() (*string, bool) {
 
 // HasDn returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasDn() bool {
-	if o != nil && o.Dn != nil {
+	if o != nil && !IsNil(o.Dn) {
 		return true
 	}
 
@@ -551,7 +652,7 @@ func (o *NetworkElementSummary) SetDn(v string) {
 // GetEthernetMode returns the EthernetMode field value if set, zero value otherwise.
 // Deprecated
 func (o *NetworkElementSummary) GetEthernetMode() string {
-	if o == nil || o.EthernetMode == nil {
+	if o == nil || IsNil(o.EthernetMode) {
 		var ret string
 		return ret
 	}
@@ -562,7 +663,7 @@ func (o *NetworkElementSummary) GetEthernetMode() string {
 // and a boolean to check if the value has been set.
 // Deprecated
 func (o *NetworkElementSummary) GetEthernetModeOk() (*string, bool) {
-	if o == nil || o.EthernetMode == nil {
+	if o == nil || IsNil(o.EthernetMode) {
 		return nil, false
 	}
 	return o.EthernetMode, true
@@ -570,7 +671,7 @@ func (o *NetworkElementSummary) GetEthernetModeOk() (*string, bool) {
 
 // HasEthernetMode returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasEthernetMode() bool {
-	if o != nil && o.EthernetMode != nil {
+	if o != nil && !IsNil(o.EthernetMode) {
 		return true
 	}
 
@@ -585,7 +686,7 @@ func (o *NetworkElementSummary) SetEthernetMode(v string) {
 
 // GetEthernetSwitchingMode returns the EthernetSwitchingMode field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetEthernetSwitchingMode() string {
-	if o == nil || o.EthernetSwitchingMode == nil {
+	if o == nil || IsNil(o.EthernetSwitchingMode) {
 		var ret string
 		return ret
 	}
@@ -595,7 +696,7 @@ func (o *NetworkElementSummary) GetEthernetSwitchingMode() string {
 // GetEthernetSwitchingModeOk returns a tuple with the EthernetSwitchingMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetEthernetSwitchingModeOk() (*string, bool) {
-	if o == nil || o.EthernetSwitchingMode == nil {
+	if o == nil || IsNil(o.EthernetSwitchingMode) {
 		return nil, false
 	}
 	return o.EthernetSwitchingMode, true
@@ -603,7 +704,7 @@ func (o *NetworkElementSummary) GetEthernetSwitchingModeOk() (*string, bool) {
 
 // HasEthernetSwitchingMode returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasEthernetSwitchingMode() bool {
-	if o != nil && o.EthernetSwitchingMode != nil {
+	if o != nil && !IsNil(o.EthernetSwitchingMode) {
 		return true
 	}
 
@@ -618,7 +719,7 @@ func (o *NetworkElementSummary) SetEthernetSwitchingMode(v string) {
 // GetFaultSummary returns the FaultSummary field value if set, zero value otherwise.
 // Deprecated
 func (o *NetworkElementSummary) GetFaultSummary() int64 {
-	if o == nil || o.FaultSummary == nil {
+	if o == nil || IsNil(o.FaultSummary) {
 		var ret int64
 		return ret
 	}
@@ -629,7 +730,7 @@ func (o *NetworkElementSummary) GetFaultSummary() int64 {
 // and a boolean to check if the value has been set.
 // Deprecated
 func (o *NetworkElementSummary) GetFaultSummaryOk() (*int64, bool) {
-	if o == nil || o.FaultSummary == nil {
+	if o == nil || IsNil(o.FaultSummary) {
 		return nil, false
 	}
 	return o.FaultSummary, true
@@ -637,7 +738,7 @@ func (o *NetworkElementSummary) GetFaultSummaryOk() (*int64, bool) {
 
 // HasFaultSummary returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasFaultSummary() bool {
-	if o != nil && o.FaultSummary != nil {
+	if o != nil && !IsNil(o.FaultSummary) {
 		return true
 	}
 
@@ -653,7 +754,7 @@ func (o *NetworkElementSummary) SetFaultSummary(v int64) {
 // GetFcMode returns the FcMode field value if set, zero value otherwise.
 // Deprecated
 func (o *NetworkElementSummary) GetFcMode() string {
-	if o == nil || o.FcMode == nil {
+	if o == nil || IsNil(o.FcMode) {
 		var ret string
 		return ret
 	}
@@ -664,7 +765,7 @@ func (o *NetworkElementSummary) GetFcMode() string {
 // and a boolean to check if the value has been set.
 // Deprecated
 func (o *NetworkElementSummary) GetFcModeOk() (*string, bool) {
-	if o == nil || o.FcMode == nil {
+	if o == nil || IsNil(o.FcMode) {
 		return nil, false
 	}
 	return o.FcMode, true
@@ -672,7 +773,7 @@ func (o *NetworkElementSummary) GetFcModeOk() (*string, bool) {
 
 // HasFcMode returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasFcMode() bool {
-	if o != nil && o.FcMode != nil {
+	if o != nil && !IsNil(o.FcMode) {
 		return true
 	}
 
@@ -687,7 +788,7 @@ func (o *NetworkElementSummary) SetFcMode(v string) {
 
 // GetFcSwitchingMode returns the FcSwitchingMode field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetFcSwitchingMode() string {
-	if o == nil || o.FcSwitchingMode == nil {
+	if o == nil || IsNil(o.FcSwitchingMode) {
 		var ret string
 		return ret
 	}
@@ -697,7 +798,7 @@ func (o *NetworkElementSummary) GetFcSwitchingMode() string {
 // GetFcSwitchingModeOk returns a tuple with the FcSwitchingMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetFcSwitchingModeOk() (*string, bool) {
-	if o == nil || o.FcSwitchingMode == nil {
+	if o == nil || IsNil(o.FcSwitchingMode) {
 		return nil, false
 	}
 	return o.FcSwitchingMode, true
@@ -705,7 +806,7 @@ func (o *NetworkElementSummary) GetFcSwitchingModeOk() (*string, bool) {
 
 // HasFcSwitchingMode returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasFcSwitchingMode() bool {
-	if o != nil && o.FcSwitchingMode != nil {
+	if o != nil && !IsNil(o.FcSwitchingMode) {
 		return true
 	}
 
@@ -719,7 +820,7 @@ func (o *NetworkElementSummary) SetFcSwitchingMode(v string) {
 
 // GetFirmware returns the Firmware field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetFirmware() string {
-	if o == nil || o.Firmware == nil {
+	if o == nil || IsNil(o.Firmware) {
 		var ret string
 		return ret
 	}
@@ -729,7 +830,7 @@ func (o *NetworkElementSummary) GetFirmware() string {
 // GetFirmwareOk returns a tuple with the Firmware field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetFirmwareOk() (*string, bool) {
-	if o == nil || o.Firmware == nil {
+	if o == nil || IsNil(o.Firmware) {
 		return nil, false
 	}
 	return o.Firmware, true
@@ -737,7 +838,7 @@ func (o *NetworkElementSummary) GetFirmwareOk() (*string, bool) {
 
 // HasFirmware returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasFirmware() bool {
-	if o != nil && o.Firmware != nil {
+	if o != nil && !IsNil(o.Firmware) {
 		return true
 	}
 
@@ -749,9 +850,73 @@ func (o *NetworkElementSummary) SetFirmware(v string) {
 	o.Firmware = &v
 }
 
+// GetFirmwareVersion returns the FirmwareVersion field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetFirmwareVersion() string {
+	if o == nil || IsNil(o.FirmwareVersion) {
+		var ret string
+		return ret
+	}
+	return *o.FirmwareVersion
+}
+
+// GetFirmwareVersionOk returns a tuple with the FirmwareVersion field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetFirmwareVersionOk() (*string, bool) {
+	if o == nil || IsNil(o.FirmwareVersion) {
+		return nil, false
+	}
+	return o.FirmwareVersion, true
+}
+
+// HasFirmwareVersion returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasFirmwareVersion() bool {
+	if o != nil && !IsNil(o.FirmwareVersion) {
+		return true
+	}
+
+	return false
+}
+
+// SetFirmwareVersion gets a reference to the given string and assigns it to the FirmwareVersion field.
+func (o *NetworkElementSummary) SetFirmwareVersion(v string) {
+	o.FirmwareVersion = &v
+}
+
+// GetFpgaUpgradeNeeded returns the FpgaUpgradeNeeded field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetFpgaUpgradeNeeded() bool {
+	if o == nil || IsNil(o.FpgaUpgradeNeeded) {
+		var ret bool
+		return ret
+	}
+	return *o.FpgaUpgradeNeeded
+}
+
+// GetFpgaUpgradeNeededOk returns a tuple with the FpgaUpgradeNeeded field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetFpgaUpgradeNeededOk() (*bool, bool) {
+	if o == nil || IsNil(o.FpgaUpgradeNeeded) {
+		return nil, false
+	}
+	return o.FpgaUpgradeNeeded, true
+}
+
+// HasFpgaUpgradeNeeded returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasFpgaUpgradeNeeded() bool {
+	if o != nil && !IsNil(o.FpgaUpgradeNeeded) {
+		return true
+	}
+
+	return false
+}
+
+// SetFpgaUpgradeNeeded gets a reference to the given bool and assigns it to the FpgaUpgradeNeeded field.
+func (o *NetworkElementSummary) SetFpgaUpgradeNeeded(v bool) {
+	o.FpgaUpgradeNeeded = &v
+}
+
 // GetInbandIpAddress returns the InbandIpAddress field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetInbandIpAddress() string {
-	if o == nil || o.InbandIpAddress == nil {
+	if o == nil || IsNil(o.InbandIpAddress) {
 		var ret string
 		return ret
 	}
@@ -761,7 +926,7 @@ func (o *NetworkElementSummary) GetInbandIpAddress() string {
 // GetInbandIpAddressOk returns a tuple with the InbandIpAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetInbandIpAddressOk() (*string, bool) {
-	if o == nil || o.InbandIpAddress == nil {
+	if o == nil || IsNil(o.InbandIpAddress) {
 		return nil, false
 	}
 	return o.InbandIpAddress, true
@@ -769,7 +934,7 @@ func (o *NetworkElementSummary) GetInbandIpAddressOk() (*string, bool) {
 
 // HasInbandIpAddress returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasInbandIpAddress() bool {
-	if o != nil && o.InbandIpAddress != nil {
+	if o != nil && !IsNil(o.InbandIpAddress) {
 		return true
 	}
 
@@ -783,7 +948,7 @@ func (o *NetworkElementSummary) SetInbandIpAddress(v string) {
 
 // GetInbandIpGateway returns the InbandIpGateway field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetInbandIpGateway() string {
-	if o == nil || o.InbandIpGateway == nil {
+	if o == nil || IsNil(o.InbandIpGateway) {
 		var ret string
 		return ret
 	}
@@ -793,7 +958,7 @@ func (o *NetworkElementSummary) GetInbandIpGateway() string {
 // GetInbandIpGatewayOk returns a tuple with the InbandIpGateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetInbandIpGatewayOk() (*string, bool) {
-	if o == nil || o.InbandIpGateway == nil {
+	if o == nil || IsNil(o.InbandIpGateway) {
 		return nil, false
 	}
 	return o.InbandIpGateway, true
@@ -801,7 +966,7 @@ func (o *NetworkElementSummary) GetInbandIpGatewayOk() (*string, bool) {
 
 // HasInbandIpGateway returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasInbandIpGateway() bool {
-	if o != nil && o.InbandIpGateway != nil {
+	if o != nil && !IsNil(o.InbandIpGateway) {
 		return true
 	}
 
@@ -815,7 +980,7 @@ func (o *NetworkElementSummary) SetInbandIpGateway(v string) {
 
 // GetInbandIpMask returns the InbandIpMask field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetInbandIpMask() string {
-	if o == nil || o.InbandIpMask == nil {
+	if o == nil || IsNil(o.InbandIpMask) {
 		var ret string
 		return ret
 	}
@@ -825,7 +990,7 @@ func (o *NetworkElementSummary) GetInbandIpMask() string {
 // GetInbandIpMaskOk returns a tuple with the InbandIpMask field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetInbandIpMaskOk() (*string, bool) {
-	if o == nil || o.InbandIpMask == nil {
+	if o == nil || IsNil(o.InbandIpMask) {
 		return nil, false
 	}
 	return o.InbandIpMask, true
@@ -833,7 +998,7 @@ func (o *NetworkElementSummary) GetInbandIpMaskOk() (*string, bool) {
 
 // HasInbandIpMask returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasInbandIpMask() bool {
-	if o != nil && o.InbandIpMask != nil {
+	if o != nil && !IsNil(o.InbandIpMask) {
 		return true
 	}
 
@@ -847,7 +1012,7 @@ func (o *NetworkElementSummary) SetInbandIpMask(v string) {
 
 // GetInbandVlan returns the InbandVlan field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetInbandVlan() int64 {
-	if o == nil || o.InbandVlan == nil {
+	if o == nil || IsNil(o.InbandVlan) {
 		var ret int64
 		return ret
 	}
@@ -857,7 +1022,7 @@ func (o *NetworkElementSummary) GetInbandVlan() int64 {
 // GetInbandVlanOk returns a tuple with the InbandVlan field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetInbandVlanOk() (*int64, bool) {
-	if o == nil || o.InbandVlan == nil {
+	if o == nil || IsNil(o.InbandVlan) {
 		return nil, false
 	}
 	return o.InbandVlan, true
@@ -865,7 +1030,7 @@ func (o *NetworkElementSummary) GetInbandVlanOk() (*int64, bool) {
 
 // HasInbandVlan returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasInbandVlan() bool {
-	if o != nil && o.InbandVlan != nil {
+	if o != nil && !IsNil(o.InbandVlan) {
 		return true
 	}
 
@@ -877,9 +1042,41 @@ func (o *NetworkElementSummary) SetInbandVlan(v int64) {
 	o.InbandVlan = &v
 }
 
+// GetInterClusterLinkState returns the InterClusterLinkState field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetInterClusterLinkState() string {
+	if o == nil || IsNil(o.InterClusterLinkState) {
+		var ret string
+		return ret
+	}
+	return *o.InterClusterLinkState
+}
+
+// GetInterClusterLinkStateOk returns a tuple with the InterClusterLinkState field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetInterClusterLinkStateOk() (*string, bool) {
+	if o == nil || IsNil(o.InterClusterLinkState) {
+		return nil, false
+	}
+	return o.InterClusterLinkState, true
+}
+
+// HasInterClusterLinkState returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasInterClusterLinkState() bool {
+	if o != nil && !IsNil(o.InterClusterLinkState) {
+		return true
+	}
+
+	return false
+}
+
+// SetInterClusterLinkState gets a reference to the given string and assigns it to the InterClusterLinkState field.
+func (o *NetworkElementSummary) SetInterClusterLinkState(v string) {
+	o.InterClusterLinkState = &v
+}
+
 // GetIpv4Address returns the Ipv4Address field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetIpv4Address() string {
-	if o == nil || o.Ipv4Address == nil {
+	if o == nil || IsNil(o.Ipv4Address) {
 		var ret string
 		return ret
 	}
@@ -889,7 +1086,7 @@ func (o *NetworkElementSummary) GetIpv4Address() string {
 // GetIpv4AddressOk returns a tuple with the Ipv4Address field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetIpv4AddressOk() (*string, bool) {
-	if o == nil || o.Ipv4Address == nil {
+	if o == nil || IsNil(o.Ipv4Address) {
 		return nil, false
 	}
 	return o.Ipv4Address, true
@@ -897,7 +1094,7 @@ func (o *NetworkElementSummary) GetIpv4AddressOk() (*string, bool) {
 
 // HasIpv4Address returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasIpv4Address() bool {
-	if o != nil && o.Ipv4Address != nil {
+	if o != nil && !IsNil(o.Ipv4Address) {
 		return true
 	}
 
@@ -909,9 +1106,41 @@ func (o *NetworkElementSummary) SetIpv4Address(v string) {
 	o.Ipv4Address = &v
 }
 
+// GetIsUpgraded returns the IsUpgraded field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetIsUpgraded() bool {
+	if o == nil || IsNil(o.IsUpgraded) {
+		var ret bool
+		return ret
+	}
+	return *o.IsUpgraded
+}
+
+// GetIsUpgradedOk returns a tuple with the IsUpgraded field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetIsUpgradedOk() (*bool, bool) {
+	if o == nil || IsNil(o.IsUpgraded) {
+		return nil, false
+	}
+	return o.IsUpgraded, true
+}
+
+// HasIsUpgraded returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasIsUpgraded() bool {
+	if o != nil && !IsNil(o.IsUpgraded) {
+		return true
+	}
+
+	return false
+}
+
+// SetIsUpgraded gets a reference to the given bool and assigns it to the IsUpgraded field.
+func (o *NetworkElementSummary) SetIsUpgraded(v bool) {
+	o.IsUpgraded = &v
+}
+
 // GetManagementMode returns the ManagementMode field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetManagementMode() string {
-	if o == nil || o.ManagementMode == nil {
+	if o == nil || IsNil(o.ManagementMode) {
 		var ret string
 		return ret
 	}
@@ -921,7 +1150,7 @@ func (o *NetworkElementSummary) GetManagementMode() string {
 // GetManagementModeOk returns a tuple with the ManagementMode field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetManagementModeOk() (*string, bool) {
-	if o == nil || o.ManagementMode == nil {
+	if o == nil || IsNil(o.ManagementMode) {
 		return nil, false
 	}
 	return o.ManagementMode, true
@@ -929,7 +1158,7 @@ func (o *NetworkElementSummary) GetManagementModeOk() (*string, bool) {
 
 // HasManagementMode returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasManagementMode() bool {
-	if o != nil && o.ManagementMode != nil {
+	if o != nil && !IsNil(o.ManagementMode) {
 		return true
 	}
 
@@ -943,7 +1172,7 @@ func (o *NetworkElementSummary) SetManagementMode(v string) {
 
 // GetModel returns the Model field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetModel() string {
-	if o == nil || o.Model == nil {
+	if o == nil || IsNil(o.Model) {
 		var ret string
 		return ret
 	}
@@ -953,7 +1182,7 @@ func (o *NetworkElementSummary) GetModel() string {
 // GetModelOk returns a tuple with the Model field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetModelOk() (*string, bool) {
-	if o == nil || o.Model == nil {
+	if o == nil || IsNil(o.Model) {
 		return nil, false
 	}
 	return o.Model, true
@@ -961,7 +1190,7 @@ func (o *NetworkElementSummary) GetModelOk() (*string, bool) {
 
 // HasModel returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasModel() bool {
-	if o != nil && o.Model != nil {
+	if o != nil && !IsNil(o.Model) {
 		return true
 	}
 
@@ -975,7 +1204,7 @@ func (o *NetworkElementSummary) SetModel(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -985,7 +1214,7 @@ func (o *NetworkElementSummary) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -993,7 +1222,7 @@ func (o *NetworkElementSummary) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -1007,7 +1236,7 @@ func (o *NetworkElementSummary) SetName(v string) {
 
 // GetNumEtherPorts returns the NumEtherPorts field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetNumEtherPorts() int64 {
-	if o == nil || o.NumEtherPorts == nil {
+	if o == nil || IsNil(o.NumEtherPorts) {
 		var ret int64
 		return ret
 	}
@@ -1017,7 +1246,7 @@ func (o *NetworkElementSummary) GetNumEtherPorts() int64 {
 // GetNumEtherPortsOk returns a tuple with the NumEtherPorts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetNumEtherPortsOk() (*int64, bool) {
-	if o == nil || o.NumEtherPorts == nil {
+	if o == nil || IsNil(o.NumEtherPorts) {
 		return nil, false
 	}
 	return o.NumEtherPorts, true
@@ -1025,7 +1254,7 @@ func (o *NetworkElementSummary) GetNumEtherPortsOk() (*int64, bool) {
 
 // HasNumEtherPorts returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasNumEtherPorts() bool {
-	if o != nil && o.NumEtherPorts != nil {
+	if o != nil && !IsNil(o.NumEtherPorts) {
 		return true
 	}
 
@@ -1039,7 +1268,7 @@ func (o *NetworkElementSummary) SetNumEtherPorts(v int64) {
 
 // GetNumEtherPortsConfigured returns the NumEtherPortsConfigured field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetNumEtherPortsConfigured() int64 {
-	if o == nil || o.NumEtherPortsConfigured == nil {
+	if o == nil || IsNil(o.NumEtherPortsConfigured) {
 		var ret int64
 		return ret
 	}
@@ -1049,7 +1278,7 @@ func (o *NetworkElementSummary) GetNumEtherPortsConfigured() int64 {
 // GetNumEtherPortsConfiguredOk returns a tuple with the NumEtherPortsConfigured field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetNumEtherPortsConfiguredOk() (*int64, bool) {
-	if o == nil || o.NumEtherPortsConfigured == nil {
+	if o == nil || IsNil(o.NumEtherPortsConfigured) {
 		return nil, false
 	}
 	return o.NumEtherPortsConfigured, true
@@ -1057,7 +1286,7 @@ func (o *NetworkElementSummary) GetNumEtherPortsConfiguredOk() (*int64, bool) {
 
 // HasNumEtherPortsConfigured returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasNumEtherPortsConfigured() bool {
-	if o != nil && o.NumEtherPortsConfigured != nil {
+	if o != nil && !IsNil(o.NumEtherPortsConfigured) {
 		return true
 	}
 
@@ -1071,7 +1300,7 @@ func (o *NetworkElementSummary) SetNumEtherPortsConfigured(v int64) {
 
 // GetNumEtherPortsLinkUp returns the NumEtherPortsLinkUp field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetNumEtherPortsLinkUp() int64 {
-	if o == nil || o.NumEtherPortsLinkUp == nil {
+	if o == nil || IsNil(o.NumEtherPortsLinkUp) {
 		var ret int64
 		return ret
 	}
@@ -1081,7 +1310,7 @@ func (o *NetworkElementSummary) GetNumEtherPortsLinkUp() int64 {
 // GetNumEtherPortsLinkUpOk returns a tuple with the NumEtherPortsLinkUp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetNumEtherPortsLinkUpOk() (*int64, bool) {
-	if o == nil || o.NumEtherPortsLinkUp == nil {
+	if o == nil || IsNil(o.NumEtherPortsLinkUp) {
 		return nil, false
 	}
 	return o.NumEtherPortsLinkUp, true
@@ -1089,7 +1318,7 @@ func (o *NetworkElementSummary) GetNumEtherPortsLinkUpOk() (*int64, bool) {
 
 // HasNumEtherPortsLinkUp returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasNumEtherPortsLinkUp() bool {
-	if o != nil && o.NumEtherPortsLinkUp != nil {
+	if o != nil && !IsNil(o.NumEtherPortsLinkUp) {
 		return true
 	}
 
@@ -1103,7 +1332,7 @@ func (o *NetworkElementSummary) SetNumEtherPortsLinkUp(v int64) {
 
 // GetNumExpansionModules returns the NumExpansionModules field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetNumExpansionModules() int64 {
-	if o == nil || o.NumExpansionModules == nil {
+	if o == nil || IsNil(o.NumExpansionModules) {
 		var ret int64
 		return ret
 	}
@@ -1113,7 +1342,7 @@ func (o *NetworkElementSummary) GetNumExpansionModules() int64 {
 // GetNumExpansionModulesOk returns a tuple with the NumExpansionModules field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetNumExpansionModulesOk() (*int64, bool) {
-	if o == nil || o.NumExpansionModules == nil {
+	if o == nil || IsNil(o.NumExpansionModules) {
 		return nil, false
 	}
 	return o.NumExpansionModules, true
@@ -1121,7 +1350,7 @@ func (o *NetworkElementSummary) GetNumExpansionModulesOk() (*int64, bool) {
 
 // HasNumExpansionModules returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasNumExpansionModules() bool {
-	if o != nil && o.NumExpansionModules != nil {
+	if o != nil && !IsNil(o.NumExpansionModules) {
 		return true
 	}
 
@@ -1135,7 +1364,7 @@ func (o *NetworkElementSummary) SetNumExpansionModules(v int64) {
 
 // GetNumFcPorts returns the NumFcPorts field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetNumFcPorts() int64 {
-	if o == nil || o.NumFcPorts == nil {
+	if o == nil || IsNil(o.NumFcPorts) {
 		var ret int64
 		return ret
 	}
@@ -1145,7 +1374,7 @@ func (o *NetworkElementSummary) GetNumFcPorts() int64 {
 // GetNumFcPortsOk returns a tuple with the NumFcPorts field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetNumFcPortsOk() (*int64, bool) {
-	if o == nil || o.NumFcPorts == nil {
+	if o == nil || IsNil(o.NumFcPorts) {
 		return nil, false
 	}
 	return o.NumFcPorts, true
@@ -1153,7 +1382,7 @@ func (o *NetworkElementSummary) GetNumFcPortsOk() (*int64, bool) {
 
 // HasNumFcPorts returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasNumFcPorts() bool {
-	if o != nil && o.NumFcPorts != nil {
+	if o != nil && !IsNil(o.NumFcPorts) {
 		return true
 	}
 
@@ -1167,7 +1396,7 @@ func (o *NetworkElementSummary) SetNumFcPorts(v int64) {
 
 // GetNumFcPortsConfigured returns the NumFcPortsConfigured field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetNumFcPortsConfigured() int64 {
-	if o == nil || o.NumFcPortsConfigured == nil {
+	if o == nil || IsNil(o.NumFcPortsConfigured) {
 		var ret int64
 		return ret
 	}
@@ -1177,7 +1406,7 @@ func (o *NetworkElementSummary) GetNumFcPortsConfigured() int64 {
 // GetNumFcPortsConfiguredOk returns a tuple with the NumFcPortsConfigured field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetNumFcPortsConfiguredOk() (*int64, bool) {
-	if o == nil || o.NumFcPortsConfigured == nil {
+	if o == nil || IsNil(o.NumFcPortsConfigured) {
 		return nil, false
 	}
 	return o.NumFcPortsConfigured, true
@@ -1185,7 +1414,7 @@ func (o *NetworkElementSummary) GetNumFcPortsConfiguredOk() (*int64, bool) {
 
 // HasNumFcPortsConfigured returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasNumFcPortsConfigured() bool {
-	if o != nil && o.NumFcPortsConfigured != nil {
+	if o != nil && !IsNil(o.NumFcPortsConfigured) {
 		return true
 	}
 
@@ -1199,7 +1428,7 @@ func (o *NetworkElementSummary) SetNumFcPortsConfigured(v int64) {
 
 // GetNumFcPortsLinkUp returns the NumFcPortsLinkUp field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetNumFcPortsLinkUp() int64 {
-	if o == nil || o.NumFcPortsLinkUp == nil {
+	if o == nil || IsNil(o.NumFcPortsLinkUp) {
 		var ret int64
 		return ret
 	}
@@ -1209,7 +1438,7 @@ func (o *NetworkElementSummary) GetNumFcPortsLinkUp() int64 {
 // GetNumFcPortsLinkUpOk returns a tuple with the NumFcPortsLinkUp field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetNumFcPortsLinkUpOk() (*int64, bool) {
-	if o == nil || o.NumFcPortsLinkUp == nil {
+	if o == nil || IsNil(o.NumFcPortsLinkUp) {
 		return nil, false
 	}
 	return o.NumFcPortsLinkUp, true
@@ -1217,7 +1446,7 @@ func (o *NetworkElementSummary) GetNumFcPortsLinkUpOk() (*int64, bool) {
 
 // HasNumFcPortsLinkUp returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasNumFcPortsLinkUp() bool {
-	if o != nil && o.NumFcPortsLinkUp != nil {
+	if o != nil && !IsNil(o.NumFcPortsLinkUp) {
 		return true
 	}
 
@@ -1231,7 +1460,7 @@ func (o *NetworkElementSummary) SetNumFcPortsLinkUp(v int64) {
 
 // GetOperEvacState returns the OperEvacState field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOperEvacState() string {
-	if o == nil || o.OperEvacState == nil {
+	if o == nil || IsNil(o.OperEvacState) {
 		var ret string
 		return ret
 	}
@@ -1241,7 +1470,7 @@ func (o *NetworkElementSummary) GetOperEvacState() string {
 // GetOperEvacStateOk returns a tuple with the OperEvacState field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOperEvacStateOk() (*string, bool) {
-	if o == nil || o.OperEvacState == nil {
+	if o == nil || IsNil(o.OperEvacState) {
 		return nil, false
 	}
 	return o.OperEvacState, true
@@ -1249,7 +1478,7 @@ func (o *NetworkElementSummary) GetOperEvacStateOk() (*string, bool) {
 
 // HasOperEvacState returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOperEvacState() bool {
-	if o != nil && o.OperEvacState != nil {
+	if o != nil && !IsNil(o.OperEvacState) {
 		return true
 	}
 
@@ -1263,7 +1492,7 @@ func (o *NetworkElementSummary) SetOperEvacState(v string) {
 
 // GetOperability returns the Operability field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOperability() string {
-	if o == nil || o.Operability == nil {
+	if o == nil || IsNil(o.Operability) {
 		var ret string
 		return ret
 	}
@@ -1273,7 +1502,7 @@ func (o *NetworkElementSummary) GetOperability() string {
 // GetOperabilityOk returns a tuple with the Operability field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOperabilityOk() (*string, bool) {
-	if o == nil || o.Operability == nil {
+	if o == nil || IsNil(o.Operability) {
 		return nil, false
 	}
 	return o.Operability, true
@@ -1281,7 +1510,7 @@ func (o *NetworkElementSummary) GetOperabilityOk() (*string, bool) {
 
 // HasOperability returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOperability() bool {
-	if o != nil && o.Operability != nil {
+	if o != nil && !IsNil(o.Operability) {
 		return true
 	}
 
@@ -1295,7 +1524,7 @@ func (o *NetworkElementSummary) SetOperability(v string) {
 
 // GetOutOfBandIpAddress returns the OutOfBandIpAddress field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpAddress() string {
-	if o == nil || o.OutOfBandIpAddress == nil {
+	if o == nil || IsNil(o.OutOfBandIpAddress) {
 		var ret string
 		return ret
 	}
@@ -1305,7 +1534,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpAddress() string {
 // GetOutOfBandIpAddressOk returns a tuple with the OutOfBandIpAddress field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandIpAddressOk() (*string, bool) {
-	if o == nil || o.OutOfBandIpAddress == nil {
+	if o == nil || IsNil(o.OutOfBandIpAddress) {
 		return nil, false
 	}
 	return o.OutOfBandIpAddress, true
@@ -1313,7 +1542,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpAddressOk() (*string, bool) {
 
 // HasOutOfBandIpAddress returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandIpAddress() bool {
-	if o != nil && o.OutOfBandIpAddress != nil {
+	if o != nil && !IsNil(o.OutOfBandIpAddress) {
 		return true
 	}
 
@@ -1327,7 +1556,7 @@ func (o *NetworkElementSummary) SetOutOfBandIpAddress(v string) {
 
 // GetOutOfBandIpGateway returns the OutOfBandIpGateway field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpGateway() string {
-	if o == nil || o.OutOfBandIpGateway == nil {
+	if o == nil || IsNil(o.OutOfBandIpGateway) {
 		var ret string
 		return ret
 	}
@@ -1337,7 +1566,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpGateway() string {
 // GetOutOfBandIpGatewayOk returns a tuple with the OutOfBandIpGateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandIpGatewayOk() (*string, bool) {
-	if o == nil || o.OutOfBandIpGateway == nil {
+	if o == nil || IsNil(o.OutOfBandIpGateway) {
 		return nil, false
 	}
 	return o.OutOfBandIpGateway, true
@@ -1345,7 +1574,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpGatewayOk() (*string, bool) {
 
 // HasOutOfBandIpGateway returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandIpGateway() bool {
-	if o != nil && o.OutOfBandIpGateway != nil {
+	if o != nil && !IsNil(o.OutOfBandIpGateway) {
 		return true
 	}
 
@@ -1359,7 +1588,7 @@ func (o *NetworkElementSummary) SetOutOfBandIpGateway(v string) {
 
 // GetOutOfBandIpMask returns the OutOfBandIpMask field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpMask() string {
-	if o == nil || o.OutOfBandIpMask == nil {
+	if o == nil || IsNil(o.OutOfBandIpMask) {
 		var ret string
 		return ret
 	}
@@ -1369,7 +1598,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpMask() string {
 // GetOutOfBandIpMaskOk returns a tuple with the OutOfBandIpMask field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandIpMaskOk() (*string, bool) {
-	if o == nil || o.OutOfBandIpMask == nil {
+	if o == nil || IsNil(o.OutOfBandIpMask) {
 		return nil, false
 	}
 	return o.OutOfBandIpMask, true
@@ -1377,7 +1606,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpMaskOk() (*string, bool) {
 
 // HasOutOfBandIpMask returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandIpMask() bool {
-	if o != nil && o.OutOfBandIpMask != nil {
+	if o != nil && !IsNil(o.OutOfBandIpMask) {
 		return true
 	}
 
@@ -1391,7 +1620,7 @@ func (o *NetworkElementSummary) SetOutOfBandIpMask(v string) {
 
 // GetOutOfBandIpv4Address returns the OutOfBandIpv4Address field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpv4Address() string {
-	if o == nil || o.OutOfBandIpv4Address == nil {
+	if o == nil || IsNil(o.OutOfBandIpv4Address) {
 		var ret string
 		return ret
 	}
@@ -1401,7 +1630,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv4Address() string {
 // GetOutOfBandIpv4AddressOk returns a tuple with the OutOfBandIpv4Address field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandIpv4AddressOk() (*string, bool) {
-	if o == nil || o.OutOfBandIpv4Address == nil {
+	if o == nil || IsNil(o.OutOfBandIpv4Address) {
 		return nil, false
 	}
 	return o.OutOfBandIpv4Address, true
@@ -1409,7 +1638,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv4AddressOk() (*string, bool) {
 
 // HasOutOfBandIpv4Address returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandIpv4Address() bool {
-	if o != nil && o.OutOfBandIpv4Address != nil {
+	if o != nil && !IsNil(o.OutOfBandIpv4Address) {
 		return true
 	}
 
@@ -1423,7 +1652,7 @@ func (o *NetworkElementSummary) SetOutOfBandIpv4Address(v string) {
 
 // GetOutOfBandIpv4Gateway returns the OutOfBandIpv4Gateway field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpv4Gateway() string {
-	if o == nil || o.OutOfBandIpv4Gateway == nil {
+	if o == nil || IsNil(o.OutOfBandIpv4Gateway) {
 		var ret string
 		return ret
 	}
@@ -1433,7 +1662,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv4Gateway() string {
 // GetOutOfBandIpv4GatewayOk returns a tuple with the OutOfBandIpv4Gateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandIpv4GatewayOk() (*string, bool) {
-	if o == nil || o.OutOfBandIpv4Gateway == nil {
+	if o == nil || IsNil(o.OutOfBandIpv4Gateway) {
 		return nil, false
 	}
 	return o.OutOfBandIpv4Gateway, true
@@ -1441,7 +1670,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv4GatewayOk() (*string, bool) {
 
 // HasOutOfBandIpv4Gateway returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandIpv4Gateway() bool {
-	if o != nil && o.OutOfBandIpv4Gateway != nil {
+	if o != nil && !IsNil(o.OutOfBandIpv4Gateway) {
 		return true
 	}
 
@@ -1455,7 +1684,7 @@ func (o *NetworkElementSummary) SetOutOfBandIpv4Gateway(v string) {
 
 // GetOutOfBandIpv4Mask returns the OutOfBandIpv4Mask field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpv4Mask() string {
-	if o == nil || o.OutOfBandIpv4Mask == nil {
+	if o == nil || IsNil(o.OutOfBandIpv4Mask) {
 		var ret string
 		return ret
 	}
@@ -1465,7 +1694,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv4Mask() string {
 // GetOutOfBandIpv4MaskOk returns a tuple with the OutOfBandIpv4Mask field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandIpv4MaskOk() (*string, bool) {
-	if o == nil || o.OutOfBandIpv4Mask == nil {
+	if o == nil || IsNil(o.OutOfBandIpv4Mask) {
 		return nil, false
 	}
 	return o.OutOfBandIpv4Mask, true
@@ -1473,7 +1702,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv4MaskOk() (*string, bool) {
 
 // HasOutOfBandIpv4Mask returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandIpv4Mask() bool {
-	if o != nil && o.OutOfBandIpv4Mask != nil {
+	if o != nil && !IsNil(o.OutOfBandIpv4Mask) {
 		return true
 	}
 
@@ -1487,7 +1716,7 @@ func (o *NetworkElementSummary) SetOutOfBandIpv4Mask(v string) {
 
 // GetOutOfBandIpv6Address returns the OutOfBandIpv6Address field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpv6Address() string {
-	if o == nil || o.OutOfBandIpv6Address == nil {
+	if o == nil || IsNil(o.OutOfBandIpv6Address) {
 		var ret string
 		return ret
 	}
@@ -1497,7 +1726,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv6Address() string {
 // GetOutOfBandIpv6AddressOk returns a tuple with the OutOfBandIpv6Address field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandIpv6AddressOk() (*string, bool) {
-	if o == nil || o.OutOfBandIpv6Address == nil {
+	if o == nil || IsNil(o.OutOfBandIpv6Address) {
 		return nil, false
 	}
 	return o.OutOfBandIpv6Address, true
@@ -1505,7 +1734,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv6AddressOk() (*string, bool) {
 
 // HasOutOfBandIpv6Address returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandIpv6Address() bool {
-	if o != nil && o.OutOfBandIpv6Address != nil {
+	if o != nil && !IsNil(o.OutOfBandIpv6Address) {
 		return true
 	}
 
@@ -1519,7 +1748,7 @@ func (o *NetworkElementSummary) SetOutOfBandIpv6Address(v string) {
 
 // GetOutOfBandIpv6Gateway returns the OutOfBandIpv6Gateway field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpv6Gateway() string {
-	if o == nil || o.OutOfBandIpv6Gateway == nil {
+	if o == nil || IsNil(o.OutOfBandIpv6Gateway) {
 		var ret string
 		return ret
 	}
@@ -1529,7 +1758,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv6Gateway() string {
 // GetOutOfBandIpv6GatewayOk returns a tuple with the OutOfBandIpv6Gateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandIpv6GatewayOk() (*string, bool) {
-	if o == nil || o.OutOfBandIpv6Gateway == nil {
+	if o == nil || IsNil(o.OutOfBandIpv6Gateway) {
 		return nil, false
 	}
 	return o.OutOfBandIpv6Gateway, true
@@ -1537,7 +1766,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv6GatewayOk() (*string, bool) {
 
 // HasOutOfBandIpv6Gateway returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandIpv6Gateway() bool {
-	if o != nil && o.OutOfBandIpv6Gateway != nil {
+	if o != nil && !IsNil(o.OutOfBandIpv6Gateway) {
 		return true
 	}
 
@@ -1551,7 +1780,7 @@ func (o *NetworkElementSummary) SetOutOfBandIpv6Gateway(v string) {
 
 // GetOutOfBandIpv6Prefix returns the OutOfBandIpv6Prefix field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpv6Prefix() string {
-	if o == nil || o.OutOfBandIpv6Prefix == nil {
+	if o == nil || IsNil(o.OutOfBandIpv6Prefix) {
 		var ret string
 		return ret
 	}
@@ -1561,7 +1790,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv6Prefix() string {
 // GetOutOfBandIpv6PrefixOk returns a tuple with the OutOfBandIpv6Prefix field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandIpv6PrefixOk() (*string, bool) {
-	if o == nil || o.OutOfBandIpv6Prefix == nil {
+	if o == nil || IsNil(o.OutOfBandIpv6Prefix) {
 		return nil, false
 	}
 	return o.OutOfBandIpv6Prefix, true
@@ -1569,7 +1798,7 @@ func (o *NetworkElementSummary) GetOutOfBandIpv6PrefixOk() (*string, bool) {
 
 // HasOutOfBandIpv6Prefix returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandIpv6Prefix() bool {
-	if o != nil && o.OutOfBandIpv6Prefix != nil {
+	if o != nil && !IsNil(o.OutOfBandIpv6Prefix) {
 		return true
 	}
 
@@ -1583,7 +1812,7 @@ func (o *NetworkElementSummary) SetOutOfBandIpv6Prefix(v string) {
 
 // GetOutOfBandMac returns the OutOfBandMac field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandMac() string {
-	if o == nil || o.OutOfBandMac == nil {
+	if o == nil || IsNil(o.OutOfBandMac) {
 		var ret string
 		return ret
 	}
@@ -1593,7 +1822,7 @@ func (o *NetworkElementSummary) GetOutOfBandMac() string {
 // GetOutOfBandMacOk returns a tuple with the OutOfBandMac field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetOutOfBandMacOk() (*string, bool) {
-	if o == nil || o.OutOfBandMac == nil {
+	if o == nil || IsNil(o.OutOfBandMac) {
 		return nil, false
 	}
 	return o.OutOfBandMac, true
@@ -1601,7 +1830,7 @@ func (o *NetworkElementSummary) GetOutOfBandMacOk() (*string, bool) {
 
 // HasOutOfBandMac returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasOutOfBandMac() bool {
-	if o != nil && o.OutOfBandMac != nil {
+	if o != nil && !IsNil(o.OutOfBandMac) {
 		return true
 	}
 
@@ -1615,7 +1844,7 @@ func (o *NetworkElementSummary) SetOutOfBandMac(v string) {
 
 // GetPartNumber returns the PartNumber field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetPartNumber() string {
-	if o == nil || o.PartNumber == nil {
+	if o == nil || IsNil(o.PartNumber) {
 		var ret string
 		return ret
 	}
@@ -1625,7 +1854,7 @@ func (o *NetworkElementSummary) GetPartNumber() string {
 // GetPartNumberOk returns a tuple with the PartNumber field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetPartNumberOk() (*string, bool) {
-	if o == nil || o.PartNumber == nil {
+	if o == nil || IsNil(o.PartNumber) {
 		return nil, false
 	}
 	return o.PartNumber, true
@@ -1633,7 +1862,7 @@ func (o *NetworkElementSummary) GetPartNumberOk() (*string, bool) {
 
 // HasPartNumber returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasPartNumber() bool {
-	if o != nil && o.PartNumber != nil {
+	if o != nil && !IsNil(o.PartNumber) {
 		return true
 	}
 
@@ -1647,7 +1876,7 @@ func (o *NetworkElementSummary) SetPartNumber(v string) {
 
 // GetPresence returns the Presence field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetPresence() string {
-	if o == nil || o.Presence == nil {
+	if o == nil || IsNil(o.Presence) {
 		var ret string
 		return ret
 	}
@@ -1657,7 +1886,7 @@ func (o *NetworkElementSummary) GetPresence() string {
 // GetPresenceOk returns a tuple with the Presence field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetPresenceOk() (*string, bool) {
-	if o == nil || o.Presence == nil {
+	if o == nil || IsNil(o.Presence) {
 		return nil, false
 	}
 	return o.Presence, true
@@ -1665,7 +1894,7 @@ func (o *NetworkElementSummary) GetPresenceOk() (*string, bool) {
 
 // HasPresence returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasPresence() bool {
-	if o != nil && o.Presence != nil {
+	if o != nil && !IsNil(o.Presence) {
 		return true
 	}
 
@@ -1677,9 +1906,41 @@ func (o *NetworkElementSummary) SetPresence(v string) {
 	o.Presence = &v
 }
 
+// GetReservedVlanStartId returns the ReservedVlanStartId field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetReservedVlanStartId() int64 {
+	if o == nil || IsNil(o.ReservedVlanStartId) {
+		var ret int64
+		return ret
+	}
+	return *o.ReservedVlanStartId
+}
+
+// GetReservedVlanStartIdOk returns a tuple with the ReservedVlanStartId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetReservedVlanStartIdOk() (*int64, bool) {
+	if o == nil || IsNil(o.ReservedVlanStartId) {
+		return nil, false
+	}
+	return o.ReservedVlanStartId, true
+}
+
+// HasReservedVlanStartId returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasReservedVlanStartId() bool {
+	if o != nil && !IsNil(o.ReservedVlanStartId) {
+		return true
+	}
+
+	return false
+}
+
+// SetReservedVlanStartId gets a reference to the given int64 and assigns it to the ReservedVlanStartId field.
+func (o *NetworkElementSummary) SetReservedVlanStartId(v int64) {
+	o.ReservedVlanStartId = &v
+}
+
 // GetRevision returns the Revision field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetRevision() string {
-	if o == nil || o.Revision == nil {
+	if o == nil || IsNil(o.Revision) {
 		var ret string
 		return ret
 	}
@@ -1689,7 +1950,7 @@ func (o *NetworkElementSummary) GetRevision() string {
 // GetRevisionOk returns a tuple with the Revision field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetRevisionOk() (*string, bool) {
-	if o == nil || o.Revision == nil {
+	if o == nil || IsNil(o.Revision) {
 		return nil, false
 	}
 	return o.Revision, true
@@ -1697,7 +1958,7 @@ func (o *NetworkElementSummary) GetRevisionOk() (*string, bool) {
 
 // HasRevision returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasRevision() bool {
-	if o != nil && o.Revision != nil {
+	if o != nil && !IsNil(o.Revision) {
 		return true
 	}
 
@@ -1711,7 +1972,7 @@ func (o *NetworkElementSummary) SetRevision(v string) {
 
 // GetRn returns the Rn field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetRn() string {
-	if o == nil || o.Rn == nil {
+	if o == nil || IsNil(o.Rn) {
 		var ret string
 		return ret
 	}
@@ -1721,7 +1982,7 @@ func (o *NetworkElementSummary) GetRn() string {
 // GetRnOk returns a tuple with the Rn field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetRnOk() (*string, bool) {
-	if o == nil || o.Rn == nil {
+	if o == nil || IsNil(o.Rn) {
 		return nil, false
 	}
 	return o.Rn, true
@@ -1729,7 +1990,7 @@ func (o *NetworkElementSummary) GetRnOk() (*string, bool) {
 
 // HasRn returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasRn() bool {
-	if o != nil && o.Rn != nil {
+	if o != nil && !IsNil(o.Rn) {
 		return true
 	}
 
@@ -1743,7 +2004,7 @@ func (o *NetworkElementSummary) SetRn(v string) {
 
 // GetSerial returns the Serial field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetSerial() string {
-	if o == nil || o.Serial == nil {
+	if o == nil || IsNil(o.Serial) {
 		var ret string
 		return ret
 	}
@@ -1753,7 +2014,7 @@ func (o *NetworkElementSummary) GetSerial() string {
 // GetSerialOk returns a tuple with the Serial field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetSerialOk() (*string, bool) {
-	if o == nil || o.Serial == nil {
+	if o == nil || IsNil(o.Serial) {
 		return nil, false
 	}
 	return o.Serial, true
@@ -1761,7 +2022,7 @@ func (o *NetworkElementSummary) GetSerialOk() (*string, bool) {
 
 // HasSerial returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasSerial() bool {
-	if o != nil && o.Serial != nil {
+	if o != nil && !IsNil(o.Serial) {
 		return true
 	}
 
@@ -1775,7 +2036,7 @@ func (o *NetworkElementSummary) SetSerial(v string) {
 
 // GetSourceObjectType returns the SourceObjectType field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetSourceObjectType() string {
-	if o == nil || o.SourceObjectType == nil {
+	if o == nil || IsNil(o.SourceObjectType) {
 		var ret string
 		return ret
 	}
@@ -1785,7 +2046,7 @@ func (o *NetworkElementSummary) GetSourceObjectType() string {
 // GetSourceObjectTypeOk returns a tuple with the SourceObjectType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetSourceObjectTypeOk() (*string, bool) {
-	if o == nil || o.SourceObjectType == nil {
+	if o == nil || IsNil(o.SourceObjectType) {
 		return nil, false
 	}
 	return o.SourceObjectType, true
@@ -1793,7 +2054,7 @@ func (o *NetworkElementSummary) GetSourceObjectTypeOk() (*string, bool) {
 
 // HasSourceObjectType returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasSourceObjectType() bool {
-	if o != nil && o.SourceObjectType != nil {
+	if o != nil && !IsNil(o.SourceObjectType) {
 		return true
 	}
 
@@ -1807,7 +2068,7 @@ func (o *NetworkElementSummary) SetSourceObjectType(v string) {
 
 // GetStatus returns the Status field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetStatus() string {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		var ret string
 		return ret
 	}
@@ -1817,7 +2078,7 @@ func (o *NetworkElementSummary) GetStatus() string {
 // GetStatusOk returns a tuple with the Status field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetStatusOk() (*string, bool) {
-	if o == nil || o.Status == nil {
+	if o == nil || IsNil(o.Status) {
 		return nil, false
 	}
 	return o.Status, true
@@ -1825,7 +2086,7 @@ func (o *NetworkElementSummary) GetStatusOk() (*string, bool) {
 
 // HasStatus returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasStatus() bool {
-	if o != nil && o.Status != nil {
+	if o != nil && !IsNil(o.Status) {
 		return true
 	}
 
@@ -1839,7 +2100,7 @@ func (o *NetworkElementSummary) SetStatus(v string) {
 
 // GetSwitchId returns the SwitchId field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetSwitchId() string {
-	if o == nil || o.SwitchId == nil {
+	if o == nil || IsNil(o.SwitchId) {
 		var ret string
 		return ret
 	}
@@ -1849,7 +2110,7 @@ func (o *NetworkElementSummary) GetSwitchId() string {
 // GetSwitchIdOk returns a tuple with the SwitchId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetSwitchIdOk() (*string, bool) {
-	if o == nil || o.SwitchId == nil {
+	if o == nil || IsNil(o.SwitchId) {
 		return nil, false
 	}
 	return o.SwitchId, true
@@ -1857,7 +2118,7 @@ func (o *NetworkElementSummary) GetSwitchIdOk() (*string, bool) {
 
 // HasSwitchId returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasSwitchId() bool {
-	if o != nil && o.SwitchId != nil {
+	if o != nil && !IsNil(o.SwitchId) {
 		return true
 	}
 
@@ -1869,9 +2130,41 @@ func (o *NetworkElementSummary) SetSwitchId(v string) {
 	o.SwitchId = &v
 }
 
+// GetSwitchProfileName returns the SwitchProfileName field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetSwitchProfileName() string {
+	if o == nil || IsNil(o.SwitchProfileName) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchProfileName
+}
+
+// GetSwitchProfileNameOk returns a tuple with the SwitchProfileName field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetSwitchProfileNameOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchProfileName) {
+		return nil, false
+	}
+	return o.SwitchProfileName, true
+}
+
+// HasSwitchProfileName returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasSwitchProfileName() bool {
+	if o != nil && !IsNil(o.SwitchProfileName) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchProfileName gets a reference to the given string and assigns it to the SwitchProfileName field.
+func (o *NetworkElementSummary) SetSwitchProfileName(v string) {
+	o.SwitchProfileName = &v
+}
+
 // GetSwitchType returns the SwitchType field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetSwitchType() string {
-	if o == nil || o.SwitchType == nil {
+	if o == nil || IsNil(o.SwitchType) {
 		var ret string
 		return ret
 	}
@@ -1881,7 +2174,7 @@ func (o *NetworkElementSummary) GetSwitchType() string {
 // GetSwitchTypeOk returns a tuple with the SwitchType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetSwitchTypeOk() (*string, bool) {
-	if o == nil || o.SwitchType == nil {
+	if o == nil || IsNil(o.SwitchType) {
 		return nil, false
 	}
 	return o.SwitchType, true
@@ -1889,7 +2182,7 @@ func (o *NetworkElementSummary) GetSwitchTypeOk() (*string, bool) {
 
 // HasSwitchType returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasSwitchType() bool {
-	if o != nil && o.SwitchType != nil {
+	if o != nil && !IsNil(o.SwitchType) {
 		return true
 	}
 
@@ -1903,7 +2196,7 @@ func (o *NetworkElementSummary) SetSwitchType(v string) {
 
 // GetSystemUpTime returns the SystemUpTime field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetSystemUpTime() string {
-	if o == nil || o.SystemUpTime == nil {
+	if o == nil || IsNil(o.SystemUpTime) {
 		var ret string
 		return ret
 	}
@@ -1913,7 +2206,7 @@ func (o *NetworkElementSummary) GetSystemUpTime() string {
 // GetSystemUpTimeOk returns a tuple with the SystemUpTime field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetSystemUpTimeOk() (*string, bool) {
-	if o == nil || o.SystemUpTime == nil {
+	if o == nil || IsNil(o.SystemUpTime) {
 		return nil, false
 	}
 	return o.SystemUpTime, true
@@ -1921,7 +2214,7 @@ func (o *NetworkElementSummary) GetSystemUpTimeOk() (*string, bool) {
 
 // HasSystemUpTime returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasSystemUpTime() bool {
-	if o != nil && o.SystemUpTime != nil {
+	if o != nil && !IsNil(o.SystemUpTime) {
 		return true
 	}
 
@@ -1935,7 +2228,7 @@ func (o *NetworkElementSummary) SetSystemUpTime(v string) {
 
 // GetThermal returns the Thermal field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetThermal() string {
-	if o == nil || o.Thermal == nil {
+	if o == nil || IsNil(o.Thermal) {
 		var ret string
 		return ret
 	}
@@ -1945,7 +2238,7 @@ func (o *NetworkElementSummary) GetThermal() string {
 // GetThermalOk returns a tuple with the Thermal field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetThermalOk() (*string, bool) {
-	if o == nil || o.Thermal == nil {
+	if o == nil || IsNil(o.Thermal) {
 		return nil, false
 	}
 	return o.Thermal, true
@@ -1953,7 +2246,7 @@ func (o *NetworkElementSummary) GetThermalOk() (*string, bool) {
 
 // HasThermal returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasThermal() bool {
-	if o != nil && o.Thermal != nil {
+	if o != nil && !IsNil(o.Thermal) {
 		return true
 	}
 
@@ -1967,7 +2260,7 @@ func (o *NetworkElementSummary) SetThermal(v string) {
 
 // GetTotalMemory returns the TotalMemory field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetTotalMemory() int64 {
-	if o == nil || o.TotalMemory == nil {
+	if o == nil || IsNil(o.TotalMemory) {
 		var ret int64
 		return ret
 	}
@@ -1977,7 +2270,7 @@ func (o *NetworkElementSummary) GetTotalMemory() int64 {
 // GetTotalMemoryOk returns a tuple with the TotalMemory field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetTotalMemoryOk() (*int64, bool) {
-	if o == nil || o.TotalMemory == nil {
+	if o == nil || IsNil(o.TotalMemory) {
 		return nil, false
 	}
 	return o.TotalMemory, true
@@ -1985,7 +2278,7 @@ func (o *NetworkElementSummary) GetTotalMemoryOk() (*int64, bool) {
 
 // HasTotalMemory returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasTotalMemory() bool {
-	if o != nil && o.TotalMemory != nil {
+	if o != nil && !IsNil(o.TotalMemory) {
 		return true
 	}
 
@@ -1997,9 +2290,41 @@ func (o *NetworkElementSummary) SetTotalMemory(v int64) {
 	o.TotalMemory = &v
 }
 
+// GetUserLabel returns the UserLabel field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetUserLabel() string {
+	if o == nil || IsNil(o.UserLabel) {
+		var ret string
+		return ret
+	}
+	return *o.UserLabel
+}
+
+// GetUserLabelOk returns a tuple with the UserLabel field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetUserLabelOk() (*string, bool) {
+	if o == nil || IsNil(o.UserLabel) {
+		return nil, false
+	}
+	return o.UserLabel, true
+}
+
+// HasUserLabel returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasUserLabel() bool {
+	if o != nil && !IsNil(o.UserLabel) {
+		return true
+	}
+
+	return false
+}
+
+// SetUserLabel gets a reference to the given string and assigns it to the UserLabel field.
+func (o *NetworkElementSummary) SetUserLabel(v string) {
+	o.UserLabel = &v
+}
+
 // GetVendor returns the Vendor field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetVendor() string {
-	if o == nil || o.Vendor == nil {
+	if o == nil || IsNil(o.Vendor) {
 		var ret string
 		return ret
 	}
@@ -2009,7 +2334,7 @@ func (o *NetworkElementSummary) GetVendor() string {
 // GetVendorOk returns a tuple with the Vendor field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetVendorOk() (*string, bool) {
-	if o == nil || o.Vendor == nil {
+	if o == nil || IsNil(o.Vendor) {
 		return nil, false
 	}
 	return o.Vendor, true
@@ -2017,7 +2342,7 @@ func (o *NetworkElementSummary) GetVendorOk() (*string, bool) {
 
 // HasVendor returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasVendor() bool {
-	if o != nil && o.Vendor != nil {
+	if o != nil && !IsNil(o.Vendor) {
 		return true
 	}
 
@@ -2031,7 +2356,7 @@ func (o *NetworkElementSummary) SetVendor(v string) {
 
 // GetVersion returns the Version field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetVersion() string {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		var ret string
 		return ret
 	}
@@ -2041,7 +2366,7 @@ func (o *NetworkElementSummary) GetVersion() string {
 // GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *NetworkElementSummary) GetVersionOk() (*string, bool) {
-	if o == nil || o.Version == nil {
+	if o == nil || IsNil(o.Version) {
 		return nil, false
 	}
 	return o.Version, true
@@ -2049,7 +2374,7 @@ func (o *NetworkElementSummary) GetVersionOk() (*string, bool) {
 
 // HasVersion returns a boolean if a field has been set.
 func (o *NetworkElementSummary) HasVersion() bool {
-	if o != nil && o.Version != nil {
+	if o != nil && !IsNil(o.Version) {
 		return true
 	}
 
@@ -2061,258 +2386,397 @@ func (o *NetworkElementSummary) SetVersion(v string) {
 	o.Version = &v
 }
 
-// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise.
-func (o *NetworkElementSummary) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
-	if o == nil || o.RegisteredDevice == nil {
-		var ret AssetDeviceRegistrationRelationship
+// GetInventoryParent returns the InventoryParent field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *NetworkElementSummary) GetInventoryParent() MoBaseMoRelationship {
+	if o == nil || IsNil(o.InventoryParent.Get()) {
+		var ret MoBaseMoRelationship
 		return ret
 	}
-	return *o.RegisteredDevice
+	return *o.InventoryParent.Get()
 }
 
-// GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
+// GetInventoryParentOk returns a tuple with the InventoryParent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *NetworkElementSummary) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
-	if o == nil || o.RegisteredDevice == nil {
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NetworkElementSummary) GetInventoryParentOk() (*MoBaseMoRelationship, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return o.RegisteredDevice, true
+	return o.InventoryParent.Get(), o.InventoryParent.IsSet()
 }
 
-// HasRegisteredDevice returns a boolean if a field has been set.
-func (o *NetworkElementSummary) HasRegisteredDevice() bool {
-	if o != nil && o.RegisteredDevice != nil {
+// HasInventoryParent returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasInventoryParent() bool {
+	if o != nil && o.InventoryParent.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetRegisteredDevice gets a reference to the given AssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
+// SetInventoryParent gets a reference to the given NullableMoBaseMoRelationship and assigns it to the InventoryParent field.
+func (o *NetworkElementSummary) SetInventoryParent(v MoBaseMoRelationship) {
+	o.InventoryParent.Set(&v)
+}
+
+// SetInventoryParentNil sets the value for InventoryParent to be an explicit nil
+func (o *NetworkElementSummary) SetInventoryParentNil() {
+	o.InventoryParent.Set(nil)
+}
+
+// UnsetInventoryParent ensures that no value is present for InventoryParent, not even an explicit nil
+func (o *NetworkElementSummary) UnsetInventoryParent() {
+	o.InventoryParent.Unset()
+}
+
+// GetRegisteredDevice returns the RegisteredDevice field value if set, zero value otherwise (both if not set or set to explicit null).
+func (o *NetworkElementSummary) GetRegisteredDevice() AssetDeviceRegistrationRelationship {
+	if o == nil || IsNil(o.RegisteredDevice.Get()) {
+		var ret AssetDeviceRegistrationRelationship
+		return ret
+	}
+	return *o.RegisteredDevice.Get()
+}
+
+// GetRegisteredDeviceOk returns a tuple with the RegisteredDevice field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
+func (o *NetworkElementSummary) GetRegisteredDeviceOk() (*AssetDeviceRegistrationRelationship, bool) {
+	if o == nil {
+		return nil, false
+	}
+	return o.RegisteredDevice.Get(), o.RegisteredDevice.IsSet()
+}
+
+// HasRegisteredDevice returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasRegisteredDevice() bool {
+	if o != nil && o.RegisteredDevice.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetRegisteredDevice gets a reference to the given NullableAssetDeviceRegistrationRelationship and assigns it to the RegisteredDevice field.
 func (o *NetworkElementSummary) SetRegisteredDevice(v AssetDeviceRegistrationRelationship) {
-	o.RegisteredDevice = &v
+	o.RegisteredDevice.Set(&v)
+}
+
+// SetRegisteredDeviceNil sets the value for RegisteredDevice to be an explicit nil
+func (o *NetworkElementSummary) SetRegisteredDeviceNil() {
+	o.RegisteredDevice.Set(nil)
+}
+
+// UnsetRegisteredDevice ensures that no value is present for RegisteredDevice, not even an explicit nil
+func (o *NetworkElementSummary) UnsetRegisteredDevice() {
+	o.RegisteredDevice.Unset()
 }
 
 func (o NetworkElementSummary) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o NetworkElementSummary) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
-	serializedViewsView, errViewsView := json.Marshal(o.ViewsView)
-	if errViewsView != nil {
-		return []byte{}, errViewsView
+	serializedMoBaseMo, errMoBaseMo := json.Marshal(o.MoBaseMo)
+	if errMoBaseMo != nil {
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	errViewsView = json.Unmarshal([]byte(serializedViewsView), &toSerialize)
-	if errViewsView != nil {
-		return []byte{}, errViewsView
+	errMoBaseMo = json.Unmarshal([]byte(serializedMoBaseMo), &toSerialize)
+	if errMoBaseMo != nil {
+		return map[string]interface{}{}, errMoBaseMo
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
-	if o.AdminEvacState != nil {
+	toSerialize["ObjectType"] = o.ObjectType
+	if !IsNil(o.AdminEvacState) {
 		toSerialize["AdminEvacState"] = o.AdminEvacState
 	}
-	if o.AdminInbandInterfaceState != nil {
+	if !IsNil(o.AdminInbandInterfaceState) {
 		toSerialize["AdminInbandInterfaceState"] = o.AdminInbandInterfaceState
 	}
 	if o.AlarmSummary.IsSet() {
 		toSerialize["AlarmSummary"] = o.AlarmSummary.Get()
 	}
-	if o.AvailableMemory != nil {
+	if !IsNil(o.AvailableMemory) {
 		toSerialize["AvailableMemory"] = o.AvailableMemory
 	}
-	if o.Chassis != nil {
+	if !IsNil(o.BundleVersion) {
+		toSerialize["BundleVersion"] = o.BundleVersion
+	}
+	if !IsNil(o.Chassis) {
 		toSerialize["Chassis"] = o.Chassis
 	}
-	if o.ConfModTs != nil {
+	if !IsNil(o.ConfModTs) {
 		toSerialize["ConfModTs"] = o.ConfModTs
 	}
-	if o.ConfModTsBackup != nil {
+	if !IsNil(o.ConfModTsBackup) {
 		toSerialize["ConfModTsBackup"] = o.ConfModTsBackup
 	}
-	if o.DefaultDomain != nil {
+	if !IsNil(o.ConnectionStatus) {
+		toSerialize["ConnectionStatus"] = o.ConnectionStatus
+	}
+	if !IsNil(o.DefaultDomain) {
 		toSerialize["DefaultDomain"] = o.DefaultDomain
 	}
-	if o.DeviceMoId != nil {
+	if !IsNil(o.DeviceMoId) {
 		toSerialize["DeviceMoId"] = o.DeviceMoId
 	}
-	if o.Dn != nil {
+	if !IsNil(o.Dn) {
 		toSerialize["Dn"] = o.Dn
 	}
-	if o.EthernetMode != nil {
+	if !IsNil(o.EthernetMode) {
 		toSerialize["EthernetMode"] = o.EthernetMode
 	}
-	if o.EthernetSwitchingMode != nil {
+	if !IsNil(o.EthernetSwitchingMode) {
 		toSerialize["EthernetSwitchingMode"] = o.EthernetSwitchingMode
 	}
-	if o.FaultSummary != nil {
+	if !IsNil(o.FaultSummary) {
 		toSerialize["FaultSummary"] = o.FaultSummary
 	}
-	if o.FcMode != nil {
+	if !IsNil(o.FcMode) {
 		toSerialize["FcMode"] = o.FcMode
 	}
-	if o.FcSwitchingMode != nil {
+	if !IsNil(o.FcSwitchingMode) {
 		toSerialize["FcSwitchingMode"] = o.FcSwitchingMode
 	}
-	if o.Firmware != nil {
+	if !IsNil(o.Firmware) {
 		toSerialize["Firmware"] = o.Firmware
 	}
-	if o.InbandIpAddress != nil {
+	if !IsNil(o.FirmwareVersion) {
+		toSerialize["FirmwareVersion"] = o.FirmwareVersion
+	}
+	if !IsNil(o.FpgaUpgradeNeeded) {
+		toSerialize["FpgaUpgradeNeeded"] = o.FpgaUpgradeNeeded
+	}
+	if !IsNil(o.InbandIpAddress) {
 		toSerialize["InbandIpAddress"] = o.InbandIpAddress
 	}
-	if o.InbandIpGateway != nil {
+	if !IsNil(o.InbandIpGateway) {
 		toSerialize["InbandIpGateway"] = o.InbandIpGateway
 	}
-	if o.InbandIpMask != nil {
+	if !IsNil(o.InbandIpMask) {
 		toSerialize["InbandIpMask"] = o.InbandIpMask
 	}
-	if o.InbandVlan != nil {
+	if !IsNil(o.InbandVlan) {
 		toSerialize["InbandVlan"] = o.InbandVlan
 	}
-	if o.Ipv4Address != nil {
+	if !IsNil(o.InterClusterLinkState) {
+		toSerialize["InterClusterLinkState"] = o.InterClusterLinkState
+	}
+	if !IsNil(o.Ipv4Address) {
 		toSerialize["Ipv4Address"] = o.Ipv4Address
 	}
-	if o.ManagementMode != nil {
+	if !IsNil(o.IsUpgraded) {
+		toSerialize["IsUpgraded"] = o.IsUpgraded
+	}
+	if !IsNil(o.ManagementMode) {
 		toSerialize["ManagementMode"] = o.ManagementMode
 	}
-	if o.Model != nil {
+	if !IsNil(o.Model) {
 		toSerialize["Model"] = o.Model
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.NumEtherPorts != nil {
+	if !IsNil(o.NumEtherPorts) {
 		toSerialize["NumEtherPorts"] = o.NumEtherPorts
 	}
-	if o.NumEtherPortsConfigured != nil {
+	if !IsNil(o.NumEtherPortsConfigured) {
 		toSerialize["NumEtherPortsConfigured"] = o.NumEtherPortsConfigured
 	}
-	if o.NumEtherPortsLinkUp != nil {
+	if !IsNil(o.NumEtherPortsLinkUp) {
 		toSerialize["NumEtherPortsLinkUp"] = o.NumEtherPortsLinkUp
 	}
-	if o.NumExpansionModules != nil {
+	if !IsNil(o.NumExpansionModules) {
 		toSerialize["NumExpansionModules"] = o.NumExpansionModules
 	}
-	if o.NumFcPorts != nil {
+	if !IsNil(o.NumFcPorts) {
 		toSerialize["NumFcPorts"] = o.NumFcPorts
 	}
-	if o.NumFcPortsConfigured != nil {
+	if !IsNil(o.NumFcPortsConfigured) {
 		toSerialize["NumFcPortsConfigured"] = o.NumFcPortsConfigured
 	}
-	if o.NumFcPortsLinkUp != nil {
+	if !IsNil(o.NumFcPortsLinkUp) {
 		toSerialize["NumFcPortsLinkUp"] = o.NumFcPortsLinkUp
 	}
-	if o.OperEvacState != nil {
+	if !IsNil(o.OperEvacState) {
 		toSerialize["OperEvacState"] = o.OperEvacState
 	}
-	if o.Operability != nil {
+	if !IsNil(o.Operability) {
 		toSerialize["Operability"] = o.Operability
 	}
-	if o.OutOfBandIpAddress != nil {
+	if !IsNil(o.OutOfBandIpAddress) {
 		toSerialize["OutOfBandIpAddress"] = o.OutOfBandIpAddress
 	}
-	if o.OutOfBandIpGateway != nil {
+	if !IsNil(o.OutOfBandIpGateway) {
 		toSerialize["OutOfBandIpGateway"] = o.OutOfBandIpGateway
 	}
-	if o.OutOfBandIpMask != nil {
+	if !IsNil(o.OutOfBandIpMask) {
 		toSerialize["OutOfBandIpMask"] = o.OutOfBandIpMask
 	}
-	if o.OutOfBandIpv4Address != nil {
+	if !IsNil(o.OutOfBandIpv4Address) {
 		toSerialize["OutOfBandIpv4Address"] = o.OutOfBandIpv4Address
 	}
-	if o.OutOfBandIpv4Gateway != nil {
+	if !IsNil(o.OutOfBandIpv4Gateway) {
 		toSerialize["OutOfBandIpv4Gateway"] = o.OutOfBandIpv4Gateway
 	}
-	if o.OutOfBandIpv4Mask != nil {
+	if !IsNil(o.OutOfBandIpv4Mask) {
 		toSerialize["OutOfBandIpv4Mask"] = o.OutOfBandIpv4Mask
 	}
-	if o.OutOfBandIpv6Address != nil {
+	if !IsNil(o.OutOfBandIpv6Address) {
 		toSerialize["OutOfBandIpv6Address"] = o.OutOfBandIpv6Address
 	}
-	if o.OutOfBandIpv6Gateway != nil {
+	if !IsNil(o.OutOfBandIpv6Gateway) {
 		toSerialize["OutOfBandIpv6Gateway"] = o.OutOfBandIpv6Gateway
 	}
-	if o.OutOfBandIpv6Prefix != nil {
+	if !IsNil(o.OutOfBandIpv6Prefix) {
 		toSerialize["OutOfBandIpv6Prefix"] = o.OutOfBandIpv6Prefix
 	}
-	if o.OutOfBandMac != nil {
+	if !IsNil(o.OutOfBandMac) {
 		toSerialize["OutOfBandMac"] = o.OutOfBandMac
 	}
-	if o.PartNumber != nil {
+	if !IsNil(o.PartNumber) {
 		toSerialize["PartNumber"] = o.PartNumber
 	}
-	if o.Presence != nil {
+	if !IsNil(o.Presence) {
 		toSerialize["Presence"] = o.Presence
 	}
-	if o.Revision != nil {
+	if !IsNil(o.ReservedVlanStartId) {
+		toSerialize["ReservedVlanStartId"] = o.ReservedVlanStartId
+	}
+	if !IsNil(o.Revision) {
 		toSerialize["Revision"] = o.Revision
 	}
-	if o.Rn != nil {
+	if !IsNil(o.Rn) {
 		toSerialize["Rn"] = o.Rn
 	}
-	if o.Serial != nil {
+	if !IsNil(o.Serial) {
 		toSerialize["Serial"] = o.Serial
 	}
-	if o.SourceObjectType != nil {
+	if !IsNil(o.SourceObjectType) {
 		toSerialize["SourceObjectType"] = o.SourceObjectType
 	}
-	if o.Status != nil {
+	if !IsNil(o.Status) {
 		toSerialize["Status"] = o.Status
 	}
-	if o.SwitchId != nil {
+	if !IsNil(o.SwitchId) {
 		toSerialize["SwitchId"] = o.SwitchId
 	}
-	if o.SwitchType != nil {
+	if !IsNil(o.SwitchProfileName) {
+		toSerialize["SwitchProfileName"] = o.SwitchProfileName
+	}
+	if !IsNil(o.SwitchType) {
 		toSerialize["SwitchType"] = o.SwitchType
 	}
-	if o.SystemUpTime != nil {
+	if !IsNil(o.SystemUpTime) {
 		toSerialize["SystemUpTime"] = o.SystemUpTime
 	}
-	if o.Thermal != nil {
+	if !IsNil(o.Thermal) {
 		toSerialize["Thermal"] = o.Thermal
 	}
-	if o.TotalMemory != nil {
+	if !IsNil(o.TotalMemory) {
 		toSerialize["TotalMemory"] = o.TotalMemory
 	}
-	if o.Vendor != nil {
+	if !IsNil(o.UserLabel) {
+		toSerialize["UserLabel"] = o.UserLabel
+	}
+	if !IsNil(o.Vendor) {
 		toSerialize["Vendor"] = o.Vendor
 	}
-	if o.Version != nil {
+	if !IsNil(o.Version) {
 		toSerialize["Version"] = o.Version
 	}
-	if o.RegisteredDevice != nil {
-		toSerialize["RegisteredDevice"] = o.RegisteredDevice
+	if o.InventoryParent.IsSet() {
+		toSerialize["InventoryParent"] = o.InventoryParent.Get()
+	}
+	if o.RegisteredDevice.IsSet() {
+		toSerialize["RegisteredDevice"] = o.RegisteredDevice.Get()
 	}
 
 	for key, value := range o.AdditionalProperties {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
+func (o *NetworkElementSummary) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type NetworkElementSummaryWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
 		// The fully-qualified name of the instantiated, concrete type. The value should be the same as the 'ClassId' property.
 		ObjectType string `json:"ObjectType"`
-		// Administratively configured state of Fabric Evacuation feature, for this switch.
+		// Administratively configured state of Fabric Evacuation feature, for this switch. * `` - Evacuation state of the switch is unknown. * `enabled` - Evacuation state of the switch is enabled. * `disabled` - Evacuation state of the switch is disabled. * `applying` - Evacuation state of the switch when evacuation is in progress. * `on` - Evacuation state of the switch is enabled. * `off` - Evacuation state of the switch is disabled. * `N/A` - Evacuation state of the switch is not applicable.
 		AdminEvacState *string `json:"AdminEvacState,omitempty"`
 		// The administrative state of the network Element inband management interface.
 		AdminInbandInterfaceState *string                     `json:"AdminInbandInterfaceState,omitempty"`
 		AlarmSummary              NullableComputeAlarmSummary `json:"AlarmSummary,omitempty"`
 		// Available memory (un-used) on this switch platform.
 		AvailableMemory *string `json:"AvailableMemory,omitempty"`
+		// Running firmware bundle information.
+		BundleVersion *string `json:"BundleVersion,omitempty"`
 		// Chassis IP of the switch.
 		Chassis *string `json:"Chassis,omitempty"`
 		// Configuration modified timestamp of the switch.
 		ConfModTs *string `json:"ConfModTs,omitempty"`
 		// Configuration modified backup timestamp of the switch.
 		ConfModTsBackup *string `json:"ConfModTsBackup,omitempty"`
+		// Connection status of the switch.
+		ConnectionStatus *string `json:"ConnectionStatus,omitempty"`
 		// The default domain name configured on the switch.
-		DefaultDomain *string `json:"DefaultDomain,omitempty"`
-		// The database identifier of the registered device of an object.
+		DefaultDomain *string `json:"DefaultDomain,omitempty" validate:"regexp=^$|^[a-zA-Z0-9]+([-.]{1}[a-zA-Z0-9]+)*$"`
+		// The MoId of the registered device that coresponds to the server.
 		DeviceMoId *string `json:"DeviceMoId,omitempty"`
 		// The Distinguished Name unambiguously identifies an object in the system.
 		Dn *string `json:"Dn,omitempty"`
@@ -2321,7 +2785,7 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		EthernetMode *string `json:"EthernetMode,omitempty"`
 		// The user configured Ethernet operational mode for this switch (End-Host or Switching). * `end-host` - In end-host mode, the fabric interconnects appear to the upstream devices as end hosts with multiple links.In this mode, the switch does not run Spanning Tree Protocol and avoids loops by following a set of rules for traffic forwarding.In case of ethernet switching mode - Ethernet end-host mode is also known as Ethernet host virtualizer. * `switch` - In switch mode, the switch runs Spanning Tree Protocol to avoid loops, and broadcast and multicast packets are handled in the traditional way.This is the traditional switch mode.
 		EthernetSwitchingMode *string `json:"EthernetSwitchingMode,omitempty"`
-		// The fault summary of the network Element out-of-band management interface.
+		// The fault summary for the server.
 		// Deprecated
 		FaultSummary *int64 `json:"FaultSummary,omitempty"`
 		// The user configured FC operational mode for this switch (End-Host or Switching).
@@ -2331,6 +2795,10 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		FcSwitchingMode *string `json:"FcSwitchingMode,omitempty"`
 		// Running firmware information.
 		Firmware *string `json:"Firmware,omitempty"`
+		// Running firmware information.
+		FirmwareVersion *string `json:"FirmwareVersion,omitempty"`
+		// The flag to check vulnerability with secure boot technology.
+		FpgaUpgradeNeeded *bool `json:"FpgaUpgradeNeeded,omitempty"`
 		// The IP address of the network Element inband management interface.
 		InbandIpAddress *string `json:"InbandIpAddress,omitempty"`
 		// The default gateway of the network Element inband management interface.
@@ -2339,13 +2807,17 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		InbandIpMask *string `json:"InbandIpMask,omitempty"`
 		// The VLAN ID of the network Element inband management interface.
 		InbandVlan *int64 `json:"InbandVlan,omitempty"`
+		// The intercluster link state of the switch. * `Unknown` - The operational state of the link is not known. * `Up` - The operational state of the link is up. * `Down` - The operational state of the link is down. * `Degraded` - The link is operational but degraded. This state is applicable to port channels when any one of the member links is down.
+		InterClusterLinkState *string `json:"InterClusterLinkState,omitempty"`
 		// IP version 4 address is saved in this property.
 		Ipv4Address *string `json:"Ipv4Address,omitempty"`
+		// This field indicates the compute status of the catalog values for the associated component or hardware.
+		IsUpgraded *bool `json:"IsUpgraded,omitempty"`
 		// The management mode of the fabric interconnect. * `IntersightStandalone` - Intersight Standalone mode of operation. * `UCSM` - Unified Computing System Manager mode of operation. * `Intersight` - Intersight managed mode of operation.
 		ManagementMode *string `json:"ManagementMode,omitempty"`
 		// This field identifies the model of the given component.
 		Model *string `json:"Model,omitempty"`
-		// Name of the ElementSummary object is saved in this property.
+		// The admin configured name of the system.
 		Name *string `json:"Name,omitempty"`
 		// Total number of Ethernet ports.
 		NumEtherPorts *int64 `json:"NumEtherPorts,omitempty"`
@@ -2361,7 +2833,7 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		NumFcPortsConfigured *int64 `json:"NumFcPortsConfigured,omitempty"`
 		// Total number of FC ports which are UP.
 		NumFcPortsLinkUp *int64 `json:"NumFcPortsLinkUp,omitempty"`
-		// Operational state of the Fabric Evacuation feature, for this switch.
+		// Operational state of the Fabric Evacuation feature, for this switch. * `` - Evacuation state of the switch is unknown. * `enabled` - Evacuation state of the switch is enabled. * `disabled` - Evacuation state of the switch is disabled. * `applying` - Evacuation state of the switch when evacuation is in progress. * `on` - Evacuation state of the switch is enabled. * `off` - Evacuation state of the switch is disabled. * `N/A` - Evacuation state of the switch is not applicable.
 		OperEvacState *string `json:"OperEvacState,omitempty"`
 		// The switch's current overall operational/health state.
 		Operability *string `json:"Operability,omitempty"`
@@ -2389,18 +2861,22 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		PartNumber *string `json:"PartNumber,omitempty"`
 		// This field identifies the presence (equipped) or absence of the given component.
 		Presence *string `json:"Presence,omitempty"`
-		// This field identifies the revision of the given component.
+		// The reserved VLAN start ID of the Network Element. A block of 128 VLANs are reserved for internal use and cannot be used for carrying network traffic.
+		ReservedVlanStartId *int64 `json:"ReservedVlanStartId,omitempty"`
+		// The product revision of the switch.
 		Revision *string `json:"Revision,omitempty"`
 		// The Relative Name uniquely identifies an object within a given context.
 		Rn *string `json:"Rn,omitempty"`
 		// This field identifies the serial of the given component.
 		Serial *string `json:"Serial,omitempty"`
-		// The source object type of this view MO.
+		// Stores the source object type used to fill the properties of this object.
 		SourceObjectType *string `json:"SourceObjectType,omitempty"`
 		// The status of the switch.
 		Status *string `json:"Status,omitempty"`
 		// The Switch Id of the network Element.
 		SwitchId *string `json:"SwitchId,omitempty"`
+		// The name of switch profile associated with the switch.
+		SwitchProfileName *string `json:"SwitchProfileName,omitempty"`
 		// The Switch type that the network element is a part of. * `FabricInterconnect` - The default Switch type of UCSM and IMM mode devices. * `NexusDevice` - Switch type of Nexus devices. * `MDSDevice` - Switch type of Nexus MDS devices.
 		SwitchType *string `json:"SwitchType,omitempty"`
 		// System up time of the switch.
@@ -2409,16 +2885,19 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		Thermal *string `json:"Thermal,omitempty"`
 		// Total available memory on this switch platform.
 		TotalMemory *int64 `json:"TotalMemory,omitempty"`
+		// The user defined label assigned to the server.
+		UserLabel *string `json:"UserLabel,omitempty"`
 		// This field identifies the vendor of the given component.
 		Vendor *string `json:"Vendor,omitempty"`
-		// Version holds the firmware version related information.
-		Version          *string                              `json:"Version,omitempty"`
-		RegisteredDevice *AssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
+		// Firmware version of the switch.
+		Version          *string                                     `json:"Version,omitempty"`
+		InventoryParent  NullableMoBaseMoRelationship                `json:"InventoryParent,omitempty"`
+		RegisteredDevice NullableAssetDeviceRegistrationRelationship `json:"RegisteredDevice,omitempty"`
 	}
 
 	varNetworkElementSummaryWithoutEmbeddedStruct := NetworkElementSummaryWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varNetworkElementSummaryWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varNetworkElementSummaryWithoutEmbeddedStruct)
 	if err == nil {
 		varNetworkElementSummary := _NetworkElementSummary{}
 		varNetworkElementSummary.ClassId = varNetworkElementSummaryWithoutEmbeddedStruct.ClassId
@@ -2427,9 +2906,11 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		varNetworkElementSummary.AdminInbandInterfaceState = varNetworkElementSummaryWithoutEmbeddedStruct.AdminInbandInterfaceState
 		varNetworkElementSummary.AlarmSummary = varNetworkElementSummaryWithoutEmbeddedStruct.AlarmSummary
 		varNetworkElementSummary.AvailableMemory = varNetworkElementSummaryWithoutEmbeddedStruct.AvailableMemory
+		varNetworkElementSummary.BundleVersion = varNetworkElementSummaryWithoutEmbeddedStruct.BundleVersion
 		varNetworkElementSummary.Chassis = varNetworkElementSummaryWithoutEmbeddedStruct.Chassis
 		varNetworkElementSummary.ConfModTs = varNetworkElementSummaryWithoutEmbeddedStruct.ConfModTs
 		varNetworkElementSummary.ConfModTsBackup = varNetworkElementSummaryWithoutEmbeddedStruct.ConfModTsBackup
+		varNetworkElementSummary.ConnectionStatus = varNetworkElementSummaryWithoutEmbeddedStruct.ConnectionStatus
 		varNetworkElementSummary.DefaultDomain = varNetworkElementSummaryWithoutEmbeddedStruct.DefaultDomain
 		varNetworkElementSummary.DeviceMoId = varNetworkElementSummaryWithoutEmbeddedStruct.DeviceMoId
 		varNetworkElementSummary.Dn = varNetworkElementSummaryWithoutEmbeddedStruct.Dn
@@ -2439,11 +2920,15 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		varNetworkElementSummary.FcMode = varNetworkElementSummaryWithoutEmbeddedStruct.FcMode
 		varNetworkElementSummary.FcSwitchingMode = varNetworkElementSummaryWithoutEmbeddedStruct.FcSwitchingMode
 		varNetworkElementSummary.Firmware = varNetworkElementSummaryWithoutEmbeddedStruct.Firmware
+		varNetworkElementSummary.FirmwareVersion = varNetworkElementSummaryWithoutEmbeddedStruct.FirmwareVersion
+		varNetworkElementSummary.FpgaUpgradeNeeded = varNetworkElementSummaryWithoutEmbeddedStruct.FpgaUpgradeNeeded
 		varNetworkElementSummary.InbandIpAddress = varNetworkElementSummaryWithoutEmbeddedStruct.InbandIpAddress
 		varNetworkElementSummary.InbandIpGateway = varNetworkElementSummaryWithoutEmbeddedStruct.InbandIpGateway
 		varNetworkElementSummary.InbandIpMask = varNetworkElementSummaryWithoutEmbeddedStruct.InbandIpMask
 		varNetworkElementSummary.InbandVlan = varNetworkElementSummaryWithoutEmbeddedStruct.InbandVlan
+		varNetworkElementSummary.InterClusterLinkState = varNetworkElementSummaryWithoutEmbeddedStruct.InterClusterLinkState
 		varNetworkElementSummary.Ipv4Address = varNetworkElementSummaryWithoutEmbeddedStruct.Ipv4Address
+		varNetworkElementSummary.IsUpgraded = varNetworkElementSummaryWithoutEmbeddedStruct.IsUpgraded
 		varNetworkElementSummary.ManagementMode = varNetworkElementSummaryWithoutEmbeddedStruct.ManagementMode
 		varNetworkElementSummary.Model = varNetworkElementSummaryWithoutEmbeddedStruct.Model
 		varNetworkElementSummary.Name = varNetworkElementSummaryWithoutEmbeddedStruct.Name
@@ -2468,18 +2953,22 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		varNetworkElementSummary.OutOfBandMac = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandMac
 		varNetworkElementSummary.PartNumber = varNetworkElementSummaryWithoutEmbeddedStruct.PartNumber
 		varNetworkElementSummary.Presence = varNetworkElementSummaryWithoutEmbeddedStruct.Presence
+		varNetworkElementSummary.ReservedVlanStartId = varNetworkElementSummaryWithoutEmbeddedStruct.ReservedVlanStartId
 		varNetworkElementSummary.Revision = varNetworkElementSummaryWithoutEmbeddedStruct.Revision
 		varNetworkElementSummary.Rn = varNetworkElementSummaryWithoutEmbeddedStruct.Rn
 		varNetworkElementSummary.Serial = varNetworkElementSummaryWithoutEmbeddedStruct.Serial
 		varNetworkElementSummary.SourceObjectType = varNetworkElementSummaryWithoutEmbeddedStruct.SourceObjectType
 		varNetworkElementSummary.Status = varNetworkElementSummaryWithoutEmbeddedStruct.Status
 		varNetworkElementSummary.SwitchId = varNetworkElementSummaryWithoutEmbeddedStruct.SwitchId
+		varNetworkElementSummary.SwitchProfileName = varNetworkElementSummaryWithoutEmbeddedStruct.SwitchProfileName
 		varNetworkElementSummary.SwitchType = varNetworkElementSummaryWithoutEmbeddedStruct.SwitchType
 		varNetworkElementSummary.SystemUpTime = varNetworkElementSummaryWithoutEmbeddedStruct.SystemUpTime
 		varNetworkElementSummary.Thermal = varNetworkElementSummaryWithoutEmbeddedStruct.Thermal
 		varNetworkElementSummary.TotalMemory = varNetworkElementSummaryWithoutEmbeddedStruct.TotalMemory
+		varNetworkElementSummary.UserLabel = varNetworkElementSummaryWithoutEmbeddedStruct.UserLabel
 		varNetworkElementSummary.Vendor = varNetworkElementSummaryWithoutEmbeddedStruct.Vendor
 		varNetworkElementSummary.Version = varNetworkElementSummaryWithoutEmbeddedStruct.Version
+		varNetworkElementSummary.InventoryParent = varNetworkElementSummaryWithoutEmbeddedStruct.InventoryParent
 		varNetworkElementSummary.RegisteredDevice = varNetworkElementSummaryWithoutEmbeddedStruct.RegisteredDevice
 		*o = NetworkElementSummary(varNetworkElementSummary)
 	} else {
@@ -2488,25 +2977,27 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 
 	varNetworkElementSummary := _NetworkElementSummary{}
 
-	err = json.Unmarshal(bytes, &varNetworkElementSummary)
+	err = json.Unmarshal(data, &varNetworkElementSummary)
 	if err == nil {
-		o.ViewsView = varNetworkElementSummary.ViewsView
+		o.MoBaseMo = varNetworkElementSummary.MoBaseMo
 	} else {
 		return err
 	}
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "AdminEvacState")
 		delete(additionalProperties, "AdminInbandInterfaceState")
 		delete(additionalProperties, "AlarmSummary")
 		delete(additionalProperties, "AvailableMemory")
+		delete(additionalProperties, "BundleVersion")
 		delete(additionalProperties, "Chassis")
 		delete(additionalProperties, "ConfModTs")
 		delete(additionalProperties, "ConfModTsBackup")
+		delete(additionalProperties, "ConnectionStatus")
 		delete(additionalProperties, "DefaultDomain")
 		delete(additionalProperties, "DeviceMoId")
 		delete(additionalProperties, "Dn")
@@ -2516,11 +3007,15 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "FcMode")
 		delete(additionalProperties, "FcSwitchingMode")
 		delete(additionalProperties, "Firmware")
+		delete(additionalProperties, "FirmwareVersion")
+		delete(additionalProperties, "FpgaUpgradeNeeded")
 		delete(additionalProperties, "InbandIpAddress")
 		delete(additionalProperties, "InbandIpGateway")
 		delete(additionalProperties, "InbandIpMask")
 		delete(additionalProperties, "InbandVlan")
+		delete(additionalProperties, "InterClusterLinkState")
 		delete(additionalProperties, "Ipv4Address")
+		delete(additionalProperties, "IsUpgraded")
 		delete(additionalProperties, "ManagementMode")
 		delete(additionalProperties, "Model")
 		delete(additionalProperties, "Name")
@@ -2545,24 +3040,28 @@ func (o *NetworkElementSummary) UnmarshalJSON(bytes []byte) (err error) {
 		delete(additionalProperties, "OutOfBandMac")
 		delete(additionalProperties, "PartNumber")
 		delete(additionalProperties, "Presence")
+		delete(additionalProperties, "ReservedVlanStartId")
 		delete(additionalProperties, "Revision")
 		delete(additionalProperties, "Rn")
 		delete(additionalProperties, "Serial")
 		delete(additionalProperties, "SourceObjectType")
 		delete(additionalProperties, "Status")
 		delete(additionalProperties, "SwitchId")
+		delete(additionalProperties, "SwitchProfileName")
 		delete(additionalProperties, "SwitchType")
 		delete(additionalProperties, "SystemUpTime")
 		delete(additionalProperties, "Thermal")
 		delete(additionalProperties, "TotalMemory")
+		delete(additionalProperties, "UserLabel")
 		delete(additionalProperties, "Vendor")
 		delete(additionalProperties, "Version")
+		delete(additionalProperties, "InventoryParent")
 		delete(additionalProperties, "RegisteredDevice")
 
 		// remove fields from embedded structs
-		reflectViewsView := reflect.ValueOf(o.ViewsView)
-		for i := 0; i < reflectViewsView.Type().NumField(); i++ {
-			t := reflectViewsView.Type().Field(i)
+		reflectMoBaseMo := reflect.ValueOf(o.MoBaseMo)
+		for i := 0; i < reflectMoBaseMo.Type().NumField(); i++ {
+			t := reflectMoBaseMo.Type().Field(i)
 
 			if jsonTag := t.Tag.Get("json"); jsonTag != "" {
 				fieldName := ""

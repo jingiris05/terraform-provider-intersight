@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,11 +13,15 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
 
-// ConnectorSshMessage An SSH message for opening, closing, executing a command, fetching or writing a file to a remote server. Cloud services send this message to a connectors SSH plugin to open and execute operations on an SSH session.
+// checks if the ConnectorSshMessage type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &ConnectorSshMessage{}
+
+// ConnectorSshMessage An SSH message for opening, closing, executing a command, fetching or writing a file to a remote server. Cloud services send this message to a connector's SSH plugin to open and execute operations on an SSH session.
 type ConnectorSshMessage struct {
 	ConnectorBaseMessage
 	// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
@@ -27,13 +31,13 @@ type ConnectorSshMessage struct {
 	ExpectPrompts []ConnectorExpectPrompt `json:"ExpectPrompts,omitempty"`
 	// The operation to execute on a new or existing session.
 	MsgType *int64 `json:"MsgType,omitempty"`
-	// Unique id of session to route messages to.
+	// Unique Id of session to route messages to.
 	SessionId *string `json:"SessionId,omitempty"`
 	// The regex of the secure shell prompt.
 	ShellPrompt *string `json:"ShellPrompt,omitempty"`
-	// Input to the SSH operation to be executed. e.g. file contents to write.
+	// Input to the SSH operation to be executed, e.g. file contents to write.
 	Stream *string `json:"Stream,omitempty"`
-	// The timeout for the ssh command to complete and exit after starting or receiving input. If timeout is not set a default of 10 minutes will be used.
+	// The timeout for the SSH command to complete and exit after starting or receiving input. If timeout is not set, a default of 10 minutes will be used.
 	Timeout              *int64 `json:"Timeout,omitempty"`
 	AdditionalProperties map[string]interface{}
 }
@@ -87,6 +91,11 @@ func (o *ConnectorSshMessage) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "connector.SshMessage" of the ClassId field.
+func (o *ConnectorSshMessage) GetDefaultClassId() interface{} {
+	return "connector.SshMessage"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *ConnectorSshMessage) GetObjectType() string {
 	if o == nil {
@@ -111,6 +120,11 @@ func (o *ConnectorSshMessage) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "connector.SshMessage" of the ObjectType field.
+func (o *ConnectorSshMessage) GetDefaultObjectType() interface{} {
+	return "connector.SshMessage"
+}
+
 // GetExpectPrompts returns the ExpectPrompts field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConnectorSshMessage) GetExpectPrompts() []ConnectorExpectPrompt {
 	if o == nil {
@@ -124,7 +138,7 @@ func (o *ConnectorSshMessage) GetExpectPrompts() []ConnectorExpectPrompt {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConnectorSshMessage) GetExpectPromptsOk() ([]ConnectorExpectPrompt, bool) {
-	if o == nil || o.ExpectPrompts == nil {
+	if o == nil || IsNil(o.ExpectPrompts) {
 		return nil, false
 	}
 	return o.ExpectPrompts, true
@@ -132,7 +146,7 @@ func (o *ConnectorSshMessage) GetExpectPromptsOk() ([]ConnectorExpectPrompt, boo
 
 // HasExpectPrompts returns a boolean if a field has been set.
 func (o *ConnectorSshMessage) HasExpectPrompts() bool {
-	if o != nil && o.ExpectPrompts != nil {
+	if o != nil && !IsNil(o.ExpectPrompts) {
 		return true
 	}
 
@@ -146,7 +160,7 @@ func (o *ConnectorSshMessage) SetExpectPrompts(v []ConnectorExpectPrompt) {
 
 // GetMsgType returns the MsgType field value if set, zero value otherwise.
 func (o *ConnectorSshMessage) GetMsgType() int64 {
-	if o == nil || o.MsgType == nil {
+	if o == nil || IsNil(o.MsgType) {
 		var ret int64
 		return ret
 	}
@@ -156,7 +170,7 @@ func (o *ConnectorSshMessage) GetMsgType() int64 {
 // GetMsgTypeOk returns a tuple with the MsgType field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorSshMessage) GetMsgTypeOk() (*int64, bool) {
-	if o == nil || o.MsgType == nil {
+	if o == nil || IsNil(o.MsgType) {
 		return nil, false
 	}
 	return o.MsgType, true
@@ -164,7 +178,7 @@ func (o *ConnectorSshMessage) GetMsgTypeOk() (*int64, bool) {
 
 // HasMsgType returns a boolean if a field has been set.
 func (o *ConnectorSshMessage) HasMsgType() bool {
-	if o != nil && o.MsgType != nil {
+	if o != nil && !IsNil(o.MsgType) {
 		return true
 	}
 
@@ -178,7 +192,7 @@ func (o *ConnectorSshMessage) SetMsgType(v int64) {
 
 // GetSessionId returns the SessionId field value if set, zero value otherwise.
 func (o *ConnectorSshMessage) GetSessionId() string {
-	if o == nil || o.SessionId == nil {
+	if o == nil || IsNil(o.SessionId) {
 		var ret string
 		return ret
 	}
@@ -188,7 +202,7 @@ func (o *ConnectorSshMessage) GetSessionId() string {
 // GetSessionIdOk returns a tuple with the SessionId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorSshMessage) GetSessionIdOk() (*string, bool) {
-	if o == nil || o.SessionId == nil {
+	if o == nil || IsNil(o.SessionId) {
 		return nil, false
 	}
 	return o.SessionId, true
@@ -196,7 +210,7 @@ func (o *ConnectorSshMessage) GetSessionIdOk() (*string, bool) {
 
 // HasSessionId returns a boolean if a field has been set.
 func (o *ConnectorSshMessage) HasSessionId() bool {
-	if o != nil && o.SessionId != nil {
+	if o != nil && !IsNil(o.SessionId) {
 		return true
 	}
 
@@ -210,7 +224,7 @@ func (o *ConnectorSshMessage) SetSessionId(v string) {
 
 // GetShellPrompt returns the ShellPrompt field value if set, zero value otherwise.
 func (o *ConnectorSshMessage) GetShellPrompt() string {
-	if o == nil || o.ShellPrompt == nil {
+	if o == nil || IsNil(o.ShellPrompt) {
 		var ret string
 		return ret
 	}
@@ -220,7 +234,7 @@ func (o *ConnectorSshMessage) GetShellPrompt() string {
 // GetShellPromptOk returns a tuple with the ShellPrompt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorSshMessage) GetShellPromptOk() (*string, bool) {
-	if o == nil || o.ShellPrompt == nil {
+	if o == nil || IsNil(o.ShellPrompt) {
 		return nil, false
 	}
 	return o.ShellPrompt, true
@@ -228,7 +242,7 @@ func (o *ConnectorSshMessage) GetShellPromptOk() (*string, bool) {
 
 // HasShellPrompt returns a boolean if a field has been set.
 func (o *ConnectorSshMessage) HasShellPrompt() bool {
-	if o != nil && o.ShellPrompt != nil {
+	if o != nil && !IsNil(o.ShellPrompt) {
 		return true
 	}
 
@@ -242,7 +256,7 @@ func (o *ConnectorSshMessage) SetShellPrompt(v string) {
 
 // GetStream returns the Stream field value if set, zero value otherwise.
 func (o *ConnectorSshMessage) GetStream() string {
-	if o == nil || o.Stream == nil {
+	if o == nil || IsNil(o.Stream) {
 		var ret string
 		return ret
 	}
@@ -252,7 +266,7 @@ func (o *ConnectorSshMessage) GetStream() string {
 // GetStreamOk returns a tuple with the Stream field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorSshMessage) GetStreamOk() (*string, bool) {
-	if o == nil || o.Stream == nil {
+	if o == nil || IsNil(o.Stream) {
 		return nil, false
 	}
 	return o.Stream, true
@@ -260,7 +274,7 @@ func (o *ConnectorSshMessage) GetStreamOk() (*string, bool) {
 
 // HasStream returns a boolean if a field has been set.
 func (o *ConnectorSshMessage) HasStream() bool {
-	if o != nil && o.Stream != nil {
+	if o != nil && !IsNil(o.Stream) {
 		return true
 	}
 
@@ -274,7 +288,7 @@ func (o *ConnectorSshMessage) SetStream(v string) {
 
 // GetTimeout returns the Timeout field value if set, zero value otherwise.
 func (o *ConnectorSshMessage) GetTimeout() int64 {
-	if o == nil || o.Timeout == nil {
+	if o == nil || IsNil(o.Timeout) {
 		var ret int64
 		return ret
 	}
@@ -284,7 +298,7 @@ func (o *ConnectorSshMessage) GetTimeout() int64 {
 // GetTimeoutOk returns a tuple with the Timeout field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *ConnectorSshMessage) GetTimeoutOk() (*int64, bool) {
-	if o == nil || o.Timeout == nil {
+	if o == nil || IsNil(o.Timeout) {
 		return nil, false
 	}
 	return o.Timeout, true
@@ -292,7 +306,7 @@ func (o *ConnectorSshMessage) GetTimeoutOk() (*int64, bool) {
 
 // HasTimeout returns a boolean if a field has been set.
 func (o *ConnectorSshMessage) HasTimeout() bool {
-	if o != nil && o.Timeout != nil {
+	if o != nil && !IsNil(o.Timeout) {
 		return true
 	}
 
@@ -305,37 +319,47 @@ func (o *ConnectorSshMessage) SetTimeout(v int64) {
 }
 
 func (o ConnectorSshMessage) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o ConnectorSshMessage) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedConnectorBaseMessage, errConnectorBaseMessage := json.Marshal(o.ConnectorBaseMessage)
 	if errConnectorBaseMessage != nil {
-		return []byte{}, errConnectorBaseMessage
+		return map[string]interface{}{}, errConnectorBaseMessage
 	}
 	errConnectorBaseMessage = json.Unmarshal([]byte(serializedConnectorBaseMessage), &toSerialize)
 	if errConnectorBaseMessage != nil {
-		return []byte{}, errConnectorBaseMessage
+		return map[string]interface{}{}, errConnectorBaseMessage
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.ExpectPrompts != nil {
 		toSerialize["ExpectPrompts"] = o.ExpectPrompts
 	}
-	if o.MsgType != nil {
+	if !IsNil(o.MsgType) {
 		toSerialize["MsgType"] = o.MsgType
 	}
-	if o.SessionId != nil {
+	if !IsNil(o.SessionId) {
 		toSerialize["SessionId"] = o.SessionId
 	}
-	if o.ShellPrompt != nil {
+	if !IsNil(o.ShellPrompt) {
 		toSerialize["ShellPrompt"] = o.ShellPrompt
 	}
-	if o.Stream != nil {
+	if !IsNil(o.Stream) {
 		toSerialize["Stream"] = o.Stream
 	}
-	if o.Timeout != nil {
+	if !IsNil(o.Timeout) {
 		toSerialize["Timeout"] = o.Timeout
 	}
 
@@ -343,10 +367,51 @@ func (o ConnectorSshMessage) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *ConnectorSshMessage) UnmarshalJSON(bytes []byte) (err error) {
+func (o *ConnectorSshMessage) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type ConnectorSshMessageWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -355,19 +420,19 @@ func (o *ConnectorSshMessage) UnmarshalJSON(bytes []byte) (err error) {
 		ExpectPrompts []ConnectorExpectPrompt `json:"ExpectPrompts,omitempty"`
 		// The operation to execute on a new or existing session.
 		MsgType *int64 `json:"MsgType,omitempty"`
-		// Unique id of session to route messages to.
+		// Unique Id of session to route messages to.
 		SessionId *string `json:"SessionId,omitempty"`
 		// The regex of the secure shell prompt.
 		ShellPrompt *string `json:"ShellPrompt,omitempty"`
-		// Input to the SSH operation to be executed. e.g. file contents to write.
+		// Input to the SSH operation to be executed, e.g. file contents to write.
 		Stream *string `json:"Stream,omitempty"`
-		// The timeout for the ssh command to complete and exit after starting or receiving input. If timeout is not set a default of 10 minutes will be used.
+		// The timeout for the SSH command to complete and exit after starting or receiving input. If timeout is not set, a default of 10 minutes will be used.
 		Timeout *int64 `json:"Timeout,omitempty"`
 	}
 
 	varConnectorSshMessageWithoutEmbeddedStruct := ConnectorSshMessageWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varConnectorSshMessageWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varConnectorSshMessageWithoutEmbeddedStruct)
 	if err == nil {
 		varConnectorSshMessage := _ConnectorSshMessage{}
 		varConnectorSshMessage.ClassId = varConnectorSshMessageWithoutEmbeddedStruct.ClassId
@@ -385,7 +450,7 @@ func (o *ConnectorSshMessage) UnmarshalJSON(bytes []byte) (err error) {
 
 	varConnectorSshMessage := _ConnectorSshMessage{}
 
-	err = json.Unmarshal(bytes, &varConnectorSshMessage)
+	err = json.Unmarshal(data, &varConnectorSshMessage)
 	if err == nil {
 		o.ConnectorBaseMessage = varConnectorSshMessage.ConnectorBaseMessage
 	} else {
@@ -394,7 +459,7 @@ func (o *ConnectorSshMessage) UnmarshalJSON(bytes []byte) (err error) {
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ExpectPrompts")

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceSoftwarerepositoryCategoryMapper() *schema.Resource {
 		UpdateContext: resourceSoftwarerepositoryCategoryMapperUpdate,
 		DeleteContext: resourceSoftwarerepositoryCategoryMapperDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -112,9 +114,9 @@ func resourceSoftwarerepositoryCategoryMapper() *schema.Resource {
 					return
 				}},
 			"file_type": {
-				Description:  "The type of distributable image, example huu, scu, driver, os.\n* `Distributable` - Stores firmware host utility images and fabric images.\n* `DriverDistributable` - Stores driver distributable images.\n* `ServerConfigurationUtilityDistributable` - Stores server configuration utility images.\n* `OperatingSystemFile` - Stores operating system iso images.\n* `HyperflexDistributable` - It stores HyperFlex images.",
+				Description:  "The type of distributable image, example huu, scu, driver, os.\n* `Distributable` - Stores firmware host utility images and fabric images.\n* `DriverDistributable` - Stores driver distributable images.\n* `ServerConfigurationUtilityDistributable` - Stores server configuration utility images.\n* `OperatingSystemFile` - Stores operating system iso images.\n* `HyperflexDistributable` - It stores HyperFlex images.\n* `HciDistributable` - It stores HCI images, such as bootstrap iso images.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.StringInSlice([]string{"Distributable", "DriverDistributable", "ServerConfigurationUtilityDistributable", "OperatingSystemFile", "HyperflexDistributable"}, false),
+				ValidateFunc: validation.StringInSlice([]string{"Distributable", "DriverDistributable", "ServerConfigurationUtilityDistributable", "OperatingSystemFile", "HyperflexDistributable", "HciDistributable"}, false),
 				Optional:     true,
 				Default:      "Distributable",
 			},
@@ -383,6 +385,17 @@ func resourceSoftwarerepositoryCategoryMapper() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -614,14 +627,25 @@ func resourceSoftwarerepositoryCategoryMapperCreate(c context.Context, d *schema
 		}
 		return diag.Errorf("error occurred while creating SoftwarerepositoryCategoryMapper: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceSoftwarerepositoryCategoryMapperRead(c, d, meta)...)
 }
 
 func resourceSoftwarerepositoryCategoryMapperRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.SoftwarerepositoryApi.GetSoftwarerepositoryCategoryMapperByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()

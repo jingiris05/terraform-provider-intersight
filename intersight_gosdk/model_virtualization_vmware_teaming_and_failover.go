@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-7658
+API version: 1.0.11-2024120409
 Contact: intersight@cisco.com
 */
 
@@ -13,9 +13,13 @@ package intersight
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 )
+
+// checks if the VirtualizationVmwareTeamingAndFailover type satisfies the MappedNullable interface at compile time
+var _ MappedNullable = &VirtualizationVmwareTeamingAndFailover{}
 
 // VirtualizationVmwareTeamingAndFailover The teams can then either share the load of traffic between physical and virtual networks among some or all of its members, or provide passive failover in the event of a hardware failure or a network outage.
 type VirtualizationVmwareTeamingAndFailover struct {
@@ -96,6 +100,11 @@ func (o *VirtualizationVmwareTeamingAndFailover) SetClassId(v string) {
 	o.ClassId = v
 }
 
+// GetDefaultClassId returns the default value "virtualization.VmwareTeamingAndFailover" of the ClassId field.
+func (o *VirtualizationVmwareTeamingAndFailover) GetDefaultClassId() interface{} {
+	return "virtualization.VmwareTeamingAndFailover"
+}
+
 // GetObjectType returns the ObjectType field value
 func (o *VirtualizationVmwareTeamingAndFailover) GetObjectType() string {
 	if o == nil {
@@ -120,6 +129,11 @@ func (o *VirtualizationVmwareTeamingAndFailover) SetObjectType(v string) {
 	o.ObjectType = v
 }
 
+// GetDefaultObjectType returns the default value "virtualization.VmwareTeamingAndFailover" of the ObjectType field.
+func (o *VirtualizationVmwareTeamingAndFailover) GetDefaultObjectType() interface{} {
+	return "virtualization.VmwareTeamingAndFailover"
+}
+
 // GetActiveAdapters returns the ActiveAdapters field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *VirtualizationVmwareTeamingAndFailover) GetActiveAdapters() []string {
 	if o == nil {
@@ -133,7 +147,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetActiveAdapters() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VirtualizationVmwareTeamingAndFailover) GetActiveAdaptersOk() ([]string, bool) {
-	if o == nil || o.ActiveAdapters == nil {
+	if o == nil || IsNil(o.ActiveAdapters) {
 		return nil, false
 	}
 	return o.ActiveAdapters, true
@@ -141,7 +155,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetActiveAdaptersOk() ([]string
 
 // HasActiveAdapters returns a boolean if a field has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) HasActiveAdapters() bool {
-	if o != nil && o.ActiveAdapters != nil {
+	if o != nil && !IsNil(o.ActiveAdapters) {
 		return true
 	}
 
@@ -155,7 +169,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) SetActiveAdapters(v []string) {
 
 // GetFailback returns the Failback field value if set, zero value otherwise.
 func (o *VirtualizationVmwareTeamingAndFailover) GetFailback() bool {
-	if o == nil || o.Failback == nil {
+	if o == nil || IsNil(o.Failback) {
 		var ret bool
 		return ret
 	}
@@ -165,7 +179,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetFailback() bool {
 // GetFailbackOk returns a tuple with the Failback field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) GetFailbackOk() (*bool, bool) {
-	if o == nil || o.Failback == nil {
+	if o == nil || IsNil(o.Failback) {
 		return nil, false
 	}
 	return o.Failback, true
@@ -173,7 +187,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetFailbackOk() (*bool, bool) {
 
 // HasFailback returns a boolean if a field has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) HasFailback() bool {
-	if o != nil && o.Failback != nil {
+	if o != nil && !IsNil(o.Failback) {
 		return true
 	}
 
@@ -187,7 +201,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) SetFailback(v bool) {
 
 // GetLoadBalancing returns the LoadBalancing field value if set, zero value otherwise.
 func (o *VirtualizationVmwareTeamingAndFailover) GetLoadBalancing() string {
-	if o == nil || o.LoadBalancing == nil {
+	if o == nil || IsNil(o.LoadBalancing) {
 		var ret string
 		return ret
 	}
@@ -197,7 +211,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetLoadBalancing() string {
 // GetLoadBalancingOk returns a tuple with the LoadBalancing field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) GetLoadBalancingOk() (*string, bool) {
-	if o == nil || o.LoadBalancing == nil {
+	if o == nil || IsNil(o.LoadBalancing) {
 		return nil, false
 	}
 	return o.LoadBalancing, true
@@ -205,7 +219,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetLoadBalancingOk() (*string, 
 
 // HasLoadBalancing returns a boolean if a field has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) HasLoadBalancing() bool {
-	if o != nil && o.LoadBalancing != nil {
+	if o != nil && !IsNil(o.LoadBalancing) {
 		return true
 	}
 
@@ -219,7 +233,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) SetLoadBalancing(v string) {
 
 // GetName returns the Name field value if set, zero value otherwise.
 func (o *VirtualizationVmwareTeamingAndFailover) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		var ret string
 		return ret
 	}
@@ -229,7 +243,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetName() string {
 // GetNameOk returns a tuple with the Name field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil || IsNil(o.Name) {
 		return nil, false
 	}
 	return o.Name, true
@@ -237,7 +251,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetNameOk() (*string, bool) {
 
 // HasName returns a boolean if a field has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) HasName() bool {
-	if o != nil && o.Name != nil {
+	if o != nil && !IsNil(o.Name) {
 		return true
 	}
 
@@ -251,7 +265,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) SetName(v string) {
 
 // GetNetworkFailureDetection returns the NetworkFailureDetection field value if set, zero value otherwise.
 func (o *VirtualizationVmwareTeamingAndFailover) GetNetworkFailureDetection() string {
-	if o == nil || o.NetworkFailureDetection == nil {
+	if o == nil || IsNil(o.NetworkFailureDetection) {
 		var ret string
 		return ret
 	}
@@ -261,7 +275,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetNetworkFailureDetection() st
 // GetNetworkFailureDetectionOk returns a tuple with the NetworkFailureDetection field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) GetNetworkFailureDetectionOk() (*string, bool) {
-	if o == nil || o.NetworkFailureDetection == nil {
+	if o == nil || IsNil(o.NetworkFailureDetection) {
 		return nil, false
 	}
 	return o.NetworkFailureDetection, true
@@ -269,7 +283,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetNetworkFailureDetectionOk() 
 
 // HasNetworkFailureDetection returns a boolean if a field has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) HasNetworkFailureDetection() bool {
-	if o != nil && o.NetworkFailureDetection != nil {
+	if o != nil && !IsNil(o.NetworkFailureDetection) {
 		return true
 	}
 
@@ -283,7 +297,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) SetNetworkFailureDetection(v st
 
 // GetNotifySwitches returns the NotifySwitches field value if set, zero value otherwise.
 func (o *VirtualizationVmwareTeamingAndFailover) GetNotifySwitches() bool {
-	if o == nil || o.NotifySwitches == nil {
+	if o == nil || IsNil(o.NotifySwitches) {
 		var ret bool
 		return ret
 	}
@@ -293,7 +307,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetNotifySwitches() bool {
 // GetNotifySwitchesOk returns a tuple with the NotifySwitches field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) GetNotifySwitchesOk() (*bool, bool) {
-	if o == nil || o.NotifySwitches == nil {
+	if o == nil || IsNil(o.NotifySwitches) {
 		return nil, false
 	}
 	return o.NotifySwitches, true
@@ -301,7 +315,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetNotifySwitchesOk() (*bool, b
 
 // HasNotifySwitches returns a boolean if a field has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) HasNotifySwitches() bool {
-	if o != nil && o.NotifySwitches != nil {
+	if o != nil && !IsNil(o.NotifySwitches) {
 		return true
 	}
 
@@ -326,7 +340,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetStandbyAdapters() []string {
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *VirtualizationVmwareTeamingAndFailover) GetStandbyAdaptersOk() ([]string, bool) {
-	if o == nil || o.StandbyAdapters == nil {
+	if o == nil || IsNil(o.StandbyAdapters) {
 		return nil, false
 	}
 	return o.StandbyAdapters, true
@@ -334,7 +348,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) GetStandbyAdaptersOk() ([]strin
 
 // HasStandbyAdapters returns a boolean if a field has been set.
 func (o *VirtualizationVmwareTeamingAndFailover) HasStandbyAdapters() bool {
-	if o != nil && o.StandbyAdapters != nil {
+	if o != nil && !IsNil(o.StandbyAdapters) {
 		return true
 	}
 
@@ -347,37 +361,47 @@ func (o *VirtualizationVmwareTeamingAndFailover) SetStandbyAdapters(v []string) 
 }
 
 func (o VirtualizationVmwareTeamingAndFailover) MarshalJSON() ([]byte, error) {
+	toSerialize, err := o.ToMap()
+	if err != nil {
+		return []byte{}, err
+	}
+	return json.Marshal(toSerialize)
+}
+
+func (o VirtualizationVmwareTeamingAndFailover) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	serializedMoBaseComplexType, errMoBaseComplexType := json.Marshal(o.MoBaseComplexType)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
 	errMoBaseComplexType = json.Unmarshal([]byte(serializedMoBaseComplexType), &toSerialize)
 	if errMoBaseComplexType != nil {
-		return []byte{}, errMoBaseComplexType
+		return map[string]interface{}{}, errMoBaseComplexType
 	}
-	if true {
-		toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ClassId"]; !exists {
+		toSerialize["ClassId"] = o.GetDefaultClassId()
 	}
-	if true {
-		toSerialize["ObjectType"] = o.ObjectType
+	toSerialize["ClassId"] = o.ClassId
+	if _, exists := toSerialize["ObjectType"]; !exists {
+		toSerialize["ObjectType"] = o.GetDefaultObjectType()
 	}
+	toSerialize["ObjectType"] = o.ObjectType
 	if o.ActiveAdapters != nil {
 		toSerialize["ActiveAdapters"] = o.ActiveAdapters
 	}
-	if o.Failback != nil {
+	if !IsNil(o.Failback) {
 		toSerialize["Failback"] = o.Failback
 	}
-	if o.LoadBalancing != nil {
+	if !IsNil(o.LoadBalancing) {
 		toSerialize["LoadBalancing"] = o.LoadBalancing
 	}
-	if o.Name != nil {
+	if !IsNil(o.Name) {
 		toSerialize["Name"] = o.Name
 	}
-	if o.NetworkFailureDetection != nil {
+	if !IsNil(o.NetworkFailureDetection) {
 		toSerialize["NetworkFailureDetection"] = o.NetworkFailureDetection
 	}
-	if o.NotifySwitches != nil {
+	if !IsNil(o.NotifySwitches) {
 		toSerialize["NotifySwitches"] = o.NotifySwitches
 	}
 	if o.StandbyAdapters != nil {
@@ -388,10 +412,51 @@ func (o VirtualizationVmwareTeamingAndFailover) MarshalJSON() ([]byte, error) {
 		toSerialize[key] = value
 	}
 
-	return json.Marshal(toSerialize)
+	return toSerialize, nil
 }
 
-func (o *VirtualizationVmwareTeamingAndFailover) UnmarshalJSON(bytes []byte) (err error) {
+func (o *VirtualizationVmwareTeamingAndFailover) UnmarshalJSON(data []byte) (err error) {
+	// This validates that all required properties are included in the JSON object
+	// by unmarshalling the object into a generic map with string keys and checking
+	// that every required field exists as a key in the generic map.
+	requiredProperties := []string{
+		"ClassId",
+		"ObjectType",
+	}
+
+	// defaultValueFuncMap captures the default values for required properties.
+	// These values are used when required properties are missing from the payload.
+	defaultValueFuncMap := map[string]func() interface{}{
+		"ClassId":    o.GetDefaultClassId,
+		"ObjectType": o.GetDefaultObjectType,
+	}
+	var defaultValueApplied bool
+	allProperties := make(map[string]interface{})
+
+	err = json.Unmarshal(data, &allProperties)
+
+	if err != nil {
+		return err
+	}
+
+	for _, requiredProperty := range requiredProperties {
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			if _, ok := defaultValueFuncMap[requiredProperty]; ok {
+				allProperties[requiredProperty] = defaultValueFuncMap[requiredProperty]()
+				defaultValueApplied = true
+			}
+		}
+		if value, exists := allProperties[requiredProperty]; !exists || value == "" {
+			return fmt.Errorf("no value given for required property %v", requiredProperty)
+		}
+	}
+
+	if defaultValueApplied {
+		data, err = json.Marshal(allProperties)
+		if err != nil {
+			return err
+		}
+	}
 	type VirtualizationVmwareTeamingAndFailoverWithoutEmbeddedStruct struct {
 		// The fully-qualified name of the instantiated, concrete type. This property is used as a discriminator to identify the type of the payload when marshaling and unmarshaling data.
 		ClassId string `json:"ClassId"`
@@ -413,7 +478,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) UnmarshalJSON(bytes []byte) (er
 
 	varVirtualizationVmwareTeamingAndFailoverWithoutEmbeddedStruct := VirtualizationVmwareTeamingAndFailoverWithoutEmbeddedStruct{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationVmwareTeamingAndFailoverWithoutEmbeddedStruct)
+	err = json.Unmarshal(data, &varVirtualizationVmwareTeamingAndFailoverWithoutEmbeddedStruct)
 	if err == nil {
 		varVirtualizationVmwareTeamingAndFailover := _VirtualizationVmwareTeamingAndFailover{}
 		varVirtualizationVmwareTeamingAndFailover.ClassId = varVirtualizationVmwareTeamingAndFailoverWithoutEmbeddedStruct.ClassId
@@ -432,7 +497,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) UnmarshalJSON(bytes []byte) (er
 
 	varVirtualizationVmwareTeamingAndFailover := _VirtualizationVmwareTeamingAndFailover{}
 
-	err = json.Unmarshal(bytes, &varVirtualizationVmwareTeamingAndFailover)
+	err = json.Unmarshal(data, &varVirtualizationVmwareTeamingAndFailover)
 	if err == nil {
 		o.MoBaseComplexType = varVirtualizationVmwareTeamingAndFailover.MoBaseComplexType
 	} else {
@@ -441,7 +506,7 @@ func (o *VirtualizationVmwareTeamingAndFailover) UnmarshalJSON(bytes []byte) (er
 
 	additionalProperties := make(map[string]interface{})
 
-	if err = json.Unmarshal(bytes, &additionalProperties); err == nil {
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
 		delete(additionalProperties, "ClassId")
 		delete(additionalProperties, "ObjectType")
 		delete(additionalProperties, "ActiveAdapters")

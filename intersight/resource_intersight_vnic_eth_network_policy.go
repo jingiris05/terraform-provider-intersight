@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"regexp"
+	"strconv"
 	"strings"
+	"time"
 
 	models "github.com/CiscoDevNet/terraform-provider-intersight/intersight_gosdk"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -21,7 +23,7 @@ func resourceVnicEthNetworkPolicy() *schema.Resource {
 		UpdateContext: resourceVnicEthNetworkPolicyUpdate,
 		DeleteContext: resourceVnicEthNetworkPolicyDelete,
 		Importer:      &schema.ResourceImporter{StateContext: schema.ImportStatePassthroughContext},
-		CustomizeDiff: CustomizeTagDiff,
+		CustomizeDiff: CombinedCustomizeDiff,
 		Schema: map[string]*schema.Schema{
 			"account_moid": {
 				Description: "The Account ID for this managed object.",
@@ -373,6 +375,17 @@ func resourceVnicEthNetworkPolicy() *schema.Resource {
 								},
 							},
 						},
+						"marked_for_deletion": {
+							Description: "The flag to indicate if snapshot is marked for deletion or not. If flag is set then snapshot will be removed after the successful deployment of the policy.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Computed:    true,
+							ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
+								if val != nil {
+									warns = append(warns, fmt.Sprintf("Cannot set read-only property: [%s]", key))
+								}
+								return
+							}},
 						"object_type": {
 							Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
 							Type:        schema.TypeString,
@@ -500,6 +513,19 @@ func resourceVnicEthNetworkPolicy() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 							Default:     "vnic.VlanSettings",
+						},
+						"qinq_enabled": {
+							Description: "Enable QinQ (802.1Q-in-802.1Q) Tunneling on the vNIC.",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
+						},
+						"qinq_vlan": {
+							Description:  "When activating VIC QinQ (802.1Q-in-802.1Q) Tunneling, a particular VLAN ID is set. In Access VLAN mode, this QinQ VLAN ID is established as the default VLAN.",
+							Type:         schema.TypeInt,
+							ValidateFunc: validation.IntBetween(2, 4093),
+							Optional:     true,
+							Default:      2,
 						},
 					},
 				},
@@ -666,6 +692,18 @@ func resourceVnicEthNetworkPolicyCreate(c context.Context, d *schema.ResourceDat
 					o.SetObjectType(x)
 				}
 			}
+			if v, ok := l["qinq_enabled"]; ok {
+				{
+					x := (v.(bool))
+					o.SetQinqEnabled(x)
+				}
+			}
+			if v, ok := l["qinq_vlan"]; ok {
+				{
+					x := int64(v.(int))
+					o.SetQinqVlan(x)
+				}
+			}
 			p = append(p, *o)
 		}
 		if len(p) > 0 {
@@ -684,14 +722,25 @@ func resourceVnicEthNetworkPolicyCreate(c context.Context, d *schema.ResourceDat
 		}
 		return diag.Errorf("error occurred while creating VnicEthNetworkPolicy: %s", responseErr.Error())
 	}
-	log.Printf("Moid: %s", resultMo.GetMoid())
-	d.SetId(resultMo.GetMoid())
+	if len(resultMo.GetMoid()) != 0 {
+		log.Printf("Moid: %s", resultMo.GetMoid())
+		d.SetId(resultMo.GetMoid())
+	} else {
+		d.SetId(strconv.FormatInt(time.Now().Unix(), 10))
+		log.Printf("Mo: %v", resultMo)
+	}
+	if len(resultMo.GetMoid()) == 0 {
+		return de
+	}
 	return append(de, resourceVnicEthNetworkPolicyRead(c, d, meta)...)
 }
 
 func resourceVnicEthNetworkPolicyRead(c context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	var de diag.Diagnostics
+	if len(d.Id()) == 0 {
+		return de
+	}
 	conn := meta.(*Config)
 	r := conn.ApiClient.VnicApi.GetVnicEthNetworkPolicyByMoid(conn.ctx, d.Id())
 	s, _, responseErr := r.Execute()
@@ -956,6 +1005,18 @@ func resourceVnicEthNetworkPolicyUpdate(c context.Context, d *schema.ResourceDat
 				{
 					x := (v.(string))
 					o.SetObjectType(x)
+				}
+			}
+			if v, ok := l["qinq_enabled"]; ok {
+				{
+					x := (v.(bool))
+					o.SetQinqEnabled(x)
+				}
+			}
+			if v, ok := l["qinq_vlan"]; ok {
+				{
+					x := int64(v.(int))
+					o.SetQinqVlan(x)
 				}
 			}
 			p = append(p, *o)
