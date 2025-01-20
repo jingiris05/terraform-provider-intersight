@@ -138,26 +138,26 @@ data "intersight_aaa_audit_record" "odata_top_and_skip_value9"{
 
 data "intersight_workflow_task_definition" "odata_count_true_value"{
 	odata {
-	 nr_count = true
+	 count = true
 	}
 }
 
 data "intersight_workflow_task_metadata" "odata_count_false_value"{
 	odata {
-	 nr_count = false
+	 count = false
 	}
 }
 
 data "intersight_workflow_task_metadata" "odata_count_filter"{
 	odata {
-	 nr_count = true
+	 count = true
 	 filter = "Label eq 'Restart IMC'"
 	}
 }
 
 data "intersight_iam_role" "odata_count_orderby"{
 	odata {
-	 nr_count = false
+	 count = false
 	 orderby = "CreateTime"
 	}
 }
@@ -165,7 +165,7 @@ data "intersight_iam_role" "odata_count_orderby"{
 data "intersight_adapter_ext_eth_interface" "odata_orderby_ascending_select"{
 	odata {
 	 orderby = "CreateTime"
-	 nr_select = "CreateTime,MacAddress"
+	 select = "CreateTime,MacAddress"
 	}
 }
 
@@ -199,7 +199,7 @@ data "intersight_adapter_host_eth_interface" "odata_filter_orderby_select"{
 	odata {
 	filter = "Moid ne '6167ee1576752d32341e2df3'"
 	orderby = "Name"
-	nr_select = "Name,ModTime"
+	select = "Name,ModTime"
 	}
 }
 
@@ -236,7 +236,7 @@ data "intersight_compute_rack_unit" "odata_filter_and_additional_property"{
 
 data "intersight_compute_rack_unit" "odata_filter_not_and_top_and_select"{
 	odata {
-		nr_select = "Model,Serial" 
+		select = "Model,Serial" 
 		top=10 
 		filter = "not(Model eq 'UCSC-C125' or Model eq 'HX220C-M5S')"
 	}
@@ -277,7 +277,7 @@ data "intersight_compute_rack_unit" "odata_top_skip_select" {
   odata {
     top = 20
     skip = 1
-    nr_select = "Model,Serial"
+    select = "Model,Serial"
   }
 }
 
