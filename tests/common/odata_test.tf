@@ -100,7 +100,7 @@ data "intersight_workflow_task_metadata" "odata_skip_large_value1"{
 
 data "intersight_workflow_task_definition" "odata_skip_large_value2"{
 	odata {
-		skip = 1200
+		skip = 800
 	}
 }
 
@@ -183,12 +183,6 @@ data "intersight_appliance_app_status" "odata_orderby_top_skip"{
 	}
 }
 
-data "intersight_compute_rack_unit" "odata_filter_equal"{
-	odata {
-	 filter = "Name eq ' C220-WZP22440YVX'"
-	}
-}
-
 data "intersight_adapter_host_eth_interface" "odata_filter_not_equal"{
 	odata {
 	 filter = "Moid ne '6167ee1576752d32341e2df3'"
@@ -262,7 +256,7 @@ data "intersight_server_profile" "odata_filter_startswith"{
 
 data "intersight_server_profile" "odata_filter_endswith"{
 	odata {
-		filter = "endswith(Name,'test')"
+		filter = "endswith(Name,'profile')"
 	}
 }
 
