@@ -138,26 +138,26 @@ data "intersight_aaa_audit_record" "odata_top_and_skip_value9"{
 
 data "intersight_workflow_task_definition" "odata_count_true_value"{
 	odata {
-	 count = true
+	 nr_count = true
 	}
 }
 
 data "intersight_workflow_task_metadata" "odata_count_false_value"{
 	odata {
-	 count = false
+	 nr_count = false
 	}
 }
 
 data "intersight_workflow_task_metadata" "odata_count_filter"{
 	odata {
-	 count = true
+	 nr_count = true
 	 filter = "Label eq 'Restart IMC'"
 	}
 }
 
 data "intersight_iam_role" "odata_count_orderby"{
 	odata {
-	 count = false
+	 nr_count = false
 	 orderby = "CreateTime"
 	}
 }
