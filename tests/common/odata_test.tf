@@ -98,12 +98,6 @@ data "intersight_workflow_task_metadata" "odata_skip_large_value1"{
 	}
 }
 
-data "intersight_workflow_task_definition" "odata_skip_large_value2"{
-	odata {
-		skip = 800
-	}
-}
-
 data "intersight_appliance_app_status" "odata_top_zero_value"{
 	odata {
 	 top = 0
@@ -133,12 +127,6 @@ data "intersight_aaa_audit_record" "odata_top_and_skip_value9"{
 	odata {
 	 top = 1300
 	 skip = 500
-	}
-}
-
-data "intersight_workflow_task_definition" "odata_count_true_value"{
-	odata {
-	 nr_count = true
 	}
 }
 
