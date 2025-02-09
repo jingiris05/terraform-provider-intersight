@@ -25,7 +25,7 @@ resource "intersight_snmp_policy" "snmp1" {
     destination = "10.10.10.1"
     enabled     = false
     port        = 660
-    nr_type        = "Trap"
+    type        = "Trap"
     user        = "demouser"
     nr_version  = "V3"
     object_type = "snmp.Trap"

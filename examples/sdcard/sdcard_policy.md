@@ -9,7 +9,7 @@ resource "intersight_sdcard_policy" "sdcard1" {
     moid        = var.organization
   }
   partitions {
-    nr_type        = "OS"
+    type        = "OS"
     object_type = "sdcard.Partition"
 
     virtual_drives {
