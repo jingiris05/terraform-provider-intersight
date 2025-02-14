@@ -23,7 +23,7 @@ build: fmt fmtcheck
 	go mod vendor
 	go install
 	# GOOS=linux GOARCH=amd64 $(GO_BUILD) -o .build/linux_amd64/terraform-provider-intersight_v$(VERSION)
-	GOOS=windows GOARCH=amd64 $(GO_BUILD) -o .build/windows/terraform-provider-intersight_v$(VERSION).exe
+	GOOS=windows GOARCH=amd64 $(GO_BUILD) -o .build/windows/terraform-provider-intersight_v$(VERSION)
 	#GOOS=darwin GOARCH=amd64 $(GO_BUILD) -o .build/darwin_amd64/terraform-provider-intersight_v$(VERSION)
 
 fmt:
