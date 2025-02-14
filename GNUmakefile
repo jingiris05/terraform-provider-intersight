@@ -7,7 +7,7 @@ SWAGGER_SPEC=spec/swagger.json
 GENERATED_FOLDERS = $(PKG_NAME) models website
 
 export GOOS=$(shell go env GOOS)
-export GO_BUILD=env go build
+export GO_BUILD=env go build -gcflags="all=-N -l
 export GO_RUN=env go run
 export GO_VET=env go vet
 export GO_TEST=env go test
@@ -22,8 +22,8 @@ build: fmt fmtcheck
 	go mod tidy
 	go mod vendor
 	go install
-	GOOS=linux GOARCH=amd64 $(GO_BUILD) -o .build/linux_amd64/terraform-provider-intersight_v$(VERSION)
-	#GOOS=windows GOARCH=amd64 $(GO_BUILD) -o .build/windows/terraform-provider-intersight_v$(VERSION).exe
+	# GOOS=linux GOARCH=amd64 $(GO_BUILD) -o .build/linux_amd64/terraform-provider-intersight_v$(VERSION)
+	GOOS=windows GOARCH=amd64 $(GO_BUILD) -o .build/windows/terraform-provider-intersight_v$(VERSION).exe
 	#GOOS=darwin GOARCH=amd64 $(GO_BUILD) -o .build/darwin_amd64/terraform-provider-intersight_v$(VERSION)
 
 fmt:
