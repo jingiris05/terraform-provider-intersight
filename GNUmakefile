@@ -7,7 +7,7 @@ SWAGGER_SPEC=spec/swagger.json
 GENERATED_FOLDERS = $(PKG_NAME) models website
 
 export GOOS=$(shell go env GOOS)
-export GO_BUILD=env go build -gcflags="all=-N -l
+export GO_BUILD=export GO_BUILD=env go build -gcflags "all=-N -l"
 export GO_RUN=env go run
 export GO_VET=env go vet
 export GO_TEST=env go test
