@@ -40,18 +40,18 @@ resource "intersight_server_profile" "server1" {
     moid = intersight_ntp_policy.tf_ntp2.moid
     object_type = "ntp.Policy"
   }
-  policy_bucket {
-    moid = intersight_sdcard_policy.tf_sdcard.moid
-    object_type = "sdcard.Policy"
-  }
+  # policy_bucket {
+  #   moid = intersight_sdcard_policy.tf_sdcard.moid
+  #   object_type = "sdcard.Policy"
+  # }
   policy_bucket {
     moid = intersight_smtp_policy.tf_smtp.moid
     object_type = "smtp.Policy"
   }
-  policy_bucket {
-    moid = intersight_snmp_policy.tf_snmp.moid
-    object_type = "snmp.Policy"
-  }
+  # policy_bucket {
+  #   moid = intersight_snmp_policy.tf_snmp.moid
+  #   object_type = "snmp.Policy"
+  # }
   policy_bucket {
     moid = intersight_sol_policy.tf_sol.moid
     object_type = "sol.Policy"
