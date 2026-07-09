@@ -3,28 +3,26 @@ subcategory: "asset"
 layout: "intersight"
 page_title: "Intersight: intersight_asset_device_registration"
 description: |-
-        ### Overview
         The DeviceRegistration object represents a device connector-enabled endpoint that has registered with Intersight. It is a concrete object central to the management of devices, allowing them to be claimed, configured, and monitored within Intersight's infrastructure.
         #### Purpose
         The DeviceRegistration serves as the primary interface for representing devices within Intersight. It facilitates device management, enabling users to perform operations like claiming, updating, or deleting device-related data. It is essential for capturing the status and configuration of devices interacting with Intersight services.
         #### Key Concepts
-        - **Claiming and Ownership:** - Supports claiming devices into a user's account, establishing ownership and enabling management operations.
-        - **Connectivity Status:** - Provides insights into the device's connection status with Intersight, including persistent connection details.
-        - **Device Identity:** - Maintains device-specific information, such as serial numbers and product IDs, crucial for device validation and tracking.
-        - **Security and Access:** - Ensures secure management through authentication keys and tokens, facilitating safe device operation and interaction with Intersight.
+        - **Claiming and Ownership:** Supports claiming devices into a user's account, establishing ownership and enabling management operations.
+        - **Connectivity Status:** Provides insights into the device's connection status with Intersight, including persistent connection details.
+        - **Device Identity:** Maintains device-specific information, such as serial numbers and product IDs, crucial for device validation and tracking.
+        - **Security and Access:** Ensures secure management through authentication keys and tokens, facilitating safe device operation and interaction with Intersight.
 
 ---
 
 # Data Source: intersight_asset_device_registration
-### Overview
 The DeviceRegistration object represents a device connector-enabled endpoint that has registered with Intersight. It is a concrete object central to the management of devices, allowing them to be claimed, configured, and monitored within Intersight's infrastructure.
 #### Purpose
 The DeviceRegistration serves as the primary interface for representing devices within Intersight. It facilitates device management, enabling users to perform operations like claiming, updating, or deleting device-related data. It is essential for capturing the status and configuration of devices interacting with Intersight services.
 #### Key Concepts
-- **Claiming and Ownership:** - Supports claiming devices into a user's account, establishing ownership and enabling management operations.
-- **Connectivity Status:** - Provides insights into the device's connection status with Intersight, including persistent connection details.
-- **Device Identity:** - Maintains device-specific information, such as serial numbers and product IDs, crucial for device validation and tracking.
-- **Security and Access:** - Ensures secure management through authentication keys and tokens, facilitating safe device operation and interaction with Intersight.
+- **Claiming and Ownership:** Supports claiming devices into a user's account, establishing ownership and enabling management operations.
+- **Connectivity Status:** Provides insights into the device's connection status with Intersight, including persistent connection details.
+- **Device Identity:** Maintains device-specific information, such as serial numbers and product IDs, crucial for device validation and tracking.
+- **Security and Access:** Ensures secure management through authentication keys and tokens, facilitating safe device operation and interaction with Intersight.
 ## Argument Reference
 The results of this data source are stored in `results` property.
 All objects matching the filter criteria are fetched through pagination.
@@ -38,7 +36,7 @@ The following arguments can be used to get data of already created objects in In
 * `claimed_time`:(string) The date and time at which the device was claimed to this account. 
 * `connection_id`:(string) The unique identifier for the current connection. The identifier persists across network connectivity loss and is reset on device connector process restart or platform administrator toggle of the Intersight connectivity. The connectionId can be used by services that need to interact with stateful plugins running in the device connector process. For example if a service schedules an inventory in a devices job scheduler plugin at registration it is not necessary to reschedule the job if the device loses network connectivity due to an Intersight service upgrade or intermittent network issues in the devices datacenter. 
 * `connection_reason`:(string) If 'connectionStatus' is not equal to Connected, connectionReason provides further details about why the device is not connected with Intersight. 
-* `connection_status`:(string) The status of the persistent connection between the device connector and Intersight.* `` - The target details have been persisted but Intersight has not yet attempted to connect to the target.* `Connected` - Intersight is able to establish a connection to the target and initiate management activities.* `NotConnected` - Intersight is unable to establish a connection to the target.* `ClaimInProgress` - Claim of the target is in progress. A connection to the target has not been fully established.* `UnclaimInProgress` - Unclaim of the target is in progress. Intersight is able to connect to the target and all management operations are supported.* `Unclaimed` - The device was un-claimed from the users account by an Administrator of the device. Also indicates the failure to claim Targets of type HTTP Endpoint in Intersight.* `Claimed` - Target of type HTTP Endpoint is successfully claimed in Intersight. Currently no validation is performed to verify the Target connectivity from Intersight at the time of creation. However invoking API from Intersight Orchestrator fails if this Target is not reachable from Intersight or if Target API credentials are incorrect. 
+* `connection_status`:(string) The status of the persistent connection between the device connector and Intersight.* `` - The target details have been persisted but Intersight has not yet attempted to connect to the target.* `Connected` - Intersight is able to establish a connection to the target and initiate management activities.* `NotConnected` - Intersight is unable to establish a connection to the target.* `ClaimInProgress` - Claim of the target is in progress. A connection to the target has not been fully established.* `UnclaimInProgress` - Unclaim of the target is in progress. Intersight is able to connect to the target and all management operations are supported.* `Unclaimed` - The device was un-claimed from the users account by an Administrator of the device. Also indicates the failure to claim Targets of type HTTP Endpoint in Intersight.* `Claimed` - Target of type HTTP Endpoint is successfully claimed in Intersight. Currently no validation is performed to verify the Target connectivity from Intersight at the time of creation. However invoking API from Intersight Orchestrator fails if this Target is not reachable from Intersight or if Target API credentials are incorrect.* `PreClaimed` - Target has been pre-claimed and is pending claim completion. Pre-claimed targets are pre-provisioned before endpoint is available to connect to Intersight, once target connects the claim can be completed by providing the security token to the pre-claim API. 
 * `connection_status_last_change_time`:(string) The last time at which the 'connectionStatus' property value changed. If connectionStatus is Connected, this time can be interpreted as the starting time since which a persistent connection has been maintained between Intersight and Device Connector. If connectionStatus is NotConnected, this time can be interpreted as the last time the device connector was connected with Intersight. 
 * `connector_version`:(string) The version of the device connector running on the managed device. 
 * `create_time`:(string) The time when this managed object was created. 

@@ -226,7 +226,7 @@ func resourceCondCustomHclBaseline() *schema.Resource {
 				Optional:     true,
 			},
 			"hcl_reason": {
-				Description: "The reason of the current Cisco HCL status of the custom Hcl baseline.\n* `Missing-Os-Info` - This means the HclStatus for the server failed HCL validation because we have missing operating system information. Either install ucstools vib or use power shell scripts to tag proper operating system information.\n* `Incompatible-Components` - This means the HclStatus for the server failed HCL validation because one or more of its components failed validation. To see why components failed check the related HclStatusDetails.\n* `Compatible` - This means the HclStatus for the server has passed HCL validation for all of its related components.\n* `Not-Evaluated` - This means the HclStatus for the server has not been evaluated because it is exempted.\n* `Not-Applicable` - At the HclStatus level this means that the custom Hcl provided is not applicable to the server.",
+				Description: "The reason of the current Cisco HCL status of the custom Hcl baseline.\n* `Missing-Os-Info` - This means the HclStatus for the server failed HCL validation because we have missing operating system information. Either install ucstools vib or use power shell scripts to tag proper operating system information.\n* `Incompatible-Components` - This means the HclStatus for the server failed HCL validation because one or more of its components failed validation. To see why components failed check the related HclStatusDetails.\n* `Compatible` - This means the HclStatus for the server has passed HCL validation for all of its related components.\n* `Not-Evaluated` - This means the HclStatus for the server has not been evaluated because it is exempted.\n* `Not-Applicable` - At the HclStatus level this means that the custom Hcl provided is not applicable to the server.\n* `Onboarding-Account` - This means the HclStatus for the server has not been evaluated because the server belongs to onboarding account.",
 				Type:        schema.TypeString,
 				Optional:    true,
 				Computed:    true,
@@ -348,13 +348,13 @@ func resourceCondCustomHclBaseline() *schema.Resource {
 			"os_vendor": {
 				Description:  "The operating system vendor name running on the server.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9_ ]+$"), ""), validation.StringLenBetween(0, 255)),
+				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9_ -]+$"), ""), validation.StringLenBetween(0, 255)),
 				Optional:     true,
 			},
 			"os_version": {
 				Description:  "Operating System version running on the server.",
 				Type:         schema.TypeString,
-				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9_ .]+$"), ""), validation.StringLenBetween(0, 255)),
+				ValidateFunc: validation.All(validation.StringMatch(regexp.MustCompile("^$|^[a-zA-Z0-9_ .()-]+$"), ""), validation.StringLenBetween(0, 255)),
 				Optional:     true,
 			},
 			"owners": {

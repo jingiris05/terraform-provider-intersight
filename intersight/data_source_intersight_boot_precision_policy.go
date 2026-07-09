@@ -118,6 +118,11 @@ func getBootPrecisionPolicySchema() map[string]*schema.Schema {
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
+		"enable_boot_migration_support": {
+			Description: "Flag to denote if migration is enabled for the boot devices.",
+			Type:        schema.TypeBool,
+			Optional:    true,
+		},
 		"enforce_uefi_secure_boot": {
 			Description: "If UEFI secure boot is enabled, the boot mode is set to UEFI by default. Secure boot enforces that device boots using only software that is trusted by the Original Equipment Manufacturer (OEM).",
 			Type:        schema.TypeBool,
@@ -637,7 +642,8 @@ func dataSourceBootPrecisionPolicyRead(c context.Context, d *schema.ResourceData
 	}
 
 	if v, ok := d.GetOk("create_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCreateTime(x)
 	}
 
@@ -651,13 +657,19 @@ func dataSourceBootPrecisionPolicyRead(c context.Context, d *schema.ResourceData
 		o.SetDomainGroupMoid(x)
 	}
 
+	if v, ok := d.GetOkExists("enable_boot_migration_support"); ok {
+		x := (v.(bool))
+		o.SetEnableBootMigrationSupport(x)
+	}
+
 	if v, ok := d.GetOkExists("enforce_uefi_secure_boot"); ok {
 		x := (v.(bool))
 		o.SetEnforceUefiSecureBoot(x)
 	}
 
 	if v, ok := d.GetOk("mod_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetModTime(x)
 	}
 
@@ -1055,6 +1067,7 @@ func dataSourceBootPrecisionPolicyRead(c context.Context, d *schema.ResourceData
 				temp["create_time"] = (s.GetCreateTime()).String()
 				temp["description"] = (s.GetDescription())
 				temp["domain_group_moid"] = (s.GetDomainGroupMoid())
+				temp["enable_boot_migration_support"] = (s.GetEnableBootMigrationSupport())
 				temp["enforce_uefi_secure_boot"] = (s.GetEnforceUefiSecureBoot())
 
 				temp["mod_time"] = (s.GetModTime()).String()

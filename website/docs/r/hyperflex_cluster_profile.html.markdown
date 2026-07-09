@@ -3,28 +3,26 @@ subcategory: "hyperflex"
 layout: "intersight"
 page_title: "Intersight: intersight_hyperflex_cluster_profile"
 description: |-
-        ### Overview
         The ClusterProfile object specifies configuration settings for a HyperFlex cluster, defining node settings and operational parameters.
         #### Purpose
         ClusterProfile acts as a blueprint for HyperFlex cluster configurations, detailing settings such as IP address configurations, storage settings, and management platforms. It ensures consistent and efficient cluster setup and operation.
         #### Key Concepts
-        - **Configuration Management** - Provides a structured framework for defining and managing cluster settings, supporting efficient deployment and operation.
-        - **Integration** - Integrates various configuration aspects, including node settings and network configurations, ensuring a cohesive cluster setup.
-        - **Access Control** - Managed through privilege sets, ensuring secure and authorized configuration management.
-        - **Relationship Management** - Establishes relationships with related objects, such as node profiles and associated clusters, for comprehensive cluster management.
+        - **Configuration Management:** Provides a structured framework for defining and managing cluster settings, supporting efficient deployment and operation.
+        - **Integration:** Integrates various configuration aspects, including node settings and network configurations, ensuring a cohesive cluster setup.
+        - **Access Control:** Managed through privilege sets, ensuring secure and authorized configuration management.
+        - **Relationship Management:** Establishes relationships with related objects, such as node profiles and associated clusters, for comprehensive cluster management.
 
 ---
 
 # Resource: intersight_hyperflex_cluster_profile
-### Overview
 The ClusterProfile object specifies configuration settings for a HyperFlex cluster, defining node settings and operational parameters.
 #### Purpose
 ClusterProfile acts as a blueprint for HyperFlex cluster configurations, detailing settings such as IP address configurations, storage settings, and management platforms. It ensures consistent and efficient cluster setup and operation.
 #### Key Concepts
-- **Configuration Management** - Provides a structured framework for defining and managing cluster settings, supporting efficient deployment and operation.
-- **Integration** - Integrates various configuration aspects, including node settings and network configurations, ensuring a cohesive cluster setup.
-- **Access Control** - Managed through privilege sets, ensuring secure and authorized configuration management.
-- **Relationship Management** - Establishes relationships with related objects, such as node profiles and associated clusters, for comprehensive cluster management.
+- **Configuration Management:** Provides a structured framework for defining and managing cluster settings, supporting efficient deployment and operation.
+- **Integration:** Integrates various configuration aspects, including node settings and network configurations, ensuring a cohesive cluster setup.
+- **Access Control:** Managed through privilege sets, ensuring secure and authorized configuration management.
+- **Relationship Management:** Establishes relationships with related objects, such as node profiles and associated clusters, for comprehensive cluster management.
 ## Usage Example
 ### Resource Creation
 
@@ -131,6 +129,11 @@ This complex property has following sub-properties:
   + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
 * `hypervisor_control_ip_address`:(string) The hypervisor control virtual IP address for the HyperFlex compute cluster that is used for node/pod management. 
 * `hypervisor_type`:(string) The hypervisor type for the HyperFlex cluster.* `ESXi` - The hypervisor running on the HyperFlex cluster is a Vmware ESXi hypervisor of any version.* `Hyper-V` - The hypervisor running on the HyperFlex cluster is Microsoft Hyper-V.* `Unknown` - The hypervisor running on the HyperFlex cluster is not known. 
+* `incomplete_policies`:(Array)(ReadOnly) An array of relationships to policyAbstractPolicy resources. 
+This complex property has following sub-properties:
+  + `moid`:(string) The Moid of the referenced REST resource. 
+  + `object_type`:(string) The fully-qualified name of the remote type referred by this relationship. 
+  + `selector`:(string) An OData $filter expression which describes the REST resource to be referenced. This field maybe set instead of 'moid' by clients.1. If 'moid' is set this field is ignored.1. If 'selector' is set and 'moid' is empty/absent from the request, Intersight determines the Moid of theresource matching the filter expression and populates it in the MoRef that is part of the objectinstance being inserted/updated to fulfill the REST request.An error is returned if the filter matches zero or more than one REST resource.An example filter string is: Serial eq '3AA8B7T11'. 
 * `is_nic_based`:(bool)(ReadOnly) The NIC based setup being set/unset determined by inventory. 
 * `local_credential`:(HashMap) - A reference to a hyperflexLocalCredentialPolicy resource.When the $expand query parameter is specified, the referenced resource is returned inline. 
 This complex property has following sub-properties:

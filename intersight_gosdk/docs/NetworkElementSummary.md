@@ -54,14 +54,19 @@ Name | Type | Description | Notes
 **OutOfBandIpv4Gateway** | Pointer to **string** | The default IPv4 gateway of the network Element out-of-band management interface. | [optional] [readonly] 
 **OutOfBandIpv4Mask** | Pointer to **string** | The network mask of the network Element out-of-band management interface. | [optional] [readonly] 
 **OutOfBandIpv6Address** | Pointer to **string** | The IPv6 address of the network Element out-of-band management interface. | [optional] [readonly] 
+**OutOfBandIpv6Error** | Pointer to **string** | The IPv6 error message if any issue occurred during address configuration. | [optional] [readonly] 
 **OutOfBandIpv6Gateway** | Pointer to **string** | The default IPv6 gateway of the network Element out-of-band management interface. | [optional] [readonly] 
-**OutOfBandIpv6Prefix** | Pointer to **string** | The network mask of the network Element out-of-band management interface. | [optional] [readonly] 
+**OutOfBandIpv6Mode** | Pointer to **string** | The IPv6 address configuration mode of the network Element out-of-band management interface. * &#x60;&#x60; - The IPv6 address mode is not available or not applicable. * &#x60;slaac&#x60; - IPv6 address is configured via Stateless Address Autoconfiguration (SLAAC). * &#x60;static&#x60; - IPv6 address is statically configured. * &#x60;disabled&#x60; - IPv6 is disabled on the out-of-band management interface. | [optional] [readonly] [default to ""]
+**OutOfBandIpv6Prefix** | Pointer to **string** | The network mask of the network Element out-of-band management interface. | [optional] 
+**OutOfBandIpv6SlaacIidMode** | Pointer to **string** | The SLAAC Interface Identifier (IID) mode for the network Element out-of-band management IPv6 address. * &#x60;&#x60; - The SLAAC IID mode is not available or not applicable. * &#x60;eui64&#x60; - The SLAAC IID is derived from the MAC address using the EUI-64 method. * &#x60;opaque&#x60; - The SLAAC IID is generated using an opaque identifier for privacy. | [optional] [readonly] [default to ""]
+**OutOfBandIpv6Status** | Pointer to **string** | The status of the IPv6 configuration on the network Element out-of-band management interface. * &#x60;&#x60; - The IPv6 address status is not available or not applicable. * &#x60;active&#x60; - The IPv6 address is active and in use. * &#x60;tentative&#x60; - The IPv6 address is in tentative state (Duplicate Address Detection in progress). * &#x60;duplicate&#x60; - The IPv6 address is a duplicate (DAD failed). * &#x60;disabled&#x60; - The IPv6 address is disabled. * &#x60;error&#x60; - An error occurred during IPv6 address configuration. * &#x60;unknown&#x60; - The IPv6 address status is unknown. | [optional] [readonly] [default to ""]
 **OutOfBandMac** | Pointer to **string** | The MAC address of the network Element out-of-band management interface. | [optional] [readonly] 
 **PartNumber** | Pointer to **string** | Part number of the switch. | [optional] 
 **Presence** | Pointer to **string** | This field identifies the presence (equipped) or absence of the given component. | [optional] [readonly] 
 **ReservedVlanStartId** | Pointer to **int64** | The reserved VLAN start ID of the Network Element. A block of 128 VLANs are reserved for internal use and cannot be used for carrying network traffic. | [optional] [readonly] 
 **Revision** | Pointer to **string** | The product revision of the switch. | [optional] [readonly] 
 **Rn** | Pointer to **string** | The Relative Name uniquely identifies an object within a given context. | [optional] [readonly] 
+**RouterMac** | Pointer to **string** | This MAC address will be the source MAC address for NetFlow packets. | [optional] [readonly] 
 **Serial** | Pointer to **string** | This field identifies the serial of the given component. | [optional] [readonly] 
 **SlotId** | Pointer to **int64** | The Slot Id of the network Element when embedded inside a chassis. | [optional] [readonly] 
 **SourceObjectType** | Pointer to **string** | Stores the source object type used to fill the properties of this object. | [optional] [readonly] 
@@ -69,6 +74,7 @@ Name | Type | Description | Notes
 **SwitchId** | Pointer to **string** | The Switch Id of the network Element. | [optional] [readonly] 
 **SwitchProfileName** | Pointer to **string** | The name of switch profile associated with the switch. | [optional] [readonly] 
 **SwitchType** | Pointer to **string** | The Switch type that the network element is a part of. * &#x60;FabricInterconnect&#x60; - The default Switch type of UCSM and IMM mode devices. * &#x60;NexusDevice&#x60; - Switch type of Nexus devices. * &#x60;MDSDevice&#x60; - Switch type of Nexus MDS devices. * &#x60;EdgeChassisManagementController&#x60; - Switch type of Edge Chassis Management Controller. | [optional] [readonly] [default to "FabricInterconnect"]
+**SwitchWwn** | Pointer to **string** | World Wide Name of the switch. | [optional] [readonly] 
 **SystemUpTime** | Pointer to **string** | System up time of the switch. | [optional] 
 **Thermal** | Pointer to **string** | The Thermal status of the fabric interconnect. * &#x60;unknown&#x60; - The default state of the sensor (in case no data is received). * &#x60;ok&#x60; - State of the sensor indicating the sensor&#39;s temperature range is okay. * &#x60;upper-non-recoverable&#x60; - State of the sensor indicating that the temperature is extremely high above normal range. * &#x60;upper-critical&#x60; - State of the sensor indicating that the temperature is above normal range. * &#x60;upper-non-critical&#x60; - State of the sensor indicating that the temperature is a little above the normal range. * &#x60;lower-non-critical&#x60; - State of the sensor indicating that the temperature is a little below the normal range. * &#x60;lower-critical&#x60; - State of the sensor indicating that the temperature is below normal range. * &#x60;lower-non-recoverable&#x60; - State of the sensor indicating that the temperature is extremely below normal range. | [optional] [default to "unknown"]
 **TotalMemory** | Pointer to **int64** | Total available memory on this switch platform. | [optional] [readonly] 
@@ -1358,6 +1364,31 @@ SetOutOfBandIpv6Address sets OutOfBandIpv6Address field to given value.
 
 HasOutOfBandIpv6Address returns a boolean if a field has been set.
 
+### GetOutOfBandIpv6Error
+
+`func (o *NetworkElementSummary) GetOutOfBandIpv6Error() string`
+
+GetOutOfBandIpv6Error returns the OutOfBandIpv6Error field if non-nil, zero value otherwise.
+
+### GetOutOfBandIpv6ErrorOk
+
+`func (o *NetworkElementSummary) GetOutOfBandIpv6ErrorOk() (*string, bool)`
+
+GetOutOfBandIpv6ErrorOk returns a tuple with the OutOfBandIpv6Error field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOutOfBandIpv6Error
+
+`func (o *NetworkElementSummary) SetOutOfBandIpv6Error(v string)`
+
+SetOutOfBandIpv6Error sets OutOfBandIpv6Error field to given value.
+
+### HasOutOfBandIpv6Error
+
+`func (o *NetworkElementSummary) HasOutOfBandIpv6Error() bool`
+
+HasOutOfBandIpv6Error returns a boolean if a field has been set.
+
 ### GetOutOfBandIpv6Gateway
 
 `func (o *NetworkElementSummary) GetOutOfBandIpv6Gateway() string`
@@ -1383,6 +1414,31 @@ SetOutOfBandIpv6Gateway sets OutOfBandIpv6Gateway field to given value.
 
 HasOutOfBandIpv6Gateway returns a boolean if a field has been set.
 
+### GetOutOfBandIpv6Mode
+
+`func (o *NetworkElementSummary) GetOutOfBandIpv6Mode() string`
+
+GetOutOfBandIpv6Mode returns the OutOfBandIpv6Mode field if non-nil, zero value otherwise.
+
+### GetOutOfBandIpv6ModeOk
+
+`func (o *NetworkElementSummary) GetOutOfBandIpv6ModeOk() (*string, bool)`
+
+GetOutOfBandIpv6ModeOk returns a tuple with the OutOfBandIpv6Mode field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOutOfBandIpv6Mode
+
+`func (o *NetworkElementSummary) SetOutOfBandIpv6Mode(v string)`
+
+SetOutOfBandIpv6Mode sets OutOfBandIpv6Mode field to given value.
+
+### HasOutOfBandIpv6Mode
+
+`func (o *NetworkElementSummary) HasOutOfBandIpv6Mode() bool`
+
+HasOutOfBandIpv6Mode returns a boolean if a field has been set.
+
 ### GetOutOfBandIpv6Prefix
 
 `func (o *NetworkElementSummary) GetOutOfBandIpv6Prefix() string`
@@ -1407,6 +1463,56 @@ SetOutOfBandIpv6Prefix sets OutOfBandIpv6Prefix field to given value.
 `func (o *NetworkElementSummary) HasOutOfBandIpv6Prefix() bool`
 
 HasOutOfBandIpv6Prefix returns a boolean if a field has been set.
+
+### GetOutOfBandIpv6SlaacIidMode
+
+`func (o *NetworkElementSummary) GetOutOfBandIpv6SlaacIidMode() string`
+
+GetOutOfBandIpv6SlaacIidMode returns the OutOfBandIpv6SlaacIidMode field if non-nil, zero value otherwise.
+
+### GetOutOfBandIpv6SlaacIidModeOk
+
+`func (o *NetworkElementSummary) GetOutOfBandIpv6SlaacIidModeOk() (*string, bool)`
+
+GetOutOfBandIpv6SlaacIidModeOk returns a tuple with the OutOfBandIpv6SlaacIidMode field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOutOfBandIpv6SlaacIidMode
+
+`func (o *NetworkElementSummary) SetOutOfBandIpv6SlaacIidMode(v string)`
+
+SetOutOfBandIpv6SlaacIidMode sets OutOfBandIpv6SlaacIidMode field to given value.
+
+### HasOutOfBandIpv6SlaacIidMode
+
+`func (o *NetworkElementSummary) HasOutOfBandIpv6SlaacIidMode() bool`
+
+HasOutOfBandIpv6SlaacIidMode returns a boolean if a field has been set.
+
+### GetOutOfBandIpv6Status
+
+`func (o *NetworkElementSummary) GetOutOfBandIpv6Status() string`
+
+GetOutOfBandIpv6Status returns the OutOfBandIpv6Status field if non-nil, zero value otherwise.
+
+### GetOutOfBandIpv6StatusOk
+
+`func (o *NetworkElementSummary) GetOutOfBandIpv6StatusOk() (*string, bool)`
+
+GetOutOfBandIpv6StatusOk returns a tuple with the OutOfBandIpv6Status field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOutOfBandIpv6Status
+
+`func (o *NetworkElementSummary) SetOutOfBandIpv6Status(v string)`
+
+SetOutOfBandIpv6Status sets OutOfBandIpv6Status field to given value.
+
+### HasOutOfBandIpv6Status
+
+`func (o *NetworkElementSummary) HasOutOfBandIpv6Status() bool`
+
+HasOutOfBandIpv6Status returns a boolean if a field has been set.
 
 ### GetOutOfBandMac
 
@@ -1557,6 +1663,31 @@ SetRn sets Rn field to given value.
 `func (o *NetworkElementSummary) HasRn() bool`
 
 HasRn returns a boolean if a field has been set.
+
+### GetRouterMac
+
+`func (o *NetworkElementSummary) GetRouterMac() string`
+
+GetRouterMac returns the RouterMac field if non-nil, zero value otherwise.
+
+### GetRouterMacOk
+
+`func (o *NetworkElementSummary) GetRouterMacOk() (*string, bool)`
+
+GetRouterMacOk returns a tuple with the RouterMac field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetRouterMac
+
+`func (o *NetworkElementSummary) SetRouterMac(v string)`
+
+SetRouterMac sets RouterMac field to given value.
+
+### HasRouterMac
+
+`func (o *NetworkElementSummary) HasRouterMac() bool`
+
+HasRouterMac returns a boolean if a field has been set.
 
 ### GetSerial
 
@@ -1732,6 +1863,31 @@ SetSwitchType sets SwitchType field to given value.
 `func (o *NetworkElementSummary) HasSwitchType() bool`
 
 HasSwitchType returns a boolean if a field has been set.
+
+### GetSwitchWwn
+
+`func (o *NetworkElementSummary) GetSwitchWwn() string`
+
+GetSwitchWwn returns the SwitchWwn field if non-nil, zero value otherwise.
+
+### GetSwitchWwnOk
+
+`func (o *NetworkElementSummary) GetSwitchWwnOk() (*string, bool)`
+
+GetSwitchWwnOk returns a tuple with the SwitchWwn field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSwitchWwn
+
+`func (o *NetworkElementSummary) SetSwitchWwn(v string)`
+
+SetSwitchWwn sets SwitchWwn field to given value.
+
+### HasSwitchWwn
+
+`func (o *NetworkElementSummary) HasSwitchWwn() bool`
+
+HasSwitchWwn returns a boolean if a field has been set.
 
 ### GetSystemUpTime
 

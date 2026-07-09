@@ -3,32 +3,28 @@ subcategory: "notification"
 layout: "intersight"
 page_title: "Intersight: intersight_notification_account_subscription"
 description: |-
-        ### Overview
-        The AccountSubscription object is a crucial component of the Intersight notification framework,   designed to facilitate account-level subscriptions managed by Account Administrators.
-        It provides a structured way to handle notifications based on specific events within an account, ensuring administrators can effectively configure and manage subscription settings.
+        The AccountSubscription object is a crucial component of the Intersight notification framework,   designed to facilitate account-level subscriptions managed by Account Administrators. This provides a structured way to handle notifications based on specific events within an account, ensuring administrators can effectively configure and manage subscription settings.
         #### Purpose
         The AccountSubscription object enables administrators to set up notifications for various account events. It serves as the blueprint for creating, updating, and managing subscriptions, ensuring that notifications are sent according to predefined conditions and actions.
         #### Key Concepts
-        - **Account-Level Management** - Designed for account administrators, allowing easy configuration of subscription settings at the account level.
-        - **Integration with Notification Methods** - Supports multiple notification methods such as email and webhook to meet diverse requirements.
-        - **Conditional Notifications** - Allows definition of conditions that trigger notifications, ensuring only relevant alerts are sent.
-        - **Access Control** - Enforces privilege sets so only authorized users can create, update, or delete subscriptions, maintaining security and integrity.
-        - **Flexibility and Scalability** - Scales notification features to support complex use cases and evolving business needs.
+        - **Account-Level Management:** Designed for account administrators, allowing easy configuration of subscription settings at the account level.
+        - **Integration with Notification Methods:** Supports multiple notification methods such as email and webhook to meet diverse requirements.
+        - **Conditional Notifications:** Allows definition of conditions that trigger notifications, ensuring only relevant alerts are sent.
+        - **Access Control:** Enforces privilege sets so only authorized users can create, update, or delete subscriptions, maintaining security and integrity.
+        - **Flexibility and Scalability:** Scales notification features to support complex use cases and evolving business needs.
 
 ---
 
 # Data Source: intersight_notification_account_subscription
-### Overview
-The AccountSubscription object is a crucial component of the Intersight notification framework,   designed to facilitate account-level subscriptions managed by Account Administrators.  
-It provides a structured way to handle notifications based on specific events within an account, ensuring administrators can effectively configure and manage subscription settings.
+The AccountSubscription object is a crucial component of the Intersight notification framework,   designed to facilitate account-level subscriptions managed by Account Administrators. This provides a structured way to handle notifications based on specific events within an account, ensuring administrators can effectively configure and manage subscription settings.
 #### Purpose
 The AccountSubscription object enables administrators to set up notifications for various account events. It serves as the blueprint for creating, updating, and managing subscriptions, ensuring that notifications are sent according to predefined conditions and actions.
 #### Key Concepts
-- **Account-Level Management** - Designed for account administrators, allowing easy configuration of subscription settings at the account level.
-- **Integration with Notification Methods** - Supports multiple notification methods such as email and webhook to meet diverse requirements.
-- **Conditional Notifications** - Allows definition of conditions that trigger notifications, ensuring only relevant alerts are sent.
-- **Access Control** - Enforces privilege sets so only authorized users can create, update, or delete subscriptions, maintaining security and integrity.
-- **Flexibility and Scalability** - Scales notification features to support complex use cases and evolving business needs.
+- **Account-Level Management:** Designed for account administrators, allowing easy configuration of subscription settings at the account level.
+- **Integration with Notification Methods:** Supports multiple notification methods such as email and webhook to meet diverse requirements.
+- **Conditional Notifications:** Allows definition of conditions that trigger notifications, ensuring only relevant alerts are sent.
+- **Access Control:** Enforces privilege sets so only authorized users can create, update, or delete subscriptions, maintaining security and integrity.
+- **Flexibility and Scalability:** Scales notification features to support complex use cases and evolving business needs.
 ## Argument Reference
 The results of this data source are stored in `results` property.
 All objects matching the filter criteria are fetched through pagination.
@@ -39,6 +35,7 @@ The following arguments can be used to get data of already created objects in In
 * `create_time`:(string) The time when this managed object was created. 
 * `description`:(string) The description for the subscription. 
 * `domain_group_moid`:(string) The DomainGroup ID for this managed object. 
+* `enable_tls`:(bool) When true, TLS with custom certificate validation is enabled for this webhook subscription. Thecertificate relationship must be set to a TrustPoint when enableTls is true. Only applicable forwebhook-type subscriptions; used for appliance deployments with private CAs. When false or unset,default TLS behavior (public CA trust) is used. SaaS typically leaves this false or unset. 
 * `enabled`:(bool) Subscription can be switched on/off without necessity to change the subscriptionsettings: notification methods, conditions, etc.Ex.: Subscription MO can be configured, but switched off. 
 * `mod_time`:(string) The time when this managed object was last modified. 
 * `moid`:(string) The unique identifier of this Managed Object instance. 

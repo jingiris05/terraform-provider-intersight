@@ -211,7 +211,7 @@ func getFcNeighborSchema() map[string]*schema.Schema {
 			},
 		},
 		"peer_device_capability": {
-			Description: "This field defines if neighbor is a switch or an NPV device.\n* `Switch` - Switch type neighbors of an interface.\n* `NPV` - N Port Virtualization neighbors of an interface.",
+			Description: "This field defines if neighbor is a switch, storage or an NPV device.\n* `Switch` - Switch type neighbors of an interface.\n* `NPV` - N Port Virtualization neighbors of an interface.\n* `Storage` - Storage type neighbors of an interface.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -222,6 +222,11 @@ func getFcNeighborSchema() map[string]*schema.Schema {
 		},
 		"peer_ip_address": {
 			Description: "IP address of the peer switch.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
+		"peer_port_wwn": {
+			Description: "World Wide Name of the neighbor port.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -385,6 +390,11 @@ func getFcNeighborSchema() map[string]*schema.Schema {
 				},
 			},
 		},
+		"vendor": {
+			Description: "Vendor name for the neighboring storage device. Available only for Storage neighbors.",
+			Type:        schema.TypeString,
+			Optional:    true,
+		},
 		"version_context": {
 			Description: "The versioning info for this managed object.",
 			Type:        schema.TypeList,
@@ -498,6 +508,11 @@ func getFcNeighborSchema() map[string]*schema.Schema {
 				},
 			},
 		},
+		"vsan": {
+			Description: "VSAN associated with this neighbor port.",
+			Type:        schema.TypeInt,
+			Optional:    true,
+		},
 	}
 	return schemaMap
 }
@@ -580,7 +595,8 @@ func dataSourceFcNeighborRead(c context.Context, d *schema.ResourceData, meta in
 	}
 
 	if v, ok := d.GetOk("create_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCreateTime(x)
 	}
 
@@ -686,7 +702,8 @@ func dataSourceFcNeighborRead(c context.Context, d *schema.ResourceData, meta in
 	}
 
 	if v, ok := d.GetOk("mod_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetModTime(x)
 	}
 
@@ -767,6 +784,11 @@ func dataSourceFcNeighborRead(c context.Context, d *schema.ResourceData, meta in
 	if v, ok := d.GetOk("peer_ip_address"); ok {
 		x := (v.(string))
 		o.SetPeerIpAddress(x)
+	}
+
+	if v, ok := d.GetOk("peer_port_wwn"); ok {
+		x := (v.(string))
+		o.SetPeerPortWwn(x)
 	}
 
 	if v, ok := d.GetOk("peer_switch_name"); ok {
@@ -905,6 +927,11 @@ func dataSourceFcNeighborRead(c context.Context, d *schema.ResourceData, meta in
 		o.SetTags(x)
 	}
 
+	if v, ok := d.GetOk("vendor"); ok {
+		x := (v.(string))
+		o.SetVendor(x)
+	}
+
 	if v, ok := d.GetOk("version_context"); ok {
 		p := make([]models.MoVersionContext, 0, 1)
 		s := v.([]interface{})
@@ -979,6 +1006,11 @@ func dataSourceFcNeighborRead(c context.Context, d *schema.ResourceData, meta in
 		}
 	}
 
+	if v, ok := d.GetOkExists("vsan"); ok {
+		x := int64(v.(int))
+		o.SetVsan(x)
+	}
+
 	data, err := o.MarshalJSON()
 	if err != nil {
 		return diag.Errorf("json marshal of FcNeighbor object failed with error : %s", err.Error())
@@ -1038,6 +1070,7 @@ func dataSourceFcNeighborRead(c context.Context, d *schema.ResourceData, meta in
 				temp["peer_device_capability"] = (s.GetPeerDeviceCapability())
 				temp["peer_interface"] = (s.GetPeerInterface())
 				temp["peer_ip_address"] = (s.GetPeerIpAddress())
+				temp["peer_port_wwn"] = (s.GetPeerPortWwn())
 				temp["peer_switch_name"] = (s.GetPeerSwitchName())
 				temp["peer_wwn"] = (s.GetPeerWwn())
 
@@ -1046,8 +1079,10 @@ func dataSourceFcNeighborRead(c context.Context, d *schema.ResourceData, meta in
 				temp["shared_scope"] = (s.GetSharedScope())
 
 				temp["tags"] = flattenListMoTag(s.GetTags(), d)
+				temp["vendor"] = (s.GetVendor())
 
 				temp["version_context"] = flattenMapMoVersionContext(s.GetVersionContext(), d)
+				temp["vsan"] = (s.GetVsan())
 				fcNeighborResults = append(fcNeighborResults, temp)
 			}
 		}

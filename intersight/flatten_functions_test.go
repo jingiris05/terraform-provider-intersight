@@ -677,30 +677,6 @@ func TestFlattenListAssetDeploymentDeviceRelationship(t *testing.T) {
 		CheckError(t, err)
 	}
 }
-func TestFlattenListAssetDeviceRegistrationRelationship(t *testing.T) {
-	p := []models.AssetDeviceRegistrationRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListAssetDeviceRegistrationRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.AssetDeviceRegistrationRelationship{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListAssetDeviceRegistrationRelationship(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
 func TestFlattenListAssetMeteringType(t *testing.T) {
 	p := []models.AssetMeteringType{}
 	var d = &schema.ResourceData{}
@@ -2165,6 +2141,54 @@ func TestFlattenListCondServerBaselineStatus(t *testing.T) {
 		CheckError(t, err)
 	}
 }
+func TestFlattenListCondThresholdDefinitionRelationship(t *testing.T) {
+	p := []models.CondThresholdDefinitionRelationship{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenListCondThresholdDefinitionRelationship(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	for i := 1; i < 3; i++ {
+		x := models.CondThresholdDefinitionRelationship{}
+		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
+		CheckError(t, err)
+		p = append(p, x)
+	}
+	ffOp := flattenListCondThresholdDefinitionRelationship(p, d)
+	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
+	for i := 0; i < len(expectedOp); i++ {
+		err := compareMaps(expectedOp[i], ffOp[i], t)
+		CheckError(t, err)
+	}
+}
+func TestFlattenListCondThresholdDefinitionState(t *testing.T) {
+	p := []models.CondThresholdDefinitionState{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"cond.ThresholdDefinitionState","ObjectType":"cond.ThresholdDefinitionState"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenListCondThresholdDefinitionState(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	for i := 1; i < 3; i++ {
+		x := models.CondThresholdDefinitionState{}
+		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
+		CheckError(t, err)
+		p = append(p, x)
+	}
+	ffOp := flattenListCondThresholdDefinitionState(p, d)
+	expectedOp := []map[string]interface{}{{"class_id": "cond.ThresholdDefinitionState", "object_type": "cond.ThresholdDefinitionState"}, {"class_id": "cond.ThresholdDefinitionState", "object_type": "cond.ThresholdDefinitionState"}}
+	for i := 0; i < len(expectedOp); i++ {
+		err := compareMaps(expectedOp[i], ffOp[i], t)
+		CheckError(t, err)
+	}
+}
 func TestFlattenListConnectorpackConnectorPackUpdate(t *testing.T) {
 	p := []models.ConnectorpackConnectorPackUpdate{}
 	var d = &schema.ResourceData{}
@@ -3215,6 +3239,54 @@ func TestFlattenListFabricFcZonePolicyRelationship(t *testing.T) {
 		p = append(p, x)
 	}
 	ffOp := flattenListFabricFcZonePolicyRelationship(p, d)
+	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
+	for i := 0; i < len(expectedOp); i++ {
+		err := compareMaps(expectedOp[i], ffOp[i], t)
+		CheckError(t, err)
+	}
+}
+func TestFlattenListFabricNetFlowExporterRelationship(t *testing.T) {
+	p := []models.FabricNetFlowExporterRelationship{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenListFabricNetFlowExporterRelationship(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	for i := 1; i < 3; i++ {
+		x := models.FabricNetFlowExporterRelationship{}
+		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
+		CheckError(t, err)
+		p = append(p, x)
+	}
+	ffOp := flattenListFabricNetFlowExporterRelationship(p, d)
+	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
+	for i := 0; i < len(expectedOp); i++ {
+		err := compareMaps(expectedOp[i], ffOp[i], t)
+		CheckError(t, err)
+	}
+}
+func TestFlattenListFabricNetFlowMonitorRelationship(t *testing.T) {
+	p := []models.FabricNetFlowMonitorRelationship{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenListFabricNetFlowMonitorRelationship(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	for i := 1; i < 3; i++ {
+		x := models.FabricNetFlowMonitorRelationship{}
+		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
+		CheckError(t, err)
+		p = append(p, x)
+	}
+	ffOp := flattenListFabricNetFlowMonitorRelationship(p, d)
 	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
 	for i := 0; i < len(expectedOp); i++ {
 		err := compareMaps(expectedOp[i], ffOp[i], t)
@@ -4416,6 +4488,30 @@ func TestFlattenListHclOperatingSystemRelationship(t *testing.T) {
 	}
 	ffOp := flattenListHclOperatingSystemRelationship(p, d)
 	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
+	for i := 0; i < len(expectedOp); i++ {
+		err := compareMaps(expectedOp[i], ffOp[i], t)
+		CheckError(t, err)
+	}
+}
+func TestFlattenListHclServerConfiguration(t *testing.T) {
+	p := []models.HclServerConfiguration{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"hcl.ServerConfiguration","ObjectType":"hcl.ServerConfiguration","ServerPid":"ServerPid %d","UcsVersion":"UcsVersion %d","VersionType":"VersionType %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenListHclServerConfiguration(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	for i := 1; i < 3; i++ {
+		x := models.HclServerConfiguration{}
+		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
+		CheckError(t, err)
+		p = append(p, x)
+	}
+	ffOp := flattenListHclServerConfiguration(p, d)
+	expectedOp := []map[string]interface{}{{"class_id": "hcl.ServerConfiguration", "object_type": "hcl.ServerConfiguration", "server_pid": "ServerPid 1", "ucs_version": "UcsVersion 1", "version_type": "VersionType 1"}, {"class_id": "hcl.ServerConfiguration", "object_type": "hcl.ServerConfiguration", "server_pid": "ServerPid 2", "ucs_version": "UcsVersion 2", "version_type": "VersionType 2"}}
 	for i := 0; i < len(expectedOp); i++ {
 		err := compareMaps(expectedOp[i], ffOp[i], t)
 		CheckError(t, err)
@@ -6269,30 +6365,6 @@ func TestFlattenListInventoryJobInfo(t *testing.T) {
 		CheckError(t, err)
 	}
 }
-func TestFlattenListIppoolBlockLeaseRelationship(t *testing.T) {
-	p := []models.IppoolBlockLeaseRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListIppoolBlockLeaseRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.IppoolBlockLeaseRelationship{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListIppoolBlockLeaseRelationship(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
 func TestFlattenListIppoolIpLeaseRelationship(t *testing.T) {
 	p := []models.IppoolIpLeaseRelationship{}
 	var d = &schema.ResourceData{}
@@ -6527,390 +6599,6 @@ func TestFlattenListIqnpoolReservationRelationship(t *testing.T) {
 		p = append(p, x)
 	}
 	ffOp := flattenListIqnpoolReservationRelationship(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesAciCniProfileRelationship(t *testing.T) {
-	p := []models.KubernetesAciCniProfileRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesAciCniProfileRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesAciCniProfileRelationship{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesAciCniProfileRelationship(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesAciCniTenantClusterAllocationRelationship(t *testing.T) {
-	p := []models.KubernetesAciCniTenantClusterAllocationRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesAciCniTenantClusterAllocationRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesAciCniTenantClusterAllocationRelationship{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesAciCniTenantClusterAllocationRelationship(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesAddon(t *testing.T) {
-	p := []models.KubernetesAddon{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.Addon","Name":"Name %d","ObjectType":"kubernetes.Addon"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesAddon(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesAddon{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesAddon(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "kubernetes.Addon", "name": "Name 1", "object_type": "kubernetes.Addon"}, {"class_id": "kubernetes.Addon", "name": "Name 2", "object_type": "kubernetes.Addon"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesAddonVersionReference(t *testing.T) {
-	p := []models.KubernetesAddonVersionReference{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.AddonVersionReference","Name":"Name %d","ObjectType":"kubernetes.AddonVersionReference","Version":"Version %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesAddonVersionReference(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesAddonVersionReference{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesAddonVersionReference(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "kubernetes.AddonVersionReference", "name": "Name 1", "object_type": "kubernetes.AddonVersionReference", "nr_version": "Version 1"}, {"class_id": "kubernetes.AddonVersionReference", "name": "Name 2", "object_type": "kubernetes.AddonVersionReference", "nr_version": "Version 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesClusterProfileRelationship(t *testing.T) {
-	p := []models.KubernetesClusterProfileRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesClusterProfileRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesClusterProfileRelationship{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesClusterProfileRelationship(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesConfigResultEntryRelationship(t *testing.T) {
-	p := []models.KubernetesConfigResultEntryRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesConfigResultEntryRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesConfigResultEntryRelationship{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesConfigResultEntryRelationship(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesEssentialAddon(t *testing.T) {
-	p := []models.KubernetesEssentialAddon{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.EssentialAddon","Name":"Name %d","ObjectType":"kubernetes.EssentialAddon"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesEssentialAddon(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesEssentialAddon{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesEssentialAddon(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "kubernetes.EssentialAddon", "name": "Name 1", "object_type": "kubernetes.EssentialAddon"}, {"class_id": "kubernetes.EssentialAddon", "name": "Name 2", "object_type": "kubernetes.EssentialAddon"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesEthernet(t *testing.T) {
-	p := []models.KubernetesEthernet{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.Ethernet","Gateway":"Gateway %d","Mtu":32,"Name":"Name %d","ObjectType":"kubernetes.Ethernet","ProviderName":"ProviderName %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesEthernet(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesEthernet{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesEthernet(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "kubernetes.Ethernet", "gateway": "Gateway 1", "mtu": 32, "name": "Name 1", "object_type": "kubernetes.Ethernet", "provider_name": "ProviderName 1"}, {"class_id": "kubernetes.Ethernet", "gateway": "Gateway 2", "mtu": 32, "name": "Name 2", "object_type": "kubernetes.Ethernet", "provider_name": "ProviderName 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesNodeAddress(t *testing.T) {
-	p := []models.KubernetesNodeAddress{}
-	var d = &schema.ResourceData{}
-	c := `{"Address":"Address %d","ClassId":"kubernetes.NodeAddress","ObjectType":"kubernetes.NodeAddress","Type":"Type %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesNodeAddress(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesNodeAddress{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesNodeAddress(p, d)
-	expectedOp := []map[string]interface{}{{"address": "Address 1", "class_id": "kubernetes.NodeAddress", "object_type": "kubernetes.NodeAddress", "type": "Type 1"}, {"address": "Address 2", "class_id": "kubernetes.NodeAddress", "object_type": "kubernetes.NodeAddress", "type": "Type 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesNodeGroupLabel(t *testing.T) {
-	p := []models.KubernetesNodeGroupLabel{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.NodeGroupLabel","Key":"Key %d","ObjectType":"kubernetes.NodeGroupLabel","Value":"Value %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesNodeGroupLabel(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesNodeGroupLabel{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesNodeGroupLabel(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "kubernetes.NodeGroupLabel", "key": "Key 1", "object_type": "kubernetes.NodeGroupLabel", "value": "Value 1"}, {"class_id": "kubernetes.NodeGroupLabel", "key": "Key 2", "object_type": "kubernetes.NodeGroupLabel", "value": "Value 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesNodeGroupProfileRelationship(t *testing.T) {
-	p := []models.KubernetesNodeGroupProfileRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesNodeGroupProfileRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesNodeGroupProfileRelationship{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesNodeGroupProfileRelationship(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesNodeGroupTaint(t *testing.T) {
-	p := []models.KubernetesNodeGroupTaint{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.NodeGroupTaint","Effect":"Effect %d","Key":"Key %d","ObjectType":"kubernetes.NodeGroupTaint","Value":"Value %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesNodeGroupTaint(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesNodeGroupTaint{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesNodeGroupTaint(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "kubernetes.NodeGroupTaint", "effect": "Effect 1", "key": "Key 1", "object_type": "kubernetes.NodeGroupTaint", "value": "Value 1"}, {"class_id": "kubernetes.NodeGroupTaint", "effect": "Effect 2", "key": "Key 2", "object_type": "kubernetes.NodeGroupTaint", "value": "Value 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesNodeProfileRelationship(t *testing.T) {
-	p := []models.KubernetesNodeProfileRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesNodeProfileRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesNodeProfileRelationship{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesNodeProfileRelationship(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesNodeStatus(t *testing.T) {
-	p := []models.KubernetesNodeStatus{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.NodeStatus","ObjectType":"kubernetes.NodeStatus","Status":"Status %d","Type":"Type %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesNodeStatus(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesNodeStatus{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesNodeStatus(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "kubernetes.NodeStatus", "object_type": "kubernetes.NodeStatus", "status": "Status 1", "type": "Type 1"}, {"class_id": "kubernetes.NodeStatus", "object_type": "kubernetes.NodeStatus", "status": "Status 2", "type": "Type 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesTaint(t *testing.T) {
-	p := []models.KubernetesTaint{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.Taint","Effect":"Effect %d","Key":"Key %d","ObjectType":"kubernetes.Taint","Value":"Value %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesTaint(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesTaint{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesTaint(p, d)
-	expectedOp := []map[string]interface{}{{"class_id": "kubernetes.Taint", "effect": "Effect 1", "key": "Key 1", "object_type": "kubernetes.Taint", "value": "Value 1"}, {"class_id": "kubernetes.Taint", "effect": "Effect 2", "key": "Key 2", "object_type": "kubernetes.Taint", "value": "Value 2"}}
-	for i := 0; i < len(expectedOp); i++ {
-		err := compareMaps(expectedOp[i], ffOp[i], t)
-		CheckError(t, err)
-	}
-}
-func TestFlattenListKubernetesVirtualMachineInfrastructureProviderRelationship(t *testing.T) {
-	p := []models.KubernetesVirtualMachineInfrastructureProviderRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenListKubernetesVirtualMachineInfrastructureProviderRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	for i := 1; i < 3; i++ {
-		x := models.KubernetesVirtualMachineInfrastructureProviderRelationship{}
-		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
-		CheckError(t, err)
-		p = append(p, x)
-	}
-	ffOp := flattenListKubernetesVirtualMachineInfrastructureProviderRelationship(p, d)
 	expectedOp := []map[string]interface{}{{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}, {"class_id": "mo.MoRef", "moid": "Moid 2", "object_type": "mo.MoRef", "selector": "Selector 2"}}
 	for i := 0; i < len(expectedOp); i++ {
 		err := compareMaps(expectedOp[i], ffOp[i], t)
@@ -8232,6 +7920,30 @@ func TestFlattenListNiatelemetryMdsNeighborInfo(t *testing.T) {
 	}
 	ffOp := flattenListNiatelemetryMdsNeighborInfo(p, d)
 	expectedOp := []map[string]interface{}{{"class_id": "niatelemetry.MdsNeighborInfo", "device_wwn": "DeviceWwn 1", "object_type": "niatelemetry.MdsNeighborInfo"}, {"class_id": "niatelemetry.MdsNeighborInfo", "device_wwn": "DeviceWwn 2", "object_type": "niatelemetry.MdsNeighborInfo"}}
+	for i := 0; i < len(expectedOp); i++ {
+		err := compareMaps(expectedOp[i], ffOp[i], t)
+		CheckError(t, err)
+	}
+}
+func TestFlattenListNiatelemetryNxosModuleInfo(t *testing.T) {
+	p := []models.NiatelemetryNxosModuleInfo{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"niatelemetry.NxosModuleInfo","Hw":"Hw %d","Mod":"Mod %d","Model":"Model %d","ObjectType":"niatelemetry.NxosModuleInfo","OnlineDiagStatus":"OnlineDiagStatus %d","SerialNumber":"SerialNumber %d","Slot":"Slot %d","Status":"Status %d","Sw":"Sw %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenListNiatelemetryNxosModuleInfo(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	for i := 1; i < 3; i++ {
+		x := models.NiatelemetryNxosModuleInfo{}
+		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
+		CheckError(t, err)
+		p = append(p, x)
+	}
+	ffOp := flattenListNiatelemetryNxosModuleInfo(p, d)
+	expectedOp := []map[string]interface{}{{"class_id": "niatelemetry.NxosModuleInfo", "hw": "Hw 1", "mod": "Mod 1", "model": "Model 1", "object_type": "niatelemetry.NxosModuleInfo", "online_diag_status": "OnlineDiagStatus 1", "serial_number": "SerialNumber 1", "slot": "Slot 1", "status": "Status 1", "sw": "Sw 1"}, {"class_id": "niatelemetry.NxosModuleInfo", "hw": "Hw 2", "mod": "Mod 2", "model": "Model 2", "object_type": "niatelemetry.NxosModuleInfo", "online_diag_status": "OnlineDiagStatus 2", "serial_number": "SerialNumber 2", "slot": "Slot 2", "status": "Status 2", "sw": "Sw 2"}}
 	for i := 0; i < len(expectedOp); i++ {
 		err := compareMaps(expectedOp[i], ffOp[i], t)
 		CheckError(t, err)
@@ -12701,6 +12413,30 @@ func TestFlattenListVnicFcIfInventoryRelationship(t *testing.T) {
 		CheckError(t, err)
 	}
 }
+func TestFlattenListVnicNetFlowMonitorSession(t *testing.T) {
+	p := []models.VnicNetFlowMonitorSession{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"vnic.NetFlowMonitorSession","FlowDirection":"FlowDirection %d","MonitorName":"MonitorName %d","ObjectType":"vnic.NetFlowMonitorSession"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenListVnicNetFlowMonitorSession(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	for i := 1; i < 3; i++ {
+		x := models.VnicNetFlowMonitorSession{}
+		err := x.UnmarshalJSON([]byte(strings.Replace(c, "%d", fmt.Sprint(i), -1)))
+		CheckError(t, err)
+		p = append(p, x)
+	}
+	ffOp := flattenListVnicNetFlowMonitorSession(p, d)
+	expectedOp := []map[string]interface{}{{"class_id": "vnic.NetFlowMonitorSession", "flow_direction": "FlowDirection 1", "monitor_name": "MonitorName 1", "object_type": "vnic.NetFlowMonitorSession"}, {"class_id": "vnic.NetFlowMonitorSession", "flow_direction": "FlowDirection 2", "monitor_name": "MonitorName 2", "object_type": "vnic.NetFlowMonitorSession"}}
+	for i := 0; i < len(expectedOp); i++ {
+		err := compareMaps(expectedOp[i], ffOp[i], t)
+		CheckError(t, err)
+	}
+}
 func TestFlattenListVnicVifStatus(t *testing.T) {
 	p := []models.VnicVifStatus{}
 	var d = &schema.ResourceData{}
@@ -13733,6 +13469,24 @@ func TestFlattenMapApplianceDeviceUpgradePolicyRelationship(t *testing.T) {
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
+func TestFlattenMapApplianceFileSystemOpSummaryRelationship(t *testing.T) {
+	p := models.ApplianceFileSystemOpSummaryRelationship{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapApplianceFileSystemOpSummaryRelationship(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapApplianceFileSystemOpSummaryRelationship(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
 func TestFlattenMapApplianceGroupOpStatusRelationship(t *testing.T) {
 	p := models.ApplianceGroupOpStatusRelationship{}
 	var d = &schema.ResourceData{}
@@ -14525,24 +14279,6 @@ func TestFlattenMapBulkApiResult(t *testing.T) {
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
-func TestFlattenMapBulkExportRelationship(t *testing.T) {
-	p := models.BulkExportRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapBulkExportRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapBulkExportRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
 func TestFlattenMapBulkExportedItemRelationship(t *testing.T) {
 	p := models.BulkExportedItemRelationship{}
 	var d = &schema.ResourceData{}
@@ -14720,6 +14456,24 @@ func TestFlattenMapCapabilityPcIdRange(t *testing.T) {
 	CheckError(t, err)
 	ffOp := flattenMapCapabilityPcIdRange(p, d)[0]
 	expectedOp := map[string]interface{}{"class_id": "capability.PcIdRange", "end_pc_id": 32, "object_type": "capability.PcIdRange", "start_pc_id": 32}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapCapabilityPortPropertyConstraints(t *testing.T) {
+	p := models.CapabilityPortPropertyConstraints{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"capability.PortPropertyConstraints","LagSuspendIndividualPortSupported":true,"MinBundleVersionFor25gSpeed":"MinBundleVersionFor25gSpeed %d","MinSwitchVersionFor25gSpeed":"MinSwitchVersionFor25gSpeed %d","ObjectType":"capability.PortPropertyConstraints"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapCapabilityPortPropertyConstraints(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapCapabilityPortPropertyConstraints(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "capability.PortPropertyConstraints", "lag_suspend_individual_port_supported": true, "min_bundle_version_for25g_speed": "MinBundleVersionFor25gSpeed 1", "min_switch_version_for25g_speed": "MinSwitchVersionFor25gSpeed 1", "object_type": "capability.PortPropertyConstraints"}
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
@@ -15173,6 +14927,24 @@ func TestFlattenMapComputeHostUtilityOperationConfguration(t *testing.T) {
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
+func TestFlattenMapComputeMigrationKeyInfo(t *testing.T) {
+	p := models.ComputeMigrationKeyInfo{}
+	var d = &schema.ResourceData{}
+	c := `{"BootLunType":"BootLunType %d","ClassId":"compute.MigrationKeyInfo","InstanceId":"InstanceId %d","IsKeyValueSet":true,"LunId":32,"ObjectType":"compute.MigrationKeyInfo"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapComputeMigrationKeyInfo(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapComputeMigrationKeyInfo(p, d)[0]
+	expectedOp := map[string]interface{}{"boot_lun_type": "BootLunType 1", "class_id": "compute.MigrationKeyInfo", "instance_id": "InstanceId 1", "is_key_value_set": true, "lun_id": 32, "object_type": "compute.MigrationKeyInfo"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
 func TestFlattenMapComputePersistentMemoryOperation(t *testing.T) {
 	p := models.ComputePersistentMemoryOperation{}
 	var d = &schema.ResourceData{}
@@ -15260,6 +15032,24 @@ func TestFlattenMapComputeRackUnitRelationship(t *testing.T) {
 	CheckError(t, err)
 	ffOp := flattenMapComputeRackUnitRelationship(p, d)[0]
 	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapComputeRecoveryKeyDetails(t *testing.T) {
+	p := models.ComputeRecoveryKeyDetails{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"compute.RecoveryKeyDetails","ObjectType":"compute.RecoveryKeyDetails","RecoveryKeyEndPointState":32,"RecoveryKeyState":"RecoveryKeyState %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapComputeRecoveryKeyDetails(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapComputeRecoveryKeyDetails(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "compute.RecoveryKeyDetails", "object_type": "compute.RecoveryKeyDetails", "recovery_key_end_point_state": 32, "recovery_key_state": "RecoveryKeyState 1"}
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
@@ -15439,6 +15229,24 @@ func TestFlattenMapCondHclStatusRelationship(t *testing.T) {
 	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
 	CheckError(t, err)
 	ffOp := flattenMapCondHclStatusRelationship(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapCondThresholdDefinitionRelationship(t *testing.T) {
+	p := models.CondThresholdDefinitionRelationship{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapCondThresholdDefinitionRelationship(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapCondThresholdDefinitionRelationship(p, d)[0]
 	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
@@ -16307,6 +16115,78 @@ func TestFlattenMapFabricFlowControlPolicyRelationship(t *testing.T) {
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
+func TestFlattenMapFabricFlowNonKey(t *testing.T) {
+	p := models.FabricFlowNonKey{}
+	var d = &schema.ResourceData{}
+	c := `{"ByteCounters":true,"ClassId":"fabric.FlowNonKey","FirstSystemTime":true,"LastSystemTime":true,"ObjectType":"fabric.FlowNonKey","PacketCounters":true}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapFabricFlowNonKey(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapFabricFlowNonKey(p, d)[0]
+	expectedOp := map[string]interface{}{"byte_counters": true, "class_id": "fabric.FlowNonKey", "first_system_time": true, "last_system_time": true, "object_type": "fabric.FlowNonKey", "packet_counters": true}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapFabricIpv4FlowKey(t *testing.T) {
+	p := models.FabricIpv4FlowKey{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"fabric.Ipv4FlowKey","DestinationIpAddress":true,"DestinationPort":true,"ObjectType":"fabric.Ipv4FlowKey","Protocol":true,"SourceIpAddress":true,"SourcePort":true,"Tos":true}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapFabricIpv4FlowKey(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapFabricIpv4FlowKey(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "fabric.Ipv4FlowKey", "destination_ip_address": true, "destination_port": true, "object_type": "fabric.Ipv4FlowKey", "protocol": true, "source_ip_address": true, "source_port": true, "tos": true}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapFabricIpv6FlowKey(t *testing.T) {
+	p := models.FabricIpv6FlowKey{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"fabric.Ipv6FlowKey","DestinationIpAddress":true,"DestinationPort":true,"ObjectType":"fabric.Ipv6FlowKey","Protocol":true,"SourceIpAddress":true,"SourcePort":true}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapFabricIpv6FlowKey(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapFabricIpv6FlowKey(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "fabric.Ipv6FlowKey", "destination_ip_address": true, "destination_port": true, "object_type": "fabric.Ipv6FlowKey", "protocol": true, "source_ip_address": true, "source_port": true}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapFabricL2FlowKey(t *testing.T) {
+	p := models.FabricL2FlowKey{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"fabric.L2FlowKey","DestinationMac":true,"EtherType":true,"ObjectType":"fabric.L2FlowKey","SourceMac":true}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapFabricL2FlowKey(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapFabricL2FlowKey(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "fabric.L2FlowKey", "destination_mac": true, "ether_type": true, "object_type": "fabric.L2FlowKey", "source_mac": true}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
 func TestFlattenMapFabricLinkAggregationPolicyRelationship(t *testing.T) {
 	p := models.FabricLinkAggregationPolicyRelationship{}
 	var d = &schema.ResourceData{}
@@ -16379,6 +16259,24 @@ func TestFlattenMapFabricMacAgingSettings(t *testing.T) {
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
+func TestFlattenMapFabricMacLearningSettings(t *testing.T) {
+	p := models.FabricMacLearningSettings{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"fabric.MacLearningSettings","DisabledVlans":"DisabledVlans %d","ObjectType":"fabric.MacLearningSettings"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapFabricMacLearningSettings(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapFabricMacLearningSettings(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "fabric.MacLearningSettings", "disabled_vlans": "DisabledVlans 1", "object_type": "fabric.MacLearningSettings"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
 func TestFlattenMapFabricMacSecEaPol(t *testing.T) {
 	p := models.FabricMacSecEaPol{}
 	var d = &schema.ResourceData{}
@@ -16430,6 +16328,60 @@ func TestFlattenMapFabricMulticastPolicyRelationship(t *testing.T) {
 	CheckError(t, err)
 	ffOp := flattenMapFabricMulticastPolicyRelationship(p, d)[0]
 	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapFabricNetFlowPolicyRelationship(t *testing.T) {
+	p := models.FabricNetFlowPolicyRelationship{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapFabricNetFlowPolicyRelationship(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapFabricNetFlowPolicyRelationship(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapFabricNetFlowRecordRelationship(t *testing.T) {
+	p := models.FabricNetFlowRecordRelationship{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapFabricNetFlowRecordRelationship(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapFabricNetFlowRecordRelationship(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapFabricPfcWatchDog(t *testing.T) {
+	p := models.FabricPfcWatchDog{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"fabric.PfcWatchDog","IsWatchdogEnabled":true,"ObjectType":"fabric.PfcWatchDog","ShutdownMultiplier":32,"WatchdogInterval":32}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapFabricPfcWatchDog(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapFabricPfcWatchDog(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "fabric.PfcWatchDog", "is_watchdog_enabled": true, "object_type": "fabric.PfcWatchDog", "shutdown_multiplier": 32, "watchdog_interval": 32}
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
@@ -16574,6 +16526,24 @@ func TestFlattenMapFabricUdldSettings(t *testing.T) {
 	CheckError(t, err)
 	ffOp := flattenMapFabricUdldSettings(p, d)[0]
 	expectedOp := map[string]interface{}{"admin_state": "AdminState 1", "class_id": "fabric.UdldSettings", "mode": "Mode 1", "object_type": "fabric.UdldSettings"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapFabricVlanExportInterface(t *testing.T) {
+	p := models.FabricVlanExportInterface{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"fabric.VlanExportInterface","ObjectType":"fabric.VlanExportInterface","SwitchAip":"SwitchAip %d","SwitchAsubnetmask":"SwitchAsubnetmask %d","SwitchBip":"SwitchBip %d","SwitchBsubnetmask":"SwitchBsubnetmask %d","VlanId":32}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapFabricVlanExportInterface(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapFabricVlanExportInterface(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "fabric.VlanExportInterface", "object_type": "fabric.VlanExportInterface", "switch_aip": "SwitchAip 1", "switch_asubnetmask": "SwitchAsubnetmask 1", "switch_bip": "SwitchBip 1", "switch_bsubnetmask": "SwitchBsubnetmask 1", "vlan_id": 32}
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
@@ -19799,672 +19769,6 @@ func TestFlattenMapIssueCondition(t *testing.T) {
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
-func TestFlattenMapKubernetesAciCniProfileRelationship(t *testing.T) {
-	p := models.KubernetesAciCniProfileRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesAciCniProfileRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesAciCniProfileRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesActionInfo(t *testing.T) {
-	p := models.KubernetesActionInfo{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.ActionInfo","FailureReason":"FailureReason %d","Name":"Name %d","ObjectType":"kubernetes.ActionInfo","Status":"Status %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesActionInfo(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesActionInfo(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.ActionInfo", "failure_reason": "FailureReason 1", "name": "Name 1", "object_type": "kubernetes.ActionInfo", "status": "Status 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesAddonConfiguration(t *testing.T) {
-	p := models.KubernetesAddonConfiguration{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.AddonConfiguration","InstallStrategy":"InstallStrategy %d","ObjectType":"kubernetes.AddonConfiguration","Overrides":"Overrides %d","ReleaseName":"ReleaseName %d","ReleaseNamespace":"ReleaseNamespace %d","UpgradeStrategy":"UpgradeStrategy %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesAddonConfiguration(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesAddonConfiguration(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.AddonConfiguration", "install_strategy": "InstallStrategy 1", "object_type": "kubernetes.AddonConfiguration", "overrides": "Overrides 1", "release_name": "ReleaseName 1", "release_namespace": "ReleaseNamespace 1", "upgrade_strategy": "UpgradeStrategy 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesAddonDefinitionRelationship(t *testing.T) {
-	p := models.KubernetesAddonDefinitionRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesAddonDefinitionRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesAddonDefinitionRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesBaremetalNetworkInfo(t *testing.T) {
-	p := models.KubernetesBaremetalNetworkInfo{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.BaremetalNetworkInfo","ObjectType":"kubernetes.BaremetalNetworkInfo"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesBaremetalNetworkInfo(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesBaremetalNetworkInfo(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.BaremetalNetworkInfo", "object_type": "kubernetes.BaremetalNetworkInfo"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesBaseInfrastructureProviderRelationship(t *testing.T) {
-	p := models.KubernetesBaseInfrastructureProviderRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesBaseInfrastructureProviderRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesBaseInfrastructureProviderRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesBaseVirtualMachineInfraConfig(t *testing.T) {
-	p := models.KubernetesBaseVirtualMachineInfraConfig{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.BaseVirtualMachineInfraConfig","ObjectType":"kubernetes.BaseVirtualMachineInfraConfig"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesBaseVirtualMachineInfraConfig(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesBaseVirtualMachineInfraConfig(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.BaseVirtualMachineInfraConfig", "object_type": "kubernetes.BaseVirtualMachineInfraConfig"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesCatalogRelationship(t *testing.T) {
-	p := models.KubernetesCatalogRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesCatalogRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesCatalogRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesClusterRelationship(t *testing.T) {
-	p := models.KubernetesClusterRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesClusterRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesClusterRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesClusterAddonProfileRelationship(t *testing.T) {
-	p := models.KubernetesClusterAddonProfileRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesClusterAddonProfileRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesClusterAddonProfileRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesClusterCertificateConfiguration(t *testing.T) {
-	p := models.KubernetesClusterCertificateConfiguration{}
-	var d = &schema.ResourceData{}
-	c := `{"CaCert":"CaCert %d","ClassId":"kubernetes.ClusterCertificateConfiguration","EtcdCert":"EtcdCert %d","FrontProxyCert":"FrontProxyCert %d","ObjectType":"kubernetes.ClusterCertificateConfiguration","SaPublicKey":"SaPublicKey %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesClusterCertificateConfiguration(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesClusterCertificateConfiguration(p, d)[0]
-	expectedOp := map[string]interface{}{"ca_cert": "CaCert 1", "class_id": "kubernetes.ClusterCertificateConfiguration", "etcd_cert": "EtcdCert 1", "front_proxy_cert": "FrontProxyCert 1", "object_type": "kubernetes.ClusterCertificateConfiguration", "sa_public_key": "SaPublicKey 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesClusterManagementConfig(t *testing.T) {
-	p := models.KubernetesClusterManagementConfig{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.ClusterManagementConfig","IsTacPasswdSet":true,"LoadBalancerCount":32,"MasterVip":"MasterVip %d","ObjectType":"kubernetes.ClusterManagementConfig","SshUser":"SshUser %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesClusterManagementConfig(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesClusterManagementConfig(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.ClusterManagementConfig", "is_tac_passwd_set": true, "load_balancer_count": 32, "master_vip": "MasterVip 1", "object_type": "kubernetes.ClusterManagementConfig", "ssh_user": "SshUser 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesClusterProfileRelationship(t *testing.T) {
-	p := models.KubernetesClusterProfileRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesClusterProfileRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesClusterProfileRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesCniConfig(t *testing.T) {
-	p := models.KubernetesCniConfig{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.CniConfig","ObjectType":"kubernetes.CniConfig","Registry":"Registry %d","Version":"Version %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesCniConfig(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesCniConfig(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.CniConfig", "object_type": "kubernetes.CniConfig", "registry": "Registry 1", "nr_version": "Version 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesConfigResultRelationship(t *testing.T) {
-	p := models.KubernetesConfigResultRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesConfigResultRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesConfigResultRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesConfiguration(t *testing.T) {
-	p := models.KubernetesConfiguration{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.Configuration","KubeConfig":"KubeConfig %d","ObjectType":"kubernetes.Configuration"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesConfiguration(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesConfiguration(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.Configuration", "kube_config": "KubeConfig 1", "object_type": "kubernetes.Configuration"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesContainerRuntimePolicyRelationship(t *testing.T) {
-	p := models.KubernetesContainerRuntimePolicyRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesContainerRuntimePolicyRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesContainerRuntimePolicyRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesDaemonSetStatus(t *testing.T) {
-	p := models.KubernetesDaemonSetStatus{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.DaemonSetStatus","CurrentNumberScheduled":32,"DesiredNumberScheduled":32,"NumberAvailable":"NumberAvailable %d","NumberMisscheduled":32,"NumberReady":32,"ObjectType":"kubernetes.DaemonSetStatus","ObservedGeneration":32,"UpdatedNumberScheduled":"UpdatedNumberScheduled %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesDaemonSetStatus(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesDaemonSetStatus(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.DaemonSetStatus", "current_number_scheduled": 32, "desired_number_scheduled": 32, "number_available": "NumberAvailable 1", "number_misscheduled": 32, "number_ready": 32, "object_type": "kubernetes.DaemonSetStatus", "observed_generation": 32, "updated_number_scheduled": "UpdatedNumberScheduled 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesDeploymentStatus(t *testing.T) {
-	p := models.KubernetesDeploymentStatus{}
-	var d = &schema.ResourceData{}
-	c := `{"AvailableReplicas":32,"ClassId":"kubernetes.DeploymentStatus","ObjectType":"kubernetes.DeploymentStatus","ObservedGeneration":32,"ReadyReplicas":32,"Replicas":32,"UpdatedReplicas":32}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesDeploymentStatus(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesDeploymentStatus(p, d)[0]
-	expectedOp := map[string]interface{}{"available_replicas": 32, "class_id": "kubernetes.DeploymentStatus", "object_type": "kubernetes.DeploymentStatus", "observed_generation": 32, "ready_replicas": 32, "replicas": 32, "updated_replicas": 32}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesHttpProxyPolicyRelationship(t *testing.T) {
-	p := models.KubernetesHttpProxyPolicyRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesHttpProxyPolicyRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesHttpProxyPolicyRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesIngressStatus(t *testing.T) {
-	p := models.KubernetesIngressStatus{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.IngressStatus","ObjectType":"kubernetes.IngressStatus"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesIngressStatus(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesIngressStatus(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.IngressStatus", "object_type": "kubernetes.IngressStatus"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesNetworkPolicyRelationship(t *testing.T) {
-	p := models.KubernetesNetworkPolicyRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesNetworkPolicyRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesNetworkPolicyRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesNodeGroupProfileRelationship(t *testing.T) {
-	p := models.KubernetesNodeGroupProfileRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesNodeGroupProfileRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesNodeGroupProfileRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesNodeInfo(t *testing.T) {
-	p := models.KubernetesNodeInfo{}
-	var d = &schema.ResourceData{}
-	c := `{"Architecture":"Architecture %d","BootId":"BootId %d","ClassId":"kubernetes.NodeInfo","ContainerRuntimeVersion":"ContainerRuntimeVersion %d","KernelVersion":"KernelVersion %d","KubeProxyVersion":"KubeProxyVersion %d","KubeletVersion":"KubeletVersion %d","MachineId":"MachineId %d","ObjectType":"kubernetes.NodeInfo","OperatingSystem":"OperatingSystem %d","OsImage":"OsImage %d","SystemUuid":"SystemUuid %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesNodeInfo(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesNodeInfo(p, d)[0]
-	expectedOp := map[string]interface{}{"architecture": "Architecture 1", "boot_id": "BootId 1", "class_id": "kubernetes.NodeInfo", "container_runtime_version": "ContainerRuntimeVersion 1", "kernel_version": "KernelVersion 1", "kube_proxy_version": "KubeProxyVersion 1", "kubelet_version": "KubeletVersion 1", "machine_id": "MachineId 1", "object_type": "kubernetes.NodeInfo", "operating_system": "OperatingSystem 1", "os_image": "OsImage 1", "system_uuid": "SystemUuid 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesNodeProfileRelationship(t *testing.T) {
-	p := models.KubernetesNodeProfileRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesNodeProfileRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesNodeProfileRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesNodeSpec(t *testing.T) {
-	p := models.KubernetesNodeSpec{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.NodeSpec","ObjectType":"kubernetes.NodeSpec","PodCidr":"PodCidr %d","ProviderId":"ProviderId %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesNodeSpec(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesNodeSpec(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.NodeSpec", "object_type": "kubernetes.NodeSpec", "pod_cidr": "PodCidr 1", "provider_id": "ProviderId 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesObjectMeta(t *testing.T) {
-	p := models.KubernetesObjectMeta{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.ObjectMeta","CreationTimestamp":"CreationTimestamp %d","Name":"Name %d","Namespace":"Namespace %d","ObjectType":"kubernetes.ObjectMeta","ResourceVersion":"ResourceVersion %d","Uuid":"Uuid %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesObjectMeta(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesObjectMeta(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.ObjectMeta", "creation_timestamp": "CreationTimestamp 1", "name": "Name 1", "namespace": "Namespace 1", "object_type": "kubernetes.ObjectMeta", "resource_version": "ResourceVersion 1", "uuid": "Uuid 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesPodStatus(t *testing.T) {
-	p := models.KubernetesPodStatus{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.PodStatus","HostIp":"HostIp %d","ObjectType":"kubernetes.PodStatus","Phase":"Phase %d","PodIp":"PodIp %d","QosClass":"QosClass %d","StartTime":"StartTime %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesPodStatus(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesPodStatus(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.PodStatus", "host_ip": "HostIp 1", "object_type": "kubernetes.PodStatus", "phase": "Phase 1", "pod_ip": "PodIp 1", "qos_class": "QosClass 1", "start_time": "StartTime 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesProxyConfig(t *testing.T) {
-	p := models.KubernetesProxyConfig{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.ProxyConfig","Hostname":"Hostname %d","IsPasswordSet":true,"ObjectType":"kubernetes.ProxyConfig","Port":32,"Protocol":"Protocol %d","Username":"Username %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesProxyConfig(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesProxyConfig(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.ProxyConfig", "hostname": "Hostname 1", "is_password_set": true, "object_type": "kubernetes.ProxyConfig", "port": 32, "protocol": "Protocol 1", "username": "Username 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesServiceStatus(t *testing.T) {
-	p := models.KubernetesServiceStatus{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"kubernetes.ServiceStatus","ObjectType":"kubernetes.ServiceStatus"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesServiceStatus(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesServiceStatus(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "kubernetes.ServiceStatus", "object_type": "kubernetes.ServiceStatus"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesStatefulSetStatus(t *testing.T) {
-	p := models.KubernetesStatefulSetStatus{}
-	var d = &schema.ResourceData{}
-	c := `{"AvailableReplicas":32,"ClassId":"kubernetes.StatefulSetStatus","CollisionCount":32,"CurrentRevision":"CurrentRevision %d","ObjectType":"kubernetes.StatefulSetStatus","ObservedGeneration":32,"ReadyReplicas":32,"Replicas":32,"UpdateRevision":"UpdateRevision %d","UpdatedReplicas":32}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesStatefulSetStatus(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesStatefulSetStatus(p, d)[0]
-	expectedOp := map[string]interface{}{"available_replicas": 32, "class_id": "kubernetes.StatefulSetStatus", "collision_count": 32, "current_revision": "CurrentRevision 1", "object_type": "kubernetes.StatefulSetStatus", "observed_generation": 32, "ready_replicas": 32, "replicas": 32, "update_revision": "UpdateRevision 1", "updated_replicas": 32}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesSysConfigPolicyRelationship(t *testing.T) {
-	p := models.KubernetesSysConfigPolicyRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesSysConfigPolicyRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesSysConfigPolicyRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesTrustedRegistriesPolicyRelationship(t *testing.T) {
-	p := models.KubernetesTrustedRegistriesPolicyRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesTrustedRegistriesPolicyRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesTrustedRegistriesPolicyRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesVersionRelationship(t *testing.T) {
-	p := models.KubernetesVersionRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesVersionRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesVersionRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesVersionPolicyRelationship(t *testing.T) {
-	p := models.KubernetesVersionPolicyRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesVersionPolicyRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesVersionPolicyRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesVirtualMachineInfraConfigPolicyRelationship(t *testing.T) {
-	p := models.KubernetesVirtualMachineInfraConfigPolicyRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesVirtualMachineInfraConfigPolicyRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesVirtualMachineInfraConfigPolicyRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapKubernetesVirtualMachineInstanceTypeRelationship(t *testing.T) {
-	p := models.KubernetesVirtualMachineInstanceTypeRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapKubernetesVirtualMachineInstanceTypeRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapKubernetesVirtualMachineInstanceTypeRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
 func TestFlattenMapKvmSessionRelationship(t *testing.T) {
 	p := models.KvmSessionRelationship{}
 	var d = &schema.ResourceData{}
@@ -20930,6 +20234,24 @@ func TestFlattenMapManagementInterfaceRelationship(t *testing.T) {
 	CheckError(t, err)
 	ffOp := flattenMapManagementInterfaceRelationship(p, d)[0]
 	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapManagementReplayConfigInfo(t *testing.T) {
+	p := models.ManagementReplayConfigInfo{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"management.ReplayConfigInfo","ObjectType":"management.ReplayConfigInfo","ReplayConfigStatus":"ReplayConfigStatus %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapManagementReplayConfigInfo(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapManagementReplayConfigInfo(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "management.ReplayConfigInfo", "object_type": "management.ReplayConfigInfo", "replay_config_status": "ReplayConfigStatus 1"}
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
@@ -23075,6 +22397,24 @@ func TestFlattenMapServerDiagnosticsRelationship(t *testing.T) {
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
+func TestFlattenMapServerMigrationKeyDetailsRelationship(t *testing.T) {
+	p := models.ServerMigrationKeyDetailsRelationship{}
+	var d = &schema.ResourceData{}
+	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapServerMigrationKeyDetailsRelationship(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapServerMigrationKeyDetailsRelationship(p, d)[0]
+	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
 func TestFlattenMapServerProfileRelationship(t *testing.T) {
 	p := models.ServerProfileRelationship{}
 	var d = &schema.ResourceData{}
@@ -23161,24 +22501,6 @@ func TestFlattenMapSoftwareHyperflexDistributableRelationship(t *testing.T) {
 	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
 	CheckError(t, err)
 	ffOp := flattenMapSoftwareHyperflexDistributableRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapSoftwareSolutionDistributableRelationship(t *testing.T) {
-	p := models.SoftwareSolutionDistributableRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapSoftwareSolutionDistributableRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapSoftwareSolutionDistributableRelationship(p, d)[0]
 	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
@@ -24926,24 +24248,6 @@ func TestFlattenMapVirtualizationStorageCapacity(t *testing.T) {
 	CheckError(t, err)
 	ffOp := flattenMapVirtualizationStorageCapacity(p, d)[0]
 	expectedOp := map[string]interface{}{"capacity": 32, "class_id": "virtualization.StorageCapacity", "free": 32, "object_type": "virtualization.StorageCapacity", "used": 32}
-	err = compareMaps(expectedOp, ffOp, t)
-	CheckError(t, err)
-}
-func TestFlattenMapVirtualizationVirtualMachineRelationship(t *testing.T) {
-	p := models.VirtualizationVirtualMachineRelationship{}
-	var d = &schema.ResourceData{}
-	c := `{"ClassId":"mo.MoRef","Moid":"Moid %d","ObjectType":"mo.MoRef","Selector":"Selector %d"}`
-
-	//test when the response is empty
-	ffOpEmpty := flattenMapVirtualizationVirtualMachineRelationship(p, d)
-	if len(ffOpEmpty) != 0 {
-		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
-	}
-	// test when response is available and resourceData is empty
-	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
-	CheckError(t, err)
-	ffOp := flattenMapVirtualizationVirtualMachineRelationship(p, d)[0]
-	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }
@@ -26942,6 +26246,24 @@ func TestFlattenMapWorkloadDeploymentInputRelationship(t *testing.T) {
 	CheckError(t, err)
 	ffOp := flattenMapWorkloadDeploymentInputRelationship(p, d)[0]
 	expectedOp := map[string]interface{}{"class_id": "mo.MoRef", "moid": "Moid 1", "object_type": "mo.MoRef", "selector": "Selector 1"}
+	err = compareMaps(expectedOp, ffOp, t)
+	CheckError(t, err)
+}
+func TestFlattenMapWorkloadRenameRequest(t *testing.T) {
+	p := models.WorkloadRenameRequest{}
+	var d = &schema.ResourceData{}
+	c := `{"Action":"Action %d","ClassId":"workload.RenameRequest","NewName":"NewName %d","ObjectType":"workload.RenameRequest","Status":"Status %d"}`
+
+	//test when the response is empty
+	ffOpEmpty := flattenMapWorkloadRenameRequest(p, d)
+	if len(ffOpEmpty) != 0 {
+		t.Errorf("error: no elements should be present. Found %d elements", len(ffOpEmpty))
+	}
+	// test when response is available and resourceData is empty
+	err := p.UnmarshalJSON([]byte(strings.Replace(c, "%d", "1", -1)))
+	CheckError(t, err)
+	ffOp := flattenMapWorkloadRenameRequest(p, d)[0]
+	expectedOp := map[string]interface{}{"action": "Action 1", "class_id": "workload.RenameRequest", "new_name": "NewName 1", "object_type": "workload.RenameRequest", "status": "Status 1"}
 	err = compareMaps(expectedOp, ffOp, t)
 	CheckError(t, err)
 }

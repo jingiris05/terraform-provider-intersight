@@ -106,7 +106,7 @@ func getVnicEthQosPolicyInventorySchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"mtu": {
-			Description: "The Maximum Transmission Unit (MTU) or packet size that the virtual interface accepts.",
+			Description: "The Maximum Transmission Unit (MTU) or packet size that the virtual interface accepts.Only 5th Gen Adapters and above with firmware version 5.4.2.15 and later support MTU size greater than 9000.",
 			Type:        schema.TypeInt,
 			Optional:    true,
 		},
@@ -560,7 +560,8 @@ func dataSourceVnicEthQosPolicyInventoryRead(c context.Context, d *schema.Resour
 	}
 
 	if v, ok := d.GetOk("create_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCreateTime(x)
 	}
 
@@ -580,7 +581,8 @@ func dataSourceVnicEthQosPolicyInventoryRead(c context.Context, d *schema.Resour
 	}
 
 	if v, ok := d.GetOk("mod_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetModTime(x)
 	}
 

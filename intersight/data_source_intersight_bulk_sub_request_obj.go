@@ -682,7 +682,7 @@ func getBulkSubRequestObjSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"status": {
-			Description: "The status of the request.\n* `Pending` - Indicates that the request is yet to be processed.\n* `ObjPresenceCheckInProgress` - Indicates that the checking for object presence is in progress.\n* `ObjPresenceCheckInComplete` - Indicates that the request is being processed.\n* `ObjPresenceCheckFailed` - Indicates that the checking for object presence failed.\n* `Processing` - Indicates that the request is being processed.\n* `TimedOut` - Indicates that the request processing timed out.\n* `Failed` - Indicates that the request processing failed.\n* `Completed` - Indicates that the request processing is complete.\n* `Skipped` - Indicates that the request was skipped.",
+			Description: "The status of the request.\n* `Pending` - Indicates that the request is yet to be processed.\n* `ObjPresenceCheckInProgress` - Indicates that the checking for object presence is in progress.\n* `ObjPresenceCheckInComplete` - Indicates that the request is being processed.\n* `ObjPresenceCheckFailed` - Indicates that the checking for object presence failed.\n* `Processing` - Indicates that the request is being processed.\n* `TimedOut` - Indicates that the request processing timed out.\n* `Failed` - Indicates that the request processing failed.\n* `Completed` - Indicates that the request processing is complete.\n* `Partial` - Indicates that the request is partially complete due to an error.\n* `Skipped` - Indicates that the request was skipped.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -1171,7 +1171,8 @@ func dataSourceBulkSubRequestObjRead(c context.Context, d *schema.ResourceData, 
 	}
 
 	if v, ok := d.GetOk("create_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCreateTime(x)
 	}
 
@@ -1201,7 +1202,8 @@ func dataSourceBulkSubRequestObjRead(c context.Context, d *schema.ResourceData, 
 	}
 
 	if v, ok := d.GetOk("mod_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetModTime(x)
 	}
 

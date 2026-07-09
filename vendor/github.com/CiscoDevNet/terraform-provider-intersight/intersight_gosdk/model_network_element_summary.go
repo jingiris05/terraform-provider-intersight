@@ -3,7 +3,7 @@ Cisco Intersight
 
 Cisco Intersight is a management platform delivered as a service with embedded analytics for your Cisco and 3rd party IT infrastructure. This platform offers an intelligent level of management that enables IT organizations to analyze, simplify, and automate their environments in more advanced ways than the prior generations of tools. Cisco Intersight provides an integrated and intuitive management experience for resources in the traditional data center as well as at the edge. With flexible deployment options to address complex security needs, getting started with Intersight is quick and easy. Cisco Intersight has deep integration with Cisco UCS and HyperFlex systems allowing for remote deployment, configuration, and ongoing maintenance. The model-based deployment works for a single system in a remote location or hundreds of systems in a data center and enables rapid, standardized configuration and deployment. It also streamlines maintaining those systems whether you are working with small or very large configurations. The Intersight OpenAPI document defines the complete set of properties that are returned in the HTTP response. From that perspective, a client can expect that no additional properties are returned, unless these properties are explicitly defined in the OpenAPI document. However, when a client uses an older version of the Intersight OpenAPI document, the server may send additional properties because the software is more recent than the client. In that case, the client may receive properties that it does not know about. Some generated SDKs perform a strict validation of the HTTP response body against the OpenAPI document.
 
-API version: 1.0.11-2026021105
+API version: 1.0.11-2026041816
 Contact: intersight@cisco.com
 */
 
@@ -125,10 +125,18 @@ type NetworkElementSummary struct {
 	OutOfBandIpv4Mask *string `json:"OutOfBandIpv4Mask,omitempty"`
 	// The IPv6 address of the network Element out-of-band management interface.
 	OutOfBandIpv6Address *string `json:"OutOfBandIpv6Address,omitempty"`
+	// The IPv6 error message if any issue occurred during address configuration.
+	OutOfBandIpv6Error *string `json:"OutOfBandIpv6Error,omitempty"`
 	// The default IPv6 gateway of the network Element out-of-band management interface.
 	OutOfBandIpv6Gateway *string `json:"OutOfBandIpv6Gateway,omitempty"`
+	// The IPv6 address configuration mode of the network Element out-of-band management interface. * `` - The IPv6 address mode is not available or not applicable. * `slaac` - IPv6 address is configured via Stateless Address Autoconfiguration (SLAAC). * `static` - IPv6 address is statically configured. * `disabled` - IPv6 is disabled on the out-of-band management interface.
+	OutOfBandIpv6Mode *string `json:"OutOfBandIpv6Mode,omitempty"`
 	// The network mask of the network Element out-of-band management interface.
 	OutOfBandIpv6Prefix *string `json:"OutOfBandIpv6Prefix,omitempty"`
+	// The SLAAC Interface Identifier (IID) mode for the network Element out-of-band management IPv6 address. * `` - The SLAAC IID mode is not available or not applicable. * `eui64` - The SLAAC IID is derived from the MAC address using the EUI-64 method. * `opaque` - The SLAAC IID is generated using an opaque identifier for privacy.
+	OutOfBandIpv6SlaacIidMode *string `json:"OutOfBandIpv6SlaacIidMode,omitempty"`
+	// The status of the IPv6 configuration on the network Element out-of-band management interface. * `` - The IPv6 address status is not available or not applicable. * `active` - The IPv6 address is active and in use. * `tentative` - The IPv6 address is in tentative state (Duplicate Address Detection in progress). * `duplicate` - The IPv6 address is a duplicate (DAD failed). * `disabled` - The IPv6 address is disabled. * `error` - An error occurred during IPv6 address configuration. * `unknown` - The IPv6 address status is unknown.
+	OutOfBandIpv6Status *string `json:"OutOfBandIpv6Status,omitempty"`
 	// The MAC address of the network Element out-of-band management interface.
 	OutOfBandMac *string `json:"OutOfBandMac,omitempty"`
 	// Part number of the switch.
@@ -141,6 +149,8 @@ type NetworkElementSummary struct {
 	Revision *string `json:"Revision,omitempty"`
 	// The Relative Name uniquely identifies an object within a given context.
 	Rn *string `json:"Rn,omitempty"`
+	// This MAC address will be the source MAC address for NetFlow packets.
+	RouterMac *string `json:"RouterMac,omitempty"`
 	// This field identifies the serial of the given component.
 	Serial *string `json:"Serial,omitempty"`
 	// The Slot Id of the network Element when embedded inside a chassis.
@@ -155,6 +165,8 @@ type NetworkElementSummary struct {
 	SwitchProfileName *string `json:"SwitchProfileName,omitempty"`
 	// The Switch type that the network element is a part of. * `FabricInterconnect` - The default Switch type of UCSM and IMM mode devices. * `NexusDevice` - Switch type of Nexus devices. * `MDSDevice` - Switch type of Nexus MDS devices. * `EdgeChassisManagementController` - Switch type of Edge Chassis Management Controller.
 	SwitchType *string `json:"SwitchType,omitempty"`
+	// World Wide Name of the switch.
+	SwitchWwn *string `json:"SwitchWwn,omitempty"`
 	// System up time of the switch.
 	SystemUpTime *string `json:"SystemUpTime,omitempty"`
 	// The Thermal status of the fabric interconnect. * `unknown` - The default state of the sensor (in case no data is received). * `ok` - State of the sensor indicating the sensor's temperature range is okay. * `upper-non-recoverable` - State of the sensor indicating that the temperature is extremely high above normal range. * `upper-critical` - State of the sensor indicating that the temperature is above normal range. * `upper-non-critical` - State of the sensor indicating that the temperature is a little above the normal range. * `lower-non-critical` - State of the sensor indicating that the temperature is a little below the normal range. * `lower-critical` - State of the sensor indicating that the temperature is below normal range. * `lower-non-recoverable` - State of the sensor indicating that the temperature is extremely below normal range.
@@ -1827,6 +1839,38 @@ func (o *NetworkElementSummary) SetOutOfBandIpv6Address(v string) {
 	o.OutOfBandIpv6Address = &v
 }
 
+// GetOutOfBandIpv6Error returns the OutOfBandIpv6Error field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetOutOfBandIpv6Error() string {
+	if o == nil || IsNil(o.OutOfBandIpv6Error) {
+		var ret string
+		return ret
+	}
+	return *o.OutOfBandIpv6Error
+}
+
+// GetOutOfBandIpv6ErrorOk returns a tuple with the OutOfBandIpv6Error field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetOutOfBandIpv6ErrorOk() (*string, bool) {
+	if o == nil || IsNil(o.OutOfBandIpv6Error) {
+		return nil, false
+	}
+	return o.OutOfBandIpv6Error, true
+}
+
+// HasOutOfBandIpv6Error returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasOutOfBandIpv6Error() bool {
+	if o != nil && !IsNil(o.OutOfBandIpv6Error) {
+		return true
+	}
+
+	return false
+}
+
+// SetOutOfBandIpv6Error gets a reference to the given string and assigns it to the OutOfBandIpv6Error field.
+func (o *NetworkElementSummary) SetOutOfBandIpv6Error(v string) {
+	o.OutOfBandIpv6Error = &v
+}
+
 // GetOutOfBandIpv6Gateway returns the OutOfBandIpv6Gateway field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpv6Gateway() string {
 	if o == nil || IsNil(o.OutOfBandIpv6Gateway) {
@@ -1859,6 +1903,38 @@ func (o *NetworkElementSummary) SetOutOfBandIpv6Gateway(v string) {
 	o.OutOfBandIpv6Gateway = &v
 }
 
+// GetOutOfBandIpv6Mode returns the OutOfBandIpv6Mode field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetOutOfBandIpv6Mode() string {
+	if o == nil || IsNil(o.OutOfBandIpv6Mode) {
+		var ret string
+		return ret
+	}
+	return *o.OutOfBandIpv6Mode
+}
+
+// GetOutOfBandIpv6ModeOk returns a tuple with the OutOfBandIpv6Mode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetOutOfBandIpv6ModeOk() (*string, bool) {
+	if o == nil || IsNil(o.OutOfBandIpv6Mode) {
+		return nil, false
+	}
+	return o.OutOfBandIpv6Mode, true
+}
+
+// HasOutOfBandIpv6Mode returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasOutOfBandIpv6Mode() bool {
+	if o != nil && !IsNil(o.OutOfBandIpv6Mode) {
+		return true
+	}
+
+	return false
+}
+
+// SetOutOfBandIpv6Mode gets a reference to the given string and assigns it to the OutOfBandIpv6Mode field.
+func (o *NetworkElementSummary) SetOutOfBandIpv6Mode(v string) {
+	o.OutOfBandIpv6Mode = &v
+}
+
 // GetOutOfBandIpv6Prefix returns the OutOfBandIpv6Prefix field value if set, zero value otherwise.
 func (o *NetworkElementSummary) GetOutOfBandIpv6Prefix() string {
 	if o == nil || IsNil(o.OutOfBandIpv6Prefix) {
@@ -1889,6 +1965,70 @@ func (o *NetworkElementSummary) HasOutOfBandIpv6Prefix() bool {
 // SetOutOfBandIpv6Prefix gets a reference to the given string and assigns it to the OutOfBandIpv6Prefix field.
 func (o *NetworkElementSummary) SetOutOfBandIpv6Prefix(v string) {
 	o.OutOfBandIpv6Prefix = &v
+}
+
+// GetOutOfBandIpv6SlaacIidMode returns the OutOfBandIpv6SlaacIidMode field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetOutOfBandIpv6SlaacIidMode() string {
+	if o == nil || IsNil(o.OutOfBandIpv6SlaacIidMode) {
+		var ret string
+		return ret
+	}
+	return *o.OutOfBandIpv6SlaacIidMode
+}
+
+// GetOutOfBandIpv6SlaacIidModeOk returns a tuple with the OutOfBandIpv6SlaacIidMode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetOutOfBandIpv6SlaacIidModeOk() (*string, bool) {
+	if o == nil || IsNil(o.OutOfBandIpv6SlaacIidMode) {
+		return nil, false
+	}
+	return o.OutOfBandIpv6SlaacIidMode, true
+}
+
+// HasOutOfBandIpv6SlaacIidMode returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasOutOfBandIpv6SlaacIidMode() bool {
+	if o != nil && !IsNil(o.OutOfBandIpv6SlaacIidMode) {
+		return true
+	}
+
+	return false
+}
+
+// SetOutOfBandIpv6SlaacIidMode gets a reference to the given string and assigns it to the OutOfBandIpv6SlaacIidMode field.
+func (o *NetworkElementSummary) SetOutOfBandIpv6SlaacIidMode(v string) {
+	o.OutOfBandIpv6SlaacIidMode = &v
+}
+
+// GetOutOfBandIpv6Status returns the OutOfBandIpv6Status field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetOutOfBandIpv6Status() string {
+	if o == nil || IsNil(o.OutOfBandIpv6Status) {
+		var ret string
+		return ret
+	}
+	return *o.OutOfBandIpv6Status
+}
+
+// GetOutOfBandIpv6StatusOk returns a tuple with the OutOfBandIpv6Status field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetOutOfBandIpv6StatusOk() (*string, bool) {
+	if o == nil || IsNil(o.OutOfBandIpv6Status) {
+		return nil, false
+	}
+	return o.OutOfBandIpv6Status, true
+}
+
+// HasOutOfBandIpv6Status returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasOutOfBandIpv6Status() bool {
+	if o != nil && !IsNil(o.OutOfBandIpv6Status) {
+		return true
+	}
+
+	return false
+}
+
+// SetOutOfBandIpv6Status gets a reference to the given string and assigns it to the OutOfBandIpv6Status field.
+func (o *NetworkElementSummary) SetOutOfBandIpv6Status(v string) {
+	o.OutOfBandIpv6Status = &v
 }
 
 // GetOutOfBandMac returns the OutOfBandMac field value if set, zero value otherwise.
@@ -2081,6 +2221,38 @@ func (o *NetworkElementSummary) HasRn() bool {
 // SetRn gets a reference to the given string and assigns it to the Rn field.
 func (o *NetworkElementSummary) SetRn(v string) {
 	o.Rn = &v
+}
+
+// GetRouterMac returns the RouterMac field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetRouterMac() string {
+	if o == nil || IsNil(o.RouterMac) {
+		var ret string
+		return ret
+	}
+	return *o.RouterMac
+}
+
+// GetRouterMacOk returns a tuple with the RouterMac field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetRouterMacOk() (*string, bool) {
+	if o == nil || IsNil(o.RouterMac) {
+		return nil, false
+	}
+	return o.RouterMac, true
+}
+
+// HasRouterMac returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasRouterMac() bool {
+	if o != nil && !IsNil(o.RouterMac) {
+		return true
+	}
+
+	return false
+}
+
+// SetRouterMac gets a reference to the given string and assigns it to the RouterMac field.
+func (o *NetworkElementSummary) SetRouterMac(v string) {
+	o.RouterMac = &v
 }
 
 // GetSerial returns the Serial field value if set, zero value otherwise.
@@ -2305,6 +2477,38 @@ func (o *NetworkElementSummary) HasSwitchType() bool {
 // SetSwitchType gets a reference to the given string and assigns it to the SwitchType field.
 func (o *NetworkElementSummary) SetSwitchType(v string) {
 	o.SwitchType = &v
+}
+
+// GetSwitchWwn returns the SwitchWwn field value if set, zero value otherwise.
+func (o *NetworkElementSummary) GetSwitchWwn() string {
+	if o == nil || IsNil(o.SwitchWwn) {
+		var ret string
+		return ret
+	}
+	return *o.SwitchWwn
+}
+
+// GetSwitchWwnOk returns a tuple with the SwitchWwn field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *NetworkElementSummary) GetSwitchWwnOk() (*string, bool) {
+	if o == nil || IsNil(o.SwitchWwn) {
+		return nil, false
+	}
+	return o.SwitchWwn, true
+}
+
+// HasSwitchWwn returns a boolean if a field has been set.
+func (o *NetworkElementSummary) HasSwitchWwn() bool {
+	if o != nil && !IsNil(o.SwitchWwn) {
+		return true
+	}
+
+	return false
+}
+
+// SetSwitchWwn gets a reference to the given string and assigns it to the SwitchWwn field.
+func (o *NetworkElementSummary) SetSwitchWwn(v string) {
+	o.SwitchWwn = &v
 }
 
 // GetSystemUpTime returns the SystemUpTime field value if set, zero value otherwise.
@@ -2798,11 +3002,23 @@ func (o NetworkElementSummary) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.OutOfBandIpv6Address) {
 		toSerialize["OutOfBandIpv6Address"] = o.OutOfBandIpv6Address
 	}
+	if !IsNil(o.OutOfBandIpv6Error) {
+		toSerialize["OutOfBandIpv6Error"] = o.OutOfBandIpv6Error
+	}
 	if !IsNil(o.OutOfBandIpv6Gateway) {
 		toSerialize["OutOfBandIpv6Gateway"] = o.OutOfBandIpv6Gateway
 	}
+	if !IsNil(o.OutOfBandIpv6Mode) {
+		toSerialize["OutOfBandIpv6Mode"] = o.OutOfBandIpv6Mode
+	}
 	if !IsNil(o.OutOfBandIpv6Prefix) {
 		toSerialize["OutOfBandIpv6Prefix"] = o.OutOfBandIpv6Prefix
+	}
+	if !IsNil(o.OutOfBandIpv6SlaacIidMode) {
+		toSerialize["OutOfBandIpv6SlaacIidMode"] = o.OutOfBandIpv6SlaacIidMode
+	}
+	if !IsNil(o.OutOfBandIpv6Status) {
+		toSerialize["OutOfBandIpv6Status"] = o.OutOfBandIpv6Status
 	}
 	if !IsNil(o.OutOfBandMac) {
 		toSerialize["OutOfBandMac"] = o.OutOfBandMac
@@ -2821,6 +3037,9 @@ func (o NetworkElementSummary) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Rn) {
 		toSerialize["Rn"] = o.Rn
+	}
+	if !IsNil(o.RouterMac) {
+		toSerialize["RouterMac"] = o.RouterMac
 	}
 	if !IsNil(o.Serial) {
 		toSerialize["Serial"] = o.Serial
@@ -2842,6 +3061,9 @@ func (o NetworkElementSummary) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.SwitchType) {
 		toSerialize["SwitchType"] = o.SwitchType
+	}
+	if !IsNil(o.SwitchWwn) {
+		toSerialize["SwitchWwn"] = o.SwitchWwn
 	}
 	if !IsNil(o.SystemUpTime) {
 		toSerialize["SystemUpTime"] = o.SystemUpTime
@@ -3022,10 +3244,18 @@ func (o *NetworkElementSummary) UnmarshalJSON(data []byte) (err error) {
 		OutOfBandIpv4Mask *string `json:"OutOfBandIpv4Mask,omitempty"`
 		// The IPv6 address of the network Element out-of-band management interface.
 		OutOfBandIpv6Address *string `json:"OutOfBandIpv6Address,omitempty"`
+		// The IPv6 error message if any issue occurred during address configuration.
+		OutOfBandIpv6Error *string `json:"OutOfBandIpv6Error,omitempty"`
 		// The default IPv6 gateway of the network Element out-of-band management interface.
 		OutOfBandIpv6Gateway *string `json:"OutOfBandIpv6Gateway,omitempty"`
+		// The IPv6 address configuration mode of the network Element out-of-band management interface. * `` - The IPv6 address mode is not available or not applicable. * `slaac` - IPv6 address is configured via Stateless Address Autoconfiguration (SLAAC). * `static` - IPv6 address is statically configured. * `disabled` - IPv6 is disabled on the out-of-band management interface.
+		OutOfBandIpv6Mode *string `json:"OutOfBandIpv6Mode,omitempty"`
 		// The network mask of the network Element out-of-band management interface.
 		OutOfBandIpv6Prefix *string `json:"OutOfBandIpv6Prefix,omitempty"`
+		// The SLAAC Interface Identifier (IID) mode for the network Element out-of-band management IPv6 address. * `` - The SLAAC IID mode is not available or not applicable. * `eui64` - The SLAAC IID is derived from the MAC address using the EUI-64 method. * `opaque` - The SLAAC IID is generated using an opaque identifier for privacy.
+		OutOfBandIpv6SlaacIidMode *string `json:"OutOfBandIpv6SlaacIidMode,omitempty"`
+		// The status of the IPv6 configuration on the network Element out-of-band management interface. * `` - The IPv6 address status is not available or not applicable. * `active` - The IPv6 address is active and in use. * `tentative` - The IPv6 address is in tentative state (Duplicate Address Detection in progress). * `duplicate` - The IPv6 address is a duplicate (DAD failed). * `disabled` - The IPv6 address is disabled. * `error` - An error occurred during IPv6 address configuration. * `unknown` - The IPv6 address status is unknown.
+		OutOfBandIpv6Status *string `json:"OutOfBandIpv6Status,omitempty"`
 		// The MAC address of the network Element out-of-band management interface.
 		OutOfBandMac *string `json:"OutOfBandMac,omitempty"`
 		// Part number of the switch.
@@ -3038,6 +3268,8 @@ func (o *NetworkElementSummary) UnmarshalJSON(data []byte) (err error) {
 		Revision *string `json:"Revision,omitempty"`
 		// The Relative Name uniquely identifies an object within a given context.
 		Rn *string `json:"Rn,omitempty"`
+		// This MAC address will be the source MAC address for NetFlow packets.
+		RouterMac *string `json:"RouterMac,omitempty"`
 		// This field identifies the serial of the given component.
 		Serial *string `json:"Serial,omitempty"`
 		// The Slot Id of the network Element when embedded inside a chassis.
@@ -3052,6 +3284,8 @@ func (o *NetworkElementSummary) UnmarshalJSON(data []byte) (err error) {
 		SwitchProfileName *string `json:"SwitchProfileName,omitempty"`
 		// The Switch type that the network element is a part of. * `FabricInterconnect` - The default Switch type of UCSM and IMM mode devices. * `NexusDevice` - Switch type of Nexus devices. * `MDSDevice` - Switch type of Nexus MDS devices. * `EdgeChassisManagementController` - Switch type of Edge Chassis Management Controller.
 		SwitchType *string `json:"SwitchType,omitempty"`
+		// World Wide Name of the switch.
+		SwitchWwn *string `json:"SwitchWwn,omitempty"`
 		// System up time of the switch.
 		SystemUpTime *string `json:"SystemUpTime,omitempty"`
 		// The Thermal status of the fabric interconnect. * `unknown` - The default state of the sensor (in case no data is received). * `ok` - State of the sensor indicating the sensor's temperature range is okay. * `upper-non-recoverable` - State of the sensor indicating that the temperature is extremely high above normal range. * `upper-critical` - State of the sensor indicating that the temperature is above normal range. * `upper-non-critical` - State of the sensor indicating that the temperature is a little above the normal range. * `lower-non-critical` - State of the sensor indicating that the temperature is a little below the normal range. * `lower-critical` - State of the sensor indicating that the temperature is below normal range. * `lower-non-recoverable` - State of the sensor indicating that the temperature is extremely below normal range.
@@ -3124,14 +3358,19 @@ func (o *NetworkElementSummary) UnmarshalJSON(data []byte) (err error) {
 		varNetworkElementSummary.OutOfBandIpv4Gateway = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandIpv4Gateway
 		varNetworkElementSummary.OutOfBandIpv4Mask = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandIpv4Mask
 		varNetworkElementSummary.OutOfBandIpv6Address = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandIpv6Address
+		varNetworkElementSummary.OutOfBandIpv6Error = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandIpv6Error
 		varNetworkElementSummary.OutOfBandIpv6Gateway = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandIpv6Gateway
+		varNetworkElementSummary.OutOfBandIpv6Mode = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandIpv6Mode
 		varNetworkElementSummary.OutOfBandIpv6Prefix = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandIpv6Prefix
+		varNetworkElementSummary.OutOfBandIpv6SlaacIidMode = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandIpv6SlaacIidMode
+		varNetworkElementSummary.OutOfBandIpv6Status = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandIpv6Status
 		varNetworkElementSummary.OutOfBandMac = varNetworkElementSummaryWithoutEmbeddedStruct.OutOfBandMac
 		varNetworkElementSummary.PartNumber = varNetworkElementSummaryWithoutEmbeddedStruct.PartNumber
 		varNetworkElementSummary.Presence = varNetworkElementSummaryWithoutEmbeddedStruct.Presence
 		varNetworkElementSummary.ReservedVlanStartId = varNetworkElementSummaryWithoutEmbeddedStruct.ReservedVlanStartId
 		varNetworkElementSummary.Revision = varNetworkElementSummaryWithoutEmbeddedStruct.Revision
 		varNetworkElementSummary.Rn = varNetworkElementSummaryWithoutEmbeddedStruct.Rn
+		varNetworkElementSummary.RouterMac = varNetworkElementSummaryWithoutEmbeddedStruct.RouterMac
 		varNetworkElementSummary.Serial = varNetworkElementSummaryWithoutEmbeddedStruct.Serial
 		varNetworkElementSummary.SlotId = varNetworkElementSummaryWithoutEmbeddedStruct.SlotId
 		varNetworkElementSummary.SourceObjectType = varNetworkElementSummaryWithoutEmbeddedStruct.SourceObjectType
@@ -3139,6 +3378,7 @@ func (o *NetworkElementSummary) UnmarshalJSON(data []byte) (err error) {
 		varNetworkElementSummary.SwitchId = varNetworkElementSummaryWithoutEmbeddedStruct.SwitchId
 		varNetworkElementSummary.SwitchProfileName = varNetworkElementSummaryWithoutEmbeddedStruct.SwitchProfileName
 		varNetworkElementSummary.SwitchType = varNetworkElementSummaryWithoutEmbeddedStruct.SwitchType
+		varNetworkElementSummary.SwitchWwn = varNetworkElementSummaryWithoutEmbeddedStruct.SwitchWwn
 		varNetworkElementSummary.SystemUpTime = varNetworkElementSummaryWithoutEmbeddedStruct.SystemUpTime
 		varNetworkElementSummary.Thermal = varNetworkElementSummaryWithoutEmbeddedStruct.Thermal
 		varNetworkElementSummary.TotalMemory = varNetworkElementSummaryWithoutEmbeddedStruct.TotalMemory
@@ -3215,14 +3455,19 @@ func (o *NetworkElementSummary) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "OutOfBandIpv4Gateway")
 		delete(additionalProperties, "OutOfBandIpv4Mask")
 		delete(additionalProperties, "OutOfBandIpv6Address")
+		delete(additionalProperties, "OutOfBandIpv6Error")
 		delete(additionalProperties, "OutOfBandIpv6Gateway")
+		delete(additionalProperties, "OutOfBandIpv6Mode")
 		delete(additionalProperties, "OutOfBandIpv6Prefix")
+		delete(additionalProperties, "OutOfBandIpv6SlaacIidMode")
+		delete(additionalProperties, "OutOfBandIpv6Status")
 		delete(additionalProperties, "OutOfBandMac")
 		delete(additionalProperties, "PartNumber")
 		delete(additionalProperties, "Presence")
 		delete(additionalProperties, "ReservedVlanStartId")
 		delete(additionalProperties, "Revision")
 		delete(additionalProperties, "Rn")
+		delete(additionalProperties, "RouterMac")
 		delete(additionalProperties, "Serial")
 		delete(additionalProperties, "SlotId")
 		delete(additionalProperties, "SourceObjectType")
@@ -3230,6 +3475,7 @@ func (o *NetworkElementSummary) UnmarshalJSON(data []byte) (err error) {
 		delete(additionalProperties, "SwitchId")
 		delete(additionalProperties, "SwitchProfileName")
 		delete(additionalProperties, "SwitchType")
+		delete(additionalProperties, "SwitchWwn")
 		delete(additionalProperties, "SystemUpTime")
 		delete(additionalProperties, "Thermal")
 		delete(additionalProperties, "TotalMemory")

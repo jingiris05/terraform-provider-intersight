@@ -265,6 +265,46 @@ func getWorkloadWorkloadMetadataSchema() map[string]*schema.Schema {
 				},
 			},
 		},
+		"rename_request": {
+			Description: "The request for the renaming operation on the workload definition object.",
+			Type:        schema.TypeList,
+			MaxItems:    1,
+			Optional:    true,
+			Elem: &schema.Resource{
+				Schema: map[string]*schema.Schema{
+					"action": {
+						Description: "The action to be taken for the rename operation on an object.\n* `None` - No action is to be taken for the rename request.\n* `Rename` - The object is to be renamed with the new name in the request.",
+						Type:        schema.TypeString,
+						Optional:    true,
+					},
+					"additional_properties": {
+						Type:             schema.TypeString,
+						Optional:         true,
+						DiffSuppressFunc: SuppressDiffAdditionProps,
+					},
+					"class_id": {
+						Description: "The fully-qualified name of the instantiated, concrete type.\nThis property is used as a discriminator to identify the type of the payload\nwhen marshaling and unmarshaling data.",
+						Type:        schema.TypeString,
+						Optional:    true,
+					},
+					"new_name": {
+						Description: "The new name for the object. This name will be used to rename all objects associated with it.",
+						Type:        schema.TypeString,
+						Optional:    true,
+					},
+					"object_type": {
+						Description: "The fully-qualified name of the instantiated, concrete type.\nThe value should be the same as the 'ClassId' property.",
+						Type:        schema.TypeString,
+						Optional:    true,
+					},
+					"status": {
+						Description: "The status of the rename operation for an object.\n* `None` - No rename operation is in progress, the last rename operation succeeded, or rename has not been performed on the object.\n* `Updating` - The object is currently being renamed.\n* `UpdateScheduled` - The rename request for the object has been accepted and will be processed.",
+						Type:        schema.TypeString,
+						Optional:    true,
+					},
+				},
+			},
+		},
 		"shared_scope": {
 			Description: "Intersight provides pre-built workflows, tasks and policies to end users through global catalogs.\nObjects that are made available through global catalogs are said to have a 'shared' ownership. Shared objects are either made globally available to all end users or restricted to end users based on their license entitlement. Users can use this property to differentiate the scope (global or a specific license tier) to which a shared MO belongs.",
 			Type:        schema.TypeString,
@@ -604,7 +644,8 @@ func dataSourceWorkloadWorkloadMetadataRead(c context.Context, d *schema.Resourc
 	}
 
 	if v, ok := d.GetOk("create_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCreateTime(x)
 	}
 
@@ -642,7 +683,8 @@ func dataSourceWorkloadWorkloadMetadataRead(c context.Context, d *schema.Resourc
 	}
 
 	if v, ok := d.GetOk("mod_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetModTime(x)
 	}
 
@@ -791,6 +833,49 @@ func dataSourceWorkloadWorkloadMetadataRead(c context.Context, d *schema.Resourc
 			x = append(x, models.MoMoRefAsMoBaseMoRelationship(o))
 		}
 		o.SetPermissionResources(x)
+	}
+
+	if v, ok := d.GetOk("rename_request"); ok {
+		p := make([]models.WorkloadRenameRequest, 0, 1)
+		s := v.([]interface{})
+		for i := 0; i < len(s); i++ {
+			l := s[i].(map[string]interface{})
+			o := &models.WorkloadRenameRequest{}
+			if v, ok := l["action"]; ok {
+				{
+					x := (v.(string))
+					o.SetAction(x)
+				}
+			}
+			if v, ok := l["additional_properties"]; ok {
+				{
+					x := []byte(v.(string))
+					var x1 interface{}
+					err := json.Unmarshal(x, &x1)
+					if err == nil && x1 != nil {
+						o.AdditionalProperties = x1.(map[string]interface{})
+					}
+				}
+			}
+			o.SetClassId("workload.RenameRequest")
+			if v, ok := l["new_name"]; ok {
+				{
+					x := (v.(string))
+					o.SetNewName(x)
+				}
+			}
+			if v, ok := l["object_type"]; ok {
+				{
+					x := (v.(string))
+					o.SetObjectType(x)
+				}
+			}
+			p = append(p, *o)
+		}
+		if len(p) > 0 {
+			x := p[0]
+			o.SetRenameRequest(x)
+		}
 	}
 
 	if v, ok := d.GetOk("shared_scope"); ok {
@@ -1011,6 +1096,8 @@ func dataSourceWorkloadWorkloadMetadataRead(c context.Context, d *schema.Resourc
 				temp["parent"] = flattenMapMoBaseMoRelationship(s.GetParent(), d)
 
 				temp["permission_resources"] = flattenListMoBaseMoRelationship(s.GetPermissionResources(), d)
+
+				temp["rename_request"] = flattenMapWorkloadRenameRequest(s.GetRenameRequest(), d)
 				temp["shared_scope"] = (s.GetSharedScope())
 
 				temp["tags"] = flattenListMoTag(s.GetTags(), d)

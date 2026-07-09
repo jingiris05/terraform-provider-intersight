@@ -71,7 +71,7 @@ func getApicOutSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"dn": {
-			Description: "Distinguished Name (DN) of an object within the Cisco Application Policy Infrastructure Controller (APIC) GUI.",
+			Description: "Distinguished Name (DN) of an object in Cisco Application Policy Infrastructure Controller (APIC) GUI.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -91,7 +91,7 @@ func getApicOutSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"name": {
-			Description: "L3Out Name of an object within the Cisco Application Policy Infrastructure Controller.",
+			Description: "Object L3Out name in Cisco Application Policy Infrastructure Controller (APIC).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -550,7 +550,8 @@ func dataSourceApicOutRead(c context.Context, d *schema.ResourceData, meta inter
 	}
 
 	if v, ok := d.GetOk("create_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCreateTime(x)
 	}
 
@@ -565,7 +566,8 @@ func dataSourceApicOutRead(c context.Context, d *schema.ResourceData, meta inter
 	}
 
 	if v, ok := d.GetOk("mod_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetModTime(x)
 	}
 

@@ -71,7 +71,7 @@ func getApicFabricLeafNodeInterfaceSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"dn": {
-			Description: "Distinguished Name (DN) of an object within the Cisco Application Policy Infrastructure Controller (APIC) GUI.",
+			Description: "Distinguished Name (DN) of an object in Cisco Application Policy Infrastructure Controller (APIC) GUI.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -116,12 +116,12 @@ func getApicFabricLeafNodeInterfaceSchema() map[string]*schema.Schema {
 			},
 		},
 		"fabric_leaf_node_dn": {
-			Description: "Fabric Leaf Node Distinguished Name.",
+			Description: "Fabric leaf node Distinguished Name (DN).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
 		"fabric_leaf_node_id": {
-			Description: "Fabric Leaf Node Identification Number.",
+			Description: "Fabric leaf node identification number.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -136,7 +136,7 @@ func getApicFabricLeafNodeInterfaceSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"name": {
-			Description: "Name of an object within the Cisco Application Policy Infrastructure Controller.",
+			Description: "Object name in Cisco Application Policy Infrastructure Controller (APIC).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -560,7 +560,8 @@ func dataSourceApicFabricLeafNodeInterfaceRead(c context.Context, d *schema.Reso
 	}
 
 	if v, ok := d.GetOk("create_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCreateTime(x)
 	}
 
@@ -628,7 +629,8 @@ func dataSourceApicFabricLeafNodeInterfaceRead(c context.Context, d *schema.Reso
 	}
 
 	if v, ok := d.GetOk("mod_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetModTime(x)
 	}
 

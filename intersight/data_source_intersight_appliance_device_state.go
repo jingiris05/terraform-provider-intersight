@@ -330,7 +330,7 @@ func getApplianceDeviceStateSchema() map[string]*schema.Schema {
 			},
 		},
 		"connection_status": {
-			Description: "Intersight Appliance's connectivity status. ConnectionStatus field is updated infrequently, and value may not be up to date. However, upgrade service will populate this field with actual value when queried.\n* `` - The target details have been persisted but Intersight has not yet attempted to connect to the target.\n* `Connected` - Intersight is able to establish a connection to the target and initiate management activities.\n* `NotConnected` - Intersight is unable to establish a connection to the target.\n* `ClaimInProgress` - Claim of the target is in progress. A connection to the target has not been fully established.\n* `UnclaimInProgress` - Unclaim of the target is in progress. Intersight is able to connect to the target and all management operations are supported.\n* `Unclaimed` - The device was un-claimed from the users account by an Administrator of the device. Also indicates the failure to claim Targets of type HTTP Endpoint in Intersight.\n* `Claimed` - Target of type HTTP Endpoint is successfully claimed in Intersight. Currently no validation is performed to verify the Target connectivity from Intersight at the time of creation. However invoking API from Intersight Orchestrator fails if this Target is not reachable from Intersight or if Target API credentials are incorrect.",
+			Description: "Intersight Appliance's connectivity status. ConnectionStatus field is updated infrequently, and value may not be up to date. However, upgrade service will populate this field with actual value when queried.\n* `` - The target details have been persisted but Intersight has not yet attempted to connect to the target.\n* `Connected` - Intersight is able to establish a connection to the target and initiate management activities.\n* `NotConnected` - Intersight is unable to establish a connection to the target.\n* `ClaimInProgress` - Claim of the target is in progress. A connection to the target has not been fully established.\n* `UnclaimInProgress` - Unclaim of the target is in progress. Intersight is able to connect to the target and all management operations are supported.\n* `Unclaimed` - The device was un-claimed from the users account by an Administrator of the device. Also indicates the failure to claim Targets of type HTTP Endpoint in Intersight.\n* `Claimed` - Target of type HTTP Endpoint is successfully claimed in Intersight. Currently no validation is performed to verify the Target connectivity from Intersight at the time of creation. However invoking API from Intersight Orchestrator fails if this Target is not reachable from Intersight or if Target API credentials are incorrect.\n* `PreClaimed` - Target has been pre-claimed and is pending claim completion. Pre-claimed targets are pre-provisioned before endpoint is available to connect to Intersight, once target connects the claim can be completed by providing the security token to the pre-claim API.",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -946,7 +946,8 @@ func dataSourceApplianceDeviceStateRead(c context.Context, d *schema.ResourceDat
 	}
 
 	if v, ok := d.GetOk("certificate_not_after"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCertificateNotAfter(x)
 	}
 
@@ -1082,7 +1083,8 @@ func dataSourceApplianceDeviceStateRead(c context.Context, d *schema.ResourceDat
 	}
 
 	if v, ok := d.GetOk("create_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCreateTime(x)
 	}
 
@@ -1141,7 +1143,8 @@ func dataSourceApplianceDeviceStateRead(c context.Context, d *schema.ResourceDat
 			}
 			if v, ok := l["file_time"]; ok {
 				{
-					x, _ := time.Parse(time.RFC1123, v.(string))
+					// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+					x, _ := time.Parse(time.RFC3339, v.(string))
 					o.SetFileTime(x)
 				}
 			}
@@ -1173,7 +1176,8 @@ func dataSourceApplianceDeviceStateRead(c context.Context, d *schema.ResourceDat
 	}
 
 	if v, ok := d.GetOk("mod_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetModTime(x)
 	}
 

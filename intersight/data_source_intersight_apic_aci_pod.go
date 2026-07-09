@@ -86,7 +86,7 @@ func getApicAciPodSchema() map[string]*schema.Schema {
 			Optional:    true,
 		},
 		"name": {
-			Description: "Name of a pod extracted from Dn within the Cisco Application Policy Infrastructure Controller (APIC).",
+			Description: "Pod name extracted from DN in Cisco Application Policy Infrastructure Controller (APIC).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -170,7 +170,7 @@ func getApicAciPodSchema() map[string]*schema.Schema {
 			},
 		},
 		"pod_type": {
-			Description: "Pod type of an object within the Cisco Application Policy Infrastructure Controller (APIC).",
+			Description: "Object pod type in Cisco Application Policy Infrastructure Controller (APIC).",
 			Type:        schema.TypeString,
 			Optional:    true,
 		},
@@ -515,7 +515,8 @@ func dataSourceApicAciPodRead(c context.Context, d *schema.ResourceData, meta in
 	}
 
 	if v, ok := d.GetOk("create_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetCreateTime(x)
 	}
 
@@ -525,7 +526,8 @@ func dataSourceApicAciPodRead(c context.Context, d *schema.ResourceData, meta in
 	}
 
 	if v, ok := d.GetOk("mod_time"); ok {
-		x, _ := time.Parse(time.RFC1123, v.(string))
+		// Please ensure the input value follows the RFC3339 time format (e.g., "2006-01-02T15:04:05Z07:00")
+		x, _ := time.Parse(time.RFC3339, v.(string))
 		o.SetModTime(x)
 	}
 

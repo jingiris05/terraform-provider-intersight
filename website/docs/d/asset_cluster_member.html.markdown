@@ -3,26 +3,24 @@ subcategory: "asset"
 layout: "intersight"
 page_title: "Intersight: intersight_asset_cluster_member"
 description: |-
-        ### Overview
         The ClusterMember object represents a node within a cluster of device connectors. This provides detailed insights into the individual members of a device cluster, supporting high availability and redundancy in device management.
         #### Purpose
         ClusterMember facilitates the management of clustered devices by capturing connection details and leadership states of each node. It plays a crucial role in ensuring that device management is robust and scalable, supporting seamless failover and load balancing.
         #### Key Concepts
-        - **Cluster Identity:** - Maintains unique identities for each node within the cluster, ensuring precise tracking and management.
-        - **Leadership Management:** - Monitors leadership states within the cluster, supporting efficient failover and recovery processes.
-        - **Connection Details:** - Provides granular visibility into the connection status and configuration of each cluster member, enabling proactive management.
+        - **Cluster Identity:** Maintains unique identities for each node within the cluster, ensuring precise tracking and management.
+        - **Leadership Management:** Monitors leadership states within the cluster, supporting efficient failover and recovery processes.
+        - **Connection Details:** Provides granular visibility into the connection status and configuration of each cluster member, enabling proactive management.
 
 ---
 
 # Data Source: intersight_asset_cluster_member
-### Overview
 The ClusterMember object represents a node within a cluster of device connectors. This provides detailed insights into the individual members of a device cluster, supporting high availability and redundancy in device management.
 #### Purpose
 ClusterMember facilitates the management of clustered devices by capturing connection details and leadership states of each node. It plays a crucial role in ensuring that device management is robust and scalable, supporting seamless failover and load balancing.
 #### Key Concepts
-- **Cluster Identity:** - Maintains unique identities for each node within the cluster, ensuring precise tracking and management.
-- **Leadership Management:** - Monitors leadership states within the cluster, supporting efficient failover and recovery processes.
-- **Connection Details:** - Provides granular visibility into the connection status and configuration of each cluster member, enabling proactive management.
+- **Cluster Identity:** Maintains unique identities for each node within the cluster, ensuring precise tracking and management.
+- **Leadership Management:** Monitors leadership states within the cluster, supporting efficient failover and recovery processes.
+- **Connection Details:** Provides granular visibility into the connection status and configuration of each cluster member, enabling proactive management.
 ## Argument Reference
 The results of this data source are stored in `results` property.
 All objects matching the filter criteria are fetched through pagination.
@@ -34,7 +32,7 @@ The following arguments can be used to get data of already created objects in In
 * `connected_host`:(string) The DNS hostname the device connector has used to connect to Intersight. Devices may be configured to connect to a set of DNS hostnames which all resolve to the same Intersight instance, the connected host is the latest hostname the device used to connect successfully to Intersight. 
 * `connection_id`:(string) The unique identifier for the current connection. The identifier persists across network connectivity loss and is reset on device connector process restart or platform administrator toggle of the Intersight connectivity. The connectionId can be used by services that need to interact with stateful plugins running in the device connector process. For example if a service schedules an inventory in a devices job scheduler plugin at registration it is not necessary to reschedule the job if the device loses network connectivity due to an Intersight service upgrade or intermittent network issues in the devices datacenter. 
 * `connection_reason`:(string) If 'connectionStatus' is not equal to Connected, connectionReason provides further details about why the device is not connected with Intersight. 
-* `connection_status`:(string) The status of the persistent connection between the device connector and Intersight.* `` - The target details have been persisted but Intersight has not yet attempted to connect to the target.* `Connected` - Intersight is able to establish a connection to the target and initiate management activities.* `NotConnected` - Intersight is unable to establish a connection to the target.* `ClaimInProgress` - Claim of the target is in progress. A connection to the target has not been fully established.* `UnclaimInProgress` - Unclaim of the target is in progress. Intersight is able to connect to the target and all management operations are supported.* `Unclaimed` - The device was un-claimed from the users account by an Administrator of the device. Also indicates the failure to claim Targets of type HTTP Endpoint in Intersight.* `Claimed` - Target of type HTTP Endpoint is successfully claimed in Intersight. Currently no validation is performed to verify the Target connectivity from Intersight at the time of creation. However invoking API from Intersight Orchestrator fails if this Target is not reachable from Intersight or if Target API credentials are incorrect. 
+* `connection_status`:(string) The status of the persistent connection between the device connector and Intersight.* `` - The target details have been persisted but Intersight has not yet attempted to connect to the target.* `Connected` - Intersight is able to establish a connection to the target and initiate management activities.* `NotConnected` - Intersight is unable to establish a connection to the target.* `ClaimInProgress` - Claim of the target is in progress. A connection to the target has not been fully established.* `UnclaimInProgress` - Unclaim of the target is in progress. Intersight is able to connect to the target and all management operations are supported.* `Unclaimed` - The device was un-claimed from the users account by an Administrator of the device. Also indicates the failure to claim Targets of type HTTP Endpoint in Intersight.* `Claimed` - Target of type HTTP Endpoint is successfully claimed in Intersight. Currently no validation is performed to verify the Target connectivity from Intersight at the time of creation. However invoking API from Intersight Orchestrator fails if this Target is not reachable from Intersight or if Target API credentials are incorrect.* `PreClaimed` - Target has been pre-claimed and is pending claim completion. Pre-claimed targets are pre-provisioned before endpoint is available to connect to Intersight, once target connects the claim can be completed by providing the security token to the pre-claim API. 
 * `connection_status_last_change_time`:(string) The last time at which the 'connectionStatus' property value changed. If connectionStatus is Connected, this time can be interpreted as the starting time since which a persistent connection has been maintained between Intersight and Device Connector. If connectionStatus is NotConnected, this time can be interpreted as the last time the device connector was connected with Intersight. 
 * `connector_version`:(string) The version of the device connector running on the managed device. 
 * `create_time`:(string) The time when this managed object was created. 
