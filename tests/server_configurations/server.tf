@@ -2,7 +2,7 @@ resource "intersight_server_profile" "server1" {
   name = "server1"
   action = "No-op"
   target_platform = "Standalone"
-  server_family = "UCS C2XX/4XX"
+  server_family = "UCSC2XX/4XX"
   tags {
     key = "server"
     value = "demo"
