@@ -70,7 +70,7 @@ resource "intersight_boot_precision_policy" "boot_precision1" {
 resource "intersight_server_profile_template" "template1" {
   name            = "server_profile_template1"
   description     = "demo server profile template"
-  target_platform = "FIAttached"
+  target_platform = "Standalone"
    organization {
      object_type = "organization.Organization"
      moid        = data.intersight_organization_organization.default.results.0.moid
