@@ -102,6 +102,8 @@ resource "intersight_bulk_mo_cloner" "clone_server1"{
                additional_properties = jsonencode({
                 Name = "demotesting_DERIVED-4"
                 Description = "Sample description"
+				TargetPlatform = "Standalone"
+                ServerFamily = "UCSC2XX/4XX"
                })
                tags = []
        }
