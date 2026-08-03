@@ -103,7 +103,7 @@ resource "intersight_bulk_mo_cloner" "clone_server1"{
                 Name = "demotesting_DERIVED-6"
                 Description = "Sample description"
 				        TargetPlatform = "FIAttached"
-                ServerFamily = "ALL"
+                ServerFamily = "All"
                })
                tags = []
        }
