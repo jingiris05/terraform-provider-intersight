@@ -109,21 +109,11 @@ resource "intersight_bulk_mo_cloner" "clone_server1"{
        }
 }
 
-resource "intersight_server_profile" "server_profile"{
-	depends_on = [intersight_bulk_mo_cloner.clone_server1]
-	name = "demotesting_DERIVED-6"
-	description = "Sample description"
-	target_platform = "FIAttached"
-  organization {
-     object_type = "organization.Organization"
-     moid        = data.intersight_organization_organization.default.results.0.moid
-   }
-}
-
 resource "intersight_server_profile" "server_profile1"{
 	name = "demotesting_DERIVED-5"
 	description = "Sample description"
 	target_platform = "FIAttached"
+	server_family   = "All"
   organization {
      object_type = "organization.Organization"
      moid        = data.intersight_organization_organization.default.results.0.moid
